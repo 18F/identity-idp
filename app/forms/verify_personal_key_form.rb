@@ -17,16 +17,20 @@ class VerifyPersonalKeyForm
     extra = {}
     success = valid?
 
-    reset_sensitive_fields if !success
+    if success
+      extra[:decrypted_pii] = decrypted_pii_json
+    else
+      reset_sensitive_fields
+    end
 
     FormResponse.new(success: valid?, errors: errors, extra: extra)
   end
 
-  def decrypted_pii_json
-    decrypted_pii&.to_json
-  end
-
   private
+
+  def decrypted_pii_json
+    decrypted_pii.to_json
+  end
 
   def password_reset_profile
     user.decorate.password_reset_profile

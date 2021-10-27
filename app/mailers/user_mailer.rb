@@ -1,7 +1,6 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
-
   before_action :attach_images
   default(
     from: email_with_name(

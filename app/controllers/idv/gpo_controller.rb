@@ -145,7 +145,7 @@ module Idv
     def idv_throttle_params
       {
         user: idv_session.current_user,
-        throttle_type: :proof_address,
+        throttle_type: :idv_resolution,
       }
     end
 
@@ -171,7 +171,7 @@ module Idv
       if idv_attempter_throttled?
         analytics.track_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: :proof_address,
+          throttle_type: :idv_resolution,
           step_name: :gpo,
         )
         flash_error
@@ -184,7 +184,7 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(current_user, email_address.email).deliver_now_or_later
+        UserMailer.letter_reminder(current_user, email_address.email).deliver_now
       end
     end
 

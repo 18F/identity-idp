@@ -14,7 +14,6 @@ class OpenidConnectUserInfoPresenter
       iss: root_url,
       email: email_from_sp_identity(identity),
       email_verified: true,
-      all_emails: all_emails_from_sp_identity(identity),
     }
 
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
@@ -35,15 +34,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity(identity)
-    email_context.last_sign_in_email_address.email
-  end
-
-  def all_emails_from_sp_identity(identity)
-    identity.user.confirmed_email_addresses.map(&:email)
-  end
-
-  def email_context
-    @email_context ||= EmailContext.new(identity.user)
+    EmailContext.new(identity.user).last_sign_in_email_address.email
   end
 
   def ial2_attributes

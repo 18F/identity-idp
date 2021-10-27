@@ -6,7 +6,6 @@ interval_5m = 5 * 60
 cron_1h = '0 * * * *'
 interval_1h = 60 * 60
 cron_24h = '0 0 * * *'
-gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 inteval_24h = 24 * 60 * 60
 
 # Once we enable ruby workers in prod, we can remove all the JobRunner code and config
@@ -22,7 +21,7 @@ all_configs = {
     },
     good_job: {
       class: 'GpoDailyJob',
-      cron: gpo_cron_24h,
+      cron: cron_24h,
       args: -> { [Time.zone.today] },
     },
   },

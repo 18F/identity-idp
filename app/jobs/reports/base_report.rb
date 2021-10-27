@@ -2,7 +2,7 @@ require 'identity/hostdata'
 
 module Reports
   class BaseReport < ApplicationJob
-    queue_as :long_running
+    queue_as :low
 
     # We use good_job's concurrency features to cancel "extra" or duplicative runs of the same job
     discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError

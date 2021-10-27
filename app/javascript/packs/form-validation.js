@@ -3,7 +3,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const PATTERN_TYPES = ['personal-key', 'ssn'];
+const PATTERN_TYPES = ['personal-key', 'ssn', 'zipcode'];
 
 const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
@@ -19,47 +19,33 @@ function disableFormSubmit(event) {
   });
 }
 
-function kebabCase(string) {
-  return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-function resetInput(input) {
-  input.setCustomValidity('');
-  input.setAttribute('aria-invalid', 'false');
-  input.classList.remove('usa-input--error');
-}
-
 /**
  * Given an `input` or `invalid` event, updates custom validity of the given input.
  *
  * @param {Event} event Input or invalid event.
  */
-
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
-  resetInput(input);
+  input.setCustomValidity('');
+  input.setAttribute('aria-invalid', String(!input.validity.valid));
   if (
     event.type === 'invalid' &&
     !input.validity.valid &&
     input.parentNode?.querySelector('.display-if-invalid')
   ) {
     event.preventDefault();
-    const errors = Object.keys(ValidityState.prototype)
-      .filter((key) => key !== 'valid')
-      .filter((key) => input.validity[key]);
-
-    input.setAttribute('aria-invalid', errors.length ? kebabCase(errors[0]) : 'false');
-    input.classList.add('usa-input--error');
     input.focus();
   }
-
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
+
   if (input.validity.valueMissing) {
     input.setCustomValidity(I18n.t('simple_form.required.text'));
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
+        // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
+        // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
         input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${snakeCase(type)}`));
       }
     });

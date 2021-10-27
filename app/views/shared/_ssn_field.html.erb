@@ -13,18 +13,10 @@ locals:
 <%= f.input(
       :ssn,
       as: :password,
-      wrapper: false,
       label: false,
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
       maxlength: 11,
-      input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle usa-input', value: '' }
+      input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle', value: '' }
     ) %>
-<span class='usa-error-message margin-top-7 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-  <%= t('simple_form.required.text') %>
-</span>
-
-<span class='usa-error-message margin-top-7 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
-  <%= t('idv.errors.pattern_mismatch.ssn') %>
-</span>
 <%= javascript_packs_tag_once('ssn-field') %>

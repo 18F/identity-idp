@@ -60,13 +60,12 @@ describe 'sign_up/completions/show.html.erb' do
     end
 
     let(:view_context) { ActionController::Base.new.view_context }
-    let(:requested_attributes) { [:email] }
     let(:decorated_session) do
       ServiceProviderSessionDecorator.new(
         sp: service_provider,
         view_context: view_context,
         sp_session: {
-          requested_attributes: requested_attributes,
+          requested_attributes: [:email],
         },
         service_provider_request: ServiceProviderRequestProxy.new,
       )
@@ -83,7 +82,7 @@ describe 'sign_up/completions/show.html.erb' do
         consent_has_expired: false,
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
-      assign(:pii, { email: 'foo@example.com', all_emails: ['foo@example.com', 'bar@example.com'] })
+      assign(:pii, {})
     end
 
     it 'shows the app name, not the agency name' do
@@ -98,18 +97,6 @@ describe 'sign_up/completions/show.html.erb' do
           app_name: APP_NAME, sp: 'My Agency App',
         ),
       )
-    end
-
-    context 'the all_emails scope is requested' do
-      let(:requested_attributes) { [:email, :all_emails] }
-
-      it 'renders all of the user email addresses' do
-        render
-
-        expect(rendered).to include(t('help_text.requested_attributes.all_emails'))
-        expect(rendered).to include('foo@example.com')
-        expect(rendered).to include('bar@example.com')
-      end
     end
   end
 

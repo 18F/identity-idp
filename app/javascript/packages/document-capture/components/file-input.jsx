@@ -14,7 +14,6 @@ import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
-/** @typedef {import('react').DragEvent} ReactDragEvent */
 /** @typedef {import('react').ChangeEvent} ReactChangeEvent */
 /** @typedef {import('react').RefAttributes} ReactRefAttributes */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -32,7 +31,6 @@ import usePrevious from '../hooks/use-previous';
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
- * @prop {(event:ReactDragEvent)=>void=} onDrop Input drop handler.
  * @prop {(nextValue:File?)=>void=} onChange Input change handler.
  * @prop {(message:ReactNode)=>void=} onError Callback to trigger if upload error occurs.
  */
@@ -110,8 +108,7 @@ function FileInput(props, ref) {
     capture,
     value,
     errorMessage,
-    onClick,
-    onDrop,
+    onClick = () => {},
     onChange = () => {},
     onError = () => {},
   } = props;
@@ -281,7 +278,6 @@ function FileInput(props, ref) {
             onChange={onChangeIfValid}
             capture={capture}
             onClick={onClick}
-            onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
             aria-describedby={hint ? hintId : undefined}
           />

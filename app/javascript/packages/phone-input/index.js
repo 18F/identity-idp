@@ -72,7 +72,7 @@ export class PhoneInput extends HTMLElement {
   get selectedOption() {
     const { codeInput } = this;
 
-    return codeInput && codeInput.options[codeInput.selectedIndex];
+    return codeInput && codeInput.selectedOptions[0];
   }
 
   /**

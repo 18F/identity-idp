@@ -12,9 +12,7 @@ class Agreements::IntegrationUsage < ApplicationRecord
   validates :integration, presence: true
   validates :integration_id, uniqueness: { scope: :iaa_order_id }
 
-  # DISABLED 2021-10-20 due to unforeseen edge case where we transfer an
-  # integration from one account to another
-  # validate :integration_and_order_have_same_account
+  validate :integration_and_order_have_same_account
 
   private
 

@@ -104,11 +104,6 @@ import './acuant-capture.scss';
  */
 
 /**
- * A noop function.
- */
-const noop = () => {};
-
-/**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  *
@@ -348,16 +343,15 @@ function AcuantCapture(
    * @template {(...args: any[]) => any} T
    *
    * @param {string} source Click source.
-   * @param {{isDrop: boolean}=} metadata Additional payload metadata to log.
    *
    * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
    */
-  function withLoggedClick(source, metadata = { isDrop: false }) {
+  function withLoggedClick(source) {
     return (fn) => (...args) => {
       if (!isSuppressingClickLogging.current) {
         addPageAction({
           label: `IdV: ${name} image clicked`,
-          payload: { source, ...metadata },
+          payload: { source },
         });
       }
 
@@ -534,7 +528,6 @@ function AcuantCapture(
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
-        onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />
