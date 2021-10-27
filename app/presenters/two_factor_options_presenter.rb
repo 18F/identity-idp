@@ -45,6 +45,10 @@ class TwoFactorOptionsPresenter
     !(piv_cac_required? || (aal3_only? && mfa_policy.two_factor_enabled?))
   end
 
+  def phone_outage?
+    VendorStatus.new.any_phone_vendor_outage?
+  end
+
   private
 
   def piv_cac_option

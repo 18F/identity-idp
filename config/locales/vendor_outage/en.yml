@@ -13,4 +13,8 @@ en:
         you — not someone pretending to be you. Unfortunately, we are having
         technical difficulties and cannot verify your identity at this time.
         Please try again later.
+    phone:
+      error: We are having technical difficulties on our end and cannot verify phones
+        at this time. Please use another authentication method if you have one,
+        or try again later.
     working: We are working to resolve an error
