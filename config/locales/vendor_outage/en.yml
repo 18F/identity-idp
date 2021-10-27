@@ -19,7 +19,9 @@ en:
           at this time. Please use another authentication method if you have one,
           or try again later.
         mfa: We cannot verify phones at this time. Please use another authentication method if you have one, or try again later.
-      blocked: We cannot verify phones at this time. Please try again later.
+      blocked:
+        verify: We cannot verify phones at this time. Please try again later.
+        idv: We cannot verify phones at this time. Please try again later or verify your address by mail instead.
     sms:
       alert: We cannot send text messages (SMS) at this time. You can get a code by phone call, or choose another authentication method if you have one.
     voice:

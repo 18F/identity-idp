@@ -26,6 +26,8 @@ module Idv
     end
 
     def create
+      redirect_to vendor_outage_path(from: :idv_phone) if !idv_form.phone_belongs_to_user? &&
+                                                          VendorStatus.new.all_phone_vendor_outage?
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
