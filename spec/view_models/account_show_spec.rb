@@ -14,6 +14,7 @@ describe AccountShow do
         )
         profile_index = AccountShow.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
+          sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
 
@@ -28,6 +29,7 @@ describe AccountShow do
         email_address.update!(last_sign_in_at: 1.minute.from_now)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
+          sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
 
@@ -46,6 +48,7 @@ describe AccountShow do
 
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
+          sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
 
@@ -61,6 +64,7 @@ describe AccountShow do
         ).to receive(:enabled?).and_return(false)
         profile_index = AccountShow.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user,
+          sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
         )
 
@@ -78,6 +82,8 @@ describe AccountShow do
       account_show = AccountShow.new(
         decrypted_pii: {},
         personal_key: '',
+        sp_session_request_url: nil,
+        sp_name: nil,
         decorated_user: user.reload.decorate,
         locked_for_session: false,
       )
@@ -95,6 +101,8 @@ describe AccountShow do
       account_show = AccountShow.new(
         decrypted_pii: {},
         personal_key: '',
+        sp_session_request_url: nil,
+        sp_name: nil,
         decorated_user: user.reload.decorate,
         locked_for_session: false,
       )
@@ -113,6 +121,8 @@ describe AccountShow do
       AccountShow.new(
         decrypted_pii: decrypted_pii,
         personal_key: '',
+        sp_session_request_url: nil,
+        sp_name: nil,
         decorated_user: user.decorate,
         locked_for_session: false,
       )
