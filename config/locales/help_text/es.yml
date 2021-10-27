@@ -7,6 +7,7 @@ es:
       delete_account: Para eliminar su cuenta, confirme su contraseña y código de seguridad.
     requested_attributes:
       address: Dirección de correo postal
+      all_emails: Direcciones de correo electrónico en su cuenta
       birthdate: Fecha de nacimiento
       email: Dirección de correo electrónico
       full_name: Nombre completo

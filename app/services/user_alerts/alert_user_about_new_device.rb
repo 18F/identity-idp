@@ -10,7 +10,7 @@ module UserAlerts
             strftime('%B %-d, %Y %H:%M Eastern Time'),
           location: login_location,
           disavowal_token: disavowal_token,
-        ).deliver_now
+        ).deliver_now_or_later
       end
     end
   end

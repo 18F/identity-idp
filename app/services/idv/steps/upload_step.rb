@@ -46,7 +46,7 @@ module Idv
         mark_step_complete(:link_sent)
         UserMailer.doc_auth_desktop_link_to_sp(
           current_user, current_user.email, application, link
-        ).deliver_now
+        ).deliver_now_or_later
       end
 
       def send_user_to_send_link_step

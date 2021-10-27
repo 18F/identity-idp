@@ -105,4 +105,18 @@ RSpec.configure do |config|
     example.run
     Bullet.enable = false
   end
+
+  config.after(:each, type: :feature, js: true) do |spec|
+    next unless page.driver.browser.respond_to?(:manage)
+
+    # Always get the logs, even if logs are allowed for the spec, since otherwise unexpected
+    # messages bleed over between specs.
+    javascript_errors = page.driver.browser.manage.logs.get(:browser).map(&:message)
+    next if spec.metadata[:allow_browser_log]
+
+    # Temporarily allow for document-capture bundle, since it uses React error boundaries to poll.
+    javascript_errors.reject! { |e| e.include? 'js/document-capture-' }
+    # Consider any browser console logging as a failure.
+    raise BrowserConsoleLogError.new(javascript_errors) if javascript_errors.present?
+  end
 end

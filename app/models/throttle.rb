@@ -13,6 +13,7 @@ class Throttle < ApplicationRecord
     verify_personal_key: 7,
     verify_gpo_key: 8,
     proof_ssn: 9,
+    proof_address: 10,
   }
 
   THROTTLE_CONFIG = {
@@ -51,6 +52,10 @@ class Throttle < ApplicationRecord
     proof_ssn: {
       max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
       attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
+    },
+    proof_address: {
+      max_attempts: IdentityConfig.store.proof_address_max_attempts,
+      attempt_window: IdentityConfig.store.proof_address_max_attempt_window_in_minutes,
     },
   }.with_indifferent_access.freeze
 

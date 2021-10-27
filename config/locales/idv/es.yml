@@ -35,7 +35,7 @@ es:
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo:
           ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
-        zipcode: 'Su código postal debe ser ingresado como #####-####'
+        zipcode: Ingresa un código postal de 5 o 9 dígitos
       unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
       attempts:

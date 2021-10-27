@@ -26,26 +26,13 @@ describe OtpRequestsTracker do
     end
 
     context 'match not found' do
-      it 'creates new record with otp_send_count = 0 and otp_last_sent_at = current time' do
+      it 'creates new record with otp_send_count = 0' do
         expect { OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone, true) }.
           to change(OtpRequestsTracker, :count).by(1)
 
         existing = OtpRequestsTracker.where(phone_fingerprint: phone_fingerprint).first
 
         expect(existing.otp_send_count).to eq 0
-        expect(existing.otp_last_sent_at).to be_within(2.seconds).of(Time.zone.now)
-      end
-    end
-
-    context 'race condition' do
-      it 'retries once, then raises ActiveRecord::RecordNotUnique' do
-        tracker = OtpRequestsTracker.new
-        allow(OtpRequestsTracker).to receive(:where).
-          and_raise(ActiveRecord::RecordNotUnique.new(tracker))
-
-        expect(OtpRequestsTracker).to receive(:where).exactly(:once)
-        expect { OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone, true) }.
-          to raise_error ActiveRecord::RecordNotUnique
       end
     end
   end

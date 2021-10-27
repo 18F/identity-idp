@@ -31,7 +31,7 @@ feature 'doc auth test credentials', :js do
     expect(page).to have_content('Jane')
   end
 
-  it 'triggers an error if the test credentials have a friendly error' do
+  it 'triggers an error if the test credentials have a friendly error', allow_browser_log: true do
     complete_doc_auth_steps_before_document_capture_step
 
     attach_file(

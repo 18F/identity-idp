@@ -69,7 +69,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
       end
 
       it 'assigns remaining count' do
@@ -90,7 +90,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
       end
 
       it 'assigns expiration time' do
@@ -110,10 +110,15 @@ describe Idv::SessionErrorsController do
     context 'while throttled' do
       let(:ssn) { '666666666' }
 
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       before do
         stub_sign_in
         create(
           :throttle,
+          :with_throttled,
           target: Pii::Fingerprinter.fingerprint(ssn),
           throttle_type: :proof_ssn,
         )
@@ -123,7 +128,7 @@ describe Idv::SessionErrorsController do
       it 'assigns expiration time' do
         get action
 
-        expect(assigns(:expires_at)).to be_kind_of(Time)
+        expect(assigns(:expires_at)).not_to eq(Time.zone.now)
       end
     end
   end

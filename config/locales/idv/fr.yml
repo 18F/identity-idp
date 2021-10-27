@@ -38,7 +38,7 @@ fr:
           exemple : ABC1-DEF2-G3HI-J456'
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
-        zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
+        zipcode: Entrez un code postal à 5 ou 9 chiffres
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
       attempts:

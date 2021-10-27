@@ -16,18 +16,4 @@ describe 'account_reset/request/show.html.erb' do
     render
     expect(rendered).to have_button t('account_reset.request.yes_continue')
   end
-
-  it 'shows personal key info when a user has a personal key' do
-    render
-    expect(rendered).to have_content(t('account_reset.request.personal_key'))
-  end
-
-  it 'does not show personal key info when a user does not have a personal key' do
-    user = view.current_user
-    user.encrypted_recovery_code_digest = ''
-    user.save
-
-    render
-    expect(rendered).to_not have_content(t('account_reset.request.personal_key'))
-  end
 end

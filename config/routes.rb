@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
+  get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
   get '/api/health/jobs' => 'health/jobs#index'
