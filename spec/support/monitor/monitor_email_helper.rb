@@ -1,10 +1,13 @@
-require 'gmail'
+require 'aws-sdk-s3'
+require 'mail'
 
 class MonitorEmailHelper
-  attr_reader :gmail
+  attr_reader :email
 
-  def initialize(email:, password:, local:)
-    @gmail = Gmail.connect!(email, password) unless local
+  def initialize(email:, local:, s3_bucket:, s3_prefix:)
+    @email = email
+    @s3_bucket = s3_bucket
+    @s3_prefix = s3_prefix
     @local = local
   end
 
@@ -12,16 +15,33 @@ class MonitorEmailHelper
     @local
   end
 
-  def inbox_unread
-    gmail.inbox.emails(:unread)
+  def find_in_inbox(regex:, subjects:, email_address:)
+    s3 = Aws::S3::Client.new
+    objects = s3.list_objects(bucket: @s3_bucket, prefix: @s3_prefix, max_keys: 100).
+      contents.sort_by { |x| x.last_modified.to_i }.reverse
+
+    objects.each do |x|
+      object = begin
+        s3.get_object(bucket: @s3_bucket, key: x.key)
+      rescue Aws::S3::Errors::AccessDenied
+        nil
+      end
+
+      next if object.nil?
+      body = object.body.read
+      mail = Mail.new(body)
+      next unless mail.to&.include?(email_address)
+      next unless subjects.blank? || subjects.include?(mail.subject)
+      match_data = mail.text_part.to_s.match(regex)
+      next unless match_data
+      s3.delete_object(bucket: @s3_bucket, key: x.key)
+      return match_data[1]
+    end
+
+    nil
   end
 
-  def inbox_clear
-    inbox_unread.each(&:read!)
-    gmail.inbox.emails(:read).each(&:delete!)
-  end
-
-  def scan_emails_and_extract(regex:, subject: nil)
+  def scan_emails_and_extract(regex:, email_address:, subject: nil)
     subjects = [*subject]
 
     if local?
@@ -31,17 +51,8 @@ class MonitorEmailHelper
       end
     else
       check_and_sleep do
-        inbox_unread.each do |email|
-          if subjects.any?
-            next unless subjects.include?(email.subject)
-          end
-          body = email.message.parts.first.body
-          if (match_data = body.match(regex))
-            email.read!
-            return match_data[1]
-          end
-        end
-        nil
+        result = find_in_inbox(regex: regex, subjects: subjects, email_address: email_address)
+        return result if result.present?
       end
     end
 
