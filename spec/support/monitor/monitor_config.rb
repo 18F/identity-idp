@@ -11,7 +11,7 @@ class MonitorConfig
   def check_env_variables!
     expected_env_vars = %w[
       MONITOR_EMAIL
-      MONITOR_EMAIL_PASSWORD
+      MONITOR_EMAIL_S3_BUCKET
       MONITOR_GOOGLE_VOICE_PHONE
       MONITOR_SMS_SIGN_IN_EMAIL
       MONITOR_ENV
@@ -53,6 +53,15 @@ class MonitorConfig
   # Password for the Login.gov account for login_gov_sign_in_email
   def login_gov_sign_in_password
     ENV['MONITOR_SMS_SIGN_IN_PASSWORD'] || 'salty pickles'
+  end
+
+  # S3 bucket where emails are sent
+  def email_s3_bucket
+    ENV['MONITOR_EMAIL_S3_BUCKET']
+  end
+
+  def email_s3_prefix
+    ENV['MONITOR_EMAIL_S3_PREFIX'] || "inbound/smoketest-#{ENV['MONITOR_ENV'].to_s.downcase}/"
   end
 
   def monitor_env
