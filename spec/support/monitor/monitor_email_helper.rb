@@ -1,5 +1,5 @@
-require 'gmail'
 require 'aws-sdk-s3'
+require 'mail'
 
 class MonitorEmailHelper
   attr_reader :email

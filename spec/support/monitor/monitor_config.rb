@@ -27,7 +27,6 @@ class MonitorConfig
     raise message unless missing_env_vars.empty?
   end
 
-  # Gmail account name
   def email_address
     if ENV['MONITOR_EMAIL_DOMAIN'] && ENV['MONITOR_ENV']
       "smoketest-#{ENV['MONITOR_ENV'].downcase}@#{ENV['MONITOR_EMAIL_DOMAIN']}"
@@ -36,7 +35,6 @@ class MonitorConfig
     end
   end
 
-  # Password for email_address Gmail account
   def email_password
     ENV['MONITOR_EMAIL_PASSWORD'] || 'salty pickles'
   end
