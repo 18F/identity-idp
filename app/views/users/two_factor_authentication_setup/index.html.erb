@@ -1,8 +1,8 @@
 <% title t('titles.two_factor_setup') %>
 
-<% if @presenter.phone_outage? %>
+<% if @presenter.outage_message %>
   <%= render('shared/alert', type: 'error', class: 'margin-bottom-4') do %>
-    <%= t('vendor_outage.phone.error') %>
+    <%= @presenter.outage_message %>
     <%= new_window_link_to t('vendor_outage.get_updates'), StatusPage.base_url %>
   <% end %>
 <% end %>

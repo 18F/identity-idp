@@ -41,12 +41,14 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def show_security_level?
-    !(piv_cac_required? || (aal3_only? && mfa_policy.two_factor_enabled?))
-  end
-
-  def phone_outage?
-    VendorStatus.new.any_phone_vendor_outage?
+  def outage_message
+    if VendorStatus.new.vendor_outage?(:voice) && VendorStatus.new.vendor_outage?(:sms)
+      t('vendor_outage.phone.alert.verify')
+    elsif VendorStatus.new.vendor_outage?(:voice)
+      t('vendor_outage.voice.alert')
+    elsif VendorStatus.new.vendor_outage?(:sms)
+      t('vendor_outage.sms.alert')
+    end
   end
 
   private

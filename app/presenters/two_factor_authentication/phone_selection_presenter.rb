@@ -32,7 +32,14 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      VendorStatus.new.any_phone_vendor_outage?
+      case type
+      when 'voice'
+        VendorStatus.new.vendor_outage?(:voice)
+      when 'sms'
+        VendorStatus.new.vendor_outage?(:sms)
+      else
+        false
+      end
     end
 
     private

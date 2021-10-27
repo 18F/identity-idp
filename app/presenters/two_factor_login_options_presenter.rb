@@ -71,6 +71,20 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     end
   end
 
+  def outage_message
+    if VendorStatus.new.vendor_outage?(:voice) && VendorStatus.new.vendor_outage?(:sms)
+      t('vendor_outage.phone.alert.mfa')
+    elsif VendorStatus.new.vendor_outage?(:voice)
+      t('vendor_outage.voice.alert')
+    elsif VendorStatus.new.vendor_outage?(:sms)
+      t('vendor_outage.sms.alert')
+    end
+  end
+
+  def first_enabled_option_index
+    options.find_index { |option| !option.disabled? }
+  end
+
   private
 
   def account_reset_link

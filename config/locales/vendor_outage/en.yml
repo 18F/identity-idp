@@ -14,7 +14,14 @@ en:
         technical difficulties and cannot verify your identity at this time.
         Please try again later.
     phone:
-      error: We are having technical difficulties on our end and cannot verify phones
-        at this time. Please use another authentication method if you have one,
-        or try again later.
+      alert:
+        verify: We are having technical difficulties on our end and cannot verify phones
+          at this time. Please use another authentication method if you have one,
+          or try again later.
+        mfa: We cannot verify phones at this time. Please use another authentication method if you have one, or try again later.
+      blocked: We cannot verify phones at this time. Please try again later.
+    sms:
+      alert: We cannot send text messages (SMS) at this time. You can get a code by phone call, or choose another authentication method if you have one.
+    voice:
+      alert: We cannot send phone calls at this time. You can get a code by text message (SMS), or verify your address by mail instead.
     working: We are working to resolve an error
