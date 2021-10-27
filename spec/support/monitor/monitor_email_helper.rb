@@ -36,7 +36,7 @@ class MonitorEmailHelper
     nil
   end
 
-  def scan_emails_and_extract(regex:, subject: nil, email_address:)
+  def scan_emails_and_extract(regex:, email_address:, subject: nil)
     subjects = [*subject]
 
     if local?
