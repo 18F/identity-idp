@@ -19,8 +19,9 @@ class MonitorHelper
   def email
     @email ||= MonitorEmailHelper.new(
       email: config.email_address,
-      password: config.email_password,
       local: local?,
+      s3_bucket: config.email_s3_bucket,
+      s3_prefix: config.email_s3_prefix,
     )
   end
 
@@ -35,7 +36,6 @@ class MonitorHelper
     else
       config.check_env_variables!
       reset_sessions
-      email.inbox_clear
     end
   end
 
@@ -72,20 +72,22 @@ class MonitorHelper
     Capybara.reset_session!
   end
 
-  def check_for_password_reset_link
+  def check_for_password_reset_link(email_address)
     email.scan_emails_and_extract(
       subject: 'Reset your password',
       regex: /(?<link>https?:.+reset_password_token=[\w\-]+)/,
+      email_address: email_address,
     )
   end
 
-  def check_for_confirmation_link
+  def check_for_confirmation_link(email_address)
     email.scan_emails_and_extract(
       subject: [
         'Confirm your email',
         'Email not found',
       ],
       regex: /(?<link>https?:.+confirmation_token=[\w\-]+)/,
+      email_address: email_address,
     )
   end
 

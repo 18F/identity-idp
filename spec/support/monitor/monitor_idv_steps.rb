@@ -4,7 +4,7 @@ module MonitorIdvSteps
 
     expect(page).to have_content 'You will also need'
     click_on 'Create an account'
-    create_new_account_with_sms
+    create_new_account_with_totp
     expect(page).to have_current_path('/verify/doc_auth/welcome')
     click_on 'Continue'
 

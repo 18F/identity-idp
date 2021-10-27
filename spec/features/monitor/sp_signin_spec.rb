@@ -10,8 +10,11 @@ RSpec.describe 'smoke test: SP initiated sign in' do
     before { monitor.filter_unless('STAGING') }
 
     it 'redirects back to SP' do
+      visit monitor.idp_signup_url
+      email_address, totp_secret = create_new_account_with_totp
+      page.first(:link, 'Sign out').click
       visit_idp_from_oidc_sp
-      sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
+      sign_in_and_2fa(email_address, totp_secret)
 
       click_on 'Agree and continue' if on_consent_screen?
 
@@ -30,14 +33,17 @@ RSpec.describe 'smoke test: SP initiated sign in' do
     before { monitor.filter_if('INT') }
 
     it 'redirects back to SP' do
+      visit monitor.idp_signup_url
+      email_address, totp_secret = create_new_account_with_totp
+      page.first(:link, 'Sign out').click
       visit_idp_from_saml_sp
-      sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
+      sign_in_and_2fa(email_address, totp_secret)
 
       click_on 'Agree and continue' if on_consent_screen?
 
       if monitor.remote?
         expect(page).to have_content('SAML Sinatra Example')
-        expect(page).to have_content(monitor.config.login_gov_sign_in_email)
+        expect(page).to have_content(email_address)
         expect(current_url).to include(monitor.config.saml_sp_url)
       else
         click_on 'Submit'
