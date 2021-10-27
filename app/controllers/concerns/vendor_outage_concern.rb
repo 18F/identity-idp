@@ -13,15 +13,15 @@ module VendorOutageConcern
   end
 
   def acuant_outage?
-    IdentityConfig.store.vendor_status_acuant == 'full_outage'
+    IdentityConfig.store.vendor_status_acuant == :full_outage
   end
 
   def instant_verify_outage?
-    IdentityConfig.store.vendor_status_lexisnexis_instant_verify == 'full_outage'
+    IdentityConfig.store.vendor_status_lexisnexis_instant_verify == :full_outage
   end
 
   def trueid_outage?
-    IdentityConfig.store.vendor_status_lexisnexis_trueid == 'full_outage'
+    IdentityConfig.store.vendor_status_lexisnexis_trueid == :full_outage
   end
 
   def lexisnexis_outage?

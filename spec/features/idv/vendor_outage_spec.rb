@@ -7,7 +7,7 @@ feature 'vendor_outage_spec' do
     context "full outage on #{service}" do
       before do
         allow(IdentityConfig.store).to receive("vendor_status_#{service}".to_sym).
-          and_return('full_outage')
+          and_return(:full_outage)
       end
 
       it 'prevents an existing ial1 user from verifying their identity' do
