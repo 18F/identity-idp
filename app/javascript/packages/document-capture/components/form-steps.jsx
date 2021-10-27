@@ -79,14 +79,16 @@ import './form-steps.scss';
 /**
  * @typedef FormStepsContext
  *
- * @prop {boolean} isLastStep
- * @prop {boolean} canContinueToNextStep
+ * @prop {boolean} isLastStep Whether the current step is the last step in the flow.
+ * @prop {boolean} canContinueToNextStep Whether the user can proceed to the next step.
+ * @prop {() => void} onContentReplaced Callback to invoke when content is replaced.
  */
 
-const FormStepsContext = createContext(
+export const FormStepsContext = createContext(
   /** @type {FormStepsContext} */ ({
     isLastStep: true,
     canContinueToNextStep: true,
+    onContentReplaced: () => {},
   }),
 );
 
@@ -153,30 +155,32 @@ function FormSteps({
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
    */
-  function focusFirstContent() {
+  function onContentReplaced() {
     const firstElementChild = formRef.current?.firstElementChild;
     if (firstElementChild instanceof window.HTMLElement) {
       firstElementChild.classList.add('form-steps__focus-anchor');
       firstElementChild.setAttribute('tabindex', '-1');
       firstElementChild.focus();
     }
+
+    setStepName(stepName);
   }
 
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
     if (autoFocus) {
-      focusFirstContent();
+      onContentReplaced();
     }
   }, []);
 
   useEffect(() => {
     if (stepErrors.length) {
-      focusFirstContent();
+      onContentReplaced();
     }
   }, [stepErrors]);
 
   useDidUpdateEffect(onStepChange, [step]);
-  useDidUpdateEffect(focusFirstContent, [step]);
+  useDidUpdateEffect(onContentReplaced, [step]);
 
   /**
    * Returns array of form errors for the current set of values.
@@ -253,7 +257,7 @@ function FormSteps({
           <FormErrorMessage error={error} isDetail />
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep }}>
+      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onContentReplaced }}>
         <Form
           key={name}
           value={values}

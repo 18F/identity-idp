@@ -59,9 +59,6 @@ export function createDOM() {
   // with global log error capturing. This suppresses said logging.
   sinon
     .stub(dom.window, 'scrollTo')
-    .withArgs(sinon.match.object)
-    .throws(new Error())
-    .withArgs(sinon.match.number, sinon.match.number)
     .callsFake((scrollX, scrollY) => Object.assign(dom.window, { scrollX, scrollY }));
 
   return dom;
