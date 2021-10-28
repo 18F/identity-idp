@@ -41,32 +41,56 @@ function unsetInvalidHTML() {
   isInvalidForm = false;
 }
 
+function unsetEmptyResponse() {
+  input.setAttribute('aria-invalid', 'false');
+  input.classList.remove('margin-bottom-3');
+  input.classList.add('margin-bottom-6');
+  input.classList.remove('usa-input--error');
+
+  isInvalidForm = false;
+}
+
+function resetErrors() {
+  unsetEmptyResponse();
+  unsetInvalidHTML();
+}
+
 function resetForm() {
   formEl.reset();
-  unsetInvalidHTML();
+  resetErrors();
+}
+
+function setEmptyResponse() {
+  input.setAttribute('aria-invalid', 'true');
+  input.classList.remove('margin-bottom-6');
+  input.classList.add('margin-bottom-3');
+  input.classList.add('usa-input--error');
+  input.focus();
+
+  isInvalidForm = true;
 }
 
 function handleSubmit(event) {
   event.preventDefault();
+  resetErrors();
 
   // As above, in case browser lacks HTML5 validation (e.g., IE < 11)
-  if (input.value.length < 19) {
-    setInvalidHTML();
+  if (input.value.length === 0) {
+    setEmptyResponse();
     return;
   }
 
   const value = encodeInput(input.value);
-
-  if (value === personalKey) {
-    unsetInvalidHTML();
-    // Recovery code page, without js enabled, has a form submission that posts
-    // to the server with no body.
-    // Mimic that here.
-    formEl.removeEventListener('submit', handleSubmit);
-    formEl.submit();
-  } else {
+  if (input.value.length < 19 || value !== personalKey) {
     setInvalidHTML();
+    return;
   }
+
+  // Recovery code page, without js enabled, has a form submission that posts
+  // to the server with no body.
+  // Mimic that here.
+  formEl.removeEventListener('submit', handleSubmit);
+  formEl.submit();
 }
 
 function show(event) {
