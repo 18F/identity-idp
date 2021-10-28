@@ -18,6 +18,7 @@ class SignUpCompletionsShow
     [[:address], :address],
     [[:phone], :phone],
     [[:email], :email],
+    [[:all_emails], :all_emails],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
@@ -27,6 +28,7 @@ class SignUpCompletionsShow
 
   SORTED_IAL1_ATTRIBUTE_MAPPING = [
     [[:email], :email],
+    [[:all_emails], :all_emails],
     [[:x509_subject], :x509_subject],
     [[:x509_issuer], :x509_issuer],
     [[:verified_at], :verified_at],
@@ -69,9 +71,13 @@ class SignUpCompletionsShow
   end
 
   def requested_attributes_sorted
-    sorted_attribute_mapping.map do |raw_attribute, display_attribute|
+    sorted_attributes = sorted_attribute_mapping.map do |raw_attribute, display_attribute|
       display_attribute if (requested_attributes & raw_attribute).present?
     end.compact
+    # If the SP requests all emails, there is no reason to show them the sign
+    # in email address in the consent screen
+    sorted_attributes.delete(:email) if sorted_attributes.include?(:all_emails)
+    sorted_attributes
   end
 
   def sorted_attribute_mapping

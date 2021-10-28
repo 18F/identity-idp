@@ -11,6 +11,7 @@ describe 'accounts/history/show.html.erb' do
       :view_model,
       AccountShow.new(
         decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+        sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false
       ),
     )

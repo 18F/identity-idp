@@ -52,7 +52,7 @@ module AccountReset
 
     def notify_user_via_email_of_deletion
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_complete(user, email_address).deliver_now
+        UserMailer.account_reset_complete(user, email_address).deliver_now_or_later
       end
     end
 

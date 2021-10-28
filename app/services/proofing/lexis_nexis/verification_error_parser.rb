@@ -79,7 +79,7 @@ module Proofing
             next if original_passed || (dob_year_only? && passed_partial_dob)
           elsif product['ProductStatus'] == 'pass'
             next
-end
+          end
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product
@@ -88,6 +88,7 @@ end
 
       # if DOBYearVerified passes, but DOBFullVerified fails, we can still allow a pass
       def instant_verify_dob_year_only_pass?(items)
+        items ||= []
         dob_full_verified = items.find { |item| item['ItemName'] == 'DOBFullVerified' }
         dob_year_verified = items.find { |item| item['ItemName'] == 'DOBYearVerified' }
         other_checks = items.reject do |item|

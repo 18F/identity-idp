@@ -113,5 +113,10 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
       end
       it { is_expected.to be_falsey }
     end
+
+    context 'with a nil Items array' do
+      let(:items) { nil }
+      it { is_expected.to be_falsey }
+    end
   end
 end

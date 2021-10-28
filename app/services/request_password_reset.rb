@@ -23,7 +23,7 @@ RequestPasswordReset = RedactedStruct.new(
       )
     else
       token = user.set_reset_password_token
-      UserMailer.reset_password_instructions(user, email, token: token).deliver_now
+      UserMailer.reset_password_instructions(user, email, token: token).deliver_now_or_later
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)

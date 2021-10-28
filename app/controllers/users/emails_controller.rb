@@ -102,7 +102,7 @@ module Users
 
     def send_delete_email_notification
       @current_confirmed_emails.each do |confirmed_email|
-        UserMailer.email_deleted(current_user, confirmed_email).deliver_now
+        UserMailer.email_deleted(current_user, confirmed_email).deliver_now_or_later
       end
     end
   end

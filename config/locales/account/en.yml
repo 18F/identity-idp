@@ -32,6 +32,7 @@ en:
       backup_code_confirm_regenerate: Yes, regenerate codes
       backup_codes_exist: Generated
       backup_codes_no_exist: Not generated
+      continue_to_service_provider: Continue to %{service_provider}
       default: default
       device: '%{browser} on %{os}'
       dob: Date of birth
