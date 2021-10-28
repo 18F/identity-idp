@@ -8,6 +8,8 @@ module SignUp
     before_action :require_no_authentication
     before_action :redirect_if_ial2_and_vendor_outage
 
+    CREATE_ACCOUNT = 'create_account'
+
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
@@ -69,7 +71,7 @@ module SignUp
     def redirect_if_ial2_and_vendor_outage
       return unless ial2_requested?
 
-      redirect_if_outage(from: 'create_account')
+      redirect_if_outage(from: CREATE_ACCOUNT)
     end
   end
 end

@@ -1,9 +1,13 @@
 module PersonalKeyHelper
   def reset_password_and_sign_back_in(user, password = 'a really long password')
-    fill_in t('forms.passwords.edit.labels.password'), with: password
-    click_button t('forms.passwords.edit.buttons.submit')
+    reset_password(user, password)
     visit_idp_from_sp_with_ial2(:oidc)
     fill_in_credentials_and_submit(user.email, password)
+  end
+
+  def reset_password(user, password = 'a really long password')
+    fill_in t('forms.passwords.edit.labels.password'), with: password
+    click_button t('forms.passwords.edit.buttons.submit')
   end
 
   def personal_key_from_pii(user, pii)

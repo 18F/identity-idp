@@ -2,6 +2,7 @@ class VendorOutageController < ApplicationController
   include VendorOutageConcern
 
   def show
+    @specific_message = outage_message
     tracking_data = {
       vendor_status: {
         acuant: IdentityConfig.store.vendor_status_acuant,
@@ -11,6 +12,5 @@ class VendorOutageController < ApplicationController
       redirect_from: session.delete(:vendor_outage_redirect),
     }
     analytics.track_event(Analytics::VENDOR_OUTAGE, tracking_data)
-    @specific_message = outage_message
   end
 end
