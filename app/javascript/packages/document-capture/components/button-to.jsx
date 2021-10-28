@@ -17,6 +17,10 @@ import Button from './button';
  */
 
 /**
+ * Component which renders a button that navigates to the specified URL via form, with method
+ * parameterized as a hidden input and including authenticity token. The form is rendered to the
+ * document root, to avoid conflicts with nested forms.
+ *
  * @param {ButtonToProps} props
  */
 function ButtonTo({ url, method, children, ...buttonProps }) {
