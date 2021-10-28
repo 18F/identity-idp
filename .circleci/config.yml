@@ -354,7 +354,7 @@ jobs:
           name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
-      # - notify-slack-smoke-test-status
+      - notify-slack-smoke-test-status
       - store-smoketest-results
   check-pinpoint-config:
     executor: ruby_browsers
@@ -400,9 +400,6 @@ workflows:
               only:
                 - main
 
-  # Theses are staggered separately from the smoke tests in the identity-monitor repo
-  # because they share credentials and would mess each other up if run concurrently
-  # https://github.com/18F/identity-monitor/blob/master/.circleci/config.yml
   # DEV
   smoketest-dev-workflow:
     triggers:
