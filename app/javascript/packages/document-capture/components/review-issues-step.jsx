@@ -13,6 +13,7 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
 import './review-issues-step.scss';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import PageHeading from './page-heading';
+import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -139,6 +140,7 @@ function ReviewIssuesStep({
       )}
       <FormStepsContinueButton />
       <DesktopDocumentDisclosure />
+      <StartOverOrCancel />
     </>
   );
 }

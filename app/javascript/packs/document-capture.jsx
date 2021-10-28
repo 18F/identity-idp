@@ -56,6 +56,9 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @prop {string} appName Application canonical name.
  * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
  * tips are shown.
+ * @prop {'standard'|'hybrid'} flowPath The user's session flow path, one of "standard" or "hybrid".
+ * @prop {string} startOverUrl URL to application DELETE path for session restart.
+ * @prop {string} cancelUrl URL to application path for session cancellation.
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
@@ -150,6 +153,9 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     documentCaptureTipsUrl: documentCaptureTipsURL,
     maxCaptureAttemptsBeforeTips,
     appName,
+    flowPath,
+    startOverUrl: startOverURL,
+    cancelUrl: cancelURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
@@ -179,6 +185,9 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
         backgroundUploadURLs,
         backgroundUploadEncryptKey,
         formData,
+        flowPath,
+        startOverURL,
+        cancelURL,
       },
     ],
     [I18nContext.Provider, { value: i18n.strings }],

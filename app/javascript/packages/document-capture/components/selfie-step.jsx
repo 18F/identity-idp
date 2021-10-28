@@ -8,6 +8,7 @@ import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import PageHeading from './page-heading';
+import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef SelfieStepValue
@@ -66,6 +67,7 @@ function SelfieStep({
         />
       )}
       <FormStepsContinueButton />
+      <StartOverOrCancel />
     </>
   );
 }
