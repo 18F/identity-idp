@@ -10,8 +10,8 @@ class MonitorConfig
 
   def check_env_variables!
     expected_env_vars = %w[
-      MONITOR_EMAIL
-      MONITOR_EMAIL_PASSWORD
+      MONITOR_EMAIL_DOMAIN
+      MONITOR_EMAIL_S3_BUCKET
       MONITOR_GOOGLE_VOICE_PHONE
       MONITOR_SMS_SIGN_IN_EMAIL
       MONITOR_ENV
@@ -27,12 +27,14 @@ class MonitorConfig
     raise message unless missing_env_vars.empty?
   end
 
-  # Gmail account name
   def email_address
-    ENV['MONITOR_EMAIL'] || 'test@example.com'
+    if ENV['MONITOR_EMAIL_DOMAIN'] && ENV['MONITOR_ENV']
+      "smoketest-#{ENV['MONITOR_ENV'].downcase}@#{ENV['MONITOR_EMAIL_DOMAIN']}"
+    else
+      'test@example.com'
+    end
   end
 
-  # Password for email_address Gmail account
   def email_password
     ENV['MONITOR_EMAIL_PASSWORD'] || 'salty pickles'
   end
@@ -53,6 +55,15 @@ class MonitorConfig
   # Password for the Login.gov account for login_gov_sign_in_email
   def login_gov_sign_in_password
     ENV['MONITOR_SMS_SIGN_IN_PASSWORD'] || 'salty pickles'
+  end
+
+  # S3 bucket where emails are sent
+  def email_s3_bucket
+    ENV['MONITOR_EMAIL_S3_BUCKET']
+  end
+
+  def email_s3_prefix
+    ENV['MONITOR_EMAIL_S3_PREFIX'] || "inbound/smoketest-#{ENV['MONITOR_ENV'].to_s.downcase}/"
   end
 
   def monitor_env

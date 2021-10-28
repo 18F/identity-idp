@@ -1,4 +1,5 @@
 import { render } from 'react-dom';
+import { composeComponents } from '@18f/identity-compose-components';
 import {
   AppContext,
   DocumentCapture,
@@ -8,6 +9,8 @@ import {
   UploadContextProvider,
   ServiceProviderContextProvider,
   AnalyticsContext,
+  FailedCaptureAttemptsContextProvider,
+  MarketingSiteContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -44,6 +47,15 @@ import { I18nContext } from '@18f/identity-react-i18n';
 
 /**
  * @typedef {typeof window & NewRelicGlobals & LoginGovGlobals} DocumentCaptureGlobal
+ */
+
+/**
+ * @typedef AppRootData
+ *
+ * @prop {string} documentCaptureTipsUrl URL to Marketing Site document capture tips.
+ * @prop {string} appName Application canonical name.
+ * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
+ * tips are shown.
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
@@ -134,45 +146,52 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   const keepAlive = () =>
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
-  const appContext = {
-    appName: /** @type string */ (appRoot.dataset.appName),
-  };
+  const {
+    documentCaptureTipsUrl: documentCaptureTipsURL,
+    maxCaptureAttemptsBeforeTips,
+    appName,
+  } = /** @type {AppRootData} */ (appRoot.dataset);
 
-  render(
-    <AppContext.Provider value={appContext}>
-      <DeviceContext.Provider value={device}>
-        <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
-          <AcuantContextProvider
-            credentials={getMetaContent('acuant-sdk-initialization-creds')}
-            endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
-            glareThreshold={glareThreshold}
-            sharpnessThreshold={sharpnessThreshold}
-          >
-            <UploadContextProvider
-              endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
-              statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
-              statusPollInterval={
-                Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
-              }
-              method={isAsyncForm ? 'PUT' : 'POST'}
-              csrf={csrf}
-              isMockClient={isMockClient}
-              backgroundUploadURLs={backgroundUploadURLs}
-              backgroundUploadEncryptKey={backgroundUploadEncryptKey}
-              formData={formData}
-            >
-              <I18nContext.Provider value={i18n.strings}>
-                <ServiceProviderContextProvider value={getServiceProvider()}>
-                  <AssetContext.Provider value={assets}>
-                    <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
-                  </AssetContext.Provider>
-                </ServiceProviderContextProvider>
-              </I18nContext.Provider>
-            </UploadContextProvider>
-          </AcuantContextProvider>
-        </AnalyticsContext.Provider>
-      </DeviceContext.Provider>
-    </AppContext.Provider>,
-    appRoot,
+  const App = composeComponents(
+    [AppContext.Provider, { value: { appName } }],
+    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL } }],
+    [DeviceContext.Provider, { value: device }],
+    [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
+    [
+      AcuantContextProvider,
+      {
+        credentials: getMetaContent('acuant-sdk-initialization-creds'),
+        endpoint: getMetaContent('acuant-sdk-initialization-endpoint'),
+        glareThreshold,
+        sharpnessThreshold,
+      },
+    ],
+    [
+      UploadContextProvider,
+      {
+        endpoint: String(appRoot.getAttribute('data-endpoint')),
+        statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
+        statusPollInterval:
+          Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined,
+        method: isAsyncForm ? 'PUT' : 'POST',
+        csrf,
+        isMockClient,
+        backgroundUploadURLs,
+        backgroundUploadEncryptKey,
+        formData,
+      },
+    ],
+    [I18nContext.Provider, { value: i18n.strings }],
+    [ServiceProviderContextProvider, { value: getServiceProvider() }],
+    [AssetContext.Provider, { value: assets }],
+    [
+      FailedCaptureAttemptsContextProvider,
+      {
+        maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+      },
+    ],
+    [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
+
+  render(<App />, appRoot);
 });

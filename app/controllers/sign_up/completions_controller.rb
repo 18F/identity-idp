@@ -105,10 +105,15 @@ module SignUp
       EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
+    def all_emails
+      current_user.confirmed_email_addresses.map(&:email)
+    end
+
     def displayable_attributes
       return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
       {
         email: email,
+        all_emails: all_emails,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
         x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,

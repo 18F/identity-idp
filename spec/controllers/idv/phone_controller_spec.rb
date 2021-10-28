@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::PhoneController do
   include IdvHelper
 
-  let(:max_attempts) { idv_max_attempts }
+  let(:max_attempts) { Throttle.max_attempts(:proof_address) }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
@@ -68,7 +68,7 @@ describe Idv::PhoneController do
 
     context 'when the user is throttled' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
       end
 
       it 'redirects to fail' do
@@ -327,8 +327,8 @@ describe Idv::PhoneController do
           create(
             :throttle,
             user: user,
-            throttle_type: :idv_resolution,
-            attempts: max_attempts_less_one,
+            throttle_type: :proof_address,
+            attempts: max_attempts - 1,
           )
         end
 
@@ -340,7 +340,7 @@ describe Idv::PhoneController do
 
           expect(@analytics).to receive(:track_event).with(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-            throttle_type: :idv_resolution,
+            throttle_type: :proof_address,
             step_name: a_kind_of(Symbol),
           )
 

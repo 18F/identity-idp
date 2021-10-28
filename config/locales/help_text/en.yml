@@ -7,6 +7,7 @@ en:
       delete_account: To delete your account, please confirm your password and security code.
     requested_attributes:
       address: Mailing address
+      all_emails: Email addresses on your account
       birthdate: Date of birth
       email: Email address
       full_name: Full name

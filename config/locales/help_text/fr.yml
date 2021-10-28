@@ -8,6 +8,7 @@ fr:
         passe et votre code de sécurité.
     requested_attributes:
       address: Adresse postale
+      all_emails: Adresses e-mail sur votre compte
       birthdate: Date de naissance
       email: Adresse e-mail
       full_name: Nom complet

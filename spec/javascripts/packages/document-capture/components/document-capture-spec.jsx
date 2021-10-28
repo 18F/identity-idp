@@ -64,32 +64,6 @@ describe('document-capture/components/document-capture', () => {
     expect(step).to.be.ok();
   });
 
-  context('mobile', () => {
-    it('does not show document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <DocumentCapture />
-        </DeviceContext.Provider>,
-      );
-
-      userEvent.click(getByText('forms.buttons.continue'));
-
-      expect(() => getByText('doc_auth.info.document_capture_upload_image')).to.throw();
-    });
-  });
-
-  context('desktop', () => {
-    it('shows document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: false }}>
-          <DocumentCapture />
-        </DeviceContext.Provider>,
-      );
-
-      expect(getByText('doc_auth.info.document_capture_upload_image')).to.be.ok();
-    });
-  });
-
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
@@ -149,7 +123,7 @@ describe('document-capture/components/document-capture', () => {
     const submitButton = getByText('forms.buttons.submit.default');
     expect(submitButton.classList.contains('usa-button--disabled')).to.be.true();
 
-    userEvent.click(continueButton);
+    userEvent.click(submitButton);
     errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(1);
     expect(document.activeElement).to.equal(
@@ -212,8 +186,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.review_issues');
-    expect(document.activeElement).to.equal(heading);
+    // Make sure that the first element after a tab is what we expect it to be.
+    userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
     expect(hasValueSelected).to.be.true();
@@ -277,8 +253,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.review_issues');
-    expect(document.activeElement).to.equal(heading);
+    // Make sure that the first focusable element after a tab is what we expect it to be.
+    userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
     expect(hasValueSelected).to.be.true();

@@ -8,7 +8,7 @@ module Idv
     before_action :set_idv_form
 
     def new
-      redirect_to failure_url(:fail) and return if idv_attempter_throttled?
+      redirect_to failure_url(:fail) and return if throttle.throttled?
 
       async_state = step.async_state
       if async_state.none?
@@ -35,10 +35,14 @@ module Idv
 
     private
 
+    def throttle
+      @throttle ||= Throttle.for(user: current_user, throttle_type: :proof_address)
+    end
+
     def max_attempts_reached
       analytics.track_event(
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_resolution,
+        throttle_type: :proof_address,
         step_name: step_name,
       )
     end

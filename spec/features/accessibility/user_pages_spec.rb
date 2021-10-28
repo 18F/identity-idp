@@ -110,11 +110,11 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_uniquely_titled
   end
 
-  scenario 'edit email page' do
+  scenario 'delete email page' do
     user = create(:user)
     sign_in_and_2fa_user(user)
 
-    visit delete_email_path(id: user.email_addresses.take.id)
+    visit manage_email_confirm_delete_path(id: user.email_addresses.take.id)
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
     expect(page).to label_required_fields

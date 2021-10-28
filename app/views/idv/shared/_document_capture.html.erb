@@ -20,6 +20,7 @@
   app_name: APP_NAME,
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
+  document_capture_tips_url: MarketingSite.help_document_capture_tips_url,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document) :
@@ -30,6 +31,7 @@
   glare_threshold: IdentityConfig.store.doc_auth_client_glare_threshold,
   sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
   status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+  max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
   sp_name: sp_name,
   flow_path: flow_path,
   failure_to_proof_url: failure_to_proof_url,
@@ -146,7 +148,11 @@
     'close-white-alt.svg',
     'id-card.svg',
     'spinner.gif',
-    'spinner@2x.gif'
+    'spinner@2x.gif',
+    'alert/warning-lg.svg',
+    'idv/capture-tips-clean.svg',
+    'idv/capture-tips-surface.svg',
+    'idv/capture-tips-lighting.svg',
   ] %>
   window.LoginGov = window.LoginGov || {};
   window.LoginGov.assets = <%= raw asset_keys.map { |key| [key, asset_path(key)] }.to_h.to_json %>;

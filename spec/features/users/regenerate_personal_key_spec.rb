@@ -15,7 +15,7 @@ feature 'View personal key' do
 
         # The user should receive an SMS and an email
         personal_key_sign_in_mail = double
-        expect(personal_key_sign_in_mail).to receive(:deliver_now)
+        expect(personal_key_sign_in_mail).to receive(:deliver_now_or_later)
         expect(UserMailer).to receive(:personal_key_regenerated).
           with(user, user.email).
           and_return(personal_key_sign_in_mail)
@@ -75,6 +75,7 @@ feature 'View personal key' do
 
       click_acknowledge_personal_key
       submit_form_without_entering_the_code
+      submit_form_with_the_wrong_code
 
       expect(current_path).not_to eq account_path
 
@@ -142,4 +143,13 @@ end
 
 def submit_form_without_entering_the_code
   click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  expect(page).to have_selector('.validation-message')
+  expect(page).not_to have_selector('#personal-key-alert')
+end
+
+def submit_form_with_the_wrong_code
+  fill_in 'personal_key', with: 'hellohellohello'
+  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  expect(page).to have_content(t('users.personal_key.confirmation_error'))
+  expect(page).not_to have_selector('.validation-message')
 end

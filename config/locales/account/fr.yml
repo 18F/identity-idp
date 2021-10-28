@@ -34,6 +34,7 @@ fr:
       backup_code_confirm_regenerate: Oui, régénérer les codes
       backup_codes_exist: Généré
       backup_codes_no_exist: Non généré
+      continue_to_service_provider: Continuer à %{service_provider}
       default: défaut
       device: '%{browser} sur %{os}'
       dob: Date de naissance

@@ -57,7 +57,7 @@ describe AccountReset::Cancel do
     it 'notifies the user via email of the account reset cancellation' do
       token = create_account_reset_request_for(user)
 
-      @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
+      @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
       user.email_addresses.each do |email_address|
         expect(UserMailer).to receive(:account_reset_cancel).with(user, email_address).
           and_return(@mailer)

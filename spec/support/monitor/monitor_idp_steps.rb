@@ -26,7 +26,7 @@ module MonitorIdpSteps
     fill_in 'user_email', with: email_address
     check 'user_terms_accepted'
     click_on 'Submit'
-    confirmation_link = monitor.check_for_confirmation_link
+    confirmation_link = monitor.check_for_confirmation_link(email_address)
     visit confirmation_link
     fill_in 'password_form_password', with: monitor.config.login_gov_sign_in_password
     submit_password
@@ -53,7 +53,7 @@ module MonitorIdpSteps
     email_address
   end
 
-  def sign_in_and_2fa(email)
+  def sign_in_and_2fa(email, totp_secret)
     fill_in 'user_email', with: email
     fill_in 'user_password', with: monitor.config.login_gov_sign_in_password
     click_on 'Sign in'
@@ -63,7 +63,9 @@ module MonitorIdpSteps
       click_button 'Continue'
     end
 
-    fill_in 'code', with: monitor.check_for_otp
+    # TOTP codes can only be generated every 30 seconds, and we just generated one for signup
+    sleep(31)
+    fill_in 'code', with: generate_totp_code(totp_secret)
     uncheck 'Remember this browser'
     click_on 'Submit'
   end
@@ -76,13 +78,14 @@ module MonitorIdpSteps
     secret = find('#qr-code').text
     fill_in 'name', with: 'Authentication app'
     fill_in 'code', with: generate_totp_code(secret)
+    uncheck 'Remember this browser'
     click_button 'Submit'
     if /two_factor_options_success/.match?(current_path)
       click_on 'Continue'
       setup_backup_codes
     end
 
-    email_address
+    [email_address, secret]
   end
 
   def generate_totp_code(secret)

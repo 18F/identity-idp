@@ -153,10 +153,10 @@ class DocumentProofingJob < ApplicationJob
   # @return [Faraday::Connection] builds a Faraday instance with our defaults
   def build_faraday
     Faraday.new do |conn|
-      conn.options.timeout = 3
-      conn.options.read_timeout = 3
-      conn.options.open_timeout = 3
-      conn.options.write_timeout = 3
+      conn.options.timeout = IdentityConfig.store.doc_auth_s3_request_timeout
+      conn.options.read_timeout = IdentityConfig.store.doc_auth_s3_request_timeout
+      conn.options.open_timeout = IdentityConfig.store.doc_auth_s3_request_timeout
+      conn.options.write_timeout = IdentityConfig.store.doc_auth_s3_request_timeout
       conn.request :instrumentation, name: 'request_log.faraday'
 
       # raises errors on 4XX or 5XX responses

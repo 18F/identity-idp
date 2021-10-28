@@ -1,18 +1,27 @@
 <% title t('titles.account') %>
 
-<% if @view_model.show_personal_key_partial? %>
-  <%= render 'accounts/personal_key', view_model: @view_model %>
-<% end %>
-<% if @view_model.show_password_reset_partial? %>
-  <%= render 'accounts/password_reset', view_model: @view_model %>
-<% end %>
+<% if @view_model.showing_any_partials? %>
+  <div class="margin-bottom-8">
+    <% if @view_model.show_personal_key_partial? %>
+      <%= render 'accounts/personal_key', view_model: @view_model %>
+    <% end %>
 
-<% if @view_model.decorated_user.pending_profile_requires_verification? %>
-  <% if @view_model.decorated_user.gpo_mail_bounced? %>
-    <%= render 'accounts/pending_profile_bounced_gpo' %>
-  <% else %>
-    <%= render 'accounts/pending_profile_gpo' %>
-  <% end %>
+    <% if @view_model.show_password_reset_partial? %>
+      <%= render 'accounts/password_reset', view_model: @view_model %>
+    <% end %>
+
+    <% if @view_model.show_gpo_partial? %>
+      <% if @view_model.decorated_user.gpo_mail_bounced? %>
+        <%= render 'accounts/pending_profile_bounced_gpo' %>
+      <% else %>
+        <%= render 'accounts/pending_profile_gpo' %>
+      <% end %>
+    <% end %>
+
+    <% if @view_model.show_service_provider_continue_partial? %>
+      <%= render 'accounts/service_provider_continue', view_model: @view_model %>
+    <% end %>
+  </div>
 <% end %>
 
 <%= render 'accounts/header', view_model: @view_model %>

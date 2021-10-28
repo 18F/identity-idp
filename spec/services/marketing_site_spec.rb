@@ -162,4 +162,22 @@ RSpec.describe MarketingSite do
       end
     end
   end
+
+  describe '.help_document_capture_tips_url' do
+    it 'points to the authentication app section of the help page' do
+      expect(MarketingSite.help_document_capture_tips_url).to eq(
+        'https://www.login.gov/help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
+      )
+    end
+
+    context 'when the user has set their locale to :es' do
+      before { I18n.locale = :es }
+
+      it 'points to the authentication app section of the help page with the locale appended' do
+        expect(MarketingSite.help_document_capture_tips_url).to eq(
+          'https://www.login.gov/es/help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
+        )
+      end
+    end
+  end
 end

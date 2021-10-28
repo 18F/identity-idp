@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'axe-rspec'
 
 feature 'Accessibility on static pages', :js do
-  scenario 'not found page' do
+  scenario 'not found page', allow_browser_log: true do
     visit '/non_existent_page'
 
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa

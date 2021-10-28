@@ -47,6 +47,7 @@ RSpec.describe OtpRateLimiter do
         phone,
         false,
       )
+      otp_rate_limiter.increment
       old_otp_last_sent_at = tracker.reload.otp_last_sent_at
       otp_rate_limiter.increment
       new_otp_last_sent_at = tracker.reload.otp_last_sent_at
