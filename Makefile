@@ -28,7 +28,7 @@ lint:
 	@echo "--- rubocop ---"
 	bundle exec rubocop --parallel
 	@echo "--- brakeman ---"
-	bundle exec brakeman --skip-files app/services/doc_auth_router.rb
+	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
 	@echo "--- bundler-audit ---"
