@@ -1,6 +1,12 @@
+import sinon from 'sinon';
+import { useContext } from 'react';
 import userEvent from '@testing-library/user-event';
-import { FailedCaptureAttemptsContextProvider } from '@18f/identity-document-capture';
+import {
+  FailedCaptureAttemptsContext,
+  FailedCaptureAttemptsContextProvider,
+} from '@18f/identity-document-capture';
 import CaptureTroubleshooting from '@18f/identity-document-capture/components/capture-troubleshooting';
+import { FormStepsContext } from '@18f/identity-document-capture/components/form-steps';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/context/capture-troubleshooting', () => {
@@ -36,5 +42,36 @@ describe('document-capture/context/capture-troubleshooting', () => {
     userEvent.click(tryAgainButton);
 
     expect(getByText('Default children')).to.be.ok();
+  });
+
+  it('triggers content resets', () => {
+    const onContentReplaced = sinon.spy();
+    const FailButton = () => (
+      <button
+        type="button"
+        onClick={useContext(FailedCaptureAttemptsContext).onFailedCaptureAttempt}
+      >
+        Fail
+      </button>
+    );
+    const { getByRole } = render(
+      <FormStepsContext.Provider value={{ onContentReplaced }}>
+        <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={1}>
+          <CaptureTroubleshooting>
+            <FailButton />
+          </CaptureTroubleshooting>
+        </FailedCaptureAttemptsContextProvider>
+      </FormStepsContext.Provider>,
+    );
+
+    expect(onContentReplaced).not.to.have.been.called();
+
+    const failButton = getByRole('button', { name: 'Fail' });
+    userEvent.click(failButton);
+    expect(onContentReplaced).to.have.been.calledOnce();
+
+    const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
+    userEvent.click(tryAgainButton);
+    expect(onContentReplaced).to.have.been.calledTwice();
   });
 });
