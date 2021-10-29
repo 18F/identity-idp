@@ -46,11 +46,11 @@ class VendorStatus
       if from_idv?
         if sp
           return I18n.t(
-            'vendor_outage.idv_blocked.unfortunately.with_sp',
+            'vendor_outage.idv_blocked.with_sp',
             service_provider: sp.friendly_name,
           )
         else
-          return I18n.t('vendor_outage.idv_blocked.unfortunately.without_sp')
+          return I18n.t('vendor_outage.idv_blocked.without_sp')
         end
       end
 

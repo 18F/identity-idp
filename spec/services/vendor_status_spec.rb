@@ -65,7 +65,7 @@ describe VendorStatus do
       context 'no service_provider in session' do
         it 'returns the correct message' do
           expect(subject.outage_message).to eq(
-            I18n.t('vendor_outage.idv_blocked.unfortunately.without_sp'),
+            I18n.t('vendor_outage.idv_blocked.without_sp'),
           )
         end
       end
@@ -76,7 +76,7 @@ describe VendorStatus do
         it 'returns the correct message tailored to the service provider' do
           expect(subject.outage_message).to eq(
             I18n.t(
-              'vendor_outage.idv_blocked.unfortunately.with_sp',
+              'vendor_outage.idv_blocked.with_sp',
               service_provider: sp.friendly_name,
             ),
           )
