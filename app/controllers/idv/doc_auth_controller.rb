@@ -60,7 +60,7 @@ module Idv
     end
 
     def check_for_outage
-      redirect_if_outage(from: "IdV: #{current_step}")
+      redirect_if_outage(vendors: IAL2_VENDORS, from: "IdV: #{current_step}")
     end
   end
 end

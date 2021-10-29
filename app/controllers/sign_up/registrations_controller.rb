@@ -71,7 +71,7 @@ module SignUp
     def redirect_if_ial2_and_vendor_outage
       return unless ial2_requested?
 
-      redirect_if_outage(from: CREATE_ACCOUNT)
+      redirect_if_outage(vendors: IAL2_VENDORS, from: CREATE_ACCOUNT)
     end
   end
 end
