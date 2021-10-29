@@ -6,7 +6,7 @@ locals:
 * message: Text to display in alert. Text can also be provided through block.
 %>
 <%
-  type = local_assigns.fetch(:type, 'info')
+  type = local_assigns.fetch(:type, :info)
   raise "unknown alert type=#{type}" unless %w[info success warning error other].include?(type)
   role = type === 'error' ? 'alert' : 'status'
   text_tag = local_assigns.fetch(:text_tag, 'p')
