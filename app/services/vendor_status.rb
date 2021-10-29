@@ -4,8 +4,8 @@ class VendorStatus
     @sp = sp
   end
 
-  ALL_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid sms voice]
-  IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid]
+  IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
+  ALL_VENDORS = (IAL2_VENDORS + %i[sms voice]).freeze
 
   def vendor_outage?(vendor)
     status = case vendor
