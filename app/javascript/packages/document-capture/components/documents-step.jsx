@@ -9,6 +9,7 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import PageHeading from './page-heading';
+import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -82,6 +83,7 @@ function DocumentsStep({
       ))}
       <FormStepsContinueButton />
       <DesktopDocumentDisclosure />
+      <StartOverOrCancel />
     </CaptureTroubleshooting>
   );
 }

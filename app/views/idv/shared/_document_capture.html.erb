@@ -34,6 +34,8 @@
   max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
   sp_name: sp_name,
   flow_path: flow_path,
+  start_over_url: idv_session_path(step: 'document_capture'),
+  cancel_url: idv_cancel_path(step: 'document_capture'),
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,
   back_image_upload_url: back_image_upload_url,
@@ -135,13 +137,13 @@
   <% end %> <%# end validated_form_for %>
 
   <p class='margin-top-4 margin-bottom-0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
-</div>
 
-<%= render(
-      'idv/doc_auth/start_over_or_cancel',
-      step: 'document_capture',
-      hide_start_over: flow_path == 'hybrid',
-    ) %>
+  <%= render(
+        'idv/doc_auth/start_over_or_cancel',
+        step: 'document_capture',
+        hide_start_over: flow_path == 'hybrid',
+      ) %>
+</div>
 
 <%= nonced_javascript_tag do %>
   <% asset_keys = [
