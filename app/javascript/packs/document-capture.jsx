@@ -17,6 +17,7 @@ import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
 import { I18nContext } from '@18f/identity-react-i18n';
 
+/** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
 
 /**
@@ -56,7 +57,7 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @prop {string} appName Application canonical name.
  * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
  * tips are shown.
- * @prop {'standard'|'hybrid'} flowPath The user's session flow path, one of "standard" or "hybrid".
+ * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
  * @prop {string} startOverUrl URL to application DELETE path for session restart.
  * @prop {string} cancelUrl URL to application path for session cancellation.
  */
