@@ -4,7 +4,7 @@ class VendorStatus
     @sp = sp
   end
 
-  ALL_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid]
+  ALL_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid sms voice]
   IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid]
 
   def redirect_url_if_outage(vendors:)
@@ -20,17 +20,17 @@ class VendorStatus
     status = case vendor
     when :acuant
       IdentityConfig.store.vendor_status_acuant
-             when :lexisnexis_instant_verify
-               IdentityConfig.store.vendor_status_lexisnexis_instant_verify
-             when :lexisnexis_trueid
-               IdentityConfig.store.vendor_status_lexisnexis_trueid
-             when :sms
-               IdentityConfig.store.vendor_status_sms
-             when :voice
-               IdentityConfig.store.vendor_status_voice
-             else
-               raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
-             end
+    when :lexisnexis_instant_verify
+      IdentityConfig.store.vendor_status_lexisnexis_instant_verify
+    when :lexisnexis_trueid
+      IdentityConfig.store.vendor_status_lexisnexis_trueid
+    when :sms
+      IdentityConfig.store.vendor_status_sms
+    when :voice
+      IdentityConfig.store.vendor_status_voice
+    else
+      raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
+    end
     status != :operational
   end
 
@@ -57,7 +57,7 @@ class VendorStatus
           return I18n.t(
             'vendor_outage.idv_blocked.unfortunately.with_sp',
             service_provider: sp.friendly_name,
-            )
+          )
         else
           return I18n.t('vendor_outage.idv_blocked.unfortunately.without_sp')
         end
