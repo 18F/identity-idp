@@ -204,6 +204,8 @@ valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://id
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
+vendor_status_sms: 'operational'
+vendor_status_voice: 'operational'
 verify_gpo_key_attempt_window_in_minutes: '10'
 verify_gpo_key_max_attempts: '3'
 verify_personal_key_attempt_window_in_minutes: '15'

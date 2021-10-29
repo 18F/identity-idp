@@ -208,6 +208,8 @@ class IdentityConfig
     config.add(:vendor_status_acuant, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_instant_verify, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_sms, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_voice, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:outbound_connection_check_retry_count, type: :integer)
     config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)
