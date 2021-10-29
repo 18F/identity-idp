@@ -70,8 +70,7 @@ module SignUp
     def redirect_if_ial2_and_vendor_outage
       return unless ial2_requested?
 
-      vendor_status = VendorStatus.new
-      if vendor_status.any_ial2_vendor_outage?
+      if VendorStatus.new.any_ial2_vendor_outage?
         session[:vendor_outage_redirect] = CREATE_ACCOUNT
         return redirect_to vendor_outage_url
       end
