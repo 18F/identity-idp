@@ -3,11 +3,7 @@ require 'pinpoint_supported_countries'
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
   c.adapter = IdentityConfig.store.telephony_adapter.to_sym
-  c.logger = if FeatureManagement.log_to_stdout?
-               Logger.new(STDOUT, level: :info)
-             else
-               Logger.new('log/telephony.log', level: :info)
-             end
+  c.logger = Logger.new('/dev/null')
 
   c.voice_pause_time = IdentityConfig.store.voice_otp_pause_time
   c.voice_rate = IdentityConfig.store.voice_otp_speech_rate
