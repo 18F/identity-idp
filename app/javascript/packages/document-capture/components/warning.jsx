@@ -1,4 +1,3 @@
-import { useEffect, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import useAsset from '../hooks/use-asset';
@@ -12,7 +11,6 @@ import PageHeading from './page-heading';
  * @prop {string=} heading Heading text.
  * @prop {string=} actionText Primary action button text.
  * @prop {(() => void)=} actionOnClick Primary action button text.
- * @prop {boolean=} autoFocus Whether to focus heading on mount.
  * @prop {import('react').ReactNode} children Component children.
  * @prop {string=} troubleshootingHeading Heading text preceding troubleshooting options.
  * @prop {(TroubleshootingOption[])=} troubleshootingOptions Array of troubleshooting options.
@@ -26,18 +24,11 @@ function Warning({
   actionText,
   actionOnClick,
   children,
-  autoFocus = false,
   troubleshootingHeading,
   troubleshootingOptions,
 }) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
-  const headingRef = useRef(/** @type {HTMLHeadingElement?} */ (null));
-  useEffect(() => {
-    if (autoFocus) {
-      headingRef.current?.focus();
-    }
-  }, []);
 
   return (
     <>
@@ -48,9 +39,7 @@ function Warning({
         height={54}
         className="display-block margin-bottom-4"
       />
-      <PageHeading ref={headingRef} tabIndex={-1}>
-        {heading}
-      </PageHeading>
+      <PageHeading>{heading}</PageHeading>
       {children}
       {actionText && actionOnClick && (
         <div className="margin-y-5">

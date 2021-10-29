@@ -27,7 +27,6 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
   return (
     <Warning
       heading={t('doc_auth.headings.capture_troubleshooting_tips')}
-      autoFocus
       actionText={t('idv.failure.button.warning')}
       actionOnClick={onTryAgain}
       troubleshootingHeading={t('idv.troubleshooting.headings.still_having_trouble')}
