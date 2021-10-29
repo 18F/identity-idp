@@ -8,7 +8,6 @@ module Idv
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
-    include VendorOutageConcern
 
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
@@ -60,7 +59,11 @@ module Idv
     end
 
     def check_for_outage
-      redirect_if_outage(vendors: IAL2_VENDORS, from: "IdV: #{current_step}")
+      vendor_status = VendorStatus.new
+      if vendor_status.any_ial2_vendor_outage?
+        session[:vendor_outage_redirect] = "IdV: #{current_step}"
+        return redirect_to vendor_outage_url
+      end
     end
   end
 end
