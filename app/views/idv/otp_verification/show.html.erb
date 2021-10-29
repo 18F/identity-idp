@@ -17,19 +17,21 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= form_tag(:idv_otp_verification, method: :put, class: 'margin-top-4') do %>
+<%= validated_form_for(:idv_otp_verification, method: :put, class: 'margin-top-4') do %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
-      <%= render(
-            'shared/one_time_code_input',
-            name: :code,
-            value: @code,
-            required: true,
-            autofocus: true,
-            numeric: false,
-            class: 'col-12 margin-bottom-5',
-          ) %>
+      <div class="margin-bottom-5">
+        <%= render(
+              'shared/one_time_code_input',
+              name: :code,
+              value: @code,
+              required: true,
+              autofocus: true,
+              numeric: false,
+              class: 'col-12',
+            ) %>
+      </div>
       <%= submit_tag t('forms.buttons.submit.default'),
                      class: 'usa-button usa-button--big usa-button--full-width' %>
     </div>
