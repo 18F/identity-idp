@@ -2,11 +2,11 @@
 
 <%= render 'shared/sp_alert' %>
 
-<%= render 'shared/alert', {
-      type: 'error',
+<%= render AlertComponent.new(
+      type: :error,
       class: 'email-invalid-alert margin-bottom-4 display-none',
       message: t('sign_up.email.invalid_email_alert_head'),
-    } %>
+    ) %>
 
 <h1 class='margin-y-0'><%= t('titles.registrations.new') %></h1>
 

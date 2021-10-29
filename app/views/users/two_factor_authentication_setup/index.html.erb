@@ -12,7 +12,7 @@
 
 <p class="mt-tiny"><%== @presenter.intro %></p>
 
-<%= render('shared/alert') { t('two_factor_authentication.lockout_information') } %>
+<%= render(AlertComponent.new) { t('two_factor_authentication.lockout_information') } %>
 
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },

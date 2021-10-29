@@ -1,11 +1,11 @@
 <% title t('titles.verify_email') %>
 
 <% if @resend_confirmation %>
-  <%= render 'shared/alert', {
-    type: 'success',
-    class: 'margin-bottom-4',
-    message: t('notices.resend_confirmation_email.success'),
-  } %>
+  <%= render AlertComponent.new(
+        type: :success,
+        class: 'margin-bottom-4',
+        message: t('notices.resend_confirmation_email.success'),
+      ) %>
 <% end %>
 
 <div class="margin-top-neg-2">

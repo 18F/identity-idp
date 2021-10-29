@@ -1,0 +1,9 @@
+<%= tag.div(
+      **tag_options,
+      class: ['usa-alert', "usa-alert--#{type}", *tag_options[:class]],
+      role: role,
+    ) do %>
+  <div class="usa-alert__body">
+    <%= content_tag(text_tag, content, class: 'usa-alert__text') %>
+  </div>
+<% end %>
