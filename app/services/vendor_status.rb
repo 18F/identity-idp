@@ -37,6 +37,10 @@ class VendorStatus
     /IdV: /.match?(from)
   end
 
+  # Returns an appropriate error message based upon the type of outage or what the user was doing
+  # when they encountered the outage.
+  #
+  # @return [String, nil] the localized message.
   def outage_message
     if any_ial2_vendor_outage?
       if from_idv?
@@ -50,7 +54,7 @@ class VendorStatus
         end
       end
 
-      return I18n.t('vendor_outage.idv_blocked.generic') # if from_create_account?
+      return I18n.t('vendor_outage.idv_blocked.generic')
     end
   end
 
