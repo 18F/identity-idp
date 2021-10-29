@@ -7,13 +7,6 @@ describe VendorStatus do
     VendorStatus.new(from: from, sp: sp)
   end
 
-  before do
-    # Do nothing
-  end
-
-  after do
-    # Do nothing
-  end
   it 'raises an error if passed an unknown vendor' do
     expect { subject.vendor_outage?(:unknown_vendor) }.to raise_error(ArgumentError)
   end

@@ -7,13 +7,6 @@ class VendorStatus
   ALL_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid sms voice]
   IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid]
 
-  def redirect_url_if_outage(vendors:)
-    if any_vendor_outage?(vendors)
-      session[:vendor_outage_redirect] = from
-      return redirect_to vendor_outage_url
-    end
-  end
-
   def vendor_outage?(vendor)
     raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
 
@@ -40,10 +33,6 @@ class VendorStatus
 
   def any_ial2_vendor_outage?
     any_vendor_outage?(IAL2_VENDORS)
-  end
-
-  def from_create_account?
-    from == SignUp::RegistrationsController::CREATE_ACCOUNT
   end
 
   def from_idv?
