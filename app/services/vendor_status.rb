@@ -20,7 +20,7 @@ class VendorStatus
     when :voice
       IdentityConfig.store.vendor_status_voice
     else
-      raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
+      raise ArgumentError, "invalid vendor #{vendor}"
     end
     status != :operational
   end
