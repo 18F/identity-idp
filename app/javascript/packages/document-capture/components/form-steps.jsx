@@ -81,14 +81,14 @@ import './form-steps.scss';
  *
  * @prop {boolean} isLastStep Whether the current step is the last step in the flow.
  * @prop {boolean} canContinueToNextStep Whether the user can proceed to the next step.
- * @prop {() => void} onContentReplaced Callback to invoke when content is replaced.
+ * @prop {() => void} onPageTransition Callback invoked when content is reset in a page transition.
  */
 
 export const FormStepsContext = createContext(
   /** @type {FormStepsContext} */ ({
     isLastStep: true,
     canContinueToNextStep: true,
-    onContentReplaced: () => {},
+    onPageTransition: () => {},
   }),
 );
 
@@ -155,7 +155,7 @@ function FormSteps({
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
    */
-  function onContentReplaced() {
+  function onPageTransition() {
     const firstElementChild = formRef.current?.firstElementChild;
     if (firstElementChild instanceof window.HTMLElement) {
       firstElementChild.classList.add('form-steps__focus-anchor');
@@ -169,18 +169,18 @@ function FormSteps({
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
     if (autoFocus) {
-      onContentReplaced();
+      onPageTransition();
     }
   }, []);
 
   useEffect(() => {
     if (stepErrors.length) {
-      onContentReplaced();
+      onPageTransition();
     }
   }, [stepErrors]);
 
   useDidUpdateEffect(onStepChange, [step]);
-  useDidUpdateEffect(onContentReplaced, [step]);
+  useDidUpdateEffect(onPageTransition, [step]);
 
   /**
    * Returns array of form errors for the current set of values.
@@ -257,7 +257,7 @@ function FormSteps({
           <FormErrorMessage error={error} isDetail />
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onContentReplaced }}>
+      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
         <Form
           key={name}
           value={values}

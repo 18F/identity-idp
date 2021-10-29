@@ -448,7 +448,7 @@ describe('document-capture/components/form-steps', () => {
             form: () => (
               <>
                 <h1>Content Title</h1>
-                <button type="button" onClick={useContext(FormStepsContext).onContentReplaced}>
+                <button type="button" onClick={useContext(FormStepsContext).onPageTransition}>
                   Replace
                 </button>
               </>

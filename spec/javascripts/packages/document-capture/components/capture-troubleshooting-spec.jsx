@@ -45,7 +45,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
   });
 
   it('triggers content resets', () => {
-    const onContentReplaced = sinon.spy();
+    const onPageTransition = sinon.spy();
     const FailButton = () => (
       <button
         type="button"
@@ -55,7 +55,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
       </button>
     );
     const { getByRole } = render(
-      <FormStepsContext.Provider value={{ onContentReplaced }}>
+      <FormStepsContext.Provider value={{ onPageTransition }}>
         <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={1}>
           <CaptureTroubleshooting>
             <FailButton />
@@ -64,14 +64,14 @@ describe('document-capture/context/capture-troubleshooting', () => {
       </FormStepsContext.Provider>,
     );
 
-    expect(onContentReplaced).not.to.have.been.called();
+    expect(onPageTransition).not.to.have.been.called();
 
     const failButton = getByRole('button', { name: 'Fail' });
     userEvent.click(failButton);
-    expect(onContentReplaced).to.have.been.calledOnce();
+    expect(onPageTransition).to.have.been.calledOnce();
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
     userEvent.click(tryAgainButton);
-    expect(onContentReplaced).to.have.been.calledTwice();
+    expect(onPageTransition).to.have.been.calledTwice();
   });
 });

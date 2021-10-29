@@ -21,12 +21,12 @@ function CaptureTroubleshooting({ children }) {
   const { failedCaptureAttempts, maxFailedAttemptsBeforeTips, lastAttemptMetadata } = useContext(
     FailedCaptureAttemptsContext,
   );
-  const { onContentReplaced } = useContext(FormStepsContext);
-  useDidUpdateEffect(onContentReplaced, [didShowTroubleshooting]);
+  const { onPageTransition } = useContext(FormStepsContext);
+  useDidUpdateEffect(onPageTransition, [didShowTroubleshooting]);
   const { isAssessedAsGlare, isAssessedAsBlurry } = lastAttemptMetadata;
 
   return failedCaptureAttempts >= maxFailedAttemptsBeforeTips && !didShowTroubleshooting ? (
-    <CallbackOnMount onMount={onContentReplaced}>
+    <CallbackOnMount onMount={onPageTransition}>
       <CaptureAdvice
         onTryAgain={() => setDidShowTroubleshooting(true)}
         isAssessedAsGlare={isAssessedAsGlare}
