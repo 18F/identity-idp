@@ -8,8 +8,6 @@ class VendorStatus
   IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid]
 
   def vendor_outage?(vendor)
-    raise ArgumentError, "invalid vendor #{vendor}" if !ALL_VENDORS.include?(vendor)
-
     status = case vendor
     when :acuant
       IdentityConfig.store.vendor_status_acuant
