@@ -75,6 +75,9 @@ fr:
       too_long:
         one: Est trop long (maximum de 1 caractère)
         other: est trop long (le maximum est de %{count} caractères)
+      too_short:
+        one: est trop court (1 caractère minimum)
+        other: est trop court (le minimum est de %{count} caractères)
       wrong_length:
         one: n'est pas de la bonne longueur (devrait être de 1 caractère)
         other: n'est pas de la bonne longueur (devrait être %{count} caractères)

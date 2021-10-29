@@ -70,6 +70,9 @@ es:
       too_long:
         one: es demasiado largo (el máximo es 1 carácter)
         other: es demasiado largo (el máximo es %{count} caracteres)
+      too_short:
+        one: es demasiado corto (el mínimo es 1 carácter)
+        other: es demasiado corto (el mínimo es %{count} caracteres)
       wrong_length:
         one: es la longitud incorrecta (debería ser de 1 carácter)
         other: es la longitud incorrecta (debería ser de %{count} caracteres)
