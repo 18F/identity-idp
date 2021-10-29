@@ -2,9 +2,10 @@ require 'rails_helper'
 
 describe VendorStatus do
   let(:from) { nil }
+  let(:from_idv) { nil }
   let(:sp) { nil }
   subject(:vendor_status) do
-    VendorStatus.new(from: from, sp: sp)
+    VendorStatus.new(from: from, from_idv: from_idv, sp: sp)
   end
 
   it 'raises an error if passed an unknown vendor' do
@@ -60,7 +61,8 @@ describe VendorStatus do
     end
 
     context 'user coming from idv flow' do
-      let(:from) { 'IdV: Welcome' }
+      let(:from) { :welcome }
+      let(:from_idv) { true }
 
       context 'no service_provider in session' do
         it 'returns the correct message' do

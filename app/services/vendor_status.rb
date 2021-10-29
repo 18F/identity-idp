@@ -1,6 +1,7 @@
 class VendorStatus
-  def initialize(from: nil, sp: nil)
+  def initialize(from: nil, from_idv: nil, sp: nil)
     @from = from
+    @from_idv = from_idv
     @sp = sp
   end
 
@@ -34,7 +35,7 @@ class VendorStatus
   end
 
   def from_idv?
-    /IdV: /.match?(from)
+    from_idv
   end
 
   # Returns an appropriate error message based upon the type of outage or what the user was doing
@@ -74,5 +75,5 @@ class VendorStatus
 
   private
 
-  attr_reader :from, :sp
+  attr_reader :from, :from_idv, :sp
 end
