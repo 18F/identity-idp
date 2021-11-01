@@ -21,7 +21,7 @@
   </div>
   <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
     <p><%= t('doc_auth.info.link_sent') %></p>
-    <%= render AlertComponent.new(type: 'warning') do %>
+    <%= render AlertComponent.new(type: :warning) do %>
       <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
       <span class="no-js"><%= t('doc_auth.info.link_sent_complete_nojs') %></span>
       <span class="js"><%= t('doc_auth.info.link_sent_complete_js') %></span>
