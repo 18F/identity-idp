@@ -71,17 +71,6 @@ fr:
     messages:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
-      inclusion: N'est pas inclus dans la liste
-      too_long:
-        one: Est trop long (maximum de 1 caractère)
-        other: est trop long (le maximum est de %{count} caractères)
-      too_short:
-        one: est trop court (1 caractère minimum)
-        other: est trop court (le minimum est de %{count} caractères)
-      wrong_length:
-        one: n'est pas de la bonne longueur (devrait être de 1 caractère)
-        other: n'est pas de la bonne longueur (devrait être %{count} caractères)
-      not_a_number: N'est pas un nombre
       confirmation_code_incorrect: Code non valide. L’avez-vous inscrit correctement?
       confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
         ou vous avez déjà confirmé votre compte.
@@ -94,6 +83,7 @@ fr:
         autre lettre afin d’obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.
+      inclusion: N'est pas inclus dans la liste
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
@@ -106,6 +96,7 @@ fr:
       must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
         de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
+      not_a_number: N'est pas un nombre
       otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
@@ -120,6 +111,12 @@ fr:
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
         dans une liste de mots de passe connus exposés dans les violations de
         données.
+      too_long:
+        one: Est trop long (maximum de 1 caractère)
+        other: est trop long (le maximum est de %{count} caractères)
+      too_short:
+        one: est trop court (1 caractère minimum)
+        other: est trop court (le minimum est de %{count} caractères)
       try_again: Veuillez réessayer.
       unauthorized_authn_context: Contexte d’authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d’identification
@@ -129,6 +126,9 @@ fr:
       voip_phone: Ce numéro est un service téléphonique basé sur le Web (Voix sur IP).
         Veuillez sélectionner un autre numéro et réessayer
       weak_password: Votre mot de passe n’est pas assez fort. %{feedback}
+      wrong_length:
+        one: n'est pas de la bonne longueur (devrait être de 1 caractère)
+        other: n'est pas de la bonne longueur (devrait être %{count} caractères)
     piv_cac_setup:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     registration:
