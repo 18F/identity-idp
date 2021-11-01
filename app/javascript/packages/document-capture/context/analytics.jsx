@@ -7,7 +7,7 @@ import { createContext } from 'react';
  *
  * @property {string=} key Short, camel-cased, dot-namespaced key describing event.
  * @property {string} label Long-form, human-readable label describing event action.
- * @property {Payload} payload Additional payload arguments to log with action.
+ * @property {Payload=} payload Additional payload arguments to log with action.
  */
 
 /**
