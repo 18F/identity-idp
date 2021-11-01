@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_30_171713) do
+ActiveRecord::Schema.define(version: 2021_10_14_225944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -339,21 +339,6 @@ ActiveRecord::Schema.define(version: 2021_08_30_171713) do
     t.index ["issuer"], name: "index_integrations_on_issuer", unique: true
     t.index ["partner_account_id"], name: "index_integrations_on_partner_account_id"
     t.index ["service_provider_id"], name: "index_integrations_on_service_provider_id"
-  end
-
-  create_table "job_runs", force: :cascade do |t|
-    t.string "host", null: false
-    t.string "pid", null: false
-    t.datetime "finish_time"
-    t.string "job_name", null: false
-    t.string "result"
-    t.string "error"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["error"], name: "index_job_runs_on_error"
-    t.index ["host"], name: "index_job_runs_on_host"
-    t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
-    t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
   end
 
   create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
