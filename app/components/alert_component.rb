@@ -1,5 +1,5 @@
 class AlertComponent < BaseComponent
-  VALID_TYPES = [:info, :success, :error, :other].freeze
+  VALID_TYPES = [:info, :success, :warning, :error, :other].freeze
 
   attr_reader :type, :message, :tag_options, :text_tag
 
