@@ -71,7 +71,7 @@ module SignUp
       return unless ial2_requested? && VendorStatus.new.any_ial2_vendor_outage?
 
       session[:vendor_outage_redirect] = CREATE_ACCOUNT
-      return redirect_to vendor_outage_url
+      return redirect_to VendorStatus.new.vendor_outage_url_localized
     end
   end
 end

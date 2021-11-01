@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe VendorStatus do
+  include Rails.application.routes.url_helpers
+
   let(:from) { nil }
   let(:from_idv) { nil }
   let(:sp) { nil }
@@ -10,6 +12,17 @@ describe VendorStatus do
 
   it 'raises an error if passed an unknown vendor' do
     expect { subject.vendor_outage?(:unknown_vendor) }.to raise_error(ArgumentError)
+  end
+
+  it 'returns a localized url if locale is other than English' do
+    I18n.locale = :fr
+    expect(subject.vendor_outage_url_localized).to eq vendor_outage_url(locale: :fr)
+
+    I18n.locale = :es
+    expect(subject.vendor_outage_url_localized).to eq vendor_outage_url(locale: :es)
+
+    I18n.locale = :en
+    expect(subject.vendor_outage_url_localized).to eq vendor_outage_url
   end
 
   context 'when all vendors are operational' do

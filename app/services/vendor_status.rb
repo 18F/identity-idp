@@ -1,4 +1,6 @@
 class VendorStatus
+  include Rails.application.routes.url_helpers
+
   def initialize(from: nil, from_idv: nil, sp: nil)
     @from = from
     @from_idv = from_idv
@@ -7,6 +9,16 @@ class VendorStatus
 
   IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
   ALL_VENDORS = (IAL2_VENDORS + %i[sms voice]).freeze
+
+  def vendor_outage_url_localized
+    return vendor_outage_url if I18n.locale == :en
+
+    vendor_outage_url(locale: I18n.locale)
+  end
+
+  def url_options
+    {}
+  end
 
   def vendor_outage?(vendor)
     status = case vendor

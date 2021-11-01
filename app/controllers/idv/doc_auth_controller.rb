@@ -62,7 +62,7 @@ module Idv
       if VendorStatus.new.any_ial2_vendor_outage?
         session[:vendor_outage_redirect] = current_step
         session[:vendor_outage_redirect_from_idv] = true
-        redirect_to vendor_outage_url
+        redirect_to VendorStatus.new.vendor_outage_url_localized
       end
     end
   end
