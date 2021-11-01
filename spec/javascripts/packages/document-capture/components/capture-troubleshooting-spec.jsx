@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { useContext } from 'react';
 import userEvent from '@testing-library/user-event';
 import {
+  AnalyticsContext,
   FailedCaptureAttemptsContext,
   FailedCaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
@@ -73,5 +74,29 @@ describe('document-capture/context/capture-troubleshooting', () => {
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
     userEvent.click(tryAgainButton);
     expect(onPageTransition).to.have.been.calledTwice();
+  });
+
+  it('logs events', () => {
+    const addPageAction = sinon.spy();
+    const { getByRole } = render(
+      <AnalyticsContext.Provider value={{ addPageAction }}>
+        <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={0}>
+          <CaptureTroubleshooting>Default children</CaptureTroubleshooting>
+        </FailedCaptureAttemptsContextProvider>
+      </AnalyticsContext.Provider>,
+    );
+
+    expect(addPageAction).to.have.been.calledOnceWith({
+      label: 'IdV: Capture troubleshooting shown',
+      payload: { isAssessedAsGlare: false, isAssessedAsBlurry: false },
+    });
+
+    const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
+    userEvent.click(tryAgainButton);
+
+    expect(addPageAction).to.have.been.calledTwice();
+    expect(addPageAction).to.have.been.calledWith({
+      label: 'IdV: Capture troubleshooting dismissed',
+    });
   });
 });
