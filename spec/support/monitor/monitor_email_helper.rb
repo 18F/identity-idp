@@ -56,7 +56,7 @@ class MonitorEmailHelper
       end
     end
 
-    raise "failed to find email that matched #{regex}"
+    raise "failed to find email to #{email_address} that matched #{regex}"
   end
 
   # local tests use "example.com" as the domain in emails but they actually

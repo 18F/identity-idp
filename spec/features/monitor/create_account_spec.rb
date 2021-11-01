@@ -11,7 +11,7 @@ RSpec.describe 'smoke test: create account' do
     context 'not staging' do
       before { monitor.filter_unless('STAGING') }
 
-      xit 'creates new account with SMS option for 2FA' do
+      skip 'creates new account with SMS option for 2FA' do
         visit_idp_from_oidc_sp
 
         click_on 'Create an account'
@@ -36,7 +36,7 @@ RSpec.describe 'smoke test: create account' do
     context 'not prod, not staging' do
       before { monitor.filter_unless('PROD', 'STAGING') }
 
-      xit 'creates new IAL2 account with SMS option for 2FA' do
+      skip 'creates new IAL2 account with SMS option for 2FA' do
         visit_idp_from_oidc_sp_with_ial2
         verify_identity_with_doc_auth
         expect_user_is_redirected_to_oidc_sp
@@ -49,7 +49,7 @@ RSpec.describe 'smoke test: create account' do
   context 'SAML' do
     before { monitor.filter_if('INT') }
 
-    xit 'creates new account with SMS option for 2FA' do
+    skip 'creates new account with SMS option for 2FA' do
       visit_idp_from_saml_sp
       click_on 'Create an account'
       email_address = create_new_account_with_sms
@@ -69,7 +69,7 @@ RSpec.describe 'smoke test: create account' do
       log_out_from_saml_sp
     end
 
-    xit 'creates new IAL2 account with SMS option for 2FA' do
+    skip 'creates new IAL2 account with SMS option for 2FA' do
       visit_idp_from_saml_sp_with_ial2
       verify_identity_with_doc_auth
       expect_user_is_redirected_to_saml_sp(email_address)
