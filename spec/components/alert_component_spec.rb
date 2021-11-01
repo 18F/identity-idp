@@ -50,6 +50,12 @@ RSpec.describe AlertComponent, type: :component do
     expect(rendered).to have_selector('.usa-alert.my-custom-class')
   end
 
+  it 'accepts arbitrary tag options' do
+    rendered = render_inline AlertComponent.new(message: 'FYI', data: { foo: 'bar' })
+
+    expect(rendered).to have_selector('.usa-alert[data-foo="bar"]')
+  end
+
   it 'assigns role="status"' do
     rendered = render_inline AlertComponent.new(message: 'FYI')
 
