@@ -1,6 +1,6 @@
 <%= tag.div(
       **tag_options,
-      class: ['usa-alert', "usa-alert--#{type}", *tag_options[:class]],
+      class: ['usa-alert', modifier_css_class, *tag_options[:class]],
       role: role,
     ) do %>
   <div class="usa-alert__body">

@@ -22,6 +22,19 @@ class AlertComponent < BaseComponent
     end
   end
 
+  def modifier_css_class
+    case type
+    when :info
+      'usa-alert--info'
+    when :success
+      'usa-alert--success'
+    when :error
+      'usa-alert--error'
+    when :warning
+      'usa-alert--warning'
+    end
+  end
+
   def content
     @message || super
   end
