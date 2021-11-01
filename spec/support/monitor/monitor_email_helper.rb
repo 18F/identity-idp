@@ -68,7 +68,7 @@ class MonitorEmailHelper
     end.to_s
   end
 
-  def check_and_sleep(count: 10, sleep_duration: 3)
+  def check_and_sleep(count: 15, sleep_duration: 3)
     count.times do
       result = yield
 
