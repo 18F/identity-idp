@@ -105,14 +105,20 @@ input::-webkit-inner-spin-button {
   }
 }
 
+// Remove/refactor once LGDS v6.3 is released
+
+.usa-error-message,
 .usa-success-message {
   @include u-padding-y(.5);
-  background-image: url(image-path('alert/success.svg'));
-  background-position: 0 center;
+  background-position: 0 .5em;
   background-repeat: no-repeat;
-  background-size: 1rem;
-  color: color('success');
-  display: block;
+  background-size: units($icon-size);
   font-weight: font-weight('bold');
   padding-left: 1.5rem;
+}
+
+.usa-success-message {
+  background-image: url(image-path('alert/success.svg'));
+  color: color('success');
+  display: block;
 }
