@@ -1,0 +1,17 @@
+---
+es:
+  vendor_outage:
+    get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
+    idv_blocked:
+      generic: Debido a problemas técnicos por nuestra parte, no podemos verificar su
+        identidad en estos momentos. Por favor, inténtelo nuevamente más tarde.
+      with_sp: '%{service_provider} necesita asegurarse de que es usted realmente y no
+        alguien que se hace pasar por usted. Lamentablemente, debido a problemas
+        técnicos por nuestra parte, tal vez no podamos verificar su identidad en
+        estos momentos. Por favor, inténtelo nuevamente más tarde.'
+      without_sp: La agencia a la que está intentando acceder debe asegurarse de que
+        usted sea quien dice ser, y no alguien que se hace pasar por usted.
+        Lamentablemente, debido a problemas técnicos por nuestra parte, tal vez
+        no podamos verificar su identidad en estos momentos. Por favor,
+        inténtelo nuevamente más tarde.
+    working: Estamos trabajando para corregir un error

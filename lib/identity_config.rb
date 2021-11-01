@@ -3,12 +3,15 @@ class IdentityConfig
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
   GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
 
+  VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
+
   class << self
     attr_reader :store
   end
 
   CONVERTERS = {
     string: proc { |value| value.to_s },
+    symbol: proc { |value| value.to_sym },
     comma_separated_string_list: proc do |value|
       value.split(',')
     end,
@@ -44,11 +47,14 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, allow_nil: false, options: {})
+  def add(key, type: :string, is_sensitive: false, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
+    if enum && !enum.include?(converted_value)
+      raise "unexpected #{key}: #{value}, expected one of #{enum}"
+    end
 
     @written_env[key] = converted_value
     @written_env
@@ -202,6 +208,11 @@ class IdentityConfig
     config.add(:otps_per_ip_limit, type: :integer)
     config.add(:otps_per_ip_period, type: :integer)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
+    config.add(:vendor_status_acuant, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_lexisnexis_instant_verify, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_lexisnexis_trueid, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_sms, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
+    config.add(:vendor_status_voice, type: :symbol, enum: VENDOR_STATUS_OPTIONS)
     config.add(:outbound_connection_check_retry_count, type: :integer)
     config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)

@@ -1,9 +1,13 @@
 module SignUp
   class RegistrationsController < ApplicationController
     include PhoneConfirmation
+    include ApplicationHelper # for ial2_requested?
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
+    before_action :redirect_if_ial2_and_vendor_outage
+
+    CREATE_ACCOUNT = 'create_account'
 
     def new
       @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
@@ -61,6 +65,13 @@ module SignUp
       request_id = permitted_params.fetch(:request_id, '')
 
       ServiceProviderRequestProxy.from_uuid(request_id).uuid
+    end
+
+    def redirect_if_ial2_and_vendor_outage
+      return unless ial2_requested? && VendorStatus.new.any_ial2_vendor_outage?
+
+      session[:vendor_outage_redirect] = CREATE_ACCOUNT
+      return redirect_to vendor_outage_url
     end
   end
 end
