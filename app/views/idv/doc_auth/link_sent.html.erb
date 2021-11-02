@@ -5,11 +5,11 @@
   <%= content_for(:meta_refresh) { "#{@meta_refresh}" } %>
 <% end %>
 <% if flow_session[:error_message] %>
-  <%= render 'shared/alert', {
-    type: 'error',
-    class: 'margin-bottom-4',
-    message: flow_session[:error_message],
-  } %>
+  <%= render AlertComponent.new(
+        type: :error,
+        class: 'margin-bottom-4',
+        message: flow_session[:error_message],
+      ) %>
 <% end %>
 <h1 class='margin-y-0'><%= t('doc_auth.headings.text_message') %></h1>
 
@@ -21,7 +21,7 @@
   </div>
   <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
     <p><%= t('doc_auth.info.link_sent') %></p>
-    <%= render 'shared/alert', type: 'warning' do %>
+    <%= render AlertComponent.new(type: :warning) do %>
       <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
       <span class="no-js"><%= t('doc_auth.info.link_sent_complete_nojs') %></span>
       <span class="js"><%= t('doc_auth.info.link_sent_complete_js') %></span>

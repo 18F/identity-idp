@@ -6,7 +6,7 @@
   )
 %>
 <% if maintenance_window.active? %>
-  <%= render 'shared/alert', { type: 'warning', class: 'margin-bottom-2', text_tag: 'div' } do %>
+  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-2', text_tag: 'div') do %>
     <p>
       <%= t('notices.maintenance.currently_under_maintenance_html',
             finish: l(maintenance_window.finish,

@@ -7,9 +7,6 @@ class ApplicationController < ActionController::Base
   include VerifySpAttributesConcern
   include EffectiveUser
 
-  FLASH_KEYS = %w[error info success warning other].freeze
-  FLASH_KEY_MAP = { 'notice' => 'info', 'alert' => 'error' }.freeze
-
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception

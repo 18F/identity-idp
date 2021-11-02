@@ -7,10 +7,11 @@ module Extensions
   SimpleForm::ErrorNotification.class_eval do
     def render
       return unless has_errors?
-      template.render 'shared/alert',
-                      type: 'error',
-                      message: error_message,
-                      class: 'margin-bottom-8'
+      template.render AlertComponent.new(
+        type: :error,
+        message: error_message,
+        class: 'margin-bottom-8',
+      )
     end
   end
 end
