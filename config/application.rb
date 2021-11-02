@@ -91,7 +91,14 @@ module Upaya
         origins do |source, _env|
           next if source == IdentityConfig.store.domain_name
 
-          ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
+          redirect_uris = Rails.cache.fetch(
+            'all_service_provider_redirect_uris',
+            expires_in: IdentityConfig.store.all_redirect_uris_cache_duration_minutes.minutes,
+          ) do
+            ServiceProvider.pluck(:redirect_uris).flatten.compact
+          end
+
+          redirect_uris.find do |uri|
             split_uri = uri.split('//')
             protocol = split_uri[0]
             domain = split_uri[1].split('/')[0] if split_uri.size > 1
