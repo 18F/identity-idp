@@ -6,6 +6,7 @@ module Idv
 
     before_action :confirm_step_needed
     before_action :set_idv_form
+    before_action :redirect_if_phone_vendor_outage, only: [:create]
 
     def new
       redirect_to failure_url(:fail) and return if throttle.throttled?
@@ -26,8 +27,6 @@ module Idv
     end
 
     def create
-      redirect_to vendor_outage_path(from: :idv_phone) if !idv_form.phone_belongs_to_user? &&
-                                                          VendorStatus.new.all_phone_vendor_outage?
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
@@ -36,6 +35,11 @@ module Idv
     end
 
     private
+
+    def redirect_if_phone_vendor_outage
+      return if idv_form.phone_belongs_to_user? || !VendorStatus.new.all_phone_vendor_outage?
+      redirect_to vendor_outage_path(from: :idv_phone)
+    end
 
     def throttle
       @throttle ||= Throttle.for(user: current_user, throttle_type: :proof_address)
