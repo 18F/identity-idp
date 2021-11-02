@@ -72,6 +72,7 @@ class IdentityConfig
     config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_verification_request_timeout, type: :integer)
     config.add(:aamva_verification_url)
+    config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:acuant_maintenance_window_start, type: :timestamp, allow_nil: true)

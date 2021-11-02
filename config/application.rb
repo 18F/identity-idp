@@ -93,7 +93,7 @@ module Upaya
 
           redirect_uris = Rails.cache.fetch(
             'all_service_provider_redirect_uris',
-            expires_in: 5.minutes,
+            expires_in: IdentityConfig.store.all_redirect_uris_cache_duration_minutes.minutes,
           ) do
             ServiceProvider.pluck(:redirect_uris).flatten.compact
           end
