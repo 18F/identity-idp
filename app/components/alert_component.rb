@@ -22,6 +22,10 @@ class AlertComponent < BaseComponent
     end
   end
 
+  def css_class
+    ['usa-alert', modifier_css_class, *tag_options[:class]]
+  end
+
   def modifier_css_class
     case type
     when :info
