@@ -1,14 +1,14 @@
 <% title t('titles.doc_auth.get_started') %>
 
-<%= render 'shared/alert', {
-  type: 'error',
-  class: [
-    'js-consent-form-alert',
-    'margin-bottom-4',
-    flow_session[:error_message].blank? && 'display-none',
-  ].select(&:present?),
-  message: flow_session[:error_message].presence || t('errors.doc_auth.consent_form'),
-} %>
+<%= render AlertComponent.new(
+      type: :error,
+      class: [
+        'js-consent-form-alert',
+        'margin-bottom-4',
+        flow_session[:error_message].blank? && 'display-none',
+      ].select(&:present?),
+      message: flow_session[:error_message].presence || t('errors.doc_auth.consent_form'),
+    ) %>
 
 <h1><%= t('doc_auth.headings.lets_go') %></h1>
 <p><%= t('doc_auth.info.lets_go') %></p>

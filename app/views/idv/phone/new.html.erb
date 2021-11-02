@@ -8,11 +8,11 @@
 <% end %>
 
 <div id="form-steps-wait-alert">
-  <%= render 'shared/alert', {
-    type: 'success',
-    class: 'margin-bottom-4',
-    message: I18n.t('doc_auth.forms.doc_success'),
-  } %>
+  <%= render AlertComponent.new(
+        type: :success,
+        class: 'margin-bottom-4',
+        message: I18n.t('doc_auth.forms.doc_success'),
+      ) %>
 </div>
 
 <% title t('titles.idv.phone') %>
@@ -57,9 +57,9 @@
                          method: :put,
                          class: 'margin-top-2',
                        }) do |f| %>
-  <%= f.input :phone, required: true, 
-              input_html: { aria: { invalid: false }, 
-              class: 'sm-col-8' }, 
+  <%= f.input :phone, required: true,
+              input_html: { aria: { invalid: false },
+              class: 'sm-col-8' },
               label: t('idv.form.phone'),
               wrapper: false,
               label_html: { class: 'bold' } %>
