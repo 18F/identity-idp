@@ -1,4 +1,4 @@
-class IsolatedSimpleStubs < ActiveSupport::Testing::SimpleStubs
+class NamespacedSimpleStubs < ActiveSupport::Testing::SimpleStubs
   def stub_object(object, method_name, &block)
     new_name = "__simple_stub__#{method_name}__#{object_id}"
 

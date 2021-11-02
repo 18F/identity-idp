@@ -67,7 +67,7 @@ RSpec.configure do |config|
 
   config.around(:each) do |example|
     now = Time.zone.now
-    simple_stubs = IsolatedSimpleStubs.new
+    simple_stubs = NamespacedSimpleStubs.new
     simple_stubs.stub_object(Time, :now) { at(now.to_i) }
     simple_stubs.stub_object(Date, :today) { jd(now.to_date.jd) }
     simple_stubs.stub_object(DateTime, :now) do
