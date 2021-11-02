@@ -1,11 +1,11 @@
 class AlertComponent < BaseComponent
-  VALID_TYPES = [:info, :success, :warning, :error, :emergency, :other].freeze
+  VALID_TYPES = %i[info success warning error emergency other].freeze
 
   attr_reader :type, :message, :tag_options, :text_tag
 
   def initialize(type: :info, text_tag: 'p', message: nil, **tag_options)
     if !VALID_TYPES.include?(type)
-      raise ArgumentError, "`type` of #{type} is invalid, expected one of #{VALID_TYPES}"
+      raise ArgumentError, "`type` #{type} is invalid, expected one of #{VALID_TYPES}"
     end
 
     @type = type
