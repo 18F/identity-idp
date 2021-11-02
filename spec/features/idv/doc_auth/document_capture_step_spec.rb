@@ -87,13 +87,6 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(next_step)
       expect(fake_analytics).to have_logged_event(
-        Analytics::DOC_AUTH + ' submitted',
-        step: 'document_capture',
-        flow_path: 'standard',
-        doc_auth_result: 'Passed',
-        billed: true,
-      )
-      expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
@@ -117,14 +110,6 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
 
-      expect(fake_analytics).to have_logged_event(
-        Analytics::DOC_AUTH + ' submitted',
-        step: 'document_capture',
-        flow_path: 'standard',
-        doc_auth_result: 'Passed',
-        billed: true,
-        success: false,
-      )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
@@ -397,7 +382,7 @@ feature 'doc auth document capture step' do
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
 
         expect(fake_analytics).to have_logged_event(
-          Analytics::DOC_AUTH + ' submitted',
+          'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
           document_expired: true,
           would_have_passed: true,
         )
@@ -412,7 +397,7 @@ feature 'doc auth document capture step' do
         expect(page).to have_current_path(next_step)
 
         expect(fake_analytics).to have_logged_event(
-          Analytics::DOC_AUTH + ' submitted',
+          'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
           document_expired: true,
         )
 
