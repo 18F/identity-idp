@@ -65,7 +65,7 @@ RSpec.configure do |config|
     end
   end
 
-  config.around(:each) do |example|
+  config.around(:each, type: proc { |t| t != :feature }) do |example|
     now = Time.zone.now
     simple_stubs = NamespacedSimpleStubs.new
     simple_stubs.stub_object(Time, :now) { at(now.to_i) }
