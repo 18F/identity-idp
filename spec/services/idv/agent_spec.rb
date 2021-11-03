@@ -38,7 +38,7 @@ describe Idv::Agent do
 
         it 'does proof state_id if resolution succeeds' do
           agent = Idv::Agent.new(
-            ssn: '444-55-8888',
+            ssn: '900-55-8888',
             first_name: Faker::Name.first_name,
             zipcode: '11111',
             state_id_number: '123456789',
@@ -78,7 +78,7 @@ describe Idv::Agent do
 
         it 'does not proof state_id if resolution succeeds' do
           agent = Idv::Agent.new(
-            { ssn: '444-55-8888', first_name: Faker::Name.first_name,
+            { ssn: '900-55-8888', first_name: Faker::Name.first_name,
               zipcode: '11111' },
           )
           agent.proof_resolution(
@@ -98,7 +98,7 @@ describe Idv::Agent do
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
         agent = Idv::Agent.new(
-          ssn: '444-55-8888', first_name: 'Time Exception',
+          ssn: '900-55-8888', first_name: 'Time Exception',
           zipcode: '11111'
         )
 
