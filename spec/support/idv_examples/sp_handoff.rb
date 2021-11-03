@@ -177,7 +177,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(decoded_id_token[:iss]).to eq(root_url)
     expect(decoded_id_token[:email]).to eq(user.email)
     expect(decoded_id_token[:given_name]).to eq('FAKEY')
-    expect(decoded_id_token[:social_security_number]).to eq('666-66-1234')
+    expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
 
     access_token = token_response[:access_token]
     expect(access_token).to be_present
@@ -191,7 +191,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
     expect(userinfo_response[:email]).to eq(user.email)
     expect(userinfo_response[:given_name]).to eq('FAKEY')
-    expect(userinfo_response[:social_security_number]).to eq('666-66-1234')
+    expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
   end
 
   def expect_successful_saml_handoff

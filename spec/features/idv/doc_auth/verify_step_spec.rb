@@ -21,8 +21,8 @@ feature 'doc auth verify step' do
   end
 
   it 'masks the ssn' do
-    expect(page).to have_text('6**-**-***4')
-    expect(page.find('.masked-text__text', text: '666-66-1234')).
+    expect(page).to have_text('9**-**-***4')
+    expect(page.find('.masked-text__text', text: DocAuthHelper::GOOD_SSN)).
       to match_css('.display-none').or have_ancestor('.display-none')
   end
 
@@ -285,16 +285,16 @@ feature 'doc auth verify step' do
     end
 
     it 'can toggle viewing the ssn' do
-      expect(page).to have_text('6**-**-***4')
-      expect(page).not_to have_text('666-66-1234')
+      expect(page).to have_text('9**-**-***4')
+      expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
 
       check t('forms.ssn.show')
-      expect(page).to have_text('666-66-1234')
-      expect(page).not_to have_text('6**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+      expect(page).not_to have_text('9**-**-***4')
 
       uncheck t('forms.ssn.show')
-      expect(page).to have_text('6**-**-***4')
-      expect(page).not_to have_text('666-66-1234')
+      expect(page).to have_text('9**-**-***4')
+      expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     end
 
     it 'proceeds to the next page upon confirmation' do
