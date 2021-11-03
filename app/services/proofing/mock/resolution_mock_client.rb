@@ -27,7 +27,7 @@ module Proofing
         elsif first_name.match?(/Time/i)
           raise Proofing::TimeoutError, 'resolution mock timeout'
 
-        elsif !applicant[:ssn].gsub(/\D/, '').match?(/\A900\Z/)
+        elsif !applicant[:ssn].match?(/\A900/)
           result.add_error(:ssn, 'Unverified SSN.')
 
         elsif applicant[:zipcode] == UNVERIFIABLE_ZIP_CODE
