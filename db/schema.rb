@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_14_225944) do
+ActiveRecord::Schema.define(version: 2021_11_04_173202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -71,15 +71,14 @@ ActiveRecord::Schema.define(version: 2021_10_14_225944) do
 
   create_table "backup_code_configurations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "code_fingerprint", default: "", null: false
-    t.string "encrypted_code", default: "", null: false
+    t.string "code_fingerprint", default: ""
+    t.string "encrypted_code", default: ""
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "salted_code_fingerprint"
     t.string "code_salt"
     t.string "code_cost"
-    t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
     t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
   end
