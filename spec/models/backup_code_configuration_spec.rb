@@ -87,27 +87,9 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)).to be_nil
     end
 
-    it 'finds codes via code_fingerprint' do
-      codes = BackupCodeGenerator.new(user, skip_legacy_encryption: false).create
-      first_code = codes.first
-
-      # overwrite with a wrong value so queries use the other column
-      BackupCodeConfiguration.all.each_with_index do |code, index|
-        code.update!(salted_code_fingerprint: index)
-      end
-
-      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
-      expect(backup_code).to be
-    end
-
     it 'finds codes via salted_code_fingerprint' do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
-
-      # overwrite with a wrong value so queries use the other column
-      BackupCodeConfiguration.all.each_with_index do |code, index|
-        code.update!(code_fingerprint: index)
-      end
 
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
       expect(backup_code).to be
@@ -137,9 +119,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
         code_cost: '10$8$4$',
         code_salt: 'abcdefg',
         code: save,
-      ).tap do |config|
-        config.code_fingerprint = fingerprint if fingerprint
-      end.save!
+      ).save!
 
       BackupCodeConfiguration.find_with_code(code: find, user_id: user.id)
     end

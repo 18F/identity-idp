@@ -8,7 +8,6 @@ class BackupCodeGenerator
   def initialize(
     user,
     num_words: BackupCodeConfiguration::NUM_WORDS,
-    skip_legacy_encryption: IdentityConfig.store.backup_code_skip_symmetric_encryption
   )
     @num_words = num_words
     @user = user
