@@ -5,10 +5,7 @@ class BackupCodeGenerator
 
   NUMBER_OF_CODES = 10
 
-  def initialize(
-    user,
-    num_words: BackupCodeConfiguration::NUM_WORDS,
-  )
+  def initialize(user, num_words: BackupCodeConfiguration::NUM_WORDS)
     @num_words = num_words
     @user = user
     @skip_legacy_encryption = skip_legacy_encryption
