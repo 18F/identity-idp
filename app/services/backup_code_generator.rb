@@ -8,11 +8,6 @@ class BackupCodeGenerator
   def initialize(user, num_words: BackupCodeConfiguration::NUM_WORDS)
     @num_words = num_words
     @user = user
-    @skip_legacy_encryption = skip_legacy_encryption
-  end
-
-  def skip_legacy_encryption?
-    @skip_legacy_encryption
   end
 
   # @return [Array<String>]
@@ -64,7 +59,6 @@ class BackupCodeGenerator
     @user.backup_code_configurations.create!(
       code_salt: salt,
       code_cost: cost,
-      skip_legacy_encryption: skip_legacy_encryption?,
       code: code,
     )
   end
