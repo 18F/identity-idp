@@ -29,6 +29,7 @@ module Users
       redirect_to root_url
     end
 
+    # @return [Pii::Attributes, nil]
     def decrypted_pii
       @_decrypted_pii ||= reactivate_account_session.decrypted_pii
     end
