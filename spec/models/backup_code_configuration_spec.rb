@@ -47,14 +47,6 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
   end
 
-  describe 'code_in_database' do
-    it 'returns nil' do
-      backup_code_config = BackupCodeConfiguration.new
-
-      expect(backup_code_config.code_in_database).to eq nil
-    end
-  end
-
   describe 'will_save_change_to_code?' do
     it 'returns false if code did not change' do
       backup_code_config = BackupCodeConfiguration.new
@@ -64,6 +56,8 @@ RSpec.describe BackupCodeConfiguration, type: :model do
 
     it 'returns true if code changed' do
       backup_code_config = BackupCodeConfiguration.new
+      backup_code_config.code_cost = IdentityConfig.store.backup_code_cost
+      backup_code_config.code_salt = 'aaa'
       backup_code_config.code = 'foo'
 
       expect(backup_code_config.will_save_change_to_code?).to eq true
@@ -131,9 +125,6 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     it 'finds codes if they were generated the old way (with SecureRandom.hex)' do
       code = SecureRandom.hex(3 * 4 / 2)
       expect(save_and_find(save: code, find: code)).to be
-
-      code = SecureRandom.hex(3 * 4 / 2)
-      expect(save_and_find(fingerprint: Pii::Fingerprinter.fingerprint(code), find: code)).to be
     end
   end
 
