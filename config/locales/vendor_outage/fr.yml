@@ -1,0 +1,17 @@
+---
+fr:
+  vendor_outage:
+    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
+    idv_blocked:
+      generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
+        votre identité pour le moment. Veuillez réessayer plus tard.
+      with_sp: "%{service_provider} doit s'assurer que c'est bien vous — et non
+        quelqu'un qui se fait passer pour vous. Malheureusement, nous
+        rencontrons des difficultés techniques et ne pouvons pas vérifier votre
+        identité pour le moment. Veuillez réessayer plus tard."
+      without_sp: L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
+        s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
+        Malheureusement, nous rencontrons des difficultés techniques et ne
+        pouvons pas vérifier votre identité pour le moment. Veuillez réessayer
+        plus tard.
+    working: "Nous travaillons à la résolution d'une erreur"

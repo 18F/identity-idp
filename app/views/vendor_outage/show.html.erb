@@ -1,0 +1,22 @@
+<%= render(
+      'idv/shared/error',
+      heading: t('vendor_outage.working'),
+      options: [
+        {
+          text: t('vendor_outage.get_updates_on_status_page'),
+          url: StatusPage.base_url,
+          new_tab: true,
+        },
+        {
+          text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+          url: MarketingSite.contact_url,
+          new_tab: true,
+        },
+      ],
+    ) do %>
+  <p><%= @specific_message %></p>
+<% end %>
+
+<%= render(
+      'idv/doc_auth/back',
+    ) %>

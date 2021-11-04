@@ -149,6 +149,7 @@ es:
       address: Actualice su dirección postal
       back: Parte Trasera
       capture_complete: Hemos verificado su identificación expedida por el estado
+      capture_troubleshooting_tips: ¿Tiene problemas para agregar su identificación emitida por el estado?
       document_capture: Añada su documento de identidad expedido por el estado
       document_capture_back: Parte trasera de su documento de identidad
       document_capture_front: Parte delantera de su documento de identidad
@@ -270,6 +271,20 @@ es:
         laborables.
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
+      capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.
+      capture_troubleshooting_clean: Asegúrese de que el código de barras no esté
+        dañado o sucio y que se pueda leer toda la información de su
+        identificación.
+      capture_troubleshooting_clean_image: Parte posterior de un documento de identidad
+      capture_troubleshooting_glare: La foto que adjuntó tiene destellos.
+      capture_troubleshooting_lead: 'Estos son algunos consejos para tomar una buena foto:'
+      capture_troubleshooting_lighting: Asegúrese de que haya suficiente luz. Lo mejor
+        es usar luz solar indirecta. Evite destellos, sombras y reflejos.
+      capture_troubleshooting_lighting_image: Sol con nube
+      capture_troubleshooting_surface: Tome la foto en una superficie plana y con un
+        fondo oscuro. Asegúrese de que los bordes de su identificación sean
+        visibles.
+      capture_troubleshooting_surface_image: Parte frontal de un documento de identidad
       document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro

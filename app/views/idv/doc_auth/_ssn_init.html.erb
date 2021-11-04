@@ -1,9 +1,9 @@
 <% title t('titles.doc_auth.ssn') %>
 
-<%= render 'shared/alert', {
-  type: 'success',
-  class: 'margin-bottom-4'
-} do %>
+<%= render AlertComponent.new(
+      type: :success,
+      class: 'margin-bottom-4'
+    ) do %>
   <%= t('doc_auth.headings.capture_complete') %>
 <% end %>
 

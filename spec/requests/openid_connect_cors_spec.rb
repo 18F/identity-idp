@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'CORS headers for OpenID Connect endpoints' do
+  before { Rails.cache.clear }
+  after { Rails.cache.clear }
+
   describe 'configuration endpoint' do
     context 'origin is included in ServiceProvider redirect_uris' do
       it 'allows origin' do

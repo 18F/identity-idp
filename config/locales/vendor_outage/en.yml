@@ -1,0 +1,16 @@
+---
+en:
+  vendor_outage:
+    get_updates_on_status_page: Get updates on our status page
+    idv_blocked:
+      generic: We are having technical difficulties on our end and cannot verify your
+        identity at this time. Please try again later.
+      with_sp: '%{service_provider} needs to make sure you are you — not someone
+        pretending to be you. Unfortunately, we are having technical
+        difficulties and cannot verify your identity at this time. Please try
+        again later.'
+      without_sp: The agency that you are trying to access needs to make sure you are
+        you — not someone pretending to be you. Unfortunately, we are having
+        technical difficulties and cannot verify your identity at this time.
+        Please try again later.
+    working: We are working to resolve an error

@@ -19,6 +19,10 @@ describe('document-capture/context/upload', () => {
       'getStatus',
       'backgroundUploadURLs',
       'backgroundUploadEncryptKey',
+      'flowPath',
+      'startOverURL',
+      'cancelURL',
+      'csrf',
     ]);
     expect(result.current.upload).to.equal(defaultUpload);
     expect(result.current.getStatus).to.be.instanceOf(Function);

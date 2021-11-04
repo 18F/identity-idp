@@ -8,11 +8,17 @@ const UploadContext = createContext({
   isMockClient: false,
   backgroundUploadURLs: /** @type {Record<string,string>} */ ({}),
   backgroundUploadEncryptKey: /** @type {CryptoKey=} */ (undefined),
+  flowPath: /** @type {FlowPath} */ ('standard'),
+  startOverURL: /** @type {string} */ (''),
+  cancelURL: /** @type {string} */ (''),
+  csrf: /** @type {string} */ (''),
 });
 
 UploadContext.displayName = 'UploadContext';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+
+/** @typedef {'standard'|'hybrid'} FlowPath */
 
 /**
  * Upload field error, after normalized to error instance.
@@ -67,6 +73,9 @@ UploadContext.displayName = 'UploadContext';
  * @prop {'POST'|'PUT'} method HTTP method to send payload.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
  * @prop {Record<string,any>=} formData Extra form data to merge into the payload before uploading
+ * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
+ * @prop {string} startOverURL URL to application DELETE path for session restart.
+ * @prop {string} cancelURL URL to application path for session cancel.
  * @prop {ReactNode} children Child elements.
  */
 
@@ -84,6 +93,9 @@ function UploadContextProvider({
   method,
   csrf,
   formData,
+  flowPath,
+  startOverURL,
+  cancelURL,
   children,
 }) {
   const uploadWithCSRF = (payload) =>
@@ -102,6 +114,10 @@ function UploadContextProvider({
       backgroundUploadURLs,
       backgroundUploadEncryptKey,
       isMockClient,
+      flowPath,
+      startOverURL,
+      cancelURL,
+      csrf,
     }),
     [
       upload,
@@ -110,6 +126,10 @@ function UploadContextProvider({
       backgroundUploadURLs,
       backgroundUploadEncryptKey,
       isMockClient,
+      flowPath,
+      startOverURL,
+      cancelURL,
+      csrf,
     ],
   );
 

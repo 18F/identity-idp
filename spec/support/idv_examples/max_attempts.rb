@@ -71,7 +71,7 @@ shared_examples 'verification step max attempts' do |step, sp|
 
   context 'after completing one less than the max attempts' do
     it 'allows the user to continue if their last attempt is successful' do
-      max_attempts_less_one.times do
+      (Throttle.max_attempts(:proof_address) - 1).times do
         fill_out_phone_form_fail
         click_continue
         click_on t('idv.failure.button.warning')
@@ -86,7 +86,7 @@ shared_examples 'verification step max attempts' do |step, sp|
   end
 
   def perfom_maximum_allowed_idv_step_attempts
-    max_attempts_less_one.times do
+    (Throttle.max_attempts(:proof_address) - 1).times do
       yield
       click_idv_continue
       click_on t('idv.failure.button.warning')

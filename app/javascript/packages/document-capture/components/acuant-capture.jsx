@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
@@ -101,6 +102,11 @@ import './acuant-capture.scss';
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {string} name Prefix to prepend to user action analytics labels.
  */
+
+/**
+ * A noop function.
+ */
+const noop = () => {};
 
 /**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
@@ -267,6 +273,9 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
+  const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
+    FailedCaptureAttemptsContext,
+  );
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -292,7 +301,7 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    *
-   * @template P
+   * @template {ImageAnalyticsPayload|AcuantImageAnalyticsPayload} P
    *
    * @param {P} payload
    *
@@ -339,15 +348,16 @@ function AcuantCapture(
    * @template {(...args: any[]) => any} T
    *
    * @param {string} source Click source.
+   * @param {{isDrop: boolean}=} metadata Additional payload metadata to log.
    *
    * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
    */
-  function withLoggedClick(source) {
+  function withLoggedClick(source, metadata = { isDrop: false }) {
     return (fn) => (...args) => {
       if (!isSuppressingClickLogging.current) {
         addPageAction({
           label: `IdV: ${name} image clicked`,
-          payload: { source },
+          payload: { source, ...metadata },
         });
       }
 
@@ -474,6 +484,9 @@ function AcuantCapture(
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
+      onResetFailedCaptureAttempts();
+    } else {
+      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
     }
 
     setIsCapturingEnvironment(false);
@@ -521,6 +534,7 @@ function AcuantCapture(
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
+        onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />

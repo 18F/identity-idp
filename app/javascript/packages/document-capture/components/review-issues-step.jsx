@@ -1,15 +1,19 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
+import { BlockLink } from '@18f/identity-components';
+import { FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
-import BlockLink from './block-link';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import './review-issues-step.scss';
+import DesktopDocumentDisclosure from './desktop-document-disclosure';
+import PageHeading from './page-heading';
+import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -65,6 +69,7 @@ function ReviewIssuesStep({
 
   return (
     <>
+      <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
@@ -133,6 +138,9 @@ function ReviewIssuesStep({
           })}
         </BlockLink>
       )}
+      <FormStepsContinueButton />
+      <DesktopDocumentDisclosure />
+      <StartOverOrCancel />
     </>
   );
 }

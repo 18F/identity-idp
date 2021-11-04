@@ -10,4 +10,10 @@ describe('document-capture/components/callback-on-mount', () => {
 
     expect(callback.calledOnce).to.be.true();
   });
+
+  it('renders children', () => {
+    const { getByText } = render(<CallbackOnMount onMount={() => {}}>Children</CallbackOnMount>);
+
+    expect(getByText('Children')).to.be.ok();
+  });
 });

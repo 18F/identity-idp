@@ -1,20 +1,37 @@
+import { useContext } from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
+import PageHeading from '@18f/identity-document-capture/components/page-heading';
 import FormSteps, {
+  FormStepsContext,
   getStepIndexByName,
+  FormStepsContinueButton,
 } from '@18f/identity-document-capture/components/form-steps';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { render } from '../../../support/document-capture';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/form-steps', () => {
+  const { spy } = useSandbox();
+
   const STEPS = [
-    { name: 'first', title: 'First Title', form: () => <span>First</span> },
+    {
+      name: 'first',
+      form: () => (
+        <>
+          <PageHeading>First Title</PageHeading>
+          <span>First</span>
+          <FormStepsContinueButton />
+          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+        </>
+      ),
+    },
     {
       name: 'second',
-      title: 'Second Title',
       form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
         <>
+          <PageHeading>Second Title</PageHeading>
           <input
             aria-label="Second Input One"
             ref={registerField('secondInputOne', { isRequired: true })}
@@ -42,10 +59,22 @@ describe('document-capture/components/form-steps', () => {
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
+          <FormStepsContinueButton />
+          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
     },
-    { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
+    {
+      name: 'last',
+      form: () => (
+        <>
+          <PageHeading>Last Title</PageHeading>
+          <span>Last</span>
+          <FormStepsContinueButton />
+          <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+        </>
+      ),
+    },
   ];
 
   let originalHash;
@@ -295,20 +324,6 @@ describe('document-capture/components/form-steps', () => {
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
   });
 
-  it('renders with optional footer', () => {
-    const steps = [
-      {
-        name: 'one',
-        title: 'Step One',
-        form: () => <span>Form Fields</span>,
-        footer: () => <span>Footer</span>,
-      },
-    ];
-    const { getByText } = render(<FormSteps steps={steps} />);
-
-    expect(getByText('Footer')).to.be.ok();
-  });
-
   it('renders with initial active errors', async () => {
     // Assumption: initialActiveErrors are only shown in combination with a flow of a single step.
     const steps = [STEPS[1]];
@@ -392,5 +407,63 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(button);
 
     expect(getByRole('alert')).to.equal(document.activeElement);
+  });
+
+  it('provides context', () => {
+    const { getByTestId, getByRole, getByLabelText } = render(<FormSteps steps={STEPS} />);
+
+    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+      isLastStep: false,
+      canContinueToNextStep: true,
+    });
+
+    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    expect(window.location.hash).to.equal('#step=second');
+
+    // Trigger validation errors on second step.
+    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    expect(window.location.hash).to.equal('#step=second');
+    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+      isLastStep: false,
+      canContinueToNextStep: false,
+    });
+
+    userEvent.type(getByLabelText('Second Input One'), 'one');
+    userEvent.type(getByLabelText('Second Input Two'), 'two');
+
+    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    expect(window.location.hash).to.equal('#step=last');
+    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+      isLastStep: true,
+      canContinueToNextStep: true,
+    });
+  });
+
+  it('allows context consumers to trigger content reset', () => {
+    const { getByRole } = render(
+      <FormSteps
+        steps={[
+          {
+            name: 'content-reset',
+            form: () => (
+              <>
+                <h1>Content Title</h1>
+                <button type="button" onClick={useContext(FormStepsContext).onPageTransition}>
+                  Replace
+                </button>
+              </>
+            ),
+          },
+        ]}
+      />,
+    );
+
+    window.scrollY = 100;
+    userEvent.click(getByRole('button', { name: 'Replace' }));
+    spy(window.history, 'pushState');
+
+    expect(window.scrollY).to.equal(0);
+    expect(document.activeElement).to.equal(getByRole('heading', { name: 'Content Title' }));
+    expect(window.history.pushState).not.to.have.been.called();
   });
 });

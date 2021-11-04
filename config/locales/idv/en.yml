@@ -166,9 +166,11 @@ en:
         having_trouble: 'Having trouble? Here’s what you can do:'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
+        still_having_trouble: Still having trouble?
       options:
         change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
+        doc_capture_tips: More tips for adding photos of your ID
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail

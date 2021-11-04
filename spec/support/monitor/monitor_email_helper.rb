@@ -17,25 +17,31 @@ class MonitorEmailHelper
 
   def find_in_inbox(regex:, subjects:, email_address:)
     s3 = Aws::S3::Client.new
-    objects = s3.list_objects(bucket: @s3_bucket, prefix: @s3_prefix, max_keys: 100).
-      contents.sort_by { |x| x.last_modified.to_i }.reverse
+    s3_response = s3.list_objects(bucket: @s3_bucket, prefix: @s3_prefix, max_keys: 1_000)
 
-    objects.each do |x|
-      object = begin
-        s3.get_object(bucket: @s3_bucket, key: x.key)
-      rescue Aws::S3::Errors::AccessDenied
-        nil
+    loop do
+      objects = s3_response.contents.sort_by { |x| x.last_modified.to_i }.reverse
+
+      objects.each do |x|
+        object = begin
+                   s3.get_object(bucket: @s3_bucket, key: x.key)
+        rescue Aws::S3::Errors::AccessDenied
+                   nil
+        end
+
+        next if object.nil?
+        body = object.body.read
+        mail = Mail.new(body)
+        next unless mail.to&.any? { |x| x.include?(email_address) }
+        next unless subjects.blank? || subjects.include?(mail.subject)
+        match_data = mail.text_part.to_s.match(regex)
+        next unless match_data
+        s3.delete_object(bucket: @s3_bucket, key: x.key)
+        return match_data[1]
       end
 
-      next if object.nil?
-      body = object.body.read
-      mail = Mail.new(body)
-      next unless mail.to&.include?(email_address)
-      next unless subjects.blank? || subjects.include?(mail.subject)
-      match_data = mail.text_part.to_s.match(regex)
-      next unless match_data
-      s3.delete_object(bucket: @s3_bucket, key: x.key)
-      return match_data[1]
+      break unless s3_response.next_page?
+      s3_response = s3_response.next_page
     end
 
     nil
@@ -56,7 +62,7 @@ class MonitorEmailHelper
       end
     end
 
-    raise "failed to find email that matched #{regex}"
+    raise "failed to find email to #{email_address} that matched #{regex}"
   end
 
   # local tests use "example.com" as the domain in emails but they actually
@@ -68,7 +74,7 @@ class MonitorEmailHelper
     end.to_s
   end
 
-  def check_and_sleep(count: 10, sleep_duration: 3)
+  def check_and_sleep(count: 15, sleep_duration: 3)
     count.times do
       result = yield
 

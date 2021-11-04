@@ -254,6 +254,7 @@ class Analytics
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
+  VENDOR_OUTAGE = 'Vendor Outage'.freeze
   WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
 end

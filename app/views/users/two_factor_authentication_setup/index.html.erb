@@ -1,16 +1,18 @@
 <% title t('titles.two_factor_setup') %>
 
 <% if @presenter.icon %>
-  <%= image_tag(asset_url(@presenter.icon),
-                class: 'margin-bottom-3',
-                alt: @presenter.icon_alt_text) %>
+  <%= image_tag(
+        asset_url(@presenter.icon),
+        class: 'margin-bottom-3',
+        alt: @presenter.icon_alt_text,
+      ) %>
 <% end %>
 
 <h1 class="margin-y-0"><%= @presenter.heading %></h1>
 
 <p class="mt-tiny"><%== @presenter.intro %></p>
 
-<%= render('shared/alert') { t('two_factor_authentication.lockout_information') } %>
+<%= render(AlertComponent.new) { t('two_factor_authentication.lockout_information') } %>
 
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
@@ -29,7 +31,7 @@
               ) %>
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
-                class: "usa-radio__label",
+                class: 'usa-radio__label',
               ) do %>
                 <%= option.label %>
                 <span class="usa-radio__label-description position-relative padding-bottom-4">
@@ -53,4 +55,4 @@
 
 <%= render 'shared/cancel', link: destroy_user_session_path %>
 
-<%= javascript_packs_tag_once("webauthn-unhide-signup") %>
+<%= javascript_packs_tag_once('webauthn-unhide-signup') %>

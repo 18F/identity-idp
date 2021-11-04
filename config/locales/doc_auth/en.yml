@@ -123,6 +123,7 @@ en:
       address: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
+      capture_troubleshooting_tips: Having trouble adding your state-issued ID?
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
@@ -233,6 +234,18 @@ en:
         mail in approximately 3-7 business days.
       welcome: 'To verify your identity, you will need:'
     tips:
+      capture_troubleshooting_blurry: The photo you added is too blurry.
+      capture_troubleshooting_clean: Make sure that the barcode is not damaged or
+        dirty and all the information on your ID can be read.
+      capture_troubleshooting_clean_image: Back of an ID
+      capture_troubleshooting_glare: The photo you added has glare.
+      capture_troubleshooting_lead: 'Here are some tips for taking a successful photo:'
+      capture_troubleshooting_lighting: Make sure there is plenty of light. Indirect
+        sunlight is best. Avoid glares, shadows and reflections.
+      capture_troubleshooting_lighting_image: Sun with a cloud
+      capture_troubleshooting_surface: Take a photo on a flat surface with a dark
+        background. Make sure the edges of your ID are clear.
+      capture_troubleshooting_surface_image: Front of an ID
       document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background

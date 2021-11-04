@@ -1,5 +1,5 @@
-<%= render 'shared/alert', {
-      type: 'success',
+<%= render AlertComponent.new(
+      type: :success,
       class: 'margin-bottom-4',
       message: t('notices.forgot_password.resend_email_success'),
-    } %>
+    ) %>

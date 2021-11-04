@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
-  get '/api/health/jobs' => 'health/jobs#index'
+  get '/api/health/jobs' => 'health/health#index'
   get '/api/health/outbound' => 'health/outbound#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
@@ -158,6 +158,7 @@ Rails.application.routes.draw do
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
         as: :sp_inactive_error
+    get '/errors/vendor' => 'vendor_outage#show', as: :vendor_outage
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal

@@ -9,7 +9,6 @@ import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-ste
 import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
-import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import { RetrySubmissionError } from './submission-complete';
 import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
@@ -94,23 +93,18 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     ? [
         {
           name: 'review',
-          title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
           validator: reviewIssuesStepValidator,
-          footer: DesktopDocumentDisclosure,
         },
       ]
     : /** @type {FormStep[]} */ ([
         {
           name: 'documents',
-          title: t('doc_auth.headings.document_capture'),
           form: DocumentsStep,
           validator: documentsStepValidator,
-          footer: DesktopDocumentDisclosure,
         },
         serviceProvider.isLivenessRequired && {
           name: 'selfie',
-          title: t('doc_auth.headings.selfie'),
           form: SelfieStep,
           validator: selfieStepValidator,
         },

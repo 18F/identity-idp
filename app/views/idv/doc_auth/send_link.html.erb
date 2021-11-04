@@ -1,11 +1,11 @@
 <% title t('titles.doc_auth.take_photo') %>
 
 <% if flow_session[:error_message] %>
-  <%= render 'shared/alert', {
-        type: 'error',
+  <%= render AlertComponent.new(
+        type: :error,
         class: 'margin-bottom-4',
         message: flow_session[:error_message],
-      } %>
+      ) %>
 <% end %>
 
 <h1>

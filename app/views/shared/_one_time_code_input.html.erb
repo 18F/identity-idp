@@ -31,4 +31,8 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
   class: classes,
 ) %>
 
+<span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
+  <%= t('simple_form.required.text') %>
+</span>
+
 <%= javascript_packs_tag_once 'one-time-code-input' %>

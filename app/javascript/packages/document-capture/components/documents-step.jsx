@@ -1,10 +1,15 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import BlockLink from './block-link';
+import { BlockLink } from '@18f/identity-components';
+import { FormStepsContinueButton } from './form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
+import DesktopDocumentDisclosure from './desktop-document-disclosure';
+import CaptureTroubleshooting from './capture-troubleshooting';
+import PageHeading from './page-heading';
+import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -48,7 +53,8 @@ function DocumentsStep({
   const serviceProvider = useContext(ServiceProviderContext);
 
   return (
-    <>
+    <CaptureTroubleshooting>
+      <PageHeading>{t('doc_auth.headings.document_capture')}</PageHeading>
       {isMobile && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
@@ -75,7 +81,10 @@ function DocumentsStep({
           onError={onError}
         />
       ))}
-    </>
+      <FormStepsContinueButton />
+      <DesktopDocumentDisclosure />
+      <StartOverOrCancel />
+    </CaptureTroubleshooting>
   );
 }
 

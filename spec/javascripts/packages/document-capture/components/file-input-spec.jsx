@@ -232,6 +232,26 @@ describe('document-capture/components/file-input', () => {
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
+  it('calls onClick when clicked', () => {
+    const onClick = sinon.stub();
+    const { getByLabelText } = render(<FileInput label="File" onClick={onClick} />);
+
+    const input = getByLabelText('File');
+    userEvent.click(input);
+
+    expect(onClick).to.have.been.calledOnce();
+  });
+
+  it('calls onDrop when receiving drop event', () => {
+    const onDrop = sinon.stub();
+    const { getByLabelText } = render(<FileInput label="File" onDrop={onDrop} />);
+
+    const input = getByLabelText('File');
+    fireEvent.drop(input);
+
+    expect(onDrop).to.have.been.calledOnce();
+  });
+
   it('allows changing the selected value', () => {
     const file2 = new window.File([file], 'file2.jpg');
     const onChange = sinon.stub();
