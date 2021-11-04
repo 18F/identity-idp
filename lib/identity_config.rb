@@ -282,6 +282,7 @@ class IdentityConfig
     config.add(:saml_secret_rotation_enabled, type: :boolean)
     config.add(:scrypt_cost, type: :string)
     config.add(:secret_key_base, type: :string)
+    config.add(:seed_agreements_data, type: :boolean)
     config.add(:service_provider_request_ttl_hours, type: :integer)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
