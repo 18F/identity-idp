@@ -22,18 +22,15 @@ class VerifyPersonalKeyForm
     FormResponse.new(success: valid?, errors: errors, extra: extra)
   end
 
-  def decrypted_pii_json
-    decrypted_pii&.to_json
+  # @return [Pii::Attributes,nil]
+  def decrypted_pii
+    @_pii ||= password_reset_profile.recover_pii(personal_key)
   end
 
   private
 
   def password_reset_profile
     user.decorate.password_reset_profile
-  end
-
-  def decrypted_pii
-    @_pii ||= password_reset_profile.recover_pii(personal_key)
   end
 
   def validate_personal_key

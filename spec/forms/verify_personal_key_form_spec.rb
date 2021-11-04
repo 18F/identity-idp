@@ -25,9 +25,8 @@ RSpec.describe VerifyPersonalKeyForm do
 
       it 'exposes the decrypted_pii as a separate attribute' do
         form.submit
-        expect(form.decrypted_pii_json).to be_present
-        expect(JSON.parse(form.decrypted_pii_json, symbolize_names: true)).
-          to include(ssn: '123456789')
+        expect(form.decrypted_pii).to be_present
+        expect(form.decrypted_pii.ssn).to eq('123456789')
       end
     end
 
