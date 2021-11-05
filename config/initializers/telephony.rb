@@ -1,3 +1,4 @@
+require 'telephony/telephony'
 require 'pinpoint_supported_countries'
 
 # rubocop:disable Metrics/BlockLength
