@@ -5,6 +5,15 @@ import AnalyticsContext from './analytics';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
+ * @typedef AcuantConfig
+ *
+ * @prop {string=} path Path from which to load SDK service worker.
+ *
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
+ */
+
+/**
  * @typedef AcuantCamera
  *
  * @prop {boolean} isCameraSupported Whether camera is supported.
@@ -40,8 +49,9 @@ import AnalyticsContext from './analytics';
 /**
  * @typedef AcuantGlobals
  *
- * @prop {()=>void}               onAcuantSdkLoaded      Acuant initialization callback.
- * @prop {AcuantCamera}           AcuantCamera           Acuant camera API.
+ * @prop {AcuantConfig=} acuantConfig Acuant configuration.
+ * @prop {()=>void} onAcuantSdkLoaded Acuant initialization callback.
+ * @prop {AcuantCamera} AcuantCamera Acuant camera API.
  * @prop {AcuantJavaScriptWebSDK} AcuantJavascriptWebSdk Acuant web SDK.
  */
 
@@ -73,6 +83,15 @@ export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
  * @type {number}
  */
 export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
+
+/**
+ * Returns the containing directory of the given file, including a trailing slash.
+ *
+ * @param {string} file
+ *
+ * @return {string}
+ */
+export const dirname = (file) => file.split('/').slice(0, -1).concat('').join('/');
 
 const AcuantContext = createContext({
   isReady: false,
@@ -175,6 +194,9 @@ function AcuantContextProvider({
       );
     };
 
+    const originalAcuantConfig = /** @type {AcuantGlobal} */ (window).acuantConfig;
+    /** @type {AcuantGlobal} */ (window).acuantConfig = { path: dirname(sdkSrc) };
+
     const script = document.createElement('script');
     script.async = true;
     script.src = sdkSrc;
@@ -183,6 +205,7 @@ function AcuantContextProvider({
 
     return () => {
       /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded = originalOnAcuantSdkLoaded;
+      /** @type {AcuantGlobal} */ (window).acuantConfig = originalAcuantConfig;
       document.body.removeChild(script);
     };
   }, []);

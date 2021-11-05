@@ -6,9 +6,11 @@ describe 'requesting acuant SDK assets' do
   # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
   [nil, *I18n.available_locales].
     product(%w[doc_auth capture_doc]).
-    each do |locale, verify_path|
+    map do |locale, verify_path|
       base_url = "#{locale && "/#{locale}"}/verify/#{verify_path}"
-
+    end.
+    push('/acuant/11.4.3').
+    each do |base_url|
       min_js = "#{base_url}/AcuantImageProcessingWorker.min.js"
       context min_js do
         before { get min_js }
