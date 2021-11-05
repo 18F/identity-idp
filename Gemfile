@@ -20,6 +20,8 @@ gem 'ahoy_matey', '~> 3.0'
 gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
+gem 'aws-sdk-pinpoint'
+gem 'aws-sdk-pinpointsmsvoice'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.9.0', require: false
 gem 'blueprinter', '~> 0.25.3'
