@@ -18,7 +18,7 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
 %>
 
 <%= text_field_tag(
-  name,
+  nil,
   nil,
   'aria-invalid': 'false',
   'data-transport': transport,
@@ -29,6 +29,13 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
   type: 'text',
   **local_assigns,
   class: classes,
+) %>
+
+<%= text_field_tag(
+  name,
+  nil,
+  type: 'hidden',
+  class: 'hidden-input'
 ) %>
 
 <span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
