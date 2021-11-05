@@ -85,7 +85,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     wait_seconds = event.payload[:wait]
 
     json = {
-      wait_ms: wait.to_i.in_milliseconds,
+      wait_ms: wait_seconds.to_i.in_milliseconds,
     }
 
     json[:exception_class] = ex.class.name if ex
