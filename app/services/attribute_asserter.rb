@@ -168,14 +168,6 @@ class AttributeAsserter
     }
   end
 
-  def add_email(attrs)
-    attrs[:email] = {
-      getter: ->(principal) { EmailContext.new(principal).last_sign_in_email_address.email },
-      name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
-      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-    }
-  end
-
   def add_all_emails(attrs)
     attrs[:all_emails] = {
 
