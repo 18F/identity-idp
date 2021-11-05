@@ -170,7 +170,6 @@ class AttributeAsserter
 
   def add_all_emails(attrs)
     attrs[:all_emails] = {
-
       getter: ->(principal) { principal.confirmed_email_addresses.map(&:email) },
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
