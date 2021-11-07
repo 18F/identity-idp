@@ -61,7 +61,7 @@ class Analytics
   end
 
   def success_state_token(event)
-    "#{request.env["REQUEST_METHOD"]}:#{request&.path}:#{event}"
+    "#{request&.env["REQUEST_METHOD"]}:#{request&.path}:#{event}"
   end
   def first_event_this_session?
     @session[:first_event]
