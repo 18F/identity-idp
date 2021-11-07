@@ -63,6 +63,7 @@ class Analytics
   def success_state_token(event)
     "#{request&.env&.dig('REQUEST_METHOD')}:#{request&.path}:#{event}"
   end
+
   def first_event_this_session?
     @session[:first_event]
   end

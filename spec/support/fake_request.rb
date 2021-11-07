@@ -26,6 +26,6 @@ class FakeRequest
   end
 
   def env
-    {'REQUEST_METHOD': 'GET'}
+    { 'REQUEST_METHOD' => 'GET' }
   end
 end
