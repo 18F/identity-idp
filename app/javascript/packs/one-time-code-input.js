@@ -7,6 +7,6 @@ if (input && fakeField) {
     input.value = fakeField.value;
   });
 }
-if (input) {
-  new OneTimeCodeInput(/** @type {HTMLInputElement} */ (input)).bind();
+if (fakeField) {
+  new OneTimeCodeInput(/** @type {HTMLInputElement} */ (fakeField)).bind();
 }
