@@ -19,6 +19,7 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useCounter from '../hooks/use-counter';
+import useCookie from '../hooks/use-cookie';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -80,8 +81,8 @@ import './acuant-capture.scss';
  *   metadata?: ImageAnalyticsPayload
  * )=>void} onChange Callback receiving next value on change.
  * @prop {()=>void=} onCameraAccessDeclined Camera permission declined callback.
- * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
- * supported, defaults to the Acuant environment camera capture.
+ * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
+ * camera is supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
@@ -273,6 +274,7 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
+  const [acuantFailureCookie, setAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -385,12 +387,12 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      const shouldStartEnvironmentCapture =
-        hasCapture && capture !== 'user' && !isForceUploading.current;
+      const shouldStartAcuantCapture =
+        hasCapture && capture !== 'user' && !isForceUploading.current && !acuantFailureCookie;
       const shouldStartSelfieCapture =
         isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
-      if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
+      if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
         event.preventDefault();
       }
 
@@ -401,7 +403,7 @@ function AcuantCapture(
             onChangeAndResetError(dataURI);
           }),
         );
-      } else if (shouldStartEnvironmentCapture) {
+      } else if (shouldStartAcuantCapture) {
         setIsCapturingEnvironment(true);
       }
 
@@ -504,16 +506,19 @@ function AcuantCapture(
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error, code) => {
-              const {
-                START_FAIL_CODE,
-              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
               if (isAcuantCameraAccessFailure(error)) {
                 if (fullScreenRef.current?.focusTrap) {
                   suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
                 }
 
+                // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+                // previously failed for any reason, including declined permission. Since the cookie
+                // never expires, and since we want to re-prompt even if the user had previously
+                // declined, unset the cookie value when failure occurs for permissions.
+                setAcuantFailureCookie(null);
+
                 onCameraAccessDeclined();
-              } else if (code === START_FAIL_CODE) {
+              } else {
                 setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               }
 

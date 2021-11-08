@@ -227,24 +227,14 @@ function AcuantCaptureCanvas({
     }
   }, []);
 
-  /** @type {AcuantCameraUICallbacks} */
-  const callbacks = { onCaptured() {}, onCropped };
-
   useEffect(() => {
     if (isReady) {
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
-        callbacks,
-        /** @type {AcuantFailureCallback} */ ((error, code) => {
-          const {
-            SEQUENCE_BREAK_CODE,
-          } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
-          if (code === SEQUENCE_BREAK_CODE) {
-            // Sequence break error won't automatically start manual capture, so start it.
-            /** @type {AcuantGlobal} */ (window).AcuantCamera.startManualCapture(callbacks);
-          }
-
-          onImageCaptureFailure(error, code);
-        }),
+        {
+          onCaptured() {},
+          onCropped,
+        },
+        onImageCaptureFailure,
         {
           text: {
             NONE: t('doc_auth.info.capture_status_none'),
