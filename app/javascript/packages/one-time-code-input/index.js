@@ -35,6 +35,7 @@ class OneTimeCodeInput {
       });
 
       input.value = code;
+      input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
     } catch {
       // Thrown errors may be expected if:
       // - the user submits the form and triggers the abort controller's signal. ('AbortError')
