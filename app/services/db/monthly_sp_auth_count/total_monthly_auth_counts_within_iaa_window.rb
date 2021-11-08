@@ -9,7 +9,7 @@ module Db
 
       module_function
 
-      # @param [Hash] iaa
+      # @param [ServiceProvider] service_provider
       # @param [Symbol] aggregate (one of :sum, :unique)
       # @return [PG::Result,Array]
       def call(service_provider:, aggregate:)
