@@ -129,6 +129,10 @@ function getDocumentTypeLabel(documentType) {
  * @return {string}
  */
 export function getNormalizedAcuantCaptureFailureMessage(error, code) {
+  if (isAcuantCameraAccessFailure(error)) {
+    return 'User or system denied camera access';
+  }
+
   const {
     START_FAIL_CODE,
     REPEAT_FAIL_CODE,
@@ -143,10 +147,6 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
     case SEQUENCE_BREAK_CODE:
       return 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)';
     default:
-  }
-
-  if (isAcuantCameraAccessFailure(error)) {
-    return 'User or system denied camera access';
   }
 
   switch (error) {
