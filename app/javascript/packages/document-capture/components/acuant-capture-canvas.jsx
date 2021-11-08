@@ -1,12 +1,10 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import FullScreen from './full-screen';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 
 /** @typedef {import('../context/acuant').AcuantJavaScriptWebSDK} AcuantJavaScriptWebSDK */
-/** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
 
 /**
  * @enum {number}
@@ -193,55 +191,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  *
  * @prop {AcuantSuccessCallback} onImageCaptureSuccess Success callback.
  * @prop {AcuantFailureCallback} onImageCaptureFailure Failure callback.
- * @prop {boolean} isCapturing Whether Acuant should be capturing.
- * @prop {() => void} onCaptureEnd Callback when full screen dialog is explicitly closed before
- * Acuant capture completes.
- * @prop {() => void} onCameraAccessDeclined Callback when user declines access to camera.
  */
-
-/**
- * Returns true if the given Acuant capture failure was caused by the user declining access to the
- * camera, or false otherwise.
- *
- * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
- *
- * @return {boolean}
- */
-export const isAcuantCameraAccessFailure = (error) => error instanceof Error;
-
-/**
- * Pauses default focus trap behaviors for a single tick. If a focus transition occurs during this
- * tick, the focus trap's deactivation will be overridden to prevent any default focus return, in
- * order to avoid a race condition between the intended focus targets.
- *
- * @param {import('focus-trap').FocusTrap} focusTrap
- */
-function suspendFocusTrapForAnticipatedFocus(focusTrap) {
-  // Pause trap event listeners to prevent focus from being pulled back into the trap container in
-  // response to programmatic focus transitions.
-  focusTrap.pause();
-
-  const originalFocus = document.activeElement;
-
-  // If an element is focused while behaviors are suspended, prevent the default deactivate from
-  // attempting to return focus to any other element.
-  const originalDeactivate = focusTrap.deactivate;
-  focusTrap.deactivate = (deactivateOptions) => {
-    const didChangeFocus = originalFocus !== document.activeElement;
-    if (didChangeFocus) {
-      deactivateOptions = { ...deactivateOptions, returnFocus: false };
-    }
-
-    return originalDeactivate(deactivateOptions);
-  };
-
-  // After the current frame, assume that focus was not moved elsewhere, or at least resume original
-  // trap behaviors.
-  setTimeout(() => {
-    focusTrap.deactivate = originalDeactivate;
-    focusTrap.unpause();
-  }, 0);
-}
 
 /**
  * @param {AcuantCaptureCanvasProps} props Component props.
@@ -249,9 +199,6 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap) {
 function AcuantCaptureCanvas({
   onImageCaptureSuccess = () => {},
   onImageCaptureFailure = () => {},
-  onCameraAccessDeclined = () => {},
-  isCapturing,
-  onCaptureEnd,
 }) {
   const { isReady } = useContext(AcuantContext);
   const { getAssetPath } = useAsset();
@@ -284,30 +231,19 @@ function AcuantCaptureCanvas({
   const callbacks = { onCaptured() {}, onCropped };
 
   useEffect(() => {
-    if (isReady && isCapturing) {
+    if (isReady) {
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         callbacks,
         /** @type {AcuantFailureCallback} */ ((error, code) => {
           const {
             SEQUENCE_BREAK_CODE,
-            REPEAT_FAIL_CODE,
           } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
-
-          if (isAcuantCameraAccessFailure(error)) {
-            onCameraAccessDeclined();
-
-            if (fullScreenRef.current?.focusTrap) {
-              suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
-            }
-          } else if (code === SEQUENCE_BREAK_CODE) {
+          if (code === SEQUENCE_BREAK_CODE) {
             // Sequence break error won't automatically start manual capture, so start it.
             /** @type {AcuantGlobal} */ (window).AcuantCamera.startManualCapture(callbacks);
-            onCaptureEnd();
-          } else if (code !== REPEAT_FAIL_CODE) {
-            onImageCaptureFailure(error, code);
-          } else {
-            onCaptureEnd();
           }
+
+          onImageCaptureFailure(error, code);
         }),
         {
           text: {
@@ -321,20 +257,18 @@ function AcuantCaptureCanvas({
       );
     }
 
-    return () => {};
-  }, [isReady, isCapturing]);
-
-  if (!isCapturing) {
-    return null;
-  }
+    return () => {
+      if (isReady) {
+        const originalElementRemove = Element.prototype.remove;
+        Element.prototype.remove = () => {};
+        /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
+        Element.prototype.remove = originalElementRemove;
+      }
+    };
+  }, [isReady]);
 
   return (
-    <FullScreen
-      ref={fullScreenRef}
-      label={t('doc_auth.accessible_labels.document_capture_dialog')}
-      onRequestClose={onCaptureEnd}
-      bgColor="black"
-    >
+    <>
       {!isReady && (
         <img
           src={getAssetPath('spinner.gif')}
@@ -373,7 +307,7 @@ function AcuantCaptureCanvas({
       <button type="button" disabled={captureType !== 'TAP'} className="usa-sr-only">
         {t('doc_auth.buttons.take_picture')}
       </button>
-    </FullScreen>
+    </>
   );
 }
 

@@ -13,6 +13,7 @@ import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
+import FullScreen from './full-screen';
 import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
@@ -23,6 +24,7 @@ import './acuant-capture.scss';
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
 /** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
+/** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
 /** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
 
 /**
@@ -92,6 +94,16 @@ import './acuant-capture.scss';
 const noop = () => {};
 
 /**
+ * Returns true if the given Acuant capture failure was caused by the user declining access to the
+ * camera, or false otherwise.
+ *
+ * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ *
+ * @return {boolean}
+ */
+export const isAcuantCameraAccessFailure = (error) => error instanceof Error;
+
+/**
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  * @param {AcuantDocumentType} documentType
@@ -132,6 +144,10 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
     default:
   }
 
+  if (isAcuantCameraAccessFailure(error)) {
+    return 'User or system denied camera access';
+  }
+
   switch (error) {
     case null:
       return 'Cropping failure';
@@ -168,6 +184,40 @@ function getImageDimensions(file) {
         })
         .catch(() => ({ width: null, height: null }))
     : Promise.resolve({ width: null, height: null });
+}
+
+/**
+ * Pauses default focus trap behaviors for a single tick. If a focus transition occurs during this
+ * tick, the focus trap's deactivation will be overridden to prevent any default focus return, in
+ * order to avoid a race condition between the intended focus targets.
+ *
+ * @param {import('focus-trap').FocusTrap} focusTrap
+ */
+function suspendFocusTrapForAnticipatedFocus(focusTrap) {
+  // Pause trap event listeners to prevent focus from being pulled back into the trap container in
+  // response to programmatic focus transitions.
+  focusTrap.pause();
+
+  const originalFocus = document.activeElement;
+
+  // If an element is focused while behaviors are suspended, prevent the default deactivate from
+  // attempting to return focus to any other element.
+  const originalDeactivate = focusTrap.deactivate;
+  focusTrap.deactivate = (deactivateOptions) => {
+    const didChangeFocus = originalFocus !== document.activeElement;
+    if (didChangeFocus) {
+      deactivateOptions = { ...deactivateOptions, returnFocus: false };
+    }
+
+    return originalDeactivate(deactivateOptions);
+  };
+
+  // After the current frame, assume that focus was not moved elsewhere, or at least resume original
+  // trap behaviors.
+  setTimeout(() => {
+    focusTrap.deactivate = originalDeactivate;
+    focusTrap.unpause();
+  }, 0);
 }
 
 export function getDecodedBase64ByteSize(data) {
@@ -212,6 +262,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { addPageAction } = useContext(AnalyticsContext);
+  const fullScreenRef = useRef(/** @type {FullScreenRefHandle?} */ (null));
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
@@ -443,33 +494,41 @@ function AcuantCapture(
 
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
-      <AcuantCaptureCanvas
-        isCapturing={isCapturingEnvironment}
-        onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-        onImageCaptureFailure={(error, code) => {
-          setIsCapturingEnvironment(false);
-          setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
-          addPageAction({
-            label: 'IdV: Image capture failed',
-            payload: {
-              field: name,
-              error: getNormalizedAcuantCaptureFailureMessage(error, code),
-            },
-          });
-        }}
-        onCameraAccessDeclined={() => {
-          setIsCapturingEnvironment(false);
-          onCameraAccessDeclined();
-          addPageAction({
-            label: 'IdV: Image capture failed',
-            payload: {
-              field: name,
-              error: 'User or system denied camera access',
-            },
-          });
-        }}
-        onCaptureEnd={() => setIsCapturingEnvironment(false)}
-      />
+      {isCapturingEnvironment && (
+        <FullScreen
+          ref={fullScreenRef}
+          label={t('doc_auth.accessible_labels.document_capture_dialog')}
+          onRequestClose={() => setIsCapturingEnvironment(false)}
+          bgColor="black"
+        >
+          <AcuantCaptureCanvas
+            onImageCaptureSuccess={onAcuantImageCaptureSuccess}
+            onImageCaptureFailure={(error, code) => {
+              const {
+                START_FAIL_CODE,
+              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+              if (isAcuantCameraAccessFailure(error)) {
+                if (fullScreenRef.current?.focusTrap) {
+                  suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+                }
+
+                onCameraAccessDeclined();
+              } else if (code === START_FAIL_CODE) {
+                setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+              }
+
+              setIsCapturingEnvironment(false);
+              addPageAction({
+                label: 'IdV: Image capture failed',
+                payload: {
+                  field: name,
+                  error: getNormalizedAcuantCaptureFailureMessage(error, code),
+                },
+              });
+            }}
+          />
+        </FullScreen>
+      )}
       <FileInput
         ref={inputRef}
         label={label}
