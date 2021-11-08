@@ -176,7 +176,7 @@ function ReviewIssuesStep({
               isExternal: true,
             },
             spName && {
-              url: getFailureToProofURL('capture_tips'),
+              url: getFailureToProofURL('post_submission_warning'),
               text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
               isExternal: true,
             },
