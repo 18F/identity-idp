@@ -3,6 +3,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useImmutableCallback from '../hooks/use-immutable-callback';
+import './acuant-capture-canvas.scss';
 
 /** @typedef {import('../context/acuant').AcuantJavaScriptWebSDK} AcuantJavaScriptWebSDK */
 
@@ -266,12 +267,7 @@ function AcuantCaptureCanvas({
           alt=""
           width="144"
           height="144"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-72px, -72px)',
-          }}
+          className="acuant-capture-canvas__spinner"
         />
       )}
       <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
@@ -280,17 +276,7 @@ function AcuantCaptureCanvas({
           {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
         </p>
       )}
-      <div
-        id="acuant-camera"
-        ref={cameraRef}
-        style={{
-          width: '100%',
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
+      <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
       <button type="button" disabled={captureType !== 'TAP'} className="usa-sr-only">
         {t('doc_auth.buttons.take_picture')}
       </button>
