@@ -6,10 +6,6 @@ fr:
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
-      status_align: Alignez le document dans le cadre
-      status_capturing: Prise de photo en trois secondes
-      status_move_closer: Rapprochez l'appareil photo du document
-      status_tap_to_capture: Capture automatique désactivée
     buttons:
       change_address: Changement
       change_address_label: Changement d'adresse

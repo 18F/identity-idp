@@ -6,10 +6,6 @@ en:
       camera_video_capture_label: Viewfinder with frame to center your ID
       document_capture_dialog: Document capture
       selfie_alt_text: An uploaded image
-      status_align: Align document in frame
-      status_capturing: Taking photo in three seconds
-      status_move_closer: Move camera closer to document
-      status_tap_to_capture: Automatic capture disabled
     buttons:
       change_address: Change
       change_address_label: Change address
