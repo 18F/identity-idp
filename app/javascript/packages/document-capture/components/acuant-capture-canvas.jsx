@@ -249,10 +249,7 @@ function AcuantCaptureCanvas({
 
     return () => {
       if (isReady) {
-        const originalElementRemove = Element.prototype.remove;
-        Element.prototype.remove = () => {};
         /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
-        Element.prototype.remove = originalElementRemove;
       }
     };
   }, [isReady]);
