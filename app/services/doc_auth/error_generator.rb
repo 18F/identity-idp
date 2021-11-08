@@ -78,9 +78,9 @@ module DocAuth
           when ID
             errors[ID] = Set[self.class.general_error(false)]
           when FRONT
-            errors[FRONT] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
+            errors[ID] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
           when BACK
-            errors[BACK] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
+            errors[ID] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
           end
         elsif error_fields.length > 1
           return self.class.wrapped_general_error(liveness_enabled) if error_fields.include?(SELFIE)

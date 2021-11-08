@@ -14,6 +14,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import PromptOnNavigate from './prompt-on-navigate';
+import withProps from '../higher-order/withProps';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
@@ -93,7 +94,9 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     ? [
         {
           name: 'review',
-          form: ReviewIssuesStep,
+          form: withProps({ remainingAttempts: submissionError.remainingAttempts })(
+            ReviewIssuesStep,
+          ),
           validator: reviewIssuesStepValidator,
         },
       ]

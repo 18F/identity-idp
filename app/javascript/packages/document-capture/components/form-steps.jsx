@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
-import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import Button from './button';
-import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
+import { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
@@ -252,16 +251,12 @@ function FormSteps({
   return (
     <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
-      {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error) => (
-        <Alert key={error.message} type="error" className="margin-bottom-4">
-          <FormErrorMessage error={error} isDetail />
-        </Alert>
-      ))}
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
         <Form
           key={name}
           value={values}
           errors={activeErrors}
+          unknownFieldErrors={unknownFieldErrors}
           onChange={ifStillMounted((nextValuesPatch) => {
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
@@ -298,7 +293,7 @@ function FormSteps({
   );
 }
 
-export function FormStepsContinueButton() {
+export function FormStepsContinueButton({ label }) {
   const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
   const { t } = useI18n();
 
@@ -310,7 +305,7 @@ export function FormStepsContinueButton() {
       className="display-block margin-y-5"
       isVisuallyDisabled={!canContinueToNextStep}
     >
-      {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
+      {label || (isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue'))}
     </Button>
   );
 }
