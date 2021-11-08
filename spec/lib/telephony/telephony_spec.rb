@@ -1,4 +1,8 @@
+require 'rails_helper'
+
 RSpec.describe Telephony do
+  include_context 'telephony'
+
   describe '.phone_info' do
     let(:phone_number) { '+18888675309' }
     subject(:phone_info) { Telephony.phone_info(phone_number) }
