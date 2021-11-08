@@ -191,7 +191,7 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install python3-pip python-dev jq
-            sudo pip install awscli
+            sudo pip install awscli --ignore-installed six
       - run:
           name: Install Code Climate Test Reporter
           command: |
