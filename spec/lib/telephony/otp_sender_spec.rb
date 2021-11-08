@@ -1,5 +1,5 @@
 require 'nokogiri'
-require_relative '../telephony_spec_helper'
+require 'rails_helper'
 
 RSpec.describe Telephony::OtpSender do
   before do
@@ -105,9 +105,9 @@ RSpec.describe Telephony::OtpSender do
       end
 
       it 'sends a confirmation OTP with Pinpoint SMS' do
-        message = "Login.gov: Your security code is 123456. "\
-                  "It expires in 5 minutes. Don't share this "\
-                  "code with anyone.\n\n@login.gov #123456"
+        message = "Login.gov: Your security code is 123456. It "\
+        "expires in 5 minutes. Don't share this code with anyone."\
+        "\n\n@login.gov #123456"
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
         expect(adapter).to receive(:send).with(

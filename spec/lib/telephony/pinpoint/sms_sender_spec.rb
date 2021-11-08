@@ -1,4 +1,8 @@
+require 'rails_helper'
+
 describe Telephony::Pinpoint::SmsSender do
+  include_context 'telephony'
+
   subject(:sms_sender) { described_class.new }
   let(:sms_config) { Telephony.config.pinpoint.sms_configs.first }
   let(:backup_sms_config) { Telephony.config.pinpoint.sms_configs.last }

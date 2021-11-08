@@ -1,4 +1,8 @@
+require 'rails_helper'
+
 describe Telephony::Test::SmsSender do
+  include_context 'telephony'
+
   before do
     Telephony::Test::Message.clear_messages
   end

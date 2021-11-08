@@ -1,4 +1,8 @@
+require 'rails_helper'
+
 describe Telephony::Pinpoint::AwsCredentialBuilder do
+  include_context 'telephony'
+
   subject(:credential_builder) { described_class.new(config) }
 
   let(:credential_role_session_name) { nil }
