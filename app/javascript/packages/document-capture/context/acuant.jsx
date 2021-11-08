@@ -189,20 +189,25 @@ function AcuantContextProvider({
         endpoint,
         {
           onSuccess: () => {
-            /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.startWorkers(() => {
-              const {
-                isCameraSupported: nextIsCameraSupported,
-              } = /** @type {AcuantGlobal} */ (window).AcuantCamera;
+            const {
+              isCameraSupported: nextIsCameraSupported,
+            } = /** @type {AcuantGlobal} */ (window).AcuantCamera;
+            setIsCameraSupported(nextIsCameraSupported);
 
-              addPageAction({
-                label: 'IdV: Acuant SDK loaded',
-                payload: { success: true, isCameraSupported: nextIsCameraSupported },
+            if (isCameraSupported) {
+              /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.startWorkers(() => {
+                addPageAction({
+                  label: 'IdV: Acuant SDK loaded',
+                  payload: { success: true, isCameraSupported: nextIsCameraSupported },
+                });
+
+                setIsReady(true);
+                setIsAcuantLoaded(true);
               });
-
-              setIsCameraSupported(nextIsCameraSupported);
+            } else {
               setIsReady(true);
               setIsAcuantLoaded(true);
-            });
+            }
           },
           onFail(code, description) {
             addPageAction({
