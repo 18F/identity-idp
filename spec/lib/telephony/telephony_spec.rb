@@ -1,6 +1,3 @@
-require 'telephony/telephony'
-require_relative 'telephony_spec_helper'
-
 RSpec.describe Telephony do
   describe '.phone_info' do
     let(:phone_number) { '+18888675309' }
@@ -17,7 +14,6 @@ RSpec.describe Telephony do
     context 'with pinpoint adapter' do
       before do
         Telephony.config { |c| c.adapter = :pinpoint }
-        # pp Telephony.config
         Aws.config[:pinpoint] = {
           stub_responses: {
             phone_number_validate: {
