@@ -10,7 +10,7 @@ import useFocusTrap from '../hooks/use-focus-trap';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
- * @param {'white'|'black'} FullScreenBackgroundColor
+ * @typedef {'white'|'black'} FullScreenBackgroundColor
  */
 
 /**

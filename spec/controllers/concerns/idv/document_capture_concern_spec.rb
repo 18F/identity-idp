@@ -14,7 +14,7 @@ RSpec.describe Idv::DocumentCaptureConcern, type: :controller do
       get :index, params: { step: 'document_capture' }
 
       csp = response.request.headers.env['secure_headers_request_config'].csp
-      expect(csp.script_src).to include("'unsafe-eval'")
+      expect(csp.style_src).to include("'unsafe-inline'")
       expect(csp.img_src).to include('blob:')
     end
 

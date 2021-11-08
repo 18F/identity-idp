@@ -25,6 +25,7 @@ import './acuant-capture.scss';
 /** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
 /** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
 /** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
+/** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
 
 /**
  * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
@@ -66,22 +67,6 @@ import './acuant-capture.scss';
 
 /**
  * @typedef {ImageAnalyticsPayload & _AcuantImageAnalyticsPayload} AcuantImageAnalyticsPayload
- */
-
-/**
- * @typedef AcuantPassiveLiveness
- *
- * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
- */
-
-/**
- * @typedef AcuantGlobals
- *
- * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
- */
-
-/**
- * @typedef {typeof window & AcuantGlobals} AcuantGlobal
  */
 
 /**
@@ -138,25 +123,40 @@ function getDocumentTypeLabel(documentType) {
 
 /**
  * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ * @param {string} code
  *
  * @return {string}
  */
-export function getNormalizedAcuantCaptureFailureMessage(error) {
+export function getNormalizedAcuantCaptureFailureMessage(error, code) {
+  const {
+    START_FAIL_CODE,
+    REPEAT_FAIL_CODE,
+    SEQUENCE_BREAK_CODE,
+  } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+
+  switch (code) {
+    case START_FAIL_CODE:
+      return 'Camera failed to start (START_FAIL_CODE)';
+    case REPEAT_FAIL_CODE:
+      return 'Capture started after failure already occurred (REPEAT_FAIL_CODE)';
+    case SEQUENCE_BREAK_CODE:
+      return 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)';
+    default:
+  }
+
   if (isAcuantCameraAccessFailure(error)) {
     return 'User or system denied camera access';
   }
 
-  if (!error) {
-    return 'Cropping failure';
-  }
-
   switch (error) {
+    case null:
+      return 'Cropping failure';
     case 'Camera not supported.':
       return 'Camera not supported';
     case 'Missing HTML elements.':
+    case "Expected div with 'acuant-camera' id":
       return 'Required page elements are not available';
     case 'already started.':
-    case 'already started':
       return 'Capture already started';
     default:
       return 'Unknown error';
@@ -499,24 +499,31 @@ function AcuantCapture(
           ref={fullScreenRef}
           label={t('doc_auth.accessible_labels.document_capture_dialog')}
           onRequestClose={() => setIsCapturingEnvironment(false)}
+          bgColor="black"
         >
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-            onImageCaptureFailure={(error) => {
+            onImageCaptureFailure={(error, code) => {
+              const {
+                START_FAIL_CODE,
+              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
               if (isAcuantCameraAccessFailure(error)) {
                 if (fullScreenRef.current?.focusTrap) {
                   suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
                 }
 
                 onCameraAccessDeclined();
-              } else {
+              } else if (code === START_FAIL_CODE) {
                 setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               }
 
               setIsCapturingEnvironment(false);
               addPageAction({
                 label: 'IdV: Image capture failed',
-                payload: { field: name, error: getNormalizedAcuantCaptureFailureMessage(error) },
+                payload: {
+                  field: name,
+                  error: getNormalizedAcuantCaptureFailureMessage(error, code),
+                },
               });
             }}
           />

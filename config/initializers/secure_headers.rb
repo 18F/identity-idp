@@ -99,12 +99,10 @@ end
 
 # We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
 Rails.application.configure do |config|
-  worker_path = '/acuant/11.4.3/AcuantImageProcessingWorker.min.js'
-
   config.middleware.insert_before(
     SecureHeaders::Middleware,
     SecureHeaders::RemoveContentSecurityPolicy,
   ) do |request|
-    request.path == worker_path
+    request.path.start_with?('/acuant/')
   end
 end
