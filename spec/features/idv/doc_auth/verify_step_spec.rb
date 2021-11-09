@@ -105,17 +105,6 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
-  # We do not currently prevent duplicate SSNs
-  skip 'does not proceed to the next page if ssn is a duplicate' do
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_duplicate_ssn
-    click_idv_continue
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_session_errors_warning_path)
-  end
-
   it 'throttles resolution and continues when it expires' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
@@ -142,27 +131,6 @@ feature 'doc auth verify step' do
 
       expect(page).to have_current_path(idv_phone_path)
     end
-  end
-
-  # We do not currently throttle on duplicate SSN
-  skip 'throttles dup ssn' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_duplicate_ssn
-    click_idv_continue
-    (max_attempts - 1).times do
-      click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
-      visit idv_doc_auth_verify_step
-    end
-    click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
-    expect(fake_analytics).to have_logged_event(
-      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-      throttle_type: :idv_resolution,
-      step_name: Idv::Steps::VerifyWaitStepShow,
-    )
   end
 
   it 'shows the step indicator' do
