@@ -1,20 +1,6 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Returns the current document cookie as an object.
- *
- * @return {Record<string, string>}
- */
-function getCookieObject() {
-  const { cookie } = document;
-  return cookie
-    .split(';')
-    .map((part) => part.trim().split('='))
-    .filter(([_key, value]) => typeof value === 'string')
-    .reduce((result, [key, value]) => Object.assign(result, { [key]: value }), {});
-}
-
-/**
  * React hook to access and manage a cookie value by name.
  *
  * @param {string} name Cookie name.
@@ -22,7 +8,12 @@ function getCookieObject() {
  * @return {[value: string|null, setValue: (nextValue: string?) => void]}
  */
 function useCookie(name) {
-  const getCookieValue = () => /** @type {string?} */ (getCookieObject()[name] ?? null);
+  const getCookieValue = () =>
+    document.cookie
+      .split(';')
+      .map((part) => part.trim().split('='))
+      .find(([key]) => key === name)?.[1] ?? null;
+
   const [value, setStateValue] = useState(getCookieValue);
 
   /**
