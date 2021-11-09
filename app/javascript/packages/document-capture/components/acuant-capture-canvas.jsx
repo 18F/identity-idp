@@ -216,16 +216,19 @@ function AcuantCaptureCanvas({
   const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
 
   useEffect(() => {
-    if (cameraRef.current) {
-      cameraRef.current.addEventListener('acuantcameracreated', () => {
-        const canvas = document.getElementById('acuant-ui-canvas');
-        // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
-        // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
-        defineObservableProperty(canvas, 'callback', (callback) => {
-          setCaptureType(callback ? 'TAP' : 'AUTO');
-        });
+    function onAcuantCameraCreated() {
+      const canvas = document.getElementById('acuant-ui-canvas');
+      // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
+      // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
+      defineObservableProperty(canvas, 'callback', (callback) => {
+        setCaptureType(callback ? 'TAP' : 'AUTO');
       });
     }
+
+    cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
+    return () => {
+      cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
+    };
   }, []);
 
   useEffect(() => {
