@@ -28,7 +28,6 @@ end
 RSpec.shared_context 'telephony' do
   before do
     Pinpoint::MockClient.reset!
-    telephony_use_default_config!
   end
 
   around do |ex|
