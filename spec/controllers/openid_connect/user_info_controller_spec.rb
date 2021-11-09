@@ -108,6 +108,10 @@ RSpec.describe OpenidConnect::UserInfoController do
           'first_path_visit' => true,
           'events' => { 'OpenID Connect: bearer token authentication' => true },
           'first_event' => true,
+          'first_success_state' => true,
+          'success_states' => {
+            'POST|/api/openid_connect/userinfo|OpenID Connect: bearer token authentication' => true,
+          },
         }
         expect(request.session.to_h).to eq(session_hash)
       end
