@@ -18,9 +18,11 @@ function getCookieObject() {
  * React hook to access and manage a cookie value by name.
  *
  * @param {string} name Cookie name.
+ *
+ * @return {[value: string|null, setValue: (nextValue: string?) => void]}
  */
 function useCookie(name) {
-  const getCookieValue = () => /** @type {string?=} */ (getCookieObject()[name]);
+  const getCookieValue = () => /** @type {string?} */ (getCookieObject()[name] ?? null);
   const [value, setStateValue] = useState(getCookieValue);
 
   /**
