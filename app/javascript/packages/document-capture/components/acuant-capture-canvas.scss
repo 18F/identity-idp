@@ -1,14 +1,14 @@
 .acuant-capture-canvas__spinner {
-  position: absolute;
   left: 50%;
+  position: absolute;
   top: 50%;
   transform: translate(-72px, -72px);
 }
 
 .acuant-capture-canvas__camera {
-  width: 100%;
+  left: 50%;
   position: absolute;
   top: 50%;
-  left: 50%;
   transform: translate(-50%, -50%);
+  width: 100%;
 }
