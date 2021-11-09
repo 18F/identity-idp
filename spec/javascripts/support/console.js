@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
 import sinon from 'sinon';
+import { format } from 'util';
 
 /**
  * Chai plugin which adds chainable `logged` method, to be used in combination with
@@ -45,8 +46,8 @@ export function chaiConsoleSpy(chai, utils) {
 export function useConsoleLogSpy() {
   beforeEach(() => {
     console.unverifiedCalls = [];
-    sinon.stub(console, 'error').callsFake((message) => {
-      console.unverifiedCalls = console.unverifiedCalls.concat(message);
+    sinon.stub(console, 'error').callsFake((message, ...args) => {
+      console.unverifiedCalls = console.unverifiedCalls.concat(format(message, ...args));
     });
   });
 
