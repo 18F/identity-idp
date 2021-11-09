@@ -66,6 +66,7 @@ module Telephony
       wrap_in_ssml_if_needed(
         I18n.t(
           "telephony.authentication_otp.#{channel}",
+          app_name: APP_NAME,
           code: otp_transformed_for_channel,
           expiration: expiration,
           domain: domain,
@@ -77,6 +78,7 @@ module Telephony
       wrap_in_ssml_if_needed(
         I18n.t(
           "telephony.confirmation_otp.#{channel}",
+          app_name: APP_NAME,
           code: otp_transformed_for_channel,
           expiration: expiration,
           domain: domain,
