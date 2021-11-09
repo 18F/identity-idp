@@ -23,7 +23,7 @@ describe Analytics do
   let(:current_user) { build_stubbed(:user, uuid: '123') }
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
-  let(:success_state) { 'GET:fake_path:Trackable Event' }
+  let(:success_state) { 'GET|fake_path|Trackable Event' }
 
   subject(:analytics) do
     Analytics.new(
