@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'rails_helper'
 require 'i18n/tasks'
 
 module I18n
