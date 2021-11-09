@@ -389,8 +389,9 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
+      const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
-        hasCapture && capture !== 'user' && !isForceUploading.current && !acuantFailureCookie;
+        isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
       const shouldStartSelfieCapture =
         isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
