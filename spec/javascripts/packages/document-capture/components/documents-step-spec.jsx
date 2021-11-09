@@ -55,7 +55,7 @@ describe('document-capture/components/documents-step', () => {
     const { getByLabelText, getByText, getByRole } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <DocumentsStep onChange={() => {}} />
           </AcuantContextProvider>
         </DeviceContext.Provider>

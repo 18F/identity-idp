@@ -90,9 +90,8 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  *   | 'Missing HTML elements.' // Required page elements are not available (SDK v11.5.0, L727)
  *   | Error // User or system denied camera access (SDK v11.5.0, L673)
  *   | "Expected div with 'acuant-camera' id" // Failure to setup due to missing element (SDK v11.5.0, L706)
- *   | 'Live capture has previously failed and was called again. User was sent to manual capture.'
- *   | 'sequence-break' // iOS 15 sequence break (SDK v11.5.0, L1327)
  *   | 'Live capture has previously failed and was called again. User was sent to manual capture.' // Previous failure (SDK v11.5.0, L698)
+ *   | 'sequence-break' // iOS 15 sequence break (SDK v11.5.0, L1327)
  * )} AcuantCaptureFailureError
  */
 

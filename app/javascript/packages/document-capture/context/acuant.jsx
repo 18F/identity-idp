@@ -181,6 +181,10 @@ function AcuantContextProvider({
       // Normally, Acuant SDK would call this itself, but because it does so as part of a
       // DOMContentLoaded event handler, it wouldn't be called if the page is already loaded.
       if (!AcuantJavascriptWebSdk) {
+        if (typeof loadAcuantSdk !== 'function') {
+          return;
+        }
+
         loadAcuantSdk();
       }
 
@@ -227,6 +231,7 @@ function AcuantContextProvider({
     sdkScript.src = sdkSrc;
     sdkScript.onload = onAcuantSdkLoaded;
     sdkScript.onerror = () => setIsError(true);
+    sdkScript.dataset.acuantSdk = '';
     document.body.appendChild(sdkScript);
     const cameraScript = document.createElement('script');
     cameraScript.async = true;
@@ -236,6 +241,7 @@ function AcuantContextProvider({
 
     return () => {
       /** @type {AcuantGlobal} */ (window).acuantConfig = originalAcuantConfig;
+      sdkScript.onload = null;
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
     };
