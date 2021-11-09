@@ -50,7 +50,7 @@ class ReactivateAccountSession
     {
       active: false,
       personal_key: false,
-      pii: nil,
+      pii_id: nil,
       x509: nil,
     }
   end

@@ -27,9 +27,13 @@ module Users
     private
 
     def capture_password_if_pii_requested_but_locked
-      return unless current_user.decorate.identity_verified? && user_session[:decrypted_pii].blank?
+      return unless current_user.decorate.identity_verified? && decrypted_pii.blank?
       user_session[:stored_location] = request.url
       redirect_to capture_password_url
+    end
+
+    def decrypted_pii
+      @_decrypted_pii ||= Pii::Cacher.new(current_user, user_session).fetch
     end
 
     def user_params

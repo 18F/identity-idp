@@ -88,7 +88,7 @@ module SignUp
     end
 
     def pii
-      @parsed_pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
+      @parsed_pii ||= Pii::Cacher.new(current_user, user_session).fetch.to_h
     end
 
     def address
@@ -110,7 +110,7 @@ module SignUp
     end
 
     def displayable_attributes
-      return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
+      return pii_to_displayable_attributes if pii.present?
       {
         email: email,
         all_emails: all_emails,

@@ -1,16 +1,12 @@
 class ForgotPasswordShow
-  attr_reader :resend, :session
+  attr_reader :resend, :email
 
-  def initialize(resend:, session:)
+  def initialize(resend:, email:)
     @resend = resend
-    @session = session
+    @email = email
   end
 
   def password_reset_email_form
     PasswordResetEmailForm.new(email)
-  end
-
-  def email
-    @_email ||= session.delete(:email)
   end
 end

@@ -64,13 +64,9 @@ module Idv
     end
 
     def non_address_pii
-      pii_to_h.
+      Pii::Cacher.new(current_user, user_session).fetch.to_h.stringify_keys.
         slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn').
         merge(uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id)
-    end
-
-    def pii_to_h
-      JSON.parse(user_session[:decrypted_pii])
     end
 
     def resolution_success(hash)

@@ -55,7 +55,7 @@ module Idv
     end
 
     def cache_encrypted_pii(password)
-      cacher = Pii::Cacher.new(current_user, session)
+      cacher = Pii::Cacher.new(current_user, user_session)
       cacher.save(password, profile)
     end
 
@@ -86,8 +86,8 @@ module Idv
     end
 
     def create_gpo_entry
-      move_pii_to_user_session
-      self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
+      session_pii = move_pii_to_user_session
+      self.pii = Pii::Attributes.new_from_json(session_pii) if pii.is_a?(String)
       confirmation_maker = GpoConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
       confirmation_maker.perform
 
@@ -131,7 +131,13 @@ module Idv
 
     def move_pii_to_user_session
       return if session[:decrypted_pii].blank?
-      user_session[:decrypted_pii] = session.delete(:decrypted_pii)
+      redis_pii = DecryptedPii.new(
+        id: SecureRandom.uuid,
+        pii: session.delete(:decrypted_pii),
+      )
+      EncryptedRedisStructStorage.store(redis_pii, expires_in: 1_000)
+      user_session[:pii_id] = redis_pii.id
+      redis_pii.pii
     end
 
     def session

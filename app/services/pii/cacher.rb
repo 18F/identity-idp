@@ -12,14 +12,26 @@ module Pii
     end
 
     def save(user_password, profile = user.active_profile)
-      user_session[:decrypted_pii] = profile.decrypt_pii(user_password).to_json if profile
+      return unless profile
+      decrypted_pii = profile.decrypt_pii(user_password).to_json if profile
+      # user_session[:decrypted_pii] = decrypted_pii
+      redis_pii = DecryptedPii.new(
+        id: SecureRandom.uuid,
+        pii: decrypted_pii,
+      )
+      EncryptedRedisStructStorage.store(redis_pii, expires_in: 1_000)
+      user_session[:pii_id] = redis_pii.id
       rotate_fingerprints(profile) if stale_fingerprints?(profile)
       rotate_encrypted_attributes if stale_attributes?
-      user_session[:decrypted_pii]
+      decrypted_pii
     end
 
     def fetch
-      decrypted_pii = user_session[:decrypted_pii]
+      id = user_session[:pii_id]
+      return unless id
+      redis_pii = EncryptedRedisStructStorage.load(id, type: DecryptedPii)
+      decrypted_pii = redis_pii.pii
+      # decrypted_pii = user_session[:decrypted_pii]
       return unless decrypted_pii
       Pii::Attributes.new_from_json(decrypted_pii)
     end

@@ -18,16 +18,31 @@ module Pii
 
     def load
       session = session_store.send(:load_session_from_redis, session_uuid) || {}
-      Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+
+      pii_id = session.dig('warden.user.user.session', :pii_id)
+      if pii_id
+        redis_pii = EncryptedRedisStructStorage.load(pii_id, type: DecryptedPii)
+        decrypted_pii = redis_pii.pii
+        Pii::Attributes.new_from_json(decrypted_pii)
+      else
+        Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+      end
     end
 
     # @api private
     # Only used for convenience in tests
     # @param [Pii::Attributes] pii
     def put(pii, expiration = 5.minutes)
+      redis_pii = DecryptedPii.new(
+        id: SecureRandom.uuid,
+        pii: pii.to_h.to_json,
+      )
+
+      EncryptedRedisStructStorage.store(redis_pii, expires_in: expiration.to_i)
+
       session_data = {
         'warden.user.user.session' => {
-          decrypted_pii: pii.to_h.to_json,
+          pii_id: redis_pii.id
         },
       }
 

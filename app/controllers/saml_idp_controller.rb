@@ -70,8 +70,12 @@ class SamlIdpController < ApplicationController
     profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
   end
 
+  def decrypted_pii
+    @_decrypted_pii ||= Pii::Cacher.new(current_user, user_session).fetch
+  end
+
   def identity_needs_decryption?
-    UserDecorator.new(current_user).identity_verified? && user_session[:decrypted_pii].blank?
+    UserDecorator.new(current_user).identity_verified? && decrypted_pii.blank?
   end
 
   def capture_analytics
