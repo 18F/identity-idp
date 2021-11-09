@@ -2,7 +2,7 @@
 es:
   vendor_outage:
     get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
-    idv_blocked:
+    blocked.idv:
       generic: Debido a problemas técnicos por nuestra parte, no podemos verificar su
         identidad en estos momentos. Por favor, inténtelo nuevamente más tarde.
       with_sp: '%{service_provider} necesita asegurarse de que es usted realmente y no
