@@ -10,16 +10,11 @@ import useFocusTrap from '../hooks/use-focus-trap';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
- * @typedef {'white'|'black'} FullScreenBackgroundColor
- */
-
-/**
  * @typedef FullScreenProps
  *
  * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
  * @prop {string} label Accessible label for modal.
  * @prop {ReactNode} children Child elements.
- * @prop {FullScreenBackgroundColor=} bgColor Optional background color, defaulting to white.
  */
 
 /**
@@ -59,7 +54,7 @@ export function useInertSiblingElements(containerRef) {
  * @param {FullScreenProps} props Props object.
  * @param {import('react').ForwardedRef<FullScreenRefHandle>} ref
  */
-function FullScreen({ onRequestClose = () => {}, label, children, bgColor = 'white' }, ref) {
+function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
@@ -73,12 +68,7 @@ function FullScreen({ onRequestClose = () => {}, label, children, bgColor = 'whi
   useInertSiblingElements(containerRef);
 
   return createPortal(
-    <div
-      ref={containerRef}
-      role="dialog"
-      aria-label={label}
-      className={`full-screen bg-${bgColor}`}
-    >
+    <div ref={containerRef} role="dialog" aria-label={label} className="full-screen bg-white">
       {children}
       <button
         type="button"

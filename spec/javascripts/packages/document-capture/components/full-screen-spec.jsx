@@ -183,23 +183,4 @@ describe('document-capture/components/full-screen', () => {
 
     expect(ref.current.focusTrap.deactivate).to.be.a('function');
   });
-
-  describe('bgColor', () => {
-    it('defaults to a white background', () => {
-      const { getByRole } = render(<FullScreen>Content</FullScreen>);
-
-      const dialog = getByRole('dialog');
-
-      expect(dialog.classList.contains('bg-white')).to.be.true();
-    });
-
-    it('supports background color customization', () => {
-      const { getByRole } = render(<FullScreen bgColor="black">Content</FullScreen>);
-
-      const dialog = getByRole('dialog');
-
-      expect(dialog.classList.contains('bg-white')).to.be.false();
-      expect(dialog.classList.contains('bg-black')).to.be.true();
-    });
-  });
 });

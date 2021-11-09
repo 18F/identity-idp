@@ -504,7 +504,6 @@ function AcuantCapture(
           ref={fullScreenRef}
           label={t('doc_auth.accessible_labels.document_capture_dialog')}
           onRequestClose={() => setIsCapturingEnvironment(false)}
-          bgColor="black"
         >
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
