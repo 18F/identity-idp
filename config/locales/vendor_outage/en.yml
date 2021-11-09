@@ -1,6 +1,7 @@
 ---
 en:
   vendor_outage:
+    get_updates: Get updates
     get_updates_on_status_page: Get updates on our status page
     idv_blocked:
       generic: We are having technical difficulties on our end and cannot verify your
