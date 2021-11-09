@@ -105,7 +105,8 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
-  it 'does not proceed to the next page if ssn is a duplicate' do
+  # We do not currently prevent duplicate SSNs
+  skip 'does not proceed to the next page if ssn is a duplicate' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
@@ -143,7 +144,8 @@ feature 'doc auth verify step' do
     end
   end
 
-  it 'throttles dup ssn' do
+  # We do not currently throttle on duplicate SSN
+  skip 'throttles dup ssn' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
