@@ -19,6 +19,7 @@
               form_name_label,
               :sms,
               form_obj.delivery_preference_sms?,
+              disabled: VendorStatus.new.vendor_outage?(:sms),
               class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_sms %>">
@@ -30,6 +31,7 @@
               form_name_label,
               :voice,
               form_obj.delivery_preference_voice?,
+              disabled: VendorStatus.new.vendor_outage?(:voice),
               class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_voice %>">
