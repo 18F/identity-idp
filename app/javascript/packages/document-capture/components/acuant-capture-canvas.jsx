@@ -258,6 +258,8 @@ function AcuantCaptureCanvas({
     };
   }, [isReady]);
 
+  const clickCanvas = () => document.getElementById('acuant-ui-canvas')?.click();
+
   return (
     <>
       {!isReady && (
@@ -280,7 +282,12 @@ function AcuantCaptureCanvas({
         </p>
       )}
       <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
-      <button type="button" disabled={captureType !== 'TAP'} className="usa-sr-only">
+      <button
+        type="button"
+        onClick={clickCanvas}
+        disabled={captureType !== 'TAP'}
+        className="usa-sr-only"
+      >
         {t('doc_auth.buttons.take_picture')}
       </button>
     </>
