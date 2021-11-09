@@ -84,6 +84,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
 
 /**
  * @typedef {(
+ *   | undefined // Cropping failure (SDK v11.5.0, L1171)
  *   | 'Camera not supported.' // Camera not supported (SDK v11.5.0, L978)
  *   | 'already started.' // Capture already started (SDK v11.5.0, L724)
  *   | 'Missing HTML elements.' // Required page elements are not available (SDK v11.5.0, L727)
@@ -184,7 +185,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  */
 
 /**
- * @typedef {(error: AcuantCaptureFailureError, code: string) => void} AcuantFailureCallback
+ * @typedef {(error?: AcuantCaptureFailureError, code?: string) => void} AcuantFailureCallback
  */
 
 /**
@@ -209,6 +210,8 @@ function AcuantCaptureCanvas({
     (response) => {
       if (response) {
         onImageCaptureSuccess(response);
+      } else {
+        onImageCaptureFailure();
       }
     },
     [onImageCaptureSuccess],

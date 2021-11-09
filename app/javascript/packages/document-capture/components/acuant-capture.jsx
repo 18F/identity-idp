@@ -124,7 +124,7 @@ function getDocumentTypeLabel(documentType) {
 
 /**
  * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
- * @param {string} code
+ * @param {string=} code
  *
  * @return {string}
  */
@@ -149,9 +149,11 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
     default:
   }
 
+  if (!error) {
+    return 'Cropping failure';
+  }
+
   switch (error) {
-    case null:
-      return 'Cropping failure';
     case 'Camera not supported.':
       return 'Camera not supported';
     case 'Missing HTML elements.':
