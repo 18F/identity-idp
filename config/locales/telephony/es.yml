@@ -7,7 +7,7 @@ es:
       login.gov para cancelar.
     authentication_otp:
       sms: |-
-        Login.gov: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
+        login.gov: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
       voice: '¡Hola! Su código de acceso de login.gov es, %{code}, nuevamente, su
@@ -15,7 +15,7 @@ es:
         minutos.'
     confirmation_otp:
       sms: |-
-        Login.gov: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
+        login.gov: Su código de seguridad es %{code}. Este código se vence en %{expiration} minutos. No lo comparta con ninguna persona.
 
         @%{domain} #%{code}
       voice: '¡Hola! Su código de acceso de login.gov es, %{code}, nuevamente, su

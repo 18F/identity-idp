@@ -7,7 +7,7 @@ fr:
       votre compte login.gov pour le annuler.
     authentication_otp:
       sms: |-
-        Login.gov: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        login.gov: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de login.gov est,
@@ -15,7 +15,7 @@ fr:
         expirera dans %{expiration} minutes.
     confirmation_otp:
       sms: |-
-        Login.gov: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
+        login.gov: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
       voice: Bonjour! Votre code de sécurité à utilisation unique de login.gov est,
@@ -57,5 +57,5 @@ fr:
       connecter à votre compte login.gov. Si ce n’était pas vous, changez votre
       mot de passe.
     stop_keyword_response: Vous vous êtes désinscrit et ne recevrez plus d'alertes
-      de Login.gov. Pour vous réabonner, connectez-vous ou créez un compte.
+      de login.gov. Pour vous réabonner, connectez-vous ou créez un compte.
       Besoin d'aide? www.login.gov/help
