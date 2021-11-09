@@ -2,8 +2,6 @@ require 'telephony'
 
 def telephony_use_default_config!
   # Setup some default configs
-  Telephony.instance_variable_set(:@config, nil)
-
   Telephony.config do |c|
     c.logger = Logger.new(nil)
 
@@ -30,6 +28,15 @@ end
 RSpec.shared_context 'telephony' do
   before do
     Pinpoint::MockClient.reset!
+  end
+
+  around do |ex|
+    old_config = Telephony.config.dup
+    Telephony.instance_variable_set(:@config, nil)
     telephony_use_default_config!
+
+    ex.run
+  ensure
+    Telephony.instance_variable_set(:@config, old_config)
   end
 end
