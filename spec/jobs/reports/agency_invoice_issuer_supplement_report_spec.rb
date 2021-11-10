@@ -52,6 +52,8 @@ RSpec.describe Reports::AgencyInvoiceIssuerSupplementReport do
               year_month: '202101',
               ial1_total_auth_count: 11,
               ial2_total_auth_count: 22,
+              ial1_unique_users: 1,
+              ial2_unique_users: 1,
             },
           ],
         )

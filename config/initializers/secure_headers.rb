@@ -110,7 +110,10 @@ Rails.application.configure do |config|
                               product(%w[doc_auth capture_doc]).
                               map do |locale, flow|
                                 File.join('/', *locale, '/verify', flow, worker_js)
-                              end.to_set.freeze
+                              end.
+                              push('/acuant/11.4.3/AcuantImageProcessingWorker.min.js').
+                              to_set.
+                              freeze
 
   config.middleware.insert_before(
     SecureHeaders::Middleware,

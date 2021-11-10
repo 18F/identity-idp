@@ -23,26 +23,6 @@ es:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
         continuación y luego haga clic en continuar.
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
-      document_capture_info_html: |-
-        <div class="bold">Por favor verifique que:</div>
-        <ul>
-        <li>Las imágenes son claras (no borrosas) y enfocadas</li>
-        <li>No hay reflejos, sombras o reflejos</li>
-        <li>Su identificación no tiene ningún código de barras dañado</li>
-        <li>Su identificación representa el 80% de la imagen general</li>
-        <li>Su identificación está contra un fondo sólido y oscuro</li>
-        </ul>
-      document_capture_info_with_selfie_html: |-
-        <div class="bold">Por favor verifique que:</div>
-        <ul>
-        <li>Las imágenes son claras (no borrosas) y enfocadas</li>
-        <li>No hay reflejos, sombras o reflejos</li>
-        <li>Su identificación no tiene ningún código de barras dañado</li>
-        <li>Su identificación representa el 80% de la imagen general</li>
-        <li>Su identificación está contra un fondo sólido y oscuro</li>
-        <li>La foto se hace en un espacio bien iluminado y con un fondo uniforme</li>
-        <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
-        </ul>
       document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
@@ -77,6 +57,7 @@ es:
         carta para recibir un nuevo código.
       improbable_phone: Número de teléfono no válido. Asegúrate de introducir un
         número de teléfono válido.
+      inclusion: No se incluye en la lista.
       invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
         enviar un SMS si tienes un teléfono que permita enviar SMS.
       invalid_phone_number: El número de teléfono ingresado no está en el formato correcto.
@@ -88,6 +69,7 @@ es:
       must_have_us_country_code: Número de teléfono no válido. Asegúrate de introducir
         un número de teléfono con un código país de EE. UU.
       no_pending_profile: Ningún perfil está esperando verificación
+      not_a_number: no es un número
       otp_failed: Se produjo un error al enviar el código de seguridad.
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
@@ -100,6 +82,12 @@ es:
         premium. Por favor, seleccione otro número e inténtelo de nuevo.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
+      too_long:
+        one: es demasiado largo (el máximo es 1 carácter)
+        other: es demasiado largo (el máximo es %{count} caracteres)
+      too_short:
+        one: es demasiado corto (el mínimo es 1 carácter)
+        other: es demasiado corto (el mínimo es %{count} caracteres)
       try_again: Por favor, inténtelo de nuevo.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
@@ -109,6 +97,9 @@ es:
       voip_phone: Este número corresponde a un servicio de telefonía basado en la web
         (VoIP). Por favor, seleccione un número diferente e inténtelo de nuevo.
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
+      wrong_length:
+        one: es la longitud incorrecta (debería ser de 1 carácter)
+        other: es la longitud incorrecta (debería ser de %{count} caracteres)
     piv_cac_setup:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
     registration:

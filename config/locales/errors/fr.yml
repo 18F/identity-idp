@@ -26,26 +26,6 @@ fr:
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
         d'identité sur votre téléphone.
-      document_capture_info_html: |-
-        <div class="bold">Veuillez vérifier que:</div>
-        <ul>
-        <li>Les images sont claires (non floues) et nettes</li>
-        <li>Aucun éblouissement, ombre ou reflet n’est présent</li>
-        <li>Votre identifiant n’a pas de code à barres endommagé</li>
-        <li>Votre pièce d’identité représente 80% de l’image globale</li>
-        <li>Votre pièce d’identité est sur un fond sombre et uni</li>
-        </ul>
-      document_capture_info_with_selfie_html: |-
-        <div class="bold">Veuillez vérifier que:</div>
-        <ul>
-        <li>Images are clear (not blurry) and in focus</li>
-        <li>Aucun éblouissement, ombre ou reflet n’est présent</li>
-        <li>Votre identifiant n’a pas de code à barres endommagé</li>
-        <li>Votre pièce d’identité représente 80% de l’image globale</li>
-        <li>Votre pièce d’identité est sur un fond sombre et uni</li>
-        <li>Votre photo est prise dans un endroit bien éclairé avec un fond uni</li>
-        <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
-        </ul>
       document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
@@ -83,6 +63,7 @@ fr:
         autre lettre afin d’obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.
+      inclusion: N'est pas inclus dans la liste
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
@@ -95,6 +76,7 @@ fr:
       must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
         de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
+      not_a_number: N'est pas un nombre
       otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
@@ -109,6 +91,12 @@ fr:
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
         dans une liste de mots de passe connus exposés dans les violations de
         données.
+      too_long:
+        one: Est trop long (maximum de 1 caractère)
+        other: est trop long (le maximum est de %{count} caractères)
+      too_short:
+        one: est trop court (1 caractère minimum)
+        other: est trop court (le minimum est de %{count} caractères)
       try_again: Veuillez réessayer.
       unauthorized_authn_context: Contexte d’authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d’identification
@@ -118,6 +106,9 @@ fr:
       voip_phone: Ce numéro est un service téléphonique basé sur le Web (Voix sur IP).
         Veuillez sélectionner un autre numéro et réessayer
       weak_password: Votre mot de passe n’est pas assez fort. %{feedback}
+      wrong_length:
+        one: n'est pas de la bonne longueur (devrait être de 1 caractère)
+        other: n'est pas de la bonne longueur (devrait être %{count} caractères)
     piv_cac_setup:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     registration:

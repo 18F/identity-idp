@@ -23,6 +23,7 @@ describe Analytics do
   let(:current_user) { build_stubbed(:user, uuid: '123') }
   let(:request) { FakeRequest.new }
   let(:path) { 'fake_path' }
+  let(:success_state) { 'GET|fake_path|Trackable Event' }
 
   subject(:analytics) do
     Analytics.new(
@@ -48,6 +49,8 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_session_success_state: true,
+        success_state: success_state,
         new_event: true,
         path: path,
       }
@@ -66,6 +69,8 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: nil,
+        new_session_success_state: nil,
+        success_state: success_state,
         new_event: nil,
         path: path,
       }
@@ -86,6 +91,8 @@ describe Analytics do
         locale: I18n.locale,
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_success_state: true,
+        success_state: success_state,
         new_session_path: true,
         new_event: true,
         path: path,
@@ -124,6 +131,8 @@ describe Analytics do
         new_session_path: true,
         new_event: true,
         path: path,
+        new_session_success_state: true,
+        success_state: success_state,
       }
 
       expect(ahoy).to receive(:track).

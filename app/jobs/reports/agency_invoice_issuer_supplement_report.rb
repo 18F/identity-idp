@@ -11,9 +11,14 @@ module Reports
 
     def perform(_date)
       raw_results = service_providers.flat_map do |service_provider|
-        transaction_with_timeout do
-          Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(service_provider)
-        end.to_a
+        [:sum, :unique].flat_map do |aggregate|
+          transaction_with_timeout do
+            Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
+              service_provider: service_provider,
+              aggregate: aggregate,
+            )
+          end.to_a
+        end
       end
 
       results = combine_by_issuer_month(raw_results)
@@ -46,6 +51,8 @@ module Reports
             year_month: year_month,
             ial1_total_auth_count: extract(grouped, 'total_auth_count', ial: 1),
             ial2_total_auth_count: extract(grouped, 'total_auth_count', ial: 2),
+            ial1_unique_users: extract(grouped, 'unique_users', ial: 1),
+            ial2_unique_users: extract(grouped, 'unique_users', ial: 2),
           }
         end.values
     end

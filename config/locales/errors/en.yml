@@ -23,26 +23,6 @@ en:
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_cancelled: You have cancelled uploading photos of your ID on your phone.
-      document_capture_info_html: |-
-        <div class="bold">Please check that:</div>
-        <ul>
-        <li>Images are clear (not blurry) and in focus</li>
-        <li>No glare, shadow or reflection is present</li>
-        <li>Your ID does not have any damaged barcodes</li>
-        <li>Your ID represents 80% of the overall image</li>
-        <li>Your ID is against a solid, dark background</li>
-        </ul>
-      document_capture_info_with_selfie_html: |-
-        <div class="bold">Please check that:</div>
-        <ul>
-        <li>Images are clear (not blurry) and in focus</li>
-        <li>No glare, shadow or reflection is present</li>
-        <li>Your ID does not have any damaged barcodes</li>
-        <li>Your ID represents 80% of the overall image</li>
-        <li>Your ID is against a solid, dark background</li>
-        <li>Your picture is taken in a well-lit area with a plain background</li>
-        <li>You are not wearing a hat or glasses, and your head is fully visible</li>
-        </ul>
       document_verification_timeout: The server took too long to respond. Please try again.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
@@ -75,6 +55,7 @@ en:
       gpo_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone number.
+      inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
       invalid_phone_number: The phone number entered is not valid.
@@ -86,6 +67,7 @@ en:
       must_have_us_country_code: Invalid phone number. Please make sure you enter a
         phone number with a U.S. country code.
       no_pending_profile: No profile is waiting for verification
+      not_a_number: is not a number
       otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
@@ -97,6 +79,12 @@ en:
         select a different number and try again.
       pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
+      too_long:
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
       try_again: Please try again.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
@@ -105,6 +93,9 @@ en:
       voip_phone: This number is a web-based (VOIP) phone service. Please select a
         different number and try again
       weak_password: Your password is not strong enough. %{feedback}
+      wrong_length:
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
     piv_cac_setup:
       unique_name: That name is already taken. Please choose a different name.
     registration:
