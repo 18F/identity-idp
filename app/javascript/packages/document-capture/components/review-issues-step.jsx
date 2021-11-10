@@ -60,7 +60,7 @@ function reviewIssuesStepValidator(value = {}) {
 
 /**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
- *  attemptsRemaining: number,
+ *  remainingAttempts: number,
  * }} props Props object.
  */
 function ReviewIssuesStep({
@@ -70,7 +70,7 @@ function ReviewIssuesStep({
   unknownFieldErrors = [],
   onError = () => {},
   registerField = () => undefined,
-  attemptsRemaining,
+  remainingAttempts,
 }) {
   const { t, formatHTML } = useI18n();
   const { isMobile } = useContext(DeviceContext);
@@ -78,7 +78,7 @@ function ReviewIssuesStep({
   const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
-  const [hasDismissed, setHasDismissed] = useState(attemptsRemaining === Infinity);
+  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
   const { onPageTransition } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
@@ -189,12 +189,12 @@ function ReviewIssuesStep({
       {!!unknownFieldErrors &&
         unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-      {attemptsRemaining <= 3 && (
+      {remainingAttempts <= 3 && (
         <p>
           <strong>
-            {attemptsRemaining === 1
+            {remainingAttempts === 1
               ? t('idv.failure.attempts.one')
-              : t('idv.failure.attempts.other', { count: attemptsRemaining })}
+              : t('idv.failure.attempts.other', { count: remainingAttempts })}
           </strong>
         </p>
       )}
