@@ -9,7 +9,7 @@ class VendorOutageAlertComponent < BaseComponent
   end
 
   def content
-    case outages
+    case outages.sort
     when [:sms, :voice]
       t(context, scope: 'vendor_outage.alerts.phone', default: :default)
     when [:sms]
@@ -23,6 +23,6 @@ class VendorOutageAlertComponent < BaseComponent
 
   def outages
     vendor_status = VendorStatus.new
-    vendors.select { |vendor| vendor_status.vendor_outage?(vendor) }.sort
+    vendors.select { |vendor| vendor_status.vendor_outage?(vendor) }
   end
 end
