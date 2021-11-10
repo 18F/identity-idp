@@ -19,6 +19,8 @@ import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
 
+/** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
+
 /**
  * @typedef {'front'|'back'} DocumentSide
  */
@@ -170,18 +172,20 @@ function ReviewIssuesStep({
         heading={t('errors.doc_auth.throttled_heading')}
         actionText={t('idv.failure.button.warning')}
         actionOnClick={onWarningPageDismissed}
-        troubleshootingOptions={[
-          {
-            url: documentCaptureTipsURL,
-            text: t('idv.troubleshooting.options.doc_capture_tips'),
-            isExternal: true,
-          },
-          spName && {
-            url: getFailureToProofURL('post_submission_warning'),
-            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
-            isExternal: true,
-          },
-        ].filter(Boolean)}
+        troubleshootingOptions={
+          /** @type {TroubleshootingOption[]} */ ([
+            {
+              url: documentCaptureTipsURL,
+              text: t('idv.troubleshooting.options.doc_capture_tips'),
+              isExternal: true,
+            },
+            spName && {
+              url: getFailureToProofURL('post_submission_warning'),
+              text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
+              isExternal: true,
+            },
+          ].filter(Boolean))
+        }
       >
         {!!unknownFieldErrors &&
           unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
