@@ -34,7 +34,7 @@ module TwoFactorAuthentication
     def disabled?
       case type
       when 'phone'
-        VendorStatus.new.all_vendor_outage?([:sms, :voice])
+        VendorStatus.new.all_phone_vendor_outage?
       when 'sms'
         VendorStatus.new.vendor_outage?(:sms)
       when 'voice'
