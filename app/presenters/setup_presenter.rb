@@ -1,6 +1,4 @@
 class SetupPresenter
-  include ActionView::Helpers::TranslationHelper
-
   attr_reader :current_user, :user_fully_authenticated, :user_opted_remember_device_cookie
 
   def initialize(current_user:, user_fully_authenticated:, user_opted_remember_device_cookie:,
