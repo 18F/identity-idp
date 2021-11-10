@@ -18,7 +18,6 @@ require 'telephony/pinpoint/aws_credential_builder'
 require 'telephony/pinpoint/sms_sender'
 require 'telephony/pinpoint/voice_sender'
 
-# I18n.load_path += Dir[File.dirname(__FILE__) + '/../config/locales/telephony/*.yml']
 
 module Telephony
   extend SingleForwardable
