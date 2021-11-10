@@ -119,7 +119,7 @@ module Users
     end
 
     def redirect_to_vendor_outage_if_phone_only
-      redirect_to vendor_outage_url if VendorStatus.new.all_phone_vendor_outage?
+      redirect_to vendor_outage_url if VendorStatus.new.all_phone_vendor_outage? &&
                                        phone_enabled? &&
                                        !MfaPolicy.new(current_user).multiple_factors_enabled?
     end
