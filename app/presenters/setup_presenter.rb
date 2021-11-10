@@ -15,12 +15,4 @@ class SetupPresenter
     return @remember_device_default if user_opted_remember_device_cookie.nil?
     ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
   end
-
-  def outage_message
-    if VendorStatus.new.vendor_outage?(:voice)
-      t('vendor_outage.voice.alert')
-    elsif VendorStatus.new.vendor_outage?(:sms)
-      t('vendor_outage.sms.alert')
-    end
-  end
 end
