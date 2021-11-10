@@ -265,7 +265,7 @@ module Features
 
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
-      fill_in :code, with: last_phone_otp, visible: false
+      fill_in :code, with: last_phone_otp
     end
 
     def accept_rules_of_use_and_continue_if_displayed
