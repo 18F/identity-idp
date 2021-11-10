@@ -31,10 +31,9 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
   class: classes,
 ) %>
 
-<%= text_field_tag(
+<%= hidden_field_tag(
   name,
   nil,
-  type: 'hidden',
   class: 'hidden-input'
 ) %>
 
