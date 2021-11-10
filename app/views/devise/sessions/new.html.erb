@@ -1,5 +1,7 @@
 <% title t('titles.visitors.index') %>
 
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], only_if_all: true)) %>
+
 <%= render 'shared/maintenance_window_alert' %>
 
 <% if decorated_session.sp_name %>
