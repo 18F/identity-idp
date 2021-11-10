@@ -95,7 +95,7 @@ module Telephony
     def wrap_in_ssml_if_needed(message)
       return message if channel != :voice
 
-      <<~XML.strip.gsub(/\s+/, ' ')
+      <<~XML.squish
         <speak>
           <prosody rate='#{Telephony.config.voice_rate}'>
             #{message}

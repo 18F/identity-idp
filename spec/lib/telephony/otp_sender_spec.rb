@@ -126,7 +126,7 @@ RSpec.describe Telephony::OtpSender do
       let(:channel) { :voice }
 
       it 'sends an authentication OTP with Pinpoint Voice' do
-        message = <<~XML.strip.gsub(/\s+/, ' ')
+        message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
               Hello! Your login.gov one time passcode is,
@@ -153,7 +153,7 @@ RSpec.describe Telephony::OtpSender do
       end
 
       it 'sends a confirmation OTP with Pinpoint Voice' do
-        message = <<~XML.strip.gsub(/\s+/, ' ')
+        message = <<~XML.squish
           <speak>
             <prosody rate='slow'>
               Hello! Your login.gov one time passcode is,
