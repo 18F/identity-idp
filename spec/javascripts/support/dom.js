@@ -66,12 +66,15 @@ export function createDOM() {
 
 /**
  * Test lifecycle helper which ensures a clean DOM document for each test case.
+ *
+ * @param {JSDOM} dom instance.
  */
-export function useCleanDOM() {
+export function useCleanDOM(dom) {
   beforeEach(() => {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
     window.location.hash = '';
+    dom.cookieJar.removeAllCookiesSync();
   });
 }

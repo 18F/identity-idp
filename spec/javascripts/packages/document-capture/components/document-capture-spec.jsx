@@ -67,7 +67,7 @@ describe('document-capture/components/document-capture', () => {
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <DocumentCapture />
         </AcuantContextProvider>
       </DeviceContext.Provider>,
@@ -153,7 +153,7 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
       {
@@ -218,7 +218,7 @@ describe('document-capture/components/document-capture', () => {
       { message: 'An unknown error occurred' },
     ].map(toFormEntryError);
     const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
       {
@@ -293,7 +293,7 @@ describe('document-capture/components/document-capture', () => {
     const { getByLabelText, getByText } = render(
       <UploadContextProvider upload={httpUpload} endpoint="/upload">
         <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <DocumentCapture />
           </AcuantContextProvider>
         </ServiceProviderContextProvider>
@@ -378,7 +378,7 @@ describe('document-capture/components/document-capture', () => {
         backgroundUploadEncryptKey={key}
         upload={upload}
       >
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <DocumentCapture isAsyncForm />
         </AcuantContextProvider>
       </UploadContextProvider>,
@@ -424,7 +424,7 @@ describe('document-capture/components/document-capture', () => {
     uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
     const onStepChange = sinon.spy();
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture onStepChange={onStepChange} />
       </AcuantContextProvider>,
       { uploadError },
@@ -497,7 +497,7 @@ describe('document-capture/components/document-capture', () => {
           upload={upload}
         >
           <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <DocumentCapture />
             </AcuantContextProvider>
           </ServiceProviderContextProvider>
