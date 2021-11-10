@@ -121,7 +121,8 @@ es:
         clave de seguridad FIDO. Por favor, asegúrese de que su dispositivo
         aparezca en
         https://fidoalliance.org/certification/fido-certified-products/. Si
-        considera que se trata de un error nuestro, póngase en contacto con %{link}.
+        considera que se trata de un error nuestro, póngase en contacto con
+        %{link}.
       general_error: Hubo un error al agregar su clave de seguridad de hardware.
         Inténtalo de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.
