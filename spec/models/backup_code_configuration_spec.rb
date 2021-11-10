@@ -47,14 +47,6 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
   end
 
-  describe 'code_in_database' do
-    it 'returns nil' do
-      backup_code_config = BackupCodeConfiguration.new
-
-      expect(backup_code_config.code_in_database).to eq nil
-    end
-  end
-
   describe 'will_save_change_to_code?' do
     it 'returns false if code did not change' do
       backup_code_config = BackupCodeConfiguration.new
@@ -64,6 +56,8 @@ RSpec.describe BackupCodeConfiguration, type: :model do
 
     it 'returns true if code changed' do
       backup_code_config = BackupCodeConfiguration.new
+      backup_code_config.code_cost = IdentityConfig.store.backup_code_cost
+      backup_code_config.code_salt = 'aaa'
       backup_code_config.code = 'foo'
 
       expect(backup_code_config.will_save_change_to_code?).to eq true
@@ -87,27 +81,9 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)).to be_nil
     end
 
-    it 'finds codes via code_fingerprint' do
-      codes = BackupCodeGenerator.new(user, skip_legacy_encryption: false).create
-      first_code = codes.first
-
-      # overwrite with a wrong value so queries use the other column
-      BackupCodeConfiguration.all.each_with_index do |code, index|
-        code.update!(salted_code_fingerprint: index)
-      end
-
-      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
-      expect(backup_code).to be
-    end
-
     it 'finds codes via salted_code_fingerprint' do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
-
-      # overwrite with a wrong value so queries use the other column
-      BackupCodeConfiguration.all.each_with_index do |code, index|
-        code.update!(code_fingerprint: index)
-      end
 
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
       expect(backup_code).to be
@@ -137,9 +113,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
         code_cost: '10$8$4$',
         code_salt: 'abcdefg',
         code: save,
-      ).tap do |config|
-        config.code_fingerprint = fingerprint if fingerprint
-      end.save!
+      ).save!
 
       BackupCodeConfiguration.find_with_code(code: find, user_id: user.id)
     end
@@ -151,9 +125,6 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     it 'finds codes if they were generated the old way (with SecureRandom.hex)' do
       code = SecureRandom.hex(3 * 4 / 2)
       expect(save_and_find(save: code, find: code)).to be
-
-      code = SecureRandom.hex(3 * 4 / 2)
-      expect(save_and_find(fingerprint: Pii::Fingerprinter.fingerprint(code), find: code)).to be
     end
   end
 
