@@ -1,4 +1,6 @@
 class VendorStatus
+  include ActionView::Helpers::TranslationHelper
+
   def initialize(from: nil, from_idv: nil, sp: nil)
     @from = from
     @from_idv = from_idv
@@ -59,18 +61,19 @@ class VendorStatus
     if any_ial2_vendor_outage?
       if from_idv?
         if sp
-          return I18n.t(
-            'vendor_outage.blocked.idv.with_sp',
-            service_provider: sp.friendly_name,
-          )
+          t('vendor_outage.blocked.idv.with_sp', service_provider: sp.friendly_name)
         else
-          return I18n.t('vendor_outage.blocked.idv.without_sp')
+          t('vendor_outage.blocked.idv.without_sp')
         end
+      else
+        t('vendor_outage.blocked.idv.generic')
       end
-
-      return I18n.t('vendor_outage.blocked.idv.generic')
     elsif any_phone_vendor_outage?
-      t('vendor_outage.phone.blocked')
+      if from_idv?
+        t('vendor_outage.blocked.phone.idv')
+      else
+        t('vendor_outage.blocked.phone.verify')
+      end
     end
   end
 
