@@ -36,5 +36,10 @@ fr:
           Malheureusement, nous rencontrons des difficultés techniques et ne
           pouvons pas vérifier votre identité pour le moment. Veuillez réessayer
           plus tard.
+      phone:
+        default: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
+          réessayer plus tard.
+        idv: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
+          réessayer plus tard ou vérifier votre adresse par la poste.
     get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
     working: "Nous travaillons à la résolution d'une erreur"

@@ -31,9 +31,9 @@ en:
           technical difficulties and cannot verify your identity at this time.
           Please try again later.
       phone:
+        default: We cannot verify phones at this time. Please try again later.
         idv: We cannot verify phones at this time. Please try again later or verify your
           address by mail instead.
-        verify: We cannot verify phones at this time. Please try again later.
     get_updates: Get updates
     get_updates_on_status_page: Get updates on our status page
     working: We are working to resolve an error
