@@ -94,9 +94,12 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     ? [
         {
           name: 'review',
-          form: withProps({ remainingAttempts: submissionError.remainingAttempts })(
-            ReviewIssuesStep,
-          ),
+          form: withProps({
+            remainingAttempts:
+              submissionError instanceof UploadFormEntriesError
+                ? submissionError.remainingAttempts
+                : Infinity,
+          })(ReviewIssuesStep),
           validator: reviewIssuesStepValidator,
         },
       ]

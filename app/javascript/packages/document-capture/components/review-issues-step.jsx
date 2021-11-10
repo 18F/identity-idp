@@ -57,8 +57,9 @@ function reviewIssuesStepValidator(value = {}) {
 }
 
 /**
- * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue>} props Props object.
- * @prop {number=} attemptsRemaining Number of remaining doc capture attempts for user. Passed by withProps.
+ * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
+ *  attemptsRemaining: number,
+ * }} props Props object.
  */
 function ReviewIssuesStep({
   value = {},
@@ -75,7 +76,7 @@ function ReviewIssuesStep({
   const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
-  const [hasDismissed, setHasDismissed] = useState(false);
+  const [hasDismissed, setHasDismissed] = useState(attemptsRemaining === Infinity);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
   const { onPageTransition } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
