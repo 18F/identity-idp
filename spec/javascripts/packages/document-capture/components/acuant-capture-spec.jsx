@@ -209,7 +209,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.'),
+        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
       });
 
       const button = getByLabelText('Image');
@@ -221,6 +221,35 @@ describe('document-capture/components/acuant-capture', () => {
       expect(addPageAction).to.have.been.calledWith({
         label: 'IdV: Image capture failed',
         payload: { field: 'test', error: 'Camera not supported' },
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('shows sequence break error', async () => {
+      const addPageAction = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ addPageAction }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, 'iOS 15 sequence break', 'sequence-break-code'),
+      });
+
+      const button = getByLabelText('Image');
+      userEvent.click(button);
+
+      await findByText('doc_auth.errors.upload_error errors.messages.try_again');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(addPageAction).to.have.been.calledWith({
+        label: 'IdV: Image capture failed',
+        payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
       });
       expect(document.activeElement).to.equal(button);
     });

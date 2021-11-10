@@ -90,6 +90,14 @@ import './acuant-capture.scss';
  */
 
 /**
+ * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
+ * happily tolerate than an HTML entity.
+ *
+ * @type {string}
+ */
+const NBSP_UNICODE = '\u00A0';
+
+/**
  * A noop function.
  */
 const noop = () => {};
@@ -134,14 +142,11 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
   }
 
   const {
-    START_FAIL_CODE,
     REPEAT_FAIL_CODE,
     SEQUENCE_BREAK_CODE,
   } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
 
   switch (code) {
-    case START_FAIL_CODE:
-      return 'Camera failed to start (START_FAIL_CODE)';
     case REPEAT_FAIL_CODE:
       return 'Capture started after failure already occurred (REPEAT_FAIL_CODE)';
     case SEQUENCE_BREAK_CODE:
@@ -508,6 +513,9 @@ function AcuantCapture(
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error, code) => {
+              const {
+                SEQUENCE_BREAK_CODE,
+              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
               if (isAcuantCameraAccessFailure(error)) {
                 if (fullScreenRef.current?.focusTrap) {
                   suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
@@ -520,6 +528,12 @@ function AcuantCapture(
                 setAcuantFailureCookie(null);
 
                 onCameraAccessDeclined();
+              } else if (code === SEQUENCE_BREAK_CODE) {
+                setOwnErrorMessage(
+                  `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
+                    .split(' ')
+                    .join(NBSP_UNICODE)}`,
+                );
               } else {
                 setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               }
