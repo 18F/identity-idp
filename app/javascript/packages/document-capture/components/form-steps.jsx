@@ -42,6 +42,7 @@ import './form-steps.scss';
  * @prop {OnErrorCallback} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
+ * @prop {FormStepError<V>[]} unknownFieldErrors Current top-level errors.
  * @prop {RegisterFieldCallback} registerField Registers field by given name, returning ref
  * assignment function.
  *

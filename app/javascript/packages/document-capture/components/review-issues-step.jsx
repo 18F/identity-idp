@@ -58,6 +58,7 @@ function reviewIssuesStepValidator(value = {}) {
 
 /**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue>} props Props object.
+ * @prop {number=} remaining_attempts Number of remaining doc capture attempts for user. Passed by withProps.
  */
 function ReviewIssuesStep({
   value = {},
