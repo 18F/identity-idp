@@ -1,12 +1,12 @@
 import OneTimeCodeInput from '@18f/identity-one-time-code-input';
 
-const fakeField = document.querySelector('.one-time-code-input');
-const input = document.querySelector('.hidden-input');
+const fakeField = /** @type {HTMLInputElement?} */ (document.querySelector('.one-time-code-input'));
+const input = /** @type {HTMLInputElement?} */ (document.querySelector('.hidden-input'));
 if (input && fakeField) {
   fakeField.addEventListener('input', () => {
     input.value = fakeField.value;
   });
 }
 if (fakeField) {
-  new OneTimeCodeInput(/** @type {HTMLInputElement} */ (fakeField)).bind();
+  new OneTimeCodeInput(fakeField).bind();
 }
