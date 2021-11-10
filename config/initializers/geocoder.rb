@@ -18,6 +18,7 @@ if Rails.env.production? && File.exist?(GEO_DATA_FILEPATH)
       file: GEO_DATA_FILEPATH,
     },
   )
+  Geocoder.search('1.2.3.4') # the datasource is lazily loaded, make sure it eager loads
 else
   Geocoder.configure(ip_lookup: :test)
   Geocoder::Lookup::Test.set_default_stub(
