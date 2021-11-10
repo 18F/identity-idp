@@ -152,7 +152,14 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('renders unhandled submission failure', async () => {
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+    const {
+      getByLabelText,
+      getByText,
+      getAllByText,
+      findAllByText,
+      findByRole,
+      getByRole,
+    } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
@@ -186,6 +193,8 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
+    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+
     // Make sure that the first element after a tab is what we expect it to be.
     userEvent.tab();
     const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
@@ -217,7 +226,14 @@ describe('document-capture/components/document-capture', () => {
       { field: 'back', message: 'Please fill in this field' },
       { message: 'An unknown error occurred' },
     ].map(toFormEntryError);
-    const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
+    const {
+      getByLabelText,
+      getByText,
+      getAllByText,
+      findAllByText,
+      findAllByRole,
+      getByRole,
+    } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
@@ -242,11 +258,13 @@ describe('document-capture/components/document-capture', () => {
     userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
+    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     let notices = await findAllByRole('alert');
-    expect(notices[0].textContent).to.equal('An unknown error occurred');
-    expect(notices[1].textContent).to.equal('Image has glare');
-    expect(notices[2].textContent).to.equal('Please fill in this field');
+    expect(notices[0].textContent).to.equal('Image has glare');
+    expect(notices[1].textContent).to.equal('Please fill in this field');
+    expect(getByText('An unknown error occurred')).to.be.ok();
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -271,8 +289,7 @@ describe('document-capture/components/document-capture', () => {
     // addressed, submit should be enabled once more.
     notices = await findAllByRole('alert');
     const errorNotices = notices.filter((notice) => notice.classList.contains('usa-alert--error'));
-    expect(errorNotices).to.have.lengthOf(1);
-    expect(errorNotices[0].textContent).to.equal('An unknown error occurred');
+    expect(errorNotices).to.have.lengthOf(0);
     expect(submitButton.classList.contains('usa-button--disabled')).to.be.false();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
@@ -281,7 +298,8 @@ describe('document-capture/components/document-capture', () => {
     const interstitialHeading = getByText('doc_auth.headings.interstitial');
     expect(interstitialHeading).to.be.ok();
 
-    await findAllByRole('alert');
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
+    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -423,7 +441,7 @@ describe('document-capture/components/document-capture', () => {
     const uploadError = new UploadFormEntriesError();
     uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
     const onStepChange = sinon.spy();
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText, getByRole } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture onStepChange={onStepChange} />
       </AcuantContextProvider>,
@@ -449,7 +467,8 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
     expect(onStepChange.callCount).to.equal(1);
 
-    await findByRole('alert');
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
+    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -525,7 +544,12 @@ describe('document-capture/components/document-capture', () => {
         submit();
         expect(upload).not.to.have.been.called();
         completeUploadAsFailure();
-        const { findAllByRole, getByLabelText } = renderResult;
+        const { findAllByRole, getByLabelText, getByRole, getAllByText } = renderResult;
+
+        await waitFor(() =>
+          expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw(),
+        );
+        userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
         const alerts = await findAllByRole('alert');
         expect(alerts).to.have.lengthOf(2);
