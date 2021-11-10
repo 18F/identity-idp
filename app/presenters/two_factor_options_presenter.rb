@@ -41,16 +41,6 @@ class TwoFactorOptionsPresenter
     end
   end
 
-  def outage_message
-    if VendorStatus.new.vendor_outage?(:voice) && VendorStatus.new.vendor_outage?(:sms)
-      t('vendor_outage.phone.alert.verify')
-    elsif VendorStatus.new.vendor_outage?(:voice)
-      t('vendor_outage.voice.alert')
-    elsif VendorStatus.new.vendor_outage?(:sms)
-      t('vendor_outage.sms.alert')
-    end
-  end
-
   private
 
   def piv_cac_option
