@@ -3,22 +3,34 @@ fr:
   vendor_outage:
     alerts:
       phone:
-        ial2: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez réessayer plus tard ou vérifier votre adresse par la poste.
-        default: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez utiliser une autre méthode d'authentification si vous en avez une, ou réessayez plus tard.
+        default: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
+          utiliser une autre méthode d'authentification si vous en avez une, ou
+          réessayez plus tard.
+        ial2: Nous ne pouvons pas vérifier les téléphones pour le moment. Veuillez
+          réessayer plus tard ou vérifier votre adresse par la poste.
       sms:
-        ial2: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment. Vous pouvez obtenir un code par téléphone ou vérifier votre adresse par la poste.
-        default: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment. Vous pouvez obtenir un code par appel téléphonique ou choisir une autre méthode d'authentification si vous en avez un.
+        default: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment.
+          Vous pouvez obtenir un code par appel téléphonique ou choisir une
+          autre méthode d'authentification si vous en avez un.
+        ial2: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment. Vous
+          pouvez obtenir un code par téléphone ou vérifier votre adresse par la
+          poste.
       voice:
-        ial2: Nous ne pouvons pas envoyer d'appels téléphoniques pour le moment. Vous pouvez obtenir un code par message texte (SMS), ou vérifier votre adresse par la poste.
-        default: Nous rencontrons des difficultés techniques et nous ne pouvons pas passer d'appels téléphoniques pour le moment. Vous pouvez obtenir un code par message texte (SMS) ou choisir une autre méthode d'authentification si vous en avez une.
+        default: Nous rencontrons des difficultés techniques et nous ne pouvons pas
+          passer d'appels téléphoniques pour le moment. Vous pouvez obtenir un
+          code par message texte (SMS) ou choisir une autre méthode
+          d'authentification si vous en avez une.
+        ial2: Nous ne pouvons pas envoyer d'appels téléphoniques pour le moment. Vous
+          pouvez obtenir un code par message texte (SMS), ou vérifier votre
+          adresse par la poste.
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
           votre identité pour le moment. Veuillez réessayer plus tard.
         with_sp: "%{service_provider} doit s'assurer que c'est bien vous — et non
           quelqu'un qui se fait passer pour vous. Malheureusement, nous
-          rencontrons des difficultés techniques et ne pouvons pas vérifier votre
-          identité pour le moment. Veuillez réessayer plus tard."
+          rencontrons des difficultés techniques et ne pouvons pas vérifier
+          votre identité pour le moment. Veuillez réessayer plus tard."
         without_sp: L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
           s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
           Malheureusement, nous rencontrons des difficultés techniques et ne
