@@ -152,14 +152,7 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('renders unhandled submission failure', async () => {
-    const {
-      getByLabelText,
-      getByText,
-      getAllByText,
-      findAllByText,
-      findByRole,
-      getByRole,
-    } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
@@ -224,14 +217,7 @@ describe('document-capture/components/document-capture', () => {
       { field: 'back', message: 'Please fill in this field' },
       { message: 'An unknown error occurred' },
     ].map(toFormEntryError);
-    const {
-      getByLabelText,
-      getByText,
-      getAllByText,
-      findAllByText,
-      findAllByRole,
-      getByRole,
-    } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
@@ -436,7 +422,7 @@ describe('document-capture/components/document-capture', () => {
     const uploadError = new UploadFormEntriesError();
     uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
     const onStepChange = sinon.spy();
-    const { getByLabelText, getByText, getAllByText, findAllByText, getByRole } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture onStepChange={onStepChange} />
       </AcuantContextProvider>,

@@ -62,7 +62,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders initially with warning page and displays attempts remaining', () => {
-    const { getByRole, getByText } = render(<ReviewIssuesStep attemptsRemaining={3} />);
+    const { getByRole, getByText } = render(<ReviewIssuesStep remainingAttempts={3} />);
 
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
     expect(getByText('idv.failure.attempts.other')).to.be.ok();
@@ -72,7 +72,7 @@ describe('document-capture/components/review-issues-step', () => {
   it('renders warning page with error and displays one attempt remaining then continues on', () => {
     const { getByRole, getByLabelText, getByText } = render(
       <ReviewIssuesStep
-        attemptsRemaining={1}
+        remainingAttempts={1}
         unknownFieldErrors={[
           {
             field: 'unknown',
