@@ -193,8 +193,6 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
-
     // Make sure that the first element after a tab is what we expect it to be.
     userEvent.tab();
     const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
@@ -258,8 +256,6 @@ describe('document-capture/components/document-capture', () => {
     userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
-    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     let notices = await findAllByRole('alert');
     expect(notices[0].textContent).to.equal('Image has glare');
@@ -299,7 +295,6 @@ describe('document-capture/components/document-capture', () => {
     expect(interstitialHeading).to.be.ok();
 
     await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -468,7 +463,6 @@ describe('document-capture/components/document-capture', () => {
     expect(onStepChange.callCount).to.equal(1);
 
     await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -544,12 +538,7 @@ describe('document-capture/components/document-capture', () => {
         submit();
         expect(upload).not.to.have.been.called();
         completeUploadAsFailure();
-        const { findAllByRole, getByLabelText, getByRole, getAllByText } = renderResult;
-
-        await waitFor(() =>
-          expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw(),
-        );
-        userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+        const { findAllByRole, getByLabelText } = renderResult;
 
         const alerts = await findAllByRole('alert');
         expect(alerts).to.have.lengthOf(2);
