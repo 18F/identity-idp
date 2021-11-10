@@ -18,7 +18,6 @@ require 'telephony/pinpoint/aws_credential_builder'
 require 'telephony/pinpoint/sms_sender'
 require 'telephony/pinpoint/voice_sender'
 
-
 module Telephony
   extend SingleForwardable
 
