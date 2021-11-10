@@ -72,7 +72,7 @@ class VendorStatus
       if from_idv?
         t('vendor_outage.blocked.phone.idv')
       else
-        t('vendor_outage.blocked.phone.verify')
+        t('vendor_outage.blocked.phone.default')
       end
     end
   end
