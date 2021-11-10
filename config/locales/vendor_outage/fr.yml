@@ -1,7 +1,12 @@
 ---
 fr:
   vendor_outage:
-    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
+    alerts:
+      sms:
+        ial2: Nous ne pouvons pas envoyer de messages texte (SMS) pour le moment. Vous pouvez obtenir un code par téléphone ou vérifier votre adresse par la poste.
+      voice:
+        ial2: Nous ne pouvons pas envoyer d'appels téléphoniques pour le moment. Vous pouvez obtenir un code par message texte (SMS), ou vérifier votre adresse par la poste.
+        default: Nous rencontrons des difficultés techniques et nous ne pouvons pas passer d'appels téléphoniques pour le moment. Vous pouvez obtenir un code par message texte (SMS) ou choisir une autre méthode d'authentification si vous en avez une.
     blocked:
       idv:
         generic: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
@@ -15,4 +20,5 @@ fr:
           Malheureusement, nous rencontrons des difficultés techniques et ne
           pouvons pas vérifier votre identité pour le moment. Veuillez réessayer
           plus tard.
+    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
     working: "Nous travaillons à la résolution d'une erreur"

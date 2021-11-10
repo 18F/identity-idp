@@ -8,9 +8,11 @@ en:
           or try again later.
         default: We cannot verify phones at this time. Please use another authentication method if you have one, or try again later.
       sms:
+        ial2: We cannot send text messages (SMS) at this time. You can get a code by phone call, or verify your address by mail instead.
         default: We cannot send text messages (SMS) at this time. You can get a code by phone call, or choose another authentication method if you have one.
       voice:
-        default: We cannot send phone calls at this time. You can get a code by text message (SMS), or verify your address by mail instead.
+        ial2: We cannot send phone calls at this time. You can get a code by text message (SMS), or verify your address by mail instead.
+        default: We are having technical difficulties and cannot send phone calls at this time. You can get a code by text message (SMS), or choose another authentication method if you have one.
     blocked:
       idv:
         generic: We are having technical difficulties on our end and cannot verify your
