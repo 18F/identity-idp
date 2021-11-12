@@ -17,7 +17,6 @@ FileUtils.cp("Gemfile.lock", "Gemfile-dev.lock")
 # @hostdata_gem = { path: '../identity-hostdata' }
 # @idp_functions_gem = { path: '../identity-idp-functions' }
 # @logging_gem = { path: '../identity-logging' }
-# @telephony_gem = { path: '../identity-telephony' }
 # @validations_gem = { path: '../identity-validations' }
 # @saml_gem = { path: '../saml_idp' }
 
