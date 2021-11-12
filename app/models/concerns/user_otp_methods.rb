@@ -15,7 +15,8 @@ module UserOtpMethods
   end
 
   def generate_totp_secret
-    ROTP::Base32.random_base32(16)
+    # Generate a 20 byte (160 bit) secret
+    ROTP::Base32.random(20)
   end
 
   def authenticate_direct_otp(code)
