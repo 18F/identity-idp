@@ -7,8 +7,8 @@ if (fakeField) {
 
   const el = `<input type="hidden" name="code" id="code" class="hidden-input">`;
   fakeField.insertAdjacentHTML('afterend', el);
-  fakeField.setAttribute('name', '');
-  fakeField.setAttribute('id', '');
+  fakeField.removeAttribute('name');
+  fakeField.removeAttribute('id');
   const hiddenInput = /** @type {HTMLInputElement?} */ (document.getElementById(`code`));
   if (hiddenInput && fakeField) {
     fakeField.addEventListener('input', () => {
