@@ -6,7 +6,7 @@ AgencySeeder.new.run
 
 # add partnerships / agreements data, note that the order matters!
 if IdentityConfig.store.seed_agreements_data
-  puts '=== Seeding agreements data ===' # rubocop:disable Rails/Output
+  Rails.logger.info('=== Seeding agreements data ===')
 
   Agreements::PartnerAccountStatusSeeder.new.run
   Agreements::PartnerAccountSeeder.new.run

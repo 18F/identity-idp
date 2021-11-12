@@ -84,13 +84,19 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:error]
     wait_seconds = event.payload[:wait]
 
-    json = {
-      wait_ms: wait.to_i.in_milliseconds,
-    }
+    json = default_attributes(event, job).merge(
+      wait_ms: wait_seconds.to_i.in_milliseconds,
+    )
 
     json[:exception_class] = ex.class.name if ex
 
-    info(json.to_json)
+    if ex
+      error(json.to_json)
+    else
+      info(json.to_json)
+    end
+
+    json
   end
 
   def retry_stopped(event)

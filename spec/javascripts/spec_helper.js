@@ -38,6 +38,6 @@ global.Node = window.Node;
 global.getComputedStyle = window.getComputedStyle;
 global.self = window;
 
-useCleanDOM();
+useCleanDOM(dom);
 useConsoleLogSpy();
 useBrowserCompatibleEncrypt();

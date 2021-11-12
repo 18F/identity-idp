@@ -4,8 +4,12 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
   let(:iaa_range) { Date.new(2021, 1, 15)..Date.new(2022, 1, 14) }
 
   describe '.call' do
+    let(:aggregate) { :sum }
     subject(:result) do
-      Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(service_provider)
+      Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
+        service_provider: service_provider,
+        aggregate: aggregate,
+      )
     end
 
     context 'when the SP does not have IAA start/end dates' do
@@ -58,29 +62,62 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         )
       end
 
-      it 'counts auths across sp_return_logs and monthly_sp_auth_counts' do
-        rows = [
-          {
-            year_month: partial_month_date.strftime('%Y%m'),
-            ial: 1,
-            issuer: service_provider.issuer,
-            total_auth_count: 2,
-            iaa: service_provider.iaa,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-          {
-            year_month: full_month_date.strftime('%Y%m'),
-            ial: 1,
-            issuer: service_provider.issuer,
-            total_auth_count: 11,
-            iaa: service_provider.iaa,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-        ]
+      context 'with the :sum aggregate' do
+        let(:aggregate) { :sum }
 
-        expect(result.map(&:symbolize_keys)).to match_array(rows)
+        it 'counts auths across sp_return_logs and monthly_sp_auth_counts' do
+          rows = [
+            {
+              year_month: partial_month_date.strftime('%Y%m'),
+              ial: 1,
+              issuer: service_provider.issuer,
+              total_auth_count: 2,
+              iaa: service_provider.iaa,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              year_month: full_month_date.strftime('%Y%m'),
+              ial: 1,
+              issuer: service_provider.issuer,
+              total_auth_count: 11,
+              iaa: service_provider.iaa,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+          ]
+
+          expect(result.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+
+      context 'when the :unique aggregate' do
+        let(:aggregate) { :unique }
+
+        it 'counts the distinct users each month' do
+          rows = [
+            {
+              year_month: partial_month_date.strftime('%Y%m'),
+              ial: 1,
+              issuer: service_provider.issuer,
+              unique_users: 1,
+              iaa: service_provider.iaa,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              year_month: full_month_date.strftime('%Y%m'),
+              ial: 1,
+              issuer: service_provider.issuer,
+              unique_users: 1,
+              iaa: service_provider.iaa,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+          ]
+
+          expect(result.map(&:symbolize_keys)).to match_array(rows)
+        end
       end
     end
 
