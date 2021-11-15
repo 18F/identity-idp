@@ -127,9 +127,10 @@ module Users
     end
 
     def redirect_to_vendor_outage_if_phone_only
-      redirect_to vendor_outage_url if VendorStatus.new.all_phone_vendor_outage? &&
-                                       phone_enabled? &&
-                                       !MfaPolicy.new(current_user).multiple_factors_enabled?
+      return unless VendorStatus.new.all_phone_vendor_outage? &&
+                    phone_enabled? &&
+                    !MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to vendor_outage_path(from: :two_factor_authentication)
     end
 
     def capture_analytics_for_exception(telephony_error)
