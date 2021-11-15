@@ -106,4 +106,16 @@ describe 'idv/doc_auth/welcome.html.erb' do
       )
     end
   end
+
+  context 'phone vendor outage' do
+    before do
+      allow_any_instance_of(VendorStatus).to receive(:all_vendor_outage?).and_return(true)
+    end
+
+    it 'renders alert banner' do
+      render template: 'idv/doc_auth/welcome'
+
+      expect(rendered).to have_selector('.usa-alert.usa-alert--error')
+    end
+  end
 end
