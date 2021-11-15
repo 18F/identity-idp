@@ -97,4 +97,88 @@ describe VendorStatus do
       expect(subject.any_ial2_vendor_outage?).not_to be
     end
   end
+
+  describe '#all_vendor_outage?' do
+    it { expect(subject.all_vendor_outage?).to eq(false) }
+
+    context 'with outage on all vendors' do
+      before do
+        allow(vendor_status).to receive(:vendor_outage?).and_return(true)
+      end
+
+      it { expect(subject.all_vendor_outage?).to eq(true) }
+    end
+
+    context 'with parameters' do
+      let(:vendor) { :sms }
+
+      it { expect(subject.all_vendor_outage?([vendor])).to eq(false) }
+
+      context 'with outage on all vendors' do
+        before do
+          allow(vendor_status).to receive(:vendor_outage?).with(vendor).and_return(true)
+        end
+
+        it { expect(subject.all_vendor_outage?([vendor])).to eq(true) }
+      end
+    end
+  end
+
+  describe '#any_phone_vendor_outage?' do
+    it { expect(subject.any_phone_vendor_outage?).to eq(false) }
+
+    context 'with outage on a phone vendor' do
+      before do
+        allow(vendor_status).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it { expect(subject.any_phone_vendor_outage?).to eq(true) }
+    end
+  end
+
+  describe '#all_phone_vendor_outage?' do
+    it { expect(subject.all_phone_vendor_outage?).to eq(false) }
+
+    context 'with outage on a phone vendor' do
+      before do
+        allow(vendor_status).to receive(:vendor_outage?).and_return(false)
+        allow(vendor_status).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it { expect(subject.all_phone_vendor_outage?).to eq(false) }
+    end
+
+    context 'with outage on all phone vendors' do
+      before do
+        allow(vendor_status).to receive(:vendor_outage?).and_return(true)
+      end
+
+      it { expect(subject.all_phone_vendor_outage?).to eq(true) }
+    end
+  end
+
+  describe '#outage_message' do
+    subject(:outage_message) { vendor_status.outage_message }
+
+    context 'phone vendor outage' do
+      before do
+        allow(vendor_status).to receive(:vendor_outage?).and_return(false)
+        VendorStatus::PHONE_VENDORS.each do |vendor|
+          allow(vendor_status).to receive(:vendor_outage?).with(vendor).and_return(true)
+        end
+      end
+
+      it 'returns default phone outage message' do
+        expect(outage_message).to eq(t('vendor_outage.blocked.phone.default'))
+      end
+
+      context 'from idv' do
+        let(:from_idv) { true }
+
+        it 'returns idv phone outage message' do
+          expect(outage_message).to eq(t('vendor_outage.blocked.phone.idv'))
+        end
+      end
+    end
+  end
 end
