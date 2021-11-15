@@ -1,7 +1,5 @@
 <% title t('titles.two_factor_setup') %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice)) %>
-
 <% if @presenter.icon %>
   <%= image_tag(
         asset_url(@presenter.icon),
