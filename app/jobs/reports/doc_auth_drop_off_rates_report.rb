@@ -20,10 +20,12 @@ module Reports
 
     def generate_report
       ret = []
-      generate_blanket_report_all_sps(ret)
-      generate_blanket_reports_per_sp(ret)
-      generate_overall_report_all_sps(ret)
-      generate_overall_reports_per_sp(ret)
+      transaction_with_timeout do
+        generate_blanket_report_all_sps(ret)
+        generate_blanket_reports_per_sp(ret)
+        generate_overall_report_all_sps(ret)
+        generate_overall_reports_per_sp(ret)
+      end
       ret
     end
 
@@ -52,15 +54,15 @@ module Reports
     end
 
     def generate_blanket_report_all_sps(ret)
-      transaction_with_timeout { blanket_drop_off_rates_all_sps_all_time(ret) }
-      transaction_with_timeout { blanket_drop_off_rates_all_sps_last_30_days(ret) }
-      transaction_with_timeout { blanket_drop_off_rates_all_sps_last_24_hours(ret) }
+      blanket_drop_off_rates_all_sps_all_time(ret)
+      blanket_drop_off_rates_all_sps_last_30_days(ret)
+      blanket_drop_off_rates_all_sps_last_24_hours(ret)
     end
 
     def generate_overall_report_all_sps(ret)
-      transaction_with_timeout { overall_drop_off_rates_all_sps_all_time(ret) }
-      transaction_with_timeout { overall_drop_off_rates_all_sps_last_30_days(ret) }
-      transaction_with_timeout { overall_drop_off_rates_all_sps_last_24_hours(ret) }
+      overall_drop_off_rates_all_sps_all_time(ret)
+      overall_drop_off_rates_all_sps_last_30_days(ret)
+      overall_drop_off_rates_all_sps_last_24_hours(ret)
     end
 
     def overall_drop_off_rates_all_sps_all_time(ret)

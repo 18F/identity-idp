@@ -11,6 +11,7 @@ module Users
     def show
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
       @sp = ServiceProvider.find_by(issuer: sp_session[:issuer])
+      @email = EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
     def update

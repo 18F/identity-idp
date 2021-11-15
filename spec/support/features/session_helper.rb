@@ -171,8 +171,9 @@ module Features
       user
     end
 
-    def sign_in_user(user = create(:user))
-      signin(user.email_addresses.first.email, user.password)
+    def sign_in_user(user = create(:user), email = nil)
+      email ||= user.email_addresses.first.email
+      signin(email, user.password)
       user
     end
 

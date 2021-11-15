@@ -35,13 +35,15 @@ module Reports
     end
 
     def letters_sent_since(days_ago)
-      @results[:letters_sent_since_days][days_ago] =
-         Db::GpoConfirmationCode::LettersSentSince.call(days_ago.days.ago)
+      @results[:letters_sent_since_days][days_ago] = transaction_with_timeout do
+        Db::GpoConfirmationCode::LettersSentSince.call(days_ago.days.ago)
+      end
     end
 
     def letters_sent_and_validated_since(days_ago)
-      @results[:letters_sent_and_validated_since_days][days_ago] =
-         Db::GpoConfirmationCode::LettersSentAndVerifiedSince.call(days_ago.days.ago)
+      @results[:letters_sent_and_validated_since_days][days_ago] = transaction_with_timeout do
+        Db::GpoConfirmationCode::LettersSentAndVerifiedSince.call(days_ago.days.ago)
+      end
     end
   end
 end

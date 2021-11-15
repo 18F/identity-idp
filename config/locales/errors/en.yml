@@ -115,7 +115,7 @@ en:
       attestation_error: Sorry, but your security key doesn’t appear to be a FIDO
         security key.  Please make sure your device is listed at
         https://fidoalliance.org/certification/fido-certified-products/ and if
-        you believe the error is ours, please contact us at hello@login.gov.
+        you believe this is our error, please contact at %{link}.
       general_error: There was an error adding your hardware security key. Please try again.
       not_supported: Sorry, your browser does not support FIDO security keys. The
         latest versions of Chrome, Firefox, Edge, and Safari support FIDO
