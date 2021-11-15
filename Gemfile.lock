@@ -36,6 +36,15 @@ GIT
       pkcs11
       uuid
 
+GIT
+  remote: https://github.com/18f/redis-session-store.git
+  revision: d3f5e38d3a6173737a580d774767a0d8471b1e67
+  tag: v0.11.4-18f
+  specs:
+    redis-session-store (0.11.4.pre.18f)
+      actionpack (>= 3, < 7)
+      redis (>= 3, < 5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -475,9 +484,6 @@ GEM
     redis (4.4.0)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
-    redis-session-store (0.11.3)
-      actionpack (>= 3, < 7)
-      redis (>= 3, < 5)
     regexp_parser (2.1.1)
     reline (0.2.5)
       io-console (~> 0.5)
@@ -749,7 +755,7 @@ DEPENDENCIES
   redacted_struct
   redis (>= 3.2.0)
   redis-namespace
-  redis-session-store (>= 0.11.3)
+  redis-session-store!
   retries
   rotp (~> 6.1)
   rqrcode
