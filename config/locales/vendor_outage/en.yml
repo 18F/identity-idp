@@ -13,9 +13,9 @@ en:
         ial2: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or verify your address by mail instead.
       voice:
-        default: We are having technical difficulties and cannot send phone calls at
-          this time. You can get a code by text message (SMS), or choose another
-          authentication method if you have one.
+        default: We cannot send phone calls at this time. You can get a code by text
+          message (SMS), or choose another authentication method if you have
+          one.
         ial2: We cannot send phone calls at this time. You can get a code by text
           message (SMS), or verify your address by mail instead.
     blocked:

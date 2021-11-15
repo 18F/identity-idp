@@ -17,10 +17,9 @@ es:
           un código por medio de una llamada telefónica o, en su lugar,
           verificar su dirección por correo.
       voice:
-        default: Debido a problemas técnicos por nuestra parte, no podemos enviar
-          llamadas telefónicas en estos momentos. Puede recibir un código por
-          medio de un mensaje de texto (SMS) o elegir otro método de
-          auntentificación, si cuenta con uno.
+        default: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir
+          un código por medio de un mensaje de texto (SMS) o elegir otro método
+          de auntentificación, si cuenta con uno.
         ial2: No podemos enviar llamadas telefónicas en estos momentos. Puede recibir un
           código por medio de un mensaje de texto (SMS) o, en su lugar,
           verificar su dirección por correo.

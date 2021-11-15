@@ -16,10 +16,9 @@ fr:
           pouvez obtenir un code par téléphone ou vérifier votre adresse par la
           poste.
       voice:
-        default: Nous rencontrons des difficultés techniques et nous ne pouvons pas
-          passer d'appels téléphoniques pour le moment. Vous pouvez obtenir un
-          code par message texte (SMS) ou choisir une autre méthode
-          d'authentification si vous en avez une.
+        default: Nous ne pouvons pas envoyer d'appels téléphoniques pour le moment. Vous
+          pouvez obtenir un code par message texte (SMS) ou choisir une autre
+          méthode d'authentification si vous en avez une.
         ial2: Nous ne pouvons pas envoyer d'appels téléphoniques pour le moment. Vous
           pouvez obtenir un code par message texte (SMS), ou vérifier votre
           adresse par la poste.
