@@ -91,4 +91,34 @@ describe TwoFactorLoginOptionsPresenter do
       it { should eq account_path }
     end
   end
+
+  describe '#first_enabled_option_index' do
+    subject(:index) { presenter.first_enabled_option_index }
+
+    it 'returns first index' do
+      expect(index).to eq(0)
+    end
+
+    context 'enabled options' do
+      before do
+        create(:phone_configuration, user: user, phone: '(202) 555-1111')
+      end
+
+      it 'returns first enabled index' do
+        expect(index).to eq(0)
+      end
+    end
+
+    context 'disabled options' do
+      before do
+        create(:phone_configuration, user: user, phone: '(202) 555-1111')
+        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
+        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it 'returns first enabled index' do
+        expect(index).to eq(1)
+      end
+    end
+  end
 end

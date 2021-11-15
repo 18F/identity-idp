@@ -72,7 +72,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def first_enabled_option_index
-    options.find_index { |option| !option.disabled? }
+    options.find_index { |option| !option.disabled? } || 0
   end
 
   private
