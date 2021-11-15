@@ -3,45 +3,53 @@ require 'rails_helper'
 feature 'signing into an SP with multiple emails enabled' do
   include SamlAuthHelper
 
-  scenario 'signing in with OIDC sends the email address used to sign in' do
-    user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.reload.email_addresses.map(&:email)
+  context 'with the email scope' do
+    scenario 'signing in with OIDC sends the email address used to sign in' do
+      user = create(:user, :signed_up, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
 
-    expect(emails.count).to eq(2)
+      expect(emails.count).to eq(2)
 
-    emails.each do |email|
-      visit_idp_from_oidc_sp
-      signin(email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_agree_and_continue if current_path == sign_up_completed_path
+      emails.each do |email|
+        visit_idp_from_oidc_sp
+        signin(email, user.password)
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        click_agree_and_continue if current_path == sign_up_completed_path
 
-      expect_oidc_sp_to_receive_email(email)
+        expect_oidc_sp_to_receive_email(email)
 
-      Capybara.reset_session!
+        Capybara.reset_session!
+      end
+    end
+
+    scenario 'signing in with SAML sends the email address used to sign in' do
+      user = create(:user, :signed_up, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
+
+      expect(emails.count).to eq(2)
+
+      emails.each do |email|
+        visit authn_request
+        signin(email, user.password)
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+        click_agree_and_continue if current_path == sign_up_completed_path
+
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+        email_from_saml_response = xmldoc.attribute_value_for('email')
+
+        expect(email_from_saml_response).to eq(email)
+
+        Capybara.reset_session!
+      end
     end
   end
 
-  scenario 'signing in with SAML sends the email address used to sign in' do
-    user = create(:user, :signed_up, :with_multiple_emails)
-    emails = user.reload.email_addresses.map(&:email)
+  context 'with the all_emails scope' do
+    scenario 'signing in with OIDC sends all emails'
 
-    expect(emails.count).to eq(2)
-
-    emails.each do |email|
-      visit authn_request
-      signin(email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_agree_and_continue if current_path == sign_up_completed_path
-
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-      email_from_saml_response = xmldoc.attribute_value_for('email')
-
-      expect(email_from_saml_response).to eq(email)
-
-      Capybara.reset_session!
-    end
+    scenario 'signing in with SAML sends all emails'
   end
 
   def visit_idp_from_oidc_sp
