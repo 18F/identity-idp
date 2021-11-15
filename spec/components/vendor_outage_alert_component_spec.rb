@@ -35,10 +35,10 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
     end
 
     context 'with contextual message' do
-      subject(:context) { 'ial2' }
+      subject(:context) { :idv }
 
       it 'renders error alert with contextualized message' do
-        expect(rendered).to have_content(t('vendor_outage.alerts.sms.ial2'))
+        expect(rendered).to have_content(t('vendor_outage.alerts.sms.idv'))
       end
     end
 

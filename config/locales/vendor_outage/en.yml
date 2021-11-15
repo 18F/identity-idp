@@ -5,19 +5,19 @@ en:
       phone:
         default: We cannot verify phones at this time. Please use another authentication
           method if you have one, or try again later.
-        ial2: We cannot verify phones at this time. Please try again later or verify
-          your address by mail instead.
+        idv: We cannot verify phones at this time. Please try again later or verify your
+          address by mail instead.
       sms:
         default: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or choose another authentication method if you have one.
-        ial2: We cannot send text messages (SMS) at this time. You can get a code by
+        idv: We cannot send text messages (SMS) at this time. You can get a code by
           phone call, or verify your address by mail instead.
       voice:
         default: We cannot send phone calls at this time. You can get a code by text
           message (SMS), or choose another authentication method if you have
           one.
-        ial2: We cannot send phone calls at this time. You can get a code by text
-          message (SMS), or verify your address by mail instead.
+        idv: We cannot send phone calls at this time. You can get a code by text message
+          (SMS), or verify your address by mail instead.
     blocked:
       idv:
         generic: We are having technical difficulties on our end and cannot verify your

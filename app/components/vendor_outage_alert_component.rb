@@ -11,15 +11,15 @@ class VendorOutageAlertComponent < BaseComponent
     case outages.sort
     when [:sms, :voice]
       # i18n-tasks-use t('vendor_outage.alerts.phone.default')
-      # i18n-tasks-use t('vendor_outage.alerts.phone.ial2')
+      # i18n-tasks-use t('vendor_outage.alerts.phone.idv')
       t(context, scope: 'vendor_outage.alerts.phone', default: :default)
     when [:sms]
       # i18n-tasks-use t('vendor_outage.alerts.sms.default')
-      # i18n-tasks-use t('vendor_outage.alerts.sms.ial2')
+      # i18n-tasks-use t('vendor_outage.alerts.sms.idv')
       t(context, scope: 'vendor_outage.alerts.sms', default: :default)
     when [:voice]
       # i18n-tasks-use t('vendor_outage.alerts.voice.default')
-      # i18n-tasks-use t('vendor_outage.alerts.voice.ial2')
+      # i18n-tasks-use t('vendor_outage.alerts.voice.idv')
       t(context, scope: 'vendor_outage.alerts.voice', default: :default)
     end
   end
