@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
-import withProps from '../../../../../app/javascript/packages/document-capture/higher-order/with-props';
+import withProps from '@18f/identity-document-capture/higher-order/with-props';
 
 describe('document-capture/higher-order/with-props', () => {
   describe('passes in property to component', () => {
-    it('renders with front and back inputs', () => {
+    it('renders withProp updated component correctly', () => {
       const testProp = 'test2';
       const TestComponent = ({ test = 'test' }) => test;
       const WithPropComponent = withProps({ test: testProp })(TestComponent);
