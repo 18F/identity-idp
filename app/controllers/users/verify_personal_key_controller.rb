@@ -28,7 +28,7 @@ module Users
 
         analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
         if result.success?
-          handle_success(decrypted_pii_json: personal_key_form.decrypted_pii_json)
+          handle_success(decrypted_pii: personal_key_form.decrypted_pii)
         else
           handle_failure(result)
         end
@@ -61,9 +61,10 @@ module Users
       reactivate_account_session.start
     end
 
-    def handle_success(decrypted_pii_json:)
+    # @param [Pii::Attributes] decrypted_pii
+    def handle_success(decrypted_pii:)
       analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION)
-      reactivate_account_session.store_decrypted_pii(decrypted_pii_json)
+      reactivate_account_session.store_decrypted_pii(decrypted_pii)
       redirect_to verify_password_url
     end
 

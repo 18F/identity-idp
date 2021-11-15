@@ -56,4 +56,36 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       )
     }.to raise_error(ArgumentError)
   end
+
+  describe '#enqueue_retry' do
+    it 'formats retry message' do
+      event = double(
+        'RetryEvent',
+        payload: { wait: 1, job: double('Job', job_id: '1', queue_name: 'Default', arguments: []) },
+        duration: 1,
+        name: 'TestEvent',
+      )
+      subscriber = IdentityJobLogSubscriber.new
+      hash = subscriber.enqueue_retry(event)
+      expect(hash[:wait_ms]).to eq 1000
+      expect(hash[:duration_ms]).to eq 1
+    end
+
+    it 'includes exception if there is a failure' do
+      event = double(
+        'RetryEvent',
+        payload: {
+          wait: 1, job: double(
+            'Job', job_id: '1', queue_name: 'Default', arguments: []
+          ),
+          error: double('Exception')
+        },
+        duration: 1,
+        name: 'TestEvent',
+      )
+      subscriber = IdentityJobLogSubscriber.new
+      hash = subscriber.enqueue_retry(event)
+      expect(hash[:exception_class]).to_not be_nil
+    end
+  end
 end

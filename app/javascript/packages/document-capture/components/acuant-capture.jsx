@@ -19,12 +19,14 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useCounter from '../hooks/use-counter';
+import useCookie from '../hooks/use-cookie';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
 /** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
 /** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
+/** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
 
 /**
  * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
@@ -69,22 +71,6 @@ import './acuant-capture.scss';
  */
 
 /**
- * @typedef AcuantPassiveLiveness
- *
- * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
- */
-
-/**
- * @typedef AcuantGlobals
- *
- * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
- */
-
-/**
- * @typedef {typeof window & AcuantGlobals} AcuantGlobal
- */
-
-/**
  * @typedef AcuantCaptureProps
  *
  * @prop {string} label Label associated with file input.
@@ -95,13 +81,21 @@ import './acuant-capture.scss';
  *   metadata?: ImageAnalyticsPayload
  * )=>void} onChange Callback receiving next value on change.
  * @prop {()=>void=} onCameraAccessDeclined Camera permission declined callback.
- * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
- * supported, defaults to the Acuant environment camera capture.
+ * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
+ * camera is supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {string} name Prefix to prepend to user action analytics labels.
  */
+
+/**
+ * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
+ * happily tolerate than an HTML entity.
+ *
+ * @type {string}
+ */
+const NBSP_UNICODE = '\u00A0';
 
 /**
  * A noop function.
@@ -138,12 +132,26 @@ function getDocumentTypeLabel(documentType) {
 
 /**
  * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ * @param {string=} code
  *
  * @return {string}
  */
-export function getNormalizedAcuantCaptureFailureMessage(error) {
+export function getNormalizedAcuantCaptureFailureMessage(error, code) {
   if (isAcuantCameraAccessFailure(error)) {
     return 'User or system denied camera access';
+  }
+
+  const {
+    REPEAT_FAIL_CODE,
+    SEQUENCE_BREAK_CODE,
+  } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+
+  switch (code) {
+    case REPEAT_FAIL_CODE:
+      return 'Capture started after failure already occurred (REPEAT_FAIL_CODE)';
+    case SEQUENCE_BREAK_CODE:
+      return 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)';
+    default:
   }
 
   if (!error) {
@@ -154,9 +162,9 @@ export function getNormalizedAcuantCaptureFailureMessage(error) {
     case 'Camera not supported.':
       return 'Camera not supported';
     case 'Missing HTML elements.':
+    case "Expected div with 'acuant-camera' id":
       return 'Required page elements are not available';
     case 'already started.':
-    case 'already started':
       return 'Capture already started';
     default:
       return 'Unknown error';
@@ -273,6 +281,7 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
+  const [acuantFailureCookie, setAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -385,12 +394,13 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      const shouldStartEnvironmentCapture =
-        hasCapture && capture !== 'user' && !isForceUploading.current;
+      const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
+      const shouldStartAcuantCapture =
+        isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
       const shouldStartSelfieCapture =
         isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
-      if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
+      if (!allowUpload || shouldStartSelfieCapture || shouldStartAcuantCapture) {
         event.preventDefault();
       }
 
@@ -401,7 +411,7 @@ function AcuantCapture(
             onChangeAndResetError(dataURI);
           }),
         );
-      } else if (shouldStartEnvironmentCapture) {
+      } else if (shouldStartAcuantCapture) {
         setIsCapturingEnvironment(true);
       }
 
@@ -502,13 +512,28 @@ function AcuantCapture(
         >
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-            onImageCaptureFailure={(error) => {
+            onImageCaptureFailure={(error, code) => {
+              const {
+                SEQUENCE_BREAK_CODE,
+              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
               if (isAcuantCameraAccessFailure(error)) {
                 if (fullScreenRef.current?.focusTrap) {
                   suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
                 }
 
+                // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+                // previously failed for any reason, including declined permission. Since the cookie
+                // never expires, and since we want to re-prompt even if the user had previously
+                // declined, unset the cookie value when failure occurs for permissions.
+                setAcuantFailureCookie(null);
+
                 onCameraAccessDeclined();
+              } else if (code === SEQUENCE_BREAK_CODE) {
+                setOwnErrorMessage(
+                  `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
+                    .split(' ')
+                    .join(NBSP_UNICODE)}`,
+                );
               } else {
                 setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               }
@@ -516,7 +541,10 @@ function AcuantCapture(
               setIsCapturingEnvironment(false);
               addPageAction({
                 label: 'IdV: Image capture failed',
-                payload: { field: name, error: getNormalizedAcuantCaptureFailureMessage(error) },
+                payload: {
+                  field: name,
+                  error: getNormalizedAcuantCaptureFailureMessage(error, code),
+                },
               });
             }}
           />

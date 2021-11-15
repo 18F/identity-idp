@@ -45,15 +45,27 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   describe('getNormalizedAcuantCaptureFailureMessage', () => {
+    beforeEach(() => {
+      window.AcuantJavascriptWebSdk = {
+        START_FAIL_CODE: 'start-fail-code',
+        REPEAT_FAIL_CODE: 'repeat-fail-code',
+        SEQUENCE_BREAK_CODE: 'sequence-break-code',
+      };
+    });
+
+    afterEach(() => {
+      delete window.AcuantJavascriptWebSdk;
+    });
+
     [
-      null,
       undefined,
       'Camera not supported.',
       'already started.',
-      'already started',
       'Missing HTML elements.',
-      /** @type {MediaStreamError} */ (new Error()),
-      'nonsense',
+      new Error(),
+      "Expected div with 'acuant-camera' id",
+      'Live capture has previously failed and was called again. User was sent to manual capture.',
+      'sequence-break',
     ].forEach((error) => {
       it('returns a string', () => {
         const message = getNormalizedAcuantCaptureFailureMessage(error);
@@ -77,7 +89,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -89,7 +101,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('cancels capture if assumed support is not actually supported once ready', () => {
       const { container, getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -105,7 +117,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('renders with upload button as mobile-primary (secondary) button if acuant script fails to load', async () => {
       const { findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="/gone.js">
+          <AcuantContextProvider sdkSrc="/gone.js" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -120,7 +132,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('renders without capture button if acuant fails to initialize', async () => {
       const { findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -135,7 +147,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('renders a button when successfully loaded', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -151,7 +163,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('renders a canvas when capturing', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -169,7 +181,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('starts capturing when clicking input on supported device', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -189,7 +201,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { container, getByLabelText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -197,7 +209,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.'),
+        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
       });
 
       const button = getByLabelText('Image');
@@ -213,13 +225,42 @@ describe('document-capture/components/acuant-capture', () => {
       expect(document.activeElement).to.equal(button);
     });
 
+    it('shows sequence break error', async () => {
+      const addPageAction = sinon.spy();
+      const { container, getByLabelText, findByText } = render(
+        <AnalyticsContext.Provider value={{ addPageAction }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, 'iOS 15 sequence break', 'sequence-break-code'),
+      });
+
+      const button = getByLabelText('Image');
+      userEvent.click(button);
+
+      await findByText('doc_auth.errors.upload_error errors.messages.try_again');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(addPageAction).to.have.been.calledWith({
+        label: 'IdV: Image capture failed',
+        payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
     it('calls onCameraAccessDeclined if camera access is declined', async () => {
       const addPageAction = sinon.spy();
       const onCameraAccessDeclined = sinon.stub();
       const { container, getByLabelText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture
                 label="Image"
                 name="test"
@@ -256,7 +297,7 @@ describe('document-capture/components/acuant-capture', () => {
       });
       const { container, getByLabelText, getByTestId } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <input data-testid="outside-input" />
             <AcuantCapture
               label="Image"
@@ -283,7 +324,7 @@ describe('document-capture/components/acuant-capture', () => {
       const onChange = sinon.mock();
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -328,7 +369,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('ends the capture when the component unmounts', () => {
       const { getByText, unmount } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -348,7 +389,7 @@ describe('document-capture/components/acuant-capture', () => {
       const selfie = await getFixtureFile('doc_auth_images/selfie.jpg');
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" value={selfie} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -368,7 +409,7 @@ describe('document-capture/components/acuant-capture', () => {
       const onClick = sinon.spy();
       const { getByText, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -402,7 +443,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" glareThreshold={50}>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" glareThreshold={50}>
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -456,7 +497,11 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
+            <AcuantContextProvider
+              sdkSrc="about:blank"
+              cameraSrc="about:blank"
+              sharpnessThreshold={50}
+            >
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -508,7 +553,11 @@ describe('document-capture/components/acuant-capture', () => {
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
       const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
+          <AcuantContextProvider
+            sdkSrc="about:blank"
+            cameraSrc="about:blank"
+            sharpnessThreshold={50}
+          >
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -546,7 +595,11 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
+            <AcuantContextProvider
+              sdkSrc="about:blank"
+              cameraSrc="about:blank"
+              sharpnessThreshold={50}
+            >
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -612,7 +665,7 @@ describe('document-capture/components/acuant-capture', () => {
           value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -634,7 +687,7 @@ describe('document-capture/components/acuant-capture', () => {
           value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" capture="user" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -659,7 +712,7 @@ describe('document-capture/components/acuant-capture', () => {
           value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" allowUpload={false} />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -680,7 +733,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('still captures selfie value when upload disallowed', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" capture="user" allowUpload={false} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -699,7 +752,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('does not show hint if capture is supported', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -713,7 +766,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('shows hint if capture is not supported', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -730,7 +783,7 @@ describe('document-capture/components/acuant-capture', () => {
       const onChange = sinon.stub();
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" capture="user" onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -754,7 +807,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('does not render acuant capture canvas for environmental capture', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: false }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -769,7 +822,7 @@ describe('document-capture/components/acuant-capture', () => {
 
   it('optionally disallows upload', () => {
     const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <AcuantCapture label="Image" allowUpload={false} />
       </AcuantContextProvider>,
     );
@@ -787,7 +840,7 @@ describe('document-capture/components/acuant-capture', () => {
     const image = await getFixtureFile('doc_auth_images/id-front.jpg');
     const onChange = sinon.spy();
     const { getByLabelText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <AcuantCapture label="Image" value={image} onChange={onChange} />
       </AcuantContextProvider>,
     );
@@ -800,7 +853,7 @@ describe('document-capture/components/acuant-capture', () => {
 
   it('restricts accepted file types', () => {
     const { getByLabelText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <AcuantCapture label="Image" />
       </AcuantContextProvider>,
       { isMockClient: false },
@@ -815,7 +868,7 @@ describe('document-capture/components/acuant-capture', () => {
     const addPageAction = sinon.stub();
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
@@ -845,7 +898,7 @@ describe('document-capture/components/acuant-capture', () => {
       >
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AnalyticsContext.Provider value={{ addPageAction }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </AnalyticsContext.Provider>
@@ -890,7 +943,7 @@ describe('document-capture/components/acuant-capture', () => {
     const addPageAction = sinon.stub();
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
@@ -912,7 +965,7 @@ describe('document-capture/components/acuant-capture', () => {
     const addPageAction = sinon.stub();
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,

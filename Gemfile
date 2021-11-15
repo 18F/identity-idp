@@ -9,12 +9,10 @@ gem 'rails', '~> 6.1.4'
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
-@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.4' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.1' }
 
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
-gem 'identity-telephony', @telephony_gem
 gem 'identity_validations', @validations_gem
 gem 'saml_idp', @saml_gem
 
@@ -22,6 +20,8 @@ gem 'ahoy_matey', '~> 3.0'
 gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
+gem 'aws-sdk-pinpoint'
+gem 'aws-sdk-pinpointsmsvoice'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.9.0', require: false
 gem 'blueprinter', '~> 0.25.3'

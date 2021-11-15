@@ -1,4 +1,4 @@
-import { render as baseRender, act, cleanup } from '@testing-library/react';
+import { render as baseRender, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
@@ -61,6 +61,7 @@ export function useAcuant() {
     delete window.AcuantCamera;
     delete window.AcuantCameraUI;
     delete window.AcuantPassiveLiveness;
+    delete window.loadAcuantSdk;
   });
 
   return {
@@ -74,12 +75,29 @@ export function useAcuant() {
     } = {}) {
       window.AcuantJavascriptWebSdk = {
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
-          isSuccess ? onSuccess() : onFail(),
+          isSuccess ? onSuccess() : onFail(401, 'Server returned a 401 (missing credentials).'),
+        startWorkers: sinon.stub().callsArg(0),
+        START_FAIL_CODE: 'start-fail-code',
+        REPEAT_FAIL_CODE: 'repeat-fail-code',
+        SEQUENCE_BREAK_CODE: 'sequence-break-code',
       };
       window.AcuantCamera = { isCameraSupported, triggerCapture };
-      window.AcuantCameraUI = { start, end };
+      window.AcuantCameraUI = {
+        start: sinon.stub().callsFake((...args) => {
+          const camera = document.getElementById('acuant-camera');
+          const canvas = document.createElement('canvas');
+          canvas.id = 'acuant-ui-canvas';
+          camera.appendChild(canvas);
+          camera.dispatchEvent(new window.CustomEvent('acuantcameracreated'));
+          start(...args);
+        }),
+        end,
+      };
       window.AcuantPassiveLiveness = { startSelfieCapture };
-      act(window.onAcuantSdkLoaded);
+      window.loadAcuantSdk = () => {};
+      const sdkScript = document.querySelector('[data-acuant-sdk]');
+      sdkScript.onload();
+      sdkScript.onload = null;
     },
   };
 }

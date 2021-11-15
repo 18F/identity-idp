@@ -47,7 +47,6 @@ aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 backup_code_cost: '2000$8$1$'
-backup_code_skip_symmetric_encryption: 'false'
 country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: '290'
 doc_auth_error_sharpness_threshold: '40'
@@ -196,6 +195,7 @@ rules_of_use_updated_at: '2021-05-21T00:00:00Z'
 s3_public_reports_enabled: 'false'
 s3_reports_enabled: 'false'
 saml_secret_rotation_enabled: 'false'
+seed_agreements_data: 'true'
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
 session_check_frequency: '30'
@@ -345,6 +345,7 @@ production:
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
   secret_key_base:
+  seed_agreements_data: 'false'
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'

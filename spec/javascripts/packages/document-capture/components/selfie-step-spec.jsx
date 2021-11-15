@@ -13,7 +13,7 @@ describe('document-capture/components/selfie-step', () => {
       const onChange = sinon.stub();
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <SelfieStep onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -34,7 +34,7 @@ describe('document-capture/components/selfie-step', () => {
       const onChange = sinon.stub();
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: false }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <SelfieStep onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,

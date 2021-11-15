@@ -24,4 +24,8 @@ class FakeRequest
   def path
     'fake_path'
   end
+
+  def env
+    { 'REQUEST_METHOD' => 'GET' }
+  end
 end

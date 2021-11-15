@@ -41,14 +41,14 @@ describe ReactivateAccountSession do
 
   describe '#suspend' do
     it 'sets the reactivate account object back to its defaults' do
-      pii = {}
+      pii = Pii::Attributes.new(first_name: 'Test')
 
       @reactivate_account_session.start
       @reactivate_account_session.store_decrypted_pii(pii)
 
       expect(@reactivate_account_session.started?).to be(true)
       expect(@reactivate_account_session.personal_key?).to be(true)
-      expect(@reactivate_account_session.decrypted_pii).to be(pii)
+      expect(@reactivate_account_session.decrypted_pii).to eq(pii)
 
       @reactivate_account_session.suspend
 
@@ -60,11 +60,11 @@ describe ReactivateAccountSession do
 
   describe '#store_decrypted_pii' do
     it 'stores the supplied object in the session and toggles `personal_key` flag' do
-      pii = {}
+      pii = Pii::Attributes.new(first_name: 'Test')
       @reactivate_account_session.store_decrypted_pii(pii)
       account_reactivation_obj = user_session[:reactivate_account]
       expect(account_reactivation_obj[:personal_key]).to be(true)
-      expect(account_reactivation_obj[:pii]).to eq(pii)
+      expect(account_reactivation_obj[:pii]).to eq(pii.to_json)
     end
   end
 
@@ -85,7 +85,7 @@ describe ReactivateAccountSession do
     end
 
     it 'returns the pii stored in the session' do
-      pii = {}
+      pii = Pii::Attributes.new(first_name: 'Test')
       @reactivate_account_session.store_decrypted_pii(pii)
 
       expect(@reactivate_account_session.decrypted_pii).to eq(pii)

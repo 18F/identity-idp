@@ -3,16 +3,23 @@ import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import AcuantContext, {
+  dirname,
   Provider as AcuantContextProvider,
   DEFAULT_ACCEPTABLE_GLARE_SCORE,
   DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
 } from '@18f/identity-document-capture/context/acuant';
-import { render } from '../../../support/document-capture';
+import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/context/acuant', () => {
-  afterEach(() => {
-    delete window.AcuantJavascriptWebSdk;
-    delete window.AcuantCamera;
+  const { initialize } = useAcuant();
+
+  describe('dirname', () => {
+    it('returns the containing directory with trailing slash', () => {
+      const file = '/acuant/AcuantJavascriptWebSdk.min.js';
+      const result = dirname(file);
+
+      expect(result).to.equal('/acuant/');
+    });
   });
 
   it('provides default context value', () => {
@@ -47,7 +54,7 @@ describe('document-capture/context/acuant', () => {
     it('does not append script element', () => {
       render(
         <DeviceContext.Provider value={{ isMobile: false }}>
-          <AcuantContextProvider sdkSrc="about:blank" />
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" />
         </DeviceContext.Provider>,
       );
 
@@ -82,7 +89,7 @@ describe('document-capture/context/acuant', () => {
     it('appends script element', () => {
       render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" />
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" />
         </DeviceContext.Provider>,
       );
 
@@ -95,7 +102,12 @@ describe('document-capture/context/acuant', () => {
       const { result } = renderHook(() => useContext(AcuantContext), {
         wrapper: ({ children }) => (
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank" credentials="a" endpoint="b">
+            <AcuantContextProvider
+              sdkSrc="about:blank"
+              cameraSrc="about:blank"
+              credentials="a"
+              endpoint="b"
+            >
               {children}
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -124,21 +136,18 @@ describe('document-capture/context/acuant', () => {
           wrapper: ({ children }) => (
             <AnalyticsContext.Provider value={{ addPageAction }}>
               <DeviceContext.Provider value={{ isMobile: true }}>
-                <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+                <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                  {children}
+                </AcuantContextProvider>
               </DeviceContext.Provider>
             </AnalyticsContext.Provider>
           ),
         }));
-
-        window.AcuantJavascriptWebSdk = {
-          initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-        };
       });
 
       context('camera supported', () => {
         beforeEach(() => {
-          window.AcuantCamera = { isCameraSupported: true };
-          window.onAcuantSdkLoaded();
+          initialize({ isCameraSupported: true });
         });
 
         it('provides ready context', () => {
@@ -167,8 +176,7 @@ describe('document-capture/context/acuant', () => {
 
       context('camera not supported', () => {
         beforeEach(() => {
-          window.AcuantCamera = { isCameraSupported: false };
-          window.onAcuantSdkLoaded();
+          initialize({ isCameraSupported: false });
         });
 
         it('provides ready context', () => {
@@ -206,17 +214,15 @@ describe('document-capture/context/acuant', () => {
           wrapper: ({ children }) => (
             <AnalyticsContext.Provider value={{ addPageAction }}>
               <DeviceContext.Provider value={{ isMobile: true }}>
-                <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+                <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                  {children}
+                </AcuantContextProvider>
               </DeviceContext.Provider>
             </AnalyticsContext.Provider>
           ),
         }));
 
-        window.AcuantJavascriptWebSdk = {
-          initialize: (_credentials, _endpoint, { onFail }) =>
-            onFail(401, 'Server returned a 401 (missing credentials).'),
-        };
-        window.onAcuantSdkLoaded();
+        initialize({ isSuccess: false });
       });
 
       it('provides error context', () => {
@@ -248,16 +254,14 @@ describe('document-capture/context/acuant', () => {
       const { result } = renderHook(() => useContext(AcuantContext), {
         wrapper: ({ children }) => (
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+              {children}
+            </AcuantContextProvider>
           </DeviceContext.Provider>
         ),
       });
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
+      initialize();
 
       expect(result.current.isCameraSupported).to.be.true();
     });
@@ -265,7 +269,7 @@ describe('document-capture/context/acuant', () => {
     it('cleans up after itself on unmount', () => {
       const { unmount } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank" />
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank" />
         </DeviceContext.Provider>,
       );
 

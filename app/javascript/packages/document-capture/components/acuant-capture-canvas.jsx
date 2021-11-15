@@ -1,19 +1,11 @@
-import { useContext, useMemo, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
-import useInstanceId from '../hooks/use-instance-id';
 import useImmutableCallback from '../hooks/use-immutable-callback';
+import './acuant-capture-canvas.scss';
 
-/**
- * @enum {string}
- */
-const CaptureStatus = {
-  ALIGN: 'ALIGN',
-  MOVE_CLOSER: 'MOVE_CLOSER',
-  TAP_TO_CAPTURE: 'TAP_TO_CAPTURE',
-  CAPTURING: 'CAPTURING',
-};
+/** @typedef {import('../context/acuant').AcuantJavaScriptWebSDK} AcuantJavaScriptWebSDK */
 
 /**
  * @enum {number}
@@ -92,13 +84,14 @@ export function defineObservableProperty(object, property, onChangeCallback) {
 
 /**
  * @typedef {(
- *   | null                     // Cropping failure (SDK v11.4.3, L753)
- *   | undefined                // Cropping failure (SDK v11.4.3, L960)
- *   | 'Camera not supported.'  // Camera not supported (SDK v11.4.3, L74, L798)
- *   | 'already started.'       // Capture already started (SDK v11.4.3, L565)
- *   | 'already started'        // Capture already started (SDK v11.4.3, L580)
- *   | 'Missing HTML elements.' // Required page elements are not available (SDK v11.4.3, L568)
- *   | MediaStreamError         // User or system denied camera access (SDK v11.4.3, L544)
+ *   | undefined // Cropping failure (SDK v11.5.0, L1171)
+ *   | 'Camera not supported.' // Camera not supported (SDK v11.5.0, L978)
+ *   | 'already started.' // Capture already started (SDK v11.5.0, L724)
+ *   | 'Missing HTML elements.' // Required page elements are not available (SDK v11.5.0, L727)
+ *   | Error // User or system denied camera access (SDK v11.5.0, L673)
+ *   | "Expected div with 'acuant-camera' id" // Failure to setup due to missing element (SDK v11.5.0, L706)
+ *   | 'Live capture has previously failed and was called again. User was sent to manual capture.' // Previous failure (SDK v11.5.0, L698)
+ *   | 'sequence-break' // iOS 15 sequence break (SDK v11.5.0, L1327)
  * )} AcuantCaptureFailureError
  */
 
@@ -127,6 +120,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @typedef AcuantCamera
  *
  * @prop {(callback: (response: AcuantImage)=>void, errorCallback: function)=>void} start
+ * @prop {(callback: AcuantCameraUICallbacks)=>void} startManualCapture
  * @prop {(callback: (response: AcuantImage)=>void)=>void} triggerCapture
  * @prop {(
  *   data: string,
@@ -142,6 +136,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  *
  * @prop {AcuantCameraUI} AcuantCameraUI Acuant camera UI API.
  * @prop {AcuantCamera} AcuantCamera Acuant camera API.
+ * @prop {AcuantJavaScriptWebSDK} AcuantJavascriptWebSdk Acuant web SDK.
  */
 
 /**
@@ -189,7 +184,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  */
 
 /**
- * @typedef {(error:AcuantCaptureFailureError)=>void} AcuantFailureCallback
+ * @typedef {(error?: AcuantCaptureFailureError, code?: string) => void} AcuantFailureCallback
  */
 
 /**
@@ -198,55 +193,6 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @prop {AcuantSuccessCallback} onImageCaptureSuccess Success callback.
  * @prop {AcuantFailureCallback} onImageCaptureFailure Failure callback.
  */
-
-/**
- * Returns the computed capture status based on current capture type and frame state.
- *
- * @param {AcuantCaptureType} captureType Current capture type.
- * @param {AcuantFrameState} frameState Current frame state.
- *
- * @return {CaptureStatus}
- */
-function getCaptureStatus(captureType, frameState) {
-  // Acuant internally updates UI state to "Tap to Capture" but does _not_ invoke the
-  // `onFrameAvailable` callback, so we have to track `captureType` separately.
-  if (captureType === 'TAP' || frameState === AcuantUIState.TAP_TO_CAPTURE) {
-    return CaptureStatus.TAP_TO_CAPTURE;
-  }
-
-  switch (frameState) {
-    case AcuantDocumentState.GOOD_DOCUMENT:
-      return CaptureStatus.CAPTURING;
-    case AcuantDocumentState.SMALL_DOCUMENT:
-      return CaptureStatus.MOVE_CLOSER;
-    default:
-      return CaptureStatus.ALIGN;
-  }
-}
-
-/**
- * Returns the translation key to use for the status text based on current capture status.
- *
- * @param {CaptureStatus} captureStatus
- *
- * @return {string}
- */
-function getStatusLabelKey(captureStatus) {
-  switch (captureStatus) {
-    case CaptureStatus.CAPTURING:
-      // i18n-tasks-use t('doc_auth.accessible_labels.status_capturing')
-      return 'doc_auth.accessible_labels.status_capturing';
-    case CaptureStatus.MOVE_CLOSER:
-      // i18n-tasks-use t('doc_auth.accessible_labels.status_move_closer')
-      return 'doc_auth.accessible_labels.status_move_closer';
-    case CaptureStatus.TAP_TO_CAPTURE:
-      // i18n-tasks-use t('doc_auth.accessible_labels.status_tap_to_capture')
-      return 'doc_auth.accessible_labels.status_tap_to_capture';
-    default:
-      // i18n-tasks-use t('doc_auth.accessible_labels.status_align')
-      return 'doc_auth.accessible_labels.status_align';
-  }
-}
 
 /**
  * @param {AcuantCaptureCanvasProps} props Component props.
@@ -258,49 +204,40 @@ function AcuantCaptureCanvas({
   const { isReady } = useContext(AcuantContext);
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
-  const instanceId = useInstanceId();
-  const [hasCaptured, setHasCaptured] = useState(false);
-  const canvasRef = useRef(/** @type {(HTMLCanvasElement & {callback: function})?} */ (null));
+  const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const onCropped = useImmutableCallback(
     (response) => {
       if (response) {
         onImageCaptureSuccess(response);
       } else {
-        onImageCaptureFailure(response);
+        onImageCaptureFailure();
       }
     },
-    [onImageCaptureSuccess, onImageCaptureFailure],
+    [onImageCaptureSuccess],
   );
   const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
-  const [frameState, setFrameState] = useState(
-    /** @type {AcuantFrameState} */ (AcuantDocumentState.NO_DOCUMENT),
-  );
-  const captureStatus = useMemo(() => getCaptureStatus(captureType, frameState), [
-    captureType,
-    frameState,
-  ]);
 
   useEffect(() => {
-    if (canvasRef.current) {
+    function onAcuantCameraCreated() {
+      const canvas = document.getElementById('acuant-ui-canvas');
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
-      defineObservableProperty(canvasRef.current, 'callback', (callback) => {
+      defineObservableProperty(canvas, 'callback', (callback) => {
         setCaptureType(callback ? 'TAP' : 'AUTO');
       });
     }
+
+    cameraRef.current?.addEventListener('acuantcameracreated', onAcuantCameraCreated);
+    return () => {
+      cameraRef.current?.removeEventListener('acuantcameracreated', onAcuantCameraCreated);
+    };
   }, []);
 
   useEffect(() => {
     if (isReady) {
-      setHasCaptured(false);
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
-          onFrameAvailable(result) {
-            setFrameState(result.state);
-          },
-          onCaptured() {
-            setHasCaptured(true);
-          },
+          onCaptured() {},
           onCropped,
         },
         onImageCaptureFailure,
@@ -323,8 +260,7 @@ function AcuantCaptureCanvas({
     };
   }, [isReady]);
 
-  // The video element is never visible to the user, but it needs to be present
-  // in the DOM for the Acuant SDK to capture the feed from the camera.
+  const clickCanvas = () => document.getElementById('acuant-ui-canvas')?.click();
 
   return (
     <>
@@ -338,47 +274,24 @@ function AcuantCaptureCanvas({
           alt=""
           width="144"
           height="144"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-72px, -72px)',
-          }}
+          className="acuant-capture-canvas__spinner"
         />
       )}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <video id="acuant-player" controls autoPlay playsInline style={{ display: 'none' }} />
-      <div id="acuant-sdk-capture-view">
-        <canvas
-          id="acuant-video-canvas"
-          ref={canvasRef}
-          tabIndex={0}
-          aria-labelledby={`acuant-sdk-heading-${instanceId}`}
-          aria-describedby={`acuant-sdk-instructions-${instanceId}`}
-          style={{
-            width: '100%',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <h2 key="label" id={`acuant-sdk-heading-${instanceId}`}>
-            {t('doc_auth.accessible_labels.camera_video_capture_label')}
-          </h2>
-          {captureType !== 'TAP' && (
-            <p key="description" id={`acuant-sdk-instructions-${instanceId}`}>
-              {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
-            </p>
-          )}
-          <button key="button" type="button" disabled={captureType !== 'TAP'}>
-            {t('doc_auth.buttons.take_picture')}
-          </button>
-        </canvas>
-        <div role="status" aria-live="polite" className="usa-sr-only">
-          {isReady && !hasCaptured ? t(getStatusLabelKey(captureStatus)) : null}
-        </div>
-      </div>
+      <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
+      {captureType !== 'TAP' && (
+        <p className="usa-sr-only">
+          {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
+        </p>
+      )}
+      <div id="acuant-camera" ref={cameraRef} className="acuant-capture-canvas__camera" />
+      <button
+        type="button"
+        onClick={clickCanvas}
+        disabled={captureType !== 'TAP'}
+        className="usa-sr-only"
+      >
+        {t('doc_auth.buttons.take_picture')}
+      </button>
     </>
   );
 }

@@ -40,12 +40,14 @@ class Profile < ApplicationRecord
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
+  # @return [Pii::Attributes]
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
     decrypted_recovery_json = encryptor.decrypt(encrypted_pii_recovery, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_recovery_json)
   end
 
+  # @param [Pii::Attributes] pii
   def encrypt_pii(pii, password)
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
@@ -54,6 +56,7 @@ class Profile < ApplicationRecord
     encrypt_recovery_pii(pii)
   end
 
+  # @param [Pii::Attributes] pii
   def encrypt_recovery_pii(pii)
     personal_key = personal_key_generator.create
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
@@ -63,6 +66,7 @@ class Profile < ApplicationRecord
     @personal_key = personal_key
   end
 
+  # @param [Pii::Attributes] pii
   def self.build_compound_pii(pii)
     values = [
       pii.first_name,

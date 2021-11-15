@@ -36,16 +36,6 @@ GIT
       pkcs11
       uuid
 
-GIT
-  remote: https://github.com/18f/identity-telephony.git
-  revision: 15e9eb147900e959e130de1bf409ee1814e24ecc
-  tag: v0.4.4
-  specs:
-    identity-telephony (0.4.4)
-      aws-sdk-pinpoint
-      aws-sdk-pinpointsmsvoice
-      i18n
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -690,6 +680,8 @@ DEPENDENCIES
   autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
+  aws-sdk-pinpoint
+  aws-sdk-pinpointsmsvoice
   aws-sdk-ses (~> 1.6)
   axe-core-rspec (~> 4.2)
   base32-crockford
@@ -721,7 +713,6 @@ DEPENDENCIES
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
   identity-logging!
-  identity-telephony!
   identity_validations!
   irb
   jwt
