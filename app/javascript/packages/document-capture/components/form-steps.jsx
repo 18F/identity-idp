@@ -294,15 +294,6 @@ function FormSteps({
   );
 }
 
-/**
- * @typedef FormStepsContinueButtonProps
- *
- * @prop {string=} label
- */
-
-/**
- * @param {FormStepsContinueButtonProps} props
- */
 export function FormStepsContinueButton() {
   const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
   const { t } = useI18n();
