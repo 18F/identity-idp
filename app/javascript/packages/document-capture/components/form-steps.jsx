@@ -303,7 +303,7 @@ function FormSteps({
 /**
  * @param {FormStepsContinueButtonProps} props
  */
-export function FormStepsContinueButton({ label }) {
+export function FormStepsContinueButton() {
   const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
   const { t } = useI18n();
 
@@ -315,7 +315,7 @@ export function FormStepsContinueButton({ label }) {
       className="display-block margin-y-5"
       isVisuallyDisabled={!canContinueToNextStep}
     >
-      {label || (isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue'))}
+      {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
     </Button>
   );
 }
