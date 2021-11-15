@@ -45,7 +45,15 @@ module Users
     end
 
     def redirect_on_nothing_enabled
-      redirect_to login_two_factor_options_path
+      # "Nothing enabled" can mean one of two things:
+      # 1. The user hasn't yet set up MFA, and should be redirect to setup path.
+      # 2. The user has set up MFA, but none of the redirect options are currently available (e.g.
+      #    vendor outage), and they should be sent to the MFA selection path.
+      if MfaPolicy.new(current_user).two_factor_enabled?
+        redirect_to login_two_factor_options_path
+      else
+        redirect_to two_factor_options_url
+      end
     end
 
     def phone_enabled?
