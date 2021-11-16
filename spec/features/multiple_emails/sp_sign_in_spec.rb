@@ -11,13 +11,15 @@ feature 'signing into an SP with multiple emails enabled' do
       expect(emails.count).to eq(2)
 
       emails.each do |email|
-        visit_idp_from_oidc_sp
+        visit_idp_from_oidc_sp(scope: 'openid email')
         signin(email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_agree_and_continue if current_path == sign_up_completed_path
 
-        expect_oidc_sp_to_receive_email(email)
+        decoded_id_token = fetch_oidc_id_token_info
+        expect(decoded_id_token[:email]).to eq(email)
+        expect(decoded_id_token[:all_emails]).to be_nil
 
         Capybara.reset_session!
       end
@@ -47,17 +49,56 @@ feature 'signing into an SP with multiple emails enabled' do
   end
 
   context 'with the all_emails scope' do
-    scenario 'signing in with OIDC sends all emails'
+    scenario 'signing in with OIDC sends all emails' do
+      user = create(:user, :signed_up, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
 
-    scenario 'signing in with SAML sends all emails'
+      expect(emails.count).to eq(2)
+
+      visit_idp_from_oidc_sp(scope: 'openid all_emails')
+      signin(emails.first, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_agree_and_continue
+
+      decoded_id_token = fetch_oidc_id_token_info
+      expect(decoded_id_token[:all_emails]).to match_array(emails)
+    end
+
+    scenario 'signing in with SAML sends all emails' do
+      user = create(:user, :signed_up, :with_multiple_emails)
+      emails = user.reload.email_addresses.map(&:email)
+
+      expect(emails.count).to eq(2)
+
+      settings = saml_settings(
+        overrides: {
+          authn_context: [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}all_emails",
+          ],
+        },
+      )
+      visit authn_request(settings)
+      signin(emails.first, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_agree_and_continue
+
+      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+      emails_from_saml_response = xmldoc.attribute_node_for('all_emails').children.map(&:text)
+      expect(emails_from_saml_response).to match_array(emails)
+    end
   end
 
-  def visit_idp_from_oidc_sp
+  def visit_idp_from_oidc_sp(scope:)
     visit openid_connect_authorize_path(
       client_id: 'urn:gov:gsa:openidconnect:sp:server',
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email',
+      scope: scope,
       redirect_uri: 'http://localhost:7654/auth/result',
       state: SecureRandom.hex,
       prompt: 'select_account',
@@ -65,7 +106,7 @@ feature 'signing into an SP with multiple emails enabled' do
     )
   end
 
-  def expect_oidc_sp_to_receive_email(email)
+  def fetch_oidc_id_token_info
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
     code = redirect_params[:code]
@@ -91,18 +132,7 @@ feature 'signing into an SP with multiple emails enabled' do
 
     token_response = JSON.parse(page.body).with_indifferent_access
     id_token = token_response[:id_token]
-    decoded_id_token = JWT.decode(id_token, nil, false).first.with_indifferent_access
-
-    expect(decoded_id_token[:email]).to eq(email)
-
-    access_token = token_response[:access_token]
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
-
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
-
-    expect(userinfo_response[:email]).to eq(email)
+    JWT.decode(id_token, nil, false).first.with_indifferent_access
   end
 
   def client_private_key
