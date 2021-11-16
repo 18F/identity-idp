@@ -114,7 +114,7 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq(back: [DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES])
+        expect(response.errors).to eq(id: [DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES])
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end

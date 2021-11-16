@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
-import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import Button from './button';
-import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
+import { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
@@ -43,6 +42,7 @@ import './form-steps.scss';
  * @prop {OnErrorCallback} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
+ * @prop {FormStepError<V>[]} unknownFieldErrors Current top-level errors.
  * @prop {RegisterFieldCallback} registerField Registers field by given name, returning ref
  * assignment function.
  *
@@ -252,16 +252,12 @@ function FormSteps({
   return (
     <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
-      {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error) => (
-        <Alert key={error.message} type="error" className="margin-bottom-4">
-          <FormErrorMessage error={error} isDetail />
-        </Alert>
-      ))}
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
         <Form
           key={name}
           value={values}
           errors={activeErrors}
+          unknownFieldErrors={unknownFieldErrors}
           onChange={ifStillMounted((nextValuesPatch) => {
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),

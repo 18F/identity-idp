@@ -4,7 +4,7 @@ const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key
  * Returns string with variable substitution.
  *
  * @param {string} string Original string.
- * @param {Record<string,string>} variables Variables to replace.
+ * @param {Record<string, *>} variables Variables to replace.
  *
  * @return {string} String with variables substituted.
  */
@@ -25,7 +25,7 @@ class I18n {
    * Returns the translated string by the given key.
    *
    * @param {string} key Key to retrieve.
-   * @param {Record<string,string>=} variables Variables to substitute in string.
+   * @param {Record<string, *>=} variables Variables to substitute in string.
    *
    * @return {string} Translated string.
    */

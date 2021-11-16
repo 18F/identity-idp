@@ -56,9 +56,6 @@ describe('document-capture/components/form-steps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
-          <button type="button" onClick={() => onError(new Error())}>
-            Create Step Error
-          </button>
           <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
@@ -346,11 +343,6 @@ describe('document-capture/components/form-steps', () => {
       />,
     );
 
-    // Unknown errors show prior to title, and persist until submission.
-    const alert = getByRole('alert');
-    expect(alert.textContent).to.equal('An unknown error occurred');
-    expect(alert.nextElementSibling.textContent).to.equal('Second Title');
-
     // Field associated errors are handled by the field. There should only be one.
     const inputOne = getByLabelText('Second Input One');
     const inputTwo = getByLabelText('Second Input Two');
@@ -366,9 +358,6 @@ describe('document-capture/components/form-steps', () => {
     await userEvent.type(inputOne, 'one');
     expect(inputOne.matches('[data-is-error]')).to.be.false();
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
-
-    // Unknown errors should still be present.
-    expect(getByRole('alert')).to.be.ok();
 
     // Default required validation should still happen and take the place of any unknown errors.
     userEvent.click(getByText('forms.buttons.submit.default'));
@@ -397,16 +386,6 @@ describe('document-capture/components/form-steps', () => {
     userEvent.type(inputOne, 'one');
 
     expect(inputOne.hasAttribute('data-is-error')).to.be.true();
-  });
-
-  it('renders and moves focus to step errors', () => {
-    const steps = [STEPS[1]];
-
-    const { getByRole } = render(<FormSteps steps={steps} />);
-    const button = getByRole('button', { name: 'Create Step Error' });
-    userEvent.click(button);
-
-    expect(getByRole('alert')).to.equal(document.activeElement);
   });
 
   it('provides context', () => {

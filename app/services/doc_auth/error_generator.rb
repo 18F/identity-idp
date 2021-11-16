@@ -41,6 +41,7 @@ module DocAuth
       'Issue Date Valid': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
       'Layout Valid': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Near-Infrared Response': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
+      'Photo Printing': {type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
       'Physical Document Presence': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Sex Crosscheck': { type: ID, msg_key: Errors::SEX_CHECK },
       'Visible Color Response': { type: ID, msg_key: Errors::VISIBLE_COLOR_CHECK },
@@ -78,9 +79,11 @@ module DocAuth
           when ID
             errors[ID] = Set[self.class.general_error(false)]
           when FRONT
-            errors[FRONT] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
+            errors[ID] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
+            errors.delete(FRONT)
           when BACK
-            errors[BACK] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
+            errors[ID] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
+            errors.delete(BACK)
           end
         elsif error_fields.length > 1
           return self.class.wrapped_general_error(liveness_enabled) if error_fields.include?(SELFIE)
