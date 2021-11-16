@@ -41,6 +41,7 @@ import useDidUpdateEffect from '../hooks/use-did-update-effect';
  * @type {DocumentSide[]}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
+const DISPLAY_ATTEMPTS = 3;
 
 /**
  * @param {Partial<ReviewIssuesStepValue>=} value
@@ -189,7 +190,7 @@ function ReviewIssuesStep({
       {!!unknownFieldErrors &&
         unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
-      {remainingAttempts <= 3 && (
+      {remainingAttempts <= DISPLAY_ATTEMPTS && (
         <p>
           <strong>
             {remainingAttempts === 1

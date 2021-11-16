@@ -56,9 +56,6 @@ describe('document-capture/components/form-steps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
-          <button type="button" onClick={() => onError(new Error())}>
-            Create Step Error
-          </button>
           <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
