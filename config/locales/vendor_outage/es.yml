@@ -44,5 +44,6 @@ es:
         idv: No podemos verificar teléfonos en estos momentos. Por favor, inténtelo
           nuevamente más tarde o, en lugar de ello, verifique su dirección por
           correo.
+    get_updates: Obtenga actualizaciones
     get_updates_on_status_page: Reciba actualizaciones en nuestra página de estado
     working: Estamos trabajando para corregir un error
