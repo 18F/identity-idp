@@ -40,6 +40,14 @@ RSpec.describe VendorOutageAlertComponent, type: :component do
       it 'renders error alert with contextualized message' do
         expect(rendered).to have_content(t('vendor_outage.alerts.sms.idv'))
       end
+
+      context 'with unknown contextual message' do
+        subject(:context) { :unknown }
+
+        it 'renders error alert with default message' do
+          expect(rendered).to have_content(t('vendor_outage.alerts.sms.default'))
+        end
+      end
     end
 
     context 'constrained to only_if_all' do
