@@ -90,14 +90,4 @@ describe Telephony::AlertSender do
       expect(last_message.body).to eq(I18n.t('telephony.personal_key_sign_in_notice'))
     end
   end
-
-  describe 'send_help_keyword_response' do
-    it 'sends the correct message' do
-      subject.send_help_keyword_response(to: recipient, country_code: 'US')
-
-      last_message = Telephony::Test::Message.messages.last
-      expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.help_keyword_response'))
-    end
-  end
 end
