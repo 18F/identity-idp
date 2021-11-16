@@ -34,6 +34,7 @@ class AttributeAsserter
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
+    add_all_emails(attrs) if bundle.include? :all_emails
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs)
@@ -162,6 +163,14 @@ class AttributeAsserter
   def add_email(attrs)
     attrs[:email] = {
       getter: ->(principal) { EmailContext.new(principal).last_sign_in_email_address.email },
+      name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
+      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+    }
+  end
+
+  def add_all_emails(attrs)
+    attrs[:all_emails] = {
+      getter: ->(principal) { principal.confirmed_email_addresses.map(&:email) },
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }

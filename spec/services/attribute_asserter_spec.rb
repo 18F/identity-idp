@@ -517,6 +517,23 @@ describe AttributeAsserter do
         end
       end
 
+      context 'custom bundle includes all_emails' do
+        before do
+          create(:email_address, user: user)
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
+            %w[all_emails],
+          )
+          subject.build
+        end
+
+        it 'includes all the user email addresses' do
+          all_emails_getter = ial1_user.asserted_attributes[:all_emails][:getter]
+          emails = all_emails_getter.call(user)
+          expect(emails.length).to eq(2)
+          expect(emails).to match_array(user.confirmed_email_addresses.map(&:email))
+        end
+      end
+
       context 'custom bundle includes email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
