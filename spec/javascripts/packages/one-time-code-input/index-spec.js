@@ -104,4 +104,32 @@ describe('OneTimeCodeInput', () => {
       expect(navigator.credentials.get).not.to.have.been.called();
     });
   });
+
+  context('Otp Hidden input created', () => {
+    let originalIsWebOTPSupported;
+    let originalCredentials;
+    const onSubmit = sandbox.stub().callsFake((event) => event.preventDefault());
+
+    beforeEach(() => {
+      originalIsWebOTPSupported = OneTimeCodeInput.isWebOTPSupported;
+      OneTimeCodeInput.isWebOTPSupported = true;
+      originalCredentials = navigator.credentials;
+      navigator.credentials = { get: sandbox.stub().resolves({ code: '123456' }) };
+      window.addEventListener('submit', onSubmit);
+    });
+
+    afterEach(() => {
+      OneTimeCodeInput.isWebOTPSupported = originalIsWebOTPSupported;
+      navigator.credentials = originalCredentials;
+      window.removeEventListener('submit', onSubmit);
+    });
+
+    context('in form', () => {
+      it('calls dispatch event', async () => {
+        const otcInput = initialize({ inForm: true });
+
+        expect(otcInput.elements.input.dispatchEvent).to.have.been.called
+      });
+    });
+  })
 });
