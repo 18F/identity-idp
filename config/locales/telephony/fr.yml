@@ -45,17 +45,9 @@ fr:
           plus tard.
         voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
           bon indicatif international ou régional.
-    help_keyword_response: Obtenez de l'aide à l'adresse www.login.gov/help ou
-      contactez-nous à l'adresse www.login.gov/contact.
-    join_keyword_response: 123456 est votre code de confirmation login.gov.
-      Utilisez-le pour confirmer votre numéro de téléphone. Ce code expirera
-      dans 5 minutes.
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
       votre compte login.gov. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
       connecter à votre compte login.gov. Si ce n’était pas vous, changez votre
       mot de passe.
-    stop_keyword_response: Vous vous êtes désinscrit et ne recevrez plus d'alertes
-      de login.gov. Pour vous réabonner, connectez-vous ou créez un compte.
-      Besoin d'aide? www.login.gov/help

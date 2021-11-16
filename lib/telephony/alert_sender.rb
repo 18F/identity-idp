@@ -41,27 +41,6 @@ module Telephony
       response
     end
 
-    def send_join_keyword_response(to:, country_code:)
-      message = I18n.t('telephony.join_keyword_response')
-      response = adapter.send(message: message, to: to, country_code: country_code)
-      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
-      response
-    end
-
-    def send_stop_keyword_response(to:, country_code:)
-      message = I18n.t('telephony.stop_keyword_response')
-      response = adapter.send(message: message, to: to, country_code: country_code)
-      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
-      response
-    end
-
-    def send_help_keyword_response(to:, country_code:)
-      message = I18n.t('telephony.help_keyword_response')
-      response = adapter.send(message: message, to: to, country_code: country_code)
-      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
-      response
-    end
-
     private
 
     def adapter

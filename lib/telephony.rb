@@ -57,9 +57,6 @@ module Telephony
                  :send_doc_auth_link,
                  :send_personal_key_regeneration_notice,
                  :send_personal_key_sign_in_notice,
-                 :send_join_keyword_response,
-                 :send_stop_keyword_response,
-                 :send_help_keyword_response,
                  :send_account_reset_notice,
                  :send_account_reset_cancellation_notice
 
