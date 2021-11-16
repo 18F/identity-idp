@@ -91,16 +91,6 @@ describe Telephony::AlertSender do
     end
   end
 
-  describe 'send_join_keyword_response' do
-    it 'sends the correct message' do
-      subject.send_join_keyword_response(to: recipient, country_code: 'US')
-
-      last_message = Telephony::Test::Message.messages.last
-      expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.join_keyword_response'))
-    end
-  end
-
   describe 'send_stop_keyword_response' do
     it 'sends the correct message' do
       subject.send_stop_keyword_response(to: recipient, country_code: 'US')
@@ -137,22 +127,6 @@ describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(I18n.t('telephony.help_keyword_response'))
-    end
-  end
-
-  context 'with the pinpoint adapter enabled' do
-    let(:configured_adapter) { :pinpoint }
-
-    it 'uses the poinpoint adapter to send messages' do
-      adapter = instance_double(Telephony::Pinpoint::SmsSender)
-      expect(adapter).to receive(:send).with(
-        message: I18n.t('telephony.join_keyword_response'),
-        to: recipient,
-        country_code: 'US',
-      )
-      expect(Telephony::Pinpoint::SmsSender).to receive(:new).and_return(adapter)
-
-      subject.send_join_keyword_response(to: recipient, country_code: 'US')
     end
   end
 end
