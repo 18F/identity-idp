@@ -19,15 +19,15 @@ class OneTimeCodeInput {
   }
 
   createHiddenInput() {
-    const input = this.elements.input
+    const { input } = this.elements;
     const hiddenInput = /** @type {HTMLInputElement} */ (document.createElement('input'));
     hiddenInput.name = input.name;
     hiddenInput.value = input.value;
     hiddenInput.type = 'hidden';
+    this.elements.hiddenInput = hiddenInput;
     /** @type {HTMLElement} */ (input.parentNode).insertBefore(hiddenInput, input);
     input.removeAttribute('name');
     input.addEventListener('input', () => {
-      debugger
       hiddenInput.value = input.value;
     });
   }
@@ -50,7 +50,6 @@ class OneTimeCodeInput {
       });
 
       input.value = code;
-      debugger
       input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
     } catch {
       // Thrown errors may be expected if:

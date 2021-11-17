@@ -1,5 +1,7 @@
 import OneTimeCodeInput from '@18f/identity-one-time-code-input';
 import { waitFor } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
+import { expect } from 'chai';
 import { useSandbox } from '../../support/sinon';
 
 describe('OneTimeCodeInput', () => {
@@ -125,11 +127,13 @@ describe('OneTimeCodeInput', () => {
     });
 
     context('in form', () => {
-      it('calls dispatch event', async () => {
+      it('syncs text to hidden input', () => {
         const otcInput = initialize({ inForm: true });
+        const { input, hiddenInput } = otcInput.elements;
+        userEvent.type(input, '134567');
 
-        expect(otcInput.elements.input.dispatchEvent).to.have.been.called
+        expect(hiddenInput.value).to.eq('134567');
       });
     });
-  })
+  });
 });
