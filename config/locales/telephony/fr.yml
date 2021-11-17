@@ -49,5 +49,5 @@ fr:
       votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
-      connecter à votre compte %{app_name}. Si ce n’était pas vous, changez votre
-      mot de passe.
+      connecter à votre compte %{app_name}. Si ce n’était pas vous, changez
+      votre mot de passe.
