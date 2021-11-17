@@ -107,7 +107,7 @@ describe('OneTimeCodeInput', () => {
     });
   });
 
-  context('Otp Hidden input created', () => {
+  describe('Otp Hidden input created', () => {
     let originalIsWebOTPSupported;
     let originalCredentials;
     const onSubmit = sandbox.stub().callsFake((event) => event.preventDefault());

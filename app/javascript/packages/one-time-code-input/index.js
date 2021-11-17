@@ -9,10 +9,10 @@ class OneTimeCodeInput {
     this.options = {
       transport: /** @type {OTPCredentialTransportType=} */ (input.dataset.transport),
     };
-    this.createHiddenInput();
   }
 
   bind() {
+    this.createHiddenInput();
     if (OneTimeCodeInput.isWebOTPSupported && this.options.transport) {
       this.receive(this.options.transport);
     }
