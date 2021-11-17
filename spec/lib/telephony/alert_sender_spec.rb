@@ -14,7 +14,7 @@ describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_reset_notice'),
+        I18n.t('telephony.account_reset_notice', app_name: APP_NAME),
       )
     end
   end
@@ -25,7 +25,9 @@ describe Telephony::AlertSender do
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.account_reset_cancellation_notice'))
+      expect(last_message.body).to eq(
+        I18n.t('telephony.account_reset_cancellation_notice', app_name: APP_NAME),
+      )
     end
   end
 
@@ -77,7 +79,9 @@ describe Telephony::AlertSender do
 
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
-      expect(last_message.body).to eq(I18n.t('telephony.personal_key_regeneration_notice'))
+      expect(last_message.body).to eq(
+        I18n.t('telephony.personal_key_regeneration_notice', app_name: APP_NAME),
+      )
     end
   end
 
