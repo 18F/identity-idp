@@ -1,16 +1,16 @@
 ---
 fr:
   telephony:
-    account_reset_cancellation_notice: Votre demande de suppression de votre compte login.gov a été annulée.
-    account_reset_notice: Comme demandé, votre compte login.gov sera supprimé dans
+    account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
+    account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans
       les 24 heures. Vous ne voulez pas supprimer votre compte? Connectez-vous à
-      votre compte login.gov pour le annuler.
+      votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
         %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de login.gov est,
+      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
         %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
         expirera dans %{expiration} minutes.
     confirmation_otp:
@@ -18,7 +18,7 @@ fr:
         %{app_name}: Votre code de sécurité est %{code}. Il est valable pendant %{expiration} minutes. Vous ne devez jamais partager ce code avec personne.
 
         @%{domain} #%{code}
-      voice: Bonjour! Votre code de sécurité à utilisation unique de login.gov est,
+      voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
         %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
         expirera dans %{expiration} minutes.
     doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
@@ -46,8 +46,8 @@ fr:
         voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
           bon indicatif international ou régional.
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
-      votre compte login.gov. Si vous ne l'avez pas demandée, réinitialisez
+      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
-      connecter à votre compte login.gov. Si ce n’était pas vous, changez votre
+      connecter à votre compte %{app_name}. Si ce n’était pas vous, changez votre
       mot de passe.
