@@ -38,7 +38,7 @@ module Idv
       end
 
       def application
-        identity&.friendly_name || 'login.gov'
+        identity&.friendly_name || APP_NAME
       end
 
       def send_user_to_email_sent_step

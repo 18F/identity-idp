@@ -30,7 +30,7 @@ describe AccountReset::Cancel do
         AccountReset::Cancel.new(token).call
 
         expect(Telephony::Test::Message.messages.last.body).to eq(
-          I18n.t('telephony.account_reset_cancellation_notice'),
+          I18n.t('telephony.account_reset_cancellation_notice', app_name: APP_NAME),
         )
       end
 
