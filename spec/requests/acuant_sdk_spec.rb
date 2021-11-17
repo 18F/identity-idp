@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe 'requesting acuant SDK assets' do
-  base_urls = ['/acuant/11.4.3', '/acuant/11.5.0']
+  base_urls = ['/acuant/11.4.3', '/acuant/11.5.0', '/acuant/11.5.1']
 
   base_urls.each do |base_url|
-    min_js = base_url == '/acuant/11.5.0' ?
+    min_js = base_url != '/acuant/11.4.3' ?
       "#{base_url}/AcuantImageWorker.min.js" :
       "#{base_url}/AcuantImageProcessingWorker.min.js"
     context min_js do
@@ -24,7 +24,7 @@ describe 'requesting acuant SDK assets' do
       end
     end
 
-    wasm_js = base_url == '/acuant/11.5.0' ?
+    wasm_js = base_url != '/acuant/11.4.3' ?
       "#{base_url}/AcuantImageService.wasm" :
       "#{base_url}/AcuantImageProcessingWorker.wasm"
     context wasm_js do
