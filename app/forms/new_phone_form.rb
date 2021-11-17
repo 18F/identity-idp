@@ -33,11 +33,11 @@ class NewPhoneForm
   end
 
   def delivery_preference_sms?
-    true
+    !VendorStatus.new.vendor_outage?(:sms)
   end
 
   def delivery_preference_voice?
-    false
+    VendorStatus.new.vendor_outage?(:sms)
   end
 
   def already_has_phone?

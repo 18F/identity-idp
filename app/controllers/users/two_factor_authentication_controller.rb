@@ -3,6 +3,7 @@ module Users
     include TwoFactorAuthenticatable
 
     before_action :check_remember_device_preference
+    before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
 
     def show
       service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
@@ -33,7 +34,7 @@ module Users
     end
 
     def phone_redirect
-      return unless phone_enabled?
+      return unless phone_enabled? && !VendorStatus.new.any_phone_vendor_outage?
       validate_otp_delivery_preference_and_send_code
       true
     end
@@ -44,7 +45,15 @@ module Users
     end
 
     def redirect_on_nothing_enabled
-      redirect_to two_factor_options_url
+      # "Nothing enabled" can mean one of two things:
+      # 1. The user hasn't yet set up MFA, and should be redirected to setup path.
+      # 2. The user has set up MFA, but none of the redirect options are currently available (e.g.
+      #    vendor outage), and they should be sent to the MFA selection path.
+      if MfaPolicy.new(current_user).two_factor_enabled?
+        redirect_to login_two_factor_options_path
+      else
+        redirect_to two_factor_options_url
+      end
     end
 
     def phone_enabled?
@@ -115,6 +124,13 @@ module Users
         otp_delivery_preference: phone_configuration.delivery_preference,
         reauthn: reauthn?,
       )
+    end
+
+    def redirect_to_vendor_outage_if_phone_only
+      return unless VendorStatus.new.all_phone_vendor_outage? &&
+                    phone_enabled? &&
+                    !MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to vendor_outage_path(from: :two_factor_authentication)
     end
 
     def capture_analytics_for_exception(telephony_error)

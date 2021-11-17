@@ -26,6 +26,10 @@ module TwoFactorAuthentication
       ''
     end
 
+    def disabled?
+      false
+    end
+
     private
 
     def option_mode

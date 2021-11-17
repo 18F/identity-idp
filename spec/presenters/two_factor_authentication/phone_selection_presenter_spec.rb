@@ -36,4 +36,18 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       end
     end
   end
+
+  describe '#disabled?' do
+    let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
+
+    it { expect(presenter.disabled?).to eq(false) }
+
+    context 'all phone vendor outage' do
+      before do
+        allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+      end
+
+      it { expect(presenter.disabled?).to eq(true) }
+    end
+  end
 end

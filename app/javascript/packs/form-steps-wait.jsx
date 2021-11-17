@@ -106,7 +106,8 @@ export class FormStepsWait {
         this.scheduleNextPollFetch();
       } else {
         const message = getPageErrorMessage(dom);
-        if (message) {
+        const isSamePage = new URL(response.url).pathname === window.location.pathname;
+        if (message && isSamePage) {
           this.renderError(message);
           this.stopSpinner();
         } else {

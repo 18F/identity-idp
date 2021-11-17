@@ -1,4 +1,7 @@
 <% title t('titles.phone_setup') %>
+
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+
 <%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, class: 'margin-bottom-2' %>
 
 <h1><%= t('titles.phone_setup') %></h1>

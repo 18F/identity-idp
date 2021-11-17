@@ -1,0 +1,6 @@
+<% if content %>
+  <%= render(AlertComponent.new(type: :error, class: 'margin-bottom-4')) do %>
+    <%= content %>
+    <%= new_window_link_to t('vendor_outage.get_updates'), StatusPage.base_url %>
+  <% end %>
+<% end %>

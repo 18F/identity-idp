@@ -1,4 +1,6 @@
 class VendorStatus
+  include ActionView::Helpers::TranslationHelper
+
   def initialize(from: nil, from_idv: nil, sp: nil)
     @from = from
     @from_idv = from_idv
@@ -6,7 +8,8 @@ class VendorStatus
   end
 
   IAL2_VENDORS = %i[acuant lexisnexis_instant_verify lexisnexis_trueid].freeze
-  ALL_VENDORS = (IAL2_VENDORS + %i[sms voice]).freeze
+  PHONE_VENDORS = %i[sms voice].freeze
+  ALL_VENDORS = (IAL2_VENDORS + PHONE_VENDORS).freeze
 
   def vendor_outage?(vendor)
     status = case vendor
@@ -30,8 +33,20 @@ class VendorStatus
     vendors.any? { |vendor| vendor_outage?(vendor) }
   end
 
+  def all_vendor_outage?(vendors = ALL_VENDORS)
+    vendors.all? { |vendor| vendor_outage?(vendor) }
+  end
+
   def any_ial2_vendor_outage?
     any_vendor_outage?(IAL2_VENDORS)
+  end
+
+  def any_phone_vendor_outage?
+    any_vendor_outage?(PHONE_VENDORS)
+  end
+
+  def all_phone_vendor_outage?
+    all_vendor_outage?(PHONE_VENDORS)
   end
 
   def from_idv?
@@ -46,16 +61,19 @@ class VendorStatus
     if any_ial2_vendor_outage?
       if from_idv?
         if sp
-          return I18n.t(
-            'vendor_outage.idv_blocked.with_sp',
-            service_provider: sp.friendly_name,
-          )
+          t('vendor_outage.blocked.idv.with_sp', service_provider: sp.friendly_name)
         else
-          return I18n.t('vendor_outage.idv_blocked.without_sp')
+          t('vendor_outage.blocked.idv.without_sp')
         end
+      else
+        t('vendor_outage.blocked.idv.generic')
       end
-
-      return I18n.t('vendor_outage.idv_blocked.generic')
+    elsif any_phone_vendor_outage?
+      if from_idv?
+        t('vendor_outage.blocked.phone.idv')
+      else
+        t('vendor_outage.blocked.phone.default')
+      end
     end
   end
 

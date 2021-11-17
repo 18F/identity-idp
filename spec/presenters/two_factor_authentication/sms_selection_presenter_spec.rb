@@ -26,4 +26,18 @@ describe TwoFactorAuthentication::SmsSelectionPresenter do
       end
     end
   end
+
+  describe '#disabled?' do
+    let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
+
+    it { expect(subject.disabled?).to eq(false) }
+
+    context 'sms vendor outage' do
+      before do
+        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it { expect(subject.disabled?).to eq(true) }
+    end
+  end
 end

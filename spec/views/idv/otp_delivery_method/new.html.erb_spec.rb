@@ -28,4 +28,20 @@ describe 'idv/otp_delivery_method/new.html.erb' do
       expect(rendered).not_to have_link(t('idv.troubleshooting.options.verify_by_mail'))
     end
   end
+
+  context 'phone vendor outage' do
+    before do
+      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).and_return(false)
+      allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+    end
+
+    it 'renders alert banner' do
+      expect(rendered).to have_selector('.usa-alert.usa-alert--error')
+    end
+
+    it 'disables problematic vendor option' do
+      expect(rendered).to have_field('otp_delivery_preference', with: :voice, disabled: false)
+      expect(rendered).to have_field('otp_delivery_preference', with: :sms, disabled: true)
+    end
+  end
 end

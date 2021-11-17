@@ -71,6 +71,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     end
   end
 
+  def first_enabled_option_index
+    options.find_index { |option| !option.disabled? } || 0
+  end
+
   private
 
   def account_reset_link

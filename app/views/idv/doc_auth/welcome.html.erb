@@ -1,5 +1,7 @@
 <% title t('titles.doc_auth.verify') %>
 
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], only_if_all: true, context: :idv)) %>
+
 <% step = 0 %>
 
 <%= render 'shared/maintenance_window_alert' do %>
