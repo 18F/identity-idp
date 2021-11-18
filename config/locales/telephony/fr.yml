@@ -21,21 +21,21 @@ fr:
       voice: Bonjour! Votre code de sécurité à utilisation unique de %{app_name} est,
         %{code}, de nouveau, votre code de sécurité est, %{code}, Ce code
         expirera dans %{expiration} minutes.
-    doc_auth_link: "%{link} Vous avez demandé à vérifier votre identité sur un
-      téléphone mobile. S'il vous plaît prendre une photo de votre identité
-      émise par l'état"
+    doc_auth_link: '%{link} Vous avez demandé à vérifier votre identité sur un
+      téléphone mobile. S’il vous plaît prendre une photo de votre identité
+      émise par l’état'
     error:
       friendly_message:
-        duplicate_endpoint: Le numéro de téléphone entré n'est pas valide.
-        generic: Échec de l'envoi de votre code de sécurité.
+        duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
+        generic: Échec de l’envoi de votre code de sécurité.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
           charge. Veuillez essayer par SMS si vous possédez un téléphone
           disposant de cette fonction.
-        invalid_phone_number: Le numéro de téléphone saisi n'est pas valide.
+        invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
         opt_out: Le numéro de téléphone entré a désactivé les messages texte.
-        permanent_failure: Le numéro de téléphone entré n'est pas valide.
+        permanent_failure: Le numéro de téléphone entré n’est pas valide.
         sms_unsupported: Le numéro de téléphone saisi ne prend pas en charge les
-          messages textuels. Veuillez essayer l'option d'appel téléphonique.
+          messages textuels. Veuillez essayer l’option d’appel téléphonique.
         temporary_failure: Nous rencontrons des difficultés techniques. Veuillez
           réessayer plus tard.
         throttled: Ce nombre connaît un volume de messages élevé. Veuillez réessayer
@@ -46,7 +46,7 @@ fr:
         voice_unsupported: Numéro de téléphone invalide. Vérifiez que vous avez entré le
           bon indicatif international ou régional.
     personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour
-      votre compte %{app_name}. Si vous ne l'avez pas demandée, réinitialisez
+      votre compte %{app_name}. Si vous ne l’avez pas demandée, réinitialisez
       votre mot de passe.
     personal_key_sign_in_notice: Votre clé personnelle a été utilisée pour vous
       connecter à votre compte %{app_name}. Si ce n’était pas vous, changez

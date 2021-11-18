@@ -3,12 +3,12 @@ fr:
   doc_auth:
     accessible_labels:
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
-      camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
+      camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d’identité
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
     buttons:
       change_address: Changement
-      change_address_label: Changement d'adresse
+      change_address_label: Changement d’adresse
       change_ssn: Changement
       change_ssn_label: Changement de numéro de sécurité sociale
       continue: Continuer
@@ -67,7 +67,7 @@ fr:
           d’identité. Essayez de prendre de nouvelles photos.
       camera:
         blocked: Votre appareil photo est bloqué
-        blocked_detail: Nous n'avons pas la permission d'accéder à l'appareil photo.
+        blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo.
           Veuillez vérifier les paramètres de votre navigateur ou de votre
           système, recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
@@ -106,13 +106,13 @@ fr:
           photo est désactivé puis essayez de prendre de nouvelles photos.
       http:
         image_load: Il y a un problème avec votre fichier image. Veuillez prendre de
-          nouvelles photos de votre pièce d'identité et réessayer.
+          nouvelles photos de votre pièce d’identité et réessayer.
         image_size: La taille de votre image est trop grande ou trop petite. Veuillez
-          ajouter des images de votre pièce d'identité d'environ 2025 x 1275
+          ajouter des images de votre pièce d’identité d’environ 2025 x 1275
           pixels.
-        pixel_depth: La profondeur de pixel de votre fichier image n'est pas supportée.
-          Veuillez prendre de nouvelles photos de votre pièce d'identité et
-          réessayer. La profondeur de pixel de l'image prise en charge est de 24
+        pixel_depth: La profondeur de pixel de votre fichier image n’est pas supportée.
+          Veuillez prendre de nouvelles photos de votre pièce d’identité et
+          réessayer. La profondeur de pixel de l’image prise en charge est de 24
           bits RGB.
       no_camera:
         explanation: Pour continuer, connectez-vous à votre compte %{app_name} sur tout
@@ -150,7 +150,7 @@ fr:
       address: Mettre à jour votre adresse postale
       back: Verso
       capture_complete: Nous avons vérifié votre carte d’identité délivrée par l’État
-      capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d'identité?
+      capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
@@ -215,7 +215,7 @@ fr:
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
         nom, date de naissance et adresse. Votre numéro de sécurité sociale est
         crypté. Avec votre accord, nous partageons ce informations auprès de
-        l'agence gouvernementale à laquelle vous essayez d'accéder pour vérifier
+        l’agence gouvernementale à laquelle vous essayez d’accéder pour vérifier
         votre identité.
       tag: Recommandation
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
@@ -238,8 +238,8 @@ fr:
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
       verifying: Vérification…
-      welcome_html: "%{sp_name} doit s'assurer que vous êtes bien vous, et non
-        quelqu'un qui se fait passer pour vous."
+      welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
+        quelqu’un qui se fait passer pour vous.'
     instructions:
       bullet1: Votre carte d’identité émise par l’État
       bullet1a: Un appareil équipé d’une caméra
@@ -273,7 +273,7 @@ fr:
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
-      text3: Il n'est pas nécessaire que vous soyez le titulaire principal du compte
+      text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte
         de votre forfait téléphonique. Si votre numéro de téléphone ne
         fonctionne pas, nous pouvons vous envoyer un code de vérification par
         courrier.
@@ -282,7 +282,7 @@ fr:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
       capture_troubleshooting_clean: Assurez-vous que le code-barres ne soit pas
         endommagé ou sale et que toutes les informations figurant sur votre
-        pièce d'identité soient lisibles.
+        pièce d’identité soient lisibles.
       capture_troubleshooting_clean_image: Verso de la carte d’identité
       capture_troubleshooting_glare: La photo que vous avez ajoutée est éblouissante.
       capture_troubleshooting_lead: 'Voici quelques conseils pour réussir votre photo:'
@@ -291,7 +291,7 @@ fr:
         éblouissements, les ombres et les reflets.
       capture_troubleshooting_lighting_image: Soleil avec nuage
       capture_troubleshooting_surface: Prenez une photo sur une surface plane avec un
-        fond sombre. Assurez-vous que les bords de votre pièce d'identité soient
+        fond sombre. Assurez-vous que les bords de votre pièce d’identité soient
         dégagés.
       capture_troubleshooting_surface_image: Recto de la carte d’identité
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'

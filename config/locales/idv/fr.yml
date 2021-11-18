@@ -14,11 +14,11 @@ fr:
     cancel:
       headings:
         confirmation:
-          hybrid: Vous avez annulé le téléchargement de vos photos d'identité sur ce
+          hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
             téléphone
         prompt:
           hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
-            d'identité sur ce téléphone?
+            d’identité sur ce téléphone?
       warnings:
         hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
           ordinateur pour continuer à vérifier votre identité.
@@ -55,8 +55,8 @@ fr:
         fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
           sécurité, nous limitons le nombre de fois où vous pouvez tenter de
           vérifier votre numéro de téléphone en ligne.'
-        heading: Nous n'avons pas pu faire correspondre ce numéro de téléphone à
-          d'autres enregistrements
+        heading: Nous n’avons pas pu faire correspondre ce numéro de téléphone à
+          d’autres enregistrements
         jobfail: Un problème s’est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer.
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
@@ -88,7 +88,7 @@ fr:
     form:
       address1: Adresse
       address2: Adresse (optional)
-      city: Ville une lettre contenant un code.'
+      city: Ville une lettre contenant un code.′
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale
@@ -120,7 +120,7 @@ fr:
       confirm: Vous avez crypté vos données vérifiées
       gpo:
         address_on_file: Nous enverrons une lettre avec un code de confirmation à
-          l'adresse que vous avez indiquée à l'étape précédente.
+          l’adresse que vous avez indiquée à l’étape précédente.
         new_address: Nous vous enverrons une lettre avec un code de confirmation à
           l’adresse que vous spécifiez.
         resend: Envoyez-moi une autre lettre
@@ -143,7 +143,7 @@ fr:
           numéro différent.'
         phone_of_record: numéro de téléphone enregistré
         rules:
-          - être un plan téléphonique associé à votre nom. Il n'est pas
+          - être un plan téléphonique associé à votre nom. Il n’est pas
             nécessaire que vous soyez le titulaire principal du compte.
           - pas un téléphone virtuel (comme Google Voice ou Skype)
           - un numéro américain
@@ -192,10 +192,10 @@ fr:
       options:
         change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app_name}
-        doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d'identité
+        doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
         learn_more_verify_by_phone: En savoir plus sur la vérification de votre numéro de téléphone
-        supported_documents: Voir la liste des pièces d'identité acceptées et délivrées par l'État
+        supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
