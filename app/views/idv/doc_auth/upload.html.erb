@@ -39,13 +39,13 @@
     <%= t('doc_auth.info.tag') %>
   </div>
   <div class='sm-col sm-col-9'>
-    <div class='bold h1 margin-y-105'>
+    <h2 class="font-family-sans margin-y-105">
       <% if liveness_checking_enabled? %>
         <%= t('doc_auth.headings.upload_from_phone_liveness_enabled') %>
       <% else %>
         <%= t('doc_auth.headings.upload_from_phone') %>
       <% end %>
-    </div>
+    </h2>
     <%= t('doc_auth.info.upload_from_phone') %>
     <br/>
     <%= validated_form_for(
