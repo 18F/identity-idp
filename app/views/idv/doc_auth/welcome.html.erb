@@ -75,14 +75,14 @@
   </ul>
 
   <%= validated_form_for :doc_auth,
-    url: url_for,
-    method: 'put',
-    html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
+                         url: url_for,
+                         method: 'put',
+                         html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
     <br/>
     <%= f.button :button,
-      t('doc_auth.buttons.continue'),
-      type: :submit,
-      class: 'usa-button--big usa-button--wide' %>
+                 t('doc_auth.buttons.continue'),
+                 type: :submit,
+                 class: 'usa-button--big usa-button--wide' %>
   <% end %>
 
   <%= render(
