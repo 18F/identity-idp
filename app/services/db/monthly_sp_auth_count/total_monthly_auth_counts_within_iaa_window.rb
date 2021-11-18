@@ -10,7 +10,6 @@ module Db
       module_function
 
       # @param [ServiceProvider] service_provider
-      # @param [Symbol] aggregate (one of :sum, :unique)
       # @return [PG::Result,Array]
       def call(service_provider:)
         return [] if !service_provider.iaa_start_date || !service_provider.iaa_end_date
