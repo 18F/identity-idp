@@ -159,7 +159,7 @@ fr:
       document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
-      lets_go: Commençons
+      lets_go: Comment fonctionne la vérification de votre identité
       photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
@@ -208,10 +208,9 @@ fr:
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
         sur nos mesures de confidentialité et de sécurité.'
-      secure_account: Après avoir vérifié votre identité, nous vous demanderons de
-        crypter votre compte. Le cryptage garantit la protection de vos données
-        et seul vous, le titulaire du compte, pourrez accéder à vos informations
-        ou les modifier.
+      secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
+        chiffrage signifie que vos données sont protégées et que vous êtes le/la
+        seul(e) à pouvoir accéder à vos informations ou les modifier.
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
         nom, date de naissance et adresse. Votre numéro de sécurité sociale est
         crypté. Avec votre accord, nous partageons ce informations auprès de
@@ -235,10 +234,8 @@ fr:
         photo de vous-même pour confirmer que vous êtes bien le propriétaire de
         la carte d’identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      verify_identity: Nous vous demanderons vos renseignements personnels. Nous
-        utiliserons, conserverons et partagerons certains de vos renseignements
-        personnels pour vérifier votre identité par rapport aux registres
-        publics.
+      verify_identity: Nous vous demanderons vos informations personnelles afin de
+        vérifier votre identité par rapport aux registres publics.
       verifying: Vérification…
       welcome_html: "%{sp_name} doit s'assurer que vous êtes bien vous, et non
         quelqu'un qui se fait passer pour vous."
