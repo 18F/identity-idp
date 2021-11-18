@@ -204,6 +204,7 @@ fr:
         vous aurez confirmé votre identifiant à l’aide de votre téléphone.
       link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
         pour terminer la vérification de votre identité.
+      no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}

@@ -195,6 +195,7 @@ es:
         verifiques tu identidad a través de tu teléfono.
       link_sent_complete_nojs: Cuando termines, haz clic en “Continuar” para completar
         la verificación de tu identidad.
+      no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
         las normas más estrictas de protección de datos. Solo utilizamos sus
         datos para verificar su identidad. %{link} sobre nuestras medidas de

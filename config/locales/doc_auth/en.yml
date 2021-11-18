@@ -167,6 +167,7 @@ en:
       link_sent_complete_js: The next step will load automatically once you verify
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying your identity.
+      no_sp_name: The agency that you are trying to access
       privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
         your identity. %{link} about our privacy and security measures.'
