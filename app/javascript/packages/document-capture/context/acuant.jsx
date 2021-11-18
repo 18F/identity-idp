@@ -126,8 +126,8 @@ AcuantContext.displayName = 'AcuantContext';
  * @param {AcuantContextProviderProps} props Props object.
  */
 function AcuantContextProvider({
-  sdkSrc = '/acuant/11.5.0/AcuantJavascriptWebSdk.min.js',
-  cameraSrc = '/acuant/11.5.0/AcuantCamera.min.js',
+  sdkSrc = '/acuant/11.5.1/AcuantJavascriptWebSdk.min.js',
+  cameraSrc = '/acuant/11.5.1/AcuantCamera.min.js',
   credentials = null,
   endpoint = null,
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
