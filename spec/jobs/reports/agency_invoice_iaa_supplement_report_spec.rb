@@ -25,12 +25,12 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
     )
   end
 
-  let(:iaa_order1) {
+  let(:iaa_order1) do
     build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
-  }
-  let(:iaa_order2) {
+  end
+  let(:iaa_order2) do
     build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
-  }
+  end
 
   # Have to do this because of invalid check when building integration usages
   let!(:iaa_orders) do

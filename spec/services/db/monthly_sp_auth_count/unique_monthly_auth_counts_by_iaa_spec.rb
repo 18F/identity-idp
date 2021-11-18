@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
   describe '.call' do
-    let(:aggregate) { :sum }
     let(:key) { 'iaa1-0001' }
     let(:iaa) do
       {
@@ -14,7 +13,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
     end
 
     subject(:results) do
-      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa: iaa, aggregate: aggregate)
+      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(**iaa)
     end
 
     it 'is empty with no data' do
@@ -101,133 +100,51 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         end
       end
 
-      context 'aggregate type :sum' do
-        let(:aggregate) { :sum }
+      it 'adds up auth_counts and sp_return_log instances' do
+        rows = [
+          {
+            ial: 1,
+            key: key,
+            year_month: '202009',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            total_auth_count: 1,
+            unique_users: 1,
+            new_unique_users: 1,
+          },
+          {
+            ial: 2,
+            key: key,
+            year_month: '202009',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            total_auth_count: 2,
+            unique_users: 2,
+            new_unique_users: 2,
+          },
+          {
+            ial: 1,
+            key: key,
+            year_month: '202010',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            total_auth_count: 20,
+            unique_users: 2,
+            new_unique_users: 1,
+          },
+          {
+            ial: 2,
+            key: key,
+            year_month: '202010',
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+            total_auth_count: 300,
+            unique_users: 3,
+            new_unique_users: 1,
+          },
+        ]
 
-        it 'adds up auth_counts and sp_return_log instances' do
-          rows = [
-            {
-              ial: 1,
-              key: key,
-              year_month: '202009',
-              total_auth_count: 1,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202009',
-              total_auth_count: 2,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 1,
-              key: key,
-              year_month: '202010',
-              total_auth_count: 20,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202010',
-              total_auth_count: 300,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-          ]
-
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
-      end
-
-      context 'aggregate type :unique' do
-        let(:aggregate) { :unique }
-
-        it 'counts unique users per month' do
-          rows = [
-            {
-              ial: 1,
-              key: key,
-              year_month: '202009',
-              unique_users: 1,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202009',
-              unique_users: 2,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 1,
-              key: key,
-              year_month: '202010',
-              unique_users: 2,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202010',
-              unique_users: 3,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-          ]
-
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
-      end
-
-      context 'aggregate type :new_unique' do
-        let(:aggregate) { :new_unique }
-
-        it 'only counts new unique users each month' do
-          rows = [
-            {
-              ial: 1,
-              key: key,
-              year_month: '202009',
-              new_unique_users: 1,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202009',
-              new_unique_users: 2,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 1,
-              key: key,
-              year_month: '202010',
-              new_unique_users: 1,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              ial: 2,
-              key: key,
-              year_month: '202010',
-              new_unique_users: 1,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-          ]
-
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
+        expect(results).to match_array(rows)
       end
     end
 
@@ -236,28 +153,8 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
       let(:issuer) { 'issuer1' }
       let(:rows) { [] }
 
-      context 'aggregate type :sum' do
-        let(:aggregate) { :sum }
-
-        it 'adds up auth_counts and sp_return_log instances' do
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
-      end
-
-      context 'aggregate type :unique' do
-        let(:aggregate) { :unique }
-
-        it 'counts unique users per month' do
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
-      end
-
-      context 'aggregate type :new_unique' do
-        let(:aggregate) { :new_unique }
-
-        it 'only counts new unique users each month' do
-          expect(results.map(&:symbolize_keys)).to match_array(rows)
-        end
+      it 'adds up auth_counts and sp_return_log instances' do
+        expect(results).to match_array(rows)
       end
     end
   end
