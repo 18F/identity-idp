@@ -50,11 +50,11 @@ module Db
         rows = []
 
         ial_to_year_month_to_users.each do |ial, year_month_to_users|
-          year_months = year_month_to_users.keys.sort
-
           prev_seen_users = Set.new
 
-          year_months.each_with_index do |year_month, idx|
+          year_months = year_month_to_users.keys.sort
+
+          year_months.each do |year_month|
             year_month_users = year_month_to_users[year_month]
 
             auth_count = year_month_users.count
