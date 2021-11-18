@@ -27,6 +27,7 @@ class OneTimeCodeInput {
     this.elements.hiddenInput = hiddenInput;
     /** @type {HTMLElement} */ (input.parentNode).insertBefore(hiddenInput, input);
     input.removeAttribute('name');
+    input.removeAttribute('id');
     input.addEventListener('input', () => {
       hiddenInput.value = input.value;
     });
