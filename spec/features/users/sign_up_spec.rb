@@ -145,7 +145,7 @@ feature 'Sign Up' do
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 
-      fill_in 'code', with: generate_totp_code(copied_text)
+      fill_in 'code', with: generate_totp_code(copied_text), visible: false
       click_button 'Submit'
       expect(did_validate_name.call).to eq true
 

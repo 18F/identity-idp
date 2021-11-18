@@ -250,7 +250,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
+      expect(page.evaluate_script('document.activeElement.id')).to start_with('code')
     end
 
     scenario 'the user changes delivery method' do
