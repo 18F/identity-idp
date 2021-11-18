@@ -4,11 +4,9 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
   let(:iaa_range) { Date.new(2021, 1, 15)..Date.new(2022, 1, 14) }
 
   describe '.call' do
-    let(:aggregate) { :sum }
     subject(:result) do
       Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
         service_provider: service_provider,
-        aggregate: aggregate,
       )
     end
 
@@ -62,62 +60,33 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         )
       end
 
-      context 'with the :sum aggregate' do
-        let(:aggregate) { :sum }
+      it 'counts and uniqes auths across sp_return_logs and monthly_sp_auth_counts' do
+        rows = [
+          {
+            year_month: partial_month_date.strftime('%Y%m'),
+            ial: 1,
+            issuer: service_provider.issuer,
+            total_auth_count: 2,
+            unique_users: 1,
+            new_unique_users: 1,
+            iaa: service_provider.iaa,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+          },
+          {
+            year_month: full_month_date.strftime('%Y%m'),
+            ial: 1,
+            issuer: service_provider.issuer,
+            total_auth_count: 11,
+            unique_users: 1,
+            new_unique_users: 0,
+            iaa: service_provider.iaa,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
+          },
+        ]
 
-        it 'counts auths across sp_return_logs and monthly_sp_auth_counts' do
-          rows = [
-            {
-              year_month: partial_month_date.strftime('%Y%m'),
-              ial: 1,
-              issuer: service_provider.issuer,
-              total_auth_count: 2,
-              iaa: service_provider.iaa,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              year_month: full_month_date.strftime('%Y%m'),
-              ial: 1,
-              issuer: service_provider.issuer,
-              total_auth_count: 11,
-              iaa: service_provider.iaa,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-          ]
-
-          expect(result.map(&:symbolize_keys)).to match_array(rows)
-        end
-      end
-
-      context 'when the :unique aggregate' do
-        let(:aggregate) { :unique }
-
-        it 'counts the distinct users each month' do
-          rows = [
-            {
-              year_month: partial_month_date.strftime('%Y%m'),
-              ial: 1,
-              issuer: service_provider.issuer,
-              unique_users: 1,
-              iaa: service_provider.iaa,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-            {
-              year_month: full_month_date.strftime('%Y%m'),
-              ial: 1,
-              issuer: service_provider.issuer,
-              unique_users: 1,
-              iaa: service_provider.iaa,
-              iaa_start_date: iaa_range.begin.to_s,
-              iaa_end_date: iaa_range.end.to_s,
-            },
-          ]
-
-          expect(result.map(&:symbolize_keys)).to match_array(rows)
-        end
+        expect(result).to match_array(rows)
       end
     end
 
@@ -125,7 +94,7 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
       let(:iaa_range) { Date.new(2021, 1, 15)..Date.new(2021, 1, 17) }
 
       it 'counts auths across sp_return_logs and monthly_sp_auth_counts' do
-        expect(result.map(&:symbolize_keys)).to match_array([])
+        expect(result).to match_array([])
       end
     end
   end
