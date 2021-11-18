@@ -4,8 +4,7 @@ checks:
     config:
       threshold: 4
   complex-logic:
-    config:
-      threshold: 4
+    enabled: false
   file-lines:
     enabled: false
   method-complexity:

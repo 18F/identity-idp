@@ -67,7 +67,7 @@ describe('document-capture/components/document-capture', () => {
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <DocumentCapture />
         </AcuantContextProvider>
       </DeviceContext.Provider>,
@@ -153,7 +153,7 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
       {
@@ -218,7 +218,7 @@ describe('document-capture/components/document-capture', () => {
       { message: 'An unknown error occurred' },
     ].map(toFormEntryError);
     const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
       {
@@ -244,9 +244,9 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
 
     let notices = await findAllByRole('alert');
-    expect(notices[0].textContent).to.equal('An unknown error occurred');
-    expect(notices[1].textContent).to.equal('Image has glare');
-    expect(notices[2].textContent).to.equal('Please fill in this field');
+    expect(notices[0].textContent).to.equal('Image has glare');
+    expect(notices[1].textContent).to.equal('Please fill in this field');
+    expect(getByText('An unknown error occurred')).to.be.ok();
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -271,8 +271,7 @@ describe('document-capture/components/document-capture', () => {
     // addressed, submit should be enabled once more.
     notices = await findAllByRole('alert');
     const errorNotices = notices.filter((notice) => notice.classList.contains('usa-alert--error'));
-    expect(errorNotices).to.have.lengthOf(1);
-    expect(errorNotices[0].textContent).to.equal('An unknown error occurred');
+    expect(errorNotices).to.have.lengthOf(0);
     expect(submitButton.classList.contains('usa-button--disabled')).to.be.false();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
@@ -281,7 +280,7 @@ describe('document-capture/components/document-capture', () => {
     const interstitialHeading = getByText('doc_auth.headings.interstitial');
     expect(interstitialHeading).to.be.ok();
 
-    await findAllByRole('alert');
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -293,7 +292,7 @@ describe('document-capture/components/document-capture', () => {
     const { getByLabelText, getByText } = render(
       <UploadContextProvider upload={httpUpload} endpoint="/upload">
         <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <DocumentCapture />
           </AcuantContextProvider>
         </ServiceProviderContextProvider>
@@ -378,7 +377,7 @@ describe('document-capture/components/document-capture', () => {
         backgroundUploadEncryptKey={key}
         upload={upload}
       >
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <DocumentCapture isAsyncForm />
         </AcuantContextProvider>
       </UploadContextProvider>,
@@ -423,8 +422,8 @@ describe('document-capture/components/document-capture', () => {
     const uploadError = new UploadFormEntriesError();
     uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
     const onStepChange = sinon.spy();
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
+    const { getByLabelText, getByText, getAllByText, findAllByText } = render(
+      <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture onStepChange={onStepChange} />
       </AcuantContextProvider>,
       { uploadError },
@@ -449,7 +448,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
     expect(onStepChange.callCount).to.equal(1);
 
-    await findByRole('alert');
+    await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -497,7 +496,7 @@ describe('document-capture/components/document-capture', () => {
           upload={upload}
         >
           <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
               <DocumentCapture />
             </AcuantContextProvider>
           </ServiceProviderContextProvider>

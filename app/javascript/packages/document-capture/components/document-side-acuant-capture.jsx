@@ -57,6 +57,7 @@ function DocumentSideAcuantCapture({
       errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
       name={side}
       className={className}
+      capture="environment"
     />
   );
 }

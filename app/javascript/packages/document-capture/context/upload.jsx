@@ -50,6 +50,7 @@ UploadContext.displayName = 'UploadContext';
  * @prop {false} success Whether request was successful.
  * @prop {UploadFieldError[]=} errors Error messages.
  * @prop {string=} redirect URL to which user should be redirected.
+ * @prop {number=} remaining_attempts Number of remaining doc capture attempts for user.
  */
 
 /**

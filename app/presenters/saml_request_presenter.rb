@@ -1,6 +1,7 @@
 class SamlRequestPresenter
   ATTRIBUTE_TO_FRIENDLY_NAME_MAP = {
     email: :email,
+    all_emails: :all_emails,
     first_name: :given_name,
     middle_name: :name,
     last_name: :family_name,

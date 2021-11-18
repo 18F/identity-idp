@@ -1,8 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { BlockLink } from '@18f/identity-components';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContext, FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
@@ -14,6 +14,12 @@ import './review-issues-step.scss';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
+import Warning from './warning';
+import MarketingSiteContext from '../context/marketing-site';
+import AnalyticsContext from '../context/analytics';
+import useDidUpdateEffect from '../hooks/use-did-update-effect';
+
+/** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -35,6 +41,7 @@ import StartOverOrCancel from './start-over-or-cancel';
  * @type {DocumentSide[]}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
+const DISPLAY_ATTEMPTS = 3;
 
 /**
  * @param {Partial<ReviewIssuesStepValue>=} value
@@ -53,23 +60,41 @@ function reviewIssuesStepValidator(value = {}) {
 }
 
 /**
- * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue>} props Props object.
+ * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
+ *  remainingAttempts: number,
+ * }} props Props object.
  */
 function ReviewIssuesStep({
   value = {},
   onChange = () => {},
   errors = [],
+  unknownFieldErrors = [],
   onError = () => {},
   registerField = () => undefined,
+  remainingAttempts,
 }) {
   const { t, formatHTML } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
+  const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
+  const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
+  const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
+  const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
+  const { onPageTransition } = useContext(FormStepsContext);
+  useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
-  return (
+  function onWarningPageDismissed() {
+    addPageAction({ label: 'IdV: Capture troubleshooting dismissed' });
+
+    setHasDismissed(true);
+  }
+
+  return hasDismissed ? (
     <>
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
+      {!!unknownFieldErrors &&
+        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
@@ -142,6 +167,39 @@ function ReviewIssuesStep({
       <DesktopDocumentDisclosure />
       <StartOverOrCancel />
     </>
+  ) : (
+    <Warning
+      heading={t('errors.doc_auth.throttled_heading')}
+      actionText={t('idv.failure.button.warning')}
+      actionOnClick={onWarningPageDismissed}
+      troubleshootingOptions={
+        /** @type {TroubleshootingOption[]} */ ([
+          {
+            url: documentCaptureTipsURL,
+            text: t('idv.troubleshooting.options.doc_capture_tips'),
+            isExternal: true,
+          },
+          spName && {
+            url: getFailureToProofURL('post_submission_warning'),
+            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
+            isExternal: true,
+          },
+        ].filter(Boolean))
+      }
+    >
+      {!!unknownFieldErrors &&
+        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
+
+      {remainingAttempts <= DISPLAY_ATTEMPTS && (
+        <p>
+          <strong>
+            {remainingAttempts === 1
+              ? t('idv.failure.attempts.one')
+              : t('idv.failure.attempts.other', { count: remainingAttempts })}
+          </strong>
+        </p>
+      )}
+    </Warning>
   );
 }
 

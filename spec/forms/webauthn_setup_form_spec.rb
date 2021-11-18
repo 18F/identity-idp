@@ -81,8 +81,14 @@ describe WebauthnSetupForm do
 
         expect(subject.submit(protocol, params).to_h).to eq(
           success: false,
-          errors: { name: [I18n.t('errors.webauthn_setup.attestation_error')] },
-          error_details: { name: [I18n.t('errors.webauthn_setup.attestation_error')] },
+          errors: { name: [I18n.t(
+            'errors.webauthn_setup.attestation_error',
+            link: MarketingSite.contact_url,
+          )] },
+          error_details: { name: [I18n.t(
+            'errors.webauthn_setup.attestation_error',
+            link: MarketingSite.contact_url,
+          )] },
           **extra_attributes,
         )
       end

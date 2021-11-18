@@ -88,6 +88,21 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:id]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
     end
 
+    it 'DocAuthResult is Failed with multiple front alerts' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [
+          {name: 'Photo Printing', result: 'Attention'},
+          {name: 'Visible Photo Characteristics', result: 'Failed'},
+        ],
+      )
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:id)
+      expect(output[:id]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+    end
+
     it 'DocAuthResult is Failed with multiple back alerts' do
       error_info = build_error_info(
         doc_result: 'Failed',
@@ -99,8 +114,8 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:back)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output.keys).to contain_exactly(:id)
+      expect(output[:id]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
     end
 
     it 'DocAuthResult is Failed with an unknown alert' do

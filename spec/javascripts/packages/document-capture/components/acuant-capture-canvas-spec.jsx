@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import AcuantCaptureCanvas, {
   defineObservableProperty,
-  AcuantDocumentState,
 } from '@18f/identity-document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
@@ -32,7 +31,7 @@ describe('document-capture/components/acuant-capture-canvas', () => {
   it('waits for initialization', () => {
     render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCaptureCanvas />
         </AcuantContextProvider>
       </DeviceContext.Provider>,
@@ -59,7 +58,7 @@ describe('document-capture/components/acuant-capture-canvas', () => {
   it('ends on unmount', () => {
     const { unmount } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCaptureCanvas />
         </AcuantContextProvider>
       </DeviceContext.Provider>,
@@ -72,9 +71,9 @@ describe('document-capture/components/acuant-capture-canvas', () => {
   });
 
   it('renders a "take photo" button', () => {
-    const { getByRole, getByLabelText } = render(
+    const { getByRole, container } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
           <AcuantCaptureCanvas />
         </AcuantContextProvider>
       </DeviceContext.Provider>,
@@ -88,7 +87,7 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
     // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
     // canvas, which happens in combination with assigning the callback property to the canvas.
-    const canvas = getByLabelText('doc_auth.accessible_labels.camera_video_capture_label');
+    const canvas = container.querySelector('canvas');
     canvas.callback = () => {};
 
     expect(button.disabled).to.be.false();
@@ -98,70 +97,5 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     userEvent.click(button);
     userEvent.type(button, 'b{space}{enter}', { skipClick: true });
     expect(onClick).to.have.been.calledThrice();
-  });
-
-  it('announces state changes', () => {
-    const { getByRole } = render(
-      <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCaptureCanvas />
-        </AcuantContextProvider>
-      </DeviceContext.Provider>,
-    );
-
-    initialize();
-
-    const { onFrameAvailable } = window.AcuantCameraUI.start.getCall(0).args[0];
-    onFrameAvailable({ state: AcuantDocumentState.SMALL_DOCUMENT });
-
-    expect(getByRole('status').textContent).to.equal(
-      'doc_auth.accessible_labels.status_move_closer',
-    );
-  });
-
-  it('does not announce state changes after capture', () => {
-    // This test case accounts for a quirk of Acuant where `onFrameAvailable` is called with "small
-    // document" after capture has already happened.
-    const { getByRole } = render(
-      <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCaptureCanvas />
-        </AcuantContextProvider>
-      </DeviceContext.Provider>,
-    );
-
-    initialize();
-
-    const { onFrameAvailable, onCaptured } = window.AcuantCameraUI.start.getCall(0).args[0];
-    onCaptured();
-    onFrameAvailable({ state: AcuantDocumentState.SMALL_DOCUMENT });
-
-    expect(getByRole('status').textContent).to.be.empty();
-  });
-
-  it('announces "tap to capture" mode', () => {
-    const { getByRole, getByLabelText, getByText } = render(
-      <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCaptureCanvas />
-        </AcuantContextProvider>
-      </DeviceContext.Provider>,
-    );
-
-    initialize();
-
-    expect(getByText('doc_auth.accessible_labels.camera_video_capture_instructions')).to.be.ok();
-
-    // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
-    // canvas, which happens in combination with assigning the callback property to the canvas.
-    const canvas = getByLabelText('doc_auth.accessible_labels.camera_video_capture_label');
-    canvas.callback = () => {};
-
-    expect(() =>
-      getByText('doc_auth.accessible_labels.camera_video_capture_instructions'),
-    ).to.throw();
-    expect(getByRole('status').textContent).to.equal(
-      'doc_auth.accessible_labels.status_tap_to_capture',
-    );
   });
 });

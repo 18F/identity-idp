@@ -127,10 +127,10 @@ fr:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
       attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
-        sécurité FIDO. Veuillez vous assurer que votre appareil est répertorié
-        sur https://fidoalliance.org/certification/fido-certified-products/ et
-        si vous pensez que l’erreur est la nôtre, veuillez nous contacter à
-        l’adresse hello@login.gov.
+        sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
+        https://fidoalliance.org/certification/fido-certified-products/. Si vous
+        pensez qu'il s'agit d'une erreur de notre part, veuillez contacter
+        %{link}.
       general_error: Une erreur s’est produite lors de l’ajout de votre clé de
         sécurité physique. Veuillez réessayer.
       not_supported: Désolé, votre navigateur ne supporte pas les clés de sécurité

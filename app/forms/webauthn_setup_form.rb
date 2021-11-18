@@ -64,7 +64,10 @@ class WebauthnSetupForm
   def safe_response(original_origin)
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
   rescue StandardError
-    errors.add :name, I18n.t('errors.webauthn_setup.attestation_error')
+    errors.add :name, I18n.t(
+      'errors.webauthn_setup.attestation_error',
+      link: MarketingSite.contact_url,
+    )
     false
   end
 

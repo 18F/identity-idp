@@ -118,9 +118,11 @@ es:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.
       attestation_error: Lo sentimos, pero su clave de seguridad no parece ser una
-        clave de seguridad FIDO. Asegúrese de que su dispositivo esté en
-        https://fidoalliance.org/certification/fido-certified-products/ y si
-        cree que el error es nuestro, contáctenos en hello@login.gov.
+        clave de seguridad FIDO. Por favor, asegúrese de que su dispositivo
+        aparezca en
+        https://fidoalliance.org/certification/fido-certified-products/. Si
+        considera que se trata de un error nuestro, póngase en contacto con
+        %{link}.
       general_error: Hubo un error al agregar su clave de seguridad de hardware.
         Inténtalo de nuevo.
       not_supported: Lo sentimos, su navegador no admite las claves de seguridad FIDO.

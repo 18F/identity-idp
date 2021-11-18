@@ -10,6 +10,9 @@ export class UploadFormEntryError extends Error {
 export class UploadFormEntriesError extends Error {
   /** @type {UploadFormEntryError[]} */
   formEntryErrors = [];
+
+  /** @type {number} */
+  remainingAttempts = Infinity;
 }
 
 /**
@@ -78,6 +81,10 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
     const error = new UploadFormEntriesError();
     if (errorResult.errors) {
       error.formEntryErrors = errorResult.errors.map(toFormEntryError);
+    }
+
+    if (errorResult.remaining_attempts) {
+      error.remainingAttempts = errorResult.remaining_attempts;
     }
 
     throw error;

@@ -31,39 +31,6 @@ RSpec.describe BackupCodeGenerator do
     expect(success).to be_falsy
   end
 
-  context 'backup_code_skip_symmetric_encryption config' do
-    before do
-      allow(IdentityConfig.store).to receive(:backup_code_skip_symmetric_encryption).
-        and_return(skip_symmetric)
-    end
-
-    context 'when enabled' do
-      let(:skip_symmetric) { true }
-
-      it 'does not write the symmetrically encrypted column anymore' do
-        codes = generator.create
-
-        user.backup_code_configurations.each do |code_config|
-          expect(code_config.encrypted_code).to be_blank
-          expect(code_config.code).to be_blank
-        end
-      end
-    end
-
-    context 'when disabled' do
-      let(:skip_symmetric) { false }
-
-      it 'still writes the symmetrically encrypted column anymore' do
-        codes = generator.create
-
-        user.backup_code_configurations.each do |code_config|
-          expect(code_config.encrypted_code).to be_present
-          expect(code_config.code).to be_present
-        end
-      end
-    end
-  end
-
   it 'creates codes with the same salt for that batch' do
     generator.create
 

@@ -287,7 +287,7 @@ RSpec.describe User do
     it 'generates a secret 16 characters long' do
       user = build(:user)
       secret = user.generate_totp_secret
-      expect(secret.length).to eq 16
+      expect(secret.length).to eq 32
     end
   end
 

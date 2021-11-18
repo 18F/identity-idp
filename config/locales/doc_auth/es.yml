@@ -6,10 +6,6 @@ es:
       camera_video_capture_label: Visor con encuadre para centrar tu documento
       document_capture_dialog: Captura del documento
       selfie_alt_text: Una foto subida
-      status_align: Alinea el documento dentro del encuadre
-      status_capturing: La foto se tomará en tres segundos
-      status_move_closer: Acerca la cámara al documento
-      status_tap_to_capture: Captura automática desactivada
     buttons:
       change_address: Cambio
       change_address_label: Cambiar dirección
