@@ -159,7 +159,7 @@ fr:
       document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
-      lets_go: Commençons
+      lets_go: Comment fonctionne la vérification de votre identité
       photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
@@ -177,8 +177,7 @@ fr:
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: Vérifier votre information
       verify_identity: Vérifier votre identité
-      welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
-        gouvernementaux
+      welcome: Commencez à vérifier votre identité
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web
       capture_status_capturing: Prendre la photo
@@ -205,14 +204,14 @@ fr:
         vous aurez confirmé votre identifiant à l’aide de votre téléphone.
       link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
         pour terminer la vérification de votre identité.
+      no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
         sur nos mesures de confidentialité et de sécurité.'
-      secure_account: Après avoir vérifié votre identité, nous vous demanderons de
-        crypter votre compte. Le cryptage garantit la protection de vos données
-        et seul vous, le titulaire du compte, pourrez accéder à vos informations
-        ou les modifier.
+      secure_account: Nous chiffrerons votre compte avec votre mot de passe. Le
+        chiffrage signifie que vos données sont protégées et que vous êtes le/la
+        seul(e) à pouvoir accéder à vos informations ou les modifier.
       ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
         nom, date de naissance et adresse. Votre numéro de sécurité sociale est
         crypté. Avec votre accord, nous partageons ce informations auprès de
@@ -236,13 +235,11 @@ fr:
         photo de vous-même pour confirmer que vous êtes bien le propriétaire de
         la carte d’identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      verify_identity: Nous vous demanderons vos renseignements personnels. Nous
-        utiliserons, conserverons et partagerons certains de vos renseignements
-        personnels pour vérifier votre identité par rapport aux registres
-        publics.
+      verify_identity: Nous vous demanderons vos informations personnelles afin de
+        vérifier votre identité par rapport aux registres publics.
       verifying: Vérification…
-      welcome_html: L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
-        s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
+      welcome_html: "%{sp_name} doit s'assurer que vous êtes bien vous, et non
+        quelqu'un qui se fait passer pour vous."
     instructions:
       bullet1: Votre carte d’identité émise par l’État
       bullet1a: Un appareil équipé d’une caméra
@@ -276,10 +273,10 @@ fr:
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
-      text3: Il n’est pas nécessaire que vous soyez le titulaire principal de la
-        ligne. Si votre numéro de téléphone ne remplit pas les conditions
-        requises, nous pouvons vous envoyer le code de vérification par courrier
-        dans un délai de 3 à 7 jours ouvrables.
+      text3: Il n'est pas nécessaire que vous soyez le titulaire principal du compte
+        de votre forfait téléphonique. Si votre numéro de téléphone ne
+        fonctionne pas, nous pouvons vous envoyer un code de vérification par
+        courrier.
       welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.

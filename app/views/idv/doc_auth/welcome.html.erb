@@ -6,7 +6,9 @@
 
 <%= render 'shared/maintenance_window_alert' do %>
   <h1><%= t('doc_auth.headings.welcome') %></h1>
-  <p class='mt-tiny margin-bottom-0'><%= t('doc_auth.info.welcome_html') %></p>
+  <p class='mt-tiny margin-bottom-0'>
+    <%= t('doc_auth.info.welcome_html', sp_name: decorated_session.sp_name || t('doc_auth.info.no_sp_name')) %>
+  </p>
   <h2 class='margin-bottom-0'><%= t('doc_auth.instructions.welcome') %></h2>
 
   <ul class='list-reset'>
@@ -74,6 +76,17 @@
     </li>
   </ul>
 
+  <%= validated_form_for :doc_auth,
+                         url: url_for,
+                         method: 'put',
+                         html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
+    <br/>
+    <%= f.button :button,
+                 t('doc_auth.buttons.continue'),
+                 type: :submit,
+                 class: 'usa-button--big usa-button--wide' %>
+  <% end %>
+
   <%= render(
         'shared/troubleshooting_options',
         heading_level: :h3,
@@ -97,8 +110,8 @@
         ].select(&:present?),
       ) %>
 
-  <h2><%= t('doc_auth.instructions.privacy') %></h2>
-  <p>
+  <h3><%= t('doc_auth.instructions.privacy') %></h3>
+  <p class="padding-bottom-2">
     <%= t(
           'doc_auth.info.privacy_html',
           app_name: APP_NAME,
@@ -108,20 +121,6 @@
           ),
         ) %>
   </p>
-
-  <%= validated_form_for :doc_auth,
-                         url: url_for,
-                         method: 'put',
-                         html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
-    <br/>
-    <%= f.button :button,
-                 t('doc_auth.buttons.continue'),
-                 type: :submit,
-                 class: 'usa-button--big usa-button--wide' %>
-  <% end %>
-
-  <br/>
-
 
   <% if user_fully_authenticated? %>
     <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
