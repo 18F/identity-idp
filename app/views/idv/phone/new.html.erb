@@ -57,12 +57,7 @@
                          method: :put,
                          class: 'margin-top-2',
                        }) do |f| %>
-  <%= f.input :phone, required: true,
-              input_html: { aria: { invalid: false },
-              class: 'sm-col-8' },
-              label: t('idv.form.phone'),
-              wrapper: false,
-              label_html: { class: 'bold' } %>
+  <%= render(PhoneInputComponent.new(form: f, allowed_countries: ['US'], required: true)) %>
   <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
     <%= t('simple_form.required.text') %>
   </span>

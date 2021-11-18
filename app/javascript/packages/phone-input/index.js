@@ -1,12 +1,15 @@
-import { isValidNumber } from 'libphonenumber-js';
+import { isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
+
+/** @typedef {import('libphonenumber-js').CountryCode} CountryCode */
 
 /**
  * @typedef PhoneInputStrings
  *
  * @prop {string=} country_code_label
  * @prop {string=} invalid_phone
+ * @prop {string=} country_constraint_usa
  */
 
 /**
@@ -119,42 +122,63 @@ export class PhoneInput extends HTMLElement {
 
   initializeIntlTelInput() {
     const { supportedCountryCodes } = this;
+    const allowDropdown = supportedCountryCodes && supportedCountryCodes.length > 1;
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
+      allowDropdown,
     });
 
-    // Remove duplicate items in the country list
-    /** @type {NodeListOf<HTMLLIElement>} */
-    const preferred = iti.countryList.querySelectorAll('.iti__preferred');
-    preferred.forEach((listItem) => {
-      const { countryCode } = listItem.dataset;
+    if (allowDropdown) {
+      // Remove duplicate items in the country list
       /** @type {NodeListOf<HTMLLIElement>} */
-      const duplicates = iti.countryList.querySelectorAll(
-        `.iti__standard[data-country-code="${countryCode}"]`,
-      );
-      duplicates.forEach((duplicateListItem) => {
-        duplicateListItem.parentNode?.removeChild(duplicateListItem);
+      const preferred = iti.countryList.querySelectorAll('.iti__preferred');
+      preferred.forEach((listItem) => {
+        const { countryCode } = listItem.dataset;
+        /** @type {NodeListOf<HTMLLIElement>} */
+        const duplicates = iti.countryList.querySelectorAll(
+          `.iti__standard[data-country-code="${countryCode}"]`,
+        );
+        duplicates.forEach((duplicateListItem) => {
+          duplicateListItem.parentNode?.removeChild(duplicateListItem);
+        });
       });
-    });
 
-    // Improve base accessibility of intl-tel-input
-    iti.flagsContainer.setAttribute('aria-label', this.strings.country_code_label);
-    iti.selectedFlag.setAttribute('aria-haspopup', 'true');
-    iti.selectedFlag.setAttribute('role', 'button');
-    iti.selectedFlag.removeAttribute('aria-owns');
+      // Improve base accessibility of intl-tel-input
+      iti.flagsContainer.setAttribute('aria-label', this.strings.country_code_label);
+      iti.selectedFlag.setAttribute('aria-haspopup', 'true');
+      iti.selectedFlag.setAttribute('role', 'button');
+      iti.selectedFlag.removeAttribute('aria-owns');
+    }
 
     return iti;
   }
 
   validate() {
-    const { textInput, codeInput } = this;
-    if (textInput && codeInput) {
-      const isValid = isPhoneValid(textInput.value, codeInput.value);
-      const validity = (!isValid && this.strings.invalid_phone) || '';
-      textInput.setCustomValidity(validity);
+    const { textInput, codeInput, supportedCountryCodes } = this;
+    if (!textInput || !codeInput) {
+      return;
+    }
+
+    const phoneNumber = textInput.value;
+    const countryCode = /** @type {CountryCode} */ (codeInput.value);
+
+    textInput.setCustomValidity('');
+    if (!phoneNumber) {
+      return;
+    }
+
+    const isInvalidCountry =
+      supportedCountryCodes?.length === 1 && !isValidNumberForRegion(phoneNumber, countryCode);
+    if (isInvalidCountry && countryCode === 'US' && this.strings.country_constraint_usa) {
+      textInput.setCustomValidity(this.strings.country_constraint_usa);
+    }
+
+    const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
+    if (isInvalidPhoneNumber && this.strings.invalid_phone) {
+      textInput.setCustomValidity(this.strings.invalid_phone);
     }
   }
 

@@ -21,6 +21,7 @@ const config = {
     'max-len': 'off',
     'max-classes-per-file': 'off',
     'newline-per-chained-call': 'off',
+    'no-cond-assign': 'off',
     'no-console': 'error',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'no-param-reassign': ['off', 'never'],

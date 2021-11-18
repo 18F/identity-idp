@@ -4,12 +4,12 @@
       type="button"
       class="usa-accordion__button"
       aria-expanded="false"
-      aria-controls="<%= @target_id %>"
+      aria-controls="accordion-<%= unique_id %>"
     >
       <%= header %>
     </button>
   </div>
-  <div id="<%= @target_id %>" class="usa-accordion__container">
+  <div id="accordion-<%= unique_id %>" class="usa-accordion__container">
     <div class="usa-accordion__content usa-prose">
       <%= content %>
     </div>

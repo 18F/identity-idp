@@ -1,9 +1,10 @@
-<lg-phone-input>
+<%= content_tag('lg-phone-input', class: css_class) do %>
   <%= content_tag(
         :script,
         {
           country_code_label: t('components.phone_input.country_code_label'),
           invalid_phone: t('errors.messages.improbable_phone'),
+          country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
         }.to_json,
         {
           type: 'application/json',
@@ -40,10 +41,21 @@
         as: :tel,
         required: required,
         label: false,
+        wrapper_html: {
+          class: 'margin-bottom-0',
+        },
         input_html: {
-          aria: { invalid: false },
+          aria: {
+            invalid: false,
+            describedby: "phone-input-error-#{unique_id}",
+          },
           class: 'phone-input__number',
         },
       ) %>
-</lg-phone-input>
+  <span
+    id="phone-input-error-<%= unique_id %>"
+    class="usa-error-message margin-y-1 display-if-invalid display-if-invalid--custom-error"
+    role="alert"
+  ></span>
+<% end %>
 <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
