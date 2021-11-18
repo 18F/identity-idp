@@ -170,8 +170,7 @@ es:
       upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
       verify: Verifica tus datos
       verify_identity: Verifique su identidad
-      welcome: Verifique su identidad para acceder de forma segura a los servicios
-        gubernamentales
+      welcome: Empiece con la verificación de su identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
       capture_status_capturing: Capturando
@@ -228,8 +227,8 @@ es:
         conservaremos y compartiremos algunos de sus datos personales para
         verificar su identidad con los registros públicos.
       verifying: Verificando…
-      welcome_html: La agencia a la que está intentando acceder debe asegurarse de que
-        usted sea quien dice ser, y no alguien que se hace pasar por usted.
+      welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
+        se haga pasar por usted.'
     instructions:
       bullet1: Su documento de identidad emitido por el estado.
       bullet1a: Un dispositivo con cámara
@@ -261,10 +260,9 @@ es:
       text1: ''
       text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.
-      text3: No es necesario que sea el titular principal de la cuenta. Si no tiene un
-        número de teléfono que cumpla con este requisito, podemos enviarle el
-        código de verificación por correo en un plazo aproximado de 3 a 7 días
-        laborables.
+      text3: No es necesario que usted sea el titular principal de la cuenta de su
+        plan de teléfono. Si su número de teléfono no funciona, podemos enviarle
+        un código de verificación por correo.
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.

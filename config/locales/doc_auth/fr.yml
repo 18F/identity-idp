@@ -177,8 +177,7 @@ fr:
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: Vérifier votre information
       verify_identity: Vérifier votre identité
-      welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
-        gouvernementaux
+      welcome: Commencez à vérifier votre identité
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web
       capture_status_capturing: Prendre la photo
@@ -241,8 +240,8 @@ fr:
         personnels pour vérifier votre identité par rapport aux registres
         publics.
       verifying: Vérification…
-      welcome_html: L’agence à laquelle vous essayez d’accéder doit s’assurer qu’il
-        s’agit bien de vous, et non de quelqu’un qui se fait passer pour vous.
+      welcome_html: "%{sp_name} doit s'assurer que vous êtes bien vous, et non
+        quelqu'un qui se fait passer pour vous."
     instructions:
       bullet1: Votre carte d’identité émise par l’État
       bullet1a: Un appareil équipé d’une caméra
@@ -276,10 +275,10 @@ fr:
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
-      text3: Il n’est pas nécessaire que vous soyez le titulaire principal de la
-        ligne. Si votre numéro de téléphone ne remplit pas les conditions
-        requises, nous pouvons vous envoyer le code de vérification par courrier
-        dans un délai de 3 à 7 jours ouvrables.
+      text3: Il n'est pas nécessaire que vous soyez le titulaire principal du compte
+        de votre forfait téléphonique. Si votre numéro de téléphone ne
+        fonctionne pas, nous pouvons vous envoyer un code de vérification par
+        courrier.
       welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
       capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
