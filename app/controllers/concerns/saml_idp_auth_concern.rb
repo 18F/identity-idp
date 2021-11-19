@@ -187,6 +187,7 @@ module SamlIdpAuthConcern
 
   def request_url
     url = URI.parse request.original_url
+    url.path = remap_auth_post_path(url.path)
     query_params = Rack::Utils.parse_nested_query url.query
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
@@ -199,5 +200,12 @@ module SamlIdpAuthConcern
 
     url.query = Rack::Utils.build_query(query_params).presence
     url.to_s
+  end
+
+  def remap_auth_post_path(path)
+    path_match = path.match(%r{/api/saml/authpost(?<year>\d{4})})
+    return path unless path_match.present?
+
+    "/api/saml/auth#{path_match[:year]}"
   end
 end

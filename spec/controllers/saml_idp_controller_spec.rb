@@ -565,10 +565,17 @@ describe SamlIdpController do
           ial2: false,
           ial2_strict: false,
           ialmax: false,
-          request_url: @stored_request_url,
+          request_url: @stored_request_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
         )
+      end
+
+      it 'correctly sets the request URL' do
+        post :auth, params: { 'SAMLRequest' => @saml_request }
+        session_request_url = session[:sp][:request_url]
+
+        expect(session_request_url).to match(%r{/api/saml/auth\d{4}})
       end
     end
 
@@ -589,7 +596,7 @@ describe SamlIdpController do
           ial2: false,
           ial2_strict: false,
           ialmax: false,
-          request_url: @saml_request.request.original_url,
+          request_url: @saml_request.request.original_url.gsub('authpost', 'auth'),
           request_id: sp_request_id,
           requested_attributes: ['email'],
         )
