@@ -25,6 +25,12 @@ const isDeliveryOptionSupported = (delivery, selectedOption) =>
   selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
 
 /**
+ * @param {HTMLFormElement} form
+ * @return {HTMLButtonElement|HTMLInputElement|null}
+ */
+const getSubmitButton = (form) => form.querySelector('button:not([type]),[type="submit"]');
+
+/**
  * @param {string} delivery
  * @param {string} location
  * @return {string=}
@@ -115,5 +121,28 @@ function updateOTPDeliveryMethods(event) {
 
 document.querySelectorAll('lg-phone-input').forEach((node) => {
   const phoneInput = /** @type {PhoneInput} */ (node);
-  phoneInput.addEventListener('change', updateOTPDeliveryMethods);
+  const form = /** @type {HTMLFormElement} */ (phoneInput.closest('form'));
+
+  function setSubmitDisabled(isDisabled) {
+    const submitButton = getSubmitButton(form);
+    if (submitButton && submitButton.disabled !== isDisabled) {
+      submitButton.disabled = isDisabled;
+    }
+  }
+
+  phoneInput.addEventListener('input', () => setSubmitDisabled(!form.checkValidity()));
+  phoneInput.addEventListener('change', (event) => {
+    setSubmitDisabled(!form.checkValidity());
+    updateOTPDeliveryMethods(event);
+  });
+  phoneInput.addEventListener(
+    'invalid',
+    (event) => {
+      setSubmitDisabled(true);
+      event.preventDefault();
+    },
+    true,
+  );
+
+  setSubmitDisabled(!form.checkValidity());
 });
