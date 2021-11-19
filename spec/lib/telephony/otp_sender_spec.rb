@@ -88,9 +88,13 @@ RSpec.describe Telephony::OtpSender do
       let(:channel) { :sms }
 
       it 'sends an authentication OTP with Pinpoint SMS' do
-        message = "Login.gov: Your security code is 123456. "\
-                  "It expires in 5 minutes. Don't share this "\
-                  "code with anyone.\n\n@login.gov #123456"
+        message = t(
+          'telephony.authentication_otp.sms',
+          app_name: APP_NAME,
+          code: otp,
+          expiration: expiration,
+          domain: domain,
+        )
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
         expect(adapter).to receive(:send).with(
@@ -105,9 +109,13 @@ RSpec.describe Telephony::OtpSender do
       end
 
       it 'sends a confirmation OTP with Pinpoint SMS' do
-        message = "Login.gov: Your security code is 123456. It "\
-        "expires in 5 minutes. Don't share this code with anyone."\
-        "\n\n@login.gov #123456"
+        message = t(
+          'telephony.confirmation_otp.sms',
+          app_name: APP_NAME,
+          code: otp,
+          expiration: expiration,
+          domain: domain,
+        )
 
         adapter = instance_double(Telephony::Pinpoint::SmsSender)
         expect(adapter).to receive(:send).with(
