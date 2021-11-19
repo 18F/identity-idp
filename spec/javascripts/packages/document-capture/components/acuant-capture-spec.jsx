@@ -125,7 +125,6 @@ describe('document-capture/components/acuant-capture', () => {
 
       const button = await findByText('doc_auth.buttons.upload_picture');
       expect(button.classList.contains('usa-button--outline')).to.be.true();
-      expect(console).to.have.loggedError(/^Error: Could not load script:/);
       userEvent.click(button);
     });
 
