@@ -11,15 +11,15 @@ fr:
       show: Choisissez un mot de passe
     doc_auth:
       address: Mettez à jour votre adresse postale
-      doc_capture: Ajoutez votre pièce d'identité
+      doc_capture: Ajoutez votre pièce d’identité
       get_started: Commençons
       link_sent: Lien envoyé
       otp_delivery: Recevez un code de sécurité
       processing_images: Traitement de vos images
       ssn: Entrez votre numéro de sécurité sociale
       switch_back: Retournez sur votre ordinateur
-      take_photo: Prenez des photos de votre pièce d'identité avec un téléphone
-      upload: Vérifiez votre pièce d'identité
+      take_photo: Prenez des photos de votre pièce d’identité avec un téléphone
+      upload: Vérifiez votre pièce d’identité
       verify: Vérifiez votre identité
       verify_info: Vérifiez vos informations
     edit_info:
@@ -32,8 +32,8 @@ fr:
       phone_verification: Numéro de téléphone non vérifié
     forget_all_browsers: Oubliez tous les navigateurs
     idv:
-      cancellation_prompt: Annulez la vérification d'identité
-      cancelled: La vérification d'identité est annulée
+      cancellation_prompt: Annulez la vérification d’identité
+      cancelled: La vérification d’identité est annulée
       come_back_soon: Revenez bientôt
       enter_security_code: Entrez votre code de sécurité
       get_letter: Obtenez une lettre

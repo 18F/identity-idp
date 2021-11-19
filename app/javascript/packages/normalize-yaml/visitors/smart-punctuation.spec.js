@@ -2,15 +2,15 @@ import { replaceInHTMLContent, ellipses } from './smart-punctuation.js';
 
 describe('replaceInHTMLContent', () => {
   it('replaces in html content', () => {
-    const string = '<div>This is a failure</div>';
-    const result = replaceInHTMLContent(string, (match) => match.replace('failure', 'success'));
-    const expected = '<div>This is a success</div>';
+    const string = 'bad<div>bad</div>bad';
+    const result = replaceInHTMLContent(string, (match) => match.replace('bad', 'good'));
+    const expected = 'good<div>good</div>good';
 
     expect(result).to.equal(expected);
   });
 
   it('does not replace in html tags', () => {
-    const string = '<div data-div-type="div">div<div>div</div>div</div>';
+    const string = 'div<div data-div-type="div">div<div>div</div>div</div>div';
     const result = replaceInHTMLContent(string, (match) => match.replace('div', ''));
     const expected = '<div data-div-type="div"><div></div></div>';
 
