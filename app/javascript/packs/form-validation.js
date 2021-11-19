@@ -23,47 +23,37 @@ function kebabCase(string) {
   return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
 }
 
-/**
- * Returns the error message elements associated with the given input.
- *
- * @param {HTMLInputElement} input Input field.
- *
- * @return {Element[]} Error message elements.
- */
-function getInputMessages(input) {
-  const messages = [];
-
-  const describedBy = input.getAttribute('aria-describedby');
-  if (describedBy) {
-    const descriptors = /** @type {Element[]} */ (describedBy
-      .split(' ')
-      .map((id) => document.getElementById(id))
-      .filter(Boolean));
-
-    messages.push(...descriptors);
-  }
-
-  /** @type {Element?} */
-  let sibling = input;
-  while ((sibling = sibling.nextElementSibling)) {
-    if (sibling.classList.contains('display-if-invalid')) {
-      messages.push(sibling);
-    }
-  }
-
-  return messages;
-}
-
-/**
- * Given an `input` event, updates custom validity of the given input.
- *
- * @param {Event} event Input or invalid event.
- */
-function checkInputValidity(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
+function resetInput(input) {
   if (input.hasAttribute('data-form-validation-message')) {
     input.setCustomValidity('');
     input.removeAttribute('data-form-validation-message');
+  }
+  input.setAttribute('aria-invalid', 'false');
+  input.classList.remove('usa-input--error');
+}
+
+/**
+ * Given an `input` or `invalid` event, updates custom validity of the given input.
+ *
+ * @param {Event} event Input or invalid event.
+ */
+
+function checkInputValidity(event) {
+  const input = /** @type {HTMLInputElement} */ (event.target);
+  resetInput(input);
+  if (
+    event.type === 'invalid' &&
+    !input.validity.valid &&
+    input.parentNode?.querySelector('.display-if-invalid')
+  ) {
+    event.preventDefault();
+    const errors = Object.keys(ValidityState.prototype)
+      .filter((key) => key !== 'valid')
+      .filter((key) => input.validity[key]);
+
+    input.setAttribute('aria-invalid', errors.length ? kebabCase(errors[0]) : 'false');
+    input.classList.add('usa-input--error');
+    input.focus();
   }
 
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
@@ -82,49 +72,13 @@ function checkInputValidity(event) {
 }
 
 /**
- * Given an `input` or `invalid` event, toggles visibility of custom error messages.
- *
- * @param {Event} event Input or invalid event.
- */
-function toggleErrorMessages(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
-  const messages = getInputMessages(input);
-  const errors = Object.keys(ValidityState.prototype)
-    .filter((key) => key !== 'valid')
-    .filter((key) => input.validity[key]);
-  const activeMessages = errors
-    .map((type) => `display-if-invalid--${kebabCase(type)}`)
-    .flatMap((className) => messages.filter((message) => message.classList.contains(className)));
-
-  input.setAttribute('aria-invalid', 'false');
-  input.classList.remove('usa-input--error');
-  messages.forEach((message) => message.classList.remove('display-if-invalid--invalid'));
-
-  const hasActiveMessages = !!activeMessages.length;
-  if (event.type === 'invalid' && hasActiveMessages) {
-    event.preventDefault();
-
-    input.setAttribute('aria-invalid', 'true');
-    input.classList.add('usa-input--error');
-    input.focus();
-
-    const firstActiveMessage = activeMessages[0];
-    firstActiveMessage.classList.add('display-if-invalid--invalid');
-    if (firstActiveMessage.classList.contains('display-if-invalid--custom-error')) {
-      firstActiveMessage.textContent = input.validationMessage;
-    }
-  }
-}
-
-/**
  * Binds validation to a given input.
  *
  * @param {HTMLInputElement} input Input element.
  */
 function validateInput(input) {
   input.addEventListener('input', checkInputValidity);
-  input.addEventListener('input', toggleErrorMessages);
-  input.addEventListener('invalid', toggleErrorMessages);
+  input.addEventListener('invalid', checkInputValidity);
 }
 
 /**

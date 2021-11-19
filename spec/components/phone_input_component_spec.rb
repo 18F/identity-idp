@@ -37,4 +37,26 @@ RSpec.describe PhoneInputComponent, type: :component do
       expect(rendered).to have_css('lg-phone-input.example-class')
     end
   end
+
+  context 'with allowed countries' do
+    let(:allowed_countries) { ['US'] }
+
+    it 'limits the allowed countries' do
+      expect(rendered).to have_select(
+        t('components.phone_input.country_code_label'),
+        options: ['United States +1'],
+      )
+    end
+
+    context 'with invalid allowed countries' do
+      let(:allowed_countries) { ['US', 'ZZ'] }
+
+      it 'limits the allowed countries to valid countries' do
+        expect(rendered).to have_select(
+          t('components.phone_input.country_code_label'),
+          options: ['United States +1'],
+        )
+      end
+    end
+  end
 end

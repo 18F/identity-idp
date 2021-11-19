@@ -737,6 +737,12 @@ Rails/Blank:
 Rails/Delegate:
   Enabled: false
 
+Rails/DynamicFindBy:
+  Include:
+    - tests/features/**/*.rb
+  AllowedMethods:
+    - find_by_id
+
 Rails/FilePath:
   Enabled: false
 

@@ -41,22 +41,27 @@ describe 'Add a new phone number' do
 
     hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
 
-    find_button 'Continue', disabled: true
-    expect(hidden_select.value).to eq('US')
-
-    input = fill_in :new_phone_form_phone, with: '5135558410'
-    expect(input.value).to eq('5135558410')
-    find_button 'Continue', disabled: false
+    click_continue
+    focused_input = page.find(':focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
+    expect(error_message).to have_content(t('simple_form.required.text'))
     expect(hidden_select.value).to eq('US')
 
     fill_in :new_phone_form_phone, with: 'abcd1234'
-    find_button 'Continue', disabled: true
+    click_continue
+    focused_input = page.find(':focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
+    expect(error_message).to have_content(t('errors.messages.improbable_phone'))
     expect(hidden_select.value).to eq('US')
 
     input = fill_in :new_phone_form_phone, with: '+81543543643'
     expect(input.value).to eq('+81 543543643')
-    find_button 'Continue', disabled: false
     expect(hidden_select.value).to eq('JP')
+
+    click_continue
+    expect(page).to have_content(t('forms.two_factor.code'))
   end
 
   scenario 'adding a phone that is already on the user account shows error message' do

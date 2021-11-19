@@ -36,8 +36,9 @@
     <%= t('forms.example') %>
     <span class="phone-input__example"></span>
   </div>
-  <%= f.input(
-        :phone,
+  <%= render ValidatedFieldComponent.new(
+        name: :phone,
+        form: f,
         as: :tel,
         required: required,
         label: false,
@@ -45,17 +46,8 @@
           class: 'margin-bottom-0',
         },
         input_html: {
-          aria: {
-            invalid: false,
-            describedby: "phone-input-error-#{unique_id}",
-          },
           class: 'phone-input__number',
         },
       ) %>
-  <span
-    id="phone-input-error-<%= unique_id %>"
-    class="usa-error-message margin-y-1 display-if-invalid display-if-invalid--custom-error"
-    role="alert"
-  ></span>
 <% end %>
 <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>

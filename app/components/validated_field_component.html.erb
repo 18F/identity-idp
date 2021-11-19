@@ -1,0 +1,27 @@
+<lg-validated-field>
+  <%= content_tag(
+        :script,
+        error_messages.to_json,
+        {
+          type: 'application/json',
+          class: 'validated-field__error-strings',
+        },
+        false,
+      ) %>
+  <%= f.input(
+        name,
+        tag_options.deep_merge(
+          error: false,
+          input_html: {
+            aria: {
+              invalid: false,
+              describedby: "validated-field-error-#{unique_id}",
+            },
+            data: {
+              input: '',
+            },
+          },
+        ),
+      ) %>
+  <%= f.error(name, id: "validated-field-error-#{unique_id}") %>
+</lg-validated-field>
