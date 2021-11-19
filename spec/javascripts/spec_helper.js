@@ -17,10 +17,15 @@ chai.use(dirtyChai);
 global.expect = chai.expect;
 
 // Emulate a DOM, since many modules will assume the presence of these globals exist as a side
-// effect of their import (focus-trap, classList.js, etc). A URL is provided as a prerequisite to
-// managing history API (pushState, etc).
+// effect of their import.
 const dom = createDOM();
 global.window = dom.window;
+const windowGlobals = Object.fromEntries(
+  Object.getOwnPropertyNames(window)
+    .filter((key) => !(key in global))
+    .map((key) => [key, window[key]]),
+);
+Object.assign(global, windowGlobals);
 global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
 global.window.crypto = new Crypto(); // In the future (Node >=15), use native webcrypto: https://nodejs.org/api/webcrypto.html
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
@@ -30,13 +35,6 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
     this.onload();
   },
 });
-global.navigator = window.navigator;
-global.document = window.document;
-global.Document = window.Document;
-global.Element = window.Element;
-global.Node = window.Node;
-global.getComputedStyle = window.getComputedStyle;
-global.self = window;
 
 useCleanDOM(dom);
 useConsoleLogSpy();
