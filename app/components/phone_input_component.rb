@@ -10,7 +10,7 @@ class PhoneInputComponent < BaseComponent
 
   def supported_country_codes
     codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
-    codes = codes & allowed_countries if allowed_countries
+    codes &= allowed_countries if allowed_countries
     codes
   end
 
