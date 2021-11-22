@@ -11,7 +11,7 @@ import { BlockLink } from '@18f/identity-components';
 /**
  * @typedef TroubleshootingOptionsProps
  *
- * @prop {string} headingTag
+ * @prop {string=} headingTag
  * @prop {string} headingText
  * @prop {TroubleshootingOption[]} options
  */
