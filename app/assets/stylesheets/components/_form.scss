@@ -43,24 +43,6 @@ textarea {
   }
 }
 
-// error states
-.has-error input {
-  background-position: center right $form-field-padding-x;
-  background-repeat: no-repeat;
-  background-size: 1rem 1rem;
-  border-color: $red;
-
-  &.date,
-  &.select {
-    background-image: none;
-  }
-
-  &:focus {
-    border-color: $red;
-    box-shadow: 0 0 0 2px rgba($red, .5);
-  }
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -83,10 +65,6 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.usa-input--error.field:invalid {
-  @include u-border($theme-input-state-border-width, 'error');
-}
-
 .usa-hint {
   font-style: italic;
 }
@@ -105,8 +83,16 @@ input::-webkit-inner-spin-button {
   }
 }
 
-// Remove/refactor once LGDS v6.3 is released
+// Upstream: https://github.com/18F/identity-style-guide/pull/275
+.usa-input--error {
+  &,
+  // Temporary: Remove after LG-3877 (with BassCSS "color-forms")
+  &.field:invalid {
+    border-color: color('error');
+  }
+}
 
+// Upstream: https://github.com/18F/identity-style-guide/pull/265
 .usa-error-message,
 .usa-success-message {
   @include u-padding-y(.5);
@@ -117,6 +103,7 @@ input::-webkit-inner-spin-button {
   padding-left: 1.5rem;
 }
 
+// Upstream: https://github.com/18F/identity-style-guide/pull/265
 .usa-success-message {
   background-image: url(image-path('alert/success.svg'));
   color: color('success');
