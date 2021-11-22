@@ -15,7 +15,7 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   it 'does nothing when rendered' do
-    expect(view_context).not_to receive(:render_component_script)
+    expect(view_context).not_to receive(:enqueue_component_scripts)
 
     render_inline(ExampleComponent.new)
   end
@@ -39,7 +39,7 @@ RSpec.describe BaseComponent, type: :component do
     end
 
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:render_component_script).twice.
+      expect(view_context).to receive(:enqueue_component_scripts).twice.
         with('example_component_with_script')
 
       render_inline(ExampleComponentWithScript.new)

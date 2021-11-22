@@ -2,8 +2,8 @@ class BaseComponent < ViewComponent::Base
   def before_render
     return if @rendered_scripts
     @rendered_scripts = true
-    if helpers.respond_to?(:render_component_script) && self.class.scripts.present?
-      helpers.render_component_script(*self.class.scripts)
+    if helpers.respond_to?(:enqueue_component_scripts) && self.class.scripts.present?
+      helpers.enqueue_component_scripts(*self.class.scripts)
     end
   end
 
