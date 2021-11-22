@@ -23,7 +23,7 @@ RSpec.describe BaseComponent, type: :component do
   context 'with sidecar script' do
     class ExampleComponentWithScript < BaseComponent
       def call
-        ''
+        render(NestedExampleComponentWithScript.new)
       end
 
       def self._sidecar_files(extensions)
@@ -32,8 +32,14 @@ RSpec.describe BaseComponent, type: :component do
       end
     end
 
+    class NestedExampleComponentWithScript < ExampleComponentWithScript
+      def call
+        ''
+      end
+    end
+
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:render_component_script).
+      expect(view_context).to receive(:render_component_script).twice.
         with('example_component_with_script')
 
       render_inline(ExampleComponentWithScript.new)
