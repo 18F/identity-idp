@@ -105,8 +105,9 @@ fr:
           peuvent avoir des reflets. Assurez-vous que le flash de votre appareil
           photo est désactivé puis essayez de prendre de nouvelles photos.
       http:
-        image_load: Il y a un problème avec votre fichier image. Veuillez prendre de
-          nouvelles photos de votre pièce d’identité et réessayer.
+        image_load: Le fichier image que vous avez ajouté n’est pas pris en charge.
+          Veuillez prendre de nouvelles photos de votre pièce d’identité et
+          réessayer.
         image_size: La taille de votre image est trop grande ou trop petite. Veuillez
           ajouter des images de votre pièce d’identité d’environ 2025 x 1275
           pixels.

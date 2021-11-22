@@ -80,7 +80,7 @@ en:
         top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure
           that the flash on your camera is off and try taking new pictures.
       http:
-        image_load: There is something wrong with your image file. Please take new
+        image_load: The image file that you added is not supported. Please take new
           photos of your ID and try again.
         image_size: You image size is too large or too small. Please add images of your
           ID that are about 2025 x 1275 pixels.
