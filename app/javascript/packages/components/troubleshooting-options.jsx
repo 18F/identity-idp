@@ -11,17 +11,20 @@ import { BlockLink } from '@18f/identity-components';
 /**
  * @typedef TroubleshootingOptionsProps
  *
- * @prop {string} heading
+ * @prop {string} headingTag
+ * @prop {string} headingText
  * @prop {TroubleshootingOption[]} options
  */
 
 /**
  * @param {TroubleshootingOptionsProps} props
  */
-function TroubleshootingOptions({ heading, options }) {
+function TroubleshootingOptions({ headingTag = 'h2', headingText, options }) {
+  const HeadingTag = headingTag;
+
   return (
     <section className="troubleshooting-options">
-      <h2>{heading}</h2>
+      <HeadingTag className="troubleshooting-options__heading">{headingText}</HeadingTag>
       <ul className="troubleshooting-options__options">
         {options.map(({ url, text, isExternal }) => (
           <li key={url}>

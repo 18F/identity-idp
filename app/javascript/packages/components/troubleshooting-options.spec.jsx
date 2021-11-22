@@ -3,7 +3,7 @@ import TroubleshootingOptions from './troubleshooting-options';
 
 describe('TroubleshootingOptions', () => {
   it('renders a given heading', () => {
-    const { getByRole } = render(<TroubleshootingOptions heading="Need help?" options={[]} />);
+    const { getByRole } = render(<TroubleshootingOptions headingText="Need help?" options={[]} />);
 
     const heading = getByRole('heading');
 
@@ -13,7 +13,7 @@ describe('TroubleshootingOptions', () => {
   it('renders given options', () => {
     const { getAllByRole } = render(
       <TroubleshootingOptions
-        heading=""
+        headingText=""
         options={[
           { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
           { text: 'Option 2', url: 'https://example.com/2' },
