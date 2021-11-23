@@ -57,7 +57,12 @@
                          method: :put,
                          class: 'margin-top-2',
                        }) do |f| %>
-  <%= render(PhoneInputComponent.new(form: f, allowed_countries: ['US'], required: true)) %>
+  <%= render PhoneInputComponent.new(
+        form: f,
+        allowed_countries: ['US'],
+        required: true,
+        class: 'margin-bottom-4'
+      ) %>
   <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
     <%= t('simple_form.required.text') %>
   </span>

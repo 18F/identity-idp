@@ -1,11 +1,13 @@
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :required, :allowed_countries
+  attr_reader :form, :required, :allowed_countries, :tag_options
+
   alias_method :f, :form
 
-  def initialize(form:, allowed_countries: nil, required: false)
+  def initialize(form:, allowed_countries: nil, required: false, **tag_options)
     @allowed_countries = allowed_countries
     @form = form
     @required = required
+    @tag_options = tag_options
   end
 
   def supported_country_codes
@@ -31,9 +33,9 @@ class PhoneInputComponent < BaseComponent
   end
 
   def css_class
-    classes = ['margin-bottom-4']
+    classes = []
     classes << 'phone-input--single-country' if supported_country_codes.size == 1
-    classes
+    [*classes, *tag_options[:class]]
   end
 
   private
