@@ -84,6 +84,7 @@ fr:
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
         entré en tant qu’authentificateur. Veuillez utiliser un numéro de
         téléphone différent.
+      phone_required: Le numéro de téléphone est obligatoire
       phone_unsupported: Désolé, nous ne sommes pas en mesure d’envoyer des SMS pour
         le moment. S’il vous plaît essayez l’option d’appel téléphonique
         ci-dessous, ou utilisez votre clé personnelle.

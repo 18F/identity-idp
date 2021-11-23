@@ -37,8 +37,11 @@
     <span class="phone-input__example"></span>
   </div>
   <%= render ValidatedFieldComponent.new(
-        name: :phone,
         form: f,
+        name: :phone,
+        error_messages: {
+          valueMissing: t('errors.messages.phone_required'),
+        },
         as: :tel,
         required: required,
         label: false,
