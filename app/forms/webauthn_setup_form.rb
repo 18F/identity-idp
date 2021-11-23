@@ -47,7 +47,7 @@ class WebauthnSetupForm
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @name = params[:name]
-    @platform_authenticator = (params[:platform_authenticator] == true)
+    @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
   end
 
   def name_is_unique
