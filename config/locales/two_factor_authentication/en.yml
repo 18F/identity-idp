@@ -169,6 +169,13 @@ en:
     webauthn_fallback:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
+    webauthn_platform_fallback:
+      question: Don’t have your platform authenticator available?
+    webauthn_platform_header_text: Use your platform authenticator
+    webauthn_platform_use_key: Use platform authenticator
+    webauthn_platform_verified:
+      header: Platform authenticator verified
+      info: We have verified your platform authenticator. Click continue to sign in.
     webauthn_piv_available: Use your PIV or CAC
     webauthn_use_key: Use security key
     webauthn_verified:

@@ -1,7 +1,7 @@
 <% title t('titles.present_webauthn') %>
 
 <h1 class='margin-y-0'>
-  <%= t('two_factor_authentication.webauthn_header_text') %>
+  <%= @presenter.header %>
 </h1>
 
 <div class='mt-tiny margin-bottom-4'>
@@ -31,7 +31,7 @@
     </div>
     <p class="half-center">
       <span class="h2"><%= t('forms.webauthn_setup.login_text') %></span>
-      <input type="button" id="webauthn-button" class="margin-top-2 usa-button usa-button--big usa-button--wide" value="<%= t('two_factor_authentication.webauthn_use_key') %>">
+      <input type="button" id="webauthn-button" class="margin-top-2 usa-button usa-button--big usa-button--wide" value="<%= @presenter.authenticate_button_text %>">
     </p>
     <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
@@ -46,10 +46,10 @@
           ) %>
     </div>
     <h2 class="h4 half-center margin-top-4">
-      <%= t('two_factor_authentication.webauthn_verified.header') %>
+      <%= @presenter.verified_header %>
     </h2>
     <p class="half-center">
-      <%= t('two_factor_authentication.webauthn_verified.info') %>
+      <%= @presenter.verified_info_text %>
     </p>
     <div class="border border-primary-light radius-lg padding-x-2 padding-y-1 margin-top-4">
       <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>

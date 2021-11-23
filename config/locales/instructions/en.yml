@@ -80,6 +80,7 @@ en:
           need to verify your identity using a physical device such as a
           security key or government employee ID (PIV or CAC) to access your
           information.
+        confirm_webauthn_platform_html: Use your platform authenticator to authenticate
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
