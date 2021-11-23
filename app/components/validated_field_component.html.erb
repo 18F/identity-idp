@@ -12,13 +12,14 @@
         name,
         tag_options.deep_merge(
           error: false,
+          wrapper_html: {
+            class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
+          },
           input_html: {
+            class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
             aria: {
               invalid: false,
               describedby: "validated-field-error-#{unique_id}",
-            },
-            data: {
-              input: '',
             },
           },
         ),

@@ -18,10 +18,9 @@ describe('ValidatedField', () => {
       <input
         aria-invalid="false"
         aria-describedby="validated-field-error-298658fb"
-        data-input=""
         required="required"
         aria-required="true"
-        ${hasInitialError ? 'class="usa-input--error"' : ''}
+        class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
       />
       ${
         hasInitialError

@@ -4,7 +4,7 @@ export class ValidatedField extends HTMLElement {
 
   connectedCallback() {
     /** @type {HTMLInputElement?} */
-    this.input = this.querySelector('[data-input]');
+    this.input = this.querySelector('.validated-field__input');
     this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
     try {

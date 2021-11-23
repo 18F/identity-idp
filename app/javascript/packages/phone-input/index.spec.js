@@ -52,7 +52,7 @@ describe('PhoneInput', () => {
             "valueMissing": "This field is required"
           }
         </script>
-        <input class="phone-input__number" aria-invalid="false" aria-describedby="validated-field-error-298658fb" data-input="" required="required" aria-required="true" type="tel" id="phone_form_phone" />
+        <input class="phone-input__number validated-field__input" aria-invalid="false" aria-describedby="validated-field-error-298658fb" required="required" aria-required="true" type="tel" id="phone_form_phone" />
       </lg-validated-field>
     `;
 
