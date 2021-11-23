@@ -172,13 +172,17 @@ export class PhoneInput extends HTMLElement {
 
     const isInvalidCountry =
       supportedCountryCodes?.length === 1 && !isValidNumberForRegion(phoneNumber, countryCode);
-    if (isInvalidCountry && countryCode === 'US' && this.strings.country_constraint_usa) {
-      textInput.setCustomValidity(this.strings.country_constraint_usa);
+    if (isInvalidCountry) {
+      if (countryCode === 'US') {
+        textInput.setCustomValidity(this.strings.country_constraint_usa || '');
+      } else {
+        textInput.setCustomValidity(this.strings.invalid_phone || '');
+      }
     }
 
     const isInvalidPhoneNumber = !isPhoneValid(phoneNumber, countryCode);
-    if (isInvalidPhoneNumber && this.strings.invalid_phone) {
-      textInput.setCustomValidity(this.strings.invalid_phone);
+    if (isInvalidPhoneNumber) {
+      textInput.setCustomValidity(this.strings.invalid_phone || '');
     }
   }
 

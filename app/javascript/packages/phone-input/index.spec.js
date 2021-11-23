@@ -5,14 +5,17 @@ const MULTIPLE_OPTIONS_HTML = `
   <select class="phone-input__international-code" data-countries="[&quot;CA&quot;,&quot;US&quot;]" id="phone_form_international_code">
     <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
     <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
-  </select>
-`;
+  </select>`;
 
 const SINGLE_OPTION_HTML = `
   <select class="phone-input__international-code" data-countries="[&quot;US&quot;]" id="phone_form_international_code">
     <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
-  </select>
-`;
+  </select>`;
+
+const SINGLE_OPTION_SELECT_NON_US_HTML = `
+  <select class="phone-input__international-code" data-countries="[&quot;CA&quot;]" id="phone_form_international_code">
+    <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
+  </select>`;
 
 describe('PhoneInput', () => {
   before(async () => {
@@ -22,7 +25,7 @@ describe('PhoneInput', () => {
     customElements.define('lg-phone-input', PhoneInput);
   });
 
-  function createAndConnectElement({ isSingleOption = false } = {}) {
+  function createAndConnectElement({ isSingleOption = false, isNonUSSingleOption = false } = {}) {
     const element = document.createElement('lg-phone-input');
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
@@ -34,7 +37,9 @@ describe('PhoneInput', () => {
       </script>
       <div class="phone-input__international-code-wrapper">
         <label class="usa-label" for="phone_form_international_code">Country code</label>
-        ${isSingleOption ? SINGLE_OPTION_HTML : MULTIPLE_OPTIONS_HTML}
+        ${isSingleOption ? SINGLE_OPTION_HTML : ''}
+        ${isNonUSSingleOption ? SINGLE_OPTION_SELECT_NON_US_HTML : ''}
+        ${!isSingleOption && !isNonUSSingleOption ? MULTIPLE_OPTIONS_HTML : ''}
       </div>
       <label class="usa-label" for="phone_form_phone">Phone number</label>
       <div class="margin-bottom-1 usa-hint js">
@@ -94,6 +99,20 @@ describe('PhoneInput', () => {
 
       userEvent.type(phoneNumber, '306-555-1234');
       expect(phoneNumber.validationMessage).to.equal('Must be a U.S. phone number');
+    });
+
+    context('with non-U.S. single option', () => {
+      it('validates phone from region', () => {
+        const input = createAndConnectElement({ isNonUSSingleOption: true });
+
+        /** @type {HTMLInputElement} */
+        const phoneNumber = getByLabelText(input, 'Phone number');
+
+        userEvent.type(phoneNumber, '513-555-1234');
+        expect(phoneNumber.validationMessage).to.equal(
+          'Invalid phone number. Please make sure you enter a valid phone number.',
+        );
+      });
     });
   });
 });
