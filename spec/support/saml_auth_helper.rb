@@ -187,8 +187,8 @@ module SamlAuthHelper
 
   def post_saml_authn_request(settings = saml_settings, params = {})
     saml_authn_params = authn_request_post_params(settings, params)
-    response = page.driver.post(saml_settings.idp_sso_target_url, saml_authn_params)
-    visit response.location
+    page.driver.post(saml_settings.idp_sso_target_url, saml_authn_params)
+    click_button(t('forms.buttons.submit.default'))
   end
 
   def login_and_confirm_sp(user)
