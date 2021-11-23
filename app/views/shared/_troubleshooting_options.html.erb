@@ -1,15 +1,15 @@
 <%#
 locals:
-* heading_level: Tag name for heading. Does not affect visual appearance. Defaults to :h2.
+* heading_tag: Tag name for heading. Does not affect visual appearance. Defaults to :h2.
 * heading: Heading text.
 * options: List of link options to display, as an array of hashes with `url`, `text`, `external` values.
 * class: Additional class names to add to wrapper element.
 %>
 <% if local_assigns[:options].presence %>
-  <% heading_level = local_assigns[:heading_level] || :h2 %>
+  <% heading_tag = local_assigns[:heading_tag] || :h2 %>
   <% classes = ['troubleshooting-options', *local_assigns[:class]] %>
   <%= tag.section class: classes do %>
-    <%= content_tag(heading_level, heading, class: 'troubleshooting-options__heading') %>
+    <%= content_tag(heading_tag, heading, class: 'troubleshooting-options__heading') %>
     <ul class="troubleshooting-options__options">
       <% options.each do |option| %>
         <li>
