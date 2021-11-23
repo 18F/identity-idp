@@ -8,6 +8,8 @@
 
 const { t } = /** @type {GlobalWithLoginGov} */ (window).LoginGov.I18n;
 
+const getOTPDeliveryMethodContainer = () => document.querySelector('.js-otp-delivery-preferences');
+
 /**
  * @return {HTMLInputElement[]}
  */
@@ -62,6 +64,9 @@ const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
  */
 const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
 
+const toggleDeliveryPreferencesVisible = (isVisible) =>
+  getOTPDeliveryMethodContainer()?.classList.toggle('display-none', !isVisible);
+
 /**
  * @param {Event} event
  */
@@ -103,17 +108,31 @@ function updateOTPDeliveryMethods(event) {
   const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
     location,
   });
+  toggleDeliveryPreferencesVisible(!isAllMethodsDisabled);
   if (isAllMethodsDisabled) {
-    setHintText(hintText);
     select.setCustomValidity(hintText);
     select.reportValidity();
   } else if (!select.validity.valid) {
+    textInput.setCustomValidity('');
     select.setCustomValidity('');
-    select.reportValidity();
+  }
+}
+
+function syncSelectValidityToTextInput(phoneInput, event) {
+  const { target: select } = event;
+  const { textInput } = phoneInput;
+  if (select instanceof HTMLSelectElement && !select.validity.valid && textInput) {
+    textInput.setCustomValidity(select.validationMessage);
+    textInput.reportValidity();
   }
 }
 
 document.querySelectorAll('lg-phone-input').forEach((node) => {
   const phoneInput = /** @type {PhoneInput} */ (node);
   phoneInput.addEventListener('change', updateOTPDeliveryMethods);
+  phoneInput.addEventListener(
+    'invalid',
+    (event) => syncSelectValidityToTextInput(phoneInput, event),
+    true,
+  );
 });

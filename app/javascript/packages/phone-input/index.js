@@ -23,22 +23,12 @@ const {
   intlTelInputUtils,
 } = /** @type {window & { intlTelInputUtils: IntlTelInputUtilsGlobal }} */ (window);
 
-const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
-
 const isPhoneValid = (phone, countryCode) => {
   let phoneValid = isValidNumber(phone, countryCode);
   if (!phoneValid && countryCode === 'US') {
     phoneValid = isValidNumber(`+1 ${phone}`, countryCode);
   }
   return phoneValid;
-};
-
-const internationalCodeFromPhone = (phone) => {
-  const match = phone.match(INTERNATIONAL_CODE_REGEX);
-  if (match) {
-    return match[1] || match[2];
-  }
-  return '1';
 };
 
 const updateInternationalCodeInPhone = (phone, newCode) =>
@@ -193,12 +183,9 @@ export class PhoneInput extends HTMLElement {
     }
 
     const phone = textInput.value;
-    const inputInternationalCode = internationalCodeFromPhone(phone);
     const selectedInternationalCode = selectedOption.dataset.countryCode;
-
-    if (inputInternationalCode !== selectedInternationalCode) {
-      textInput.value = updateInternationalCodeInPhone(phone, selectedInternationalCode);
-    }
+    textInput.value = updateInternationalCodeInPhone(phone, selectedInternationalCode);
+    textInput.dispatchEvent(new CustomEvent('input', { bubbles: true }));
   }
 
   /**
