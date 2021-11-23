@@ -91,8 +91,7 @@ es:
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
-      no_supported_options: En estos momentos no podemos verificar números telefónicos
-        a personas de %{location}.
+      no_supported_options: No podemos verificar los números de teléfono de %{location}
       sms: Mensaje de texto (SMS, sigla en inglés)
       sms_unsupported: En estos momentos no podemos enviar mensajes de texto a
         personas de %{location}.

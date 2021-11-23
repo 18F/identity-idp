@@ -85,7 +85,7 @@ en:
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.
-      no_supported_options: We’re unable to verify phone numbers from %{location} at this time.
+      no_supported_options: We are unable to verify phone numbers from %{location}
       sms: Text message (SMS)
       sms_unsupported: We’re unable to send text messages to people in %{location} at this time.
       title: How should we send you a code?
