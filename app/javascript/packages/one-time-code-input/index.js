@@ -12,9 +12,28 @@ class OneTimeCodeInput {
   }
 
   bind() {
+    this.createHiddenInput();
     if (OneTimeCodeInput.isWebOTPSupported && this.options.transport) {
       this.receive(this.options.transport);
     }
+  }
+
+  createHiddenInput() {
+    const { input, form } = this.elements;
+    const hiddenInput = /** @type {HTMLInputElement} */ (document.createElement('input'));
+    const label = form?.querySelector(`label[for="${input.id}"]`);
+    const modifiedId = `${input.id}-${Math.floor(Math.random() * 1000000)} `;
+    hiddenInput.name = input.name;
+    hiddenInput.value = input.value;
+    hiddenInput.type = 'hidden';
+    this.elements.hiddenInput = hiddenInput;
+    /** @type {HTMLElement} */ (input.parentNode).insertBefore(hiddenInput, input);
+    input.removeAttribute('name');
+    input.setAttribute('id', modifiedId);
+    label?.setAttribute('for', modifiedId);
+    input.addEventListener('input', () => {
+      hiddenInput.value = input.value;
+    });
   }
 
   /**
@@ -35,6 +54,7 @@ class OneTimeCodeInput {
       });
 
       input.value = code;
+      input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
     } catch {
       // Thrown errors may be expected if:
       // - the user submits the form and triggers the abort controller's signal. ('AbortError')
