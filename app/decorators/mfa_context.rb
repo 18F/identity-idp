@@ -20,7 +20,15 @@ class MfaContext
 
   def webauthn_configurations
     if user.present?
-      user.webauthn_configurations
+      user.webauthn_configurations.roaming_authenticators
+    else
+      WebauthnConfiguration.none
+    end
+  end
+
+  def webauthn_platform_configurations
+    if user.present?
+      user.webauthn_configurations.platform_authenticators
     else
       WebauthnConfiguration.none
     end
@@ -55,12 +63,12 @@ class MfaContext
   end
 
   def aal3_configurations
-    webauthn_configurations + piv_cac_configurations
+    webauthn_platform_configurations + webauthn_configurations + piv_cac_configurations
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_configurations + backup_code_configurations +
-      piv_cac_configurations + auth_app_configurations
+    phone_configurations + webauthn_platform_configurations + webauthn_configurations +
+      backup_code_configurations + piv_cac_configurations + auth_app_configurations
   end
 
   def two_factor_enabled?
