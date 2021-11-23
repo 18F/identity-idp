@@ -67,7 +67,7 @@ fr:
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
-      invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
+      invalid_phone_number: Le numéro de téléphone n’est pas valide
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
         messages textuels. Veuillez essayer l’option d’appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
