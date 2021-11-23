@@ -3,7 +3,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const PATTERN_TYPES = ['personal-key', 'ssn'];
+const PATTERN_TYPES = ['personal-key'];
 
 const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
@@ -24,7 +24,10 @@ function kebabCase(string) {
 }
 
 function resetInput(input) {
-  input.setCustomValidity('');
+  if (input.hasAttribute('data-form-validation-message')) {
+    input.setCustomValidity('');
+    input.removeAttribute('data-form-validation-message');
+  }
   input.setAttribute('aria-invalid', 'false');
   input.classList.remove('usa-input--error');
 }
@@ -56,11 +59,13 @@ function checkInputValidity(event) {
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
   if (input.validity.valueMissing) {
     input.setCustomValidity(I18n.t('simple_form.required.text'));
+    input.setAttribute('data-form-validation-message', '');
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
         input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${snakeCase(type)}`));
+        input.setAttribute('data-form-validation-message', '');
       }
     });
   }
