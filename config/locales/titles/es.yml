@@ -12,7 +12,6 @@ es:
     doc_auth:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
-      get_started: Iniciemos
       link_sent: Enlace enviado
       otp_delivery: Recibe un código de seguridad
       processing_images: Procesando tus imágenes
