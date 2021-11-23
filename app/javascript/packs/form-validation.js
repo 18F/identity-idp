@@ -3,7 +3,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const PATTERN_TYPES = ['personal-key', 'ssn'];
+const PATTERN_TYPES = ['personal-key'];
 
 const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
