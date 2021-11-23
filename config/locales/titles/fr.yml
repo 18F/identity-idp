@@ -12,7 +12,6 @@ fr:
     doc_auth:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d’identité
-      get_started: Commençons
       link_sent: Lien envoyé
       otp_delivery: Recevez un code de sécurité
       processing_images: Traitement de vos images
