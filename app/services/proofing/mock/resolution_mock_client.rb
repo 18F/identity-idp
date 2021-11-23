@@ -27,7 +27,7 @@ module Proofing
         elsif first_name.match?(/Time/i)
           raise Proofing::TimeoutError, 'resolution mock timeout'
 
-        elsif !applicant[:ssn].start_with?('900')
+        elsif !ssn.start_with?('900') && !IdentityConfig.store.test_ssn_allowed_list.include?(ssn)
           result.add_error(:ssn, 'Unverified SSN.')
 
         elsif applicant[:zipcode] == UNVERIFIABLE_ZIP_CODE
