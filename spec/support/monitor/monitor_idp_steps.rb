@@ -65,7 +65,10 @@ module MonitorIdpSteps
 
     # TOTP codes can only be generated every 30 seconds, and we just generated one for signup
     sleep(31)
-    fill_in 'code', with: generate_totp_code(totp_secret)
+
+    otp_input = page.find('.one-time-code-input')
+    otp_input.set(generate_totp_code(totp_secret))
+
     uncheck 'Remember this browser'
     click_on 'Submit'
   end
@@ -77,7 +80,10 @@ module MonitorIdpSteps
     click_on 'Continue'
     secret = find('#qr-code').text
     fill_in 'name', with: 'Authentication app'
-    fill_in 'code', with: generate_totp_code(secret)
+
+    otp_input = page.find('.one-time-code-input')
+    otp_input.set(generate_totp_code(secret))
+
     uncheck 'Remember this browser'
     click_button 'Submit'
     if /two_factor_options_success/.match?(current_path)
