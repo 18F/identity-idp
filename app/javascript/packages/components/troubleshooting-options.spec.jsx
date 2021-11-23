@@ -3,13 +3,11 @@ import TroubleshootingOptions from './troubleshooting-options';
 
 describe('TroubleshootingOptions', () => {
   it('renders a given heading', () => {
-    const { getByRole, getByText } = render(
-      <TroubleshootingOptions heading="Need help?" options={[]} />,
-    );
+    const { getByRole } = render(<TroubleshootingOptions heading="Need help?" options={[]} />);
 
     const heading = getByRole('heading');
 
-    expect(getByText('Need help?').tagName).to.be.equal('H2');
+    expect(heading.tagName).to.be.equal('H2');
     expect(heading.textContent).to.equal('Need help?');
   });
 
