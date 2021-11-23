@@ -54,7 +54,7 @@ function Warning({
       )}
       {troubleshootingOptions && (
         <TroubleshootingOptions
-          headingText={troubleshootingHeading || t('idv.troubleshooting.headings.having_trouble')}
+          heading={troubleshootingHeading || t('idv.troubleshooting.headings.having_trouble')}
           options={troubleshootingOptions}
         />
       )}

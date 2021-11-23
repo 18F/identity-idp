@@ -4,7 +4,7 @@ import TroubleshootingOptions from './troubleshooting-options';
 describe('TroubleshootingOptions', () => {
   it('renders a given heading', () => {
     const { getByRole, getByText } = render(
-      <TroubleshootingOptions headingText="Need help?" options={[]} />,
+      <TroubleshootingOptions heading="Need help?" options={[]} />,
     );
 
     const heading = getByRole('heading');
@@ -15,7 +15,7 @@ describe('TroubleshootingOptions', () => {
 
   it('renders a given headingTag', () => {
     const { getByText } = render(
-      <TroubleshootingOptions headingTag="h3" headingText="Test Header" options={[]} />,
+      <TroubleshootingOptions headingTag="h3" heading="Test Header" options={[]} />,
     );
 
     expect(getByText('Test Header').tagName).to.be.equal('H3');
@@ -24,7 +24,7 @@ describe('TroubleshootingOptions', () => {
   it('renders given options', () => {
     const { getAllByRole } = render(
       <TroubleshootingOptions
-        headingText=""
+        heading=""
         options={[
           { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
           { text: 'Option 2', url: 'https://example.com/2' },
