@@ -71,6 +71,19 @@ feature 'SAML Authorization Confirmation' do
       expect(current_path).to eq(new_user_session_path)
     end
 
+    it 'does not render the confirmation screen on a return visit to the SP' do
+      second_email = create(:email_address, user: user1)
+      sign_in_user(user1, second_email.email)
+
+      # first visit
+      visit request_url
+      continue_as(second_email.email)
+
+      # second visit
+      visit request_url
+      expect(current_url).to eq(request_url)
+    end
+
     it 'redirects to the account page with no sp in session' do
       sign_in_user(user1)
       visit user_authorization_confirmation_path
