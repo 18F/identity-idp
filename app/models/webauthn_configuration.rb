@@ -25,7 +25,11 @@ class WebauthnConfiguration < ApplicationRecord
   end
 
   def friendly_name
-    :webauthn
+    if platform_authenticator?
+      :webauthn_platform
+    else
+      :webauthn
+    end
   end
 
   def self.selection_presenters(set)

@@ -18,6 +18,9 @@ class MfaContext
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 
+  # TODO: Maybe this should be renamed to reflect that it is a roaming authenticator?
+  # Potentially the MFA context does not need to differentiate and can leave that to the presenters
+  # similar to how phone has voice and SMS modes
   def webauthn_configurations
     if user.present?
       user.webauthn_configurations.roaming_authenticators
@@ -77,12 +80,14 @@ class MfaContext
     return true if auth_app_configurations.any?(&:mfa_enabled?)
     return true if backup_code_configurations.any?(&:mfa_enabled?)
     return true if webauthn_configurations.any?(&:mfa_enabled?)
+    return true if webauthn_platform_configurations.any?(&:mfa_enabled?)
     return false
   end
 
   def enabled_mfa_methods_count
     phone_configurations.to_a.count(&:mfa_enabled?) +
       webauthn_configurations.to_a.count(&:mfa_enabled?) +
+      webauthn_platform_configurations.to_a.count(&:mfa_enabled?) +
       (backup_code_configurations.any? ? 1 : 0) +
       piv_cac_configurations.to_a.count(&:mfa_enabled?) +
       auth_app_configurations.to_a.count(&:mfa_enabled?) +
@@ -104,6 +109,7 @@ class MfaContext
 
   def unphishable_configuration_count
     webauthn_configurations.to_a.count(&:mfa_enabled?) +
+    webauthn_platform_configurations.to_a.count(&:mfa_enabled?) +
       piv_cac_configurations.to_a.count(&:mfa_enabled?)
   end
 

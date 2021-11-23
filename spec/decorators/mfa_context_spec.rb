@@ -24,6 +24,12 @@ describe MfaContext do
       end
     end
 
+    describe '#webauthn_platform_configurations' do
+      it 'is empty' do
+        expect(mfa.webauthn_platform_configurations).to be_empty
+      end
+    end
+
     describe '#backup_code_configurations' do
       it 'is empty' do
         expect(mfa.backup_code_configurations).to be_empty
@@ -56,6 +62,14 @@ describe MfaContext do
       context 'with no user' do
         it 'mirrors the user relationship' do
           expect(mfa.webauthn_configurations).to be_empty
+        end
+      end
+    end
+
+    describe '#webauthn_configurations' do
+      context 'with no user' do
+        it 'mirrors the user relationship' do
+          expect(mfa.webauthn_platform_configurations).to be_empty
         end
       end
     end
@@ -119,10 +133,25 @@ describe MfaContext do
     end
 
     context 'with webauthn configuration' do
-      let(:user) { build(:user, :with_webauthn) }
+      let(:user) { create(:user, :with_webauthn) }
 
       it 'returns 1 for webauthn' do
         hash = { webauthn: 1 }
+
+        expect(count_hash).to eq hash
+      end
+    end
+
+    context 'with webauthn configuration' do
+      let(:user) do
+        user = build(:user, :with_webauthn)
+        user.webauthn_configurations.first.platform_authenticator = true
+        user.save!
+        user
+      end
+
+      it 'returns 1 for webauthn_platform' do
+        hash = { webauthn_platform: 1 }
 
         expect(count_hash).to eq hash
       end
@@ -219,6 +248,17 @@ describe MfaContext do
       it 'returns 2' do
         user = create(:user)
         create_list(:webauthn_configuration, 2, user: user)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with 1 webauthn roaming authenticator and one platform authenticator' do
+      it 'returns 2' do
+        user = create(:user)
+        create(:webauthn_configuration, user: user)
+        create(:webauthn_configuration, platform_authenticator: true, user: user)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
