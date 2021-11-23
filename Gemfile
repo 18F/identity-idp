@@ -70,7 +70,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.40.0', require: 'view_component/engine'
+gem 'view_component', '~> 2.43.1', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
 gem 'xmldsig', '~> 0.6'
