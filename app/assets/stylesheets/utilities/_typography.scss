@@ -20,10 +20,9 @@ body { -webkit-font-smoothing: antialiased; }
 .line-height-4 { line-height: $line-height-4; }
 
 // given how similar & coupled these are, single line preferred
-// scss-lint:disable SingleLinePerSelector, SpaceBeforeBrace
 h1, .h1 { font-size: $h1; }
 h2, .h2 { font-size: $h2; }
-h3      { font-size: $h3; }
+h3 { font-size: $h3; }
 h4, .h4 { font-size: $h4; }
 h5, .h5 { font-size: $h5; }
 h6, .h6 { font-size: $h6; }
@@ -31,9 +30,8 @@ h6, .h6 { font-size: $h6; }
 @media #{$breakpoint-sm} {
   h1, .h1 { font-size: $sm-h1; }
   h2, .h2 { font-size: $sm-h2; }
-  h3      { font-size: $sm-h3; }
+  h3 { font-size: $sm-h3; }
   h4, .h4 { font-size: $sm-h4; }
   h5, .h5 { font-size: $sm-h5; }
   h6, .h6 { font-size: $sm-h6; }
 }
-// scss-lint:enable SingleLinePerSelector, SpaceBeforeBrace
