@@ -86,7 +86,6 @@ es:
       address2: Dirección (opcional)
       city: Ciudad
       password: Contraseña
-      phone: Teléfono
       ssn_label_html: Número de Seguro Social
       state: Estado
       zipcode: Código postal

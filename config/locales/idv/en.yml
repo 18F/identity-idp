@@ -80,7 +80,6 @@ en:
       address2: Address (optional)
       city: City
       password: Password
-      phone: Phone Number
       ssn_label_html: Social Security Number
       state: State
       zipcode: ZIP Code
