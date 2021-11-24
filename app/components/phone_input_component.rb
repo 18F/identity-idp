@@ -39,7 +39,27 @@ class PhoneInputComponent < BaseComponent
       end
   end
 
+  def strings
+    {
+      country_code_label: t('components.phone_input.country_code_label'),
+      invalid_phone: t('errors.messages.invalid_phone_number'),
+      country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
+      unsupported_country: unsupported_country_string,
+    }
+  end
+
   private
+
+  def unsupported_country_string
+    case delivery_methods.sort
+    when [:sms, :voice]
+      t('two_factor_authentication.otp_delivery_preference.no_supported_options')
+    when [:sms]
+      t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
+    when [:voice]
+      t('two_factor_authentication.otp_delivery_preference.voice_unsupported')
+    end
+  end
 
   def international_phone_code_label(code_data)
     "#{code_data['name']} +#{code_data['country_code']}"

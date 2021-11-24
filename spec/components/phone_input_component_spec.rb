@@ -12,12 +12,14 @@ RSpec.describe PhoneInputComponent, type: :component do
   end
   let(:allowed_countries) { nil }
   let(:required) { nil }
+  let(:delivery_methods) { nil }
   let(:tag_options) { {} }
   let(:options) do
     {
       form: form_builder,
       allowed_countries: allowed_countries,
       required: required,
+      delivery_methods: delivery_methods,
       **tag_options,
     }.compact
   end
@@ -28,6 +30,14 @@ RSpec.describe PhoneInputComponent, type: :component do
 
   it 'renders an lg-phone-input tag' do
     expect(rendered).to have_css('lg-phone-input')
+  end
+
+  it 'renders with JavaScript string initializers' do
+    expect(rendered).to have_css(
+      '.phone-input__strings',
+      visible: false,
+      text: t('two_factor_authentication.otp_delivery_preference.no_supported_options'),
+    )
   end
 
   context 'with class tag option' do
@@ -57,6 +67,18 @@ RSpec.describe PhoneInputComponent, type: :component do
           options: ['United States +1'],
         )
       end
+    end
+  end
+
+  context 'with constrained delivery methods' do
+    let(:delivery_methods) { [:sms] }
+
+    it 'renders with JavaScript string initializers' do
+      expect(rendered).to have_css(
+        '.phone-input__strings',
+        visible: false,
+        text: t('two_factor_authentication.otp_delivery_preference.sms_unsupported'),
+      )
     end
   end
 end

@@ -5,12 +5,7 @@
     ) do %>
   <%= content_tag(
         :script,
-        {
-          country_code_label: t('components.phone_input.country_code_label'),
-          invalid_phone: t('errors.messages.invalid_phone_number'),
-          country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
-          unsupported_country: t('two_factor_authentication.otp_delivery_preference.no_supported_options'),
-        }.to_json,
+        strings.to_json,
         {
           type: 'application/json',
           class: 'phone-input__strings',
