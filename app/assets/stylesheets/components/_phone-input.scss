@@ -14,12 +14,12 @@ lg-phone-input {
   }
 }
 
-.phone-input--single-country .iti input {
+.iti:not(.iti--allow-dropdown) input {
   padding-left: 36px;
   padding-right: 6px;
 }
 
-.phone-input--single-country .iti .iti__flag-container {
+.iti:not(.iti--allow-dropdown) .iti__flag-container {
   left: 0;
   right: auto;
 }

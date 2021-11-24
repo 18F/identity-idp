@@ -32,12 +32,6 @@ class PhoneInputComponent < BaseComponent
       end
   end
 
-  def css_class
-    classes = []
-    classes << 'phone-input--single-country' if supported_country_codes.size == 1
-    [*classes, *tag_options[:class]]
-  end
-
   private
 
   def international_phone_code_label(code_data)
