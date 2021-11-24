@@ -186,14 +186,16 @@ describe Idv::PhoneController do
       end
 
       context 'when same as user phone' do
-        it 'redirects to review page and sets phone_confirmed_at' do
+        before do
           user = build(
             :user, :with_phone, with: {
               phone: good_phone, confirmed_at: Time.zone.now
             }
           )
           stub_verify_steps_one_and_two(user)
+        end
 
+        it 'redirects to review page and sets phone_confirmed_at' do
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_path
@@ -211,17 +213,34 @@ describe Idv::PhoneController do
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq true
         end
+
+        context 'with full vendor outage' do
+          before do
+            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+              and_return(true)
+          end
+
+          it 'redirects to review page' do
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+            get :new
+            expect(response).to redirect_to idv_review_path
+          end
+        end
       end
 
       context 'when different phone from user phone' do
-        it 'redirects to otp page and does not set phone_confirmed_at' do
+        before do
           user = build(
             :user, :with_phone, with: {
               phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
             }
           )
           stub_verify_steps_one_and_two(user)
+        end
 
+        it 'redirects to otp page and does not set phone_confirmed_at' do
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_path
@@ -230,6 +249,21 @@ describe Idv::PhoneController do
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
+        end
+
+        context 'with full vendor outage' do
+          before do
+            allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).
+              and_return(true)
+          end
+
+          it 'redirects to vendor outage page' do
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+            get :new
+            expect(response).to redirect_to vendor_outage_path(from: :idv_phone)
+          end
         end
       end
 

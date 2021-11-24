@@ -328,7 +328,15 @@ describe('FormStepsWait', () => {
         status: 200,
         redirected: true,
         url: redirect,
-        text: () => Promise.resolve(NON_POLL_PAGE_MARKUP),
+        text: () =>
+          Promise.resolve(
+            `${NON_POLL_PAGE_MARKUP}
+            <div class="usa-alert usa-alert--error">
+              <div class="usa-alert__body">
+                <p class="usa-alert__text">Error on redirected page is fine.</p>
+              </div>
+            </div>`,
+          ),
       });
     defineProperty(window, 'location', {
       value: {

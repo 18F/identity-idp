@@ -10,9 +10,8 @@ module Db
       module_function
 
       # @param [ServiceProvider] service_provider
-      # @param [Symbol] aggregate (one of :sum, :unique)
       # @return [PG::Result,Array]
-      def call(service_provider:, aggregate:)
+      def call(service_provider:)
         return [] if !service_provider.iaa_start_date || !service_provider.iaa_end_date
 
         iaa_range = (service_provider.iaa_start_date..service_provider.iaa_end_date)
@@ -28,51 +27,57 @@ module Db
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [user_id, ial, auth_count, year_month]
-        subquery = [
+        queries = [
           *full_month_subquery(issuer: issuer, full_months: full_months),
           *partial_month_subqueries(issuer: issuer, partial_months: partial_months),
-        ].join(' UNION ALL ')
+        ]
 
-        select_clause = case aggregate
-        when :sum
-          <<~SQL
-            SUM(billing_month_logs.auth_count)::bigint AS total_auth_count
-          SQL
-        when :unique
-          <<~SQL
-            COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
-          SQL
-        else
-          raise "unknown aggregate=#{aggregate}"
+        ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
+          ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
         end
 
-        params = {
-          iaa_start_date: quote(iaa_range.begin),
-          iaa_end_date: quote(iaa_range.end),
-          iaa: quote(service_provider.iaa),
-          issuer: quote(issuer),
-          subquery: subquery,
-          select_clause: select_clause,
-        }
+        queries.each do |query|
+          stream_query(query) do |row|
+            user_id = row['user_id']
+            year_month = row['year_month']
+            auth_count = row['auth_count']
+            ial = row['ial']
 
-        sql = format(<<~SQL, params)
-          WITH subquery AS (%{subquery})
-          SELECT
-            billing_month_logs.year_month
-          , billing_month_logs.ial
-          , %{iaa_start_date} AS iaa_start_date
-          , %{iaa_end_date} AS iaa_end_date
-          , %{issuer} AS issuer
-          , %{iaa} AS iaa
-          , %{select_clause}
-          FROM
-            subquery billing_month_logs
-          GROUP BY
-            billing_month_logs.year_month
-          , billing_month_logs.ial
-        SQL
+            ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+          end
+        end
 
-        ActiveRecord::Base.connection.execute(sql)
+        rows = []
+
+        ial_to_year_month_to_users.each do |ial, year_month_to_users|
+          prev_seen_users = Set.new
+
+          year_months = year_month_to_users.keys.sort
+
+          year_months.each do |year_month|
+            year_month_users = year_month_to_users[year_month]
+
+            auth_count = year_month_users.count
+            unique_users = year_month_users.uniq.to_set
+
+            new_unique_users = unique_users - prev_seen_users
+            prev_seen_users |= unique_users
+
+            rows << {
+              issuer: service_provider.issuer,
+              iaa: service_provider.iaa,
+              ial: ial,
+              year_month: year_month,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+              total_auth_count: auth_count,
+              unique_users: unique_users.count,
+              new_unique_users: new_unique_users.count,
+            }
+          end
+        end
+
+        rows
       end
 
       # @return [String]

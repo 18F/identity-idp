@@ -80,7 +80,7 @@ en:
         top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure
           that the flash on your camera is off and try taking new pictures.
       http:
-        image_load: There is something wrong with your image file. Please take new
+        image_load: The image file that you added is not supported. Please take new
           photos of your ID and try again.
         image_size: You image size is too large or too small. Please add images of your
           ID that are about 2025 x 1275 pixels.
@@ -128,7 +128,7 @@ en:
       document_capture_selfie: Your photo
       front: Front
       interstitial: We are processing your images
-      lets_go: Let’s get started
+      lets_go: How verifying your identity works
       photo: Photo
       review_issues: Check your images and try again
       secure_account: Secure your account
@@ -143,7 +143,7 @@ en:
       upload_liveness_enabled: How would you like to verify your identity?
       verify: Verify your information
       verify_identity: Verify your identity
-      welcome: Verify your identity to securely access government services
+      welcome: Get started verifying your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
       capture_status_capturing: Capturing
@@ -167,12 +167,13 @@ en:
       link_sent_complete_js: The next step will load automatically once you verify
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying your identity.
+      no_sp_name: The agency that you are trying to access
       privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
         your identity. %{link} about our privacy and security measures.'
-      secure_account: After you verify, we’ll ask you to encrypt your account.
-        Encryption means your data is protected and only you, the account
-        holder, will be able to access or change your information.
+      secure_account: We’ll encrypt your account with your password. Encryption means
+        your data is protected and only you will be able to access or change
+        your information.
       ssn: We need your Social Security number to validate your name, date of birth
         and address.  Your Social Security number is encrypted.  With your
         consent, we share this information with the government agency you are
@@ -190,12 +191,11 @@ en:
         state-issued ID. Then, you’ll take a photo of yourself to confirm that
         you are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your identity.
-      verify_identity: We’ll ask for your personal information. We’ll use, keep and
-        share some of your personal information to verify your identity against
-        public records.
+      verify_identity: We’ll ask for your personal information to verify your identity
+        against public records.
       verifying: Verifying…
-      welcome_html: The agency that you are trying to access needs to make sure you
-        are you &#8212; not someone pretending to be you.
+      welcome_html: '%{sp_name} needs to make sure you are you — not someone
+        pretending to be you.'
     instructions:
       bullet1: Your State-issued ID
       bullet1a: A device with a camera
@@ -225,9 +225,9 @@ en:
       text1: ''
       text1a: such as a phone or computer.
       text2: You will not need the card with you.
-      text3: You do not need to be the primary account holder. If you do not have a
-        phone number that qualifies, we can send you the verification code by
-        mail in approximately 3-7 business days.
+      text3: You do not need to be the primary account holder on your phone plan. If
+        your phone number doesn’t work, we can send you a verification code by
+        mail.
       welcome: 'To verify your identity, you will need:'
     tips:
       capture_troubleshooting_blurry: The photo you added is too blurry.

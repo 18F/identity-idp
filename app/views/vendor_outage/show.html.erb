@@ -2,6 +2,10 @@
       'idv/shared/error',
       heading: t('vendor_outage.working'),
       options: [
+        @show_gpo_option && {
+          text: t('idv.troubleshooting.options.verify_by_mail'),
+          url: idv_gpo_path,
+        },
         {
           text: t('vendor_outage.get_updates_on_status_page'),
           url: StatusPage.base_url,
@@ -12,11 +16,9 @@
           url: MarketingSite.contact_url,
           new_tab: true,
         },
-      ],
+      ].select(&:present?),
     ) do %>
   <p><%= @specific_message %></p>
 <% end %>
 
-<%= render(
-      'idv/doc_auth/back',
-    ) %>
+<%= render('idv/doc_auth/back') %>

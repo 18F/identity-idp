@@ -5,14 +5,13 @@ module Db
 
       module_function
 
-      # Aggregates a user metric at across issuers within the same IAA, during that IAA's
-      # period of performance (between its start and end date), month-over-month, by IAL level
-      # @param [Hash] iaa
-      # @param [Symbol] aggregate (one of :sum, :unique, :new_unique)
+      # @param [String] key label for billing (IAA + order number)
+      # @param [Array<String>] issuers issuers for the iaa
+      # @param [Date] start_date iaa start date
+      # @param [Date] end_date iaa end date
       # @return [PG::Result, Array]
-      def call(iaa:, aggregate:)
-        date_range = iaa[:start_date]...iaa[:end_date]
-        issuers = iaa[:issuers]
+      def call(key:, issuers:, start_date:, end_date:)
+        date_range = start_date...end_date
 
         return [] if !date_range || issuers.blank?
 
@@ -25,75 +24,56 @@ module Db
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [user_id, ial, auth_count, year_month]
-        subquery = [
+        queries = [
           *full_month_subquery(issuers: issuers, full_months: full_months),
           *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
-        ].join(' UNION ALL ')
+        ]
 
-        select_clause = case aggregate
-        when :sum
-          <<~SQL
-            SUM(billing_month_logs.auth_count)::bigint AS total_auth_count
-          SQL
-        when :unique
-          <<~SQL
-            COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
-          SQL
-        when :new_unique
-          <<~SQL
-            COUNT(DISTINCT billing_month_logs.user_id) AS new_unique_users
-          SQL
-        else
-          raise "unknown aggregate=#{aggregate}"
+        ial_to_year_month_to_users = Hash.new do |ial_h, ial_k|
+          ial_h[ial_k] = Hash.new { |ym_h, ym_k| ym_h[ym_k] = Multiset.new }
         end
 
-        where_clause = case aggregate
-        when :new_unique
-          # "new unique users" are users that we are seeing for the first
-          # time this month, so this filters out users we have seen in a past
-          # month by joining the subquery against itself
-          <<~SQL
-            NOT EXISTS (
-              SELECT 1
-              FROM subquery lookback_logs
-              WHERE
-                  lookback_logs.user_id = billing_month_logs.user_id
-              AND lookback_logs.ial = billing_month_logs.ial
-              AND lookback_logs.year_month < billing_month_logs.year_month
-            )
-          SQL
-        else
-          'TRUE'
+        queries.each do |query|
+          stream_query(query) do |row|
+            user_id = row['user_id']
+            year_month = row['year_month']
+            auth_count = row['auth_count']
+            ial = row['ial']
+
+            ial_to_year_month_to_users[ial][year_month].add(user_id, auth_count)
+          end
         end
 
-        params = {
-          iaa_start_date: quote(date_range.begin),
-          iaa_end_date: quote(date_range.end),
-          key: quote(iaa[:key]),
-          subquery: subquery,
-          select_clause: select_clause,
-          where_clause: where_clause,
-        }
+        rows = []
 
-        sql = format(<<~SQL, params)
-          WITH subquery AS (%{subquery})
-          SELECT
-            billing_month_logs.year_month
-          , billing_month_logs.ial
-          , %{key} AS key
-          , %{iaa_start_date} AS iaa_start_date
-          , %{iaa_end_date} AS iaa_end_date
-          , %{select_clause}
-          FROM
-            subquery billing_month_logs
-          WHERE
-            %{where_clause}
-          GROUP BY
-            billing_month_logs.year_month
-          , billing_month_logs.ial
-        SQL
+        ial_to_year_month_to_users.each do |ial, year_month_to_users|
+          prev_seen_users = Set.new
 
-        ActiveRecord::Base.connection.execute(sql)
+          year_months = year_month_to_users.keys.sort
+
+          year_months.each do |year_month|
+            year_month_users = year_month_to_users[year_month]
+
+            auth_count = year_month_users.count
+            unique_users = year_month_users.uniq.to_set
+
+            new_unique_users = unique_users - prev_seen_users
+            prev_seen_users |= unique_users
+
+            rows << {
+              key: key,
+              ial: ial,
+              year_month: year_month,
+              iaa_start_date: date_range.begin.to_s,
+              iaa_end_date: date_range.end.to_s,
+              total_auth_count: auth_count,
+              unique_users: unique_users.count,
+              new_unique_users: new_unique_users.count,
+            }
+          end
+        end
+
+        rows
       end
 
       # @return [String]

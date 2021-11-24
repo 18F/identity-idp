@@ -31,6 +31,10 @@ module TwoFactorAuthentication
       t('two_factor_authentication.two_factor_choice_options.less_secure_label')
     end
 
+    def disabled?
+      VendorStatus.new.all_phone_vendor_outage?
+    end
+
     private
 
     def masked_number(number)

@@ -29,9 +29,9 @@ es:
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite de
         verificación de identidad. Póngase en contacto con su proveedor de
         servicios para obtener más información.
-      send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en
-        %{timeout}. También puedes hacer clic en comenzar de nuevo y elegir usar
-        tu computadora.
+      send_link_throttle: Ha intentado demasiadas veces, por favor, inténtelo de nuevo
+        en %{timeout}. También puede retroceder y elegir utilizar su computadora
+        como alternativa.
       throttled_heading: No pudimos verificar la identificación
       throttled_heading_liveness: No pudimos verificar la identificación ni la foto
       throttled_text_html: '<strong>Por favor, inténtelo de nuevo en

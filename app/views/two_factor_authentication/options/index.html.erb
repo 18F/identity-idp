@@ -1,5 +1,7 @@
 <% title @presenter.title %>
 
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+
 <h1 class="margin-y-0">
   <%= @presenter.heading %>
 </h1>
@@ -24,7 +26,8 @@
           <%= radio_button_tag(
                 'two_factor_options_form[selection]',
                 option.type,
-                index.zero?,
+                index == @presenter.first_enabled_option_index,
+                disabled: option.disabled?,
                 class: "usa-radio__input usa-radio__input--tile",
               ) %>
           <%= label_tag(

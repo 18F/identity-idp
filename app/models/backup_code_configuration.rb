@@ -1,8 +1,6 @@
 class BackupCodeConfiguration < ApplicationRecord
   NUM_WORDS = 3
 
-  self.ignored_columns = %w[encrypted_code code_fingerprint]
-
   include EncryptableAttribute
 
   encrypted_attribute_without_setter(name: :code)

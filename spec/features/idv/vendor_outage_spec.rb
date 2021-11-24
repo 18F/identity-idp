@@ -22,7 +22,7 @@ feature 'vendor_outage_spec' do
         click_submit_default
         expect(current_path).to eq vendor_outage_path
         expect(page).to have_content(
-          t('vendor_outage.idv_blocked.with_sp', service_provider: 'Test SP'),
+          t('vendor_outage.blocked.idv.with_sp', service_provider: 'Test SP'),
         )
       end
 
@@ -42,14 +42,14 @@ feature 'vendor_outage_spec' do
         click_on t('forms.buttons.continue')
 
         expect(current_path).to eq vendor_outage_path
-        expect(page).to have_content(t('vendor_outage.idv_blocked.without_sp'))
+        expect(page).to have_content(t('vendor_outage.blocked.idv.without_sp'))
       end
 
       it 'prevents a user from creating an account' do
         visit_idp_from_sp_with_ial2(:oidc)
         click_link t('links.create_account')
         expect(current_path).to eq vendor_outage_path
-        expect(page).to have_content(t('vendor_outage.idv_blocked.generic'))
+        expect(page).to have_content(t('vendor_outage.blocked.idv.generic'))
       end
     end
   end

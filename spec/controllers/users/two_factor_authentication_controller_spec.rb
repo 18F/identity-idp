@@ -206,6 +206,20 @@ describe Users::TwoFactorAuthenticationController do
         expect(response).
           to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
       end
+
+      context 'when no options are enabled and available for use' do
+        before do
+          allow_any_instance_of(VendorStatus).to receive(:any_phone_vendor_outage?).and_return(true)
+        end
+
+        it 'redirects to mfa options page' do
+          stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+
+          get :show
+
+          expect(response).to redirect_to login_two_factor_options_path
+        end
+      end
     end
 
     context 'when the user has not already set up 2FA' do
@@ -214,6 +228,20 @@ describe Users::TwoFactorAuthenticationController do
         get :show
 
         expect(response).to redirect_to two_factor_options_url
+      end
+    end
+
+    context 'when phone is sole configured mfa and full phone vendor outage' do
+      before do
+        allow_any_instance_of(VendorStatus).to receive(:all_phone_vendor_outage?).and_return(true)
+      end
+
+      it 'redirects to vendor outage page' do
+        stub_sign_in_before_2fa(create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+
+        get :show
+
+        expect(response).to redirect_to vendor_outage_path(from: :two_factor_authentication)
       end
     end
 

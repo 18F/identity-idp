@@ -368,6 +368,7 @@ GEM
     minitest (5.14.4)
     msgpack (1.4.2)
     multipart-post (2.1.1)
+    multiset (0.5.3)
     nenv (0.3.0)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
@@ -727,6 +728,7 @@ DEPENDENCIES
   lograge (>= 0.11.2)
   lru_redux
   maxminddb
+  multiset
   net-sftp
   newrelic_rpm (~> 7.0)
   nokogiri (~> 1.12.5)

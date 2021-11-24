@@ -100,8 +100,8 @@ es:
           tengan reflejos. Asegúrese de que el flash de su cámara esté
           desactivado e intente tomar nuevas fotos.
       http:
-        image_load: Hay un error en su archivo de imagen. Procure tomar nuevas fotos de
-          su documento de identidad e inténtelo nuevamente.
+        image_load: El archivo de imagen que ha añadido no es compatible. Por favor,
+          tome nuevas fotos de su identificación y vuelva a intentarlo.
         image_size: El tamaño de la imagen es demasiado grande o demasiado pequeño.
           Añada imágenes de su documento de identidad de unos 2025 x 1275
           píxeles.
@@ -154,7 +154,7 @@ es:
       document_capture_selfie: Su foto
       front: Parte Delantera
       interstitial: Estamos procesando sus imágenes
-      lets_go: Comencemos
+      lets_go: Cómo funciona la verificación de su identidad
       photo: Foto
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
@@ -170,8 +170,7 @@ es:
       upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
       verify: Verifica tus datos
       verify_identity: Verifique su identidad
-      welcome: Verifique su identidad para acceder de forma segura a los servicios
-        gubernamentales
+      welcome: Empiece con la verificación de su identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
       capture_status_capturing: Capturando
@@ -196,14 +195,14 @@ es:
         verifiques tu identidad a través de tu teléfono.
       link_sent_complete_nojs: Cuando termines, haz clic en “Continuar” para completar
         la verificación de tu identidad.
+      no_sp_name: La agencia a la que está intentando acceder
       privacy_html: '%{app_name} es un sitio web gubernamental seguro que cumple con
         las normas más estrictas de protección de datos. Solo utilizamos sus
         datos para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.'
-      secure_account: Una vez que haya verificado su identidad, le pediremos que cifre
-        su cuenta. Con el cifrado, sus datos quedan protegidos, por lo que solo
-        usted, el titular de la cuenta, puede acceder a su información o
-        modificarla.
+      secure_account: Vamos a encriptar su cuenta con su contraseña. La encriptación
+        significa que sus datos están protegidos y solo usted podrá acceder o
+        modificar su información.
       ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
         nacimiento y habla a. Su número de Seguro Social está encriptado. Con su
         consentimiento, compartimos este información con la agencia
@@ -224,12 +223,11 @@ es:
         documento de identidad expedido por el estado. Luego, se tomará una foto
         para confirmar que es el propietario del documento de identidad.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
-      verify_identity: Le pediremos su información personal. Utilizaremos,
-        conservaremos y compartiremos algunos de sus datos personales para
-        verificar su identidad con los registros públicos.
+      verify_identity: Le preguntaremos sus datos personales para verificar su
+        identidad comparándola con los registros públicos.
       verifying: Verificando…
-      welcome_html: La agencia a la que está intentando acceder debe asegurarse de que
-        usted sea quien dice ser, y no alguien que se hace pasar por usted.
+      welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
+        se haga pasar por usted.'
     instructions:
       bullet1: Su documento de identidad emitido por el estado.
       bullet1a: Un dispositivo con cámara
@@ -261,10 +259,9 @@ es:
       text1: ''
       text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.
-      text3: No es necesario que sea el titular principal de la cuenta. Si no tiene un
-        número de teléfono que cumpla con este requisito, podemos enviarle el
-        código de verificación por correo en un plazo aproximado de 3 a 7 días
-        laborables.
+      text3: No es necesario que usted sea el titular principal de la cuenta de su
+        plan de teléfono. Si su número de teléfono no funciona, podemos enviarle
+        un código de verificación por correo.
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
       capture_troubleshooting_blurry: La foto que adjuntó está demasiado borrosa.

@@ -1,5 +1,7 @@
 <% title t('titles.two_factor_setup') %>
 
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
+
 <% if @presenter.icon %>
   <%= image_tag(
         asset_url(@presenter.icon),
@@ -27,6 +29,7 @@
                 'two_factor_options_form[selection]',
                 option.type,
                 false,
+                disabled: option.disabled?,
                 class: 'usa-radio__input usa-radio__input--tile',
               ) %>
           <%= label_tag(
@@ -37,7 +40,7 @@
                 <span class="usa-radio__label-description position-relative padding-bottom-4">
                   <%= option.info %>
                   <% if option.security_level && @presenter.show_security_level? %>
-                    <span class="usa-tag pin-bottom pin-right bg-info-dark">
+                    <span class="usa-tag pin-bottom pin-right <%= option.disabled? ? 'bg-base-light' : 'bg-info-dark' %>">
                       <%= option.security_level %>
                     </span>
                   <% end %>

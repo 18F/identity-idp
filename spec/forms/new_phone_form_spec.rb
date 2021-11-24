@@ -319,6 +319,38 @@ describe NewPhoneForm do
     end
   end
 
+  describe '#delivery_preference_sms?' do
+    it 'is true' do
+      expect(form.delivery_preference_sms?).to eq(true)
+    end
+
+    context 'sms outage' do
+      before do
+        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it 'is false' do
+        expect(form.delivery_preference_sms?).to eq(false)
+      end
+    end
+  end
+
+  describe '#delivery_preference_voice?' do
+    it 'is false' do
+      expect(form.delivery_preference_voice?).to eq(false)
+    end
+
+    context 'sms outage' do
+      before do
+        allow_any_instance_of(VendorStatus).to receive(:vendor_outage?).with(:sms).and_return(true)
+      end
+
+      it 'is true' do
+        expect(form.delivery_preference_voice?).to eq(true)
+      end
+    end
+  end
+
   describe '#redact' do
     it 'leaves in punctuation and spaces, but removes letters and numbers' do
       expect(form.send(:redact, '+11 (555) DEF-1234')).to eq('+## (###) XXX-####')

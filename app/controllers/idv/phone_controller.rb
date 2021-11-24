@@ -49,7 +49,11 @@ module Idv
 
     def redirect_to_next_step
       if phone_confirmation_required?
-        redirect_to idv_otp_delivery_method_url
+        if VendorStatus.new.all_phone_vendor_outage?
+          redirect_to vendor_outage_path(from: :idv_phone)
+        else
+          redirect_to idv_otp_delivery_method_url
+        end
       else
         redirect_to idv_review_url
       end

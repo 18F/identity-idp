@@ -3,6 +3,7 @@ module Users
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
+    before_action :redirect_if_phone_vendor_outage
 
     def add
       user_session[:phone_id] = nil
@@ -20,6 +21,11 @@ module Users
     end
 
     private
+
+    def redirect_if_phone_vendor_outage
+      return unless VendorStatus.new.all_phone_vendor_outage?
+      redirect_to vendor_outage_path(from: :users_phones)
+    end
 
     def user_params
       params.require(:new_phone_form).permit(

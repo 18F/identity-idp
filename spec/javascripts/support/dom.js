@@ -27,7 +27,6 @@ export function createDOM() {
           : Promise.reject(new Error('Failed to load'));
       }
     })(),
-    runScripts: 'dangerously',
   });
 
   // JSDOM doesn't implement `offsetParent`, which is used by some third-party libraries to detect
@@ -60,6 +59,24 @@ export function createDOM() {
   sinon
     .stub(dom.window, 'scrollTo')
     .callsFake((scrollX, scrollY) => Object.assign(dom.window, { scrollX, scrollY }));
+
+  // If a script tag is added to the page, execute its callbacks as a successful or failed load,
+  // based on whether the `src` is `about:blank`.
+  new dom.window.MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node instanceof dom.window.HTMLScriptElement) {
+          if (node.src === 'about:blank') {
+            if (typeof node.onload === 'function') {
+              node.onload();
+            }
+          } else if (typeof node.onerror === 'function') {
+            node.onerror();
+          }
+        }
+      });
+    });
+  }).observe(dom.window.document.body, { childList: true, subtree: true });
 
   return dom;
 }

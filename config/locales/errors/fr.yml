@@ -25,7 +25,7 @@ fr:
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       document_capture_cancelled: Vous avez annulé le téléchargement de vos photos
-        d'identité sur votre téléphone.
+        d’identité sur votre téléphone.
       document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé
@@ -33,9 +33,9 @@ fr:
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d’identité. Veuillez contacter votre fournisseur de
         services pour plus d’informations.
-      send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
-        %{timeout}. Vous pouvez également cliquer sur recommencer et choisir
-        d’utiliser votre ordinateur.
+      send_link_throttle: Vous avez essayé trop de fois, veuillez réessayer dans
+        %{timeout}. Vous pouvez également revenir en arrière et choisir
+        d’utiliser votre ordinateur à la place.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
       throttled_heading_liveness: Nous n’avons pas pu vérifier votre identité et votre photo
       throttled_text_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
@@ -63,7 +63,7 @@ fr:
         autre lettre afin d’obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro de
         téléphone valide.
-      inclusion: N'est pas inclus dans la liste
+      inclusion: N’est pas inclus dans la liste
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
@@ -76,7 +76,7 @@ fr:
       must_have_us_country_code: Numéro de téléphone non valide. Veuillez vous assurer
         de saisir un numéro de téléphone avec un code pays des États-Unis.
       no_pending_profile: Aucun profil en attente de vérification
-      not_a_number: N'est pas un nombre
+      not_a_number: N’est pas un nombre
       otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
@@ -107,8 +107,8 @@ fr:
         Veuillez sélectionner un autre numéro et réessayer
       weak_password: Votre mot de passe n’est pas assez fort. %{feedback}
       wrong_length:
-        one: n'est pas de la bonne longueur (devrait être de 1 caractère)
-        other: n'est pas de la bonne longueur (devrait être %{count} caractères)
+        one: n’est pas de la bonne longueur (devrait être de 1 caractère)
+        other: n’est pas de la bonne longueur (devrait être %{count} caractères)
     piv_cac_setup:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     registration:
@@ -129,7 +129,7 @@ fr:
       attestation_error: Désolé, votre clé de sécurité ne semble pas être une clé de
         sécurité FIDO. Veuillez vérifier que votre appareil est répertorié sur
         https://fidoalliance.org/certification/fido-certified-products/. Si vous
-        pensez qu'il s'agit d'une erreur de notre part, veuillez contacter
+        pensez qu’il s’agit d’une erreur de notre part, veuillez contacter
         %{link}.
       general_error: Une erreur s’est produite lors de l’ajout de votre clé de
         sécurité physique. Veuillez réessayer.

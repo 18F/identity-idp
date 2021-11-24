@@ -9,6 +9,8 @@
 
 <% title t('titles.doc_auth.otp_delivery') %>
 
+<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
+
 <h1 class="margin-y-0">
   <%= t('idv.titles.otp_delivery_method') %>
 </h1>
@@ -28,6 +30,7 @@
           'otp_delivery_preference',
           :sms,
           false,
+          disabled: VendorStatus.new.vendor_outage?(:sms),
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <label for="otp_delivery_preference_sms" class="usa-radio__label">
@@ -41,6 +44,7 @@
           'otp_delivery_preference',
           :voice,
           false,
+          disabled: VendorStatus.new.vendor_outage?(:voice),
           class: 'usa-radio__input usa-radio__input--tile',
         ) %>
     <label for="otp_delivery_preference_voice" class="usa-radio__label">
