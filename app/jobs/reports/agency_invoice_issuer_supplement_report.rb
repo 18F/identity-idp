@@ -13,7 +13,10 @@ module Reports
       raw_results = service_providers.flat_map do |service_provider|
         transaction_with_timeout do
           Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-            service_provider: service_provider,
+            issuer: service_provider.issuer,
+            iaa_start_date: service_provider.iaa_start_date,
+            iaa_end_date: service_provider.iaa_end_date,
+            iaa: service_provider.iaa,
           )
         end
       end

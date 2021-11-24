@@ -10,36 +10,20 @@ module Reports
     )
 
     def perform(_date)
-      raw_results = iaas.flat_map do |iaa|
+      raw_results = IaaReportingHelper.iaas.flat_map do |iaa|
         transaction_with_timeout do
-          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(**iaa)
+          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
+            key: iaa.key,
+            issuers: iaa.issuers,
+            start_date: iaa.start_date,
+            end_date: iaa.end_date,
+          )
         end
       end
 
       results = combine_by_iaa_month(raw_results)
 
       save_report(REPORT_NAME, results.to_json, extension: 'json')
-    end
-
-    # @return [Array<Hash>]
-    def iaas
-      Agreements::IaaGtc.
-        includes(iaa_orders: { integration_usages: :integration }).
-        flat_map do |gtc|
-          gtc.iaa_orders.flat_map do |iaa_order|
-            key = "#{gtc.gtc_number}-#{format('%04d', iaa_order.order_number)}"
-            issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
-
-            if issuers.present?
-              {
-                key: key,
-                issuers: issuers,
-                start_date: iaa_order.start_date,
-                end_date: iaa_order.end_date,
-              }
-            end
-          end.compact
-        end
     end
 
     # Turns ial1/ial2 rows into ial1/ial2 columns

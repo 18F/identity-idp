@@ -26,10 +26,10 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
   end
 
   let(:iaa_order1) do
-    build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
+    build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
   end
   let(:iaa_order2) do
-    build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
+    build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc2)
   end
 
   # Have to do this because of invalid check when building integration usages
@@ -58,12 +58,12 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
     )
   end
 
-  let(:integration1) {
+  let(:integration1) do
     build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
-  }
-  let(:integration2) {
+  end
+  let(:integration2) do
     build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
-  }
+  end
 
   let(:iaa1) { 'iaa1' }
   let(:iaa1_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
@@ -168,19 +168,19 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       end
 
       context 'one agreement with consecutive iaas' do
-        let(:iaa_order1) {
-          build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
-        }
-        let(:iaa_order2) {
-          build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc1)
-        }
+        let(:iaa_order1) do
+          build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
+        end
+        let(:iaa_order2) do
+          build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc1)
+        end
 
-        let(:integration1) {
+        let(:integration1) do
           build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
-        }
-        let(:integration2) {
+        end
+        let(:integration2) do
           build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account1)
-        }
+        end
 
         let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
 
@@ -218,63 +218,6 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
 
           expect(results).to match_array(rows)
         end
-      end
-    end
-  end
-
-  describe '#iaas' do
-    before do
-      iaa_order1.integrations << integration1
-      iaa_order2.integrations << integration2
-      iaa_order1.save
-      iaa_order2.save
-    end
-
-    context 'multiple IAAs on same GTC' do
-      let(:iaa_order1) {
-        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
-      }
-      let(:iaa_order2) {
-        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc1)
-      }
-
-      let(:integration2) {
-        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account1)
-      }
-
-      let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
-
-      let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
-      let(:iaa2_range) { Date.new(2021, 4, 14)..Date.new(2022, 4, 13) }
-
-      it 'returns both fo the IAAS with the proper key' do
-        iaas = report.iaas
-        orders = iaas.select { |obj| obj[:key].starts_with?(gtc1.gtc_number) }
-        # Expect IAAS with matching GTC to appear
-        expect(orders.count).to eq(2)
-      end
-    end
-
-    context 'IAAS on different GTCs' do
-      let(:integration1) {
-        build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
-      }
-      let(:integration2) {
-        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
-      }
-      let(:iaa_order1) {
-        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
-      }
-      let(:iaa_order2) {
-        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
-      }
-
-      it 'returns both of the IAAS with the proper key of different GTCs' do
-        iaas = report.iaas
-        gtc1_orders = iaas.select { |obj| obj[:key].starts_with?(gtc1.gtc_number) }
-        gtc2_orders = iaas.select { |obj| obj[:key].starts_with?(gtc2.gtc_number) }
-        expect(gtc1_orders.count).to eq(1)
-        expect(gtc2_orders.count).to eq(1)
       end
     end
   end
