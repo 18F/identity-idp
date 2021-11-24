@@ -20,7 +20,7 @@
 <%= validated_form_for :doc_auth,
                        url: url_for,
                        method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
+                       html: { autocomplete: 'off', class: 'margin-top-2 padding-bottom-1 js-consent-continue-form' } do |f| %>
   <div class="margin-bottom-4">
     <%= check_box_tag(
           :ial2_consent_given,

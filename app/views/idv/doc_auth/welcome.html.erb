@@ -79,8 +79,7 @@
   <%= validated_form_for :doc_auth,
                          url: url_for,
                          method: 'put',
-                         html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
-    <br/>
+                         html: { autocomplete: 'off', class: 'margin-top-4 padding-bottom-1 js-consent-continue-form' } do |f| %>
     <%= f.button :button,
                  t('doc_auth.buttons.continue'),
                  type: :submit,
