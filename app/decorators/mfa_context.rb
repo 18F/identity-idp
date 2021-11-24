@@ -18,9 +18,6 @@ class MfaContext
     phone_configurations.find { |cfg| cfg.id.to_s == id.to_s }
   end
 
-  # TODO: Maybe this should be renamed to reflect that it is a roaming authenticator?
-  # Potentially the MFA context does not need to differentiate and can leave that to the presenters
-  # similar to how phone has voice and SMS modes
   def webauthn_configurations
     if user.present?
       user.webauthn_configurations
