@@ -63,8 +63,8 @@ en:
       voice_setup_info_html: Get security code via phone call (North America phone numbers only).
       webauthn: Security key
       webauthn_info_html: Use your security key to access your account.
-      webauthn_platform: Platform authenticator
-      webauthn_platform_info_html: Use a platform authenticator
+      webauthn_platform: Face or Touch Unlock
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add another level of security to your Login.gov account. Recommended because it is more phishing resistant.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -145,7 +145,7 @@ en:
       less_secure_label: Less secure
       more_secure_label: More Secure
       most_secure_label: Most Secure
-      phone: Phone
+      phone: Text or Voice Message
       phone_info_html: Get security codes by text message (SMS) or phone call.
       phone_info_no_voip: Please do not use web-based (VOIP) phone services.
       piv_cac: Government employee ID
@@ -160,8 +160,8 @@ en:
         that you plug in or that is built in to your computer or phone (it often
         looks like a USB flash drive). Recommended because it is more phishing
         resistant.
-      webauthn_platform: Platform authenticator
-      webauthn_platform_info_html: Use a platform authenticator
+      webauthn_platform: Face or Touch Unlock
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add another level of security to your Login.gov account. Recommended because it is more phishing resistant.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
