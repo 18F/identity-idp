@@ -69,4 +69,4 @@ en:
     webauthn_setup:
       new: Add your security key
     webauthn_platform_setup:
-      new: Add your platform authenticator
+      new: Use your device
