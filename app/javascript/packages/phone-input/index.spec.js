@@ -26,9 +26,13 @@ describe('PhoneInput', () => {
     customElements.define('lg-phone-input', PhoneInput);
   });
 
-  function createAndConnectElement({ isSingleOption = false, isNonUSSingleOption = false } = {}) {
+  function createAndConnectElement({
+    isSingleOption = false,
+    isNonUSSingleOption = false,
+    deliveryMethods = ['sms', 'voice'],
+  } = {}) {
     const element = document.createElement('lg-phone-input');
-    element.setAttribute('data-delivery-methods', '["sms","voice"]');
+    element.setAttribute('data-delivery-methods', JSON.stringify(deliveryMethods));
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
         {
@@ -126,6 +130,22 @@ describe('PhoneInput', () => {
         userEvent.type(phoneNumber, '513-555-1234');
         expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
       });
+    });
+  });
+
+  context('with constrained delivery options', () => {
+    it('validates supported delivery method', () => {
+      const input = createAndConnectElement({ deliveryMethods: ['voice'] });
+
+      /** @type {HTMLInputElement} */
+      const phoneNumber = getByLabelText(input, 'Phone number');
+      /** @type {HTMLSelectElement} */
+      const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+
+      userEvent.selectOptions(countryCode, 'CA');
+      expect(phoneNumber.validationMessage).to.equal(
+        'We are unable to verify phone numbers from Canada',
+      );
     });
   });
 });
