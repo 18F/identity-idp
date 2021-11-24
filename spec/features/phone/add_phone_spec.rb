@@ -45,7 +45,7 @@ describe 'Add a new phone number' do
     focused_input = page.find(':focus')
     error_message = page.find_by_id(focused_input[:'aria-describedby'])
     expect(focused_input).to match_css('.phone-input__number.usa-input--error')
-    expect(error_message).to have_content(t('simple_form.required.text'))
+    expect(error_message).to have_content(t('errors.messages.phone_required'))
     expect(hidden_select.value).to eq('US')
 
     fill_in :new_phone_form_phone, with: 'abcd1234'
