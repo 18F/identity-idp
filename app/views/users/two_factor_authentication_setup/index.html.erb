@@ -2,13 +2,7 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
 
-<% if @presenter.icon %>
-  <%= image_tag(
-        asset_url(@presenter.icon),
-        class: 'margin-bottom-3',
-        alt: @presenter.icon_alt_text,
-      ) %>
-<% end %>
+<%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 200, class: 'margin-bottom-2' %>
 
 <h1 class="margin-y-0"><%= @presenter.heading %></h1>
 
