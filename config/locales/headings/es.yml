@@ -68,3 +68,5 @@ es:
     verify_personal_key: Verifica tu clave personal
     webauthn_setup:
       new: Añade tu clave de seguridad
+    webauthn_platform_setup:
+      new: Utilice su dispositivo

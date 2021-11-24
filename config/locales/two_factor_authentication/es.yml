@@ -69,6 +69,10 @@ es:
         telefónica. (Solo números de teléfono de América del Norte).
       webauthn: Llave de seguridad
       webauthn_info_html: Use su llave de seguridad para acceder a su cuenta.
+      webauthn_platform: Desbloqueo facial o táctil
+      webauthn_platform_info_html: Utilice su dispositivo (teléfono, tableta o
+        computadora de escritorio) para añadir otro nivel de seguridad a su cuenta
+        Login.gov. Es recomendable porque resiste mejor el phishing.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
@@ -169,6 +173,10 @@ es:
       webauthn_info_html: Use una llave de seguridad que tenga. Es un dispositivo
         físico que se conecta o que está integrado en su computadora o teléfono
         (a menudo parece una unidad flash USB).
+      webauthn_platform: Desbloqueo facial o táctil
+      webauthn_platform_info_html: Utilice su dispositivo (teléfono, tableta o
+        computadora de escritorio) para añadir otro nivel de seguridad a su cuenta
+        Login.gov. Es recomendable porque resiste mejor el phishing.
     two_factor_hspd12_choice: Se requiere autenticación adicional
     two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de
       seguridad. Para poder acceder a su información, deberá verificar su
@@ -177,6 +185,14 @@ es:
     webauthn_fallback:
       question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
+    # TODO: TRANSLATE
+    # webauthn_platform_fallback:
+    #   question: Don’t have your platform authenticator available?
+    # webauthn_platform_header_text: Use your platform authenticator
+    # webauthn_platform_use_key: Use platform authenticator
+    # webauthn_platform_verified:
+    #   header: Platform authenticator verified
+    #   info: We have verified your platform authenticator. Click continue to sign in.
     webauthn_piv_available: Utilice su PIV o CAC
     webauthn_use_key: Usar llave de seguridad
     webauthn_verified:

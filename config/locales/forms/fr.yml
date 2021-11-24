@@ -141,3 +141,12 @@ fr:
         de sécurité.
       login_text: Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton
       nickname: Pseudo clé de sécurité
+    webauthn_platform_setup:
+      continue: Continuer
+      instructions_text: Appuyez sur le bouton de votre dispositivo pour
+        l’enregistrer avec %{app_name}
+      instructions_title: Connectez votre dispositivo
+      intro_html: Activez la fonctionnalité de reconnaissance faciale ou tactile
+        de vos appareils comme méthode d'authentification pour votre compte.
+      login_text: Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton
+      nickname: Pseudo dispositivo

@@ -161,7 +161,9 @@ en:
         looks like a USB flash drive). Recommended because it is more phishing
         resistant.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add another level of security to your Login.gov account. Recommended because it is more phishing resistant.
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to
+        add another level of security to your Login.gov account. Recommended because
+        it is more phishing resistant.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)

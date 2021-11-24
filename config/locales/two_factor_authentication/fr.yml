@@ -70,6 +70,10 @@ fr:
         (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
+      webauthn_platform: Déverrouillage facial ou tactile
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette
+        ou ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte Login.gov. Recommandé, car il est plus résistant aux hameçonnages.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
@@ -183,6 +187,14 @@ fr:
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
+    # TODO: TRANSLATE
+    # webauthn_platform_fallback:
+    #   question: Don’t have your platform authenticator available?
+    # webauthn_platform_header_text: Use your platform authenticator
+    # webauthn_platform_use_key: Use platform authenticator
+    # webauthn_platform_verified:
+    #   header: Platform authenticator verified
+    #   info: We have verified your platform authenticator. Click continue to sign in.
     webauthn_piv_available: Utilisez votre PIV ou CAC
     webauthn_use_key: Utiliser la clé de sécurité
     webauthn_verified:
