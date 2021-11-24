@@ -24,12 +24,6 @@ describe MfaContext do
       end
     end
 
-    describe '#webauthn_platform_configurations' do
-      it 'is empty' do
-        expect(mfa.webauthn_platform_configurations).to be_empty
-      end
-    end
-
     describe '#backup_code_configurations' do
       it 'is empty' do
         expect(mfa.backup_code_configurations).to be_empty
@@ -62,14 +56,6 @@ describe MfaContext do
       context 'with no user' do
         it 'mirrors the user relationship' do
           expect(mfa.webauthn_configurations).to be_empty
-        end
-      end
-    end
-
-    describe '#webauthn_configurations' do
-      context 'with no user' do
-        it 'mirrors the user relationship' do
-          expect(mfa.webauthn_platform_configurations).to be_empty
         end
       end
     end
@@ -137,21 +123,6 @@ describe MfaContext do
 
       it 'returns 1 for webauthn' do
         hash = { webauthn: 1 }
-
-        expect(count_hash).to eq hash
-      end
-    end
-
-    context 'with webauthn configuration' do
-      let(:user) do
-        user = build(:user, :with_webauthn)
-        user.webauthn_configurations.first.platform_authenticator = true
-        user.save!
-        user
-      end
-
-      it 'returns 1 for webauthn_platform' do
-        hash = { webauthn_platform: 1 }
 
         expect(count_hash).to eq hash
       end

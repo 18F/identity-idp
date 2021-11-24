@@ -23,15 +23,7 @@ class MfaContext
   # similar to how phone has voice and SMS modes
   def webauthn_configurations
     if user.present?
-      user.webauthn_configurations.roaming_authenticators
-    else
-      WebauthnConfiguration.none
-    end
-  end
-
-  def webauthn_platform_configurations
-    if user.present?
-      user.webauthn_configurations.platform_authenticators
+      user.webauthn_configurations
     else
       WebauthnConfiguration.none
     end
@@ -66,11 +58,11 @@ class MfaContext
   end
 
   def aal3_configurations
-    webauthn_platform_configurations + webauthn_configurations + piv_cac_configurations
+    webauthn_configurations + piv_cac_configurations
   end
 
   def two_factor_configurations
-    phone_configurations + webauthn_platform_configurations + webauthn_configurations +
+    phone_configurations + webauthn_configurations +
       backup_code_configurations + piv_cac_configurations + auth_app_configurations
   end
 
@@ -80,14 +72,12 @@ class MfaContext
     return true if auth_app_configurations.any?(&:mfa_enabled?)
     return true if backup_code_configurations.any?(&:mfa_enabled?)
     return true if webauthn_configurations.any?(&:mfa_enabled?)
-    return true if webauthn_platform_configurations.any?(&:mfa_enabled?)
     return false
   end
 
   def enabled_mfa_methods_count
     phone_configurations.to_a.count(&:mfa_enabled?) +
       webauthn_configurations.to_a.count(&:mfa_enabled?) +
-      webauthn_platform_configurations.to_a.count(&:mfa_enabled?) +
       (backup_code_configurations.any? ? 1 : 0) +
       piv_cac_configurations.to_a.count(&:mfa_enabled?) +
       auth_app_configurations.to_a.count(&:mfa_enabled?) +
@@ -109,7 +99,6 @@ class MfaContext
 
   def unphishable_configuration_count
     webauthn_configurations.to_a.count(&:mfa_enabled?) +
-    webauthn_platform_configurations.to_a.count(&:mfa_enabled?) +
       piv_cac_configurations.to_a.count(&:mfa_enabled?)
   end
 
