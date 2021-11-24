@@ -103,6 +103,23 @@ describe('PhoneInput', () => {
     );
   });
 
+  it('formats on country change', () => {
+    const input = createAndConnectElement();
+
+    /** @type {HTMLInputElement} */
+    const phoneNumber = getByLabelText(input, 'Phone number');
+    /** @type {HTMLSelectElement} */
+    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+
+    userEvent.type(phoneNumber, '071');
+
+    userEvent.selectOptions(countryCode, 'LK');
+    expect(phoneNumber.value).to.equal('+94 071');
+
+    userEvent.selectOptions(countryCode, 'US');
+    expect(phoneNumber.value).to.equal('+1 071');
+  });
+
   context('with single option', () => {
     it('initializes without dropdown', () => {
       const input = createAndConnectElement({ isSingleOption: true });
