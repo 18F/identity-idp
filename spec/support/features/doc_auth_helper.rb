@@ -3,6 +3,8 @@ require_relative 'document_capture_step_helper'
 module DocAuthHelper
   include DocumentCaptureStepHelper
 
+  GOOD_SSN = '900-66-1234'
+
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
     Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
@@ -10,12 +12,6 @@ module DocAuthHelper
       return session if step == finished_step
     end
     session
-  end
-
-  def fill_out_ssn_form_with_duplicate_ssn
-    diff_user = create(:user)
-    create(:profile, pii: { ssn: '123-45-6666' }, user: diff_user)
-    fill_in 'doc_auth_ssn', with: '123-45-6666'
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -27,7 +23,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_ok
-    fill_in 'doc_auth_ssn', with: '666-66-1234'
+    fill_in 'doc_auth_ssn', with: GOOD_SSN
   end
 
   def fill_out_ssn_form_fail

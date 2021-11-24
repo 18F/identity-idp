@@ -18,7 +18,7 @@ feature 'idv review step' do
     expect(page).to have_content('1 FAKE RD')
     expect(page).to have_content('GREAT FALLS, MT 59010')
     expect(page).to have_content('October 06, 1938')
-    expect(page).to have_content('666-66-1234')
+    expect(page).to have_content(DocAuthHelper::GOOD_SSN)
     expect(page).to have_content('+1 202-555-1212')
 
     fill_in 'Password', with: 'this is not the right password'
