@@ -56,6 +56,19 @@ feature 'OIDC Authorization Confirmation' do
       expect(current_url).to match('http://localhost:7654/auth/result')
     end
 
+    it 'does not show the confirmation page if a user is visiting the same SP' do
+      second_email = create(:email_address, user: user1)
+      sign_in_user(user1, second_email.email)
+
+      # first visit
+      visit_idp_from_ial1_oidc_sp
+      continue_as(second_email.email)
+
+      # second visit
+      visit_idp_from_ial1_oidc_sp
+      expect(current_url).to match('http://localhost:7654/auth/result')
+    end
+
     it 'does not render an error if a user goes back after opting to switch accounts' do
       sign_in_user(user1)
       visit_idp_from_ial1_oidc_sp

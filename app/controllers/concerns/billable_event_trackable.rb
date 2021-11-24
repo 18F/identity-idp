@@ -53,4 +53,11 @@ module BillableEventTrackable
       "auth_counted_#{issuer}"
     end
   end
+
+  def first_visit_for_sp?
+    issuer = sp_session[:issuer]
+
+    # check if the user has visited this SP at either IAL1 or IAL2 in this session
+    !user_session["auth_counted_#{issuer}ial1"] && !user_session["auth_counted_#{issuer}"]
+  end
 end
