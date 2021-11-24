@@ -41,7 +41,7 @@ const isWebAuthnEnabled = () => {
   return false;
 };
 
-const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredentials }) => {
+const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredentials, platformAuthenticator }) => {
   const createOptions = {
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
@@ -87,8 +87,7 @@ const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredent
       authenticatorSelection: {
         // Prevents user from needing to use PIN with Security Key
         userVerification: 'discouraged',
-        // Defaults to "Security Key" instead of things like "Windows Hello"
-        authenticatorAttachment: 'cross-platform',
+        authenticatorAttachment: platformAuthenticator ? 'platform' : 'cross-platform',
       },
       excludeCredentials: extractCredentials(excludeCredentials),
     },

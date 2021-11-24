@@ -9,11 +9,14 @@ function webauthn() {
     document.getElementById('spinner').className = '';
     document.getElementById('continue-button').className = 'hidden';
 
+    const platformAuthenticator = document.getElementById('platform_authenticator').value == 'true';
+
     WebAuthn.enrollWebauthnDevice({
       userId: document.getElementById('user_id').value,
       userEmail: document.getElementById('user_email').value,
       userChallenge: document.getElementById('user_challenge').value,
       excludeCredentials: document.getElementById('exclude_credentials').value,
+      platformAuthenticator: platformAuthenticator,
     })
       .then((result) => {
         document.getElementById('webauthn_id').value = result.webauthnId;
