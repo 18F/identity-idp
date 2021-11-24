@@ -124,11 +124,22 @@ function updateOTPDeliveryMethods(event) {
     select.setCustomValidity(hintText);
     select.reportValidity();
   } else if (!select.validity.valid) {
-    textInput.setCustomValidity('');
+    // Reset previously-set custom validity. This may have been sync'd to the text input if the user
+    // tried to submit, and should be reset there as well if it had been.
     select.setCustomValidity('');
+    if (textInput.validationMessage === hintText) {
+      textInput.setCustomValidity('');
+    }
   }
 }
 
+/**
+ * On an invalid event of the selected code (e.g. on form submission after selecting an unsupported
+ * country), sync invalid state to text input, so that an error message is shown.
+ *
+ * @param {PhoneInput} phoneInput PhoneInput element.
+ * @param {Event} event Invalid event.
+ */
 function syncSelectValidityToTextInput(phoneInput, event) {
   const { target: select } = event;
   const { textInput } = phoneInput;
