@@ -135,6 +135,10 @@ function syncSelectValidityToTextInput(phoneInput, event) {
   if (select instanceof HTMLSelectElement && !select.validity.valid && textInput) {
     textInput.setCustomValidity(select.validationMessage);
     textInput.reportValidity();
+
+    // Prevent default behavior, which may attempt to draw focus to the select input. Because it is
+    // hidden, the browser may throw an error.
+    event.preventDefault();
   }
 }
 
