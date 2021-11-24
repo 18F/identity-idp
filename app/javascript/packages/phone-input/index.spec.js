@@ -5,6 +5,7 @@ const MULTIPLE_OPTIONS_HTML = `
   <select class="phone-input__international-code" data-countries="[&quot;CA&quot;,&quot;US&quot;]" id="phone_form_international_code">
     <option data-supports-sms="true" data-supports-voice="true" data-country-code="1" data-country-name="United States" value="US">United States +1</option>
     <option data-supports-sms="true" data-supports-voice="false" data-country-code="1" data-country-name="Canada" value="CA">Canada +1</option>
+    <option data-supports-sms="false" data-supports-voice="false" data-country-code="94" data-country-name="Sri Lanka" value="LK">Sri Lanka +94</option>
   </select>`;
 
 const SINGLE_OPTION_HTML = `
@@ -27,12 +28,14 @@ describe('PhoneInput', () => {
 
   function createAndConnectElement({ isSingleOption = false, isNonUSSingleOption = false } = {}) {
     const element = document.createElement('lg-phone-input');
+    element.setAttribute('data-delivery-methods', '["sms","voice"]');
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
         {
           "country_code_label": "Country code",
-          "invalid_phone": "Invalid phone number. Please make sure you enter a valid phone number.",
-          "country_constraint_usa": "Must be a U.S. phone number"
+          "invalid_phone": "Phone number is not valid",
+          "country_constraint_usa": "Must be a U.S. phone number",
+          "unsupported_country": "We are unable to verify phone numbers from %{location}"
         }
       </script>
       <div class="phone-input__international-code-wrapper">
@@ -76,12 +79,24 @@ describe('PhoneInput', () => {
     expect(phoneNumber.validity.valueMissing).to.be.true();
 
     userEvent.type(phoneNumber, '5');
-    expect(phoneNumber.validationMessage).to.equal(
-      'Invalid phone number. Please make sure you enter a valid phone number.',
-    );
+    expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
 
     userEvent.type(phoneNumber, '13-555-1234');
     expect(phoneNumber.validity.valid).to.be.true();
+  });
+
+  it('validates supported delivery method', () => {
+    const input = createAndConnectElement();
+
+    /** @type {HTMLInputElement} */
+    const phoneNumber = getByLabelText(input, 'Phone number');
+    /** @type {HTMLSelectElement} */
+    const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
+
+    userEvent.selectOptions(countryCode, 'LK');
+    expect(phoneNumber.validationMessage).to.equal(
+      'We are unable to verify phone numbers from Sri Lanka',
+    );
   });
 
   context('with single option', () => {
@@ -109,9 +124,7 @@ describe('PhoneInput', () => {
         const phoneNumber = getByLabelText(input, 'Phone number');
 
         userEvent.type(phoneNumber, '513-555-1234');
-        expect(phoneNumber.validationMessage).to.equal(
-          'Invalid phone number. Please make sure you enter a valid phone number.',
-        );
+        expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
       });
     });
   });

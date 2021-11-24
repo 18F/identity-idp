@@ -116,49 +116,10 @@ function updateOTPDeliveryMethods(event) {
   });
 
   const isAllMethodsDisabled = isAllDisabled(methods);
-  const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
-    location,
-  });
   toggleDeliveryPreferencesVisible(!isAllMethodsDisabled);
-  if (isAllMethodsDisabled) {
-    select.setCustomValidity(hintText);
-    select.reportValidity();
-  } else if (!select.validity.valid) {
-    // Reset previously-set custom validity. This may have been sync'd to the text input if the user
-    // tried to submit, and should be reset there as well if it had been.
-    select.setCustomValidity('');
-    if (textInput.validationMessage === hintText) {
-      textInput.setCustomValidity('');
-    }
-  }
-}
-
-/**
- * On an invalid event of the selected code (e.g. on form submission after selecting an unsupported
- * country), sync invalid state to text input, so that an error message is shown.
- *
- * @param {PhoneInput} phoneInput PhoneInput element.
- * @param {Event} event Invalid event.
- */
-function syncSelectValidityToTextInput(phoneInput, event) {
-  const { target: select } = event;
-  const { textInput } = phoneInput;
-  if (select instanceof HTMLSelectElement && !select.validity.valid && textInput) {
-    textInput.setCustomValidity(select.validationMessage);
-    textInput.reportValidity();
-
-    // Prevent default behavior, which may attempt to draw focus to the select input. Because it is
-    // hidden, the browser may throw an error.
-    event.preventDefault();
-  }
 }
 
 document.querySelectorAll('lg-phone-input').forEach((node) => {
   const phoneInput = /** @type {PhoneInput} */ (node);
   phoneInput.addEventListener('change', updateOTPDeliveryMethods);
-  phoneInput.addEventListener(
-    'invalid',
-    (event) => syncSelectValidityToTextInput(phoneInput, event),
-    true,
-  );
 });

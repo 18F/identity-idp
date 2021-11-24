@@ -1,12 +1,19 @@
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :required, :allowed_countries, :tag_options
+  attr_reader :form, :required, :allowed_countries, :delivery_methods, :tag_options
 
   alias_method :f, :form
 
-  def initialize(form:, allowed_countries: nil, required: false, **tag_options)
+  def initialize(
+    form:,
+    allowed_countries: nil,
+    delivery_methods: [:sms, :voice],
+    required: false,
+    **tag_options
+  )
     @allowed_countries = allowed_countries
     @form = form
     @required = required
+    @delivery_methods = delivery_methods
     @tag_options = tag_options
   end
 

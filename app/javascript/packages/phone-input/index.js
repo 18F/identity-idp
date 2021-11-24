@@ -1,6 +1,7 @@
 import { isValidNumber, isValidNumberForRegion } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import intlTelInput from 'intl-tel-input';
+import { replaceVariables } from '@18f/identity-i18n';
 
 /** @typedef {import('libphonenumber-js').CountryCode} CountryCode */
 
@@ -10,6 +11,7 @@ import intlTelInput from 'intl-tel-input';
  * @prop {string=} country_code_label
  * @prop {string=} invalid_phone
  * @prop {string=} country_constraint_usa
+ * @prop {string=} unsupported_country
  */
 
 /**
@@ -38,6 +40,9 @@ export class PhoneInput extends HTMLElement {
   /** @type {PhoneInputStrings} */
   #_strings;
 
+  /** @type {string[]} */
+  deliveryMethods = [];
+
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.textInput = this.querySelector('.phone-input__number');
@@ -45,6 +50,9 @@ export class PhoneInput extends HTMLElement {
     this.codeInput = this.querySelector('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
     this.exampleText = this.querySelector('.phone-input__example');
+    try {
+      this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
+    } catch {}
 
     if (!this.textInput || !this.codeInput) {
       return;
@@ -147,8 +155,8 @@ export class PhoneInput extends HTMLElement {
   }
 
   validate() {
-    const { textInput, codeInput, supportedCountryCodes } = this;
-    if (!textInput || !codeInput) {
+    const { textInput, codeInput, supportedCountryCodes, selectedOption } = this;
+    if (!textInput || !codeInput || !selectedOption) {
       return;
     }
 
@@ -174,6 +182,18 @@ export class PhoneInput extends HTMLElement {
     if (isInvalidPhoneNumber) {
       textInput.setCustomValidity(this.strings.invalid_phone || '');
     }
+
+    if (!this.isSupportedCountry()) {
+      const validationMessage = replaceVariables(this.strings.unsupported_country || '', {
+        location: selectedOption.dataset.countryName,
+      });
+
+      textInput.setCustomValidity(validationMessage);
+
+      // While most other validations can wait 'til submission to present user feedback, this one
+      // should notify immediately.
+      textInput.dispatchEvent(new CustomEvent('invalid'));
+    }
   }
 
   formatTextInput() {
@@ -198,6 +218,16 @@ export class PhoneInput extends HTMLElement {
     const { selectedOption } = this;
 
     return !!selectedOption && selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
+  }
+
+  /**
+   * Returns true if the currently selected country can receive a supported delivery options, or
+   * false otherwise.
+   *
+   * @return {boolean} Whether selected country is supported.
+   */
+  isSupportedCountry() {
+    return this.deliveryMethods.some((delivery) => this.isDeliveryOptionSupported(delivery));
   }
 
   setExampleNumber() {

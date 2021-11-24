@@ -1,10 +1,15 @@
-<lg-phone-input class="<%= tag_options[:class] %>">
+<%= content_tag(
+      'lg-phone-input',
+      class: tag_options[:class],
+      data: { delivery_methods: delivery_methods },
+    ) do %>
   <%= content_tag(
         :script,
         {
           country_code_label: t('components.phone_input.country_code_label'),
           invalid_phone: t('errors.messages.invalid_phone_number'),
           country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
+          unsupported_country: t('two_factor_authentication.otp_delivery_preference.no_supported_options'),
         }.to_json,
         {
           type: 'application/json',
@@ -52,5 +57,5 @@
           class: 'phone-input__number',
         },
       ) %>
-</lg-phone-input>
+<% end %>
 <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
