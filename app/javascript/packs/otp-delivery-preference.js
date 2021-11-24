@@ -8,7 +8,13 @@
 
 const { t } = /** @type {GlobalWithLoginGov} */ (window).LoginGov.I18n;
 
-const getOTPDeliveryMethodContainer = () => document.querySelector('.js-otp-delivery-preferences');
+/**
+ * Returns the OTP delivery preference element.
+ *
+ * @return {HTMLElement}
+ */
+const getOTPDeliveryMethodContainer = () =>
+  /** @type {HTMLElement} */ (document.querySelector('.js-otp-delivery-preferences'));
 
 /**
  * @return {HTMLInputElement[]}
@@ -64,8 +70,13 @@ const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
  */
 const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
 
+/**
+ * Toggles the delivery preferences selection visible or hidden.
+ *
+ * @param {boolean} isVisible Whether the selection element should be visible.
+ */
 const toggleDeliveryPreferencesVisible = (isVisible) =>
-  getOTPDeliveryMethodContainer()?.classList.toggle('display-none', !isVisible);
+  getOTPDeliveryMethodContainer().classList.toggle('display-none', !isVisible);
 
 /**
  * @param {Event} event
