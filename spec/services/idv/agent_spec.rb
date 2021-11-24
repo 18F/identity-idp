@@ -94,6 +94,25 @@ describe Idv::Agent do
             transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
           )
         end
+
+        it 'returns a successful result if SSN does not start with 900 but is in SSN allowlist' do
+          agent = Idv::Agent.new(
+            ssn: '999-99-9999', first_name: Faker::Name.first_name,
+            zipcode: '11111'
+          )
+
+          agent.proof_resolution(
+            document_capture_session,
+            should_proof_state_id: false,
+            trace_id: trace_id,
+            document_expired: document_expired,
+          )
+          result = document_capture_session.load_proofing_result.result
+
+          expect(result).to include(
+            success: true,
+          )
+        end
       end
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do

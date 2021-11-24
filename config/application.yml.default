@@ -432,6 +432,7 @@ test:
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   state_tracking_enabled: 'true'
   telephony_adapter: test
+  test_ssn_allowed_list: '999999999'
   verify_gpo_key_attempt_window_in_minutes: '3'
   verify_gpo_key_max_attempts: '2'
   verify_personal_key_attempt_window_in_minutes: '3'
