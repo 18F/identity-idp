@@ -4,7 +4,11 @@
 <% help_link = new_window_link_to t('links.what_is_webauthn'),
                                   MarketingSite.help_hardware_security_key_url %>
 
+<% if @platform_authenticator %>
+<%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: '90', class: 'margin-left-1' %>
+<% else %>
 <%= image_tag asset_url('security-key.svg'), alt: '', width: '90', class: 'margin-left-1' %>
+<% end %>
 
 <h1 class='margin-y-0'>
   <%= t("headings.#{setup_context}.new") %>
