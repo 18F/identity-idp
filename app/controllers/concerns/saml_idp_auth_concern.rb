@@ -6,12 +6,22 @@ module SamlIdpAuthConcern
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
+    # this must take place _before_ the store_saml_request action or the SAML
+    # request is cleared (along with the rest of the session) when the user is
+    # signed out
+    before_action :sign_out_if_forceauthn_is_true_and_user_is_signed_in, only: :auth
     before_action :store_saml_request, only: :auth
     before_action :check_sp_active, only: :auth
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
   private
+
+  def sign_out_if_forceauthn_is_true_and_user_is_signed_in
+    return unless user_signed_in? && saml_request.force_authn?
+
+    sign_out unless sp_session[:request_url] == request.original_url
+  end
 
   def check_sp_active
     return if current_service_provider&.active?
