@@ -9,7 +9,7 @@ module IaaReportingHelper
     :end_date,
     keyword_init: true,
   ) do
-    # ex LG123567-1
+    # ex LG123567-0001
     def key
       "#{gtc_number}-#{format('%04d', order_number)}"
     end
