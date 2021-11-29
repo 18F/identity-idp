@@ -70,7 +70,7 @@ RSpec.describe PhoneInputComponent, type: :component do
     end
   end
 
-  context 'with constrained delivery methods' do
+  context 'with sms delivery constraint' do
     let(:delivery_methods) { [:sms] }
 
     it 'renders with JavaScript string initializers' do
@@ -78,6 +78,18 @@ RSpec.describe PhoneInputComponent, type: :component do
         '.phone-input__strings',
         visible: false,
         text: t('two_factor_authentication.otp_delivery_preference.sms_unsupported'),
+      )
+    end
+  end
+
+  context 'with voice delivery constraint' do
+    let(:delivery_methods) { [:voice] }
+
+    it 'renders with JavaScript string initializers' do
+      expect(rendered).to have_css(
+        '.phone-input__strings',
+        visible: false,
+        text: t('two_factor_authentication.otp_delivery_preference.voice_unsupported'),
       )
     end
   end
