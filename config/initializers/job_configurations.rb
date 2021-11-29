@@ -108,6 +108,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Combined Invoice Supplement Report to S3
+      combined_invoice_supplement_report: {
+        class: 'Reports::CombinedInvoiceSupplementReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Total SP Costs Report to S3
       total_sp_costs: {
         class: 'Reports::TotalSpCostReport',
