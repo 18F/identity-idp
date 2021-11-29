@@ -242,9 +242,8 @@ module Users
     def redirect_url
       if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url(reauthn_params)
-      # TODO: Redirect to platform if it is setup
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url(reauthn_params)
+        login_two_factor_webauthn_url(webauthn_params)
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
         login_two_factor_authenticator_url(reauthn_params)
       end
@@ -256,6 +255,12 @@ module Users
       else
         {}
       end
+    end
+
+    def webauthn_params
+      params = reauthn_params
+      params[:platform] = current_user.webauthn_configurations.platform_authenticators.present?
+      params
     end
   end
 end
