@@ -10,9 +10,9 @@ module Users
     before_action :set_webauthn_setup_presenter
 
     def new
-      # TODO: Move this ivar into the form object since it already consumes the params
-      @platform_authenticator = params[:platform].to_s == 'true'
-      result = WebauthnVisitForm.new.submit(params)
+      form = WebauthnVisitForm.new
+      result = form.submit(params)
+      @platform_authenticator = form.platform_authenticator?
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
