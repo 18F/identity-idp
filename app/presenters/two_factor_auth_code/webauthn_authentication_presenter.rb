@@ -6,7 +6,7 @@ module TwoFactorAuthCode
     attr_reader :credential_ids, :user_opted_remember_device_cookie
 
     def initialize(data:, view:, remember_device_default: true, platform_authenticator: true)
-      @platform_authenticator = true
+      @platform_authenticator = platform_authenticator
       super(data: data, view: view, remember_device_default: remember_device_default)
     end
 
