@@ -57,7 +57,7 @@ en:
       inclusion: is not included in the list
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
-      invalid_phone_number: The phone number entered is not valid.
+      invalid_phone_number: Phone number is not valid
       invalid_sms_number: The phone number entered doesn’t support text messaging. Try
         the Phone call option.
       invalid_voice_number: Invalid phone number. Check that you’ve entered the
@@ -70,8 +70,10 @@ en:
       otp_failed: Your security code failed to send.
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
+      phone_country_constraint_usa: Must be a U.S. phone number
       phone_duplicate: This account is already using the phone number you entered as
         an authenticator. Please use a different phone number.
+      phone_required: Phone number is required
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the
         phone call option below, or use your personal key.
       premium_rate_phone: This appears to be a premium rate phone number. Please

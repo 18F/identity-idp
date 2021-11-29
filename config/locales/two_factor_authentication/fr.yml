@@ -92,14 +92,14 @@ fr:
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
       no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
-        téléphone de %{location} pour le moment.
+        téléphone de %{location}
       sms: Message texte (SMS)
-      sms_unsupported: Nous ne sommes pas en mesure d’envoyer des SMS aux personnes se
-        trouvant en %{location} pour le moment.
+      sms_unsupported: Il est impossible d’envoyer des messages texte à des numéros de
+        téléphone dans %{location}.
       title: Comment devrions-nous vous envoyer un code?
       voice: Appel téléphonique
-      voice_unsupported: Nous ne sommes pas en mesure de passer des appels
-        téléphoniques aux personnes se trouvant en %{location} pour le moment.
+      voice_unsupported: Il nous est impossible d’appeler des numéros de téléphone
+        dans le %{location}.
     otp_make_default_number:
       instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
         téléphone par défaut. numéro que vous recevez des messages texte ou des

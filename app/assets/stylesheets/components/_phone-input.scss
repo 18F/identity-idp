@@ -1,3 +1,11 @@
+lg-phone-input {
+  display: block;
+
+  .iti__flag {
+    background-image: image-url('intl-tel-input/build/img/flags.png');
+  }
+}
+
 .phone-input__international-code-wrapper {
   display: none;
 
@@ -6,8 +14,14 @@
   }
 }
 
-lg-phone-input .iti__flag {
-  background-image: image-url('intl-tel-input/build/img/flags.png');
+.iti:not(.iti--allow-dropdown) input {
+  padding-left: 36px;
+  padding-right: 6px;
+}
+
+.iti:not(.iti--allow-dropdown) .iti__flag-container {
+  left: 0;
+  right: auto;
 }
 
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {

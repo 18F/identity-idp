@@ -10,4 +10,8 @@ class BaseComponent < ViewComponent::Base
   def self.scripts
     @scripts ||= _sidecar_files(['js']).map { |file| File.basename(file, '.js') }
   end
+
+  def unique_id
+    @unique_id ||= SecureRandom.hex(4)
+  end
 end

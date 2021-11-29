@@ -45,4 +45,21 @@ RSpec.describe BaseComponent, type: :component do
       render_inline(ExampleComponentWithScript.new)
     end
   end
+
+  describe '#unique_id' do
+    it 'provides a unique id' do
+      first_component = ExampleComponentWithScript.new
+      second_component = ExampleComponentWithScript.new
+
+      expect(first_component.unique_id).to be_present
+      expect(second_component.unique_id).to be_present
+      expect(first_component.unique_id).not_to eq(second_component.unique_id)
+    end
+
+    it 'is memoized' do
+      component = ExampleComponentWithScript.new
+
+      expect(component.unique_id).to eq(component.unique_id)
+    end
+  end
 end

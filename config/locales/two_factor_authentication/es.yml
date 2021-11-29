@@ -91,15 +91,12 @@ es:
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
-      no_supported_options: En estos momentos no podemos verificar números telefónicos
-        a personas de %{location}.
+      no_supported_options: No podemos verificar los números de teléfono de %{location}
       sms: Mensaje de texto (SMS, sigla en inglés)
-      sms_unsupported: En estos momentos no podemos enviar mensajes de texto a
-        personas de %{location}.
+      sms_unsupported: No podemos enviar mensajes de texto a números de teléfono de %{location}.
       title: '¿Cómo deberíamos enviarle un código?'
       voice: Llamada telefónica
-      voice_unsupported: En estos momentos no podemos realizar llamadas telefónicas a
-        personas de %{location}.
+      voice_unsupported: No podemos llamar a números de teléfono en %{location}.
     otp_make_default_number:
       instruction: Marque la casilla a continuación si desea que este sea el teléfono
         predeterminado número que recibe mensajes de texto o llamadas

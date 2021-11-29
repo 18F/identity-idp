@@ -1,32 +1,65 @@
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :required
+  attr_reader :form, :required, :allowed_countries, :delivery_methods, :tag_options
+
   alias_method :f, :form
 
-  def initialize(form:, required: false)
+  def initialize(
+    form:,
+    allowed_countries: nil,
+    delivery_methods: [:sms, :voice],
+    required: false,
+    **tag_options
+  )
+    @allowed_countries = allowed_countries
     @form = form
     @required = required
+    @delivery_methods = delivery_methods
+    @tag_options = tag_options
   end
 
   def supported_country_codes
-    PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
+    codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
+    codes &= allowed_countries if allowed_countries
+    codes
   end
 
   def international_phone_codes
-    codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
-      [
-        international_phone_code_label(value),
-        key,
-        { data: international_phone_codes_data(value) },
-      ]
-    end
+    supported_country_codes.
+      map do |code_key|
+        code_data = PhoneNumberCapabilities::INTERNATIONAL_CODES[code_key]
+        [
+          international_phone_code_label(code_data),
+          code_key,
+          { data: international_phone_codes_data(code_data) },
+        ]
+      end.
+      sort_by do |label, code_key, _data|
+        # Sort alphabetically by label, but put the US first in the list
+        [code_key == 'US' ? -1 : 1, label]
+      end
+  end
 
-    # Sort alphabetically by label, but put the US first in the list
-    codes.sort_by do |label, key, _data|
-      [key == 'US' ? -1 : 1, label]
-    end
+  def strings
+    {
+      country_code_label: t('components.phone_input.country_code_label'),
+      invalid_phone: t('errors.messages.invalid_phone_number'),
+      country_constraint_usa: t('errors.messages.phone_country_constraint_usa'),
+      unsupported_country: unsupported_country_string,
+    }
   end
 
   private
+
+  def unsupported_country_string
+    case delivery_methods.sort
+    when [:sms, :voice]
+      t('two_factor_authentication.otp_delivery_preference.no_supported_options')
+    when [:sms]
+      t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
+    when [:voice]
+      t('two_factor_authentication.otp_delivery_preference.voice_unsupported')
+    end
+  end
 
   def international_phone_code_label(code_data)
     "#{code_data['name']} +#{code_data['country_code']}"
