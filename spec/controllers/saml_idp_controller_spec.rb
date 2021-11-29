@@ -407,6 +407,19 @@ describe SamlIdpController do
       end
     end
 
+    context 'ForceAuthn set to true' do
+      it 'signs the user out if a session is active' do
+        user = create(:user, :signed_up)
+        sign_in(user)
+        generate_saml_response(user, saml_settings(overrides: { force_authn: true }))
+
+        # would be 200 if the user's session persists
+        expect(response.status).to eq(302)
+        # implicit test of request storage since request_id would be missing otherwise
+        expect(response.location).to match(%r{#{root_url}\?request_id=.+})
+      end
+    end
+
     context 'service provider is inactive' do
       it 'responds with an error page' do
         user = create(:user, :signed_up)

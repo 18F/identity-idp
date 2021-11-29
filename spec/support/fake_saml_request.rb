@@ -46,6 +46,10 @@ class FakeSamlRequest
     '123'
   end
 
+  def force_authn?
+    false
+  end
+
   def authn_request?
     true
   end
