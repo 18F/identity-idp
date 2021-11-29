@@ -41,7 +41,13 @@ const isWebAuthnEnabled = () => {
   return false;
 };
 
-const enrollWebauthnDevice = ({ userId, userEmail, userChallenge, excludeCredentials, platformAuthenticator }) => {
+const enrollWebauthnDevice = ({
+  userId,
+  userEmail,
+  userChallenge,
+  excludeCredentials,
+  platformAuthenticator,
+}) => {
   const createOptions = {
     publicKey: {
       challenge: new Uint8Array(JSON.parse(userChallenge)),
