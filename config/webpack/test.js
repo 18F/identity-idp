@@ -1,7 +1,5 @@
-const environment = require('./environment');
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-environment.plugins.get('RailsI18nWebpackPlugin').options.onMissingString = (key, locale) => {
-  throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
-};
+const webpackConfig = require('./base');
 
-module.exports = environment.toWebpackConfig();
+module.exports = webpackConfig;

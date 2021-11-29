@@ -49,8 +49,9 @@ const getTranslationKeys = (source) =>
  *
  * @return {boolean}
  */
-const isJavaScriptChunk = (chunk) =>
-  !!chunk.entryModule && chunk.entryModule.type.startsWith('javascript/');
+const isJavaScriptChunk = (chunkGraph, chunk) =>
+  chunkGraph.getNumberOfEntryModules(chunk) > 0 ||
+  !!chunkGraph.getChunkModulesIterableBySourceType(chunk, 'javascript');
 
 /**
  * @template {Record<string,any>} Options
@@ -80,20 +81,22 @@ class ExtractKeysWebpackPlugin {
     compiler.hooks.compilation.tap('compile', (compilation) => {
       compilation.hooks.additionalAssets.tapPromise(PLUGIN, () =>
         Promise.all(
-          compilation.chunks.filter(isJavaScriptChunk).map((chunk) =>
-            Promise.all(
-              chunk.files.map(async (filename) => {
-                const source = compilation.assets[filename].source();
-                const keys = getTranslationKeys(source);
-                const additionalAssets = await this.getAdditionalAssets(keys);
-                for (const [locale, content] of Object.entries(additionalAssets)) {
-                  const assetFilename = getAdditionalAssetFilename(filename, locale);
-                  compilation.emitAsset(assetFilename, new sources.RawSource(content));
-                  chunk.files.push(assetFilename);
-                }
-              }),
+          Array.from(compilation.chunks)
+            .filter(isJavaScriptChunk.bind(null, compilation.chunkGraph))
+            .map((chunk) =>
+              Promise.all(
+                Array.from(chunk.files).map(async (filename) => {
+                  const source = compilation.assets[filename].source();
+                  const keys = getTranslationKeys(source);
+                  const additionalAssets = await this.getAdditionalAssets(keys);
+                  for (const [locale, content] of Object.entries(additionalAssets)) {
+                    const assetFilename = getAdditionalAssetFilename(filename, locale);
+                    compilation.emitAsset(assetFilename, new sources.RawSource(content));
+                    chunk.files.push(assetFilename);
+                  }
+                }),
+              ),
             ),
-          ),
         ),
       );
     });

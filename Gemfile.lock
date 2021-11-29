@@ -656,7 +656,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.3.0)
+    webpacker (6.0.0.rc.6)
       activesupport (>= 5.2)
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
@@ -665,8 +665,6 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    xmldsig (0.6.6)
-      nokogiri (>= 1.6.8, < 2.0.0)
     xmlenc (0.7.1)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -790,8 +788,7 @@ DEPENDENCIES
   webauthn (~> 2.1)
   webdrivers (~> 4.0)
   webmock
-  webpacker (~> 5.1)
-  xmldsig (~> 0.6)
+  webpacker (~> 6.0.0.rc.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
   zxcvbn (= 0.1.7)
