@@ -67,6 +67,12 @@ module SamlIdp
       end
     end
 
+    def force_authn?
+      return nil unless authn_request?
+
+      request["ForceAuthn"] == 'true'
+    end
+
     def requested_authn_context
       return authn_context_node.content if authn_request? && authn_context_node
     end
