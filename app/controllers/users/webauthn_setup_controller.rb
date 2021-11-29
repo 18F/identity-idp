@@ -121,6 +121,7 @@ module Users
     def process_invalid_webauthn(form)
       if form.name_taken
         flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        # TODO: Retain "platform" query parameter
         render :new
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
