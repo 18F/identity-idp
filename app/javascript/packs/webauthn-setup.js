@@ -1,8 +1,20 @@
-const WebAuthn = require('../app/webauthn');
+import { loadPolyfills } from '@18f/identity-polyfill';
+import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
+
+/**
+ * Reloads the current page, presenting the message corresponding to the given error key.
+ *
+ * @param {string} error Error key for which to show message.
+ */
+function reloadWithError(error) {
+  const params = new URLSearchParams(window.location.search);
+  params.set('error', error);
+  window.location.search = params.toString();
+}
 
 function webauthn() {
-  if (window.location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {
-    window.location.search = '?error=NotSupportedError';
+  if (window.location.href.indexOf('?error=') === -1 && !isWebAuthnEnabled()) {
+    reloadWithError('NotSupportedError');
   }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
@@ -12,7 +24,7 @@ function webauthn() {
     const platformAuthenticator =
       document.getElementById('platform_authenticator').value === 'true';
 
-    WebAuthn.enrollWebauthnDevice({
+    enrollWebauthnDevice({
       userId: document.getElementById('user_id').value,
       userEmail: document.getElementById('user_email').value,
       userChallenge: document.getElementById('user_challenge').value,
@@ -26,9 +38,7 @@ function webauthn() {
         document.getElementById('client_data_json').value = result.clientDataJSON;
         document.getElementById('webauthn_form').submit();
       })
-      .catch(function (err) {
-        window.location.search = `?error=${err.name}`;
-      });
+      .catch((err) => reloadWithError(err.name));
   });
   const input = document.getElementById('nickname');
   input.addEventListener('keypress', function (event) {
@@ -44,4 +54,5 @@ function webauthn() {
     }
   });
 }
-document.addEventListener('DOMContentLoaded', webauthn);
+
+loadPolyfills(['url']).then(webauthn);
