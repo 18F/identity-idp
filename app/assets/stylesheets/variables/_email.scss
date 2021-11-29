@@ -12,7 +12,6 @@
 //   7. Menu
 //   8. Thumbnail
 
-
 // 1. Global
 // ---------
 
@@ -54,7 +53,7 @@ $block-grid-gutter: $global-gutter;
 // -------------
 
 $global-font-color: $gray;
-$body-font-family: Arial, Helvetica, sans-serif;
+$body-font-family: 'Arial', 'Helvetica', sans-serif;
 $global-font-weight: normal;
 $header-color: inherit;
 $global-line-height: 1.3;

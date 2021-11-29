@@ -19,7 +19,6 @@
   margin: 0 auto;
 }
 
-// scss-lint:disable QualifyingElement
 html.no-js .js {
   display: none;
 }
@@ -27,7 +26,6 @@ html.no-js .js {
 html.js .no-js {
   display: none;
 }
-// scss-lint:enable QualifyingElement
 
 .scale-down {
   // trigger anti-aliasing in chrome

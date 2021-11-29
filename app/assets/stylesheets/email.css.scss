@@ -1,6 +1,5 @@
 @import 'variables/colors';
 @import 'variables/email';
-
 @import 'foundation-emails';
 
 .gray {
@@ -108,10 +107,8 @@ h4 {
 }
 
 @media only screen and (max-width: #{$global-breakpoint}) {
-  // scss-lint:disable QualifyingElement
   table.body .columns,
   table.body .column {
-    // scss-lint:disable ImportantRule
     padding-left: $global-gutter-small !important;
     padding-right: $global-gutter-small !important;
   }
