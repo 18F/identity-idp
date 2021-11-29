@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def html_class
-      ''#'display-none'
+      'display-none'
     end
 
     def security_level
