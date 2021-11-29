@@ -221,7 +221,7 @@ jobs:
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
             bundle exec rake db:create db:migrate --trace
             bundle exec rake db:seed
-            ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
+            ruby -i -pe 'gsub(/^  compile: true$/, "  compile: false")' config/webpacker.yml
       - attach_workspace:
           at: .
       - run:
