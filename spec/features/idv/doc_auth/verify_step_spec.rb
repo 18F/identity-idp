@@ -107,11 +107,9 @@ feature 'doc auth verify step' do
 
   context 'resolution proofing raises a timeout exception' do
     before do
-      client = instance_double(Proofing::Mock::StateIdMockClient)
-      allow(Proofing::Mock::StateIdMockClient).to receive(:new).and_return(client)
-      allow(client).to receive(:proof).and_raise(
-        ::Proofing::TimeoutError.new(
-          'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion'
+      allow_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:execute_proof).and_raise(
+        Proofing::TimeoutError.new(
+          'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
         ),
       )
     end

@@ -32,11 +32,19 @@ shared_examples 'failed idv job' do |step|
       click_idv_continue
     end
 
-    it 'renders a timeout failure screen' do
-      expect(page).to have_current_path(session_timeout_path) if step == :profile
-      expect(page).to have_current_path(phone_timeout_path) if step == :phone
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
+    if step == :profile
+      it 'renders a timeout failure screen' do
+        expect(page).to have_current_path(session_timeout_path)
+        expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+        expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
+      end
+    end
+
+    if step == :phone
+      it 'renders a timeout message on the phone entry screen' do
+        expect(page).to have_current_path(idv_phone_path)
+        expect(page).to have_content(t('idv.failure.timeout'))
+      end
     end
   end
 
