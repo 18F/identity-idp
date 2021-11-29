@@ -58,7 +58,7 @@ shared_examples 'failed idv phone job' do
   def session_jobfail_path
     idv_session_errors_jobfail_path(locale: locale)
   end
-  
+
   def phone_jobfail_path
     idv_phone_errors_jobfail_path(locale: locale)
   end
