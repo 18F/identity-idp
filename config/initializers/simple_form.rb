@@ -22,7 +22,7 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.use :label, class: 'bold'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'italic' }
+    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'block col-12 field', error_class: 'usa-input--error'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
