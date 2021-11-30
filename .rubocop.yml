@@ -738,10 +738,8 @@ Rails/Delegate:
   Enabled: false
 
 Rails/DynamicFindBy:
-  Include:
-    - tests/features/**/*.rb
-  AllowedMethods:
-    - find_by_id
+  Exclude:
+    - spec/features/**/*.rb
 
 Rails/FilePath:
   Enabled: false
