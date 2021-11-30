@@ -167,6 +167,8 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - tmp/cache/webpacker/last-compilation-digest-test
+            - tmp/cache/assets
             - public/assets
             - public/packs
             - public/packs-test
