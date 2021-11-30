@@ -11,11 +11,13 @@ RSpec.describe ValidatedFieldComponent, type: :component do
   end
   let(:name) { :uuid }
   let(:error_messages) { nil }
+  let(:tag_options) { {} }
   let(:options) do
     {
       name: name,
       form: form_builder,
       error_messages: error_messages,
+      **tag_options,
     }.compact
   end
 
@@ -29,6 +31,18 @@ RSpec.describe ValidatedFieldComponent, type: :component do
       text: { valueMissing: t('simple_form.required.text') }.to_json,
       visible: :all,
     )
+  end
+
+  context 'boolean type' do
+    let(:tag_options) { { as: :boolean } }
+
+    it 'renders with error message texts' do
+      expect(rendered).to have_css(
+        'script',
+        text: { valueMissing: t('forms.validation.required_checkbox') }.to_json,
+        visible: :all,
+      )
+    end
   end
 
   context 'custom error message texts' do

@@ -24,7 +24,6 @@
     "app/javascript/packs/accept-terms-button.js",
     "app/javascript/packs/application.js",
     "app/javascript/packs/email-validation.js",
-    "app/javascript/packs/ial2-consent-button.js",
     "app/javascript/packs/personal-key-page-controller.js",
     "app/javascript/packs/pw-strength.js",
     "app/javascript/packs/reactivate-account-modal.js",

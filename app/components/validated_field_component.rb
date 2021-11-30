@@ -12,8 +12,19 @@ class ValidatedFieldComponent < BaseComponent
 
   def error_messages
     {
-      valueMissing: t('simple_form.required.text'),
+      valueMissing: value_missing_error_message,
       **@error_messages,
     }
+  end
+
+  private
+
+  def value_missing_error_message
+    case form.send(:default_input_type, name, form.send(:find_attribute_column, name), tag_options)
+    when :boolean
+      t('forms.validation.required_checkbox')
+    else
+      t('simple_form.required.text')
+    end
   end
 end
