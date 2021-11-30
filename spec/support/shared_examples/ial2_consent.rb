@@ -7,7 +7,7 @@ shared_examples 'ial2 consent' do
   end
 
   it 'allows the user to continue after checking the checkbox' do
-    check :ial2_consent_given
+    check t('doc_auth.instructions.consent', app_name: APP_NAME)
     click_continue
 
     expect_doc_auth_upload_step
