@@ -97,7 +97,9 @@ commands:
       - run:
           name: Custom Checkout of Deployed SHA
           command: |
-            DEPLOYED_SHA=$(curl --silent << parameters.sha_url >> | jq -r '.git_sha')
+            SHA_RESPONSE=$(curl --silent << parameters.sha_url >>)
+            echo "Response: $SHA_RESPONSE"
+            DEPLOYED_SHA=$(echo ${SHA_RESPONSE} | jq -r '.git_sha')
 
             echo "URL: << parameters.sha_url >>"
             echo "SHA: $DEPLOYED_SHA"
