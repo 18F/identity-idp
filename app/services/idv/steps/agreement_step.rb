@@ -7,7 +7,7 @@ module Idv
       end
 
       def form_submit
-        skip_to_capture if params[:doc_auth][:skip_upload]
+        skip_to_capture if params[:skip_upload]
 
         Idv::ConsentForm.new.submit(consent_form_params)
       end
