@@ -32,11 +32,9 @@
         :phone,
         class: 'usa-label',
       ) { t('two_factor_authentication.phone_label') } %>
-  <%= f.hint safe_join([
-        t('forms.example'),
-        ' ',
-        content_tag('span', '', class: 'phone-input__example'),
-      ]) %>
+  <%= f.hint safe_join(
+        [t('forms.example'), ' ', content_tag('span', '', class: 'phone-input__example')],
+      ) %>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :phone,
