@@ -27,16 +27,13 @@
         form: f,
         name: :ial2_consent_given,
         as: :boolean,
-        label: safe_join(
-          [
-            t('doc_auth.instructions.consent', app_name: APP_NAME),
-            ' ',
-            new_window_link_to(
-              t('doc_auth.instructions.learn_more'),
-              MarketingSite.security_and_privacy_practices_url,
-            ),
-          ],
-        ),
+        label: capture do %>
+          <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
+          <%= new_window_link_to(
+                t('doc_auth.instructions.learn_more'),
+                MarketingSite.security_and_privacy_practices_url,
+              ) %>
+        <% end,
         required: true,
       ) %>
   <%= f.button(
