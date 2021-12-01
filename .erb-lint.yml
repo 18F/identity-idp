@@ -28,7 +28,6 @@ linters:
       - '*/app/views/idv/doc_auth/_back.html.erb'
       - '*/app/views/idv/doc_auth/_ssn_init.html.erb'
       - '*/app/views/idv/doc_auth/_ssn_update.html.erb'
-      - '*/app/views/idv/doc_auth/agreement.html.erb'
       - '*/app/views/idv/doc_auth/document_capture.html.erb'
       - '*/app/views/idv/doc_auth/link_sent.html.erb'
       - '*/app/views/idv/doc_auth/no_camera.html.erb'

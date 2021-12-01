@@ -18,7 +18,7 @@ module Idv
       end
 
       def consent_form_params
-        params.permit(:ial2_consent_given)
+        params[:doc_auth].permit(:ial2_consent_given)
       end
     end
   end

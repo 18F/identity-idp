@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { ValidatedField } from '.';
@@ -99,6 +100,41 @@ describe('ValidatedField', () => {
 
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(() => getByText(element, 'Invalid value')).to.throw();
+    });
+  });
+
+  context('text-like input', () => {
+    it('sets max width on error message to match input', () => {
+      const inputWidth = 280;
+      const element = createAndConnectElement();
+
+      /** @type {HTMLInputElement} */
+      const input = getByRole(element, 'textbox');
+      sinon.stub(input, 'offsetWidth').value(inputWidth);
+
+      /** @type {HTMLFormElement} */
+      const form = element.parentNode;
+      form.checkValidity();
+
+      const message = getByText(element, 'This field is required');
+      expect(message.style.maxWidth).to.equal(`${inputWidth}px`);
+    });
+  });
+
+  context('non-text-like input', () => {
+    it('does not set max width on error message', () => {
+      const element = createAndConnectElement();
+
+      /** @type {HTMLInputElement} */
+      const input = getByRole(element, 'textbox');
+      input.type = 'checkbox';
+
+      /** @type {HTMLFormElement} */
+      const form = element.parentNode;
+      form.checkValidity();
+
+      const message = getByText(element, 'This field is required');
+      expect(message.style.maxWidth).to.equal('');
     });
   });
 });

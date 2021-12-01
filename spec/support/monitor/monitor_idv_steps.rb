@@ -9,7 +9,7 @@ module MonitorIdvSteps
     click_on 'Continue'
 
     expect(page).to have_current_path('/verify/doc_auth/agreement')
-    check 'ial2_consent_given'
+    check 'By checking this box'
     expect(page).to have_button('Continue', disabled: :all)
 
     click_on 'Continue'

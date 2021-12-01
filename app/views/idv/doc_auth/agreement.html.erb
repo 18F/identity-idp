@@ -17,32 +17,33 @@
 <h2><%= t('doc_auth.headings.secure_account') %></h2>
 <p><%= t('doc_auth.info.secure_account') %></p>
 
-<%= validated_form_for :doc_auth,
-                       url: url_for,
-                       method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' } do |f| %>
-  <div class="margin-bottom-4">
-    <%= check_box_tag(
-          :ial2_consent_given,
-          true,
-          false,
-          class: 'usa-checkbox__input',
-          required: true,
-          aria: {invalid: false}
-        ) %>
-    <label class="usa-checkbox__label" for="ial2_consent_given">
-      <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
-      <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
-    </label>
-
-    <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">
-      <%= t('forms.validation.required_checkbox') %>
-    </div>
-  </div>
-  <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
-               class: 'usa-button--big usa-button--wide' %>
+<%= simple_form_for(
+      :doc_auth,
+      url: url_for,
+      method: 'put',
+      html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :ial2_consent_given,
+        as: :boolean,
+        label: capture do %>
+          <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
+          <%= new_window_link_to(
+                t('doc_auth.instructions.learn_more'),
+                MarketingSite.security_and_privacy_practices_url,
+              ) %>
+        <% end,
+        required: true,
+      ) %>
+  <%= f.button(
+        :button,
+        t('doc_auth.buttons.continue'),
+        type: :submit,
+        class: 'usa-button--big usa-button--wide margin-top-4',
+      ) %>
 <% end %>
 
 <%= render 'idv/doc_auth/start_over_or_cancel', step: 'agreement' %>
 
-<%= javascript_packs_tag_once('ial2-consent-button', 'document-capture-welcome') %>
+<%= javascript_packs_tag_once('document-capture-welcome') %>
