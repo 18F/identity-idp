@@ -93,33 +93,27 @@ describe('document-capture/components/documents-step', () => {
     ).to.throw();
   });
 
-  context('service provider context', () => {
-    it('renders with name and help link', () => {
-      const { getByText } = render(
-        <I18nContext.Provider
-          value={{
-            'doc_auth.info.get_help_at_sp_html':
-              '<strong>Having trouble?</strong> Get help at %{sp_name}',
-          }}
-        >
-          <ServiceProviderContextProvider
-            value={{
-              name: 'Example App',
-              failureToProofURL: 'https://example.com/?step=document_capture',
-              isLivenessRequired: false,
-            }}
-          >
-            <DocumentsStep />
-          </ServiceProviderContextProvider>
-        </I18nContext.Provider>,
-      );
+  it('renders troubleshooting options', () => {
+    const { getByRole } = render(
+      <ServiceProviderContextProvider
+        value={{
+          name: 'Example App',
+          failureToProofURL: 'https://example.com/?step=document_capture',
+          isLivenessRequired: false,
+        }}
+      >
+        <DocumentsStep />
+      </ServiceProviderContextProvider>,
+    );
 
-      const help = getByText('Having trouble?').closest('a');
-
-      expect(help).to.be.ok();
-      expect(help.href).to.equal(
-        'https://example.com/?step=document_capture&location=documents_having_trouble',
-      );
-    });
+    expect(
+      getByRole('heading', { name: 'idv.troubleshooting.headings.having_trouble' }),
+    ).to.be.ok();
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
+        .href,
+    ).to.equal(
+      'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
+    );
   });
 });

@@ -180,7 +180,6 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su identificación emitida por el estado. No almacenamos las
         imágenes que subes. Solo verificamos su identidad.
-      get_help_at_sp_html: '<strong>¿Tienes algún problema?</strong> Obtén ayuda en %{sp_name}'
       image_updated: Imagen actualizada
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
