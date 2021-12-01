@@ -48,6 +48,7 @@ describe('ValidatedField', () => {
     form.checkValidity();
 
     expect(input.classList.contains('usa-input--error')).to.be.true();
+    expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
     const message = getByText(element, 'This field is required');
     expect(message).to.be.ok();
@@ -82,6 +83,7 @@ describe('ValidatedField', () => {
     userEvent.type(input, '5');
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
+    expect(input.getAttribute('aria-invalid')).to.equal('false');
     expect(() => getByText(element, 'This field is required')).to.throw();
   });
 
@@ -99,6 +101,7 @@ describe('ValidatedField', () => {
       userEvent.type(input, '5');
 
       expect(input.classList.contains('usa-input--error')).to.be.false();
+      expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
     });
   });
