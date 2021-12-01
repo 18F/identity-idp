@@ -7,7 +7,6 @@ import {
 import ReviewIssuesStep, {
   reviewIssuesStepValidator,
 } from '@18f/identity-document-capture/components/review-issues-step';
-import { I18nContext } from '@18f/identity-react-i18n';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
