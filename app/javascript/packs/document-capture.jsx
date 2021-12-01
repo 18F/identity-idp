@@ -53,7 +53,8 @@ import { I18nContext } from '@18f/identity-react-i18n';
 /**
  * @typedef AppRootData
  *
- * @prop {string} documentCaptureTipsUrl URL to Marketing Site document capture tips.
+ * @prop {string} documentCaptureTipsUrl URL to marketing site document capture tips.
+ * @prop {string} supportedDocumentsUrl URL to marketing site supported documents.
  * @prop {string} appName Application canonical name.
  * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
  * tips are shown.
@@ -152,6 +153,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const {
     documentCaptureTipsUrl: documentCaptureTipsURL,
+    supportedDocumentsUrl: supportedDocumentsURL,
     maxCaptureAttemptsBeforeTips,
     appName,
     flowPath,
@@ -161,7 +163,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL } }],
+    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL, supportedDocumentsURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [

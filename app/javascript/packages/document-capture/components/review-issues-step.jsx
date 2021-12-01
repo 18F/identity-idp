@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { BlockLink } from '@18f/identity-components';
 import { FormStepsContext, FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -10,13 +9,14 @@ import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import './review-issues-step.scss';
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
 import MarketingSiteContext from '../context/marketing-site';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
+import './review-issues-step.scss';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
@@ -72,7 +72,7 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   remainingAttempts,
 }) {
-  const { t, formatHTML } = useI18n();
+  const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
   const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
@@ -152,17 +152,8 @@ function ReviewIssuesStep({
           )}
         </>
       )}
-      {serviceProvider.name && (
-        <BlockLink
-          url={serviceProvider.getFailureToProofURL('review_issues_having_trouble')}
-          isNewTab
-        >
-          {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
-            strong: 'strong',
-          })}
-        </BlockLink>
-      )}
       <FormStepsContinueButton />
+      <DocumentCaptureTroubleshootingOptions />
       <StartOverOrCancel />
     </>
   ) : (

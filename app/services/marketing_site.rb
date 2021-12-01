@@ -86,6 +86,14 @@ class MarketingSite
     ).to_s
   end
 
+  def self.help_document_capture_supported_documents_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help/verify-your-identity/accepted-state-issued-identification/',
+    ).to_s
+  end
+
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end
