@@ -11,7 +11,6 @@ import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import './review-issues-step.scss';
-import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
@@ -164,7 +163,6 @@ function ReviewIssuesStep({
         </BlockLink>
       )}
       <FormStepsContinueButton />
-      <DesktopDocumentDisclosure />
       <StartOverOrCancel />
     </>
   ) : (

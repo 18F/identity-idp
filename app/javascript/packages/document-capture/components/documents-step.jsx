@@ -6,7 +6,6 @@ import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
@@ -82,7 +81,6 @@ function DocumentsStep({
         />
       ))}
       <FormStepsContinueButton />
-      <DesktopDocumentDisclosure />
       <StartOverOrCancel />
     </CaptureTroubleshooting>
   );

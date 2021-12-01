@@ -153,8 +153,6 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state-issued ID. We do not store images you upload. We only
         verify your identity.
-      document_capture_upload_image: We only use your ID to verify your identity, and
-        we will not save any images.
       get_help_at_sp_html: '<strong>Having trouble?</strong> Get help at %{sp_name}'
       image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step

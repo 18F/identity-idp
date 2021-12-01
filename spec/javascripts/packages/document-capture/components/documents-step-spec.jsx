@@ -122,28 +122,4 @@ describe('document-capture/components/documents-step', () => {
       );
     });
   });
-
-  context('mobile', () => {
-    it('does not show document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <DocumentsStep />
-        </DeviceContext.Provider>,
-      );
-
-      expect(() => getByText('doc_auth.info.document_capture_upload_image')).to.throw();
-    });
-  });
-
-  context('desktop', () => {
-    it('shows document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: false }}>
-          <DocumentsStep />
-        </DeviceContext.Provider>,
-      );
-
-      expect(getByText('doc_auth.info.document_capture_upload_image')).to.be.ok();
-    });
-  });
 });
