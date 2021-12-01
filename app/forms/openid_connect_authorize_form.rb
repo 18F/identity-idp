@@ -95,6 +95,10 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
+  def ial_context
+    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
+  end
+
   def_delegators :ial_context,
                  :ial2_or_greater?,
                  :ial2_requested?,
@@ -103,10 +107,6 @@ class OpenidConnectAuthorizeForm
   private
 
   attr_reader :identity, :success
-
-  def ial_context
-    @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
-  end
 
   def check_for_unauthorized_scope(params)
     param_value = params[:scope]
