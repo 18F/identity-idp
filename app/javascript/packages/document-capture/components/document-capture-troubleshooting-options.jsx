@@ -16,12 +16,12 @@ function DocumentCaptureTroubleshootingOptions() {
       heading={t('idv.troubleshooting.headings.having_trouble')}
       options={
         /** @type {TroubleshootingOption[]} */ ([
-          {
+          documentCaptureTipsURL && {
             url: documentCaptureTipsURL,
             text: t('idv.troubleshooting.options.doc_capture_tips'),
             isExternal: true,
           },
-          {
+          supportedDocumentsURL && {
             url: supportedDocumentsURL,
             text: t('idv.troubleshooting.options.supported_documents'),
             isExternal: true,
