@@ -12,7 +12,10 @@ variables:
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
 .yarn_install: &yarn_install
-  - yarn install --ignore-engines --cache-folder .yarn-cache
+  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+
+.yarn_production_install: &yarn_production_install
+  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
 
 cache:
   - &ruby_cache
@@ -24,6 +27,14 @@ cache:
     policy: pull
 
   - &yarn_cache
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
+    policy: pull
+
+  - &yarn_production_cache
     key:
       files:
         - yarn.lock
@@ -129,6 +140,17 @@ specs:
     - >
         ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
+
+js_build:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_production_cache
+  script:
+    - *bundle_install
+    - *yarn_production_install
+    - bundle exec rake assets:precompile
 
 js_tests:
   extends: .on_push
