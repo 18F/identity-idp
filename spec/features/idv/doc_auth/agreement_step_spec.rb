@@ -62,7 +62,7 @@ feature 'doc auth welcome step' do
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
-      find('label', text: /^By checking this box/).click
+      check t('doc_auth.instructions.consent', app_name: APP_NAME)
       click_continue
     end
 
