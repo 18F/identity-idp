@@ -39,7 +39,19 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     it 'renders with error message texts' do
       expect(rendered).to have_css(
         'script',
-        text: { valueMissing: t('forms.validation.required_checkbox') }.to_json,
+        text: { valueMissing: t('forms.validation.required_checkbox') }.to_json[1..-1],
+        visible: :all,
+      )
+    end
+  end
+
+  context 'email type' do
+    let(:tag_options) { { as: :email } }
+
+    it 'renders with error message texts' do
+      expect(rendered).to have_css(
+        'script',
+        text: { typeMismatch: t('valid_email.validations.email.invalid') }.to_json[1..-1],
         visible: :all,
       )
     end
