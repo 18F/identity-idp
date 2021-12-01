@@ -66,7 +66,9 @@ export class ValidatedField extends HTMLElement {
   setErrorMessage(message) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
-      this.input?.focus();
+      if (!document.activeElement?.classList.contains('usa-input--error')) {
+        this.input?.focus();
+      }
     } else if (this.errorMessage) {
       this.inputWrapper?.removeChild(this.errorMessage);
       this.errorMessage = null;
