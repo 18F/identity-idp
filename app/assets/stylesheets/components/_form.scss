@@ -66,13 +66,14 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.usa-hint {
-  font-style: italic;
-}
-
 // ===============================================
 // Pending upstream Login Design System revisions:
 // ===============================================
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/262
+.usa-hint {
+  font-style: italic;
+}
 
 .usa-form-group--error {
   border-left-style: none;

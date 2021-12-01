@@ -1,8 +1,27 @@
 lg-phone-input {
   display: block;
 
+  .validated-field__input-wrapper {
+    margin-top: units(1);
+  }
+
   .iti__flag {
     background-image: image-url('intl-tel-input/build/img/flags.png');
+
+    /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      background-image: image-url('intl-tel-input/build/img/flags@2x.png');
+    }
+  }
+
+  .iti:not(.iti--allow-dropdown) input {
+    padding-left: 36px;
+    padding-right: 6px;
+  }
+
+  .iti:not(.iti--allow-dropdown) .iti__flag-container {
+    left: 0;
+    right: auto;
   }
 }
 
@@ -11,22 +30,5 @@ lg-phone-input {
 
   .no-js & {
     display: block;
-  }
-}
-
-.iti:not(.iti--allow-dropdown) input {
-  padding-left: 36px;
-  padding-right: 6px;
-}
-
-.iti:not(.iti--allow-dropdown) .iti__flag-container {
-  left: 0;
-  right: auto;
-}
-
-/* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  lg-phone-input .iti__flag {
-    background-image: image-url('intl-tel-input/build/img/flags@2x.png');
   }
 }
