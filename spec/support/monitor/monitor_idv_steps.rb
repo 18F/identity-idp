@@ -9,7 +9,7 @@ module MonitorIdvSteps
     click_on 'Continue'
 
     expect(page).to have_current_path('/verify/doc_auth/agreement')
-    check t('doc_auth.instructions.consent', app_name: APP_NAME)
+    check 'By checking this box'
     expect(page).to have_button('Continue', disabled: :all)
 
     click_on 'Continue'
