@@ -6,7 +6,8 @@ describe('document-capture/context/marketing-site', () => {
   it('assigns default context', () => {
     const { result } = renderHook(() => useContext(MarketingSiteContext));
 
-    expect(result.current).to.have.keys(['documentCaptureTipsURL']);
+    expect(result.current).to.have.keys(['documentCaptureTipsURL', 'supportedDocumentsURL']);
     expect(result.current.documentCaptureTipsURL).to.be.a('string');
+    expect(result.current.supportedDocumentsURL).to.be.a('string');
   });
 });
