@@ -127,7 +127,7 @@ RSpec.describe DocAuthRouter do
   end
 
   describe '.default_discriminator_parser' do
-    it 'parses a value based on its hexdigest to a value between 0 and 1' do
+    it 'parses a value based on its hexdigest to a value between 0 and 100' do
       expect(DocAuthRouter.default_discriminator_parser('aaa')).to eq(59.45515292257269)
     end
   end
