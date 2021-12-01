@@ -32,10 +32,12 @@
         :phone,
         class: 'usa-label',
       ) { t('two_factor_authentication.phone_label') } %>
-  <%= f.hint(capture do %>
-    <%= t('forms.example') %>
-    <span class="phone-input__example"></span>
-  <% end) %>
+  <div class="js">
+    <%= f.hint(capture do %>
+      <%= t('forms.example') %>
+      <span class="phone-input__example"></span>
+    <% end) %>
+  </div>
   <%= render ValidatedFieldComponent.new(
         form: f,
         name: :phone,
