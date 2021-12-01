@@ -53,13 +53,11 @@ module Telephony
     attr_accessor :voice_pause_time
     attr_accessor :voice_rate
 
-    # rubocop:disable Metrics/MethodLength
     def initialize
       @adapter = :pinpoint
       @logger = Logger.new(STDOUT)
       @pinpoint = PinpointConfiguration.new
     end
-    # rubocop:enable Metrics/MethodLength
 
     def adapter
       @adapter.to_sym
