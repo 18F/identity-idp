@@ -35,7 +35,6 @@ module Telephony
 
     private
 
-    # rubocop:disable all
     def adapter
       case [Telephony.config.adapter, channel.to_sym]
       when [:pinpoint, :sms]
@@ -50,7 +49,6 @@ module Telephony
         raise "Unknown telephony adapter #{Telephony.config.adapter} for channel #{channel.to_sym}"
       end
     end
-    # rubocop:enable all
 
     def log_response(response, context:)
       extra = {
