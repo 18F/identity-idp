@@ -223,7 +223,7 @@ module DocAuthRouter
     user_value < target_percent.clamp(0, 100)
   end
 
-  # Takes a string and converts it to a value between 0.0 and 1.0
+  # Takes a string and converts it to a value between 0 and 100
   def self.default_discriminator_parser(value)
     max_sha = (16 ** 64) - 1
     Digest::SHA256.hexdigest(value).to_i(16).to_f / max_sha * 100
