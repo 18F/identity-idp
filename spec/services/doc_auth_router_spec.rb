@@ -39,103 +39,96 @@ RSpec.describe DocAuthRouter do
       let(:doc_auth_vendor_randomize) { true }
       let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
       let(:iterations) { 1000 }
-      let(:percent_variance) { 0.05 }
+      let(:doc_auth_vendor_randomize_percent) { 0 }
 
-      before(:each) do
+      before do
         allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
           and_return(doc_auth_vendor_randomize)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
           and_return(doc_auth_vendor_randomize_alternate_vendor)
-      end
-
-      it 'doc_auth_vendor randomizes near configured level' do
-        srand(999)
-        doc_auth_vendor_randomize_percent = 57
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
           and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
-        end
-
-        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
-
-        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
       end
 
-      it 'doc_auth_vendor randomizes at 100 when set above 100' do
-        doc_auth_vendor_randomize_percent = 105
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
-        end
-
-        expect(results.tally['test1']).to be(nil)
-        expect(results.tally['test2']).to be(iterations)
+      let(:discriminator_parser) do
+        proc { |value| value.to_i }
       end
 
-      it 'doc_auth_vendor randomizes at 0 when set below 0' do
-        doc_auth_vendor_randomize_percent = 0
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
+      context 'discriminator (random value) is less than randomize percent' do
+        let(:doc_auth_vendor_randomize_percent) { 75 }
+        let(:discriminator) { 50 }
 
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
+        it 'is the alternate vendor' do
+          vendor = DocAuthRouter.doc_auth_vendor(
+            discriminator: discriminator,
+            discriminator_parser: discriminator_parser,
+          )
+          expect(vendor).to eq(doc_auth_vendor_randomize_alternate_vendor)
         end
-
-        expect(results.tally['test1']).to be(iterations)
-        expect(results.tally['test2']).to be(nil)
       end
 
-      it 'doc_auth_vendor is deterministic when presented with the same session id' do
-        doc_auth_vendor_randomize_percent = 50
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
+      context 'discriminator (random value) is equal to randomize percent' do
+        let(:doc_auth_vendor_randomize_percent) { 75 }
+        let(:discriminator) { 75 }
 
-        single_id = SecureRandom.uuid
-
-        results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: single_id))
+        it 'is the original vendor' do
+          vendor = DocAuthRouter.doc_auth_vendor(
+            discriminator: discriminator,
+            discriminator_parser: discriminator_parser,
+          )
+          expect(vendor).to eq(doc_auth_vendor)
         end
+      end
 
-        expect(results.tally).to match({ 'test1' => iterations }).
-          or match({ 'test2' => iterations })
+      context 'discriminator (random value) is greater than randomize percent' do
+        let(:doc_auth_vendor_randomize_percent) { 75 }
+        let(:discriminator) { 80 }
+
+        it 'is the original vendor' do
+          vendor = DocAuthRouter.doc_auth_vendor(
+            discriminator: discriminator,
+            discriminator_parser: discriminator_parser,
+          )
+          expect(vendor).to eq(doc_auth_vendor)
+        end
+      end
+
+      context 'randomize percent is above 100' do
+        let(:doc_auth_vendor_randomize_percent) { 105 }
+        let(:discriminator) { 50 }
+
+        it 'is the alternate vendor' do
+          vendor = DocAuthRouter.doc_auth_vendor(
+            discriminator: discriminator,
+            discriminator_parser: discriminator_parser,
+          )
+          expect(vendor).to eq(doc_auth_vendor_randomize_alternate_vendor)
+        end
+      end
+
+      context 'randomize percent is below 0' do
+        let(:doc_auth_vendor_randomize_percent) { -10 }
+        let(:discriminator) { 50 }
+
+        it 'is the original vendor' do
+          vendor = DocAuthRouter.doc_auth_vendor(
+            discriminator: discriminator,
+            discriminator_parser: discriminator_parser,
+          )
+          expect(vendor).to eq(doc_auth_vendor)
+        end
       end
 
       it 'doc_auth_vendor returns an exception when called without a session_id when randomized' do
         expect { DocAuthRouter.doc_auth_vendor(discriminator: nil) }.to raise_error
       end
+    end
+  end
 
-      it 'client returns randomized vendors when configured' do
-        srand(999)
-        doc_auth_vendor = 'acuant'
-        doc_auth_vendor_randomize_alternate_vendor = 'lexisnexis'
-        doc_auth_vendor_randomize_percent = 35
-
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
-          and_return(doc_auth_vendor_randomize_alternate_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
-          and_return(doc_auth_vendor_randomize_percent)
-
-        results = []
-        iterations.times do |_i|
-          client = DocAuthRouter.client(vendor_discriminator: SecureRandom.uuid).client
-          results.push(client.class.to_s)
-        end
-
-        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
-
-        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient']).
-          to be_within(iterations*percent_variance).of(target_value)
-      end
+  describe '.default_discriminator_parser' do
+    it 'parses a value based on its hexdigest to a value between 0 and 1' do
+      expect(DocAuthRouter.default_discriminator_parser('aaa')).to eq(59.45515292257269)
     end
   end
 

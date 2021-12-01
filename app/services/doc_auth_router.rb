@@ -198,7 +198,10 @@ module DocAuthRouter
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor(discriminator: nil)
+  def self.doc_auth_vendor(
+    discriminator: nil,
+    discriminator_parser: method(:default_discriminator_parser)
+  )
     if IdentityConfig.store.doc_auth_vendor_randomize
       if discriminator.blank?
         raise StandardError.new('doc_auth_vendor called without a discriminator when randomized!')
@@ -206,7 +209,7 @@ module DocAuthRouter
 
       target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
 
-      if randomize?(target_percent, discriminator)
+      if randomize?(target_percent, discriminator, discriminator_parser)
         return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
       end
     end
@@ -214,10 +217,15 @@ module DocAuthRouter
     IdentityConfig.store.doc_auth_vendor
   end
 
-  def self.randomize?(target_percent, discriminator)
-    max_sha = (16 ** 64) - 1
-    user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
+  def self.randomize?(target_percent, discriminator, discriminator_parser)
+    user_value = discriminator_parser.call(discriminator)
 
     user_value < target_percent.clamp(0, 100)
+  end
+
+  # Takes a string and converts it to a value between 0.0 and 1.0
+  def self.default_discriminator_parser(value)
+    max_sha = (16 ** 64) - 1
+    Digest::SHA256.hexdigest(value).to_i(16).to_f / max_sha * 100
   end
 end
