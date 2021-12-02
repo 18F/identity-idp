@@ -2,6 +2,8 @@ module Redirect
   class RedirectController < ApplicationController
     PERMITTED_LOCATION_PARAMS = [:flow, :step, :location].freeze
 
+    private
+
     def location_params
       params.permit(*PERMITTED_LOCATION_PARAMS).to_h.symbolize_keys
     end
