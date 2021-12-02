@@ -84,6 +84,8 @@ es:
           seguridad. Debe verificar su identidad con un dispositivo físico, como
           una llave de seguridad o una identificación de empleado del Gobierno
           (PIV o CAC) para acceder a su información.
+        # TODO: translate line 88
+        confirm_webauthn_platform_html: You have Face and/or Touch Unlock enabled for your Login.gov account.
       wrong_number_html: '¿Ingresó el número de teléfono equivocado? %{link}'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'
