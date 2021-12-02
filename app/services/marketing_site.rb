@@ -115,6 +115,6 @@ class MarketingSite
   end
 
   def self.valid_help_center_article?(category:, article:)
-    HELP_CENTER_ARTICLES.fetch(category, article).present?
+    HELP_CENTER_ARTICLES.dig(category)&.include?(article).present?
   end
 end
