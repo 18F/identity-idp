@@ -22,10 +22,10 @@ module Proofing
 
       INVALID_STATE_ID_NUMBER = '00000000'
       TRANSACTION_ID = 'state-id-mock-transaction-id-456'
-      TRIGGER_MVA_TIMEOUT = 'MVATimeout'
+      TRIGGER_MVA_TIMEOUT = 'mvatimeout'
 
       proof do |applicant, result|
-        if applicant[:last_name] == TRIGGER_MVA_TIMEOUT
+        if applicant[:state_id_number].downcase == TRIGGER_MVA_TIMEOUT
           raise ::Proofing::TimeoutError.new(
             'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
           )
