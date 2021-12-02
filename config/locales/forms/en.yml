@@ -125,7 +125,8 @@ en:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}
       instructions_title: Connect your security key
-      intro_html: Add a security key that meets the FIDO standard as your authentication method. You can add
-        as many security keys as you want. To get started, first give your security key a nickname.
+      intro_html: Add a security key that meets the FIDO standard as your
+        authentication method. You can add as many security keys as you want. To
+        get started, first give your security key a nickname.
       login_text: When you are ready to authenticate, press the button
       nickname: Security key nickname
