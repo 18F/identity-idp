@@ -115,11 +115,11 @@ specs:
       alias: db-postgres
     - name: redis
       alias: db-redis
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
+  # artifacts:
+  #   expire_in: 31d
+  #   when: always
+  #   paths:
+  #     - coverage/
   script:
     - *bundle_install
     - *yarn_install
