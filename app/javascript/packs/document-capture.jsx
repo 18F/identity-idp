@@ -53,14 +53,18 @@ import { I18nContext } from '@18f/identity-react-i18n';
 /**
  * @typedef AppRootData
  *
- * @prop {string} documentCaptureTipsUrl URL to marketing site document capture tips.
- * @prop {string} supportedDocumentsUrl URL to marketing site supported documents.
- * @prop {string} appName Application canonical name.
- * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
- * tips are shown.
- * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
- * @prop {string} startOverUrl URL to application DELETE path for session restart.
- * @prop {string} cancelUrl URL to application path for session cancellation.
+ * @prop {string} documentCaptureTipsUrl
+ * @prop {string} supportedDocumentsUrl
+ * @prop {string} appName
+ * @prop {string} maxCaptureAttemptsBeforeTips
+ * @prop {FlowPath} flowPath
+ * @prop {string} startOverUrl
+ * @prop {string} cancelUrl
+ *
+ * @see AppContext
+ * @see MarketingSiteContext
+ * @see FailedCaptureAttemptsContext
+ * @see UploadContext
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
