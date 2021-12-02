@@ -132,8 +132,8 @@ en:
       nickname: Security key nickname
     webauthn_platform_setup:
       continue: Continue
-      instructions_text: Press the button on your security key to register it with %{app_name}
-      instructions_title: Connect your security key
-      intro_html: Enable your devices face or touch capability as an authentication method to your account.
-      login_text: When you are ready to authenticate, press the button
+      instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
+      instructions_title: Use Touch or Face Unlock on to access your account.
+      intro_html: Use Touch or Face Unlock on to access your account.
+      login_text: When you are ready, press the button.
       nickname: Device nickname
