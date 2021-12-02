@@ -3,7 +3,7 @@ module Redirect
     before_action :validate_help_center_article_params
 
     def show
-      redirect_to_and_log MarketingSite.help_center_article(**article_params)
+      redirect_to_and_log MarketingSite.help_center_article_url(**article_params)
     end
 
     private
