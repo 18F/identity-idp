@@ -1,4 +1,4 @@
-class ReturnToSpController < ApplicationController
+class ReturnToSpController < Redirect::RedirectController
   before_action :validate_sp_exists
 
   def cancel
@@ -12,16 +12,12 @@ class ReturnToSpController < ApplicationController
     analytics.track_event(
       Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
       redirect_url: redirect_url,
-      **idv_location_params,
+      **location_params,
     )
     redirect_to redirect_url
   end
 
   private
-
-  def idv_location_params
-    params.permit(:step, :location).to_h.symbolize_keys
-  end
 
   def sp_return_url_resolver
     @sp_return_url_resolver ||= SpReturnUrlResolver.new(

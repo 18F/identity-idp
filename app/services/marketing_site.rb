@@ -1,6 +1,12 @@
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
+  HELP_CENTER_ARTICLES = {
+    'verify-your-identity' => [
+      'how-to-add-images-of-your-state-issued-id',
+    ].freeze,
+  }.freeze
+
   def self.locale_segment
     active_locale = I18n.locale
     active_locale == I18n.default_locale ? '/' : "/#{active_locale}/"
@@ -96,5 +102,19 @@ class MarketingSite
 
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
+  end
+
+  def self.help_center_article(category:, article:)
+    unless valid_help_center_article?(category: category, article: article)
+      raise ArgumentError.new(
+        "Unknown help center article category: '#{category}', article: '#{article}'",
+      )
+    end
+
+    URI.join(BASE_URL, locale_segment, *['help', category, article].map { |p| "#{p}/" }).to_s
+  end
+
+  def self.valid_help_center_article?(category:, article:)
+    HELP_CENTER_ARTICLES.fetch(category, article).present?
   end
 end
