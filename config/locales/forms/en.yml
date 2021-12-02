@@ -99,7 +99,7 @@ en:
       totp_intro_html: Set up an authentication app to sign in using temporary
         security codes. %{link}
       totp_step_1: Give it a nickname
-      totp_step_1a: If you add more than one app, you’ll know which ones which.
+      totp_step_1a: If you add more than one app, you’ll know which one is which.
       totp_step_2: Open your authentication app
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
