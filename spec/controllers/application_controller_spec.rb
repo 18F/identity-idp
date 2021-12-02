@@ -30,7 +30,6 @@ describe ApplicationController do
     end
   end
 
-
   describe '#cache_issuer_in_cookie' do
     controller do
       def index
