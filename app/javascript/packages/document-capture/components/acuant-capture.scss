@@ -11,8 +11,7 @@
     @include u-margin-top(1);
     position: relative;
 
-    // Note: Lint disable is no longer necessary after above ID specifier is removed.
-    .usa-file-input__target { // scss-lint:disable SelectorDepth
+    .usa-file-input__target {
       align-items: center;
       bottom: 0;
       display: flex;

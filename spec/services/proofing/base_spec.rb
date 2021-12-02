@@ -14,7 +14,7 @@ describe Proofing::Base do
       first_name: 'Dave',
       last_name: 'Corwin',
       dob: '01/01/2000',
-      ssn: '111111111',
+      ssn: '900111111',
     }
   end
 
@@ -93,7 +93,7 @@ describe Proofing::Base do
     it 'is a hash containing only the keys listed in attributes' do
       restricted_attributes = impl.new.send(:restrict_attributes, applicant)
 
-      expect(restricted_attributes).to eq(last_name: 'Corwin', ssn: '111111111')
+      expect(restricted_attributes).to eq(last_name: 'Corwin', ssn: '900111111')
     end
   end
 
@@ -109,7 +109,7 @@ describe Proofing::Base do
     subject { impl.new.send(:validate_attributes, applicant) }
 
     context 'when all attributes are present' do
-      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson', ssn: '123456789' } }
+      let(:applicant) { { first_name: 'Homer', last_name: 'Simpson', ssn: '900456789' } }
 
       it 'does not raise' do
         expect { subject }.not_to raise_exception

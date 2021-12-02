@@ -9,6 +9,14 @@
 const { t } = /** @type {GlobalWithLoginGov} */ (window).LoginGov.I18n;
 
 /**
+ * Returns the OTP delivery preference element.
+ *
+ * @return {HTMLElement}
+ */
+const getOTPDeliveryMethodContainer = () =>
+  /** @type {HTMLElement} */ (document.querySelector('.js-otp-delivery-preferences'));
+
+/**
  * @return {HTMLInputElement[]}
  */
 const getOTPDeliveryMethods = () =>
@@ -23,12 +31,6 @@ const getOTPDeliveryMethods = () =>
  */
 const isDeliveryOptionSupported = (delivery, selectedOption) =>
   selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
-
-/**
- * @param {HTMLFormElement} form
- * @return {HTMLButtonElement|HTMLInputElement|null}
- */
-const getSubmitButton = (form) => form.querySelector('button:not([type]),[type="submit"]');
 
 /**
  * @param {string} delivery
@@ -69,6 +71,14 @@ const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
 const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
 
 /**
+ * Toggles the delivery preferences selection visible or hidden.
+ *
+ * @param {boolean} isVisible Whether the selection element should be visible.
+ */
+const toggleDeliveryPreferencesVisible = (isVisible) =>
+  getOTPDeliveryMethodContainer().classList.toggle('display-none', !isVisible);
+
+/**
  * @param {Event} event
  */
 function updateOTPDeliveryMethods(event) {
@@ -106,43 +116,10 @@ function updateOTPDeliveryMethods(event) {
   });
 
   const isAllMethodsDisabled = isAllDisabled(methods);
-  const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
-    location,
-  });
-  if (isAllMethodsDisabled) {
-    setHintText(hintText);
-    select.setCustomValidity(hintText);
-    select.reportValidity();
-  } else if (!select.validity.valid) {
-    select.setCustomValidity('');
-    select.reportValidity();
-  }
+  toggleDeliveryPreferencesVisible(!isAllMethodsDisabled);
 }
 
 document.querySelectorAll('lg-phone-input').forEach((node) => {
   const phoneInput = /** @type {PhoneInput} */ (node);
-  const form = /** @type {HTMLFormElement} */ (phoneInput.closest('form'));
-
-  function setSubmitDisabled(isDisabled) {
-    const submitButton = getSubmitButton(form);
-    if (submitButton && submitButton.disabled !== isDisabled) {
-      submitButton.disabled = isDisabled;
-    }
-  }
-
-  phoneInput.addEventListener('input', () => setSubmitDisabled(!form.checkValidity()));
-  phoneInput.addEventListener('change', (event) => {
-    setSubmitDisabled(!form.checkValidity());
-    updateOTPDeliveryMethods(event);
-  });
-  phoneInput.addEventListener(
-    'invalid',
-    (event) => {
-      setSubmitDisabled(true);
-      event.preventDefault();
-    },
-    true,
-  );
-
-  setSubmitDisabled(!form.checkValidity());
+  phoneInput.addEventListener('change', updateOTPDeliveryMethods);
 });

@@ -12,7 +12,6 @@ en:
     doc_auth:
       address: Update your mailing address
       doc_capture: Add your ID
-      get_started: Lets get started
       link_sent: Link sent
       otp_delivery: Receive a security code
       processing_images: Processing your images

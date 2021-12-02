@@ -6,12 +6,22 @@ module SamlIdpAuthConcern
     # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
+    # this must take place _before_ the store_saml_request action or the SAML
+    # request is cleared (along with the rest of the session) when the user is
+    # signed out
+    before_action :sign_out_if_forceauthn_is_true_and_user_is_signed_in, only: :auth
     before_action :store_saml_request, only: :auth
     before_action :check_sp_active, only: :auth
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
   private
+
+  def sign_out_if_forceauthn_is_true_and_user_is_signed_in
+    return unless user_signed_in? && saml_request.force_authn?
+
+    sign_out unless sp_session[:request_url] == request.original_url
+  end
 
   def check_sp_active
     return if current_service_provider&.active?
@@ -187,6 +197,7 @@ module SamlIdpAuthConcern
 
   def request_url
     url = URI.parse request.original_url
+    url.path = remap_auth_post_path(url.path)
     query_params = Rack::Utils.parse_nested_query url.query
     unless query_params['SAMLRequest']
       orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
@@ -199,5 +210,12 @@ module SamlIdpAuthConcern
 
     url.query = Rack::Utils.build_query(query_params).presence
     url.to_s
+  end
+
+  def remap_auth_post_path(path)
+    path_match = path.match(%r{/api/saml/authpost(?<year>\d{4})})
+    return path unless path_match.present?
+
+    "/api/saml/auth#{path_match[:year]}"
   end
 end

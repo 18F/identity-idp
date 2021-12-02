@@ -9,19 +9,20 @@ module Db
 
       module_function
 
-      # @param [ServiceProvider] service_provider
+      # @param [String] issuer
+      # @param [String] iaa
+      # @param [Date] iaa_start_date
+      # @param [Date] iaa_end_date
       # @return [PG::Result,Array]
-      def call(service_provider:)
-        return [] if !service_provider.iaa_start_date || !service_provider.iaa_end_date
+      def call(issuer:, iaa:, iaa_start_date:, iaa_end_date:)
+        return [] if !iaa_start_date || !iaa_end_date
 
-        iaa_range = (service_provider.iaa_start_date..service_provider.iaa_end_date)
+        iaa_range = (iaa_start_date..iaa_end_date)
 
         full_months, partial_months = Reports::MonthHelper.months(iaa_range).
           partition do |month_range|
             Reports::MonthHelper.full_month?(month_range)
           end
-
-        issuer = service_provider.issuer
 
         # The subqueries create a uniform representation of data:
         # - full months from monthly_sp_auth_counts
@@ -64,8 +65,8 @@ module Db
             prev_seen_users |= unique_users
 
             rows << {
-              issuer: service_provider.issuer,
-              iaa: service_provider.iaa,
+              issuer: issuer,
+              iaa: iaa,
               ial: ial,
               year_month: year_month,
               iaa_start_date: iaa_range.begin.to_s,

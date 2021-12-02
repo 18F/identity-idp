@@ -41,22 +41,60 @@ describe 'Add a new phone number' do
 
     hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
 
-    find_button 'Continue', disabled: true
+    # Required field should prompt as required on submit
+    click_continue
+    focused_input = page.find(':focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
+    expect(error_message).to have_content(t('errors.messages.phone_required'))
     expect(hidden_select.value).to eq('US')
 
-    input = fill_in :new_phone_form_phone, with: '5135558410'
-    expect(input.value).to eq('5135558410')
-    find_button 'Continue', disabled: false
-    expect(hidden_select.value).to eq('US')
-
+    # Invalid number should prompt as invalid on submit
     fill_in :new_phone_form_phone, with: 'abcd1234'
-    find_button 'Continue', disabled: true
+    click_continue
+    focused_input = page.find(':focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
+    expect(error_message).to have_content(t('errors.messages.invalid_phone_number'))
     expect(hidden_select.value).to eq('US')
 
+    # Unsupported country should prompt as invalid and hide delivery options immediately
+    page.find('div[aria-label="Country code"]').click
+    within(page.find('.iti__flag-container', visible: :all)) do
+      find('span', text: 'Sri Lanka').click
+    end
+    focused_input = page.find('.phone-input__number:focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(error_message).to have_content(
+      t(
+        'two_factor_authentication.otp_delivery_preference.no_supported_options',
+        location: 'Sri Lanka',
+      ),
+    )
+    expect(page).to_not have_content(t('two_factor_authentication.otp_delivery_preference.title'))
+    expect(hidden_select.value).to eq('LK')
+    fill_in :new_phone_form_phone, with: '+94 071 234 5678'
+    click_continue
+    expect(page.find(':focus')).to match_css('.phone-input__number')
+
+    # Switching to supported country should re-show delivery options, but prompt as invalid number
+    page.find('div[aria-label="Country code"]').click
+    within(page.find('.iti__flag-container', visible: :all)) do
+      find('span', text: 'United States').click
+    end
+    expect(page).to have_content(t('two_factor_authentication.otp_delivery_preference.title'))
+    expect(page).to_not have_css('.usa-error-message')
+    expect(hidden_select.value).to eq('US')
+    click_continue
+    expect(page.find(':focus')).to match_css('.phone-input__number')
+    expect(page).to have_content(t('errors.messages.invalid_phone_number'))
+
+    # Entering valid number should allow submission
     input = fill_in :new_phone_form_phone, with: '+81543543643'
     expect(input.value).to eq('+81 543543643')
-    find_button 'Continue', disabled: false
     expect(hidden_select.value).to eq('JP')
+    click_continue
+    expect(page).to have_content(t('forms.two_factor.code'))
   end
 
   scenario 'adding a phone that is already on the user account shows error message' do

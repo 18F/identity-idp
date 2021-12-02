@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.verify') %>
+<% title t('doc_auth.headings.welcome') %>
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], only_if_all: true, context: :idv)) %>
 
@@ -58,7 +58,7 @@
         </div>
       </div>
     </li>
-    <li class='padding-top-2 padding-bottom-1'>
+    <li class='padding-top-2'>
       <div class="grid-row">
         <div class='grid-col-2 margin-right-2 text-top circle-number bg-primary text-white'>
           <%= step += 1 %>
@@ -79,8 +79,7 @@
   <%= validated_form_for :doc_auth,
                          url: url_for,
                          method: 'put',
-                         html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
-    <br/>
+                         html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
     <%= f.button :button,
                  t('doc_auth.buttons.continue'),
                  type: :submit,
@@ -89,7 +88,7 @@
 
   <%= render(
         'shared/troubleshooting_options',
-        heading_level: :h3,
+        heading_tag: :h3,
         heading: t('idv.troubleshooting.headings.missing_required_items'),
         options: [
           {

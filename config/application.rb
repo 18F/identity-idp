@@ -54,6 +54,12 @@ module Upaya
     config.good_job.queues = IdentityConfig.store.good_job_queues
     # see config/initializers/job_configurations.rb for cron schedule
 
+    includes_star_queue = config.good_job.queues.split(';').any? do |name_threads|
+      name, threads = name_threads.split(':', 2)
+      name == '*'
+    end
+    raise 'good_job.queues does not contain *, but it should' if !includes_star_queue
+
     GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
     GoodJob.retry_on_unhandled_error = false
     GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }

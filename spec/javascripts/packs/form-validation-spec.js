@@ -57,6 +57,7 @@ describe('form-validation', () => {
         <input type="text" aria-label="required field" required class="field">
         <input type="text" aria-label="format" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z">
         <input type="text" aria-label="format unknown field" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z" class="field">
+        <input type="text" aria-label="format field" pattern="(?:[a-zA-Z0-9]{4}([ -])?){3}[a-zA-Z0-9]{4}" class="field personal-key">
       </form>`;
 
     initialize(document.querySelector('form'));
@@ -82,5 +83,50 @@ describe('form-validation', () => {
     expect(formatUnknownField.validationMessage).to.not.be.empty.and.not.match(
       /^idv\.errors\.pattern_mismatch\./,
     );
+
+    const formatField = screen.getByLabelText('format field');
+    await userEvent.type(formatField, 'a');
+    expect(formatField.validationMessage).to.equal('idv.errors.pattern_mismatch.personal_key');
+    await userEvent.type(formatField, 'aaa-aaaa-aaaa-aaaa');
+    expect(formatField.validationMessage).to.be.empty();
+  });
+
+  it('resets its own custom validity message on input', () => {
+    document.body.innerHTML = `
+      <form>
+        <input type="text" aria-label="required field" required class="field">
+        <button>Submit</button>
+      </form>`;
+
+    const form = document.querySelector('form');
+    initialize(form);
+
+    form.checkValidity();
+
+    const input = screen.getByLabelText('required field');
+    userEvent.type(input, 'a');
+
+    expect(input.validity.customError).to.be.false();
+  });
+
+  it('does not reset external custom validity message on input', () => {
+    document.body.innerHTML = `
+      <form>
+        <input type="text" aria-label="field" class="field">
+        <button>Submit</button>
+      </form>`;
+
+    const form = document.querySelector('form');
+    initialize(form);
+
+    form.checkValidity();
+
+    /** @type {HTMLInputElement} */
+    const input = screen.getByLabelText('field');
+    input.setCustomValidity('custom error');
+
+    userEvent.type(input, 'a');
+
+    expect(input.validity.customError).to.be.true();
   });
 });

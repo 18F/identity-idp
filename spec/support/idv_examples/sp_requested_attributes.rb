@@ -3,7 +3,7 @@ shared_examples 'sp requesting attributes' do |sp|
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
-  let(:good_ssn) { '666-66-1234' }
+  let(:good_ssn) { DocAuthHelper::GOOD_SSN }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
   let(:saved_pii) do
     DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
@@ -41,7 +41,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-        expect(page).to have_content '666-66-1234'
+        expect(page).to have_content good_ssn
       end
     end
   end
@@ -101,7 +101,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+15555551234'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-        expect(page).to have_content '666-66-1234'
+        expect(page).to have_content DocAuthHelper::GOOD_SSN
       end
     end
   end

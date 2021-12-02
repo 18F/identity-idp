@@ -8,7 +8,7 @@ gem 'rails', '~> 6.1.4'
 # Variables can be overridden for local dev in Gemfile-dev
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
+@saml_gem ||= { github: '18F/saml_idp', tag: '0.15.0-18f' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.1' }
 
 gem 'identity-hostdata', @hostdata_gem
@@ -31,7 +31,7 @@ gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday'
 gem 'foundation_emails'
-gem 'good_job', '~> 2.2.0'
+gem 'good_job', '~> 2.7.0'
 gem 'hashie', '~> 4.1'
 gem 'hiredis', '~> 0.6.0'
 gem 'http_accept_language'
@@ -70,7 +70,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.40.0', require: 'view_component/engine'
+gem 'view_component', '~> 2.43.1', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
 gem 'xmldsig', '~> 0.6'
@@ -126,7 +126,6 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
-  gem 'scss_lint', require: false
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'

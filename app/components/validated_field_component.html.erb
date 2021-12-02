@@ -1,0 +1,28 @@
+<lg-validated-field>
+  <%= content_tag(
+        :script,
+        error_messages.to_json,
+        {
+          type: 'application/json',
+          class: 'validated-field__error-strings',
+        },
+        false,
+      ) %>
+  <%= f.input(
+        name,
+        tag_options.deep_merge(
+          error: false,
+          wrapper_html: {
+            class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
+          },
+          input_html: {
+            class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
+            aria: {
+              invalid: false,
+              describedby: "validated-field-error-#{unique_id}",
+            },
+          },
+        ),
+      ) %>
+  <%= f.error(name, id: "validated-field-error-#{unique_id}") %>
+</lg-validated-field>

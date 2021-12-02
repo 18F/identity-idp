@@ -9,7 +9,7 @@
 // 2. The focus styling is specific to non-interactive content not included in regular tab order,
 //    expected to be used only for programmatic fallback, and with exception to allow supported
 //    `:focus-visible` to restore identified indicator.
-h1[tabindex="-1"].page-heading:focus { // scss-lint:disable QualifyingElement
+h1[tabindex="-1"].page-heading:focus {
   outline: none;
 
   &:focus-visible {

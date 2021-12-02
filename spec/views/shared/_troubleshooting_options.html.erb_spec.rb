@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'shared/_troubleshooting_options.html.erb' do
   let(:heading) { '' }
-  let(:heading_level) { nil }
+  let(:heading_tag) { nil }
   let(:options) { [{ text: 'One', url: '#one' }, { text: 'Two', url: '#two' }] }
   let(:classes) { nil }
 
@@ -10,7 +10,7 @@ describe 'shared/_troubleshooting_options.html.erb' do
     render(
       'shared/troubleshooting_options',
       heading: heading,
-      heading_level: heading_level,
+      heading_tag: heading_tag,
       options: options,
       class: classes,
     )
@@ -24,17 +24,17 @@ describe 'shared/_troubleshooting_options.html.erb' do
     end
   end
 
-  describe 'heading_level' do
+  describe 'heading_tag' do
     context 'omitted' do
-      it 'renders with default heading_level h2' do
+      it 'renders with default heading_tag h2' do
         expect(rendered).to have_css('h2')
       end
     end
 
     context 'given' do
-      let(:heading_level) { :h3 }
+      let(:heading_tag) { :h3 }
 
-      it 'renders with custom heading_level' do
+      it 'renders with custom heading_tag' do
         expect(rendered).to have_css('h3')
       end
     end

@@ -9,7 +9,7 @@
   - if the markup for something is defined multiple times across templates,
     it should be consolidated to a single place
 - leverages elements from the U.S. Web Design Standards (i.e., fonts, colors)
-- uses Sass as the CSS preprocessor and `scss-lint` to keep files tidy
+- uses Sass as the CSS preprocessor and `stylelint` to keep files tidy
 - uses well structured, accessible, semantic HTML
 
 ## JavaScript

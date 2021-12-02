@@ -737,6 +737,10 @@ Rails/Blank:
 Rails/Delegate:
   Enabled: false
 
+Rails/DynamicFindBy:
+  Exclude:
+    - spec/features/**/*.rb
+
 Rails/FilePath:
   Enabled: false
 

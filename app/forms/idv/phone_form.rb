@@ -4,7 +4,7 @@ module Idv
 
     ALL_DELIVERY_METHODS = [:sms, :voice].freeze
 
-    attr_reader :user, :phone, :allowed_countries, :delivery_methods
+    attr_reader :user, :phone, :allowed_countries, :delivery_methods, :international_code
 
     validate :validate_valid_phone_for_allowed_countries
     validate :validate_phone_delivery_methods
@@ -49,10 +49,13 @@ module Idv
     attr_writer :phone
 
     def initial_phone_value(input_phone)
-      return input_phone if input_phone.present?
+      initial_phone = input_phone
+      initial_phone ||= begin
+        user_phone = MfaContext.new(user).phone_configurations.take&.phone
+        user_phone if valid_phone?(user_phone, phone_confirmed: true)
+      end
 
-      user_phone = MfaContext.new(user).phone_configurations.take&.phone
-      user_phone if valid_phone?(user_phone, phone_confirmed: true)
+      PhoneFormatter.format(initial_phone) if initial_phone
     end
 
     def validate_valid_phone_for_allowed_countries

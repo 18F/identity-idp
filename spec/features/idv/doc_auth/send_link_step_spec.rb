@@ -62,6 +62,23 @@ feature 'doc auth send link step' do
     expect(page).to have_content I18n.t('telephony.error.friendly_message.generic')
   end
 
+  it 'displays error if user selects a country to which we cannot send SMS', js: true do
+    page.find('div[aria-label="Country code"]').click
+    within(page.find('.iti__flag-container', visible: :all)) do
+      find('span', text: 'Sri Lanka').click
+    end
+    focused_input = page.find('.phone-input__number:focus')
+    error_message = page.find_by_id(focused_input[:'aria-describedby'])
+    expect(error_message).to have_content(
+      t(
+        'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+        location: 'Sri Lanka',
+      ),
+    )
+    click_continue
+    expect(page.find(':focus')).to match_css('.phone-input__number')
+  end
+
   it 'throttles sending the link' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     user = sign_in_and_2fa_user

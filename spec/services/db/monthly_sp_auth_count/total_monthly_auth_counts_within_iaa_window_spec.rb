@@ -6,7 +6,10 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
   describe '.call' do
     subject(:result) do
       Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(
-        service_provider: service_provider,
+        issuer: service_provider.issuer,
+        iaa_start_date: service_provider.iaa_start_date,
+        iaa_end_date: service_provider.iaa_end_date,
+        iaa: service_provider.iaa,
       )
     end
 

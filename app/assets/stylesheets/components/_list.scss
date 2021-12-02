@@ -46,11 +46,11 @@
 }
 
 .red-dots {
-  @include color-list($red)
+  @include color-list($red);
 }
 
 .teal-dots {
-  @include color-list($teal)
+  @include color-list($teal);
 }
 
 .yellow-dots {

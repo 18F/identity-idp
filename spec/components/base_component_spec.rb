@@ -15,7 +15,7 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   it 'does nothing when rendered' do
-    expect(view_context).not_to receive(:render_component_script)
+    expect(view_context).not_to receive(:enqueue_component_scripts)
 
     render_inline(ExampleComponent.new)
   end
@@ -23,7 +23,7 @@ RSpec.describe BaseComponent, type: :component do
   context 'with sidecar script' do
     class ExampleComponentWithScript < BaseComponent
       def call
-        ''
+        render(NestedExampleComponentWithScript.new)
       end
 
       def self._sidecar_files(extensions)
@@ -32,11 +32,34 @@ RSpec.describe BaseComponent, type: :component do
       end
     end
 
+    class NestedExampleComponentWithScript < ExampleComponentWithScript
+      def call
+        ''
+      end
+    end
+
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:render_component_script).
+      expect(view_context).to receive(:enqueue_component_scripts).twice.
         with('example_component_with_script')
 
       render_inline(ExampleComponentWithScript.new)
+    end
+  end
+
+  describe '#unique_id' do
+    it 'provides a unique id' do
+      first_component = ExampleComponentWithScript.new
+      second_component = ExampleComponentWithScript.new
+
+      expect(first_component.unique_id).to be_present
+      expect(second_component.unique_id).to be_present
+      expect(first_component.unique_id).not_to eq(second_component.unique_id)
+    end
+
+    it 'is memoized' do
+      component = ExampleComponentWithScript.new
+
+      expect(component.unique_id).to eq(component.unique_id)
     end
   end
 end

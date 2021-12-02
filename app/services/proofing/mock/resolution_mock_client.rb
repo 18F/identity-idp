@@ -27,7 +27,7 @@ module Proofing
         elsif first_name.match?(/Time/i)
           raise Proofing::TimeoutError, 'resolution mock timeout'
 
-        elsif applicant[:ssn].match?(/6666/)
+        elsif !verified_ssn?(ssn)
           result.add_error(:ssn, 'Unverified SSN.')
 
         elsif applicant[:zipcode] == UNVERIFIABLE_ZIP_CODE
@@ -36,6 +36,13 @@ module Proofing
 
         result.transaction_id = TRANSACTION_ID
         result.reference = REFERENCE
+      end
+
+      # To reduce the chances of allowing real PII in the mock proofer, we only allow SSNs that
+      # start with 900 or appear in the configurable allow list
+      def verified_ssn?(ssn)
+        ssn.start_with?('900') ||
+          IdentityConfig.store.test_ssn_allowed_list.include?(ssn.delete('-'))
       end
     end
   end

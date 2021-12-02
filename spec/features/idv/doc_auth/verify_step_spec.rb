@@ -21,8 +21,8 @@ feature 'doc auth verify step' do
   end
 
   it 'masks the ssn' do
-    expect(page).to have_text('6**-**-***4')
-    expect(page.find('.masked-text__text', text: '666-66-1234')).
+    expect(page).to have_text('9**-**-***4')
+    expect(page.find('.masked-text__text', text: DocAuthHelper::GOOD_SSN)).
       to match_css('.display-none').or have_ancestor('.display-none')
   end
 
@@ -105,16 +105,6 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
-  it 'does not proceed to the next page if ssn is a duplicate' do
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_duplicate_ssn
-    click_idv_continue
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_session_errors_warning_path)
-  end
-
   it 'throttles resolution and continues when it expires' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
@@ -141,26 +131,6 @@ feature 'doc auth verify step' do
 
       expect(page).to have_current_path(idv_phone_path)
     end
-  end
-
-  it 'throttles dup ssn' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_duplicate_ssn
-    click_idv_continue
-    (max_attempts - 1).times do
-      click_idv_continue
-      expect(page).to have_current_path(idv_session_errors_warning_path)
-      visit idv_doc_auth_verify_step
-    end
-    click_idv_continue
-    expect(page).to have_current_path(idv_session_errors_failure_path)
-    expect(fake_analytics).to have_logged_event(
-      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-      throttle_type: :idv_resolution,
-      step_name: Idv::Steps::VerifyWaitStepShow,
-    )
   end
 
   it 'shows the step indicator' do
@@ -285,16 +255,16 @@ feature 'doc auth verify step' do
     end
 
     it 'can toggle viewing the ssn' do
-      expect(page).to have_text('6**-**-***4')
-      expect(page).not_to have_text('666-66-1234')
+      expect(page).to have_text('9**-**-***4')
+      expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
 
       check t('forms.ssn.show')
-      expect(page).to have_text('666-66-1234')
-      expect(page).not_to have_text('6**-**-***4')
+      expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+      expect(page).not_to have_text('9**-**-***4')
 
       uncheck t('forms.ssn.show')
-      expect(page).to have_text('6**-**-***4')
-      expect(page).not_to have_text('666-66-1234')
+      expect(page).to have_text('9**-**-***4')
+      expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     end
 
     it 'proceeds to the next page upon confirmation' do

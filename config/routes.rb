@@ -15,7 +15,11 @@ Rails.application.routes.draw do
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
-    match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
+    # JS-driven POST redirect route to preserve existing session
+    post "/api/saml/auth#{suffix}" => 'saml_post#auth'
+    # actual SAML handling POST route
+    post "/api/saml/authpost#{suffix}" => 'saml_idp#auth'
+    get "/api/saml/auth#{suffix}" => 'saml_idp#auth'
   end
 
   post '/api/service_provider' => 'service_provider#update'

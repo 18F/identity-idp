@@ -23,7 +23,12 @@
       method: 'PUT',
       html: { autocomplete: 'off', class: 'margin-top-4' },
     ) do |f| %>
-  <%= render PhoneInputComponent.new(form: f, required: true) %>
+  <%= render PhoneInputComponent.new(
+        form: f,
+        required: true,
+        delivery_methods: [:sms],
+        class: 'margin-bottom-4',
+      ) %>
   <div class="usa-error-message margin-bottom-4 display-none" role="alert"></div>
   <button class="margin-top-1 usa-button usa-button--big usa-button--wide">
     <%= t('forms.buttons.continue') %>

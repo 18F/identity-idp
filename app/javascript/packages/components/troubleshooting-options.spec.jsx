@@ -7,7 +7,16 @@ describe('TroubleshootingOptions', () => {
 
     const heading = getByRole('heading');
 
+    expect(heading.tagName).to.be.equal('H2');
     expect(heading.textContent).to.equal('Need help?');
+  });
+
+  it('renders a given headingTag', () => {
+    const { getByText } = render(
+      <TroubleshootingOptions headingTag="h3" heading="Test Header" options={[]} />,
+    );
+
+    expect(getByText('Test Header').tagName).to.be.equal('H3');
   });
 
   it('renders given options', () => {

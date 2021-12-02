@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_packs_with_chunks_tag 'saml-post' %>
+  </head>
+  <body>
+    <div class="container tablet:padding-y-6">
+      <div class="card margin-x-auto sm-col-6">
+        <h1 class="margin-y-0">
+          <%= t('saml_idp.shared.saml_post_binding.heading') %>
+        </h1>
+
+        <p>
+          <%= t('saml_idp.shared.saml_post_binding.no_js') %>
+        </p>
+
+        <%= form_tag action_url, id: 'saml-post-binding' do %>
+          <% form_params.each do |key, val| %>
+            <%= hidden_field_tag(key, val) %>
+          <% end %>
+          <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--wide usa-button--big' %>
+        <% end %>
+      </div>
+    </div>
+  </body>
+</html>

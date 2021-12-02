@@ -49,12 +49,12 @@ describe Idv::PhoneForm do
       let(:phone) { '7035551234' }
       let(:user) { build_stubbed(:user, :signed_up, with: { phone: phone }) }
 
-      it 'uses the user phone number as the initial phone value' do
-        expect(subject.phone).to eq('7035551234')
+      it 'uses the formatted phone number as the initial phone value' do
+        expect(subject.phone).to eq('+1 703-555-1234')
       end
 
       context 'with supported international user phone number' do
-        let(:phone) { '+63 0905 123 4567' }
+        let(:phone) { '+63 905 123 4567' }
 
         it 'uses the user phone number as the initial phone value' do
           expect(subject.phone).to eq(phone)
@@ -84,7 +84,7 @@ describe Idv::PhoneForm do
       let(:previous_params) { { phone: '2255555000' } }
 
       it 'uses the previously submitted value as the initial phone value' do
-        expect(subject.phone).to eq('2255555000')
+        expect(subject.phone).to eq('+1 225-555-5000')
       end
     end
 

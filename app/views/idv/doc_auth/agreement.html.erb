@@ -1,4 +1,4 @@
-<% title t('titles.doc_auth.get_started') %>
+<% title t('doc_auth.headings.lets_go') %>
 
 <%= render AlertComponent.new(
       type: :error,
@@ -20,7 +20,7 @@
 <%= validated_form_for :doc_auth,
                        url: url_for,
                        method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
+                       html: { autocomplete: 'off', class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' } do |f| %>
   <div class="margin-bottom-4">
     <%= check_box_tag(
           :ial2_consent_given,

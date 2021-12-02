@@ -16,14 +16,14 @@
   <% end %>
 </p>
 
-<%= simple_form_for(
+<%= validated_form_for(
       @new_phone_form,
       html: { autocomplete: 'off', method: :patch },
       data: { international_phone_form: true },
       url: phone_setup_path,
     ) do |f| %>
 
-  <%= render PhoneInputComponent.new(form: f, required: true) %>
+  <%= render PhoneInputComponent.new(form: f, required: true, class: 'margin-bottom-4') %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>

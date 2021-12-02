@@ -67,7 +67,7 @@ fr:
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en
         charge. Veuillez essayer par SMS si vous possédez un téléphone disposant
         de cette fonction.
-      invalid_phone_number: Le numéro de téléphone saisi n’est pas valide.
+      invalid_phone_number: Le numéro de téléphone n’est pas valide
       invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les
         messages textuels. Veuillez essayer l’option d’appel téléphonique.
       invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
@@ -80,9 +80,11 @@ fr:
       otp_failed: Échec de l’envoi de votre code de sécurité.
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
+      phone_country_constraint_usa: Dois être un numéro de téléphone américain
       phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez
         entré en tant qu’authentificateur. Veuillez utiliser un numéro de
         téléphone différent.
+      phone_required: Le numéro de téléphone est obligatoire
       phone_unsupported: Désolé, nous ne sommes pas en mesure d’envoyer des SMS pour
         le moment. S’il vous plaît essayez l’option d’appel téléphonique
         ci-dessous, ou utilisez votre clé personnelle.
