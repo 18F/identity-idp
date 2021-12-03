@@ -47,14 +47,16 @@ describe('document-capture/context/capture-troubleshooting', () => {
 
   it('triggers content resets', () => {
     const onPageTransition = sinon.spy();
-    const FailButton = () => (
-      <button
-        type="button"
-        onClick={useContext(FailedCaptureAttemptsContext).onFailedCaptureAttempt}
-      >
-        Fail
-      </button>
-    );
+    function FailButton() {
+      return (
+        <button
+          type="button"
+          onClick={useContext(FailedCaptureAttemptsContext).onFailedCaptureAttempt}
+        >
+          Fail
+        </button>
+      );
+    }
     const { getByRole } = render(
       <FormStepsContext.Provider value={{ onPageTransition }}>
         <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={1}>

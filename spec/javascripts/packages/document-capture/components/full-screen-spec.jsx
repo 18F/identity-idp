@@ -164,15 +164,11 @@ describe('document-capture/components/full-screen', () => {
       </>,
     );
 
-    rerender(
-      <>
-        <FullScreen>Please don’t</FullScreen>
-      </>,
-    );
+    rerender(<FullScreen>Please don’t</FullScreen>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
-    rerender(<></>);
+    rerender(null);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
   });

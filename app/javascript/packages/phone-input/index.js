@@ -38,7 +38,7 @@ const updateInternationalCodeInPhone = (phone, newCode) =>
 
 export class PhoneInput extends HTMLElement {
   /** @type {PhoneInputStrings} */
-  #_strings;
+  #strings;
 
   /** @type {string[]} */
   deliveryMethods = [];
@@ -95,15 +95,15 @@ export class PhoneInput extends HTMLElement {
    * @return {PhoneInputStrings}
    */
   get strings() {
-    if (!this.#_strings) {
+    if (!this.#strings) {
       try {
-        this.#_strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
+        this.#strings = JSON.parse(this.querySelector('.phone-input_strings')?.textContent || '');
       } catch {
-        this.#_strings = {};
+        this.#strings = {};
       }
     }
 
-    return this.#_strings;
+    return this.#strings;
   }
 
   /**
