@@ -1,21 +1,18 @@
 import { render } from '@testing-library/react';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
-  MarketingSiteContext,
+  HelpCenterContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import DocumentCaptureTroubleshootingOptions from '@18f/identity-document-capture/components/document-capture-troubleshooting-options';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
-  const documentCaptureTipsURL = '/url/to/document-capture-tips';
-  const supportedDocumentsURL = '/url/to/supported-documents';
-
   function renderWithContext({ serviceProviderContext } = {}) {
     const Component = composeComponents(
       ...[
         [
-          MarketingSiteContext.Provider,
-          { value: { documentCaptureTipsURL, supportedDocumentsURL } },
+          HelpCenterContextProvider,
+          { value: { helpCenterRedirectURL: 'https://example.com/redirect/' } },
         ],
         serviceProviderContext && [
           ServiceProviderContextProvider,
@@ -37,12 +34,16 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     expect(links[0].textContent).to.equal(
       'idv.troubleshooting.options.doc_capture_tips links.new_window',
     );
-    expect(links[0].getAttribute('href')).to.equal('/url/to/document-capture-tips');
+    expect(links[0].getAttribute('href')).to.equal(
+      'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=troubleshooting_options',
+    );
     expect(links[0].target).to.equal('_blank');
     expect(links[1].textContent).to.equal(
       'idv.troubleshooting.options.supported_documents links.new_window',
     );
-    expect(links[1].getAttribute('href')).to.equal('/url/to/supported-documents');
+    expect(links[1].getAttribute('href')).to.equal(
+      'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=troubleshooting_options',
+    );
     expect(links[1].target).to.equal('_blank');
   });
 
@@ -61,12 +62,16 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       expect(links[0].textContent).to.equal(
         'idv.troubleshooting.options.doc_capture_tips links.new_window',
       );
-      expect(links[0].getAttribute('href')).to.equal('/url/to/document-capture-tips');
+      expect(links[0].getAttribute('href')).to.equal(
+        'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=troubleshooting_options',
+      );
       expect(links[0].target).to.equal('_blank');
       expect(links[1].textContent).to.equal(
         'idv.troubleshooting.options.supported_documents links.new_window',
       );
-      expect(links[1].getAttribute('href')).to.equal('/url/to/supported-documents');
+      expect(links[1].getAttribute('href')).to.equal(
+        'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=troubleshooting_options',
+      );
       expect(links[1].target).to.equal('_blank');
       expect(links[2].textContent).to.equal(
         'idv.troubleshooting.options.get_help_at_sp links.new_window',

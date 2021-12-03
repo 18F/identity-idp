@@ -20,15 +20,7 @@
   app_name: APP_NAME,
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
-  document_capture_tips_url: help_center_redirect_url(
-    category: 'verify-your-identity',
-    article: 'how-to-add-images-of-your-state-issued-id',
-    flow: :idv,
-    step: :document_capture,
-  ),
-  supported_documents_url: help_center_redirect_url(
-    category: 'verify-your-identity',
-    article: 'accepted-state-issued-identification',
+  help_center_redirect_url: help_center_redirect_url(
     flow: :idv,
     step: :document_capture,
   ),

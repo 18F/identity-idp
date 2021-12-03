@@ -13,7 +13,7 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
-import MarketingSiteContext from '../context/marketing-site';
+import HelpCenterContext from '../context/help-center';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import './review-issues-step.scss';
@@ -75,7 +75,7 @@ function ReviewIssuesStep({
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
-  const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
+  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
@@ -164,7 +164,11 @@ function ReviewIssuesStep({
       troubleshootingOptions={
         /** @type {TroubleshootingOption[]} */ ([
           {
-            url: documentCaptureTipsURL,
+            url: getHelpCenterURL({
+              category: 'verify-your-identity',
+              article: 'how-to-add-images-of-your-state-issued-id',
+              location: 'post_submission_warning',
+            }),
             text: t('idv.troubleshooting.options.doc_capture_tips'),
             isExternal: true,
           },

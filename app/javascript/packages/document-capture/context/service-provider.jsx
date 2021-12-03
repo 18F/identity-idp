@@ -1,4 +1,5 @@
 import { createContext, useMemo } from 'react';
+import { addSearchParams } from '@18f/identity-url';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -37,11 +38,7 @@ function ServiceProviderContextProvider({ value, children }) {
   const mergedValue = useMemo(
     () => ({
       ...value,
-      getFailureToProofURL(location) {
-        const url = new URL(value.failureToProofURL);
-        url.searchParams.set('location', location);
-        return url.toString();
-      },
+      getFailureToProofURL: (location) => addSearchParams(value.failureToProofURL, { location }),
     }),
     [value],
   );

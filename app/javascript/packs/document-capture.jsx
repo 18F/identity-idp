@@ -10,7 +10,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
-  MarketingSiteContext,
+  HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -53,8 +53,7 @@ import { I18nContext } from '@18f/identity-react-i18n';
 /**
  * @typedef AppRootData
  *
- * @prop {string} documentCaptureTipsUrl
- * @prop {string} supportedDocumentsUrl
+ * @prop {string} helpCenterRedirectUrl
  * @prop {string} appName
  * @prop {string} maxCaptureAttemptsBeforeTips
  * @prop {FlowPath} flowPath
@@ -62,7 +61,7 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @prop {string} cancelUrl
  *
  * @see AppContext
- * @see MarketingSiteContext
+ * @see HelpCenterContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
@@ -156,8 +155,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
   const {
-    documentCaptureTipsUrl: documentCaptureTipsURL,
-    supportedDocumentsUrl: supportedDocumentsURL,
+    helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
     appName,
     flowPath,
@@ -167,7 +165,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL, supportedDocumentsURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [
