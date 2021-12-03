@@ -135,7 +135,7 @@ feature 'doc capture document capture step' do
           expect(fake_analytics).to have_logged_event(
             Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
             step: 'document_capture',
-            location: 'documents_having_trouble',
+            location: 'document_capture_troubleshooting_options',
           )
         end
       end

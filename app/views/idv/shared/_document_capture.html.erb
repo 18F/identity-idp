@@ -21,6 +21,7 @@
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
   document_capture_tips_url: MarketingSite.help_document_capture_tips_url,
+  supported_documents_url: MarketingSite.help_document_capture_supported_documents_url,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document) :
@@ -135,8 +136,6 @@
       <div class="clearfix"></div>
     </div>
   <% end %> <%# end validated_form_for %>
-
-  <p class='margin-top-4 margin-bottom-0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 
   <%= render(
         'idv/doc_auth/start_over_or_cancel',
