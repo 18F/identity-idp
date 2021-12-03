@@ -51,7 +51,7 @@ function CaptureTroubleshooting({ children }) {
       />
     </CallbackOnMount>
   ) : (
-    children
+    <>{children}</>
   );
 }
 
