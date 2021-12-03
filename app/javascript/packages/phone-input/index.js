@@ -97,7 +97,7 @@ export class PhoneInput extends HTMLElement {
   get strings() {
     if (!this.#strings) {
       try {
-        this.#strings = JSON.parse(this.querySelector('.phone-input_strings')?.textContent || '');
+        this.#strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
       } catch {
         this.#strings = {};
       }
