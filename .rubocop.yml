@@ -498,6 +498,9 @@ Lint/RedundantWithObject:
 Lint/RegexpAsCondition:
   Enabled: true
 
+Lint/RequireRelativeSelfPath:
+  Enabled: true
+
 Lint/RequireParentheses:
   Enabled: true
 
