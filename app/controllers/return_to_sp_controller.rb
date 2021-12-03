@@ -3,18 +3,12 @@ class ReturnToSpController < Redirect::RedirectController
 
   def cancel
     redirect_url = sp_return_url_resolver.return_to_sp_url
-    analytics.track_event(Analytics::RETURN_TO_SP_CANCEL, redirect_url: redirect_url)
-    redirect_to_and_log redirect_url
+    redirect_to_and_log redirect_url, event: Analytics::RETURN_TO_SP_CANCEL
   end
 
   def failure_to_proof
     redirect_url = sp_return_url_resolver.failure_to_proof_url
-    analytics.track_event(
-      Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
-      redirect_url: redirect_url,
-      **location_params,
-    )
-    redirect_to_and_log redirect_url
+    redirect_to_and_log redirect_url, event: Analytics::RETURN_TO_SP_FAILURE_TO_PROOF
   end
 
   private

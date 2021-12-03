@@ -8,16 +8,9 @@ module Redirect
       params.permit(*PERMITTED_LOCATION_PARAMS).to_h.symbolize_keys
     end
 
-    def redirect_to_and_log(...)
-      redirect_result = redirect_to(...)
-
-      analytics.track_event(
-        Analytics::EXTERNAL_REDIRECT,
-        redirect_url: self.location,
-        **location_params,
-      )
-
-      redirect_result
+    def redirect_to_and_log(url, event: Analytics::EXTERNAL_REDIRECT)
+      analytics.track_event(event, redirect_url: url, **location_params)
+      redirect_to(url)
     end
   end
 end
