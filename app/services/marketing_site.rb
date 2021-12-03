@@ -1,11 +1,11 @@
+require 'set'
+
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
-  HELP_CENTER_ARTICLES = {
-    'verify-your-identity' => [
-      'how-to-add-images-of-your-state-issued-id',
-    ].freeze,
-  }.freeze
+  HELP_CENTER_ARTICLES = %w[
+    verify-your-identity/how-to-add-images-of-your-state-issued-id
+  ].to_set.freeze
 
   def self.locale_segment
     active_locale = I18n.locale
@@ -105,16 +105,14 @@ class MarketingSite
   end
 
   def self.help_center_article_url(category:, article:)
-    unless valid_help_center_article?(category: category, article: article)
-      raise ArgumentError.new(
-        "Unknown help center article category: '#{category}', article: '#{article}'",
-      )
+    if !valid_help_center_article?(category: category, article: article)
+      raise ArgumentError.new("Unknown help center article category #{category}/#{article}")
     end
 
-    URI.join(BASE_URL, locale_segment, *['help', category, article].map { |p| "#{p}/" }).to_s
+    URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/").to_s
   end
 
   def self.valid_help_center_article?(category:, article:)
-    HELP_CENTER_ARTICLES.dig(category)&.include?(article).present?
+    HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
   end
 end
