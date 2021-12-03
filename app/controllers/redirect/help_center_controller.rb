@@ -9,13 +9,17 @@ module Redirect
     private
 
     def validate_help_center_article_params
-      return if MarketingSite.valid_help_center_article?(**article_params)
+      begin
+        return if MarketingSite.valid_help_center_article?(**article_params)
+      rescue ActionController::ParameterMissing
+      end
 
       redirect_to root_url
     end
 
     def article_params
-      params.permit(:category, :article).to_h.symbolize_keys
+      category, article = params.require([:category, :article])
+      { category: category, article: article }
     end
   end
 end
