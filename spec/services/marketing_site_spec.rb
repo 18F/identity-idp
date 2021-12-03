@@ -108,4 +108,50 @@ RSpec.describe MarketingSite do
       end
     end
   end
+
+  describe '.help_center_article_url' do
+    let(:category) {}
+    let(:article) {}
+    let(:result) { MarketingSite.help_center_article_url(category: category, article: article ) }
+
+    context 'with invalid article' do
+      let(:category) { 'foo' }
+      let(:article) { 'bar' }
+
+      it 'raises ArgumentError' do
+        expect { result }.to raise_error ArgumentError
+      end
+    end
+
+    context 'with valid article' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
+
+      it 'returns article URL' do
+        expect(result).to eq(
+          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/',
+        )
+      end
+    end
+  end
+
+  describe '.valid_help_center_article?' do
+    let(:category) {}
+    let(:article) {}
+    let(:result) { MarketingSite.valid_help_center_article?(category: category, article: article ) }
+
+    context 'with invalid article' do
+      let(:category) { 'foo' }
+      let(:article) { 'bar' }
+
+      it { expect(result).to eq(false) }
+    end
+
+    context 'with valid article' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
+
+      it { expect(result).to eq(true) }
+    end
+  end
 end
