@@ -51,7 +51,7 @@ cache:
     policy: pull
 
 stages:
-  - build
+  # - build
   - test
   - after_test
 
@@ -59,23 +59,23 @@ stages:
   rules:
     - if: $CI_PIPELINE_SOURCE != "schedule"
 
-install:
-  extends: .on_push
-  stage: build
-  variables:
-    RAILS_ENV: test
-  cache:
-    - <<: *ruby_cache
-      policy: pull-push
-    - <<: *yarn_cache
-      policy: pull-push
-    - <<: *assets_cache
-      policy: push
+# install:
+#   extends: .on_push
+#   stage: build
+#   variables:
+#     RAILS_ENV: test
+#   cache:
+#     - <<: *ruby_cache
+#       policy: pull-push
+#     - <<: *yarn_cache
+#       policy: pull-push
+#     - <<: *assets_cache
+#       policy: push
 
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bundle exec rake assets:precompile
+#   script:
+#     - *bundle_install
+#     - *yarn_install
+#     - bundle exec rake assets:precompile
 
 lint:
   extends: .on_push
@@ -139,6 +139,7 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://localhost:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
+    - bundle exec rake assets:precompile
     - >
         ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
