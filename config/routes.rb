@@ -247,9 +247,8 @@ Rails.application.routes.draw do
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
 
-    get '/return_to_sp/cancel' => 'return_to_sp#cancel'
-    get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
-
+    get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
+    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center/:category/:article' => 'redirect/help_center#show', as: :help_center
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
