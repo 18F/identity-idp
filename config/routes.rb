@@ -250,6 +250,8 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
+    get '/return_to_sp/cancel' => redirect('/redirect/return_to_sp/cancel') # Temporary: Remove after RC169
+    get '/return_to_sp/failure_to_proof' => redirect('/redirect/return_to_sp/failure_to_proof') # Temporary: Remove after RC169
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
