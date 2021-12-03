@@ -197,7 +197,7 @@ feature 'idv phone step' do
   end
 
   context 'when the IdV background job fails' do
-    it_behaves_like 'failed idv job', :phone
+    it_behaves_like 'failed idv phone job'
   end
 
   context 'after the max number of attempts' do

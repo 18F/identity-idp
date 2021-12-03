@@ -270,7 +270,6 @@ Rails.application.routes.draw do
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp

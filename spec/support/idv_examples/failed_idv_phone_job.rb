@@ -1,42 +1,33 @@
-shared_examples 'failed idv job' do |step|
+shared_examples 'failed idv phone job' do
   let(:locale) { LinkLocaleResolver.locale }
-  let(:step_locale_key) do
-    return :sessions if step == :profile
-    step
-  end
 
   before do
     visit_idp_from_sp_with_ial2(:oidc)
-    complete_idv_steps_before_step(step)
+    complete_idv_steps_before_step(:phone)
   end
 
   context 'the proofer raises an error' do
     before do
-      fill_out_idv_form_error if step == :profile
-      fill_out_phone_form_error if step == :phone
+      fill_out_phone_form_error
       click_idv_continue
     end
 
     it 'renders a jobfail failure screen' do
-      expect(page).to have_current_path(session_jobfail_path) if step == :profile
-      expect(page).to have_current_path(phone_jobfail_path) if step == :phone
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.jobfail")
+      expect(page).to have_current_path(phone_jobfail_path)
+      expect(page).to have_content t('idv.failure.phone.heading')
+      expect(page).to have_content t('idv.failure.phone.jobfail')
     end
   end
 
   context 'the proofer times out' do
     before do
-      fill_out_idv_form_timeout if step == :profile
-      fill_out_phone_form_timeout if step == :phone
+      fill_out_phone_form_timeout
       click_idv_continue
     end
 
-    it 'renders a timeout failure screen' do
-      expect(page).to have_current_path(session_timeout_path) if step == :profile
-      expect(page).to have_current_path(phone_timeout_path) if step == :phone
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
-      expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
+    it 'renders a timeout message on the phone entry screen' do
+      expect(page).to have_current_path(idv_phone_path)
+      expect(page).to have_content(t('idv.failure.timeout'))
     end
   end
 
@@ -66,10 +57,6 @@ shared_examples 'failed idv job' do |step|
 
   def session_jobfail_path
     idv_session_errors_jobfail_path(locale: locale)
-  end
-
-  def phone_timeout_path
-    idv_phone_errors_timeout_path(locale: locale)
   end
 
   def phone_jobfail_path

@@ -25,7 +25,7 @@ ProofingSessionAsyncResult = Struct.new(:id, :result, :status, keyword_init: tru
   end
 
   def timed_out?
-    status == ProofingSessionAsyncResult::TIMED_OUT
+    status == ProofingSessionAsyncResult::TIMED_OUT || result[:timed_out]
   end
 
   def done?

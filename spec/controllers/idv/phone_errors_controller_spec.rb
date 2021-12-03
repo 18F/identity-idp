@@ -72,27 +72,6 @@ describe Idv::PhoneErrorsController do
     end
   end
 
-  describe '#timeout' do
-    let(:action) { :timeout }
-    let(:template) { 'idv/phone_errors/timeout' }
-
-    it_behaves_like 'an idv phone errors controller action'
-
-    context 'with throttle attempts' do
-      let(:user) { create(:user) }
-
-      before do
-        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
-      end
-
-      it 'assigns remaining count' do
-        get action
-
-        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
-      end
-    end
-  end
-
   describe '#jobfail' do
     let(:action) { :jobfail }
     let(:template) { 'idv/phone_errors/jobfail' }
