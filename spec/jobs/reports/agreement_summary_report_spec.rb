@@ -16,8 +16,8 @@ RSpec.describe Reports::AgreementSummaryReport do
     end
 
     context 'with iaa data' do
-      let(:sp1) { create(:service_provider, friendly_name: 'aaa') }
-      let(:sp2) { create(:service_provider, friendly_name: 'bbb') }
+      let(:sp1) { create(:service_provider, issuer: 'aaa', friendly_name: 'App A') }
+      let(:sp2) { create(:service_provider, issuer: 'bbb', friendly_name: 'App B') }
 
       let(:partner_account) { build(:partner_account) }
 
