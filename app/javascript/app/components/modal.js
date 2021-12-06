@@ -24,21 +24,19 @@ class Modal extends Events {
     }
   }
 
-  show(target) {
+  show(target = this.el) {
     this.setElementVisibility(target, true);
     this.emit(STATES.SHOW);
   }
 
-  hide(target) {
+  hide(target = this.el) {
     this.setElementVisibility(target, false);
     this.emit(STATES.HIDE);
   }
 
-  setElementVisibility(target = null, showing) {
-    const el = target || this.el;
-
+  setElementVisibility(target, showing) {
     this.shown = showing;
-    el.classList[showing ? 'remove' : 'add']('display-none');
+    target.classList[showing ? 'remove' : 'add']('display-none');
     document.body.classList[showing ? 'add' : 'remove']('modal-open');
     this.trap[showing ? 'activate' : 'deactivate']();
   }
