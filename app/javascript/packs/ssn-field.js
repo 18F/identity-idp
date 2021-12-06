@@ -9,7 +9,7 @@ function formatSSNFieldAndLimitLength() {
   if (inputs) {
     [].slice.call(inputs).forEach((input, i) => {
       const el = `
-        <div class="margin-top-1 float-right">
+        <div class="margin-top-1 display-flex flex-justify-end">
           <input
             id="ssn-toggle-${i}"
             type="checkbox"
