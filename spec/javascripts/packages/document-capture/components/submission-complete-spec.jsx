@@ -1,4 +1,3 @@
-import sinon from 'sinon';
 import { waitFor } from '@testing-library/dom';
 import useAsync from '@18f/identity-document-capture/hooks/use-async';
 import { UploadContextProvider } from '@18f/identity-document-capture';
@@ -7,9 +6,11 @@ import SubmissionComplete, {
 } from '@18f/identity-document-capture/components/submission-complete';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
 import { render, useDocumentCaptureForm } from '../../../support/document-capture';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/submission-complete-step', () => {
   const onSubmit = useDocumentCaptureForm();
+  const sandbox = useSandbox();
 
   let response;
 
@@ -43,10 +44,10 @@ describe('document-capture/components/submission-complete-step', () => {
   });
 
   it('retries on pending success as configured by upload context poll interval', async () => {
-    const onError = sinon.spy();
+    const onError = sandbox.stub();
     response = { success: true, isPending: true };
 
-    const { findByText } = render(
+    render(
       <UploadContextProvider statusPollInterval={0}>
         <SuspenseErrorBoundary fallback={null} onError={onError}>
           <TestComponent />
@@ -54,29 +55,24 @@ describe('document-capture/components/submission-complete-step', () => {
       </UploadContextProvider>,
     );
 
-    expect(onError.called).to.be.false();
-    await findByText('doc_auth.headings.interstitial');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(onError.calledOnce).to.be.true();
+    await expect(onError).to.eventually.be.called();
     expect(onError.getCall(0).args[0]).to.be.instanceOf(RetrySubmissionError);
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(/React will try to recreate this component/);
   });
 
-  it('does not retry on pending success if poll interval is not configured', async () => {
-    const onError = sinon.spy();
+  it.skip('does not retry on pending success if poll interval is not configured', () => {
+    sandbox.stub(window, 'setTimeout');
+    response = { success: true, isPending: true };
 
-    const { findByText } = render(
+    render(
       <UploadContextProvider>
-        <SuspenseErrorBoundary fallback={null} onError={onError}>
+        <SuspenseErrorBoundary fallback={null}>
           <TestComponent />
         </SuspenseErrorBoundary>
       </UploadContextProvider>,
     );
 
-    expect(onError.called).to.be.false();
-    await findByText('doc_auth.headings.interstitial');
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(onError.called).to.be.false();
+    expect(window.setTimeout).not.to.have.been.called();
   });
 });

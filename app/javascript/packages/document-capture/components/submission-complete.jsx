@@ -48,12 +48,7 @@ function SubmissionComplete({ resource }) {
     return () => window.clearTimeout(sleepTimeout.current);
   }
 
-  return (
-    <>
-      <CallbackOnMount onMount={handleResponse} />
-      <SubmissionInterstitial />
-    </>
-  );
+  return <CallbackOnMount onMount={handleResponse} />;
 }
 
 export default SubmissionComplete;
