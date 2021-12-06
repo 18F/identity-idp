@@ -27,12 +27,12 @@ module IaaReportingHelper
             IaaConfig.new(
               gtc_number: gtc.gtc_number,
               order_number: iaa_order.order_number,
-              issuers: issuers,
+              issuers: issuers.sort,
               start_date: iaa_order.start_date,
               end_date: iaa_order.end_date,
             )
           end
         end.compact
-      end
+      end.sort_by(&:key)
   end
 end
