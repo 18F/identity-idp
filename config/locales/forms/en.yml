@@ -99,7 +99,7 @@ en:
       totp_intro_html: Set up an authentication app to sign in using temporary
         security codes. %{link}
       totp_step_1: Give it a nickname
-      totp_step_1a: If you add more than one app, you’ll know which ones which.
+      totp_step_1a: If you add more than one app, you’ll know which one is which.
       totp_step_2: Open your authentication app
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
@@ -125,9 +125,8 @@ en:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}
       instructions_title: Connect your security key
-      intro_html: Add a security key as an authentication method to your
-        account.  Your security key must support the FIDO standard.  You can add
-        as many security keys as you want, and we recommend at least two for
-        easier account recovery.
+      intro: Add a security key that meets the FIDO standard as your authentication
+        method. You can add as many security keys as you want. To get started,
+        first give your security key a nickname.
       login_text: When you are ready to authenticate, press the button
       nickname: Security key nickname

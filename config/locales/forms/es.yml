@@ -133,9 +133,8 @@ es:
       instructions_text: Presione el botón en su clave de seguridad para registrarlo
         con %{app_name}
       instructions_title: Conecte su llave de seguridad
-      intro_html: Agregue una clave de seguridad como método de autenticación a su
-        cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO.
-        Puede agregar tantas claves de seguridad como desee, y le recomendamos
-        al menos dos para que la recuperación de la cuenta sea más fácil.
+      intro: Añada una clave de seguridad que cumpla el estándar FIDO como método de
+        autenticación. Puede añadir tantas claves de seguridad como desee. Para
+        empezar, primero asigne un apodo a su clave de seguridad.
       login_text: Cuando esté listo para autenticarse, presione el botón
       nickname: Apodo clave de seguridad
