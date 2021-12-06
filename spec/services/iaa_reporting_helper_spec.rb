@@ -24,14 +24,17 @@ RSpec.describe IaaReportingHelper do
   end
 
   let(:iaa_order1) do
-    build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
+    build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1, integration: integration1)
   end
   let(:iaa_order2) do
-    build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc2)
+    build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc2, integration: integration2)
   end
 
   let(:integration1) do
-    build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+    build_integration(
+      issuer: iaa1_sp.issuer,
+      partner_account: partner_account1,
+    )
   end
   let(:integration2) do
     build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
@@ -71,13 +74,14 @@ RSpec.describe IaaReportingHelper do
     )
   end
 
-  def build_iaa_order(order_number:, date_range:, iaa_gtc:)
+  def build_iaa_order(order_number:, date_range:, iaa_gtc:, integration: nil)
     create(
       :iaa_order,
       order_number: order_number,
       start_date: date_range.begin,
       end_date: date_range.end,
       iaa_gtc: iaa_gtc,
+      integrations: [*integration]
     )
   end
 
@@ -91,18 +95,18 @@ RSpec.describe IaaReportingHelper do
 
   describe '#iaas' do
     before do
-      iaa_order1.integrations << integration1
-      iaa_order2.integrations << integration2
-      iaa_order1.save
-      iaa_order2.save
+      # iaa_order1.integrations << integration1
+      # iaa_order2.integrations << integration2
+      # iaa_order1.save
+      # iaa_order2.save
     end
 
     context 'multiple IAAs on same GTC' do
       let(:iaa_order1) do
-        build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1)
+        build_iaa_order(order_number: 1, date_range: iaa1_range, iaa_gtc: gtc1, integration: integration1)
       end
       let(:iaa_order2) do
-        build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc1)
+        build_iaa_order(order_number: 2, date_range: iaa2_range, iaa_gtc: gtc1, integration: integration2)
       end
 
       let(:integration2) do
