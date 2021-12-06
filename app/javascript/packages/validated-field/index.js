@@ -26,6 +26,8 @@ export class ValidatedField extends HTMLElement {
     /** @type {HTMLInputElement?} */
     this.input = this.querySelector('.validated-field__input');
     /** @type {HTMLElement?} */
+    this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
+    /** @type {HTMLElement?} */
     this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
     try {
@@ -66,7 +68,7 @@ export class ValidatedField extends HTMLElement {
       this.getOrCreateErrorMessageElement().textContent = message;
       this.input?.focus();
     } else if (this.errorMessage) {
-      this.removeChild(this.errorMessage);
+      this.inputWrapper?.removeChild(this.errorMessage);
       this.errorMessage = null;
     }
   }
@@ -120,7 +122,7 @@ export class ValidatedField extends HTMLElement {
         this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
       }
 
-      this.appendChild(this.errorMessage);
+      this.inputWrapper?.appendChild(this.errorMessage);
     }
 
     return this.errorMessage;
