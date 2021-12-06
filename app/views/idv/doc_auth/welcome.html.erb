@@ -92,12 +92,22 @@
         heading: t('idv.troubleshooting.headings.missing_required_items'),
         options: [
           {
-            url: MarketingSite.help_idv_supported_documents_url,
+            url: help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'accepted-state-issued-identification',
+              flow: :idv,
+              step: :welcome,
+            ),
             text: t('idv.troubleshooting.options.supported_documents'),
             new_tab: true,
           },
           {
-            url: MarketingSite.help_idv_verify_by_phone_url,
+            url: help_center_redirect_path(
+              category: 'verify-your-identity',
+              article: 'phone-number-and-phone-plan-in-your-name',
+              flow: :idv,
+              step: :welcome,
+            ),
             text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
             new_tab: true,
           },
