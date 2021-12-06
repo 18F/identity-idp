@@ -47,9 +47,7 @@ test:
     replica: true
   worker_jobs:
     <<: *test
-    database: <%= ENV['POSTGRES_DB'] || "upaya_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
-    user: <%= ENV['POSTGRES_USER'] %>
-    password: <%= ENV['POSTGRES_PASSWORD'] %>
+    database: <%= "upaya_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
 
 <%
