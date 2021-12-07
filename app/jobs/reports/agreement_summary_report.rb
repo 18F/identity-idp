@@ -30,7 +30,7 @@ module Reports
         ]
 
         IaaReportingHelper.iaas.each do |iaa|
-          ServiceProvider.where(issuer: iaa.issuers).each do |service_provider|
+          ServiceProvider.where(issuer: iaa.issuers).order(:issuer).each do |service_provider|
             csv << [
               iaa.gtc_number,
               iaa.order_number,
