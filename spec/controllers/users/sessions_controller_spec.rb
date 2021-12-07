@@ -548,7 +548,7 @@ describe Users::SessionsController, devise: true do
         stub_sign_in(user)
         get :new
 
-        expect(response).to redirect_to verify_account_path
+        expect(response).to redirect_to idv_gpo_verify_path
       end
     end
 

@@ -14,7 +14,7 @@ describe 'clearing IdV and restarting' do
 
     context 'before signing out' do
       before do
-        visit verify_account_path
+        visit idv_gpo_verify_path
       end
 
       it_behaves_like 'clearing and restarting idv'

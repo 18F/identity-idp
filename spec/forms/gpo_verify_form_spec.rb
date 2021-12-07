@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe VerifyAccountForm do
+describe GpoVerifyForm do
   subject(:form) do
-    VerifyAccountForm.new(user: user, otp: entered_otp)
+    GpoVerifyForm.new(user: user, otp: entered_otp)
   end
 
   let(:user) { pending_profile.user }
