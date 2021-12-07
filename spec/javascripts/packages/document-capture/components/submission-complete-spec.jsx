@@ -61,9 +61,21 @@ describe('document-capture/components/submission-complete-step', () => {
     expect(console).to.have.loggedError(/React will try to recreate this component/);
   });
 
-  it.skip('does not retry on pending success if poll interval is not configured', () => {
+  it('does not retry on pending success if poll interval is not configured', (done) => {
     sandbox.stub(window, 'setTimeout');
-    response = { success: true, isPending: true };
+
+    response = {
+      success: true,
+      get isPending() {
+        // When pending is checked, ensure that it's not followed-up with a scheduling of a timeout.
+        setTimeout(() => {
+          expect(window.setTimeout).not.to.have.been.called();
+          done();
+        }, 0);
+
+        return true;
+      },
+    };
 
     render(
       <UploadContextProvider>
@@ -72,7 +84,5 @@ describe('document-capture/components/submission-complete-step', () => {
         </SuspenseErrorBoundary>
       </UploadContextProvider>,
     );
-
-    expect(window.setTimeout).not.to.have.been.called();
   });
 });
