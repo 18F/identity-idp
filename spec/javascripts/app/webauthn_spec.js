@@ -1,7 +1,10 @@
 import { TextEncoder } from 'util';
+import { useSandbox } from '../support/sinon';
 import * as WebAuthn from '../../../app/javascript/app/webauthn';
 
 describe('WebAuthn', () => {
+  const sandbox = useSandbox();
+
   let originalNavigator;
   let originalCredentials;
   beforeEach(() => {
@@ -43,6 +46,17 @@ describe('WebAuthn', () => {
     const userChallenge = '[1, 2, 3, 4, 5, 6, 7, 8]';
     const excludeCredentials = 'Y3JlZGVudGlhbDEyMw==,Y3JlZGVudGlhbDQ1Ng=='; // Base64-encoded 'credential123,credential456'
 
+    const createReturnValue = {
+      rawId: Buffer.from([214, 109]), // encodes to '123'
+      id: '123',
+      response: {
+        // decodes to 'attest'
+        attestationObject: Buffer.from([97, 116, 116, 101, 115, 116]),
+        // decodes to 'json'
+        clientDataJSON: Buffer.from([106, 115, 111, 110]),
+      },
+    };
+
     it('enrolls a device using the proper create options', (done) => {
       const expectedCreateOptions = {
         publicKey: {
@@ -82,17 +96,6 @@ describe('WebAuthn', () => {
         },
       };
 
-      const createReturnValue = {
-        rawId: Buffer.from([214, 109]), // encodes to '123'
-        id: '123',
-        response: {
-          // decodes to 'attest'
-          attestationObject: Buffer.from([97, 116, 116, 101, 115, 116]),
-          // decodes to 'json'
-          clientDataJSON: Buffer.from([106, 115, 111, 110]),
-        },
-      };
-
       const expectedReturnValue = {
         webauthnId: '1m0=', // Base64.encode64('123'),
         webauthnPublicKey: '123',
@@ -112,6 +115,7 @@ describe('WebAuthn', () => {
         userEmail,
         userChallenge,
         excludeCredentials,
+        platformAuthenticator: false,
       })
         .then((result) => {
           expect(createCalled).to.eq(true);
@@ -136,6 +140,28 @@ describe('WebAuthn', () => {
           done();
         })
         .catch(done);
+    });
+
+    context('platform authenticator', () => {
+      it('enrolls a device with correct authenticatorAttachment', async () => {
+        sandbox.stub(navigator.credentials, 'create').resolves(createReturnValue);
+
+        await WebAuthn.enrollWebauthnDevice({
+          userId,
+          userEmail,
+          userChallenge,
+          excludeCredentials,
+          platformAuthenticator: true,
+        });
+
+        expect(navigator.credentials.create).to.have.been.calledWithMatch({
+          publicKey: {
+            authenticatorSelection: {
+              authenticatorAttachment: 'platform',
+            },
+          },
+        });
+      });
     });
   });
 

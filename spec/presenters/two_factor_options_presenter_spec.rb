@@ -16,6 +16,7 @@ describe TwoFactorOptionsPresenter do
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [
+        TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
         TwoFactorAuthentication::WebauthnSelectionPresenter,
         TwoFactorAuthentication::PivCacSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
@@ -31,6 +32,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'only displays AAL3 MFA methods' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
         ]
@@ -44,6 +46,7 @@ describe TwoFactorOptionsPresenter do
 
       it 'supplies all the options except phone' do
         expect(presenter.options.map(&:class)).to eq [
+          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
           TwoFactorAuthentication::WebauthnSelectionPresenter,
           TwoFactorAuthentication::PivCacSelectionPresenter,
           TwoFactorAuthentication::AuthAppSelectionPresenter,

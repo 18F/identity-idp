@@ -30,7 +30,6 @@
     "app/javascript/packs/upload-step.js",
     "app/javascript/packs/webauthn-authenticate.js",
     "app/javascript/packs/webauthn-setup.js",
-    "app/javascript/packs/webauthn-unhide-signin.js",
-    "app/javascript/packs/webauthn-unhide-signup.js"
+    "app/javascript/packs/webauthn-unhide.js"
   ]
 }

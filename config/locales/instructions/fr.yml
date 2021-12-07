@@ -93,6 +93,8 @@ fr:
           plus élevé. Vous devez vérifier votre identité à l’aide d’un
           dispositif physique tel qu’une clé de sécurité ou un badge d’employé
           du gouvernement (PIV ou CAC) pour accéder à vos informations.
+        confirm_webauthn_platform_html: Vous avez activé le déverrouillage facial ou
+          tactile pour votre compte %{app_name}.
       wrong_number_html: Vous avez entré un mauvais numéro de téléphone? %{link}
     password:
       forgot: Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir

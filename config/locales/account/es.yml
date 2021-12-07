@@ -64,6 +64,10 @@ es:
       webauthn_add: Añadir clave de seguridad
       webauthn_confirm_delete: Si quitar la llave
       webauthn_delete: Quitar llave
+      webauthn_platform: El desbloqueo facial o táctil
+      webauthn_platform_add: Añadir el desbloqueo facial o táctil
+      webauthn_platform_confirm_delete: Si, quitar el desbloqueo facial o táctil
+      webauthn_platform_delete: Quitar el desbloqueo facial o táctil
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal
@@ -85,6 +89,7 @@ es:
       add_email: Agregar dirección de correo electrónico
       add_federal_id: Agregar identificación de empleado federal
       add_phone_number: Agregar el número de teléfono
+      add_platform_authenticator: Agregar desbloqueo facial o táctil
       add_security_key: Agregar llave de seguridad
       connected_accounts: Tus cuentas conectadas
       customer_support: Atención al cliente

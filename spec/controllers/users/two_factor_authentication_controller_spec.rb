@@ -165,23 +165,30 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when user is webauthn enabled' do
       before do
-        stub_sign_in_before_2fa(build(:user, :with_webauthn))
-
-        allow_any_instance_of(
-          TwoFactorAuthentication::WebauthnPolicy,
-        ).to receive(:enabled?).and_return(true)
+        stub_sign_in_before_2fa(create(:user, :with_webauthn))
       end
 
       it 'renders the :webauthn view' do
         get :show
 
-        expect(response).to redirect_to login_two_factor_webauthn_path
+        expect(response).to redirect_to login_two_factor_webauthn_path(platform: false)
       end
 
       it 'passes reauthn parameter on redirect' do
         get :show, params: { reauthn: 'true' }
 
-        expect(response).to redirect_to login_two_factor_webauthn_path(reauthn: 'true')
+        expect(response).to redirect_to login_two_factor_webauthn_path(
+          reauthn: 'true',
+          platform: false,
+        )
+      end
+
+      it 'passes the platform parameter if the user has a platform autheticator' do
+        controller.current_user.webauthn_configurations.first.update!(platform_authenticator: true)
+
+        get :show
+
+        expect(response).to redirect_to login_two_factor_webauthn_path(platform: true)
       end
     end
 

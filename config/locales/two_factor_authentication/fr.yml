@@ -54,6 +54,11 @@ fr:
         téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
+      webauthn_platform: Déverrouillage facial ou tactile
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+        ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte %{app_name}. Recommandé, car il est plus résistant aux
+        hameçonnages.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
@@ -152,6 +157,11 @@ fr:
       webauthn_info_html: Utilisez une clé de sécurité que vous avez. C’est un
         périphérique physique que vous branchez ou qui est intégré à votre
         ordinateur ou à votre téléphone (il ressemble souvent à une clé USB).
+      webauthn_platform: Déverrouillage facial ou tactile
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+        ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte %{app_name}. Recommandé, car il est plus résistant aux
+        hameçonnages.
     two_factor_hspd12_choice: Authentification supplémentaire requise
     two_factor_hspd12_choice_intro: Cette application nécessite un haut niveau de
       sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
@@ -161,6 +171,14 @@ fr:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
     webauthn_piv_available: Utilisez votre PIV ou CAC
+    webauthn_platform_fallback:
+      question: Vous n’avez pas votre appareil à disposition?
+    webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_verified:
+      header: Appareil vérifié
+      info: Nous avons vérifié votre appareil. Cliquez sur continuer pour vous
+        connecter.
     webauthn_use_key: Utiliser la clé de sécurité
     webauthn_verified:
       header: Clé de sécurité vérifiée
