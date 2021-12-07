@@ -35,14 +35,14 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       'idv.troubleshooting.options.doc_capture_tips links.new_window',
     );
     expect(links[0].getAttribute('href')).to.equal(
-      'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=troubleshooting_options',
+      'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
     );
     expect(links[0].target).to.equal('_blank');
     expect(links[1].textContent).to.equal(
       'idv.troubleshooting.options.supported_documents links.new_window',
     );
     expect(links[1].getAttribute('href')).to.equal(
-      'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=troubleshooting_options',
+      'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
     );
     expect(links[1].target).to.equal('_blank');
   });
@@ -63,14 +63,14 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         'idv.troubleshooting.options.doc_capture_tips links.new_window',
       );
       expect(links[0].getAttribute('href')).to.equal(
-        'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=troubleshooting_options',
+        'https://example.com/redirect/?category=verify-your-identity&article=how-to-add-images-of-your-state-issued-id&location=document_capture_troubleshooting_options',
       );
       expect(links[0].target).to.equal('_blank');
       expect(links[1].textContent).to.equal(
         'idv.troubleshooting.options.supported_documents links.new_window',
       );
       expect(links[1].getAttribute('href')).to.equal(
-        'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=troubleshooting_options',
+        'https://example.com/redirect/?category=verify-your-identity&article=accepted-state-issued-identification&location=document_capture_troubleshooting_options',
       );
       expect(links[1].target).to.equal('_blank');
       expect(links[2].textContent).to.equal(

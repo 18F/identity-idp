@@ -20,7 +20,7 @@ function DocumentCaptureTroubleshootingOptions() {
             url: getHelpCenterURL({
               category: 'verify-your-identity',
               article: 'how-to-add-images-of-your-state-issued-id',
-              location: 'troubleshooting_options',
+              location: 'document_capture_troubleshooting_options',
             }),
             text: t('idv.troubleshooting.options.doc_capture_tips'),
             isExternal: true,
@@ -29,7 +29,7 @@ function DocumentCaptureTroubleshootingOptions() {
             url: getHelpCenterURL({
               category: 'verify-your-identity',
               article: 'accepted-state-issued-identification',
-              location: 'troubleshooting_options',
+              location: 'document_capture_troubleshooting_options',
             }),
             text: t('idv.troubleshooting.options.supported_documents'),
             isExternal: true,
