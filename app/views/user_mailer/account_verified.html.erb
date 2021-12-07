@@ -5,7 +5,7 @@
         date: @date,
         disavowal_link: link_to(
           t('user_mailer.account_verified.disavowal_link'),
-          event_disavowal_url(disavowal_token: @disavowal_token)
+          event_disavowal_url(disavowal_token: @disavowal_token),
         ),
         contact_link: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
        ) %>
