@@ -11,7 +11,7 @@
     selfie_image_upload_url
   ].
     compact.
-    map { |url| URI(url).tap { |uri| uri.query = nil }.to_s }
+    map { |url| URI(url).tap { |uri| uri.query = nil }.to_s },
 )
 
    session_id = flow_session[:document_capture_session_uuid]
@@ -60,7 +60,7 @@
     :doc_auth,
     url: url_for,
     method: 'PUT',
-    html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' }
+    html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' },
   ) do |f| %>
     <%# ---- Front Image ----- %>
 

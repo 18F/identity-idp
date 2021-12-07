@@ -23,7 +23,7 @@ classes << local_assigns[:class] if local_assigns[:class]
       <%= button_to(
         path,
         method: :put,
-        class: [*classes, 'usa-button usa-button--unstyled']
+        class: [*classes, 'usa-button usa-button--unstyled'],
       ) { text } %>
     <% else %>
       <%= link_to(text, path, class: classes) %>

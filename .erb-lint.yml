@@ -41,7 +41,6 @@ linters:
       - '*/app/views/reactivate_account/index.html.erb'
       - '*/app/views/session_timeout/_expire_session.html.erb'
       - '*/app/views/session_timeout/_ping.html.erb'
-      - '*/app/views/shared/_alert.html.erb'
       - '*/app/views/shared/_banner.html.erb'
       - '*/app/views/shared/_block_link.html.erb'
       - '*/app/views/shared/_email_languages.html.erb'
