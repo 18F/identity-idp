@@ -6,7 +6,7 @@ locals:
            new tabs to when absolutely necessary, such as when form data may otherwise be lost.
 %>
 <%
-content = yield.presence or raise "no block content given"
+content = yield.presence or raise 'no block content given'
 new_tab = local_assigns.fetch(:new_tab, false)
 tag_attrs = { href: url, class: ['usa-link', 'block-link'] }
 tag_attrs[:target] = '_blank' if new_tab
