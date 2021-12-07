@@ -3,6 +3,8 @@ require 'rails_helper'
 describe Idv::GpoController do
   let(:user) { create(:user) }
 
+  before { stub_analytics }
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -27,6 +29,10 @@ describe Idv::GpoController do
       get :index
 
       expect(response).to be_ok
+      expect(@analytics).to have_logged_event(
+        Analytics::IDV_GPO_ADDRESS_VISITED,
+        letter_already_sent: false,
+      )
     end
 
     it 'redirects if the user has sent too much mail' do
@@ -57,8 +63,6 @@ describe Idv::GpoController do
     end
 
     it 'logs an event when there is a timeout' do
-      stub_analytics
-
       allow(controller).to receive(:async_state).and_return(
         ProofingSessionAsyncResult.new(
           status: ProofingSessionAsyncResult::TIMED_OUT,
@@ -67,6 +71,21 @@ describe Idv::GpoController do
 
       get :index
       expect(@analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_TIMEOUT, {})
+    end
+
+    context 'with letter already sent' do
+      before do
+        allow_any_instance_of(Idv::GpoPresenter).to receive(:letter_already_sent?).and_return(true)
+      end
+
+      it 'logs visited event' do
+        get :index
+
+        expect(@analytics).to have_logged_event(
+          Analytics::IDV_GPO_ADDRESS_VISITED,
+          letter_already_sent: true,
+        )
+      end
     end
   end
 
