@@ -5,6 +5,9 @@
     "browser": true,
     "commonjs": true
   },
+  "globals": {
+    "PublicKeyCredential": true
+  },
   "rules": {
     "no-restricted-syntax": [
       "error",
