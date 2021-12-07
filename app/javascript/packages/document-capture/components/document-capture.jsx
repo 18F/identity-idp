@@ -7,6 +7,7 @@ import DocumentsStep, { documentsStepValidator } from './documents-step';
 import SelfieStep, { selfieStepValidator } from './selfie-step';
 import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
+import UploadContext from '../context/upload';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
@@ -54,6 +55,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
+  const { flowPath } = useContext(UploadContext);
 
   /**
    * Clears error state and sets form values for submission.
@@ -66,8 +68,12 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   }
 
   const submissionFormValues = useMemo(
-    () => (formValues && isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
-    [isAsyncForm, formValues],
+    () =>
+      formValues && {
+        ...(isAsyncForm ? except(formValues, 'front', 'back', 'selfie') : formValues),
+        flow_path: flowPath,
+      },
+    [isAsyncForm, formValues, flowPath],
   );
 
   let initialActiveErrors;
