@@ -18,7 +18,7 @@ locals:
                           id: item_id) %>
         <%= f.label(:email_language,
                     locale == I18n.locale ?
-                      t("account.email_language.default", language: t("i18n.locale.#{locale}")) :
+                      t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
                       t("i18n.locale.#{locale}"),
                     for: item_id,
                     class: 'usa-radio__label width-full') %>
