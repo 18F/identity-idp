@@ -130,3 +130,13 @@ en:
         first give your security key a nickname.
       login_text: When you are ready to authenticate, press the button
       nickname: Security key nickname
+    webauthn_platform_setup:
+      continue: Continue
+      instructions_text: Press the button on your security key to register it with %{app_name}
+      instructions_title: Connect your security key
+      intro_html: Add a platform authenticator as an authentication method to your
+        account.  Your device must support the FIDO standard.  You can add
+        as many platform authenticators  as you want, and we recommend at least two
+        for easier account recovery.
+      login_text: When you are ready to authenticate, press the button
+      nickname: Platform authenticator nickname

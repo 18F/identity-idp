@@ -10,6 +10,7 @@ module Users
     before_action :set_webauthn_setup_presenter
 
     def new
+      @platform_authenticator = params[:platform]
       result = WebauthnVisitForm.new.submit(params)
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session

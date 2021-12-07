@@ -68,3 +68,5 @@ en:
     verify_personal_key: Verify your personal key
     webauthn_setup:
       new: Add your security key
+    webauthn_platform_setup:
+      new: Add your platform authenticator

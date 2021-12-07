@@ -17,6 +17,7 @@ class WebauthnSetupForm
     @client_data_json = nil
     @attestation_response = nil
     @name = nil
+    @platform_authenticator = false
   end
 
   def submit(protocol, params)
@@ -39,12 +40,14 @@ class WebauthnSetupForm
   private
 
   attr_reader :success
-  attr_accessor :user, :challenge, :attestation_object, :client_data_json, :name
+  attr_accessor :user, :challenge, :attestation_object, :client_data_json,
+                :name, :platform_authenticator
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @name = params[:name]
+    @platform_authenticator = (params[:platform_authenticator] == true)
   end
 
   def name_is_unique
@@ -79,6 +82,7 @@ class WebauthnSetupForm
       credential_public_key: public_key,
       credential_id: id,
       name: name,
+      platform_authenticator: platform_authenticator,
     )
   end
 

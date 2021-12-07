@@ -9,7 +9,8 @@ class TwoFactorOptionsPresenter
   end
 
   def options
-    webauthn_option + piv_cac_option + totp_option + phone_options + backup_code_option
+    webauthn_platform_option + webauthn_option + piv_cac_option + totp_option +
+      phone_options + backup_code_option
   end
 
   def icon
@@ -55,6 +56,11 @@ class TwoFactorOptionsPresenter
   def webauthn_option
     return [] if piv_cac_required?
     [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
+  end
+
+  def webauthn_platform_option
+    return [] if piv_cac_required?
+    [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new]
   end
 
   def phone_options
