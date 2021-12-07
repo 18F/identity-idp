@@ -1,5 +1,4 @@
 import { useState, useContext, useRef } from 'react';
-import SubmissionInterstitial from './submission-interstitial';
 import CallbackOnMount from './callback-on-mount';
 import UploadContext from '../context/upload';
 
