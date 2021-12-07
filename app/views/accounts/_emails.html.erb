@@ -6,10 +6,10 @@
     <div class="right-align col col-6">
       <% if EmailPolicy.new(current_user).can_add_email? %>
         <%= link_to(
-          prefix_with_plus(t('account.index.email_add')),
-          add_email_path,
-          class: 'account-action-button',
-        ) %>
+              prefix_with_plus(t('account.index.email_add')),
+              add_email_path,
+              class: 'account-action-button',
+            ) %>
       <% end %>
     </div>
   </div>
@@ -28,9 +28,9 @@
         <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
           &nbsp; &nbsp;
           <%= render(
-            'accounts/actions/delete_action_button',
-            path: manage_email_confirm_delete_url(id: email.id),
-          ) %>
+                'accounts/actions/delete_action_button',
+                path: manage_email_confirm_delete_url(id: email.id),
+              ) %>
         <% end %>
       </div>
     </div>

@@ -14,9 +14,7 @@
   <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
     <div class="grid-col-9">
       <%= t 'account.index.backup_codes_exist' %>
-      <%=
-        local_time(@view_model.backup_codes_generated_at, t('time.formats.event_timestamp'))
-      %>
+      <%= local_time(@view_model.backup_codes_generated_at, t('time.formats.event_timestamp')) %>
     </div>
     <div class="grid-col-3 right-align">
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>

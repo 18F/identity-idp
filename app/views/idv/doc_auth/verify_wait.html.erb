@@ -1,4 +1,4 @@
-<%= content_for(:meta_refresh) { "#{@meta_refresh}" } %>
+<%= content_for(:meta_refresh) { @meta_refresh.to_s } %>
 <% title t('titles.doc_auth.processing_images') %>
 
 <h1 class="margin-y-0"><%= t('doc_auth.info.interstitial_eta') %></h1>

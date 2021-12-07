@@ -5,8 +5,10 @@
 </h1>
 
 <p class="margin-top-4">
-  <%= t('account.revoke_consent.longer_description_html',
-        service_provider: content_tag(:b, @service_provider.friendly_name)) %>
+  <%= t(
+        'account.revoke_consent.longer_description_html',
+        service_provider: content_tag(:b, @service_provider.friendly_name),
+      ) %>
 </p>
 
 <%= button_to(service_provider_revoke_url(@service_provider.id), method: 'delete', class: 'usa-button usa-button--wide usa-button--big margin-top-4') { t('forms.buttons.continue') } %>

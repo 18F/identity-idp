@@ -3,11 +3,13 @@
 <h1><%= t('account.email_language.edit_title') %></h1>
 
 <p class="margin-bottom-4">
-  <%= t('account.email_language.languages_list',
+  <%= t(
+        'account.email_language.languages_list',
         app_name: APP_NAME,
         list: I18n.available_locales.
           map { |locale| t("account.email_language.name.#{locale}") }.
-          to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} ")) %>
+          to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
+      ) %>
 </p>
 
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
@@ -18,7 +20,7 @@
     <%= render partial: 'shared/email_languages',
                locals: {
                  selection: current_user.email_language,
-                 f: f
+                 f: f,
                } %>
   </fieldset>
   <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big usa-button--wide grid-col-8 mobile-lg:grid-col-6' %>
