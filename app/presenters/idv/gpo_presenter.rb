@@ -33,6 +33,10 @@ module Idv
       current_user.decorate.gpo_mail_bounced?
     end
 
+    def letter_already_sent?
+      gpo_mail_service.any_mail_sent?
+    end
+
     def url_options
       @url_options
     end
@@ -41,10 +45,6 @@ module Idv
 
     def gpo_mail_service
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
-    def letter_already_sent?
-      gpo_mail_service.any_mail_sent?
     end
 
     def user_needs_address_otp_verification?
