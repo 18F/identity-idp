@@ -19,8 +19,10 @@
 
 <div class="margin-top-2">
   <%= t('forms.personal_key.alternative') %>
-  <%= button_to(reactivate_account_path, method: :put,
-                class: 'usa-button usa-button--unstyled', form_class: 'inline-block padding-left-1') { t('links.reverify') } %>
+  <%= button_to(
+        reactivate_account_path, method: :put,
+                                 class: 'usa-button usa-button--unstyled', form_class: 'inline-block padding-left-1'
+      ) { t('links.reverify') } %>
 </div>
 
 <%= render 'shared/cancel', link: account_path %>

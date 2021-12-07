@@ -1,5 +1,6 @@
 <p class="lead">
-  <%= t('user_mailer.account_verified.intro_html',
+  <%= t(
+        'user_mailer.account_verified.intro_html',
         sp_name: @sp_name,
         app_name: APP_NAME,
         date: @date,
@@ -8,7 +9,7 @@
           event_disavowal_url(disavowal_token: @disavowal_token),
         ),
         contact_link: link_to(t('user_mailer.account_verified.contact_link'), MarketingSite.contact_url),
-       ) %>
+      ) %>
 </p>
 
 <table class="spacer">

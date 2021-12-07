@@ -8,11 +8,13 @@
   <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
 </p>
 
-<%= validated_form_for(@update_user_password_form, url: manage_password_path,
-                       html: { autocomplete: 'off', method: :patch }) do |f| %>
+<%= validated_form_for(
+      @update_user_password_form, url: manage_password_path,
+                                  html: { autocomplete: 'off', method: :patch }
+    ) do |f| %>
   <%= f.error_notification %>
   <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
-              input_html: { aria: { invalid: false, describedby: 'password-description' }, class: 'password-toggle' } %>
+                         input_html: { aria: { invalid: false, describedby: 'password-description' }, class: 'password-toggle' } %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= f.button :submit, t('forms.buttons.submit.update'), class: 'usa-button--big usa-button--wide margin-top-2 margin-bottom-4' %>
 <% end %>

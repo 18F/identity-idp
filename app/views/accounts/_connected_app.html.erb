@@ -9,13 +9,17 @@
         <% end %>
       </div>
 
-      <%= t('account.connected_apps.associated',
-            timestamp: local_time(identity.created_at.in_time_zone('UTC'), t('time.formats.event_timestamp'))).html_safe %>
+      <%= t(
+            'account.connected_apps.associated',
+            timestamp: local_time(identity.created_at.in_time_zone('UTC'), t('time.formats.event_timestamp')),
+          ).html_safe %>
     </div>
     <% if identity.service_provider_id %>
       <div class="sm-col sm-col-6 padding-x-1 sm-right-align line-height-4">
-        <%= link_to(t('account.revoke_consent.link_title'),
-                    service_provider_revoke_url(identity.service_provider_id)) %>
+        <%= link_to(
+              t('account.revoke_consent.link_title'),
+              service_provider_revoke_url(identity.service_provider_id),
+            ) %>
       </div>
     <% end %>
   </div>

@@ -11,14 +11,14 @@
   <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
   <div class="col-12 sm-col-5 margin-bottom-1 tablet:margin-bottom-0 sm-mr-20p inline-block">
     <%= render(
-      'shared/one_time_code_input',
-      transport: nil,
-      name: :code,
-      value: @code,
-      required: true,
-      autofocus: true,
-      class: 'col-12',
-    ) %>
+          'shared/one_time_code_input',
+          transport: nil,
+          name: :code,
+          value: @code,
+          required: true,
+          autofocus: true,
+          class: 'col-12',
+        ) %>
   </div>
   <div class="border border-primary-light radius-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
     <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>

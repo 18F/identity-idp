@@ -8,10 +8,12 @@
   <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
 </p>
 
-<%= validated_form_for(current_user, url: update_verify_password_path,
-                       html: { autocomplete: 'off', method: :put }) do |f| %>
+<%= validated_form_for(
+      current_user, url: update_verify_password_path,
+                    html: { autocomplete: 'off', method: :put }
+    ) do |f| %>
   <%= f.input :password, label: t('idv.form.password'), required: true,
-              input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+                         input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
 <% end %>
 

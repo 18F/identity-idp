@@ -6,10 +6,10 @@
     <div class="grid-col-auto">
       <% if EmailPolicy.new(current_user).can_add_email? %>
         <%= link_to(
-          prefix_with_plus(t('account.index.phone_add')),
-          add_phone_path,
-          class: 'account-action-button',
-        ) %>
+              prefix_with_plus(t('account.index.phone_add')),
+              add_phone_path,
+              class: 'account-action-button',
+            ) %>
       <% end %>
     </div>
   </div>
@@ -27,8 +27,8 @@
         </div>
         <div class="grid-col-3 right-align">
           <%= render 'accounts/actions/manage_action_button',
-            path: manage_phone_path(id: phone_configuration.id),
-            name: t('account.index.phone') %>
+                     path: manage_phone_path(id: phone_configuration.id),
+                     name: t('account.index.phone') %>
         </div>
       </div>
     <% end %>

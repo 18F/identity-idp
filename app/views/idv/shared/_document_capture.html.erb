@@ -4,47 +4,47 @@
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
 <% end %>
 <% SecureHeaders.append_content_security_policy_directives(
-  request,
-  connect_src: [
-    front_image_upload_url,
-    back_image_upload_url,
-    selfie_image_upload_url
-  ].
-    compact.
-    map { |url| URI(url).tap { |uri| uri.query = nil }.to_s },
-)
+     request,
+     connect_src: [
+       front_image_upload_url,
+       back_image_upload_url,
+       selfie_image_upload_url,
+     ].
+       compact.
+       map { |url| URI(url).tap { |uri| uri.query = nil }.to_s },
+   )
 
    session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
-  app_name: APP_NAME,
-  liveness_required: liveness_checking_enabled?.presence,
-  mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
-  help_center_redirect_url: help_center_redirect_url(
-    flow: :idv,
-    step: :document_capture,
-  ),
-  document_capture_session_uuid: flow_session[:document_capture_session_uuid],
-  endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
+      app_name: APP_NAME,
+      liveness_required: liveness_checking_enabled?.presence,
+      mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
+      help_center_redirect_url: help_center_redirect_url(
+        flow: :idv,
+        step: :document_capture,
+      ),
+      document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+      endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document) :
     api_verify_images_url,
-  status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
+      status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
     nil,
-  glare_threshold: IdentityConfig.store.doc_auth_client_glare_threshold,
-  sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
-  status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
-  max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
-  sp_name: sp_name,
-  flow_path: flow_path,
-  start_over_url: idv_session_path(step: 'document_capture'),
-  cancel_url: idv_cancel_path(step: 'document_capture'),
-  failure_to_proof_url: failure_to_proof_url,
-  front_image_upload_url: front_image_upload_url,
-  back_image_upload_url: back_image_upload_url,
-  selfie_image_upload_url: selfie_image_upload_url,
-  keep_alive_endpoint: sessions_keepalive_url,
-} %>
+      glare_threshold: IdentityConfig.store.doc_auth_client_glare_threshold,
+      sharpness_threshold: IdentityConfig.store.doc_auth_client_sharpness_threshold,
+      status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+      max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
+      sp_name: sp_name,
+      flow_path: flow_path,
+      start_over_url: idv_session_path(step: 'document_capture'),
+      cancel_url: idv_cancel_path(step: 'document_capture'),
+      failure_to_proof_url: failure_to_proof_url,
+      front_image_upload_url: front_image_upload_url,
+      back_image_upload_url: back_image_upload_url,
+      selfie_image_upload_url: selfie_image_upload_url,
+      keep_alive_endpoint: sessions_keepalive_url,
+    } %>
 <div class="no-js">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
@@ -57,11 +57,11 @@
   </h1>
 
   <%= validated_form_for(
-    :doc_auth,
-    url: url_for,
-    method: 'PUT',
-    html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' },
-  ) do |f| %>
+        :doc_auth,
+        url: url_for,
+        method: 'PUT',
+        html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' },
+      ) do |f| %>
     <%# ---- Front Image ----- %>
 
     <p><%= t('doc_auth.info.document_capture_intro_acknowledgment') %></p>
@@ -76,10 +76,10 @@
     </ul>
 
     <%= f.input(
-      :document_capture_session_uuid,
-      as: :hidden,
-      input_html: { value: flow_session[:document_capture_session_uuid] },
-    ) %>
+          :document_capture_session_uuid,
+          as: :hidden,
+          input_html: { value: flow_session[:document_capture_session_uuid] },
+        ) %>
 
     <div class="front-image margin-top-2">
       <p>
@@ -148,17 +148,17 @@
 
 <%= nonced_javascript_tag do %>
   <% asset_keys = [
-    'close-white-alt.svg',
-    'id-card.svg',
-    'spinner.gif',
-    'spinner@2x.gif',
-    'alert/warning-lg.svg',
-    'idv/capture-tips-clean.svg',
-    'idv/capture-tips-surface.svg',
-    'idv/capture-tips-lighting.svg',
-  ] %>
+       'close-white-alt.svg',
+       'id-card.svg',
+       'spinner.gif',
+       'spinner@2x.gif',
+       'alert/warning-lg.svg',
+       'idv/capture-tips-clean.svg',
+       'idv/capture-tips-surface.svg',
+       'idv/capture-tips-lighting.svg',
+     ] %>
   window.LoginGov = window.LoginGov || {};
-  window.LoginGov.assets = <%= raw asset_keys.map { |key| [key, asset_path(key)] }.to_h.to_json %>;
+  window.LoginGov.assets = <%= raw asset_keys.index_with { |key| asset_path(key) }.to_json %>;
 <% end %>
 <%= javascript_packs_tag_once 'document-capture' %>
 <%= stylesheet_packs_with_chunks_tag 'document-capture' %>

@@ -5,10 +5,10 @@
     </h2>
     <div class="grid-col-auto">
       <%= link_to(
-        prefix_with_plus(t('account.index.webauthn_add')),
-        webauthn_setup_path,
-        class: 'account-action-button',
-      ) %>
+            prefix_with_plus(t('account.index.webauthn_add')),
+            webauthn_setup_path,
+            class: 'account-action-button',
+          ) %>
     </div>
   </div>
 
@@ -21,9 +21,9 @@
         <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
           <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
             <%= link_to(
-              t('account.index.webauthn_delete'),
-              webauthn_setup_delete_path(id: cfg.id),
-            ) %>
+                  t('account.index.webauthn_delete'),
+                  webauthn_setup_delete_path(id: cfg.id),
+                ) %>
           </div>
         <% end %>
       </div>

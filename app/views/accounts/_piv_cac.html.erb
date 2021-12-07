@@ -6,10 +6,10 @@
     <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
       <div class="grid-col-auto">
         <%= link_to(
-          prefix_with_plus(t('account.index.piv_cac_add')),
-          setup_piv_cac_url,
-          class: 'account-action-button',
-        ) %>
+              prefix_with_plus(t('account.index.piv_cac_add')),
+              setup_piv_cac_url,
+              class: 'account-action-button',
+            ) %>
       </div>
     <% end %>
   </div>

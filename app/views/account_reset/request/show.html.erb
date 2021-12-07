@@ -14,15 +14,15 @@
 
 <p class='margin-y-2 text-bold'><%= t('account_reset.request.are_you_sure') %></p>
 <%= button_to(
-  root_url,
-  method: :get,
-  class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
-  'data-toggle': 'modal',
-) { t('account_reset.request.no_cancel') } %>
+      root_url,
+      method: :get,
+      class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
+      'data-toggle': 'modal',
+    ) { t('account_reset.request.no_cancel') } %>
 <%= button_to(
-  account_reset_request_path,
-  class: 'usa-button usa-button--unstyled',
-) { t('account_reset.request.yes_continue') } %>
+      account_reset_request_path,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('account_reset.request.yes_continue') } %>
 
 <br/>
 <br/>
