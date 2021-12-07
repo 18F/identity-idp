@@ -3,4 +3,4 @@ en:
   valid_email:
     validations:
       email:
-        invalid: Invalid email address format or domain.
+        invalid: Email address is not valid

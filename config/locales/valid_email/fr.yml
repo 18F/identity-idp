@@ -3,5 +3,4 @@ fr:
   valid_email:
     validations:
       email:
-        invalid: Format d’adresse courriel ou domaine entré non valide. Corrigez
-          l’adresse et entrez-la de nouveau.
+        invalid: L’adresse électronique n’est pas valide
