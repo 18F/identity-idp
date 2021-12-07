@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_06_205035) do
+ActiveRecord::Schema.define(version: 2021_12_07_125122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -572,7 +572,6 @@ ActiveRecord::Schema.define(version: 2021_12_06_205035) do
     t.index ["issuer", "requested_at"], name: "index_sp_return_logs_on_issuer_and_requested_at"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
     t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
-    t.index ["user_id", "requested_at"], name: "index_sp_return_logs_on_user_id_and_requested_at"
   end
 
   create_table "throttles", force: :cascade do |t|
