@@ -29,7 +29,7 @@ feature 'doc auth ssn step' do
       fill_out_ssn_form_fail
       click_idv_continue
 
-      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('value-missing')
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('true')
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end

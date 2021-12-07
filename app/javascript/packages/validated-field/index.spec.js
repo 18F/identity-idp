@@ -16,18 +16,20 @@ describe('ValidatedField', () => {
           "valueMissing": "This field is required"
         }
       </script>
-      <input
-        aria-invalid="false"
-        aria-describedby="validated-field-error-298658fb"
-        required="required"
-        aria-required="true"
-        class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
-      />
-      ${
-        hasInitialError
-          ? '<div class="usa-error-message" id="validated-field-error-298658fb">Invalid value</div>'
-          : ''
-      }
+      <div class="validated-field__input-wrapper">
+        <input
+          aria-invalid="false"
+          aria-describedby="validated-field-error-298658fb"
+          required="required"
+          aria-required="true"
+          class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
+        />
+        ${
+          hasInitialError
+            ? '<div class="usa-error-message" id="validated-field-error-298658fb">Invalid value</div>'
+            : ''
+        }
+      </div>
     `;
 
     const form = document.createElement('form');
