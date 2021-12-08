@@ -26,6 +26,22 @@ class MfaContext
     end
   end
 
+  def webauthn_cross_platform_configurations
+    if user.present?
+      user.webauthn_configurations.where(platform_authenticator: [false, nil])
+    else
+      WebauthnConfiguration.none
+    end
+  end
+
+  def webauthn_platform_configurations
+    if user.present?
+      user.webauthn_configurations.where(platform_authenticator: true)
+    else
+      WebauthnConfiguration.none
+    end
+  end
+
   def backup_code_configurations
     if user.present?
       user.backup_code_configurations.unused

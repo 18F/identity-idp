@@ -67,6 +67,9 @@ fr:
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé
       webauthn_delete: Supprimer la clé
+      webauthn_platform: Platform authenticator
+      webauthn_platform_add: Add platform authenticator
+      webauthn_platform_delete: Remove platform authenticator
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle
