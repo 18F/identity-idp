@@ -27,6 +27,9 @@
           <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
         <% end,
         required: true,
+        error_messages: {
+          valueMissing: t('errors.rules_of_use'),
+        },
       ) %>
 
     <%= f.button(
