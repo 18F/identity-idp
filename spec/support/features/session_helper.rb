@@ -266,7 +266,7 @@ module Features
 
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
-      check :user_terms_accepted
+      check 'rules_of_use_form[terms_accepted]'
       click_button t('forms.buttons.continue')
     end
 

@@ -17,7 +17,7 @@ class RulesOfUseForm
   end
 
   def submit(params)
-    @terms_accepted = params[:terms_accepted] == 'true'
+    @terms_accepted = params[:terms_accepted] == '1'
     if valid?
       process_successful_submission
     else
