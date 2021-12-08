@@ -5,7 +5,7 @@ module VerifyProfileConcern
     return reactivate_account_url if user_needs_to_reactivate_account?
     return account_url unless profile_needs_verification?
     return idv_gpo_url if gpo_mail_bounced?
-    verify_account_url
+    idv_gpo_verify_url
   end
 
   def profile_needs_verification?

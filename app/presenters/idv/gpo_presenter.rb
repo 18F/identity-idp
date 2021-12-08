@@ -26,7 +26,7 @@ module Idv
     end
 
     def fallback_back_path
-      user_needs_address_otp_verification? ? verify_account_path : idv_phone_path
+      user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
 
     def gpo_mail_bounced?

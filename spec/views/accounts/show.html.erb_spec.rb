@@ -53,7 +53,7 @@ describe 'accounts/show.html.erb' do
       render
 
       expect(rendered).to_not have_link(
-        t('account.index.verification.reactivate_button'), href: verify_account_path
+        t('account.index.verification.reactivate_button'), href: idv_gpo_verify_path
       )
     end
   end
@@ -67,7 +67,7 @@ describe 'accounts/show.html.erb' do
       render
 
       expect(rendered).
-        to have_link(t('account.index.verification.reactivate_button'), href: verify_account_path)
+        to have_link(t('account.index.verification.reactivate_button'), href: idv_gpo_verify_path)
     end
   end
 

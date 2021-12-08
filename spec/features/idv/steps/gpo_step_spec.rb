@@ -39,7 +39,7 @@ feature 'idv gpo step' do
       click_doc_auth_back_link
 
       expect(page).to have_content(t('forms.verify_profile.title'))
-      expect(page).to have_current_path(verify_account_path)
+      expect(page).to have_current_path(idv_gpo_verify_path)
       expect_user_to_be_unverified(user)
     end
 

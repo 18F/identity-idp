@@ -305,8 +305,8 @@ Rails.application.routes.draw do
       put '/capture_doc/:step' => 'capture_doc#update'
     end
 
-    get '/account/verify' => 'users/verify_account#index', as: :verify_account
-    post '/account/verify' => 'users/verify_account#create'
+    get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
+    post '/account/verify' => 'idv/gpo_verify#create'
     if FeatureManagement.enable_gpo_verification?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo
