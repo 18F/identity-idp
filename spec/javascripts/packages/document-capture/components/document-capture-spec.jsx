@@ -344,6 +344,7 @@ describe('document-capture/components/document-capture', () => {
             'back_image_metadata',
             'selfie_image_iv',
             'selfie_image_url',
+            'flow_path',
           ]);
 
           return Promise.resolve({ success: true, isPending: true });
