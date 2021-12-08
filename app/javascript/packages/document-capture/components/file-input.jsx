@@ -168,6 +168,9 @@ function FileInput(props, ref) {
     const file = /** @type {FileList} */ (event.target.files)[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {
+        if (inputRef.current) { 
+          inputRef.current.title = file.name;
+        }
         onChange(file);
       } else {
         const nextOwnErrorMessage = invalidTypeText ?? t('errors.file_input.invalid_type');
