@@ -43,8 +43,6 @@
      <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden' %>
    <% end %>
    <br>
-   <%= link_to t("forms.#{setup_context}.continue"), '#', method: :get,
-           class: 'usa-button usa-button--big usa-button--wide', id: 'continue-button' %>
    <%= button_tag(
          @presenter.button_text,
          class: 'usa-button usa-button--big usa-button--wide',
