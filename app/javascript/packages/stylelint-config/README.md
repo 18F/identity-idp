@@ -6,10 +6,10 @@ These configurations largely inherit from the [TTS CSS coding standards](https:/
 
 ## Installation
 
-Install using [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [Stylelint](https://stylelint.io/) is required as a peer dependency and should be installed if it is not already.
+Install using [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [Stylelint](https://stylelint.io/) and [Prettier](https://prettier.io/) are required as peer dependencies and should be installed if it is not already.
 
 ```
-npm install --save-dev @18f/identity-stylelint-config stylelint
+npm install --save-dev @18f/identity-stylelint-config stylelint prettier
 ```
 
 ## Usage

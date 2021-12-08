@@ -15,7 +15,7 @@
 .usa-file-input:not(.usa-file-input--has-value) {
   .usa-file-input__target {
     border-color: color('primary');
-    border-radius: .375rem;
+    border-radius: 0.375rem;
 
     &:hover {
       border-color: color('primary-dark');
@@ -45,7 +45,7 @@
   color: color('primary');
   display: block;
   font-size: 1.625rem;
-  letter-spacing: .4px;
+  letter-spacing: 0.4px;
   line-height: 1.5;
   // For content to appear as vertically centered, offset the larger line-height of the banner to
   // match the space below the drag text.

@@ -1,5 +1,6 @@
-$serif-font-family: "Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif !default;
-$sans-serif-font-family: "Source Sans Pro Web", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif !default;
+$serif-font-family: 'Merriweather Web', 'Georgia', 'Cambria', 'Times New Roman', 'Times', serif !default;
+$sans-serif-font-family: 'Source Sans Pro Web', 'Helvetica Neue', 'Helvetica', 'Roboto', 'Arial',
+  sans-serif !default;
 $monospace-font-family: 'Source Code Pro', 'Consolas', monospace !default;
 
 $base-font-size: 16px !default;
@@ -16,27 +17,27 @@ $heading-font-weight: bold !default;
 $heading-line-height: 1.5 !default;
 $caps-letter-spacing: 1px !default;
 
-$line-height-0: .75 !default; // For when a tighter-than-normal leading is desired.
+$line-height-0: 0.75 !default; // For when a tighter-than-normal leading is desired.
 $line-height-1: 1 !default;
 $line-height-4: 2 !default;
 
 $h1: 1.3125rem !default;
 $h2: 1.125rem !default;
 $h3: 1rem !default;
-$h4: .875rem !default;
-$h5: .8125rem !default;
-$h6: .625rem !default;
+$h4: 0.875rem !default;
+$h5: 0.8125rem !default;
+$h6: 0.625rem !default;
 
 $sm-h1: 1.5rem !default;
 $sm-h2: 1.25rem !default;
 $sm-h3: 1rem !default;
-$sm-h4: .875rem !default;
-$sm-h5: .875rem !default;
-$sm-h6: .8125rem !default;
+$sm-h4: 0.875rem !default;
+$sm-h5: 0.875rem !default;
+$sm-h6: 0.8125rem !default;
 
-$space-tiny: .25rem !default;
+$space-tiny: 0.25rem !default;
 
-$space-1: .5rem !default;
+$space-1: 0.5rem !default;
 $space-2: 1rem !default;
 $space-3: 2rem !default;
 $space-4: 3rem !default;
@@ -44,14 +45,14 @@ $space-4: 3rem !default;
 $form-field-font-size: 1rem !default;
 $form-field-font-size-sm: 1.25rem !default;
 $form-field-height: 3rem !default;
-$form-field-padding-y: .5rem !default;
+$form-field-padding-y: 0.5rem !default;
 $form-field-padding-x: 1rem !default;
 
 $button-font-size: 1rem !default;
 $button-font-size-sm: 1.25rem !default;
 $button-font-weight: bold !default;
 $button-line-height: 1.375rem !default;
-$button-padding-y: .75rem !default;
+$button-padding-y: 0.75rem !default;
 $button-padding-x: 1.5rem !default;
 $button-color: $white !default;
 $button-background-color: $blue !default;
@@ -60,15 +61,15 @@ $link-color: $blue !default;
 $link-text-decoration: underline !default;
 $link-hover-text-decoration: underline !default;
 
-$darken-1: rgba(0, 0, 0, .0625) !default;
-$darken-2: rgba(0, 0, 0, .125) !default;
-$darken-3: rgba(0, 0, 0, .25) !default;
-$darken-4: rgba(0, 0, 0, .5) !default;
+$darken-1: rgba(0, 0, 0, 0.0625) !default;
+$darken-2: rgba(0, 0, 0, 0.125) !default;
+$darken-3: rgba(0, 0, 0, 0.25) !default;
+$darken-4: rgba(0, 0, 0, 0.5) !default;
 
-$lighten-1: rgba(255, 255, 255, .0625) !default;
-$lighten-2: rgba(255, 255, 255, .125) !default;
-$lighten-3: rgba(255, 255, 255, .25) !default;
-$lighten-4: rgba(255, 255, 255, .5) !default;
+$lighten-1: rgba(255, 255, 255, 0.0625) !default;
+$lighten-2: rgba(255, 255, 255, 0.125) !default;
+$lighten-3: rgba(255, 255, 255, 0.25) !default;
+$lighten-4: rgba(255, 255, 255, 0.5) !default;
 
 $border-width: 1px !default;
 $border-radius-md: 6px !default;
@@ -78,7 +79,7 @@ $border-color: #cedced !default;
 
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;
-$table-cell-padding-y: .25rem !default;
+$table-cell-padding-y: 0.25rem !default;
 $table-border-color: $border-color !default;
 $table-bg-accent: #f9f9f9 !default;
 $table-bg-hover: #f5f5f5 !default;
