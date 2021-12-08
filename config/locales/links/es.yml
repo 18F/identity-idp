@@ -26,4 +26,3 @@ es:
     two_factor_authentication:
       get_another_code: Obtener otro código
     what_is_totp: '¿Qué es una app de autenticación?'
-    what_is_webauthn: '¿Qué es una clave de seguridad de hardware?'

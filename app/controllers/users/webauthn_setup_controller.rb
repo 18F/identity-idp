@@ -12,7 +12,13 @@ module Users
     def new
       form = WebauthnVisitForm.new
       result = form.submit(params)
-      @platform_authenticator = form.platform_authenticator?
+      @presenter = WebauthnSetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+        platform_authenticator: form.platform_authenticator?,
+      )
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
