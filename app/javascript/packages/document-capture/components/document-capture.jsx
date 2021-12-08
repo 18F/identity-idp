@@ -118,22 +118,20 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
 
   return submissionFormValues &&
     (!submissionError || submissionError instanceof RetrySubmissionError) ? (
-    <SuspenseErrorBoundary
-      fallback={
-        <>
-          <PromptOnNavigate />
-          <SubmissionInterstitial autoFocus />
-        </>
-      }
-      onError={setSubmissionError}
-      handledError={submissionError}
-    >
-      {submissionError instanceof RetrySubmissionError ? (
-        <SubmissionStatus />
-      ) : (
-        <Submission payload={submissionFormValues} />
-      )}
-    </SuspenseErrorBoundary>
+    <>
+      <SubmissionInterstitial autoFocus />
+      <SuspenseErrorBoundary
+        fallback={<PromptOnNavigate />}
+        onError={setSubmissionError}
+        handledError={submissionError}
+      >
+        {submissionError instanceof RetrySubmissionError ? (
+          <SubmissionStatus />
+        ) : (
+          <Submission payload={submissionFormValues} />
+        )}
+      </SuspenseErrorBoundary>
+    </>
   ) : (
     <>
       {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
