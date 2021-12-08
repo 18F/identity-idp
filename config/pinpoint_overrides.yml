@@ -57,6 +57,7 @@ DZ:
 EC:
   supports_voice: false
 EG:
+  supports_sms: false # Temporarily disabled due to SMS fraud attack 2021-11-30
   supports_voice: true
 FI:
   supports_voice: false
