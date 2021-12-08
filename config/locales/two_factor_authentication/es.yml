@@ -185,7 +185,7 @@ es:
     webauthn_fallback:
       question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
-    # TODO: TRANSLATE
+    # TODO: TRANSLATE THIS SECTION
     # webauthn_platform_fallback:
     #   question: Don’t have your platform authenticator available?
     # webauthn_platform_header_text: Use your platform authenticator
