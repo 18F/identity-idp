@@ -288,7 +288,7 @@ EE:
 EG:
   country_code: '20'
   name: Egypt
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
 ER:
   country_code: '291'
