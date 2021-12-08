@@ -4,6 +4,12 @@ module.exports = {
     'no-descending-specificity': null,
     'scss/comment-no-empty': null,
     'scss/no-global-function-names': null,
-    'selector-class-pattern': '^[a-z]([a-z0-9-]+)?(__([a-z0-9]+-?)+)?(--([a-z0-9]+-?)+){0,2}$',
+    'selector-class-pattern': [
+      '^[a-z]([a-z0-9-]+)?(__([a-z0-9]+-?)+)?(--([a-z0-9]+-?)+){0,2}$',
+      {
+        message:
+          'Class selectors should be named using "Two Dashes Style" BEM format. See: https://en.bem.info/methodology/naming-convention/#two-dashes-style',
+      },
+    ],
   },
 };
