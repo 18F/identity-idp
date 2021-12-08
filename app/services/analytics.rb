@@ -179,8 +179,8 @@ class Analytics
   IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'.freeze
   IDV_GPO_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
   IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
-  IDV_GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'
-  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited'
+  IDV_GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'.freeze # Previously: "Account verification submitted"
+  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited'.freeze # Previously: "Account verification visited"
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
