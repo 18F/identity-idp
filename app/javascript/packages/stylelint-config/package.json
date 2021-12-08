@@ -17,7 +17,7 @@
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
     "stylelint-config-prettier": "^9.0.3",
-    "stylelint-config-standard-scss": "^3.0.0",
+    "stylelint-config-recommended-scss": "^5.0.2",
     "stylelint-prettier": "^2.0.0"
   },
   "peerDependencies": {
