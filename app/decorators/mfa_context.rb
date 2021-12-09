@@ -26,7 +26,7 @@ class MfaContext
     end
   end
 
-  def webauthn_cross_platform_configurations
+  def webauthn_roaming_configurations
     if user.present?
       user.webauthn_configurations.where(platform_authenticator: [false, nil])
     else

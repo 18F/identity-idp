@@ -24,7 +24,7 @@
 
 <% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? %>
   <div class="margin-bottom-4 card profile-info-box">
-    <%= render 'accounts/webauthn_cross_platform' %>
+    <%= render 'accounts/webauthn_roaming' %>
   </div>
 <% end %>
 

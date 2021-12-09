@@ -13,7 +13,7 @@
   </div>
 
   <div class="border-bottom border-primary-light">
-    <% MfaContext.new(current_user).webauthn_cross_platform_configurations.each do |cfg| %>
+    <% MfaContext.new(current_user).webauthn_roaming_configurations.each do |cfg| %>
       <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
         <div class="grid-col-8 mobile-lg:grid-col-6 truncate">
           <%= cfg.name %>
