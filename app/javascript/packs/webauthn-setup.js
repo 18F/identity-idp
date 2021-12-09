@@ -5,10 +5,12 @@ import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
  * Reloads the current page, presenting the message corresponding to the given error key.
  *
  * @param {string} error Error key for which to show message.
+ * @param {object} options Optional options.
+ * @param {boolean} options.force If true, reload the page even if that error is already shown.
  */
-function reloadWithError(error) {
+export function reloadWithError(error, { force = false } = {}) {
   const params = new URLSearchParams(window.location.search);
-  if (params.get('error') !== error) {
+  if (force || params.get('error') !== error) {
     params.set('error', error);
     window.location.search = params.toString();
   }
@@ -40,7 +42,7 @@ function webauthn() {
         document.getElementById('client_data_json').value = result.clientDataJSON;
         document.getElementById('webauthn_form').submit();
       })
-      .catch((err) => reloadWithError(err.name));
+      .catch((err) => reloadWithError(err.name, { force: true }));
   });
   const input = document.getElementById('nickname');
   input.addEventListener('keypress', function (event) {
