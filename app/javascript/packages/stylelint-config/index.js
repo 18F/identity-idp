@@ -4,6 +4,9 @@ module.exports = {
     'no-descending-specificity': null,
     'scss/comment-no-empty': null,
     'scss/no-global-function-names': null,
+    'scss/operator-no-newline-after': null,
+    'scss/operator-no-newline-before': null,
+    'scss/operator-no-unspaced': null,
     'selector-class-pattern': [
       '^[a-z]([a-z0-9-]+)?(__([a-z0-9]+-?)+)?(--([a-z0-9]+-?)+){0,2}$',
       {
