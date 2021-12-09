@@ -147,7 +147,7 @@ fr:
         déverouillage facial pour accéder à votre compte avec %{app_name}.
       instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
-      intro_html: Utilisez le déverrouillage par empreinte digitale ou le
+      intro: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
       login_text: Lorsque vous êtes prêt, appuyez sur le bouton.
       nickname: Pseudo dispositivo

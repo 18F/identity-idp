@@ -142,6 +142,6 @@ es:
       continue: Continuar
       instructions_text: Use el desbloqueo táctil o facial para acceder a su cuenta con %{app_name}.
       instructions_title: Use el desbloqueo táctil o facial para acceder a su cuenta.
-      intro_html: Use el desbloqueo táctil o facial para acceder a su cuenta.
+      intro: Use el desbloqueo táctil o facial para acceder a su cuenta.
       login_text: Cuando esté listo, presione el botón.
       nickname: Apodo de dispositivo.

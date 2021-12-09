@@ -36,9 +36,9 @@ class WebauthnSetupPresenter < SetupPresenter
 
   def intro
     if @platform_authenticator
-      t('forms.webauthn_platform_setup.intro_html')
+      t('forms.webauthn_platform_setup.intro')
     else
-      t('forms.webauthn_setup.intro_html')
+      t('forms.webauthn_setup.intro')
     end
   end
 
