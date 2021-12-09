@@ -8,12 +8,14 @@ import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
  */
 function reloadWithError(error) {
   const params = new URLSearchParams(window.location.search);
-  params.set('error', error);
-  window.location.search = params.toString();
+  if (params.get('error') !== error) {
+    params.set('error', error);
+    window.location.search = params.toString();
+  }
 }
 
 function webauthn() {
-  if (window.location.href.indexOf('?error=') === -1 && !isWebAuthnEnabled()) {
+  if (!isWebAuthnEnabled()) {
     reloadWithError('NotSupportedError');
   }
   const continueButton = document.getElementById('continue-button');
