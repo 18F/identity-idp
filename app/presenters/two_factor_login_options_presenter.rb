@@ -56,9 +56,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     # webauthn keys and phones. However, we only want to show one of each option
     # during login, except for phones, where we want to allow the user to choose
     # which MFA-enabled phone they want to use.
-    configurations.flat_map do |config|
-      config.selection_presenters
-    end.uniq(&:class)
+    configurations.group_by(&:class).flat_map { |klass, set| klass.selection_presenters(set) }
   end
 
   def account_reset_or_cancel_link
