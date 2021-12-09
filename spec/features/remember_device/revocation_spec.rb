@@ -171,7 +171,7 @@ feature 'taking an action that revokes remember device' do
     expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
                       login_two_factor_piv_cac_path
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-                      login_two_factor_webauthn_path
+                      login_two_factor_webauthn_path(platform: false)
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?
