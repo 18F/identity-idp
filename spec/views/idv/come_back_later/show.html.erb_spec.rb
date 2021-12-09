@@ -14,7 +14,7 @@ describe 'idv/come_back_later/show.html.erb' do
       render
       expect(rendered).to have_link(
         t('idv.buttons.continue_plain'),
-        href: return_to_sp_cancel_path,
+        href: return_to_sp_cancel_path(location: :come_back_later),
       )
     end
 
