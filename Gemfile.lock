@@ -561,7 +561,7 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
-    ruby-saml (1.12.2)
+    ruby-saml (1.13.0)
       nokogiri (>= 1.10.5)
       rexml
     ruby-statistics (2.1.3)
