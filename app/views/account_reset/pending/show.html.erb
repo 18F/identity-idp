@@ -2,13 +2,13 @@
 
 <p>
   <%= t(
-    'account_reset.pending.wait_html',
-    interval: @pending_presenter.time_remaining_until_granted,
-  ) %>
+        'account_reset.pending.wait_html',
+        interval: @pending_presenter.time_remaining_until_granted,
+      ) %>
 </p>
 
 <%= link_to(
-    t('account_reset.pending.cancel_request'),
-    account_reset_pending_confirm_path,
-    class: 'usa-button usa-button--wide usa-button--big',
-) %>
+      t('account_reset.pending.cancel_request'),
+      account_reset_pending_confirm_path,
+      class: 'usa-button usa-button--wide usa-button--big',
+    ) %>

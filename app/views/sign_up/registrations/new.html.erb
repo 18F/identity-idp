@@ -2,65 +2,60 @@
 
 <%= render 'shared/sp_alert' %>
 
-<%= render AlertComponent.new(
-      type: :error,
-      class: 'email-invalid-alert margin-bottom-4 display-none',
-      message: t('sign_up.email.invalid_email_alert_head'),
-    ) %>
-
 <h1 class='margin-y-0'><%= t('titles.registrations.new') %></h1>
 
-<div class='margin-bottom-6'>
-  <%= validated_form_for(
-        @register_user_email_form,
-        html: { autocomplete: 'off' },
-        url: sign_up_register_path,
-      ) do |f| %>
-    <%= f.input :email,
-                label: t('forms.registration.labels.email'),
-                required: true,
-                input_html: { autocorrect: 'off', aria: { invalid: false } } %>
+<%= simple_form_for(
+      @register_user_email_form,
+      html: { autocomplete: 'off' },
+      url: sign_up_register_path,
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :email,
+        as: :email,
+        label: t('forms.registration.labels.email'),
+        required: true,
+        input_html: { autocorrect: 'off' },
+      ) %>
 
-    <span class='email-invalid-alert-inline usa-error-message margin-top-neg-3 margin-bottom-3 display-none' role='alert'>
-      <%= t('sign_up.email.invalid_email_alert_inline') %>
-    </span>
+  <fieldset class="usa-fieldset">
+    <legend class="margin-bottom-1">
+      <%= t('forms.registration.labels.email_language') %>
+    </legend>
 
-    <fieldset class="usa-fieldset">
-      <legend class="margin-bottom-1">
-        <%= t('forms.registration.labels.email_language') %>
-      </legend>
+    <p class="margin-bottom-4">
+      <%= t(
+            'account.email_language.languages_list',
+            app_name: APP_NAME,
+            list: I18n.available_locales.
+              map { |locale| t("account.email_language.name.#{locale}") }.
+              to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
+          ) %>
+    </p>
 
-      <p class="margin-bottom-4">
-        <%= t(
-              'account.email_language.languages_list',
-              app_name: APP_NAME,
-              list: I18n.available_locales.
-                map { |locale| t("account.email_language.name.#{locale}") }.
-                to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
-            ) %>
-      </p>
+    <%= render partial: 'shared/email_languages',
+               locals: { f: f, selection: @register_user_email_form.email_language } %>
+  </fieldset>
 
-      <%= render partial: 'shared/email_languages',
-                 locals: { f: f, selection: @register_user_email_form.email_language } %>
-    </fieldset>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :terms_accepted,
+        as: :boolean,
+        label: capture do %>
+          <%= t('sign_up.terms', app_name: APP_NAME) %>
+          <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+        <% end,
+        required: true,
+      ) %>
 
-    <div class="margin-bottom-3">
-      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
-                                         required: true, aria: { invalid: false } }, true, false %>
-      <label for="user_terms_accepted" class="usa-checkbox__label">
-        <%= t('sign_up.terms', app_name: APP_NAME) %>
-        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-      </label>
-      <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">
-        <%= t('forms.validation.required_checkbox') %>
-      </div>
-    </div>
-
-    <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
-    <%= f.button :button, t('forms.buttons.submit.default'), type: :submit,
-                                                             class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
+  <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
+  <%= f.button(
+        :button,
+        t('forms.buttons.submit.default'),
+        type: :submit,
+        class: 'usa-button usa-button--big usa-button--wide margin-y-5',
+      ) %>
 <% end %>
-</div>
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
@@ -77,6 +72,3 @@
         MarketingSite.privacy_act_statement_url,
       ) %>
 </p>
-
-
-<%= javascript_packs_tag_once 'email-validation', 'accept-terms-button' %>

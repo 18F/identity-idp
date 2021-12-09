@@ -3,5 +3,4 @@ es:
   valid_email:
     validations:
       email:
-        invalid: El formato de email o dominio ingresado no es válido. Corrija su email
-          y vuelva a intentarlo.
+        invalid: La dirección de correo electrónico no es válida

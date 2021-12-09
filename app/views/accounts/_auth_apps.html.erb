@@ -6,10 +6,10 @@
     <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
       <div class="grid-col-auto">
         <%= link_to(
-          prefix_with_plus(t('account.index.auth_app_add')),
-          authenticator_setup_url,
-          class: 'account-action-button',
-        ) %>
+              prefix_with_plus(t('account.index.auth_app_add')),
+              authenticator_setup_url,
+              class: 'account-action-button',
+            ) %>
       </div>
     <% end %>
   </div>

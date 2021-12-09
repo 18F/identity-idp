@@ -19,10 +19,10 @@ class OneTimeCodeInput {
   }
 
   createHiddenInput() {
-    const { input, form } = this.elements;
+    const { input } = this.elements;
     const hiddenInput = /** @type {HTMLInputElement} */ (document.createElement('input'));
-    const label = form?.querySelector(`label[for="${input.id}"]`);
-    const modifiedId = `${input.id}-${Math.floor(Math.random() * 1000000)} `;
+    const label = input.ownerDocument.querySelector(`label[for="${input.id}"]`);
+    const modifiedId = `${input.id}-${Math.floor(Math.random() * 1000000)}`;
     hiddenInput.name = input.name;
     hiddenInput.value = input.value;
     hiddenInput.type = 'hidden';

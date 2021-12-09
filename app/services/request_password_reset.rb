@@ -5,7 +5,7 @@ RequestPasswordReset = RedactedStruct.new(
   def perform
     if user_should_receive_registration_email?
       form = RegisterUserEmailForm.new(password_reset_requested: true, analytics: analytics)
-      result = form.submit({ email: email, terms_accepted: 'true' }, instructions)
+      result = form.submit({ email: email, terms_accepted: '1' }, instructions)
       [form.user, result]
     else
       send_reset_password_instructions

@@ -13,10 +13,15 @@
               <td>
                 <center>
                   <%= link_to t('user_mailer.email_confirmation_instructions.link_text'),
-                              add_email_confirmation_url(_request_id:
-                              @request_id, confirmation_token: @token, locale: @locale),
+                              add_email_confirmation_url(
+                                _request_id: @request_id,
+                                confirmation_token: @token,
+                                locale: @locale,
+                              ),
                               target: '_blank',
-                              class: 'float-center', align: 'center' %>
+                              class: 'float-center',
+                              align: 'center',
+                              rel: 'noopener' %>
                 </center>
               </td>
             </tr>
@@ -31,6 +36,11 @@
 
 <p>
   <%= link_to add_email_confirmation_url(_request_id: @request_id, confirmation_token: @token, locale: @locale),
-              sign_up_create_email_confirmation_url(_request_id: @request_id,
-              confirmation_token: @token, locale: @locale), target: '_blank' %>
+              sign_up_create_email_confirmation_url(
+                _request_id: @request_id,
+                confirmation_token: @token,
+                locale: @locale,
+              ),
+              target: '_blank',
+              rel: 'noopener' %>
 </p>

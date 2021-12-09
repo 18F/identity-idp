@@ -17,8 +17,8 @@
     <%= form_tag(submit_new_piv_cac_url) do %>
       <%= label_tag 'code', t('forms.piv_cac_setup.nickname'), class: 'block bold' %>
       <%= text_field_tag :name, '', required: true, aria: { invalid: false }, id: 'nickname',
-                         class: 'block col-12 field monospace', size: 16, maxlength: 20,
-                         'aria-labelledby': 'totp-label' %>
+                                    class: 'block col-12 field monospace', size: 16, maxlength: 20,
+                                    'aria-labelledby': 'totp-label' %>
        <div class="margin-top-2">
         <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'usa-button usa-button--wide usa-button--big' %>
       </div>

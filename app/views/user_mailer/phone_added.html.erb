@@ -20,6 +20,10 @@
 </table>
 
 <p>
-  <%= raw t('.help', disavowal_link: link_to(t('.disavowal_link'),
-                                             event_disavowal_url(disavowal_token: @disavowal_token))) %>
+  <%= raw t(
+        '.help', disavowal_link: link_to(
+          t('.disavowal_link'),
+          event_disavowal_url(disavowal_token: @disavowal_token),
+        )
+      ) %>
 </p>

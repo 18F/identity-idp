@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ReturnToSpController do
+describe Redirect::ReturnToSpController do
   let(:current_sp) { build(:service_provider) }
 
   before do

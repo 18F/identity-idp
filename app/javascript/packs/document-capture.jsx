@@ -10,7 +10,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
-  MarketingSiteContext,
+  HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -53,13 +53,17 @@ import { I18nContext } from '@18f/identity-react-i18n';
 /**
  * @typedef AppRootData
  *
- * @prop {string} documentCaptureTipsUrl URL to Marketing Site document capture tips.
- * @prop {string} appName Application canonical name.
- * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
- * tips are shown.
- * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
- * @prop {string} startOverUrl URL to application DELETE path for session restart.
- * @prop {string} cancelUrl URL to application path for session cancellation.
+ * @prop {string} helpCenterRedirectUrl
+ * @prop {string} appName
+ * @prop {string} maxCaptureAttemptsBeforeTips
+ * @prop {FlowPath} flowPath
+ * @prop {string} startOverUrl
+ * @prop {string} cancelUrl
+ *
+ * @see AppContext
+ * @see HelpCenterContextProvider
+ * @see FailedCaptureAttemptsContext
+ * @see UploadContext
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
@@ -151,7 +155,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
   const {
-    documentCaptureTipsUrl: documentCaptureTipsURL,
+    helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
     appName,
     flowPath,
@@ -161,7 +165,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [

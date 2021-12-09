@@ -18,8 +18,8 @@
   <%= t('forms.verify_profile.instructions') %>
 </p>
 <%= validated_form_for(
-      @verify_account_form,
-      url: verify_account_path,
+      @gpo_verify_form,
+      url: idv_gpo_verify_path,
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
   <div class="grid-row margin-bottom-5">
@@ -35,7 +35,7 @@
                   },
                   label: t('forms.verify_profile.name'),
                   wrapper: false %>
-      
+
       <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing' role='alert'>
         <%= t('simple_form.required.text') %>
       </span>

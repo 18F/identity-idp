@@ -104,7 +104,7 @@ feature 'IAL2 Single Sign On' do
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
-          expect(current_path).to eq verify_account_path
+          expect(current_path).to eq idv_gpo_verify_path
 
           click_link(t('idv.messages.gpo.resend'))
 
@@ -126,7 +126,7 @@ feature 'IAL2 Single Sign On' do
 
           sign_in_live_with_2fa(user)
 
-          expect(current_path).to eq verify_account_path
+          expect(current_path).to eq idv_gpo_verify_path
 
           click_link(t('idv.messages.gpo.resend'))
 

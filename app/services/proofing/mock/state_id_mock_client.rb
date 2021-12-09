@@ -21,10 +21,16 @@ module Proofing
       ].to_set.freeze
 
       INVALID_STATE_ID_NUMBER = '00000000'
-
       TRANSACTION_ID = 'state-id-mock-transaction-id-456'
+      TRIGGER_MVA_TIMEOUT = 'mvatimeout'
 
       proof do |applicant, result|
+        if applicant[:state_id_number].downcase == TRIGGER_MVA_TIMEOUT
+          raise ::Proofing::TimeoutError.new(
+            'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
+          )
+        end
+
         if state_not_supported?(applicant[:state_id_jurisdiction])
           result.add_error(:state_id_jurisdiction, 'The jurisdiction could not be verified')
 

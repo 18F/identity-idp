@@ -13,7 +13,7 @@ module Telephony
         'UNKNOWN_FAILURE' => UnknownFailureError,
       }.freeze
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize, Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength
       # @return [Response]
       def send(message:, to:, country_code:, otp: nil)
         return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
@@ -64,7 +64,7 @@ module Telephony
         end
         response || handle_config_failure
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/BlockLength
+      # rubocop:enable Metrics/BlockLength
 
       def phone_info(phone_number)
         return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
@@ -131,7 +131,6 @@ module Telephony
         )
       end
 
-      # rubocop:disable Metrics/MethodLength
       def build_response(pinpoint_response, start:, finish:)
         message_response_result = pinpoint_response.message_response.result.values.first
 

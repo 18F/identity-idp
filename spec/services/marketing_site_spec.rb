@@ -109,75 +109,49 @@ RSpec.describe MarketingSite do
     end
   end
 
-  describe '.help_idv_supported_documents_url' do
-    it 'points to the authentication app section of the help page' do
-      expect(MarketingSite.help_idv_supported_documents_url).to eq(
-        'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/',
-      )
+  describe '.help_center_article_url' do
+    let(:category) {}
+    let(:article) {}
+    let(:result) { MarketingSite.help_center_article_url(category: category, article: article ) }
+
+    context 'with invalid article' do
+      let(:category) { 'foo' }
+      let(:article) { 'bar' }
+
+      it 'raises ArgumentError' do
+        expect { result }.to raise_error ArgumentError
+      end
     end
 
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
+    context 'with valid article' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
 
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(MarketingSite.help_idv_supported_documents_url).to eq(
-          'https://www.login.gov/es/help/verify-your-identity/accepted-state-issued-identification/',
+      it 'returns article URL' do
+        expect(result).to eq(
+          'https://www.login.gov/help/verify-your-identity/accepted-state-issued-identification/',
         )
       end
     end
   end
 
-  describe '.help_idv_verify_by_mail_url' do
-    it 'points to the authentication app section of the help page' do
-      expect(MarketingSite.help_idv_verify_by_mail_url).to eq(
-        'https://www.login.gov/help/verify-your-identity/verify-your-address-by-mail/',
-      )
+  describe '.valid_help_center_article?' do
+    let(:category) {}
+    let(:article) {}
+    let(:result) { MarketingSite.valid_help_center_article?(category: category, article: article ) }
+
+    context 'with invalid article' do
+      let(:category) { 'foo' }
+      let(:article) { 'bar' }
+
+      it { expect(result).to eq(false) }
     end
 
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
+    context 'with valid article' do
+      let(:category) { 'verify-your-identity' }
+      let(:article) { 'accepted-state-issued-identification' }
 
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(MarketingSite.help_idv_verify_by_mail_url).to eq(
-          'https://www.login.gov/es/help/verify-your-identity/verify-your-address-by-mail/',
-        )
-      end
-    end
-  end
-
-  describe '.help_idv_verify_by_phone_url' do
-    it 'points to the authentication app section of the help page' do
-      expect(MarketingSite.help_idv_verify_by_phone_url).to eq(
-        'https://www.login.gov/help/verify-your-identity/phone-number-and-phone-plan-in-your-name/',
-      )
-    end
-
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
-
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(MarketingSite.help_idv_verify_by_phone_url).to eq(
-          'https://www.login.gov/es/help/verify-your-identity/phone-number-and-phone-plan-in-your-name/',
-        )
-      end
-    end
-  end
-
-  describe '.help_document_capture_tips_url' do
-    it 'points to the authentication app section of the help page' do
-      expect(MarketingSite.help_document_capture_tips_url).to eq(
-        'https://www.login.gov/help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
-      )
-    end
-
-    context 'when the user has set their locale to :es' do
-      before { I18n.locale = :es }
-
-      it 'points to the authentication app section of the help page with the locale appended' do
-        expect(MarketingSite.help_document_capture_tips_url).to eq(
-          'https://www.login.gov/es/help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
-        )
-      end
+      it { expect(result).to eq(true) }
     end
   end
 end

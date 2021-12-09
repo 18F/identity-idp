@@ -11,7 +11,6 @@
   <%= f.input(
         name,
         tag_options.deep_merge(
-          error: false,
           wrapper_html: {
             class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
           },
@@ -22,7 +21,7 @@
               describedby: "validated-field-error-#{unique_id}",
             },
           },
+          error_html: { id: "validated-field-error-#{unique_id}" },
         ),
       ) %>
-  <%= f.error(name, id: "validated-field-error-#{unique_id}") %>
 </lg-validated-field>

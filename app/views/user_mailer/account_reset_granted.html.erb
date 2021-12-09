@@ -11,7 +11,7 @@
               <tr>
                 <td class="btn-warn-bkg">
                   <%= link_to t('user_mailer.account_reset_granted.button'), account_reset_delete_account_url(token: @granted_token),
-                              target: '_blank', class: 'btn-warn' %>
+                              target: '_blank', class: 'btn-warn', rel: 'noopener' %>
                 </td>
               </tr>
             </tbody>
@@ -25,7 +25,7 @@
 
 <p>
   <%= link_to account_reset_delete_account_url(token: @granted_token),
-              account_reset_delete_account_url(token: @granted_token), target: '_blank' %>
+              account_reset_delete_account_url(token: @granted_token), target: '_blank', rel: 'noopener' %>
 </p>
 
 <table class="spacer">
@@ -50,7 +50,11 @@
   <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: '24 hours') %>
 </p>
 <p>
-  <%= t('user_mailer.account_reset_granted.help_html',
-        cancel_account_reset: link_to(t('user_mailer.account_reset_granted.cancel_link_text'),
-                                      account_reset_cancel_url(token: @token))) %>
+  <%= t(
+        'user_mailer.account_reset_granted.help_html',
+        cancel_account_reset: link_to(
+          t('user_mailer.account_reset_granted.cancel_link_text'),
+          account_reset_cancel_url(token: @token),
+        ),
+      ) %>
 </p>

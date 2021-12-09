@@ -1,12 +1,18 @@
 <% title t('account_reset.confirm_delete_account.title') %>
 <div class="margin-y-2 padding-4 tablet:padding-x-6 border border-error rounded-xl relative">
-  <%= image_tag(asset_url('alert/fail-x.svg'),
-                size: '48x48',
-                alt: '',
-                class: 'absolute top-n24 left-0 right-0 margin-x-auto') %>
+  <%= image_tag(
+        asset_url('alert/fail-x.svg'),
+        size: '48x48',
+        alt: '',
+        class: 'absolute top-n24 left-0 right-0 margin-x-auto',
+      ) %>
   <h3><%= t('account_reset.confirm_delete_account.title') %></h3>
   <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
-  <p><%= t('account_reset.confirm_delete_account.cta_html',
-           link: link_to(t('account_reset.confirm_delete_account.link_text'),
-                           sign_up_email_path)) %></p>
+  <p><%= t(
+           'account_reset.confirm_delete_account.cta_html',
+           link: link_to(
+             t('account_reset.confirm_delete_account.link_text'),
+             sign_up_email_path,
+           ),
+         ) %></p>
 </div>

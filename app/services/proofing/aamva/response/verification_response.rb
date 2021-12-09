@@ -20,6 +20,8 @@ module Proofing
           first_name
         ].freeze
 
+        MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'.freeze
+
         attr_reader :verification_results, :transaction_locator_id
 
         def initialize(http_response)
@@ -68,7 +70,10 @@ module Proofing
         def handle_soap_error
           error_handler = SoapErrorHandler.new(http_response)
           return unless error_handler.error_present?
-          raise VerificationError, error_handler.error_message
+
+          msg = error_handler.error_message
+          raise ::Proofing::TimeoutError, msg if mva_timeout?(msg)
+          raise VerificationError, msg
         end
 
         def node_for_match_indicator(match_indicator_name)
@@ -95,6 +100,10 @@ module Proofing
 
         def rexml_document
           @rexml_document ||= REXML::Document.new(http_response.body)
+        end
+
+        def mva_timeout?(error_message)
+          error_message.include? MVA_TIMEOUT_EXCEPTION
         end
       end
     end

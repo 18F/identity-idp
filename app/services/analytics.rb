@@ -123,8 +123,6 @@ class Analytics
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'.freeze
-  ACCOUNT_VERIFICATION_SUBMITTED = 'Account verification submitted'
-  ACCOUNT_VERIFICATION_VISITED = 'Account verification visited'
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   ADD_EMAIL = 'Add Email: Email Submitted'.freeze
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
@@ -142,6 +140,7 @@ class Analytics
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
+  EXTERNAL_REDIRECT = 'External Redirect'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
@@ -180,6 +179,8 @@ class Analytics
   IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'.freeze
   IDV_GPO_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
   IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
+  IDV_GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted'.freeze # Previously: "Account verification submitted"
+  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited'.freeze # Previously: "Account verification visited"
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze

@@ -104,7 +104,8 @@ module Encryption
         else
           raise EncryptionError, 'Malformed JSON ciphertext, not a hash'
         end
-      else resolve_legacy_decryption(ciphertext)
+      else
+        resolve_legacy_decryption(ciphertext)
       end
     end
   end

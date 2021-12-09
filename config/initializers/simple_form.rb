@@ -4,8 +4,9 @@ SimpleForm.setup do |config|
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil
+  config.boolean_style = :inline
   config.default_form_class = 'margin-top-4'
-  config.wrapper_mappings = { inline: :append }
+  config.wrapper_mappings = { boolean: :uswds_checkbox }
 
   config.wrappers :base do |b|
     b.use :html5
@@ -22,8 +23,16 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.use :label, class: 'bold'
-    b.use :hint,  wrap_with: { tag: 'div', class: 'italic' }
+    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'block col-12 field', error_class: 'usa-input--error'
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+  end
+
+  config.wrappers :uswds_checkbox do |b|
+    b.use :html5
+    b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
+    b.use :input, class: 'usa-checkbox__input', error_class: 'usa-input--error'
+    b.use :label, class: 'usa-checkbox__label'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 

@@ -2,7 +2,7 @@
 
 <!-- Hide meta refresh if we are polling -->
 <% if @meta_refresh && !FeatureManagement.doc_capture_polling_enabled? %>
-  <%= content_for(:meta_refresh) { "#{@meta_refresh}" } %>
+  <%= content_for(:meta_refresh) { @meta_refresh.to_s } %>
 <% end %>
 <% if flow_session[:error_message] %>
   <%= render AlertComponent.new(
@@ -30,14 +30,12 @@
 </div>
 
 <div class="margin-top-4 margin-bottom-0">
-  <%=
-    button_to(
-      url_for,
-      method: :put,
-      class: 'usa-button usa-button--big usa-button--wide',
-      form_class: 'link-sent-continue-button-form'
-    ) { t('forms.buttons.continue') }
-  %>
+  <%= button_to(
+        url_for,
+        method: :put,
+        class: 'usa-button usa-button--big usa-button--wide',
+        form_class: 'link-sent-continue-button-form',
+      ) { t('forms.buttons.continue') } %>
 </div>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>

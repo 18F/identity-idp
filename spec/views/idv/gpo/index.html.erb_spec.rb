@@ -62,7 +62,7 @@ describe 'idv/gpo/index.html.erb' do
     let(:user_needs_address_otp_verification) { true }
 
     it 'renders fallback link to return to verify path' do
-      expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: verify_account_path)
+      expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: idv_gpo_verify_path)
     end
   end
 end

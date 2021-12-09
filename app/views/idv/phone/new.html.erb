@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
-    steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-    current_step: :verify_phone_or_address,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-  } %>
+        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+        current_step: :verify_phone_or_address,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      } %>
 <% end %>
 
 <div id="form-steps-wait-alert">
@@ -43,25 +43,27 @@
   <br/>
 </div>
 
-<%= validated_form_for(@idv_form,
-                       url: idv_phone_path,
-                       data: {
-                         form_steps_wait: '',
-                         error_message: t('idv.failure.exceptions.internal_error'),
-                         alert_target: '#form-steps-wait-alert',
-                         wait_step_path: idv_phone_path,
-                         poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
-                       },
-                       html: {
-                         autocomplete: 'off',
-                         method: :put,
-                         class: 'margin-top-2',
-                       }) do |f| %>
+<%= validated_form_for(
+      @idv_form,
+      url: idv_phone_path,
+      data: {
+        form_steps_wait: '',
+        error_message: t('idv.failure.exceptions.internal_error'),
+        alert_target: '#form-steps-wait-alert',
+        wait_step_path: idv_phone_path,
+        poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+      },
+      html: {
+        autocomplete: 'off',
+        method: :put,
+        class: 'margin-top-2',
+      },
+    ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
         allowed_countries: ['US'],
         required: true,
-        class: 'margin-bottom-4'
+        class: 'margin-bottom-4',
       ) %>
   <div class="margin-y-5">
     <%= render('shared/spinner_button', action_message: t('doc_auth.info.verifying')) do %>
@@ -75,7 +77,12 @@
       heading: t('idv.troubleshooting.headings.having_trouble'),
       options: [
         {
-          url: MarketingSite.help_idv_verify_by_phone_url,
+          url: help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'phone-number-and-phone-plan-in-your-name',
+            flow: :idv,
+            step: :phone,
+          ),
           text: t('idv.troubleshooting.options.learn_more_verify_by_phone'),
           new_tab: true,
         },

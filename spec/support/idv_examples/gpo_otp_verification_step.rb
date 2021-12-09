@@ -19,7 +19,7 @@ shared_examples 'gpo otp verification step' do |sp|
   it 'prompts for confirmation code at sign in' do
     sign_in_from_sp(sp)
 
-    expect(current_path).to eq verify_account_path
+    expect(current_path).to eq idv_gpo_verify_path
     expect(page).to have_content t('idv.messages.gpo.resend')
 
     gpo_confirmation_code
@@ -53,7 +53,7 @@ shared_examples 'gpo otp verification step' do |sp|
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
-    expect(current_path).to eq verify_account_path
+    expect(current_path).to eq idv_gpo_verify_path
     expect(page).to have_content t('errors.messages.gpo_otp_expired')
 
     user.reload

@@ -4,7 +4,7 @@ module Proofing
       class VerificationRequest < Request
         private
 
-        def build_request_body # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+        def build_request_body
           {
             Settings: {
               AccountNumber: account_number,

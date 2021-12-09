@@ -250,7 +250,7 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep}>
+    <form ref={formRef} className="read-after-submit" onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
         <Form

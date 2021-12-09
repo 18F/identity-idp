@@ -1,9 +1,7 @@
-<%
-  form_name = form_obj.class.name.underscore.to_s
-  form_name_label = form_name + "[otp_delivery_preference]"
-  form_name_tag_sms = form_name + "_otp_delivery_preference_sms"
-  form_name_tag_voice = form_name + "_otp_delivery_preference_voice"
-%>
+<% form_name = form_obj.class.name.underscore.to_s
+   form_name_label = form_name + '[otp_delivery_preference]'
+   form_name_tag_sms = form_name + '_otp_delivery_preference_sms'
+   form_name_tag_voice = form_name + '_otp_delivery_preference_voice' %>
 
 <div class="js-otp-delivery-preferences margin-bottom-4">
   <fieldset class="margin-0 padding-0 border-0">

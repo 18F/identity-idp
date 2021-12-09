@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::VerifyAccountController do
+RSpec.describe Idv::GpoVerifyController do
   let(:has_pending_profile) { true }
   let(:success) { true }
   let(:otp) { 'ABC123' }
@@ -28,11 +28,11 @@ RSpec.describe Users::VerifyAccountController do
 
     context 'user has pending profile' do
       it 'renders page' do
-        expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_VERIFICATION_VISITED)
+        expect(@analytics).to receive(:track_event).with(Analytics::IDV_GPO_VERIFICATION_VISITED)
 
         action
 
-        expect(response).to render_template('users/verify_account/index')
+        expect(response).to render_template('idv/gpo_verify/index')
       end
 
       it 'shows throttled page is user is throttled' do
@@ -62,7 +62,7 @@ RSpec.describe Users::VerifyAccountController do
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::ACCOUNT_VERIFICATION_VISITED,
+          Analytics::IDV_GPO_VERIFICATION_VISITED,
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
@@ -81,7 +81,7 @@ RSpec.describe Users::VerifyAccountController do
       post(
         :create,
         params: {
-          verify_account_form: {
+          gpo_verify_form: {
             otp: submitted_otp,
           },
         },
@@ -93,7 +93,7 @@ RSpec.describe Users::VerifyAccountController do
 
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
@@ -113,7 +113,7 @@ RSpec.describe Users::VerifyAccountController do
 
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
           error_details: { otp: [:confirmation_code_incorrect]},
@@ -122,7 +122,7 @@ RSpec.describe Users::VerifyAccountController do
 
         action
 
-        expect(response).to redirect_to(verify_account_url)
+        expect(response).to redirect_to(idv_gpo_verify_url)
       end
     end
 
@@ -133,7 +133,7 @@ RSpec.describe Users::VerifyAccountController do
         max_attempts = IdentityConfig.store.verify_gpo_key_max_attempts
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
           error_details: { otp: [:confirmation_code_incorrect]},
@@ -149,14 +149,14 @@ RSpec.describe Users::VerifyAccountController do
           post(
             :create,
             params: {
-              verify_account_form: {
+              gpo_verify_form: {
                 otp: submitted_otp,
               },
             },
           )
         end
 
-        expect(response).to render_template('users/verify_account/throttled')
+        expect(response).to render_template('idv/gpo_verify/throttled')
       end
     end
   end

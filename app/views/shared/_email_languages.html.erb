@@ -8,20 +8,24 @@ locals:
     <% I18n.available_locales.each do |locale| %>
       <% item_id = "email-locale-#{locale}" %>
       <li class="grid-col-8 mobile-lg:grid-col-6">
-        <%= f.input_field(:email_language,
-                          type: :radio,
-                          value: locale,
-                          checked: selection ?
-                            selection.to_s == locale.to_s :
-                            (I18n.locale.to_s == locale.to_s),
-                          class: 'usa-radio__input usa-radio__input--bordered',
-                          id: item_id) %>
-        <%= f.label(:email_language,
-                    locale == I18n.locale ?
-                      t("account.email_language.default", language: t("i18n.locale.#{locale}")) :
-                      t("i18n.locale.#{locale}"),
-                    for: item_id,
-                    class: 'usa-radio__label width-full') %>
+        <%= f.input_field(
+              :email_language,
+              type: :radio,
+              value: locale,
+              checked: selection ?
+                selection.to_s == locale.to_s :
+                (I18n.locale.to_s == locale.to_s),
+              class: 'usa-radio__input usa-radio__input--bordered',
+              id: item_id,
+            ) %>
+        <%= f.label(
+              :email_language,
+              locale == I18n.locale ?
+                t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
+                t("i18n.locale.#{locale}"),
+              for: item_id,
+              class: 'usa-radio__label width-full',
+            ) %>
       </li>
     <% end %>
   </ul>

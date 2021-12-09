@@ -13,7 +13,10 @@ module Idv
       current_async_state = async_state
 
       if current_async_state.none?
-        analytics.track_event(Analytics::IDV_GPO_ADDRESS_VISITED)
+        analytics.track_event(
+          Analytics::IDV_GPO_ADDRESS_VISITED,
+          letter_already_sent: @presenter.letter_already_sent?,
+        )
         render :index
       elsif current_async_state.in_progress?
         render :wait

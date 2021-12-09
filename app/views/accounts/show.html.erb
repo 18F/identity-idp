@@ -64,5 +64,5 @@
 
 <% if @view_model.show_pii_partial? %>
   <%= render 'accounts/pii', pii: @view_model.pii,
-    locked_for_session: @view_model.locked_for_session %>
+                             locked_for_session: @view_model.locked_for_session %>
 <% end %>

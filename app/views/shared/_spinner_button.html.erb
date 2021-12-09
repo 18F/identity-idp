@@ -6,11 +6,9 @@ locals:
                   technology.
 * class: Additional class names to add to alert wrapper.
 %>
-<%
-  content = yield.presence or raise "no block content given"
-  classes = ['spinner-button']
-  classes << local_assigns[:class] if local_assigns[:class]
-%>
+<% content = yield.presence or raise 'no block content given'
+   classes = ['spinner-button']
+   classes << local_assigns[:class] if local_assigns[:class] %>
 <%= tag.div class: classes do %>
   <div class="spinner-button__content">
     <%= content %>

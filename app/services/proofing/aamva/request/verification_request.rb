@@ -101,7 +101,6 @@ module Proofing
           applicant.uuid
         end
 
-        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def user_provided_data_map
           applicant_address = applicant.address
           {
@@ -112,7 +111,6 @@ module Proofing
             '//ns1:PersonBirthDate' => applicant.dob,
           }
         end
-        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def timeout
           (config.verification_request_timeout || 5).to_i

@@ -6,7 +6,6 @@ import {
   FailedCaptureAttemptsContextProvider,
   AcuantContextProvider,
 } from '@18f/identity-document-capture';
-import { I18nContext } from '@18f/identity-react-i18n';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
@@ -93,57 +92,27 @@ describe('document-capture/components/documents-step', () => {
     ).to.throw();
   });
 
-  context('service provider context', () => {
-    it('renders with name and help link', () => {
-      const { getByText } = render(
-        <I18nContext.Provider
-          value={{
-            'doc_auth.info.get_help_at_sp_html':
-              '<strong>Having trouble?</strong> Get help at %{sp_name}',
-          }}
-        >
-          <ServiceProviderContextProvider
-            value={{
-              name: 'Example App',
-              failureToProofURL: 'https://example.com/?step=document_capture',
-              isLivenessRequired: false,
-            }}
-          >
-            <DocumentsStep />
-          </ServiceProviderContextProvider>
-        </I18nContext.Provider>,
-      );
+  it('renders troubleshooting options', () => {
+    const { getByRole } = render(
+      <ServiceProviderContextProvider
+        value={{
+          name: 'Example App',
+          failureToProofURL: 'https://example.com/?step=document_capture',
+          isLivenessRequired: false,
+        }}
+      >
+        <DocumentsStep />
+      </ServiceProviderContextProvider>,
+    );
 
-      const help = getByText('Having trouble?').closest('a');
-
-      expect(help).to.be.ok();
-      expect(help.href).to.equal(
-        'https://example.com/?step=document_capture&location=documents_having_trouble',
-      );
-    });
-  });
-
-  context('mobile', () => {
-    it('does not show document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <DocumentsStep />
-        </DeviceContext.Provider>,
-      );
-
-      expect(() => getByText('doc_auth.info.document_capture_upload_image')).to.throw();
-    });
-  });
-
-  context('desktop', () => {
-    it('shows document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: false }}>
-          <DocumentsStep />
-        </DeviceContext.Provider>,
-      );
-
-      expect(getByText('doc_auth.info.document_capture_upload_image')).to.be.ok();
-    });
+    expect(
+      getByRole('heading', { name: 'idv.troubleshooting.headings.having_trouble' }),
+    ).to.be.ok();
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })
+        .href,
+    ).to.equal(
+      'https://example.com/?step=document_capture&location=document_capture_troubleshooting_options',
+    );
   });
 });

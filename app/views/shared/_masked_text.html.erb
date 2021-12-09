@@ -6,10 +6,8 @@ locals:
 * accessible_masked_text: A version of masked text appropriate for assistive technology.
 * toggle_label: (Optional) Text to show on toggle. If not given, no toggle will be shown.
 %>
-<%
-id = local_assigns.fetch(:id, "masked-text-#{SecureRandom.hex(6)}")
-checkbox_id = "#{id}-checkbox"
-%>
+<% id = local_assigns.fetch(:id, "masked-text-#{SecureRandom.hex(6)}")
+   checkbox_id = "#{id}-checkbox" %>
 <%= tag.span(id: id) do %>
   <span class="masked-text__text" data-masked="true">
     <span class="usa-sr-only"><%= accessible_masked_text %></span>
@@ -22,11 +20,11 @@ checkbox_id = "#{id}-checkbox"
 <% if local_assigns[:toggle_label] %>
   <div class="margin-top-2">
     <%= tag.input(
-      type: 'checkbox',
-      id: checkbox_id,
-      aria: { controls: id },
-      class: 'masked-text__toggle usa-checkbox__input usa-checkbox__input--bordered',
-    ) %>
+          type: 'checkbox',
+          id: checkbox_id,
+          aria: { controls: id },
+          class: 'masked-text__toggle usa-checkbox__input usa-checkbox__input--bordered',
+        ) %>
     <%= tag.label(toggle_label, for: checkbox_id, class: 'usa-checkbox__label') %>
   </div>
   <%= javascript_packs_tag_once 'masked-text-toggle' %>

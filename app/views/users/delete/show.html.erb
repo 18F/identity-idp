@@ -15,13 +15,15 @@
     <li class="margin-bottom-1"><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
   </ul>
   <div>
-    <%= validated_form_for(current_user, url: account_delete_path,
-                           html: { autocomplete: 'off', method: :post }) do |f| %>
+    <%= validated_form_for(
+          current_user, url: account_delete_path,
+                        html: { autocomplete: 'off', method: :post }
+        ) do |f| %>
       <div class="margin-bottom-4">
         <%= t('users.delete.instructions') %>
       </div>
       <%= f.input :password, label: t('idv.form.password'), required: true,
-                  input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+                             input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
       <%= f.button :submit,
                    t('users.delete.actions.delete'),
                    class: 'usa-button--big usa-button--full-width margin-bottom-2' %>

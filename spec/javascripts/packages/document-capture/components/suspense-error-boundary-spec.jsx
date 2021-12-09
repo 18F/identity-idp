@@ -54,7 +54,7 @@ describe('document-capture/components/suspense-error-boundary', () => {
       throw error;
     };
 
-    const TestComponent = () => {
+    function TestComponent() {
       const [handledError, setHandledError] = useState();
 
       return (
@@ -66,7 +66,7 @@ describe('document-capture/components/suspense-error-boundary', () => {
           {handledError ? 'Handled' : <Child />}
         </SuspenseErrorBoundary>
       );
-    };
+    }
 
     const { findByText } = render(<TestComponent />);
 

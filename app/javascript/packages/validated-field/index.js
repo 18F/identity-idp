@@ -1,3 +1,23 @@
+/**
+ * Set of text-like input types, used in determining whether the width of the error message should
+ * be constrained to match the width of the input.
+ *
+ * @type {Set<String>}
+ */
+const TEXT_LIKE_INPUT_TYPES = new Set([
+  'date',
+  'datetime-local',
+  'email',
+  'month',
+  'number',
+  'password',
+  'search',
+  'tel',
+  'text',
+  'time',
+  'url',
+]);
+
 export class ValidatedField extends HTMLElement {
   /** @type {Partial<ValidityState>} */
   errorStrings = {};
@@ -5,6 +25,9 @@ export class ValidatedField extends HTMLElement {
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.input = this.querySelector('.validated-field__input');
+    /** @type {HTMLElement?} */
+    this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
+    /** @type {HTMLElement?} */
     this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
     try {
@@ -15,6 +38,7 @@ export class ValidatedField extends HTMLElement {
     } catch {}
 
     this.input?.addEventListener('input', () => this.setErrorMessage());
+    this.input?.addEventListener('input', () => this.setInputIsValid(true));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
   }
 
@@ -26,7 +50,12 @@ export class ValidatedField extends HTMLElement {
    */
   toggleErrorMessage(event) {
     event.preventDefault();
-    this.setErrorMessage(this.getNormalizedValidationMessage(this.input));
+
+    const errorMessage = this.getNormalizedValidationMessage(this.input);
+    const isValid = !errorMessage;
+
+    this.setErrorMessage(errorMessage);
+    this.setInputIsValid(isValid);
   }
 
   /**
@@ -37,13 +66,23 @@ export class ValidatedField extends HTMLElement {
   setErrorMessage(message) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
-      this.input?.focus();
+      if (!document.activeElement?.classList.contains('usa-input--error')) {
+        this.input?.focus();
+      }
     } else if (this.errorMessage) {
-      this.removeChild(this.errorMessage);
+      this.inputWrapper?.removeChild(this.errorMessage);
       this.errorMessage = null;
     }
+  }
 
-    this.input?.classList.toggle('usa-input--error', !!message);
+  /**
+   * Sets input attributes corresponding to given validity state.
+   *
+   * @param {boolean} isValid Whether input is valid.
+   */
+  setInputIsValid(isValid) {
+    this.input?.classList.toggle('usa-input--error', !isValid);
+    this.input?.setAttribute('aria-invalid', String(!isValid));
   }
 
   /**
@@ -81,8 +120,11 @@ export class ValidatedField extends HTMLElement {
       if (this.descriptorId) {
         this.errorMessage.id = this.descriptorId;
       }
+      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
+        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
+      }
 
-      this.appendChild(this.errorMessage);
+      this.inputWrapper?.appendChild(this.errorMessage);
     }
 
     return this.errorMessage;

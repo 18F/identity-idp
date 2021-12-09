@@ -4,14 +4,16 @@
   <%= t('headings.passwords.change') %>
 </h1>
 
-<%= validated_form_for(@password_reset_from_disavowal_form,
-    url: events_disavowal_url,
-    html: { autocomplete: 'off',
-    method: :post }) do |f| %>
+<%= validated_form_for(
+      @password_reset_from_disavowal_form,
+      url: events_disavowal_url,
+      html: { autocomplete: 'off',
+              method: :post },
+    ) do |f| %>
     <%= f.input :disavowal_token, as: :hidden,
-                input_html: { value: @disavowal_token, name: :disavowal_token } %>
+                                  input_html: { value: @disavowal_token, name: :disavowal_token } %>
     <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
-                input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+                           input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
     <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
     <%= f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'usa-button--big usa-button--wide margin-bottom-4' %>
 <% end %>
