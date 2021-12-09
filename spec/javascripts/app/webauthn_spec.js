@@ -1,8 +1,10 @@
 import { TextEncoder } from 'util';
-import sinon from 'sinon';
+import { useSandbox } from '../support/sinon';
 import * as WebAuthn from '../../../app/javascript/app/webauthn';
 
 describe('WebAuthn', () => {
+  const sandbox = useSandbox();
+
   let originalNavigator;
   let originalCredentials;
   beforeEach(() => {
@@ -142,7 +144,7 @@ describe('WebAuthn', () => {
 
     context('platform authenticator', () => {
       it('enrolls a device with correct authenticatorAttachment', async () => {
-        sinon.stub(navigator.credentials, 'create').resolves(createReturnValue);
+        sandbox.stub(navigator.credentials, 'create').resolves(createReturnValue);
 
         await WebAuthn.enrollWebauthnDevice({
           userId,
