@@ -618,7 +618,7 @@ GEM
     stringex (2.8.5)
     strong_migrations (0.7.8)
       activerecord (>= 5)
-    subprocess (1.5.4)
+    subprocess (1.5.5)
     systemu (2.6.5)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
