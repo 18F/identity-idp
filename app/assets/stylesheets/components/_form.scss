@@ -26,14 +26,14 @@ textarea {
   color: $gray;
   font-weight: $bold-font-weight;
 
-  &[type="number"],
+  &[type='number'],
   &.phone {
     font-family: $monospace-font-family;
   }
 
   &:focus {
     border-color: $field-focus-color;
-    box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
+    box-shadow: 0 0 0 2px rgba($field-focus-color, 0.5);
     outline: none;
   }
 
@@ -53,15 +53,15 @@ input::-webkit-inner-spin-button {
 .display-if-invalid {
   display: none;
 
-  [aria-invalid="true"] ~ & {
+  [aria-invalid='true'] ~ & {
     display: block;
   }
 
-  [aria-invalid="value-missing"] ~ &.display-if-invalid--value-missing {
+  [aria-invalid='value-missing'] ~ &.display-if-invalid--value-missing {
     display: block;
   }
 
-  [aria-invalid="pattern-mismatch"] ~ &.display-if-invalid--pattern-mismatch {
+  [aria-invalid='pattern-mismatch'] ~ &.display-if-invalid--pattern-mismatch {
     display: block;
   }
 }
@@ -97,8 +97,8 @@ input::-webkit-inner-spin-button {
 // Upstream: https://github.com/18F/identity-style-guide/pull/265
 .usa-error-message,
 .usa-success-message {
-  @include u-padding-y(.5);
-  background-position: 0 .5em;
+  @include u-padding-y(0.5);
+  background-position: 0 0.5em;
   background-repeat: no-repeat;
   background-size: units($icon-size);
   font-weight: font-weight('bold');

@@ -1,6 +1,8 @@
 // supplemental utility classes
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .truncate-inline {
   max-width: 80%;
@@ -30,12 +32,16 @@ html.js .no-js {
 .scale-down {
   // trigger anti-aliasing in chrome
   backface-visibility: hidden;
-  transform: scale(.7);
+  transform: scale(0.7);
 }
 
 @media #{$breakpoint-sm} {
-  .sm-left-align { text-align: left; }
-  .sm-right-align { text-align: right; }
+  .sm-left-align {
+    text-align: left;
+  }
+  .sm-right-align {
+    text-align: right;
+  }
 }
 
 .half-center {
