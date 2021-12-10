@@ -45,7 +45,10 @@ module Idv
 
         @flow.analytics.track_event(
           Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-          doc_pii_form_result.to_h.merge(remaining_attempts: remaining_attempts),
+          doc_pii_form_result.to_h.merge(
+            remaining_attempts: remaining_attempts,
+            flow_path: flow_path,
+          ),
         )
 
         delete_async

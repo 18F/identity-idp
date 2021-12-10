@@ -12,10 +12,11 @@ module Idv
 
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, analytics:)
+    def initialize(params, liveness_checking_enabled:, analytics:, flow_path: nil)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
       @analytics = analytics
+      @flow_path = flow_path
     end
 
     def submit
@@ -26,6 +27,7 @@ module Idv
         errors: errors,
         extra: {
           remaining_attempts: remaining_attempts,
+          flow_path: @flow_path,
         },
       )
 

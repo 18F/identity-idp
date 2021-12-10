@@ -180,7 +180,7 @@ module Idv
         doc_auth_log.save!
       end
 
-      delegate :idv_session, :session, to: :@flow
+      delegate :idv_session, :session, :flow_path, to: :@flow
     end
   end
 end

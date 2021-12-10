@@ -205,7 +205,11 @@ module Idv
       update_funnel(client_response)
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(client_image_metrics: image_metadata, async: false),
+        client_response.to_h.merge(
+          client_image_metrics: image_metadata,
+          async: false,
+          flow_path: params[:flow_path],
+        ),
       )
     end
 

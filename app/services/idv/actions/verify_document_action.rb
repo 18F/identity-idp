@@ -26,6 +26,7 @@ module Idv
           params,
           liveness_checking_enabled: liveness_checking_enabled?,
           analytics: @flow.analytics,
+          flow_path: flow_path,
         )
       end
 
