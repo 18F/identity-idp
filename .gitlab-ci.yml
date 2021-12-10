@@ -216,7 +216,7 @@ coverage:
 sync_from_github:
   image: mirror.gcr.io/alpine/git:latest
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $GITHUB_SYNC == "true"
   script:
     - cd .git
     - git config --bool core.bare true
