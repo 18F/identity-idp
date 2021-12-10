@@ -184,8 +184,9 @@ function FileInput(props, ref) {
    */
   function getLabelFromValue(fileValue) {
     if (fileValue instanceof window.File) {
-      return fileValue;
-    } else if (fileValue) {
+      return fileValue.name;
+    }
+    if (fileValue) {
       return 'Captured Image';
     }
     return '';
