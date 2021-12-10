@@ -9,7 +9,7 @@ module Idv
       should_proof_state_id:,
       trace_id:,
       document_expired:,
-      flow_path:
+      flow_path: 'standard'
     )
       document_capture_session.create_proofing_session
 
@@ -61,7 +61,7 @@ module Idv
       trace_id:,
       image_metadata:,
       analytics_data:,
-      flow_path:
+      flow_path: 'standard'
     )
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
         @applicant.to_json,

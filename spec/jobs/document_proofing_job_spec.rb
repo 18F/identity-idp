@@ -66,6 +66,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         trace_id: trace_id,
         image_metadata: image_metadata,
         analytics_data: {},
+        flow_path: 'standard',
       )
 
       result = document_capture_session.load_doc_auth_async_result
@@ -84,6 +85,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         trace_id: trace_id,
         image_metadata: image_metadata,
         analytics_data: {},
+        flow_path: 'standard',
       )
     end
 
