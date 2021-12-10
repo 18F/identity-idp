@@ -13,9 +13,12 @@ module Idv
     end
 
     def update
-      return unless params.key?(:cancel)
-      analytics.track_event(Analytics::IDV_CANCELLATION_GO_BACK, step: params[:step])
-      redirect_to session_go_back_path || idv_path
+      if params.key?(:cancel)
+        analytics.track_event(Analytics::IDV_CANCELLATION_GO_BACK, step: params[:step])
+        redirect_to session_go_back_path || idv_path
+      else
+        render :new
+      end
     end
 
     def destroy
