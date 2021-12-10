@@ -267,6 +267,8 @@ fr:
         ce lien vers votre navigateur pour prendre des photos du recto et du
         verso de votre identifiant.
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
+      test_ssn: Dans l’environnement de test, seuls les SSN commençant par “900-” sont
+        considérés comme valides. N’entrez pas de vrais PII dans ce champ.
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.

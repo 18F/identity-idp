@@ -9,6 +9,16 @@
   <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
+<% if IdentityConfig.store.proofer_mock_fallback %>
+  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <%= t('doc_auth.instructions.test_ssn') %>
+      </p>
+    </div>
+  </div>
+<% end %>
+
 <%= simple_form_for(
       :doc_auth,
       url: url_for,
