@@ -199,6 +199,7 @@ smoketest-int:
     - bin/smoke_test --remote --no-source-env
 
 coverage:
+  extends: .on_push
   stage: after_test
   script:
     - *bundle_install
