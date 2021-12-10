@@ -213,21 +213,8 @@ coverage:
       reports:
         cobertura: coverage/coverage/coverage.xml
 
-sync_from_github:
-  image: mirror.gcr.io/alpine/git:latest
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $GITHUB_SYNC == "true"
-  script:
-    - cd .git
-    - git config --bool core.bare true
-    - git remote rm origin
-    - git remote add github https://identity-servers:"$github_identity_servers_access_key"@github.com/18F/"$CI_PROJECT_NAME".git
-    - git config --unset remote.github.fetch
-    - git config --add remote.github.fetch '+refs/tags/*:refs/tags/*'
-    - git config --add remote.github.fetch '+refs/heads/*:refs/heads/*'
-    - git remote add gitlab https://identity-servers:"$gitlab_identity_servers_access_key"@gitlab-"$CLUSTER_NAME".gitlab.identitysandbox.gov/lg/"$CI_PROJECT_NAME".git
-    - git config --unset remote.gitlab.fetch
-    - git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
-    - git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
-    - git fetch github --prune --prune-tags
-    - git push gitlab --prune
+# Sync from GitHub
+include:
+  project: 'lg/identity-gitlab'
+  ref: 'main'
+  file: '.gitlab-ci-sync.yml'
