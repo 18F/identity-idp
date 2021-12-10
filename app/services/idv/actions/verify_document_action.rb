@@ -60,6 +60,7 @@ module Idv
           analytics_data: {
             browser_attributes: @flow.analytics.browser_attributes,
           },
+          flow_path: flow_path,
         )
 
         nil

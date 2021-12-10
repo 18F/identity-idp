@@ -60,7 +60,8 @@ module Idv
       liveness_checking_enabled:,
       trace_id:,
       image_metadata:,
-      analytics_data:
+      analytics_data:,
+      flow_path:
     )
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
         @applicant.to_json,
@@ -73,6 +74,7 @@ module Idv
         trace_id: trace_id,
         image_metadata: image_metadata,
         analytics_data: analytics_data,
+        flow_path: flow_path,
       )
     end
   end
