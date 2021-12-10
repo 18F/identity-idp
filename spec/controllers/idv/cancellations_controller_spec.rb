@@ -8,6 +8,12 @@ describe Idv::CancellationsController do
   end
 
   describe '#new' do
+    let(:go_back_path) { '/path/to/return' }
+
+    before do
+      allow(controller).to receive(:go_back_path).and_return(go_back_path)
+    end
+
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
@@ -57,6 +63,12 @@ describe Idv::CancellationsController do
 
         expect(response).to render_template(:new)
       end
+
+      it 'stores go back path' do
+        get :new
+
+        expect(session[:go_back_path]).to eq(go_back_path)
+      end
     end
 
     context 'when regular session' do
@@ -68,6 +80,12 @@ describe Idv::CancellationsController do
         get :new
 
         expect(response).to render_template(:new)
+      end
+
+      it 'stores go back path' do
+        get :new
+
+        expect(controller.user_session[:idv][:go_back_path]).to eq(go_back_path)
       end
     end
   end
