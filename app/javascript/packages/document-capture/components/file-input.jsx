@@ -180,14 +180,13 @@ function FileInput(props, ref) {
   }
 
   /**
-   * @param {Blob|string|null|undefined} fileValue Optional array of file input accept patterns.
+   * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    */
   function getLabelFromValue(fileValue) {
-    if (fileValue instanceof String) {
-      return fileValue;
-    }
     if (fileValue instanceof window.File) {
-      return fileValue.name;
+      return fileValue;
+    } else if (fileValue) {
+      return 'Captured Image';
     }
     return '';
   }
