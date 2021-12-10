@@ -65,6 +65,7 @@ en:
       webauthn_delete: Remove key
       webauthn_platform: Platform authenticator
       webauthn_platform_add: Add platform authenticator
+      webauthn_platform_confirm_delete: Yes, remove platform authenticator
       webauthn_platform_delete: Remove platform authenticator
     items:
       delete_your_account: Delete your account

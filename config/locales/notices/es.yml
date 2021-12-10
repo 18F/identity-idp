@@ -62,3 +62,4 @@ es:
       text_html: O %{link}
     webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
     webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.
+    webauthn_platform_configured: A platform authenticator was added to your account.

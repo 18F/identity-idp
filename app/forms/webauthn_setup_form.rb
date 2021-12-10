@@ -37,6 +37,10 @@ class WebauthnSetupForm
     IdentityConfig.store.domain_name
   end
 
+  def platform_authenticator?
+    !!@platform_authenticator
+  end
+
   private
 
   attr_reader :success
