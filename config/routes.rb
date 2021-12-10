@@ -285,6 +285,7 @@ Rails.application.routes.draw do
       get '/session/errors/throttled' => 'session_errors#throttled'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
+      put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
