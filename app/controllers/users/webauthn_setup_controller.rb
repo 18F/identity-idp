@@ -56,7 +56,7 @@ module Users
 
     def show_delete
       @webauthn = WebauthnConfiguration.where(
-        user_id: current_user.id, id: delete_params[:id]
+        user_id: current_user.id, id: delete_params[:id],
       ).first
       render 'users/webauthn_setup/delete'
     end

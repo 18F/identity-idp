@@ -28,7 +28,7 @@ describe 'webauthn management' do
     sign_in_and_2fa_user(user)
     visit account_two_factor_authentication_path
     click_link "+ #{t('account.index.webauthn_platform_add')}",
-      href: webauthn_setup_path(platform: true)
+               href: webauthn_setup_path(platform: true)
   end
 
   def expect_webauthn_platform_setup_success
@@ -40,7 +40,6 @@ describe 'webauthn management' do
     expect(page).to have_content t('errors.webauthn_platform_setup.general_error')
     expect(current_path).to eq account_two_factor_authentication_path
   end
-
 
   context 'with webauthn roaming associations' do
     it 'displays the user supplied names of the security keys' do

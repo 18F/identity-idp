@@ -181,7 +181,10 @@ describe Users::TwoFactorAuthenticationController do
       it 'passes reauthn parameter on redirect' do
         get :show, params: { reauthn: 'true' }
 
-        expect(response).to redirect_to login_two_factor_webauthn_path(reauthn: 'true', platform: false)
+        expect(response).to redirect_to login_two_factor_webauthn_path(
+          reauthn: 'true',
+          platform: false,
+        )
       end
 
       it 'passes the platform parameter if the user has a platform autheticator' do
