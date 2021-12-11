@@ -136,11 +136,20 @@ module Users
 
     def process_invalid_webauthn(form)
       if form.name_taken
-        flash.now[:error] = t('errors.webauthn_setup.unique_name')
-        # TODO: Retain "platform" query parameter
+        if form.platform_authenticator?
+          flash.now[:error] = t('errors.webauthn_platform_setup.unique_name')
+        else
+          flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        end
+
         render :new
       else
-        flash[:error] = t('errors.webauthn_setup.general_error')
+        if form.platform_authenticator?
+          flash[:error] = t('errors.webauthn_platform_setup.general_error')
+        else
+          flash[:error] = t('errors.webauthn_setup.general_error')
+        end
+
         redirect_to account_two_factor_authentication_path
       end
     end

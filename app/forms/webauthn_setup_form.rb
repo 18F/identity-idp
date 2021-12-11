@@ -55,8 +55,13 @@ class WebauthnSetupForm
   end
 
   def name_is_unique
+    # TODO: Unique across platform and roaming?
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
-    errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+    if @platform_authenticator
+      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name')
+    else
+      errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+    end
     @name_taken = true
   end
 
@@ -71,10 +76,17 @@ class WebauthnSetupForm
   def safe_response(original_origin)
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
   rescue StandardError
-    errors.add :name, I18n.t(
-      'errors.webauthn_setup.attestation_error',
-      link: MarketingSite.contact_url,
-    )
+    if @platform_authenticator
+      errors.add :name, I18n.t(
+        'errors.webauthn_platform_setup.attestation_error',
+        link: MarketingSite.contact_url,
+      )
+    else
+      errors.add :name, I18n.t(
+        'errors.webauthn_setup.attestation_error',
+        link: MarketingSite.contact_url,
+      )
+    end
     false
   end
 
