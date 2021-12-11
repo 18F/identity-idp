@@ -52,7 +52,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_user(user)
       visit account_two_factor_authentication_path
       click_on t('account.index.webauthn_platform_delete')
-      click_on t('account.index.webauthn_confirm_delete')
+      click_on t('account.index.webauthn_platform_confirm_delete')
       first(:link, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
