@@ -128,6 +128,14 @@ es:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta %{app_name}.
       confirm: '¿Estás seguro de que quieres eliminar tu clave de seguridad?'
+    webauthn_platform_setup:
+      continue: Continuar
+      instructions_text: Use el desbloqueo táctil o facial para acceder a su cuenta
+        con %{app_name}.
+      instructions_title: Use el desbloqueo táctil o facial para acceder a su cuenta.
+      intro: Use el desbloqueo táctil o facial para acceder a su cuenta.
+      login_text: Cuando esté listo, presione el botón.
+      nickname: Apodo de dispositivo.
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo
@@ -138,10 +146,3 @@ es:
         empezar, primero asigne un apodo a su clave de seguridad.
       login_text: Cuando esté listo para autenticarse, presione el botón
       nickname: Apodo clave de seguridad
-    webauthn_platform_setup:
-      continue: Continuar
-      instructions_text: Use el desbloqueo táctil o facial para acceder a su cuenta con %{app_name}.
-      instructions_title: Use el desbloqueo táctil o facial para acceder a su cuenta.
-      intro: Use el desbloqueo táctil o facial para acceder a su cuenta.
-      login_text: Cuando esté listo, presione el botón.
-      nickname: Apodo de dispositivo.

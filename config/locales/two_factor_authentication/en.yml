@@ -64,7 +64,9 @@ en:
       webauthn: Security key
       webauthn_info_html: Use your security key to access your account.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add another level of security to your Login.gov account. Recommended because it is more phishing resistant.
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+        another level of security to your Login.gov account. Recommended because
+        it is more phishing resistant.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -161,8 +163,8 @@ en:
         looks like a USB flash drive). Recommended because it is more phishing
         resistant.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to
-        add another level of security to your Login.gov account. Recommended because
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+        another level of security to your Login.gov account. Recommended because
         it is more phishing resistant.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
@@ -171,6 +173,7 @@ en:
     webauthn_fallback:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
+    webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_fallback:
       question: Don’t have your platform authenticator available?
     webauthn_platform_header_text: Use your platform authenticator
@@ -178,7 +181,6 @@ en:
     webauthn_platform_verified:
       header: Platform authenticator verified
       info: We have verified your platform authenticator. Click continue to sign in.
-    webauthn_piv_available: Use your PIV or CAC
     webauthn_use_key: Use security key
     webauthn_verified:
       header: Security key verified

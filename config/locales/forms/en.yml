@@ -125,6 +125,13 @@ en:
       caution: If you remove your platform authenticator you won’t be able to use it
         to access your %{app_name} account.
       confirm: Are you sure you want to remove your platform authenticator?
+    webauthn_platform_setup:
+      continue: Continue
+      instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
+      instructions_title: Use Touch or Face Unlock on to access your account.
+      intro: Use Touch or Face Unlock on to access your account.
+      login_text: When you are ready, press the button.
+      nickname: Device nickname
     webauthn_setup:
       continue: Continue
       instructions_text: Press the button on your security key to register it with %{app_name}
@@ -134,10 +141,3 @@ en:
         first give your security key a nickname.
       login_text: When you are ready to authenticate, press the button
       nickname: Security key nickname
-    webauthn_platform_setup:
-      continue: Continue
-      instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
-      instructions_title: Use Touch or Face Unlock on to access your account.
-      intro: Use Touch or Face Unlock on to access your account.
-      login_text: When you are ready, press the button.
-      nickname: Device nickname

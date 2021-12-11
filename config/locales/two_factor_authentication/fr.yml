@@ -71,9 +71,10 @@ fr:
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
-      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette
-        ou ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
-        compte Login.gov. Recommandé, car il est plus résistant aux hameçonnages.
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+        ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte Login.gov. Recommandé, car il est plus résistant aux
+        hameçonnages.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
