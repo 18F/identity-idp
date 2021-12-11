@@ -10,6 +10,7 @@ describe WebauthnVisitForm do
       expect(subject.submit(params).to_h).to eq(
         success: true,
         errors: {},
+        platform_authenticator: false,
       )
     end
 
