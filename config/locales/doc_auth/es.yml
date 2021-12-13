@@ -129,6 +129,7 @@ es:
       upload_error: Lo siento, algo salió mal por nuestra parte.
     forms:
       address1: Dirección
+      captured_image: Imagen capturada
       change_file: Cambiar archivo
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
         carpeta</lg-underline>

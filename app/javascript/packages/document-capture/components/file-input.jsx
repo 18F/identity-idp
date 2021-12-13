@@ -187,7 +187,7 @@ function FileInput(props, ref) {
       return fileValue.name;
     }
     if (fileValue) {
-      return 'Captured Image';
+      return t('doc_auth.forms.captured_image');
     }
     return '';
   }
