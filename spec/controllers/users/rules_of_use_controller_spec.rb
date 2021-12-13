@@ -95,7 +95,7 @@ RSpec.describe Users::RulesOfUseController do
   describe '#create' do
     context 'when the user needs to accept the rules of use and does accept them' do
       subject(:action) do
-        post :create, params: { rules_of_use_form: { terms_accepted: 'true' } }
+        post :create, params: { rules_of_use_form: { terms_accepted: '1' } }
       end
 
       before do
@@ -125,7 +125,7 @@ RSpec.describe Users::RulesOfUseController do
 
     context 'when the user needs to accept the rules of use and does not accept them' do
       subject(:action) do
-        post :create, params: { rules_of_use_form: { terms_accepted: 'false' } }
+        post :create, params: { rules_of_use_form: { terms_accepted: '0' } }
       end
 
       before do

@@ -24,7 +24,7 @@ module MonitorIdpSteps
   # @return [String] email address for the account
   def create_new_account_up_until_password(email_address = random_email_address)
     fill_in 'user_email', with: email_address
-    check 'user_terms_accepted'
+    check 'user[terms_accepted]'
     click_on 'Submit'
     confirmation_link = monitor.check_for_confirmation_link(email_address)
     visit confirmation_link
@@ -59,7 +59,7 @@ module MonitorIdpSteps
     click_on 'Sign in'
 
     if current_path == '/rules_of_use'
-      check 'user_terms_accepted'
+      check 'rules_of_use_form[terms_accepted]'
       click_button 'Continue'
     end
 
