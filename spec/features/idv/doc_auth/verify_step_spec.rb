@@ -182,6 +182,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: true,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
     end
   end
@@ -211,6 +212,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: false,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
       expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
     end
@@ -237,6 +239,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: false,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
     end
   end

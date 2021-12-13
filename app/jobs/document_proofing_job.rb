@@ -12,7 +12,8 @@ class DocumentProofingJob < ApplicationJob
     trace_id:,
     liveness_checking_enabled:,
     image_metadata:,
-    analytics_data:
+    analytics_data:,
+    flow_path:
   )
     timer = JobHelpers::Timer.new
 
@@ -83,6 +84,7 @@ class DocumentProofingJob < ApplicationJob
         attempts: throttle.attempts,
         remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
+        flow_path: flow_path,
       ).merge(analytics_data),
     )
   ensure

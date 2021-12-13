@@ -61,6 +61,7 @@ describe Idv::Steps::VerifyStep do
           should_proof_state_id: anything,
           trace_id: amzn_trace_id,
           document_expired: nil,
+          flow_path: 'standard',
         )
 
       step.call
