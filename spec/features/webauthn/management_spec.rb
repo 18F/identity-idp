@@ -182,7 +182,7 @@ describe 'webauthn management' do
       click_button t('account.index.webauthn_platform_confirm_delete')
 
       expect(page).to_not have_content webauthn_config.name
-      expect(page).to have_content t('notices.webauthn_deleted')
+      expect(page).to have_content t('notices.webauthn_platform_deleted')
       expect(user.reload.webauthn_configurations.empty?).to eq(true)
     end
 

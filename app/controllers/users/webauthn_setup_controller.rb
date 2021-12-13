@@ -86,13 +86,19 @@ module Users
     end
 
     def handle_successful_delete
+      webauthn = WebauthnConfiguration.find_by(user_id: current_user.id, id: delete_params[:id])
+      return unless webauthn
+
       create_user_event(:webauthn_key_removed)
-      WebauthnConfiguration.where(user_id: current_user.id, id: delete_params[:id]).destroy_all
+      webauthn.destroy
       revoke_remember_device(current_user)
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
-      # TODO: Show webauthn_platform_deleted
-      flash[:success] = t('notices.webauthn_deleted')
+      if webauthn.platform_authenticator
+        flash[:success] = t('notices.webauthn_platform_deleted')
+      else
+        flash[:success] = t('notices.webauthn_deleted')
+      end
       track_delete(true)
     end
 

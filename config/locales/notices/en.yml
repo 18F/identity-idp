@@ -62,3 +62,4 @@ en:
     webauthn_configured: A security key was added to your account.
     webauthn_deleted: Your security key was deleted from your account.
     webauthn_platform_configured: A platform authenticator was added to your account.
+    webauthn_platform_deleted: Your platform authenticator was deleted from your account.
