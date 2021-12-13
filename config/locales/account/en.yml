@@ -88,6 +88,7 @@ en:
       add_email: Add email address
       add_federal_id: Add Federal Employee ID
       add_phone_number: Add phone number
+      add_platform_authenticator: Add platform authenticator
       add_security_key: Add security key
       connected_accounts: Your connected accounts
       customer_support: Customer support

@@ -25,8 +25,11 @@ class Navigation
             I18n.t('account.navigation.add_authentication_apps'),
             authenticator_setup_url,
           ),
+          NavItem.new(
+            I18n.t('account.navigation.add_platform_authenticator'),
+            webauthn_setup_path(platform: true),
+          ),
           NavItem.new(I18n.t('account.navigation.add_security_key'), webauthn_setup_path),
-          # TODO: add platform auth
           NavItem.new(I18n.t('account.navigation.add_federal_id'), setup_piv_cac_path),
           NavItem.new(
             I18n.t('account.navigation.get_backup_codes'),
