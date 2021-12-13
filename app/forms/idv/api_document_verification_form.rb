@@ -90,7 +90,7 @@ module Idv
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'))
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
     def throttled_else_increment
