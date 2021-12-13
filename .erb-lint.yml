@@ -38,7 +38,7 @@ linters:
           - 'range-light'
           - 'field-dark'
           - 'progress'
-          - 'flex-(column|none)'
+          - 'flex(-(center|baseline|stretch|start|end|grow|none|first|last))?'
           - '((sm|md|lg)-)?table(-(cell|fixed))?'
           - '[xy]-group-item'
           - '(items|self|justify|content)-(start|end|center|baseline|stretch)'
