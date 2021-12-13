@@ -258,7 +258,7 @@ describe('document-capture/components/file-input', () => {
       />,
     );
 
-    const queryByAriaLabel = getByLabelText('Captured Image');
+    const queryByAriaLabel = getByLabelText('doc_auth.forms.captured_image');
 
     expect(queryByAriaLabel).to.exist();
   });
