@@ -24,7 +24,6 @@ module Idv
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         document_expired: document_expired,
-        flow_path: flow_path,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

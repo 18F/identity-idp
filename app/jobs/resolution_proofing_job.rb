@@ -14,7 +14,7 @@ class ResolutionProofingJob < ApplicationJob
   )
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:, document_expired:, flow_path: nil)
+              dob_year_only:, document_expired:)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
