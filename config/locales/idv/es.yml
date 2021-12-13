@@ -32,8 +32,6 @@ es:
       incorrect_password: La contraseña que ingresó no es correcta.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
-        personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo:
-          ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: Ingresa un código postal de 5 o 9 dígitos
       unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
