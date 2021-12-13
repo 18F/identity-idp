@@ -181,4 +181,19 @@ describe VendorStatus do
       end
     end
   end
+
+  describe '#track_event' do
+    it 'logs status of all vendors' do
+      analytics = FakeAnalytics.new
+      expect(analytics).to receive(:track_event).with(
+        Analytics::VENDOR_OUTAGE,
+        redirect_from: from,
+        vendor_status: VendorStatus::ALL_VENDORS.index_with do |_vendor|
+          satisfy { |status| IdentityConfig::VENDOR_STATUS_OPTIONS.include?(status) }
+        end,
+      )
+
+      vendor_status.track_event(analytics)
+    end
+  end
 end
