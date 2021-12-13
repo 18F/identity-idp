@@ -233,7 +233,6 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('has a blank aria-label with no input added', () => {
-    const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" />);
 
     const queryByAriaLabel = getByLabelText('');
@@ -242,9 +241,8 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('has aria-label same as file name', () => {
-    const fileName = 'file2.jpg'
+    const fileName = 'file2.jpg';
     const file2 = new window.File([file], fileName);
-    const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" value={file2} />);
 
     const queryByAriaLabel = getByLabelText(fileName);
@@ -252,7 +250,7 @@ describe('document-capture/components/file-input', () => {
     expect(queryByAriaLabel).to.exist();
   });
 
-  it('has aria-label with Captured Image', async () => {
+  it('has aria-label with Captured Image', () => {
     const { getByLabelText } = render(
       <FileInput
         label="File"
