@@ -12,7 +12,7 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['base-uri']).to eq("'self'")
       expect(content_security_policy['child-src']).to eq("'self'")
       expect(content_security_policy['connect-src']).to eq(
-        "'self' *.newrelic.com *.nr-data.net *.google-analytics.com us.acas.acuant.net",
+        "'self' *.nr-data.net *.google-analytics.com us.acas.acuant.net",
       )
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq(
@@ -40,7 +40,7 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['base-uri']).to eq("'self'")
       expect(content_security_policy['child-src']).to eq("'self'")
       expect(content_security_policy['connect-src']).to eq(
-        "'self' *.newrelic.com *.nr-data.net *.google-analytics.com us.acas.acuant.net",
+        "'self' *.nr-data.net *.google-analytics.com us.acas.acuant.net",
       )
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq("'self'")
