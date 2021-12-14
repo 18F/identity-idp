@@ -93,7 +93,7 @@ fr:
       add_email: Ajouter une adresse e-mail
       add_federal_id: Ajouter un identifiant d’employé fédéral
       add_phone_number: Ajouter un numéro de téléphone
-      add_platform_authenticator: Add platform authenticator
+      add_platform_authenticator: Ajouter déverouillage facial ou déverrouillage par empreinte digitale
       add_security_key: Ajouter une clé de sécurité
       connected_accounts: Vos comptes connectés
       customer_support: Service client
