@@ -48,6 +48,23 @@ class SamlIdpController < ApplicationController
     handle_valid_sp_logout_request
   end
 
+  def remotelogout
+    raw_saml_request = params[:SAMLRequest]
+    return head(:bad_request) if raw_saml_request.nil?
+
+    decode_request(raw_saml_request)
+
+    track_remote_logout_event
+
+    return head(:bad_request) unless valid_saml_request?
+
+    user_id = find_user_from_session_index
+
+    return head(:bad_request) unless valid_remote_logout_user_id?(user_id)
+
+    handle_valid_sp_remote_logout_request(user_id)
+  end
+
   private
 
   def confirm_user_is_authenticated_with_fresh_mfa
