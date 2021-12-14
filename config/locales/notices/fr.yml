@@ -63,5 +63,5 @@ fr:
       text_html: Ou %{link}
     webauthn_configured: Une clé de sécurité a été ajoutée à votre compte.
     webauthn_deleted: Votre clé de sécurité a été supprimée de votre compte.
-    webauthn_platform_configured: A platform authenticator was added to your account.
-    webauthn_platform_deleted: Your platform authenticator was deleted from your account.
+    webauthn_platform_configured: Déverouillage facial ou déverrouillage par empreinte digitale a été ajoutée à votre compte.
+    webauthn_platform_deleted: Déverouillage facial ou déverrouillage par empreinte digitale a été ajoutée à votre compte.
