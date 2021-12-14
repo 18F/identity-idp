@@ -185,14 +185,13 @@ es:
     webauthn_fallback:
       question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
-    # TODO: TRANSLATE THIS SECTION
-    # webauthn_platform_fallback:
-    #   question: Don’t have your platform authenticator available?
-    # webauthn_platform_header_text: Use your platform authenticator
-    # webauthn_platform_use_key: Use platform authenticator
-    # webauthn_platform_verified:
-    #   header: Platform authenticator verified
-    #   info: We have verified your platform authenticator. Click continue to sign in.
+    webauthn_platform_fallback:
+      question: '¿No dispone de tu dispositivo?'
+    webauthn_platform_header_text: Usar desbloqueo facial o táctil
+    webauthn_platform_use_key: Usar desbloqueo facial o táctil
+    webauthn_platform_verified:
+      header: Dispositivo verificado
+      info: We have verified your device. Click continue to sign in.
     webauthn_piv_available: Utilice su PIV o CAC
     webauthn_use_key: Usar llave de seguridad
     webauthn_verified:

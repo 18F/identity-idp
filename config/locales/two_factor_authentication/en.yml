@@ -175,12 +175,12 @@ en:
     webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_fallback:
-      question: Don’t have your platform authenticator available?
-    webauthn_platform_header_text: Use your platform authenticator
-    webauthn_platform_use_key: Use platform authenticator
+      question: Don’t have your device available?
+    webauthn_platform_header_text: Use Face or Touch Unlock
+    webauthn_platform_use_key: Use Face or Touch Unlock
     webauthn_platform_verified:
-      header: Platform authenticator verified
-      info: We have verified your platform authenticator. Click continue to sign in.
+      header: Device verified
+      info: We have verified your device. Click continue to sign in.
     webauthn_use_key: Use security key
     webauthn_verified:
       header: Security key verified

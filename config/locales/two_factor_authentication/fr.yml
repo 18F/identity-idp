@@ -188,14 +188,14 @@ fr:
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
-    # TODO: TRANSLATE
+    # TODO: translate
     # webauthn_platform_fallback:
-    #   question: Don’t have your platform authenticator available?
-    # webauthn_platform_header_text: Use your platform authenticator
-    # webauthn_platform_use_key: Use platform authenticator
+    #   question: Don’t have your device available?
+    # webauthn_platform_header_text: Use Face or Touch Unlock
+    # webauthn_platform_use_key: Use Face or Touch Unlock
     # webauthn_platform_verified:
-    #   header: Platform authenticator verified
-    #   info: We have verified your platform authenticator. Click continue to sign in.
+    #   header: Device verified
+    #   info: We have verified your device. Click continue to sign in.
     webauthn_piv_available: Utilisez votre PIV ou CAC
     webauthn_use_key: Utiliser la clé de sécurité
     webauthn_verified:
