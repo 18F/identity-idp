@@ -7,8 +7,6 @@ module TwoFactorAuthCode
 
     COUNTDOWN_ID = 'countdown'.freeze
 
-    T_SCOPE = 'two_factor_authentication'.freeze
-
     def initialize(type, decorated_user)
       super(:locked)
       @type = type
@@ -71,11 +69,11 @@ module TwoFactorAuthCode
 
     def read_about_two_factor_authentication
       link = link_to(
-        t('read_about_two_factor_authentication.link', scope: T_SCOPE),
+        t('two_factor_authentication.read_about_two_factor_authentication.link'),
         MarketingSite.help_url,
       )
 
-      t('read_about_two_factor_authentication.text_html', scope: T_SCOPE, link: link)
+      t('two_factor_authentication.read_about_two_factor_authentication.text_html', link: link)
     end
   end
 end
