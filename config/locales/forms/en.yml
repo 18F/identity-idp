@@ -122,9 +122,9 @@ en:
         your %{app_name} account.
       confirm: Are you sure you want to remove your security key?
     webauthn_platform_delete:
-      caution: If you remove your platform authenticator you won’t be able to use it
+      caution: If you remove Face or Touch Unlock you won’t be able to use it
         to access your %{app_name} account.
-      confirm: Are you sure you want to remove your platform authenticator?
+      confirm: Are you sure you want to remove Face or Touch Unlock?
     webauthn_platform_setup:
       continue: Continue
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
