@@ -55,7 +55,6 @@ class WebauthnSetupForm
   end
 
   def name_is_unique
-    # TODO: Unique across platform and roaming?
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
       errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name')
