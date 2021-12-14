@@ -51,6 +51,7 @@ UploadContext.displayName = 'UploadContext';
  * @prop {UploadFieldError[]=} errors Error messages.
  * @prop {string=} redirect URL to which user should be redirected.
  * @prop {number=} remaining_attempts Number of remaining doc capture attempts for user.
+ * @prop {boolean=} hints Boolean to decide if capture hints should be shown with error.
  */
 
 /**

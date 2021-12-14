@@ -128,6 +128,7 @@ describe ImageUploadResponsePresenter do
           success: false,
           errors: {
             front: t('doc_auth.errors.not_a_file'),
+            hints: true
           },
           extra: { remaining_attempts: 3 },
         )
@@ -137,6 +138,7 @@ describe ImageUploadResponsePresenter do
         expected = {
           success: false,
           errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
+          hints: true,
           remaining_attempts: 3,
         }
 

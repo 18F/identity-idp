@@ -13,6 +13,9 @@ export class UploadFormEntriesError extends Error {
 
   /** @type {number} */
   remainingAttempts = Infinity;
+
+  /** @type {boolean} */
+  hints = false;
 }
 
 /**
@@ -85,6 +88,10 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
 
     if (errorResult.remaining_attempts) {
       error.remainingAttempts = errorResult.remaining_attempts;
+    }
+
+    if (errorResult.hints) {
+      error.hints = errorResult.hints;
     }
 
     throw error;

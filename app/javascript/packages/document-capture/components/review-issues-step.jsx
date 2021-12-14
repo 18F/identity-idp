@@ -61,6 +61,7 @@ function reviewIssuesStepValidator(value = {}) {
 /**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
  *  remainingAttempts: number,
+ *  captureHints: boolean,
  * }} props Props object.
  */
 function ReviewIssuesStep({
@@ -71,6 +72,7 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   remainingAttempts,
+  captureHints,
 }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
@@ -94,13 +96,17 @@ function ReviewIssuesStep({
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       {!!unknownFieldErrors &&
         unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
-      <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-      </ul>
+      {captureHints && (
+        <>
+          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
+          <ul>
+            <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
+          </ul>
+        </>
+      )}
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
           key={side}
@@ -181,7 +187,9 @@ function ReviewIssuesStep({
       }
     >
       {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        unknownFieldErrors
+          .filter((error) => !['front', 'back', 'selfie'].includes(error.field))
+          .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
       {remainingAttempts <= DISPLAY_ATTEMPTS && (
         <p>
