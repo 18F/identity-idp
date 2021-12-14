@@ -64,10 +64,10 @@ es:
       webauthn_add: Añadir clave de seguridad
       webauthn_confirm_delete: Si quitar la llave
       webauthn_delete: Quitar llave
-      webauthn_platform: Platform authenticator
-      webauthn_platform_add: Add platform authenticator
-      webauthn_platform_confirm_delete: Yes, remove platform authenticator
-      webauthn_platform_delete: Remove platform authenticator
+      webauthn_platform: El desbloqueo facial o táctil
+      webauthn_platform_add: Añadir el desbloqueo facial o táctil
+      webauthn_platform_confirm_delete: Si, quitar el desbloqueo facial o táctil
+      webauthn_platform_delete: Quitar el desbloqueo facial o táctil
     items:
       delete_your_account: Eliminar su cuenta
       personal_key: Clave personal
