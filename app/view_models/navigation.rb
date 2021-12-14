@@ -1,7 +1,11 @@
 class Navigation
   include Rails.application.routes.url_helpers
 
-  NavItem = Struct.new(:title, :href, :children)
+  NavItem = Struct.new(:title, :href, :children, :id, :klass) do
+    def initialize(title, href, children = nil, id = nil, klass = nil)
+      super(title, href, children, id, klass)
+    end
+  end
 
   def initialize(user:, url_options:)
     @user = user
@@ -28,8 +32,16 @@ class Navigation
           IdentityConfig.store.platform_authentication_enabled ? NavItem.new(
             I18n.t('account.navigation.add_platform_authenticator'),
             webauthn_setup_path(platform: true),
+            nil,
+            'select_webauthn_platform',
+            'display-none'
           ) : nil,
-          NavItem.new(I18n.t('account.navigation.add_security_key'), webauthn_setup_path),
+          NavItem.new(
+            I18n.t('account.navigation.add_security_key'),
+            webauthn_setup_path,
+            'select_webauthn',
+            'display-none'
+          ),
           NavItem.new(I18n.t('account.navigation.add_federal_id'), setup_piv_cac_path),
           NavItem.new(
             I18n.t('account.navigation.get_backup_codes'),

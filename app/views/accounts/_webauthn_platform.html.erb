@@ -7,7 +7,8 @@
       <%= link_to(
             prefix_with_plus(t('account.index.webauthn_platform_add')),
             webauthn_setup_path(platform: true),
-            class: 'account-action-button',
+            class: 'account-action-button display-none',
+            id: 'select_webauthn_platform'
           ) %>
     </div>
   </div>

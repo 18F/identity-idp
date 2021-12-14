@@ -66,3 +66,5 @@
   <%= render 'accounts/pii', pii: @view_model.pii,
                              locked_for_session: @view_model.locked_for_session %>
 <% end %>
+
+<%= javascript_packs_tag_once('webauthn-unhide') %>

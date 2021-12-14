@@ -5,14 +5,14 @@
   <div class="usa-nav__inner">
     <ul class="usa-nav__primary usa-accordion">
       <% Navigation.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
-        <li class="usa-nav__primary-item">
+        <li class="<%= ['usa-nav__primary-item', nav_item.klass].join(' ') %>">
           <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
             <strong><%= nav_item.title %></strong>
           <% end %>
           <% if nav_item.children&.any? %>
             <ul class="usa-nav__submenu">
               <% nav_item.children.each do |child_nav_item| %>
-                <li class="usa-nav__submenu-item">
+                <li class="<%= ['usa-nav__submenu-item', child_nav_item.klass].join(' ') %>">
                   <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
                 </li>
               <% end %>
