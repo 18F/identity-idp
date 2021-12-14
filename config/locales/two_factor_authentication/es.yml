@@ -7,13 +7,6 @@ es:
       pending_html: Actualmente tiene una solicitud pendiente para eliminar su cuenta.
         Se necesitan 24 horas desde el momento en que realizó la solicitud para
         completar el proceso.  Por favor, vuelva más tarde. %{cancel_link}
-      recover_html: Si no puede utilizar ninguno de los métodos de autenticación
-        anteriores, puede %{reverify_link}. Su nombre, dirección y número de
-        seguro social deben coincidir con el perfil de su cuenta. Si no lo
-        hacen, puede %{reset_link} en su lugar.
-      reset_link: restablecer su cuenta
-      reset_your_account: Restablecer su cuenta
-      reverify_link: vuelva a verificar su identidad
       successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name}
         ha sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
@@ -24,12 +17,6 @@ es:
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
     choose_another_option: '‹ Elige otra opción'
-    devices:
-      auth_app: Aplicación de autenticación
-      backup_code: Códigos de seguridad personal
-      phone: Teléfono
-      piv_cac: PIV/CAC
-      webauthn: Llave de seguridad
     header_text: Ingrese su código de seguridad
     important_alert_icon: ícono de aviso importante
     invalid_backup_code: Esa código de respaldo no es válida.
@@ -60,13 +47,10 @@ es:
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto /
         SMS a <strong>%{phone}</strong>.
-      sms_setup_info_html: Obtenga su código de seguridad a través de mensajes de texto / SMS.
       voice: Llamada telefónica automatizada
       voice_info_html: Obtenga su código de seguridad a través de una llamada
         telefónica a <strong>%{phone}</strong>. (Solo números de teléfono de
         América del Norte).
-      voice_setup_info_html: Obtenga su código de seguridad a través de una llamada
-        telefónica. (Solo números de teléfono de América del Norte).
       webauthn: Llave de seguridad
       webauthn_info_html: Use su llave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
@@ -153,7 +137,6 @@ es:
       least_secure_label: Lo menos seguro
       less_secure_label: Menos seguro
       more_secure_label: Más seguro
-      most_secure_label: Lo más seguro
       phone: Teléfono
       phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o
         llamada telefónica.
