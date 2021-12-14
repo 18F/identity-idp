@@ -105,12 +105,6 @@ fr:
     phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
       <strong>chaque fois que vous vous connectez</strong>.
     phone_label: Numéro de téléphone
-    phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
-      que vous vous connectez</strong>.
-    phone_sms_label: Numéro de téléphone portable
-    phone_voice_info_html: Nous vous appellerons avec un code de sécurité
-      <strong>chaque fois que vous vous connectez</strong>.
-    phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC

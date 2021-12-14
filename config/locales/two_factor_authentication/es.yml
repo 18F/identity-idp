@@ -102,12 +102,6 @@ es:
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad
       <strong>cada vez que inicie sesión</strong>.
     phone_label: Número de teléfono
-    phone_sms_info_html: Le enviaremos un mensaje de texto con un código de
-      seguridad <strong>cada vez que inicie sesión</strong>.
-    phone_sms_label: Número de teléfono móvil
-    phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada vez
-      que inicies sesión</strong>.
-    phone_voice_label: Número de teléfono
     piv_cac_fallback:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
