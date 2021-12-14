@@ -149,6 +149,7 @@ class Analytics
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
   IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
+  IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'.freeze
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
