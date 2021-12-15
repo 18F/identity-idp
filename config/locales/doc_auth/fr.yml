@@ -72,7 +72,7 @@ fr:
           système, recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       dpi:
-        failed_short: L'image est trop petite ou floue, veuillez réessayer.
+        failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
           image est peut-être trop petite ou il se peut que votre pièce
           d’identité soit trop petite ou floue sur la photo. Assurez-vous que la
