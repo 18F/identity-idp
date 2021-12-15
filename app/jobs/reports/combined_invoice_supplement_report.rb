@@ -70,8 +70,6 @@ module Reports
 
           'year_month',
           'year_month_readable',
-          'dates_billed_start_date',
-          'dates_billed_end_date',
 
           'iaa_ial1_unique_users',
           'iaa_ial2_unique_users',
@@ -106,8 +104,6 @@ module Reports
 
                 year_month,
                 year_month_start.strftime('%B %Y'),
-                [year_month_start, iaa_start_date].max.to_s,
-                [year_month_start.end_of_month, iaa_end_date].min.to_s,
 
                 (ial1_unique_users = extract(iaa_results, :unique_users, ial: 1)),
                 (ial2_unique_users = extract(iaa_results, :unique_users, ial: 2)),
