@@ -40,14 +40,27 @@ describe('ClipboardButton', () => {
     expect(navigator.clipboard.writeText).to.have.been.calledWith(clipboardText);
   });
 
+  it('copies the latest clipboard attribute value after initialization', () => {
+    const clipboardText = 'example';
+    const element = createAndConnectElement({ clipboardText });
+    const changedClipbordText = 'example2';
+    element.setAttribute('data-clipboard-text', changedClipbordText);
+
+    const button = getByRole(element, 'button');
+
+    userEvent.click(button);
+
+    expect(navigator.clipboard.writeText).to.have.been.calledWith(changedClipbordText);
+  });
+
   context('with nothing to copy', () => {
-    it('does not write to clipboard', () => {
+    it('does writes an empty string to the clipboard', () => {
       const element = createAndConnectElement();
       const button = getByRole(element, 'button');
 
       userEvent.click(button);
 
-      expect(navigator.clipboard.writeText).not.to.have.been.called();
+      expect(navigator.clipboard.writeText).to.have.been.calledWith('');
     });
   });
 });
