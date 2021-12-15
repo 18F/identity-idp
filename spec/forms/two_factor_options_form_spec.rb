@@ -6,7 +6,7 @@ describe TwoFactorOptionsForm do
 
   describe '#submit' do
     it 'is successful if the selection is valid' do
-      %w[voice sms auth_app piv_cac].each do |selection|
+      %w[voice sms auth_app piv_cac webauthn webauthn_platform].each do |selection|
         result = subject.submit(selection: selection)
 
         expect(result.success?).to eq true

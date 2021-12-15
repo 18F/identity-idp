@@ -152,6 +152,7 @@ pinpoint_voice_configs: '[]'
 piv_cac_service_url: https://localhost:8443/
 piv_cac_service_timeout: '5'
 piv_cac_verify_token_url: https://localhost:8443/
+platform_authentication_enabled: 'true'
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_allow_expired_license: 'false'
@@ -335,6 +336,7 @@ production:
   participate_in_dap: 'true'
   password_pepper:
   piv_cac_verify_token_secret:
+  platform_authentication_enabled: 'false'
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379

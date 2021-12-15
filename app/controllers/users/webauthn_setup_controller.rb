@@ -10,7 +10,16 @@ module Users
     before_action :set_webauthn_setup_presenter
 
     def new
-      result = WebauthnVisitForm.new.submit(params)
+      form = WebauthnVisitForm.new
+      result = form.submit(new_params)
+      @platform_authenticator = form.platform_authenticator?
+      @presenter = WebauthnSetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+        platform_authenticator: @platform_authenticator,
+      )
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
@@ -19,10 +28,18 @@ module Users
 
     def confirm
       form = WebauthnSetupForm.new(current_user, user_session)
-      result = form.submit(request.protocol, params)
+      result = form.submit(request.protocol, confirm_params)
+      @platform_authenticator = form.platform_authenticator?
+      @presenter = WebauthnSetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+        platform_authenticator: @platform_authenticator,
+      )
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
       if result.success?
-        process_valid_webauthn
+        process_valid_webauthn(form)
       else
         process_invalid_webauthn(form)
       end
@@ -38,6 +55,9 @@ module Users
     end
 
     def show_delete
+      @webauthn = WebauthnConfiguration.where(
+        user_id: current_user.id, id: delete_params[:id],
+      ).first
       render 'users/webauthn_setup/delete'
     end
 
@@ -66,12 +86,19 @@ module Users
     end
 
     def handle_successful_delete
+      webauthn = WebauthnConfiguration.find_by(user_id: current_user.id, id: delete_params[:id])
+      return unless webauthn
+
       create_user_event(:webauthn_key_removed)
-      WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
+      webauthn.destroy
       revoke_remember_device(current_user)
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
-      flash[:success] = t('notices.webauthn_deleted')
+      if webauthn.platform_authenticator
+        flash[:success] = t('notices.webauthn_platform_deleted')
+      else
+        flash[:success] = t('notices.webauthn_deleted')
+      end
       track_delete(true)
     end
 
@@ -94,12 +121,16 @@ module Users
       user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
     end
 
-    def process_valid_webauthn
+    def process_valid_webauthn(form)
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       handle_remember_device
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
-      flash[:success] = t('notices.webauthn_configured')
+      if form.platform_authenticator?
+        flash[:success] = t('notices.webauthn_platform_configured')
+      else
+        flash[:success] = t('notices.webauthn_configured')
+      end
       user_session[:auth_method] = 'webauthn'
       redirect_to after_mfa_setup_path
     end
@@ -111,10 +142,20 @@ module Users
 
     def process_invalid_webauthn(form)
       if form.name_taken
-        flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        if form.platform_authenticator?
+          flash.now[:error] = t('errors.webauthn_platform_setup.unique_name')
+        else
+          flash.now[:error] = t('errors.webauthn_setup.unique_name')
+        end
+
         render :new
       else
-        flash[:error] = t('errors.webauthn_setup.general_error')
+        if form.platform_authenticator?
+          flash[:error] = t('errors.webauthn_platform_setup.general_error')
+        else
+          flash[:error] = t('errors.webauthn_setup.general_error')
+        end
+
         redirect_to account_two_factor_authentication_path
       end
     end
@@ -122,6 +163,18 @@ module Users
     def mark_user_as_fully_authenticated
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
+    end
+
+    def new_params
+      params.permit(:platform, :error)
+    end
+
+    def confirm_params
+      params.permit(:attestation_object, :client_data_json, :name, :platform_authenticator)
+    end
+
+    def delete_params
+      params.permit(:id)
     end
   end
 end

@@ -4,21 +4,37 @@ class WebauthnConfiguration < ApplicationRecord
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
 
+  def self.roaming_authenticators
+    self.where(platform_authenticator: [nil, false])
+  end
+
+  def self.platform_authenticators
+    self.where(platform_authenticator: true)
+  end
+
   def mfa_enabled?
     true
   end
 
   def selection_presenters
-    [TwoFactorAuthentication::WebauthnSelectionPresenter.new(self)]
+    if platform_authenticator?
+      [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new(self)]
+    else
+      [TwoFactorAuthentication::WebauthnSelectionPresenter.new(self)]
+    end
   end
 
   def friendly_name
-    :webauthn
+    if platform_authenticator?
+      :webauthn_platform
+    else
+      :webauthn
+    end
   end
 
   def self.selection_presenters(set)
     if set.any?
-      set.first.selection_presenters
+      set.map(&:selection_presenters).flatten.uniq(&:class)
     else
       []
     end

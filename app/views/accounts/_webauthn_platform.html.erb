@@ -1,0 +1,33 @@
+<div>
+  <div class="grid-row margin-bottom-1 margin-top-0">
+    <h2 class="grid-col-fill margin-y-0 padding-right-1">
+      <%= t('account.index.webauthn_platform') %>
+    </h2>
+    <div class="grid-col-auto">
+      <%= link_to(
+            prefix_with_plus(t('account.index.webauthn_platform_add')),
+            webauthn_setup_path(platform: true),
+            class: 'account-action-button',
+          ) %>
+    </div>
+  </div>
+
+  <div class="border-bottom border-primary-light">
+    <% MfaContext.new(current_user).webauthn_platform_configurations.each do |cfg| %>
+      <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
+        <div class="grid-col-8 mobile-lg:grid-col-6 truncate">
+          <%= cfg.name %>
+        </div>
+        <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
+          <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
+            <%= link_to(
+                  t('account.index.webauthn_platform_delete'),
+                  webauthn_setup_delete_path(id: cfg.id),
+                ) %>
+          </div>
+        <% end %>
+      </div>
+      <div class="clearfix"></div>
+    <% end %>
+  </div>
+</div>

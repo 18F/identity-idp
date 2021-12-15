@@ -84,6 +84,8 @@ es:
           seguridad. Debe verificar su identidad con un dispositivo físico, como
           una llave de seguridad o una identificación de empleado del Gobierno
           (PIV o CAC) para acceder a su información.
+        confirm_webauthn_platform_html: Tiene activado el desbloqueo facial o táctil
+          para su cuenta de %{app_name}.
       wrong_number_html: '¿Ingresó el número de teléfono equivocado? %{link}'
     password:
       forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su email.'
