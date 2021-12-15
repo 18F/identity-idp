@@ -49,7 +49,6 @@ module DocAuth
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
 
-    # rubocop:disable Metrics/PerceivedComplexity
     def generate_doc_auth_errors(response_info)
       liveness_enabled = response_info[:liveness_enabled]
       alert_error_count = response_info[:alert_failure_count]
@@ -95,8 +94,6 @@ module DocAuth
 
       errors.transform_values(&:to_a)
     end
-    # rubocop:enable Metrics/PerceivedComplexity
-
     # private
 
     def get_image_metric_errors(processed_image_metrics)

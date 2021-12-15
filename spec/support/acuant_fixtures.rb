@@ -1,4 +1,3 @@
-# rubocop:disable Naming/AccessorMethodName
 module AcuantFixtures
   def self.create_document_response
     load_response_fixture('create_document_response.json')
@@ -45,4 +44,3 @@ module AcuantFixtures
     File.read(path)
   end
 end
-# rubocop:enable Naming/AccessorMethodName

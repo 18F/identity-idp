@@ -30,7 +30,6 @@ class AttributeAsserter
     self.user_session = user_session
   end
 
-  # rubocop:disable Metrics/PerceivedComplexity
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
@@ -42,7 +41,6 @@ class AttributeAsserter
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
-  # rubocop:enable Metrics/PerceivedComplexity
 
   private
 
