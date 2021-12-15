@@ -1,4 +1,3 @@
-# rubocop:disable Lint/UnusedMethodArgument
 module DocAuth
   module Mock
     class DocAuthMockClient
@@ -124,4 +123,3 @@ module DocAuth
     end
   end
 end
-# rubocop:enable Lint/UnusedMethodArgument
