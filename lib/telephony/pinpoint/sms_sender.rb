@@ -147,7 +147,6 @@ module Telephony
           },
         )
       end
-      # rubocop:enable Metrics/MethodLength
 
       def success?(message_response_result)
         message_response_result.delivery_status == 'SUCCESSFUL'
