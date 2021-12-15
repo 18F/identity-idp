@@ -135,6 +135,7 @@ fr:
       upload_error: Désolé, quelque chose a mal tourné de notre côté.
     forms:
       address1: Adresse
+      captured_image: Image capturée
       change_file: Changer de fichier
       choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez un
         dossier</lg-underline>
