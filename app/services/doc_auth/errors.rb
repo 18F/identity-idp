@@ -72,9 +72,10 @@ module DocAuth
       GLARE_LOW_BOTH_SIDES,
     ].freeze
 
+    # rubocop:disable Layout/LineLength
     USER_DISPLAY = {
       # Image metrics
-      DPI_LOW => { long_msg: DPI_LOW_ONE_SIDE, long_msg_plural: DPI_LOW_BOTH_SIDES,  field_msg: DPI_LOW_FIELD },
+      DPI_LOW => { long_msg: DPI_LOW_ONE_SIDE, long_msg_plural: DPI_LOW_BOTH_SIDES, field_msg: DPI_LOW_FIELD },
       SHARP_LOW => { long_msg: SHARP_LOW_ONE_SIDE, long_msg_plural: SHARP_LOW_BOTH_SIDES, field_msg: SHARP_LOW_FIELD },
       GLARE_LOW => { long_msg: GLARE_LOW_ONE_SIDE, long_msg_plural: GLARE_LOW_BOTH_SIDES, field_msg: GLARE_LOW_FIELD },
       # Alerts
@@ -107,7 +108,8 @@ module DocAuth
       GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       GENERAL_ERROR_NO_LIVENESS => { long_msg: GENERAL_ERROR_NO_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
       # Liveness
-      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: FALLBACK_FIELD_LEVEL, hints: false }
+      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
     }
+    # rubocop:enable Layout/LineLength
   end
 end

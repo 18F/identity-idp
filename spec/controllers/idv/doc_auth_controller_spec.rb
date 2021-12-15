@@ -317,7 +317,7 @@ describe Idv::DocAuthController do
       {
         pii_from_doc: {},
         success: false,
-        errors: { front: 'Wrong document' },
+        errors: { front: 'Wrong document', hints: true },
         messages: ['message'],
       }
     end
@@ -356,6 +356,7 @@ describe Idv::DocAuthController do
         {
           success: false,
           errors: [{ field: 'front', message: 'Wrong document' }],
+          hints: true,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )
@@ -374,6 +375,7 @@ describe Idv::DocAuthController do
           success: false,
           errors: [{ field: 'pii',
                      message: I18n.t('doc_auth.errors.general.no_liveness') }],
+          hints: false,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )

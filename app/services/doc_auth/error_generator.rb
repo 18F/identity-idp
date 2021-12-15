@@ -51,7 +51,8 @@ module DocAuth
 
     def generate_doc_auth_errors(response_info)
       liveness_enabled = response_info[:liveness_enabled]
-      alert_error_count = response_info[:alert_failure_count]
+      alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
+        0 : response_info[:alert_failure_count]
 
       unknown_fail_count = scan_for_unknown_alerts(response_info)
       alert_error_count -= unknown_fail_count
@@ -62,7 +63,7 @@ module DocAuth
       alert_errors = get_error_messages(liveness_enabled, response_info)
       alert_error_count += 1 if alert_errors.include?(SELFIE)
 
-      error = ""
+      error = ''
       side = nil
 
       if alert_error_count < 1
@@ -102,6 +103,7 @@ module DocAuth
 
       ErrorResult.new(error, side).to_h
     end
+
     # private
 
     def get_image_metric_errors(processed_image_metrics)

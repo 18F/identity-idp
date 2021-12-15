@@ -84,8 +84,8 @@ module DocAuthRouter
     DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
     # i18n-tasks-use t('doc_auth.errors.http.image_size')
     DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
-    # i18n-tasks-use t('errors.messages.try_again')
-    DocAuth::Errors::FALLBACK_FIELD_LEVEL => 'doc_auth.errors.general.fallback_field_level'
+    # i18n-tasks-use t('doc_auth.errors.general.fallback_field_level')
+    DocAuth::Errors::FALLBACK_FIELD_LEVEL => 'doc_auth.errors.general.fallback_field_level',
   }.freeze
 
   class DocAuthErrorTranslatorProxy

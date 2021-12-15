@@ -119,7 +119,12 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       aggregate_failures do
         expect(response.success?).to eq(false)
 
-        expect(response.errors).to eq(id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK])
+        expect(response.errors).to eq(
+          general: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: true,
+        )
 
         expect(response.pii_from_doc).to include(
           first_name: 'FAKEY',
@@ -143,7 +148,10 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     it 'returns an unsuccessful response with errors' do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
-        id: ['id_not_recognized'],
+        general: [DocAuth::Errors::ID_NOT_RECOGNIZED],
+        front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+        hints: true,
       )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
@@ -162,7 +170,10 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'returns the untranslated error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          id: ['id_not_recognized'],
+          general: [DocAuth::Errors::ID_NOT_RECOGNIZED],
+          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: true,
         )
         expect(response.exception).to be_nil
       end
@@ -181,7 +192,10 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'only returns one copy of the each error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          id: ['general_error_no_liveness'],
+          general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
+          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: true,
         )
         expect(response.exception).to be_nil
       end
@@ -204,7 +218,10 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'does not return errors for alerts with success result codes' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          id: ['id_not_recognized'],
+          general: [DocAuth::Errors::ID_NOT_RECOGNIZED],
+          front: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: true,
         )
         expect(response.exception).to be_nil
       end
@@ -224,6 +241,8 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
           general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+          front: [DocAuth::Errors::DPI_LOW_FIELD],
+          hints: false,
         )
         expect(response.exception).to be_nil
         expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)

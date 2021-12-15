@@ -1,7 +1,7 @@
 module DocAuth
     class ErrorResult
       def initialize(error = nil, side = nil)
-        @error = ""
+        @error = ''
         @error_display = nil
         @sides = []
         set_error(error) unless error.nil?
