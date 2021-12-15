@@ -128,7 +128,7 @@ describe ImageUploadResponsePresenter do
           success: false,
           errors: {
             front: t('doc_auth.errors.not_a_file'),
-            hints: true
+            hints: true,
           },
           extra: { remaining_attempts: 3 },
         )

@@ -259,11 +259,11 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({
+        expect(response.errors).to eq(
           general: [DocAuth::Errors::SELFIE_FAILURE],
           selfie: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
           hints: false,
-        })
+        )
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end

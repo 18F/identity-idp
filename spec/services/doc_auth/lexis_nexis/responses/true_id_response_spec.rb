@@ -250,10 +250,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_empty, false, config).to_h
 
       expect(output[:success]).to eq(false)
-      expect(output[:errors]).to eq({
+      expect(output[:errors]).to eq(
         general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],
         hints: true,
-      })
+      )
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
       expect(output[:vendor]).to eq('TrueID')
     end
@@ -278,11 +278,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_no_liveness_low_dpi, false, config).to_h
 
       expect(output[:success]).to eq(false)
-      expect(output[:errors]).to eq({
+      expect(output[:errors]).to eq(
         general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
         front: [DocAuth::Errors::DPI_LOW_FIELD],
         hints: false,
-      })
+      )
       expect(output[:exception]).to be_nil
       expect(output[:doc_auth_result]).to eq('Failed')
     end

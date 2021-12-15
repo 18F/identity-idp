@@ -558,10 +558,10 @@ describe Idv::ImageUploadsController do
           {
             field: 'general',
             message: I18n.t('doc_auth.errors.alerts.barcode_content_check'),
-          },{
+          }, {
             field: 'back',
             message: I18n.t('doc_auth.errors.general.fallback_field_level'),
-          },
+          }
         ]
       end
 
