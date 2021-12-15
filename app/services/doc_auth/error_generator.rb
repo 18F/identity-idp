@@ -111,24 +111,35 @@ module DocAuth
       sharpness_threshold = config&.sharpness_threshold&.to_i || 40
       glare_threshold = config&.glare_threshold&.to_i || 40
 
+      dpi_metrics, sharp_metrics, glare_metrics = {}, {}, {}
       error_result = ErrorResult.new
 
       processed_image_metrics.each do |side, img_metrics|
+        dpi_metrics[side] = img_metrics.slice('HorizontalResolution', 'VerticalResolution')
+        sharp_metrics[side] = img_metrics.slice('SharpnessMetric')
+        glare_metrics[side] = img_metrics.slice('GlareMetric')
+      end
+
+      dpi_metrics.each do |side, img_metrics|
         hdpi = img_metrics['HorizontalResolution']&.to_i || 0
         vdpi = img_metrics['VerticalResolution']&.to_i || 0
         if hdpi < dpi_threshold || vdpi < dpi_threshold
           error_result.set_error(Errors::DPI_LOW)
           error_result.add_side(side)
         end
-        next if error_result.error == Errors::DPI_LOW
+      end
+      return error_result unless error_result.empty?
 
+      sharp_metrics.each do |side, img_metrics|
         sharpness = img_metrics['SharpnessMetric']&.to_i
         if sharpness.present? && sharpness < sharpness_threshold
           error_result.set_error(Errors::SHARP_LOW)
           error_result.add_side(side)
         end
-        next if error_result.error == Errors::SHARP_LOW
+      end
+      return error_result unless error_result.empty?
 
+      glare_metrics.each do |side, img_metrics|
         glare = img_metrics['GlareMetric']&.to_i
         if glare.present? && glare < glare_threshold
           error_result.set_error(Errors::GLARE_LOW)

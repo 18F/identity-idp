@@ -433,5 +433,18 @@ RSpec.describe DocAuth::ErrorGenerator do
       expect(output[:back]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
       expect(output[:hints]).to eq(false)
     end
+
+    it 'both images have different problems' do
+      metrics[:front]['GlareMetric'] = 20
+      metrics[:back]['SharpnessMetric'] = 25
+      error_info = build_error_info(image_metrics: metrics)
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
+    end
   end
 end
