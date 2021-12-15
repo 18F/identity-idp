@@ -105,6 +105,8 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
               submissionError instanceof UploadFormEntriesError
                 ? submissionError.remainingAttempts
                 : Infinity,
+            captureHints:
+              submissionError instanceof UploadFormEntriesError ? submissionError.hints : null,
           })(ReviewIssuesStep),
           validator: reviewIssuesStepValidator,
         },

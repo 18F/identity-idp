@@ -11,7 +11,7 @@ class ImageUploadResponsePresenter
   end
 
   def errors
-    @form_response.errors.flat_map do |key, errs|
+    @form_response.errors.except(:hints).flat_map do |key, errs|
       Array(errs).map { |err| { field: key, message: err } }
     end
   end
@@ -36,7 +36,10 @@ class ImageUploadResponsePresenter
     elsif @form_response.errors.key?(:limit)
       { success: false, redirect: idv_session_errors_throttled_url }
     else
-      { success: false, errors: errors, remaining_attempts: remaining_attempts }
+      hints = @form_response.errors[:hints]
+      json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
+      json[:hints] = hints unless hints.blank?
+      json
     end
   end
 

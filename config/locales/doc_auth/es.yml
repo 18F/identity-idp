@@ -68,6 +68,8 @@ es:
           página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       dpi:
+        failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
+          de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
           imagen sea demasiado chico, que su identificación sea demasiado
           pequeña o que la foto esté borrosa. Asegúrese de que su identificación
@@ -81,6 +83,7 @@ es:
       file_type:
         invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
+        fallback_field_level: Agregue una imagen nueva
         liveness: No pudimos verificar su documento de identidad y su foto. Intente
           tomar nuevas fotografías.
         multiple_back_id_failures: No pudimos verificar la parte trasera de su documento

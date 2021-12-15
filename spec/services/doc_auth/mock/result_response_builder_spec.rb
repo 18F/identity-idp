@@ -114,7 +114,11 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq(id: [DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES])
+        expect(response.errors).to eq(
+          general: [DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES],
+          back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: true,
+        )
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end
@@ -150,7 +154,11 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq(general: [DocAuth::Errors::DPI_LOW_ONE_SIDE])
+        expect(response.errors).to eq(
+          general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+          back: [DocAuth::Errors::DPI_LOW_FIELD],
+          hints: false,
+        )
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end
@@ -251,7 +259,11 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq({ selfie: [DocAuth::Errors::SELFIE_FAILURE]})
+        expect(response.errors).to eq(
+          general: [DocAuth::Errors::SELFIE_FAILURE],
+          selfie: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
+          hints: false,
+        )
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end
