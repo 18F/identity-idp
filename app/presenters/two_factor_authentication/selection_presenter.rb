@@ -38,6 +38,8 @@ module TwoFactorAuthentication
       false
     end
 
+    private
+
     def login_label(type)
       case type
       when 'auth_app'
