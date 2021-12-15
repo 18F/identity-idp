@@ -30,6 +30,7 @@ module DocAuth
       end
 
       def to_h
+        return {} if @error.empty? || @error_display.empty?
         error_output = {}
 
         plural_banner = @error_display[:long_msg_plural] || @error_display[:long_msg]

@@ -64,12 +64,16 @@ module DocAuth
       SEX_CHECK,
       VISIBLE_COLOR_CHECK,
       VISIBLE_PHOTO_CHECK,
+      DPI_LOW,
       DPI_LOW_ONE_SIDE,
       DPI_LOW_BOTH_SIDES,
+      SHARP_LOW,
       SHARP_LOW_ONE_SIDE,
       SHARP_LOW_BOTH_SIDES,
+      GLARE_LOW,
       GLARE_LOW_ONE_SIDE,
       GLARE_LOW_BOTH_SIDES,
+      FALLBACK_FIELD_LEVEL,
     ].freeze
 
     # rubocop:disable Layout/LineLength
