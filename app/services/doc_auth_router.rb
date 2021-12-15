@@ -64,20 +64,28 @@ module DocAuthRouter
     DocAuth::Errors::DPI_LOW_ONE_SIDE => 'doc_auth.errors.dpi.top_msg',
     # i18n-tasks-use t('doc_auth.errors.dpi.top_msg_plural')
     DocAuth::Errors::DPI_LOW_BOTH_SIDES => 'doc_auth.errors.dpi.top_msg_plural',
+    # i18n-tasks-use t('doc_auth.errors.dpi.failed_short')
+    DocAuth::Errors::DPI_LOW_FIELD => 'doc_auth.errors.dpi.failed_short',
     # i18n-tasks-use t('doc_auth.errors.sharpness.top_msg')
     DocAuth::Errors::SHARP_LOW_ONE_SIDE => 'doc_auth.errors.sharpness.top_msg',
     # i18n-tasks-use t('doc_auth.errors.sharpness.top_msg_plural')
     DocAuth::Errors::SHARP_LOW_BOTH_SIDES => 'doc_auth.errors.sharpness.top_msg_plural',
+    # i18n-tasks-use t('doc_auth.errors.sharpness.failed_short')
+    DocAuth::Errors::SHARP_LOW_FIELD => 'doc_auth.errors.sharpness.failed_short',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg')
     DocAuth::Errors::GLARE_LOW_ONE_SIDE => 'doc_auth.errors.glare.top_msg',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg_plural')
     DocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
+    # i18n-tasks-use t('doc_auth.errors.glare.failed_short')
+    DocAuth::Errors::GLARE_LOW_FIELD => 'doc_auth.errors.glare.failed_short',
     # i18n-tasks-use t('doc_auth.errors.http.image_load')
     DocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
     # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
     DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
     # i18n-tasks-use t('doc_auth.errors.http.image_size')
     DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
+    # i18n-tasks-use t('doc_auth.errors.general.fallback_field_level')
+    DocAuth::Errors::FALLBACK_FIELD_LEVEL => 'doc_auth.errors.general.fallback_field_level',
   }.freeze
 
   class DocAuthErrorTranslatorProxy

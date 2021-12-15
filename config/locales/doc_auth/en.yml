@@ -57,6 +57,7 @@ en:
           instead.
         failed: Camera failed to start, please try again.
       dpi:
+        failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
           is too small or blurry in the photo. Make sure your ID is large within
           the image frame and try taking a new picture.
@@ -66,6 +67,7 @@ en:
       file_type:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
+        fallback_field_level: Please add a new image
         liveness: We couldn’t verify your ID and photo of yourself. Try taking new
           pictures.
         multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.

@@ -556,9 +556,12 @@ describe Idv::ImageUploadsController do
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
-            field: 'back',
+            field: 'general',
             message: I18n.t('doc_auth.errors.alerts.barcode_content_check'),
-          },
+          }, {
+            field: 'back',
+            message: I18n.t('doc_auth.errors.general.fallback_field_level'),
+          }
         ]
       end
 
@@ -580,7 +583,9 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           success: false,
           errors: {
-            back: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
+            general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
+            back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
+            hints: true,
           },
           async: false,
           billed: true,
