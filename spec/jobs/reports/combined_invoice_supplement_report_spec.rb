@@ -155,6 +155,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
           expect(row['issuer_ial1_total_auth_count'].to_i).to eq(1)
           expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
           expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+          expect(row['issuer_ial2_new_unique_users'].to_i).to eq(0)
         end
 
         [iaa2_sp1, iaa2_sp2].each do |sp|
@@ -179,6 +180,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
             expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
             expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
             expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+            expect(row['issuer_ial2_new_unique_users'].to_i).to eq(1)
           end
         end
       end

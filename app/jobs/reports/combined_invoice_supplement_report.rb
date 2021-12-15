@@ -79,6 +79,7 @@ module Reports
           'issuer_ial1_total_auth_count',
           'issuer_ial2_total_auth_count',
           'issuer_ial1_plus_2_total_auth_count',
+          'issuer_ial2_new_unique_users',
         ]
 
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
@@ -113,6 +114,7 @@ module Reports
                 (ial1_total_auth_count = extract(issuer_results, :total_auth_count, ial: 1)),
                 (ial2_total_auth_count = extract(issuer_results, :total_auth_count, ial: 2)),
                 ial1_total_auth_count + ial2_total_auth_count,
+                extract(issuer_results, :new_unique_users, ial: 2),
               ]
             end
           end
