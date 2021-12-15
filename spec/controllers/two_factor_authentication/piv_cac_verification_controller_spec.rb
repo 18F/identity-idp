@@ -166,6 +166,8 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     end
 
     context 'when the user has reached the max number of piv/cac attempts' do
+      render_views
+
       it 'tracks the event' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         stub_sign_in_before_2fa(user)

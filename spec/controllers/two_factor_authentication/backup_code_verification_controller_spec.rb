@@ -88,9 +88,11 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
     end
 
     context 'when the user enters an invalid backup code' do
+      render_views
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
-        form = instance_double(BackupCodeVerificationForm)
+        user = build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
+        form = BackupCodeVerificationForm.new(user)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'backup_code' },
         )
