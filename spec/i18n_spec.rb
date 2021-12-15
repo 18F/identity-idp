@@ -16,7 +16,6 @@ module I18n
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
-        { key: 'two_factor_authentication.devices.piv_cac' }, # "PIV/CAC" does not translate
       ].freeze
 
       def untranslated_keys
