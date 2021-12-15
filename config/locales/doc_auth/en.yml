@@ -104,6 +104,7 @@ en:
       upload_error: Sorry, something went wrong on our end.
     forms:
       address1: Address
+      captured_image: Captured Image
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
