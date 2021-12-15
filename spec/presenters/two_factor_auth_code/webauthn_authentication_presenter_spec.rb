@@ -7,11 +7,12 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) do
     TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, view: view)
+      new(data: { reauthn: reauthn }, view: view, platform_authenticator: platform_authenticator)
   end
 
   let(:allow_user_to_switch_method) { false }
   let(:aal3_required) { false }
+  let(:platform_authenticator) { false }
   let(:service_provider_mfa_policy) do
     instance_double(
       ServiceProviderMfaPolicy,
@@ -55,6 +56,96 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'displays the help text' do
         expect(presenter.webauthn_help).to eq(
           t('instructions.mfa.webauthn.confirm_webauthn_html'),
+        )
+      end
+    end
+
+    context 'with a platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'returns the help text for a platform authenticator' do
+        expect(presenter.webauthn_help).to eq(
+          t('instructions.mfa.webauthn.confirm_webauthn_platform_html', app_name: APP_NAME),
+        )
+      end
+    end
+  end
+
+  describe '#authenticate_button_text' do
+    context 'with a roaming authenticator' do
+      it 'renders the roaming authenticator button text' do
+        expect(presenter.authenticate_button_text).to eq(
+          t('two_factor_authentication.webauthn_use_key'),
+        )
+      end
+    end
+
+    context 'with a platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'renders the platform authenticator button text' do
+        expect(presenter.authenticate_button_text).to eq(
+          t('two_factor_authentication.webauthn_platform_use_key'),
+        )
+      end
+    end
+  end
+
+  describe '#verified_info_text' do
+    context 'with a roaming authenticator' do
+      it 'renders the roaming authenticator text' do
+        expect(presenter.verified_info_text).to eq(
+          t('two_factor_authentication.webauthn_verified.info'),
+        )
+      end
+    end
+
+    context 'with a platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'renders the platform authenticator text' do
+        expect(presenter.verified_info_text).to eq(
+          t('two_factor_authentication.webauthn_platform_verified.info'),
+        )
+      end
+    end
+  end
+
+  describe '#header' do
+    context 'with a roaming authenticator' do
+      it 'renders the roaming authenticator header' do
+        expect(presenter.header).to eq(
+          t('two_factor_authentication.webauthn_header_text'),
+        )
+      end
+    end
+
+    context 'with a platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'renders the platform authenticator header' do
+        expect(presenter.header).to eq(
+          t('two_factor_authentication.webauthn_platform_header_text'),
+        )
+      end
+    end
+  end
+
+  describe '#verified_header' do
+    context 'with a roaming authenticator' do
+      it 'renders the roaming authenticator header' do
+        expect(presenter.verified_header).to eq(
+          t('two_factor_authentication.webauthn_verified.header'),
+        )
+      end
+    end
+
+    context 'with a platform authenticator' do
+      let(:platform_authenticator) { true }
+
+      it 'renders the platform authenticator header' do
+        expect(presenter.verified_header).to eq(
+          t('two_factor_authentication.webauthn_platform_verified.header'),
         )
       end
     end

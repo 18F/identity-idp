@@ -10,62 +10,126 @@ describe 'Remembering a webauthn device' do
 
   let(:user) { create(:user, :signed_up) }
 
-  context 'sign in' do
-    before do
-      create(
-        :webauthn_configuration,
-        user: user,
-        credential_id: credential_id,
-        credential_public_key: credential_public_key,
-      )
+  context 'roaming authenticator' do
+    context 'sign in' do
+      before do
+        create(
+          :webauthn_configuration,
+          user: user,
+          credential_id: credential_id,
+          credential_public_key: credential_public_key,
+        )
+      end
+
+      def remember_device_and_sign_out_user
+        mock_webauthn_verification_challenge
+        sign_in_user(user)
+        mock_press_button_on_hardware_key_on_verification
+        check :remember_device
+        click_button t('forms.buttons.continue')
+        first(:link, t('links.sign_out')).click
+        user
+      end
+
+      it_behaves_like 'remember device'
     end
 
-    def remember_device_and_sign_out_user
-      mock_webauthn_verification_challenge
-      sign_in_user(user)
-      mock_press_button_on_hardware_key_on_verification
-      check :remember_device
-      click_button t('forms.buttons.continue')
-      first(:link, t('links.sign_out')).click
-      user
+    context 'sign up' do
+      def remember_device_and_sign_out_user
+        mock_webauthn_setup_challenge
+        user = sign_up_and_set_password
+        user.password = Features::SessionHelper::VALID_PASSWORD
+
+        # webauthn option is hidden in browsers that don't support it
+        select_2fa_option('webauthn', visible: :all)
+        fill_in_nickname_and_click_continue
+        check :remember_device
+        mock_press_button_on_hardware_key_on_setup
+
+        first(:link, t('links.sign_out')).click
+        user
+      end
+
+      it_behaves_like 'remember device'
     end
 
-    it_behaves_like 'remember device'
+    context 'update webauthn' do
+      def remember_device_and_sign_out_user
+        mock_webauthn_setup_challenge
+        sign_in_and_2fa_user(user)
+        visit account_two_factor_authentication_path
+        click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
+        fill_in_nickname_and_click_continue
+        check :remember_device
+        mock_press_button_on_hardware_key_on_setup
+        expect(page).to have_current_path(account_two_factor_authentication_path)
+        first(:link, t('links.sign_out')).click
+        user
+      end
+
+      it_behaves_like 'remember device'
+    end
   end
 
-  context 'sign up' do
-    def remember_device_and_sign_out_user
-      mock_webauthn_setup_challenge
-      user = sign_up_and_set_password
-      user.password = Features::SessionHelper::VALID_PASSWORD
+  context 'platform authenticator' do
+    context 'sign in' do
+      before do
+        create(
+          :webauthn_configuration,
+          user: user,
+          platform_authenticator: true,
+          credential_id: credential_id,
+          credential_public_key: credential_public_key,
+        )
+      end
 
-      # webauthn option is hidden in browsers that don't support it
-      select_2fa_option('webauthn', visible: :all)
-      fill_in_nickname_and_click_continue
-      check :remember_device
-      mock_press_button_on_hardware_key_on_setup
+      def remember_device_and_sign_out_user
+        mock_webauthn_verification_challenge
+        sign_in_user(user)
+        mock_press_button_on_hardware_key_on_verification
+        check :remember_device
+        click_button t('forms.buttons.continue')
+        first(:link, t('links.sign_out')).click
+        user
+      end
 
-      first(:link, t('links.sign_out')).click
-      user
+      it_behaves_like 'remember device'
     end
 
-    it_behaves_like 'remember device'
-  end
+    context 'sign up' do
+      def remember_device_and_sign_out_user
+        mock_webauthn_setup_challenge
+        user = sign_up_and_set_password
+        user.password = Features::SessionHelper::VALID_PASSWORD
 
-  context 'update webauthn' do
-    def remember_device_and_sign_out_user
-      mock_webauthn_setup_challenge
-      sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
-      click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
-      fill_in_nickname_and_click_continue
-      check :remember_device
-      mock_press_button_on_hardware_key_on_setup
-      expect(page).to have_current_path(account_two_factor_authentication_path)
-      first(:link, t('links.sign_out')).click
-      user
+        # webauthn option is hidden in browsers that don't support it
+        select_2fa_option('webauthn', visible: :all)
+        fill_in_nickname_and_click_continue
+        check :remember_device
+        mock_press_button_on_hardware_key_on_setup
+
+        first(:link, t('links.sign_out')).click
+        user
+      end
+
+      it_behaves_like 'remember device'
     end
 
-    it_behaves_like 'remember device'
+    context 'update webauthn' do
+      def remember_device_and_sign_out_user
+        mock_webauthn_setup_challenge
+        sign_in_and_2fa_user(user)
+        visit account_two_factor_authentication_path
+        click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
+        fill_in_nickname_and_click_continue
+        check :remember_device
+        mock_press_button_on_hardware_key_on_setup
+        expect(page).to have_current_path(account_two_factor_authentication_path)
+        first(:link, t('links.sign_out')).click
+        user
+      end
+
+      it_behaves_like 'remember device'
+    end
   end
 end

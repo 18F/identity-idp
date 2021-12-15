@@ -77,6 +77,30 @@ FactoryBot.define do
       end
     end
 
+    trait :with_webauthn_platform do
+      after(:build) do |user, evaluator|
+        next unless user.webauthn_configurations.empty?
+        user.webauthn_configurations << build(
+          :webauthn_configuration,
+          {
+            user_id: -1,
+            platform_authenticator: true,
+          }.merge(
+            evaluator.with.slice(:name, :credential_id, :credential_public_key),
+          ),
+        )
+      end
+
+      after(:stub) do |user, evaluator|
+        next unless user.webauthn_configurations.empty?
+        user.webauthn_configurations << build(
+          :webauthn_configuration,
+          { platform_authenticator: true }.
+          evaluator.with.slice(:name, :credential_id, :credential_public_key),
+        )
+      end
+    end
+
     trait :with_phone do
       after(:build) do |user, evaluator|
         next unless user.phone_configurations.empty?

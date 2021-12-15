@@ -17,6 +17,7 @@ class WebauthnSetupForm
     @client_data_json = nil
     @attestation_response = nil
     @name = nil
+    @platform_authenticator = false
   end
 
   def submit(protocol, params)
@@ -36,20 +37,30 @@ class WebauthnSetupForm
     IdentityConfig.store.domain_name
   end
 
+  def platform_authenticator?
+    !!@platform_authenticator
+  end
+
   private
 
   attr_reader :success
-  attr_accessor :user, :challenge, :attestation_object, :client_data_json, :name
+  attr_accessor :user, :challenge, :attestation_object, :client_data_json,
+                :name, :platform_authenticator
 
   def consume_parameters(params)
     @attestation_object = params[:attestation_object]
     @client_data_json = params[:client_data_json]
     @name = params[:name]
+    @platform_authenticator = (params[:platform_authenticator].to_s == 'true')
   end
 
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
-    errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+    if @platform_authenticator
+      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name')
+    else
+      errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+    end
     @name_taken = true
   end
 
@@ -64,10 +75,17 @@ class WebauthnSetupForm
   def safe_response(original_origin)
     @attestation_response.valid?(@challenge.pack('c*'), original_origin)
   rescue StandardError
-    errors.add :name, I18n.t(
-      'errors.webauthn_setup.attestation_error',
-      link: MarketingSite.contact_url,
-    )
+    if @platform_authenticator
+      errors.add :name, I18n.t(
+        'errors.webauthn_platform_setup.attestation_error',
+        link: MarketingSite.contact_url,
+      )
+    else
+      errors.add :name, I18n.t(
+        'errors.webauthn_setup.attestation_error',
+        link: MarketingSite.contact_url,
+      )
+    end
     false
   end
 
@@ -79,6 +97,7 @@ class WebauthnSetupForm
       credential_public_key: public_key,
       credential_id: id,
       name: name,
+      platform_authenticator: platform_authenticator,
     )
   end
 

@@ -9,12 +9,13 @@ describe WebauthnSetupForm do
 
   describe '#submit' do
     context 'when the input is valid' do
-      it 'returns FormResponse with success: true' do
+      it 'returns FormResponse with success: true and creates a webauthn configuration' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         params = {
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
+          platform_authenticator: false,
         }
         extra_attributes = {
           mfa_method_counts: { webauthn: 1 },
@@ -27,6 +28,22 @@ describe WebauthnSetupForm do
           errors: {},
           **extra_attributes,
         )
+
+        expect(user.reload.webauthn_configurations.roaming_authenticators.count).to eq(1)
+      end
+
+      it 'creates a platform authenticator if the platform_authenticator param is set' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        params = {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          platform_authenticator: true,
+        }
+
+        subject.submit(protocol, params)
+
+        expect(user.reload.webauthn_configurations.platform_authenticators.count).to eq(1)
       end
 
       it 'sends a recovery information changed event' do
@@ -38,6 +55,7 @@ describe WebauthnSetupForm do
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
+          platform_authenticator: false,
         }
 
         subject.submit(protocol, params)
@@ -50,6 +68,7 @@ describe WebauthnSetupForm do
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
+          platform_authenticator: false,
         }
         extra_attributes = {
           mfa_method_counts: {},
@@ -72,6 +91,7 @@ describe WebauthnSetupForm do
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
           name: 'mykey',
+          platform_authenticator: false,
         }
         extra_attributes = {
           mfa_method_counts: {},

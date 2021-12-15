@@ -43,6 +43,22 @@ feature 'taking an action that revokes remember device' do
     end
   end
 
+  context 'webauthn platform' do
+    let(:user) { create(:user, :signed_up, :with_webauthn_platform) }
+
+    it 'revokes remember device when removed' do
+      sign_in_with_remember_device_and_sign_out
+
+      sign_in_user(user)
+      visit account_two_factor_authentication_path
+      click_on t('account.index.webauthn_platform_delete')
+      click_on t('account.index.webauthn_platform_confirm_delete')
+      first(:link, t('links.sign_out')).click
+
+      expect_mfa_to_be_required_for_user(user)
+    end
+  end
+
   context 'piv/cac' do
     let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
 
@@ -170,8 +186,10 @@ feature 'taking an action that revokes remember device' do
 
     expected_path = if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
                       login_two_factor_piv_cac_path
+                    elsif TwoFactorAuthentication::WebauthnPolicy.new(user).platform_enabled?
+                      login_two_factor_webauthn_path(platform: true)
                     elsif TwoFactorAuthentication::WebauthnPolicy.new(user).enabled?
-                      login_two_factor_webauthn_path
+                      login_two_factor_webauthn_path(platform: false)
                     elsif TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
                       login_two_factor_authenticator_path
                     elsif TwoFactorAuthentication::PhonePolicy.new(user).enabled?

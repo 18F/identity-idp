@@ -130,6 +130,22 @@ fr:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
         l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
+    webauthn_platform_delete:
+      caution: Si vous supprimez votre déverouillage facial ou déverrouillage par
+        empreinte digitale, vous ne pourrez plus l’utiliser pour accéder à votre
+        compte %{app_name}.
+      confirm: Êtes-vous sûr de vouloir supprimer votre déverouillage facial ou
+        déverrouillage par empreinte digitale?
+    webauthn_platform_setup:
+      continue: Continuer
+      instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
+        déverouillage facial pour accéder à votre compte avec %{app_name}.
+      instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
+        déverouillage facial pour accéder à votre compte.
+      intro: Utilisez le déverrouillage par empreinte digitale ou le déverouillage
+        facial pour accéder à votre compte.
+      login_text: Lorsque vous êtes prêt, appuyez sur le bouton.
+      nickname: Pseudo dispositivo
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour

@@ -62,3 +62,5 @@ es:
       text_html: O %{link}
     webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
     webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.
+    webauthn_platform_configured: Desbloqueo facial o táctil fue agregada a tu cuenta.
+    webauthn_platform_deleted: Desbloqueo facial o táctil fue eliminada de tu cuenta.

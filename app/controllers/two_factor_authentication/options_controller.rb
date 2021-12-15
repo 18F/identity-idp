@@ -9,6 +9,7 @@ module TwoFactorAuthentication
       'auth_app' => :login_two_factor_authenticator_url,
       'piv_cac' => :login_two_factor_piv_cac_url,
       'webauthn' => :login_two_factor_webauthn_url,
+      'webauthn_platform' => :login_two_factor_webauthn_url,
       'personal_key' => :login_two_factor_personal_key_url,
       'backup_code' => :login_two_factor_backup_code_url,
     }.freeze
@@ -66,6 +67,7 @@ module TwoFactorAuthentication
       configuration_id = @two_factor_options_form.configuration_id
       user_session[:phone_id] = configuration_id if configuration_id.present?
       options[:id] = user_session[:phone_id]
+      options[:platform] = true if selection == 'webauthn_platform'
 
       build_url(selection, options)
     end

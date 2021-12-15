@@ -11,12 +11,25 @@ describe WebauthnConfiguration do
   let(:subject) { create(:webauthn_configuration) }
 
   describe '#selection_presenters' do
-    it 'returns a WebauthnSelectionPresenter in an array' do
-      presenters = subject.selection_presenters
-      expect(presenters.count).to eq 1
-      expect(presenters.first).to be_instance_of(
-        TwoFactorAuthentication::WebauthnSelectionPresenter,
-      )
+    context 'for a roaming authenticator' do
+      it 'returns a WebauthnSelectionPresenter in an array' do
+        presenters = subject.selection_presenters
+        expect(presenters.count).to eq 1
+        expect(presenters.first).to be_instance_of(
+          TwoFactorAuthentication::WebauthnSelectionPresenter,
+        )
+      end
+    end
+
+    context 'for a platform authenticator' do
+      it 'returns a WebauthnPlatformSelectionPresenter in an array' do
+        subject.platform_authenticator = true
+        presenters = subject.selection_presenters
+        expect(presenters.count).to eq 1
+        expect(presenters.first).to be_instance_of(
+          TwoFactorAuthentication::WebauthnPlatformSelectionPresenter,
+        )
+      end
     end
   end
 
