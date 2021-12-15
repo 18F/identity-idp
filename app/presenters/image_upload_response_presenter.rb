@@ -38,7 +38,7 @@ class ImageUploadResponsePresenter
     else
       hints = @form_response.errors[:hints]
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
-      json[:hints] = hints unless hints&.blank?
+      json[:hints] = hints unless hints.blank?
       json
     end
   end
