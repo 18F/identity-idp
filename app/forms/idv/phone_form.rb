@@ -62,9 +62,9 @@ module Idv
       return if valid_phone_for_allowed_countries?(phone)
 
       if allowed_countries == ['US']
-        errors.add(:phone, :must_have_us_country_code)
+        errors.add(:phone, :must_have_us_country_code, type: :phone)
       else
-        errors.add(:phone, :improbable_phone)
+        errors.add(:phone, :improbable_phone, type: :phone)
       end
     end
 
@@ -79,6 +79,7 @@ module Idv
             "two_factor_authentication.otp_delivery_preference.#{delivery_method}_unsupported",
             location: capabilities.unsupported_location,
           ),
+          type: :phone,
         )
       end
     end

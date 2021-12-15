@@ -10,7 +10,7 @@ module PersonalKeyValidator
 
   def check_personal_key
     return if personal_key_format_matches? && personal_key_generator.verify(personal_key)
-    errors.add :personal_key, :personal_key_incorrect
+    errors.add :personal_key, :personal_key_incorrect, type: :personal_key
   end
 
   def personal_key_format_matches?

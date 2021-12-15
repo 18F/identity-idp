@@ -11,6 +11,7 @@ require:
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/translation_linter.rb
   - ./lib/linters/url_options_linter.rb
+  - ./lib/linters/errors_add_linter.rb
 
 AllCops:
   Exclude:
@@ -54,6 +55,11 @@ IdentityIdp/TranslationLinter:
     - 'spec/support/monitor/**/*.rb'
 
 IdentityIdp/UrlOptionsLinter:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
+
+IdentityIdp/ErrorsAddLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'

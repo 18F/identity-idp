@@ -59,7 +59,12 @@ class OpenidConnectLogoutForm
   end
 
   def validate_identity
-    errors.add(:id_token_hint, t('openid_connect.logout.errors.id_token_hint')) unless identity
+    unless identity
+      errors.add(
+        :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
+        type: :open_id_connect
+      )
+    end
   end
 
   # Used by RedirectUriValidator

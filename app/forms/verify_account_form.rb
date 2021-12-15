@@ -45,16 +45,16 @@ class VerifyAccountForm
   def validate_otp_not_expired
     return unless gpo_confirmation_code.present? && gpo_confirmation_code.expired?
 
-    errors.add :otp, :gpo_otp_expired
+    errors.add :otp, :gpo_otp_expired, type: :account_verify
   end
 
   def validate_pending_profile
-    errors.add :base, :no_pending_profile unless pending_profile
+    errors.add :base, :no_pending_profile, type: :account_verify unless pending_profile
   end
 
   def validate_otp
     return if otp.blank? || valid_otp?
-    errors.add :otp, :confirmation_code_incorrect
+    errors.add :otp, :confirmation_code_incorrect, type: :account_verify
   end
 
   def valid_otp?

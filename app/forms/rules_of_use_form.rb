@@ -13,7 +13,7 @@ class RulesOfUseForm
   def validate_terms_accepted
     return if @terms_accepted
 
-    errors.add(:terms_accepted, t('errors.rules_of_use'))
+    errors.add(:terms_accepted, t('errors.rules_of_use'), type: :rules_of_use)
   end
 
   def submit(params)

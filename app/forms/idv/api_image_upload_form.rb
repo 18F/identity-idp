@@ -154,15 +154,30 @@ module Idv
     end
 
     def validate_images
-      errors.add(:front, t('doc_auth.errors.not_a_file')) if front.is_a? URI::InvalidURIError
-      errors.add(:back, t('doc_auth.errors.not_a_file')) if back.is_a? URI::InvalidURIError
-      errors.add(:selfie, t('doc_auth.errors.not_a_file')) if selfie.is_a? URI::InvalidURIError
+      if front.is_a? URI::InvalidURIError
+        errors.add(
+          :front, t('doc_auth.errors.not_a_file'),
+          type: :api_image_upload
+        )
+      end
+      if back.is_a? URI::InvalidURIError
+        errors.add(
+          :back, t('doc_auth.errors.not_a_file'),
+          type: :api_image_upload
+        )
+      end
+      if selfie.is_a? URI::InvalidURIError
+        errors.add(
+          :selfie, t('doc_auth.errors.not_a_file'),
+          type: :api_image_upload
+        )
+      end
     end
 
     def throttle_if_rate_limited
       return unless @throttled
       track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_doc_auth)
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'))
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :api_image_upload)
     end
 
     def document_capture_session_uuid

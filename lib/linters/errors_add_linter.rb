@@ -7,12 +7,10 @@ module RuboCop
       #
       # @example
       #   #bad
-      #   redirect_back
-      #   redirect_back '/'
-      #   redirect_back allow_other_host: false
+      #   errors.add(:iss, 'invalid issuer')
       #
       #   #good
-      #   redirect_back fallback_location: '/', allow_other_host: false
+      #   rrors.add(:iss, 'invalid issuer', type: issue)
       #
       class ErrorsAddLinter < RuboCop::Cop::Cop
         MSG = 'Please set a unique key for this error'.freeze
@@ -24,10 +22,15 @@ module RuboCop
         PATTERN
 
         def on_send(node)
-          # require 'pry'
-          # binding.pry
-          return unless errors_add_match?(node)
-          add_offense(node, location: :expression)
+          unless node.arguments.last.type == :hash || errors_add_match?(node).nil?
+            return add_offense(node, location: :expression)
+          end
+          errors_add_match?(node) do |arguments|
+            type_node = arguments.last.pairs.find do |pair|
+              pair.key.sym_type? && pair.key.source == 'type'
+            end
+            add_offense(node, location: :expression) unless type_node
+          end
         end
       end
     end

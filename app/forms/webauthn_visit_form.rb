@@ -14,6 +14,7 @@ class WebauthnVisitForm
       'InvalidStateError' => I18n.t('errors.webauthn_setup.already_registered'),
       'NotSupportedError' => I18n.t('errors.webauthn_setup.not_supported'),
     }
-    errors.add error, error_h[error] || I18n.t('errors.webauthn_setup.general_error')
+    errors.add error,
+               error_h[error] || I18n.t('errors.webauthn_setup.general_error'), type: :webauthn
   end
 end

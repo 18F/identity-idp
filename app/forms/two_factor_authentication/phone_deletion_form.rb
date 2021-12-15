@@ -37,7 +37,10 @@ module TwoFactorAuthentication
         revoke_remember_device(user)
         true
       else
-        errors.add(:configuration, :not_destroyed, message: 'cannot delete phone')
+        errors.add(
+          :configuration, :not_destroyed, message: 'cannot delete phone',
+                                          type: :two_factor
+        )
         false
       end
     end
