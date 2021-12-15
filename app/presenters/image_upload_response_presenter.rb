@@ -37,7 +37,9 @@ class ImageUploadResponsePresenter
       { success: false, redirect: idv_session_errors_throttled_url }
     else
       hints = @form_response.errors[:hints]
-      { success: false, errors: errors, hints: hints, remaining_attempts: remaining_attempts }
+      json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
+      json[:hints] = hints unless hints&.blank?
+      json
     end
   end
 
