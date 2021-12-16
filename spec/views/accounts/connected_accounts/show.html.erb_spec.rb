@@ -29,6 +29,7 @@ describe 'accounts/connected_accounts/show.html.erb' do
 
     it 'renders' do
       expect { render }.to_not raise_error
+      expect(rendered).to match '</time>'
     end
   end
 end
