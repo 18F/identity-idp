@@ -149,6 +149,7 @@ class Analytics
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
   IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
+  IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'.freeze
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
@@ -227,6 +228,7 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
+  REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'.freeze
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'.freeze
   RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'.freeze
   RULES_OF_USE_VISIT = 'Rules Of Use Visited'.freeze

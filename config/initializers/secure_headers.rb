@@ -6,8 +6,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
 
-  connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
-                 'us.acas.acuant.net']
+  connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
@@ -29,7 +28,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     object_src: ["'none'"],
     script_src: [
       "'self'",
-      '*.newrelic.com',
+      'js-agent.newrelic.com',
       '*.nr-data.net',
       'dap.digitalgov.gov',
       '*.google-analytics.com',

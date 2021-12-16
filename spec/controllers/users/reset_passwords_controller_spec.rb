@@ -422,7 +422,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
-          error_details: { email: [t('valid_email.validations.email.invalid')] },
+          error_details: { email: [:invalid] },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

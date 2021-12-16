@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
+    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post delete]
     # JS-driven POST redirect route to preserve existing session
     post "/api/saml/auth#{suffix}" => 'saml_post#auth'
     # actual SAML handling POST route
@@ -250,8 +251,6 @@ Rails.application.routes.draw do
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
-    get '/return_to_sp/cancel' => redirect('/redirect/return_to_sp/cancel') # Temporary: Remove after RC169
-    get '/return_to_sp/failure_to_proof' => redirect('/redirect/return_to_sp/failure_to_proof') # Temporary: Remove after RC169
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -287,6 +286,7 @@ Rails.application.routes.draw do
       get '/session/errors/throttled' => 'session_errors#throttled'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
+      put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'

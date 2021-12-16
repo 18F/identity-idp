@@ -55,9 +55,6 @@ describe('form-validation', () => {
       <form>
         <input type="text" aria-label="not required field">
         <input type="text" aria-label="required field" required class="field">
-        <input type="text" aria-label="format" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z">
-        <input type="text" aria-label="format unknown field" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z" class="field">
-        <input type="text" aria-label="format field" pattern="(?:[a-zA-Z0-9]{4}([ -])?){3}[a-zA-Z0-9]{4}" class="field personal-key">
       </form>`;
 
     initialize(document.querySelector('form'));
@@ -71,24 +68,6 @@ describe('form-validation', () => {
     expect(requiredField.validationMessage).to.equal('simple_form.required.text');
     await userEvent.type(requiredField, 'a');
     expect(notRequiredField.validationMessage).to.be.empty();
-
-    const format = screen.getByLabelText('format');
-    await userEvent.type(format, 'a');
-    expect(format.validationMessage).to.not.be.empty.and.not.match(
-      /^idv\.errors\.pattern_mismatch\./,
-    );
-
-    const formatUnknownField = screen.getByLabelText('format unknown field');
-    await userEvent.type(formatUnknownField, 'a');
-    expect(formatUnknownField.validationMessage).to.not.be.empty.and.not.match(
-      /^idv\.errors\.pattern_mismatch\./,
-    );
-
-    const formatField = screen.getByLabelText('format field');
-    await userEvent.type(formatField, 'a');
-    expect(formatField.validationMessage).to.equal('idv.errors.pattern_mismatch.personal_key');
-    await userEvent.type(formatField, 'aaa-aaaa-aaaa-aaaa');
-    expect(formatField.validationMessage).to.be.empty();
   });
 
   it('resets its own custom validity message on input', () => {

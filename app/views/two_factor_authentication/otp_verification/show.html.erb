@@ -31,7 +31,7 @@
   </div>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
-  <div class="flex flex-row flex-align-center flex-wrap">
+  <div class="display-flex flex-row flex-align-center flex-wrap">
     <%= link_to(
           t('links.two_factor_authentication.get_another_code'),
           otp_send_path(
@@ -44,7 +44,7 @@
           form_class: 'inline-block',
         ) %>
 
-    <span class="text-no-wrap flex-no-shrink flex flex-row flex-align-center">
+    <span class="text-no-wrap flex-no-shrink display-flex flex-row flex-align-center">
       <%= hidden_field_tag 'remember_device', false,
                            id: 'remember_device_preference' %>
       <%= check_box_tag 'remember_device', true,

@@ -8,8 +8,17 @@ module Idv
     def new
       properties = ParseControllerFromReferer.new(request.referer).call
       analytics.track_event(Analytics::IDV_CANCELLATION, properties.merge(step: params[:step]))
-      @go_back_path = go_back_path || idv_path
+      self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
+    end
+
+    def update
+      if params.key?(:cancel)
+        analytics.track_event(Analytics::IDV_CANCELLATION_GO_BACK, step: params[:step])
+        redirect_to session_go_back_path || idv_path
+      else
+        render :new
+      end
     end
 
     def destroy
@@ -46,6 +55,22 @@ module Idv
 
     def document_capture_session
       DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+    end
+
+    def session_go_back_path=(path)
+      if hybrid_session?
+        session[:go_back_path] = path
+      else
+        idv_session.go_back_path = path
+      end
+    end
+
+    def session_go_back_path
+      if hybrid_session?
+        session[:go_back_path]
+      else
+        idv_session.go_back_path
+      end
     end
   end
 end

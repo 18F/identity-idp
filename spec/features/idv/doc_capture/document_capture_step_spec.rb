@@ -32,10 +32,31 @@ feature 'doc capture document capture step' do
     click_on t('links.cancel')
 
     expect(page).to have_text(t('idv.cancel.headings.prompt.hybrid'))
+    expect(fake_analytics).to have_logged_event(
+      Analytics::IDV_CANCELLATION,
+      step: 'document_capture',
+    )
 
     click_on t('forms.buttons.cancel')
 
     expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
+    expect(fake_analytics).to have_logged_event(
+      Analytics::IDV_CANCELLATION_CONFIRMED,
+      step: 'document_capture',
+    )
+  end
+
+  it 'goes back to the right place when clicking "go back" after cancelling' do
+    complete_doc_capture_steps_before_first_step(user)
+
+    click_on t('links.cancel')
+    click_on t('links.go_back')
+
+    expect(page).to have_current_path(idv_capture_doc_document_capture_step)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::IDV_CANCELLATION_GO_BACK,
+      step: 'document_capture',
+    )
   end
 
   it 'advances original session once complete' do

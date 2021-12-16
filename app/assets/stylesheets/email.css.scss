@@ -11,14 +11,18 @@
   }
 }
 
-.hr { margin: $hr-margin; }
+.hr {
+  margin: $hr-margin;
+}
 
 .lead {
   hyphens: none;
   margin-bottom: 30px;
 }
 
-.mr-tiny { margin-right: 4px; }
+.mr-tiny {
+  margin-right: 4px;
+}
 
 .s10 {
   font-size: 10px;
@@ -40,7 +44,9 @@ h4 {
   margin-bottom: 16px;
 }
 
-.button.large.expanded table a { padding: 20px 0; }
+.button.large.expanded table a {
+  padding: 20px 0;
+}
 
 .button.expanded.large .btn-warn-bkg {
   background-color: $white;

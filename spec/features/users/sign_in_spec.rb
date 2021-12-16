@@ -680,17 +680,14 @@ feature 'Sign in' do
   end
 
   context 'user signs in when accepted_terms_at is out of date', js: true do
-    it 'disables terms button correctly and signs in successfully' do
+    it 'validates terms checkbox and signs in successfully' do
       user = create(:user, :signed_up, accepted_terms_at: nil)
       signin(user.email, user.password)
-      button = find_button(t('forms.buttons.continue'))
-      expect(button[:class]).to include('usa-button--disabled')
 
-      # This checkbox element has a non-standard id for the accept-terms-button JS
-      check 'user_terms_accepted'
+      click_button t('forms.buttons.continue')
+      expect(page).to have_css(':focus[name="rules_of_use_form[terms_accepted]"]', visible: :all)
 
-      button = find_button(t('forms.buttons.continue'))
-      expect(button[:class]).to_not include('usa-button--disabled')
+      check 'rules_of_use_form[terms_accepted]'
 
       click_button t('forms.buttons.continue')
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
