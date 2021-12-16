@@ -82,7 +82,10 @@ class SecurityEventForm
   def check_jwt_parse_error
     return false if @error_code != ErrorCodes::JWT_PARSE
 
-    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'), type: :jwt_could_not_parse)
+    errors.add(
+      :jwt, t('risc.security_event.errors.jwt_could_not_parse'),
+      type: :jwt_could_not_parse
+    )
     true
   end
 
@@ -165,11 +168,14 @@ class SecurityEventForm
 
   def validate_event_type
     if event_type.blank?
-      errors.add(:event_type, t('risc.security_event.errors.event_type_missing'), type: :event_type_missing)
+      errors.add(
+        :event_type, t('risc.security_event.errors.event_type_missing'),
+        type: :event_type_missing
+      )
     elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
-        t('risc.security_event.errors.event_type_unsupported', event_type: :event_type_unsupported),
+        t('risc.security_event.errors.event_type_unsupported', event_type: :"#{event_type}"),
         type: :event_type_unsupported,
       )
       @error_code = ErrorCodes::SET_TYPE
@@ -193,7 +199,12 @@ class SecurityEventForm
         type: :sub_unsupported
       )
     end
-    errors.add(:sub, t('risc.security_event.errors.sub_not_found'), type: :sub_not_found) if user.blank?
+    if user.blank?
+      errors.add(
+        :sub, t('risc.security_event.errors.sub_not_found'),
+        type: :sub_not_found
+      )
+    end
   end
 
   def validate_typ

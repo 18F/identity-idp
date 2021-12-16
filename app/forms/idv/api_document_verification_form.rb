@@ -124,7 +124,7 @@ module Idv
       if liveness_checking_enabled?
         errors.add(
           :selfie_image_url, invalid_link,
-          type: :invalid_link,
+          type: :invalid_link
         )
       end
     end

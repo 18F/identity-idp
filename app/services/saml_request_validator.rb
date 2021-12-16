@@ -30,7 +30,10 @@ class SamlRequestValidator
   # SamlIdpAuthConcern#check_sp_active checks that it's currently active
   def authorized_service_provider
     return if service_provider
-    errors.add(:service_provider, :unauthorized_service_provider, type: :unauthorized_service_provider)
+    errors.add(
+      :service_provider, :unauthorized_service_provider,
+      type: :unauthorized_service_provider
+    )
   end
 
   def authorized_authn_context
