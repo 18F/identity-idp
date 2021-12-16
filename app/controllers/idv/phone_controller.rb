@@ -8,8 +8,8 @@ module Idv
     before_action :set_idv_form
 
     def new
-      if params[:location]
-        analytics.track_event(Analytics::IDV_PHONE_USE_DIFFERENT, location: params[:location])
+      if params[:step]
+        analytics.track_event(Analytics::IDV_PHONE_USE_DIFFERENT, step: params[:step])
       end
 
       redirect_to failure_url(:fail) and return if throttle.throttled?

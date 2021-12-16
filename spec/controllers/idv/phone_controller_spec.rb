@@ -79,8 +79,8 @@ describe Idv::PhoneController do
     end
 
     context 'when the user has chosen to use a different number' do
-      let(:path_from) { 'path_where_user_asked_to_use_different_number' }
-      let(:params) { { location: path_from } }
+      let(:step) { 'path_where_user_asked_to_use_different_number' }
+      let(:params) { { step: step } }
 
       before do
         stub_analytics
@@ -91,7 +91,7 @@ describe Idv::PhoneController do
         get :new, params: params
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_USE_DIFFERENT, location: path_from)
+          with(Analytics::IDV_PHONE_USE_DIFFERENT, step: step)
       end
     end
 
