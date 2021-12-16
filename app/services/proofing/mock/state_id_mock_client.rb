@@ -12,8 +12,8 @@ module Proofing
       stage :state_id
 
       SUPPORTED_STATES = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM PA
-        RI SC SD TX VA VT WA WI WY
+        AR AZ CO CT DC DE FL GA IA ID IL IN KS KY MA MD ME MI MO MS MT NC ND NE
+        NJ NM OH OR PA RI SC SD TN TX VA VT WA WI WY
       ].to_set.freeze
 
       SUPPORTED_STATE_ID_TYPES = %w[
