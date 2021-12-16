@@ -19,7 +19,8 @@ module Idv
     end
 
     def update_phone_link
-      phone_path = Rails.application.routes.url_helpers.idv_phone_path
+      current_path = Rails.application.routes.url_helpers.idv_otp_verification_path
+      phone_path = Rails.application.routes.url_helpers.idv_phone_path(location: current_path)
       link = link_to(t('forms.two_factor.try_again'), phone_path)
       t('instructions.mfa.wrong_number_html', link: link)
     end
