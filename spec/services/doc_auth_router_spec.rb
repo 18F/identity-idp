@@ -55,8 +55,8 @@ RSpec.describe DocAuthRouter do
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        iterations.times do |_i|
-          results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
+        iterations.times do |i|
+          results.push(DocAuthRouter.doc_auth_vendor(discriminator: i.to_s(16)))
         end
 
         target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
@@ -124,8 +124,8 @@ RSpec.describe DocAuthRouter do
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        iterations.times do |_i|
-          client = DocAuthRouter.client(vendor_discriminator: SecureRandom.uuid).client
+        iterations.times do |i|
+          client = DocAuthRouter.client(vendor_discriminator: i.to_s(16)).client
           results.push(client.class.to_s)
         end
 
