@@ -70,16 +70,10 @@ class PhoneInputComponent < BaseComponent
 
   def international_phone_codes_data(code_data)
     supports_sms = code_data['supports_sms']
-    supports_sms_unconfirmed = code_data.fetch(
-      'supports_sms_unconfirmed',
-      supports_sms,
-    )
+    supports_sms_unconfirmed = code_data.fetch('supports_sms_unconfirmed', supports_sms)
 
     supports_voice = code_data['supports_voice']
-    supports_voice_unconfirmed = code_data.fetch(
-      'supports_voice_unconfirmed',
-      supports_voice,
-    )
+    supports_voice_unconfirmed = code_data.fetch('supports_voice_unconfirmed', supports_voice)
 
     {
       supports_sms: supports_sms_unconfirmed || (confirmed_phone && supports_sms),
