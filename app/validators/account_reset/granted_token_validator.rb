@@ -22,7 +22,7 @@ module AccountReset
 
       errors.add(
         :token, I18n.t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
-        type: :token_validator
+        type: :granted_token_invalid
       )
     end
 
@@ -30,7 +30,7 @@ module AccountReset
       return unless account_reset_request&.granted_token_expired?
       errors.add(
         :token, I18n.t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
-        type: :token_validator
+        type: :granted_token_expired
       )
     end
 

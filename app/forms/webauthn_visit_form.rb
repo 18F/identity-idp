@@ -15,6 +15,6 @@ class WebauthnVisitForm
       'NotSupportedError' => I18n.t('errors.webauthn_setup.not_supported'),
     }
     errors.add error,
-               error_h[error] || I18n.t('errors.webauthn_setup.general_error'), type: :webauthn
+               error_h[error] || I18n.t('errors.webauthn_setup.general_error'), type: :general_error
   end
 end

@@ -55,7 +55,7 @@ class EmailConfirmationTokenValidator
 
   def email_not_already_confirmed
     return if already_confirmed_email_address.nil?
-    errors.add(:confirmation_token, :already_confirmed, type: :email_confirmation_validator)
+    errors.add(:confirmation_token, :already_confirmed, type: :already_confirmed)
   end
 
   def already_confirmed_email_address
@@ -70,7 +70,7 @@ class EmailConfirmationTokenValidator
     unless email_address_found_with_token?
       errors.add(
         :confirmation_token, :not_found,
-        type: :email_confirmation_validator
+        type: :not_found
       )
     end
   end
@@ -84,7 +84,7 @@ class EmailConfirmationTokenValidator
     if confirmation_period_expired?
       errors.add(
         :confirmation_token, :expired,
-        type: :email_confirmation_validator
+        type: :expired
       )
     end
   end

@@ -82,14 +82,14 @@ class SecurityEventForm
   def check_jwt_parse_error
     return false if @error_code != ErrorCodes::JWT_PARSE
 
-    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'), type: :sec_event)
+    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'), type: :jwt_could_not_parse)
     true
   end
 
   def check_public_key_error(public_key)
     return false if public_key.present?
 
-    errors.add(:jwt, t('risc.security_event.errors.no_public_key'), type: :sec_event)
+    errors.add(:jwt, t('risc.security_event.errors.no_public_key'), type: :no_public_key)
     @error_code = ErrorCodes::JWS
     true
   end
@@ -116,7 +116,7 @@ class SecurityEventForm
 
     if error_code && error_message
       @error_code = error_code
-      errors.add(:jwt, error_message, type: :sec_event)
+      errors.add(:jwt, error_message, type: :"#{error_message.split('.').last}")
     else
       check_public_key_error(matching_public_key)
     end
@@ -124,7 +124,7 @@ class SecurityEventForm
 
   def validate_jti
     if jti.blank?
-      errors.add(:jti, t('risc.security_event.errors.jti_required'), type: :sec_event)
+      errors.add(:jti, t('risc.security_event.errors.jti_required'), type: :jti_required)
       return
     end
 
@@ -132,7 +132,7 @@ class SecurityEventForm
 
     return unless record_already_exists?
 
-    errors.add(:jti, t('risc.security_event.errors.jti_not_unique'), type: :sec_event)
+    errors.add(:jti, t('risc.security_event.errors.jti_not_unique'), type: :jti_not_unique)
     @error_code = ErrorCodes::DUP
   end
 
@@ -148,7 +148,7 @@ class SecurityEventForm
   end
 
   def validate_iss
-    errors.add(:iss, 'invalid issuer', type: :sec_event) if service_provider.blank?
+    errors.add(:iss, 'invalid issuer', type: :invalid_issuer) if service_provider.blank?
   end
 
   def validate_aud
@@ -158,19 +158,19 @@ class SecurityEventForm
     errors.add(
       :aud,
       t('risc.security_event.errors.aud_invalid', url: api_risc_security_events_url),
-      type: :sec_event,
+      type: :aud_invalid,
     )
     @error_code = ErrorCodes::JWT_AUD
   end
 
   def validate_event_type
     if event_type.blank?
-      errors.add(:event_type, t('risc.security_event.errors.event_type_missing'), type: :sec_event)
+      errors.add(:event_type, t('risc.security_event.errors.event_type_missing'), type: :event_type_missing)
     elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
-        t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
-        type: :sec_event,
+        t('risc.security_event.errors.event_type_unsupported', event_type: :event_type_unsupported),
+        type: :event_type_unsupported,
       )
       @error_code = ErrorCodes::SET_TYPE
     end
@@ -182,7 +182,7 @@ class SecurityEventForm
     errors.add(
       :subject_type,
       t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss-sub'),
-      type: :sec_event,
+      type: :subject_type_unsupported,
     )
   end
 
@@ -190,10 +190,10 @@ class SecurityEventForm
     if jwt_payload['sub'].present?
       errors.add(
         :sub, t('risc.security_event.errors.sub_unsupported'),
-        type: :sec_event
+        type: :sub_unsupported
       )
     end
-    errors.add(:sub, t('risc.security_event.errors.sub_not_found'), type: :sec_event) if user.blank?
+    errors.add(:sub, t('risc.security_event.errors.sub_not_found'), type: :sub_not_found) if user.blank?
   end
 
   def validate_typ
@@ -202,7 +202,7 @@ class SecurityEventForm
 
     errors.add(
       :typ, t('risc.security_event.errors.typ_error', expected_typ: 'secevent+jwt'),
-      type: :sec_event
+      type: :typ_error
     )
     @error_code = ErrorCodes::JWT_HDR
   end
@@ -210,7 +210,7 @@ class SecurityEventForm
   def validate_exp
     return if jwt_payload['exp'].blank?
 
-    errors.add(:exp, t('risc.security_event.errors.exp_present'), type: :sec_event)
+    errors.add(:exp, t('risc.security_event.errors.exp_present'), type: :exp_present)
   end
 
   def client_id

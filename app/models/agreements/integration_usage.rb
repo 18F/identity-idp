@@ -24,7 +24,7 @@ class Agreements::IntegrationUsage < ApplicationRecord
 
     errors.add(
       :iaa_order, 'must belong to same partner account as integration',
-      type: :integrations
+      type: :partner_account_does_match_integration
     )
   end
 end

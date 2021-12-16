@@ -34,7 +34,7 @@ module EventDisavowal
       return if event.disavowed_at.blank?
       errors.add(
         :event, I18n.t('event_disavowals.errors.event_already_disavowed'),
-        type: :disavowed_event_validator
+        type: :event_already_disavowed
       )
     end
 
@@ -44,7 +44,7 @@ module EventDisavowal
       return if event.created_at > disavowal_expiration
       errors.add(
         :event, I18n.t('event_disavowals.errors.event_disavowal_expired'),
-        type: :disavowed_event_validator
+        type: :event_disavowal_expired
       )
     end
   end

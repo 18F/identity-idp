@@ -109,20 +109,20 @@ module Idv
       unless valid_url?(:front_image_url)
         errors.add(
           :front_image_url, invalid_link,
-          type: :doc_verification
+          type: :invalid_link
         )
       end
       unless valid_url?(:back_image_url)
         errors.add(
           :back_image_url, invalid_link,
-          type: :doc_verification
+          type: :invalid_link
         )
       end
       return if valid_url?(:selfie_image_url)
       if liveness_checking_enabled?
         errors.add(
           :selfie_image_url, invalid_link,
-          type: :doc_verification
+          type: :invalid_link,
         )
       end
     end

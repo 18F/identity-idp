@@ -14,7 +14,7 @@ module RedirectUriValidator
 
     errors.add(
       :redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'),
-      type: :redirect_uri
+      type: :redirect_uri_no_match
     )
   end
 
@@ -27,7 +27,7 @@ module RedirectUriValidator
   rescue ArgumentError, URI::InvalidURIError
     errors.add(
       :redirect_uri, t('openid_connect.authorization.errors.redirect_uri_invalid'),
-      type: :redirect_uri
+      type: :redirect_uri_invalid
     )
   end
 

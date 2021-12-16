@@ -34,7 +34,7 @@ class RegisterUserEmailForm
   def validate_terms_accepted
     return if @terms_accepted
 
-    errors.add(:terms_accepted, t('errors.registration.terms'), type: :register_user)
+    errors.add(:terms_accepted, t('errors.registration.terms'), type: :terms)
   end
 
   def submit(params, instructions = nil)

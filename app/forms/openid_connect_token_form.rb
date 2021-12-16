@@ -93,23 +93,22 @@ class OpenidConnectTokenForm
     return if pkce? || private_key_jwt?
     errors.add :code,
                t('openid_connect.token.errors.invalid_authentication'),
-               type: :open_id_connect
+               type: :invalid_authentication
   end
 
   def validate_expired
     if identity&.updated_at && identity.updated_at < session_expiration
-      errors.add :code, t('openid_connect.token.errors.expired_code'), type: :open_id_connect
+      errors.add :code, t('openid_connect.token.errors.expired_code'), type: :expired_code
     end
   end
 
   def validate_code
-    if identity.blank? ||
-       !identity.user
+    if identity.blank? || !identity.user
       errors.add :code,
                  t(
                    'openid_connect.token.errors.invalid_code',
                  ),
-                 type: :open_id_connect
+                 type: :invalid_code
     end
   end
 
@@ -119,7 +118,7 @@ class OpenidConnectTokenForm
     return if expected_code_challenge == given_code_challenge
     errors.add :code_verifier,
                t('openid_connect.token.errors.invalid_code_verifier'),
-               type: :open_id_connect
+               type: :invalid_code_verifier
   end
 
   def validate_client_assertion
@@ -146,7 +145,7 @@ class OpenidConnectTokenForm
       errors.add(
         :client_assertion,
         err&.message || t('openid_connect.token.errors.invalid_signature'),
-        type: :open_id_connect,
+        type: :invalid_signature,
       )
     end
   end
@@ -160,7 +159,7 @@ class OpenidConnectTokenForm
     errors.add(
       :client_assertion,
       t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
-      type: :open_id_connect,
+      type: :invalid_aud,
     )
   end
 
@@ -171,7 +170,7 @@ class OpenidConnectTokenForm
 
     errors.add(
       :client_assertion, t('openid_connect.token.errors.invalid_iat'),
-      type: :open_id_connect
+      type: :invalid_iat
     )
   end
 

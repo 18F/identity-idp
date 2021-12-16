@@ -20,7 +20,7 @@ module AccountReset
       if token
         errors.add(
           :token, I18n.t('errors.account_reset.cancel_token_invalid'),
-          type: :token_validator
+          type: :cancel_token_invalid
         )
       end
     end

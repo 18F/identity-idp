@@ -124,12 +124,12 @@ class OpenidConnectAuthorizeForm
     if acr_values.empty?
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_valid_acr_values'),
-        type: :open_id_connect
+        type: :no_valid_acr_values
       )
     elsif ial_values.empty?
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.missing_ial'),
-        type: :open_id_connect
+        type: :missing_ial
       )
     end
   end
@@ -140,7 +140,7 @@ class OpenidConnectAuthorizeForm
     return if service_provider
     errors.add(
       :client_id, t('openid_connect.authorization.errors.bad_client_id'),
-      type: :open_id_connect
+      type: :bad_client_id
     )
   end
 
@@ -148,7 +148,7 @@ class OpenidConnectAuthorizeForm
     return if scope.present?
     errors.add(
       :scope, t('openid_connect.authorization.errors.no_valid_scope'),
-      type: :open_id_connect
+      type: :no_valid_scope
     )
   end
 
@@ -156,7 +156,7 @@ class OpenidConnectAuthorizeForm
     return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(
       :scope, t('openid_connect.authorization.errors.unauthorized_scope'),
-      type: :open_id_connect
+      type: :unauthorized_scope
     )
   end
 
@@ -165,7 +165,7 @@ class OpenidConnectAuthorizeForm
     return if prompt == 'login' && service_provider&.allow_prompt_login
     errors.add(
       :prompt, t('openid_connect.authorization.errors.prompt_invalid'),
-      type: :open_id_connect
+      type: :prompt_invalid
     )
   end
 
@@ -175,7 +175,7 @@ class OpenidConnectAuthorizeForm
     errors.add(
       :verified_within,
       t('openid_connect.authorization.errors.invalid_verified_within_format'),
-      type: :open_id_connect,
+      type: :invalid_verified_within_format,
     )
     false
   end
@@ -190,7 +190,7 @@ class OpenidConnectAuthorizeForm
         'openid_connect.authorization.errors.invalid_verified_within_duration',
         count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS,
       ),
-      type: :open_id_connect,
+      type: :invalid_verified_within_duration,
     )
     false
   end
@@ -238,7 +238,7 @@ class OpenidConnectAuthorizeForm
        (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(
         :acr_values, t('openid_connect.authorization.errors.no_auth'),
-        type: :open_id_connect
+        type: :no_auth
       )
     end
   end
@@ -247,7 +247,7 @@ class OpenidConnectAuthorizeForm
     return if !ial2_strict_requested? || FeatureManagement.liveness_checking_enabled?
     errors.add(
       :acr_values, t('openid_connect.authorization.errors.liveness_checking_disabled'),
-      type: :open_id_connect
+      type: :liveness_checking_disabled
     )
   end
 end

@@ -34,7 +34,7 @@ class AccessTokenVerifier
     else
       errors.add(
         :access_token, t('openid_connect.user_info.errors.not_found'),
-        type: :access_token_validator
+        type: :not_found
       )
     end
   end
@@ -43,7 +43,7 @@ class AccessTokenVerifier
     if header.blank?
       errors.add(
         :access_token, t('openid_connect.user_info.errors.no_authorization'),
-        type: :access_token_validator
+        type: :no_authorization
       )
       return
     end
@@ -52,7 +52,7 @@ class AccessTokenVerifier
     if bearer != 'Bearer'
       errors.add(
         :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
-        type: :access_token_validator
+        type: :malformed_authorization
       )
       return
     end

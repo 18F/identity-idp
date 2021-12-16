@@ -62,7 +62,7 @@ class OpenidConnectLogoutForm
     unless identity
       errors.add(
         :id_token_hint, t('openid_connect.logout.errors.id_token_hint'),
-        type: :open_id_connect
+        type: :id_token_hint
       )
     end
   end
