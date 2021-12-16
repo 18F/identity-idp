@@ -8,22 +8,28 @@
 <div class="full-width-box">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
-<br>
-<div class="sm-col sm-col-4 center">
-  <%= link_to t('forms.backup_code.download'), idv_download_personal_key_path,
-              class: 'usa-button usa-button--outline' %>
+<div class="grid-row text-center margin-y-3">
+  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
+    <%= link_to(
+          t('forms.backup_code.download'),
+          idv_download_personal_key_path,
+          class: 'usa-button usa-button--outline',
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
+    <%= button_tag(
+          t('users.personal_key.print'),
+          type: :button,
+          data: { print: true },
+          class: 'usa-button usa-button--outline',
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
+    <%= render ClipboardButtonComponent.new(clipboard_text: code, outline: true) do %>
+      <%= t('links.copy') %>
+    <% end %>
+  </div>
 </div>
-<div class="sm-col sm-col-4 center">
-  <%= link_to t('users.personal_key.print'), '#', data: {print: true},
-                                                  class: 'usa-button usa-button--outline' %>
-</div>
-<div class="sm-col sm-col-4 center">
-  <%= link_to t('links.copy'), '#', data: {"clipboard-text": code},
-                                    class: 'usa-button usa-button--outline clipboard' %>
-</div>
-<br>
-<br>
-<br>
 <div class="sm-col sm-col-2 padding-right-2">
   <%= image_tag(asset_url('alert/icon-lock-alert-important.svg'), alt: '', size: '80') %>
 </div>
@@ -43,4 +49,4 @@
                 'data-toggle': 'modal' %>
 </p>
 <%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>
-<%== javascript_packs_tag_once 'personal-key-page-controller', 'clipboard' %>
+<%== javascript_packs_tag_once 'personal-key-page-controller' %>

@@ -8,7 +8,7 @@ import isSafe from './is-safe';
  */
 
 /**
- * @typedef {"fetch"|"classlist"|"crypto"|"custom-elements"|"custom-event"|"url"} SupportedPolyfills
+ * @typedef {"fetch"|"classlist"|"clipboard"|"crypto"|"custom-elements"|"custom-event"|"url"} SupportedPolyfills
  */
 
 /**
@@ -22,6 +22,11 @@ const POLYFILLS = {
   classlist: {
     test: () => 'classList' in Element.prototype,
     load: () => import(/* webpackChunkName: "classlist-polyfill" */ 'classlist-polyfill'),
+  },
+  clipboard: {
+    test: () => 'clipboard' in navigator,
+    load: () =>
+      import(/* webpackChunkName: "clipboard-polyfill" */ 'clipboard-polyfill/overwrite-globals'),
   },
   crypto: {
     test: () => 'crypto' in window,
