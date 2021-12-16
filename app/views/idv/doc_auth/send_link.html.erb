@@ -25,6 +25,7 @@
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
+        confirmed_phone: true,
         required: true,
         delivery_methods: [:sms],
         class: 'margin-bottom-4',
