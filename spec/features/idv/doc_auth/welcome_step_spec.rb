@@ -34,6 +34,36 @@ feature 'doc auth welcome step' do
     )
   end
 
+  it 'logs supported documents troubleshooting link click' do
+    click_on t('idv.troubleshooting.options.supported_documents')
+
+    expect(fake_analytics).to have_logged_event(
+      Analytics::EXTERNAL_REDIRECT,
+      step: 'welcome',
+      location: 'missing_items',
+      flow: 'idv',
+      redirect_url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'accepted-state-issued-identification',
+      ),
+    )
+  end
+
+  it 'logs missing items troubleshooting link click' do
+    click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
+
+    expect(fake_analytics).to have_logged_event(
+      Analytics::EXTERNAL_REDIRECT,
+      step: 'welcome',
+      location: 'missing_items',
+      flow: 'idv',
+      redirect_url: MarketingSite.help_center_article_url(
+        category: 'verify-your-identity',
+        article: 'phone-number-and-phone-plan-in-your-name',
+      ),
+    )
+  end
+
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
     it 'progresses to the agreement screen' do
       click_continue

@@ -68,6 +68,8 @@ es:
           página o suba una foto en su lugar.
         failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       dpi:
+        failed_short: La imagen es demasiado pequeña o está borrosa, por favor inténtelo
+          de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
           imagen sea demasiado chico, que su identificación sea demasiado
           pequeña o que la foto esté borrosa. Asegúrese de que su identificación
@@ -81,6 +83,7 @@ es:
       file_type:
         invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
+        fallback_field_level: Agregue una imagen nueva
         liveness: No pudimos verificar su documento de identidad y su foto. Intente
           tomar nuevas fotografías.
         multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
@@ -129,6 +132,7 @@ es:
       upload_error: Lo siento, algo salió mal por nuestra parte.
     forms:
       address1: Dirección
+      captured_image: Imagen capturada
       change_file: Cambiar archivo
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
         carpeta</lg-underline>
@@ -180,9 +184,6 @@ es:
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su identificación emitida por el estado. No almacenamos las
         imágenes que subes. Solo verificamos su identidad.
-      document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
-        y no guardaremos ninguna imagen.
-      get_help_at_sp_html: '<strong>¿Tienes algún problema?</strong> Obtén ayuda en %{sp_name}'
       image_updated: Imagen actualizada
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
@@ -256,6 +257,8 @@ es:
         trasera de su identificación.
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.
+      test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” se
+        consideran válidos. No ingrese PII real en este campo.
       text1: ''
       text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.

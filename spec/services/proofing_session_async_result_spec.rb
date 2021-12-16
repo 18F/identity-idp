@@ -21,4 +21,14 @@ RSpec.describe ProofingSessionAsyncResult do
       expect(loaded_result.result).to eq(idv_result.deep_symbolize_keys)
     end
   end
+
+  context 'proofing timed out' do
+    let(:idv_result) { { errors: {}, messages: ['some message'], timed_out: true } }
+
+    it 'indicates a timeout' do
+      result = ProofingSessionAsyncResult.new(id: id, status: status, result: idv_result)
+
+      expect(result.timed_out?).to be
+    end
+  end
 end

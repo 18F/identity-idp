@@ -105,6 +105,23 @@ feature 'doc auth verify step' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
+  context 'resolution proofing raises a timeout exception' do
+    before do
+      allow_any_instance_of(Proofing::Mock::StateIdMockClient).to receive(:execute_proof).and_raise(
+        Proofing::TimeoutError.new(
+          'ExceptionId: 0047, ExceptionText: MVA did not respond in a timely fashion',
+        ),
+      )
+    end
+
+    it 'does not proceed to the next page if resolution raises a timeout exception' do
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      expect(page).to have_content(t('idv.failure.timeout'))
+    end
+  end
+
   it 'throttles resolution and continues when it expires' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
@@ -148,14 +165,11 @@ feature 'doc auth verify step' do
         success: true, errors: {}, context: { stages: [] },
       )
 
-      # rubocop:disable Layout/LineLength
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS +
           [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
-      # rubocop:enable Layout/LineLength
-
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -165,6 +179,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: true,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
     end
   end
@@ -177,14 +192,11 @@ feature 'doc auth verify step' do
         success: true, errors: {}, context: { stages: [] },
       )
 
-      # rubocop:disable Layout/LineLength
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS -
           [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
-      # rubocop:enable Layout/LineLength
-
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -194,6 +206,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: false,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
       expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
     end
@@ -220,6 +233,7 @@ feature 'doc auth verify step' do
         should_proof_state_id: false,
         document_expired: nil,
         trace_id: anything,
+        flow_path: 'standard',
       )
     end
   end

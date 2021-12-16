@@ -12,7 +12,10 @@ variables:
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
 .yarn_install: &yarn_install
-  - yarn install --ignore-engines --cache-folder .yarn-cache
+  - yarn install --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
+
+.yarn_production_install: &yarn_production_install
+  - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
 
 cache:
   - &ruby_cache
@@ -31,9 +34,19 @@ cache:
       - .yarn-cache/
     policy: pull
 
+  - &yarn_production_cache
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
+    policy: pull
+
   - &assets_cache
     key: $CI_COMMIT_SHA
     paths:
+      - tmp/cache/webpacker/last-compilation-digest-test
+      - tmp/cache/assets
       - public/assets
       - public/packs
       - public/packs-test
@@ -93,6 +106,7 @@ specs:
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
+    DOCKER_DB_HOST: postgres
     POSTGRES_DB: upaya_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
@@ -124,11 +138,23 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
+    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://localhost:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - >
         ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
+
+js_build:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_production_cache
+  script:
+    - *bundle_install
+    - *yarn_production_install
+    - bundle exec rake assets:precompile
 
 js_tests:
   extends: .on_push
@@ -139,7 +165,41 @@ js_tests:
     - *yarn_install
     - yarn test
 
+
+smoketest-dev:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $DEV_SMOKETEST == "true"
+  variables:
+    MONITOR_ENV: 'DEV'
+    HEADLESS_BROWSER: 'true'
+    MONITOR_SMS_SIGN_IN_EMAIL: ''
+    MONITOR_GOOGLE_VOICE_PHONE: ''
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - bin/smoke_test --remote --no-source-env
+
+smoketest-int:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $INT_SMOKETEST == "true"
+  variables:
+    MONITOR_ENV: 'INT'
+    HEADLESS_BROWSER: 'true'
+    MONITOR_SMS_SIGN_IN_EMAIL: ''
+    MONITOR_GOOGLE_VOICE_PHONE: ''
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - bin/smoke_test --remote --no-source-env
+
 coverage:
+  extends: .on_push
   stage: after_test
   script:
     - *bundle_install
@@ -156,7 +216,7 @@ coverage:
 sync_from_github:
   image: mirror.gcr.io/alpine/git:latest
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: $CI_PIPELINE_SOURCE == "schedule" && $GITHUB_SYNC == "true"
   script:
     - cd .git
     - git config --bool core.bare true

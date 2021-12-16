@@ -4,7 +4,7 @@ $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator {
   border-bottom: 1px solid color('primary-light');
-  box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   margin-bottom: units(4);
   position: relative;
 
@@ -78,8 +78,8 @@ $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator__step {
   flex: 0 0 33.33%;
-  font-size: .875rem;
-  padding: 1.5rem .25rem 0;
+  font-size: 0.875rem;
+  padding: 1.5rem 0.25rem 0;
   position: relative;
   text-align: center;
 
@@ -94,7 +94,7 @@ $step-indicator-pending-color: #a8b6c6;
   content: '';
   height: 1rem;
   left: 50%;
-  margin-left: -.5rem;
+  margin-left: -0.5rem;
   position: absolute;
   top: 0;
   width: 1rem;
@@ -118,10 +118,10 @@ $step-indicator-pending-color: #a8b6c6;
   background-color: color('base-lighter');
   content: '';
   height: $step-indicator-line-height;
-  left: calc(50% + .5rem + #{$step-indicator-line-height});
+  left: calc(50% + 0.5rem + #{$step-indicator-line-height});
   margin-top: -$step-indicator-line-height / 2;
   position: absolute;
-  top: .5rem;
+  top: 0.5rem;
   width: calc(100% - 1rem - #{$step-indicator-line-height * 2});
 }
 

@@ -23,7 +23,7 @@ describe RegisterUserEmailForm do
           domain_name: 'gmail.com',
         }
 
-        expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: 'true').to_h).to eq(
+        expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: '1').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -36,7 +36,7 @@ describe RegisterUserEmailForm do
         existing_user = create(:user, :signed_up, email: 'taken@example.com')
 
         (IdentityConfig.store.reg_confirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'TAKEN@example.com', terms_accepted: 'true')
+          subject.submit(email: 'TAKEN@example.com', terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
@@ -64,7 +64,7 @@ describe RegisterUserEmailForm do
           domain_name: 'test.com',
         }
 
-        expect(subject.submit(email: user.email, terms_accepted: 'true').to_h).to eq(
+        expect(subject.submit(email: user.email, terms_accepted: '1').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -74,7 +74,7 @@ describe RegisterUserEmailForm do
       it 'creates throttle events after reaching throttle limit' do
         user = create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
         (IdentityConfig.store.reg_unconfirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'test@example.com', terms_accepted: 'true')
+          subject.submit(email: 'test@example.com', terms_accepted: '1')
         end
 
         expect(analytics).to have_logged_event(
@@ -94,7 +94,7 @@ describe RegisterUserEmailForm do
         expect(SendSignUpEmailConfirmation).to receive(:new).
           and_return(send_sign_up_email_confirmation)
 
-        result = subject.submit(email: email_address.email, terms_accepted: 'true')
+        result = subject.submit(email: email_address.email, terms_accepted: '1')
         uuid = result.extra[:user_id]
         new_user = User.find_by(uuid: uuid)
 
@@ -106,7 +106,7 @@ describe RegisterUserEmailForm do
 
     context 'when email is not already taken' do
       it 'is valid' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com', terms_accepted: 'true')
+        submit_form = subject.submit(email: 'not_taken@gmail.com', terms_accepted: '1')
         extra = {
           email_already_exists: false,
           throttled: false,
@@ -125,7 +125,7 @@ describe RegisterUserEmailForm do
         form = RegisterUserEmailForm.new(analytics: analytics)
 
         response = form.submit(
-          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: 'true',
+          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: '1',
         )
         expect(response).to be_success
 
@@ -144,7 +144,7 @@ describe RegisterUserEmailForm do
           domain_name: 'invalid_email',
         }
 
-        expect(subject.submit(email: 'invalid_email', terms_accepted: 'true').to_h).to include(
+        expect(subject.submit(email: 'invalid_email', terms_accepted: '1').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -158,7 +158,7 @@ describe RegisterUserEmailForm do
         submit_form = subject.submit(
           email: 'not_taken@example.com',
           request_id: 'fake_id',
-          terms_accepted: 'true',
+          terms_accepted: '1',
         )
 
         expect(submit_form.success?).to eq true
@@ -181,7 +181,7 @@ describe RegisterUserEmailForm do
         submit_form = subject.submit(
           email: 'not_taken@example.com',
           request_id: request_id,
-          terms_accepted: 'true',
+          terms_accepted: '1',
         )
         extra = {
           domain_name: 'example.com',
@@ -207,7 +207,7 @@ describe RegisterUserEmailForm do
         submit_form = subject.submit(
           email: 'not_taken@gmail.com',
           request_id: nil,
-          terms_accepted: 'true',
+          terms_accepted: '1',
         )
         extra = {
           domain_name: 'gmail.com',

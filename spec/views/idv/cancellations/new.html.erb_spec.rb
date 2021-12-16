@@ -3,18 +3,16 @@ require 'rails_helper'
 describe 'idv/cancellations/new.html.erb' do
   let(:hybrid_session) { false }
   let(:params) { ActionController::Parameters.new }
-  let(:go_back_path) { root_url }
 
   before do
     assign(:hybrid_session, hybrid_session)
-    assign(:go_back_path, go_back_path)
     allow(view).to receive(:params).and_return(params)
 
     render
   end
 
   it 'renders go back path' do
-    expect(rendered).to have_link(t('links.go_back'), href: go_back_path)
+    expect(rendered).to have_button(t('links.go_back'))
   end
 
   context 'with hybrid flow' do

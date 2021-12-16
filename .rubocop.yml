@@ -486,6 +486,12 @@ Lint/RaiseException:
 Lint/RandOne:
   Enabled: true
 
+Lint/RedundantCopDisableDirective:
+  Enabled: true
+
+Lint/RedundantCopEnableDirective:
+  Enabled: true
+
 Lint/RedundantRequireStatement:
   Enabled: true
 
@@ -502,6 +508,9 @@ Lint/RedundantWithObject:
   Enabled: true
 
 Lint/RegexpAsCondition:
+  Enabled: true
+
+Lint/RequireRelativeSelfPath:
   Enabled: true
 
 Lint/RequireParentheses:

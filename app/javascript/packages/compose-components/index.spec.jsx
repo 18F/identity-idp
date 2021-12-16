@@ -6,12 +6,14 @@ describe('composeComponents', () => {
   it('composes components', () => {
     const FirstContext = createContext(null);
     const SecondContext = createContext(null);
-    const AppRoot = () => (
-      <>
-        {useContext(FirstContext)}
-        {useContext(SecondContext)}
-      </>
-    );
+    function AppRoot() {
+      return (
+        <>
+          {useContext(FirstContext)}
+          {useContext(SecondContext)}
+        </>
+      );
+    }
 
     const ComposedComponent = composeComponents(
       [FirstContext.Provider, { value: 1 }],

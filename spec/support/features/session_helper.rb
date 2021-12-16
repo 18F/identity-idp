@@ -11,11 +11,6 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
-    def expect_email_invalid(page)
-      expect(page).to have_content t('sign_up.email.invalid_email_alert_head')
-      expect(page).to have_content t('sign_up.email.invalid_email_alert_inline')
-    end
-
     def choose_another_security_option(option)
       accept_rules_of_use_and_continue_if_displayed
 
@@ -271,7 +266,7 @@ module Features
 
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
-      check :user_terms_accepted
+      check 'rules_of_use_form[terms_accepted]'
       click_button t('forms.buttons.continue')
     end
 

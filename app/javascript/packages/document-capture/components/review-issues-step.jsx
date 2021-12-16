@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { BlockLink } from '@18f/identity-components';
 import { FormStepsContext, FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -10,14 +9,14 @@ import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import './review-issues-step.scss';
-import DesktopDocumentDisclosure from './desktop-document-disclosure';
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
-import MarketingSiteContext from '../context/marketing-site';
+import HelpCenterContext from '../context/help-center';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
+import './review-issues-step.scss';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
@@ -62,6 +61,7 @@ function reviewIssuesStepValidator(value = {}) {
 /**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
  *  remainingAttempts: number,
+ *  captureHints: boolean,
  * }} props Props object.
  */
 function ReviewIssuesStep({
@@ -72,11 +72,12 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   remainingAttempts,
+  captureHints,
 }) {
-  const { t, formatHTML } = useI18n();
+  const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
-  const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
+  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
@@ -95,13 +96,17 @@ function ReviewIssuesStep({
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       {!!unknownFieldErrors &&
         unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
-      <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-      </ul>
+      {captureHints && (
+        <>
+          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
+          <ul>
+            <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
+          </ul>
+        </>
+      )}
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
           key={side}
@@ -153,18 +158,8 @@ function ReviewIssuesStep({
           )}
         </>
       )}
-      {serviceProvider.name && (
-        <BlockLink
-          url={serviceProvider.getFailureToProofURL('review_issues_having_trouble')}
-          isNewTab
-        >
-          {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
-            strong: 'strong',
-          })}
-        </BlockLink>
-      )}
       <FormStepsContinueButton />
-      <DesktopDocumentDisclosure />
+      <DocumentCaptureTroubleshootingOptions />
       <StartOverOrCancel />
     </>
   ) : (
@@ -175,7 +170,11 @@ function ReviewIssuesStep({
       troubleshootingOptions={
         /** @type {TroubleshootingOption[]} */ ([
           {
-            url: documentCaptureTipsURL,
+            url: getHelpCenterURL({
+              category: 'verify-your-identity',
+              article: 'how-to-add-images-of-your-state-issued-id',
+              location: 'post_submission_warning',
+            }),
             text: t('idv.troubleshooting.options.doc_capture_tips'),
             isExternal: true,
           },
@@ -188,7 +187,9 @@ function ReviewIssuesStep({
       }
     >
       {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        unknownFieldErrors
+          .filter((error) => !['front', 'back', 'selfie'].includes(error.field))
+          .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
       {remainingAttempts <= DISPLAY_ATTEMPTS && (
         <p>

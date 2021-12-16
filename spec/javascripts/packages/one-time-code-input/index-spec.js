@@ -1,14 +1,16 @@
 import OneTimeCodeInput from '@18f/identity-one-time-code-input';
-import { waitFor } from '@testing-library/dom';
+import { waitFor, screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { expect } from 'chai';
 import { useSandbox } from '../../support/sinon';
 
 describe('OneTimeCodeInput', () => {
   const sandbox = useSandbox();
+  const labelText = 'Enter a value:';
 
   function initialize({ transport = 'sms', inForm = false } = {}) {
     const input = document.createElement('input');
+    input.id = 'input';
     if (transport) {
       input.dataset.transport = transport;
     }
@@ -19,6 +21,10 @@ describe('OneTimeCodeInput', () => {
     } else {
       document.body.appendChild(input);
     }
+    const label = document.createElement('label');
+    label.textContent = labelText;
+    label.setAttribute('for', input.id);
+    document.body.appendChild(label);
     const otcInput = new OneTimeCodeInput(document.body.querySelector('input'));
     otcInput.bind();
     return otcInput;
@@ -124,6 +130,12 @@ describe('OneTimeCodeInput', () => {
       OneTimeCodeInput.isWebOTPSupported = originalIsWebOTPSupported;
       navigator.credentials = originalCredentials;
       window.removeEventListener('submit', onSubmit);
+    });
+
+    it('is still associated by its label', () => {
+      initialize();
+
+      expect(screen.getByLabelText(labelText)).to.be.ok();
     });
 
     context('in form', () => {

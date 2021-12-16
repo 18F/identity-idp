@@ -8,13 +8,6 @@ fr:
         compte.  Il faut compter 24 heures à partir du moment où vous avez fait
         la demande pour terminer le processus.  Veuillez vérifier plus tard.
         %{cancel_link}
-      recover_html: Si vous ne pouvez utiliser aucune des méthodes d’authentification
-        ci-dessus, vous pouvez %{reverify_link}. Votre nom, votre adresse et
-        votre numéro de sécurité sociale doivent correspondre à votre profil de
-        compte. Si ce n’est pas le cas, vous pouvez %{reset_link}.
-      reset_link: réinitialiser votre compte
-      reset_your_account: Réinitialiser votre compte
-      reverify_link: re-vérifier votre identité
       successful_cancel: Je vous remercie. Votre demande de suppression de votre
         compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez pas utiliser l’une de ces options de sécurité
@@ -25,12 +18,6 @@ fr:
     backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après
       l’avoir entré, vous devrez utiliser une nouvelle clé.
     choose_another_option: '‹ Choisissez une autre option'
-    devices:
-      auth_app: Application d’authentification
-      backup_code: Codes de sécurité personnels
-      phone: Téléphone
-      piv_cac: PIV/CAC
-      webauthn: Clé de sécurité
     header_text: Entrez votre code de sécurité
     important_alert_icon: Icône d’alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
@@ -61,15 +48,17 @@ fr:
       piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
-      sms_setup_info_html: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
       voice_info_html: Obtenez votre code de sécurité Obtenez votre code de sécurité
         par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de
         téléphone en Amerique du Nord)
-      voice_setup_info_html: Obtenez votre code de sécurité par appel téléphonique.
-        (Seulement les numéros de téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
       webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
+      webauthn_platform: Déverrouillage facial ou tactile
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+        ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte %{app_name}. Recommandé, car il est plus résistant aux
+        hameçonnages.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
@@ -121,12 +110,6 @@ fr:
     phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
       <strong>chaque fois que vous vous connectez</strong>.
     phone_label: Numéro de téléphone
-    phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
-      que vous vous connectez</strong>.
-    phone_sms_label: Numéro de téléphone portable
-    phone_voice_info_html: Nous vous appellerons avec un code de sécurité
-      <strong>chaque fois que vous vous connectez</strong>.
-    phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
@@ -158,7 +141,6 @@ fr:
       least_secure_label: Le moins sécurisé
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
-      most_secure_label: Le plus sécurisé
       phone: Téléphone
       phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique.
       phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés
@@ -175,6 +157,11 @@ fr:
       webauthn_info_html: Utilisez une clé de sécurité que vous avez. C’est un
         périphérique physique que vous branchez ou qui est intégré à votre
         ordinateur ou à votre téléphone (il ressemble souvent à une clé USB).
+      webauthn_platform: Déverrouillage facial ou tactile
+      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+        ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
+        compte %{app_name}. Recommandé, car il est plus résistant aux
+        hameçonnages.
     two_factor_hspd12_choice: Authentification supplémentaire requise
     two_factor_hspd12_choice_intro: Cette application nécessite un haut niveau de
       sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
@@ -184,6 +171,14 @@ fr:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
     webauthn_piv_available: Utilisez votre PIV ou CAC
+    webauthn_platform_fallback:
+      question: Vous n’avez pas votre appareil à disposition?
+    webauthn_platform_header_text: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_use_key: Utilisez le déverrouillage facial ou tactile
+    webauthn_platform_verified:
+      header: Appareil vérifié
+      info: Nous avons vérifié votre appareil. Cliquez sur continuer pour vous
+        connecter.
     webauthn_use_key: Utiliser la clé de sécurité
     webauthn_verified:
       header: Clé de sécurité vérifiée

@@ -107,7 +107,6 @@ es:
     registration:
       terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
-    rules_of_use: Marque esta casilla para continuar
     sign_in:
       bad_password_limit: Has superado el número máximo de intentos de inicio de sesión.
     two_factor_auth_setup:
@@ -116,6 +115,20 @@ es:
       throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
     verify_profile:
       throttled: Lo intentaste muchas veces, vuelve a intentarlo en %{timeout}.
+    webauthn_platform_setup:
+      already_registered: El desbloqueo facial o táctil ya está registrado. Por favor,
+        intente un método de plataforma diferente para iniciar la sesión.
+      attestation_error: Lo sentimos, pero su desbloqueo facial o táctil no parece
+        funcionar. Por favor, asegúrese de que su dispositivo está registrado en
+        https://fidoalliance.org/certification/fido-certified-products/ y si
+        cree que se trata de un error nuestro, póngase en contacto con nosotros
+        en %{link}.
+      general_error: Se ha producido un error al agregar su método de autenticación.
+        Por favor, inténtelo de nuevo.
+      not_supported: Lo sentimos, pero su navegador no es compatible con el desbloqueo
+        facial o táctil.
+      unique_name: Ese nombre de dispositivo ha sido utilizado. Por favor, seleccione
+        un nombre de dispositivo diferente.
     webauthn_setup:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.

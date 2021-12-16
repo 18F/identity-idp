@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
+    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post delete]
     # JS-driven POST redirect route to preserve existing session
     post "/api/saml/auth#{suffix}" => 'saml_post#auth'
     # actual SAML handling POST route
@@ -247,8 +248,9 @@ Rails.application.routes.draw do
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
 
-    get '/return_to_sp/cancel' => 'return_to_sp#cancel'
-    get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
+    get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
+    get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
+    get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
@@ -270,7 +272,6 @@ Rails.application.routes.draw do
       get '/phone' => 'phone#new'
       put '/phone' => 'phone#create'
       get '/phone/errors/warning' => 'phone_errors#warning'
-      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/phone/errors/jobfail' => 'phone_errors#jobfail'
       get '/phone/errors/failure' => 'phone_errors#failure'
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
@@ -285,6 +286,7 @@ Rails.application.routes.draw do
       get '/session/errors/throttled' => 'session_errors#throttled'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
+      put '/cancel' => 'cancellations#update'
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'
       post '/address' => 'address#update'
@@ -303,8 +305,8 @@ Rails.application.routes.draw do
       put '/capture_doc/:step' => 'capture_doc#update'
     end
 
-    get '/account/verify' => 'users/verify_account#index', as: :verify_account
-    post '/account/verify' => 'users/verify_account#create'
+    get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
+    post '/account/verify' => 'idv/gpo_verify#create'
     if FeatureManagement.enable_gpo_verification?
       scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'gpo#index', as: :gpo

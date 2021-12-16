@@ -17,13 +17,13 @@
       <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
       <div class="margin-bottom-5">
         <%= render(
-          'shared/one_time_code_input',
-          name: :code,
-          value: @presenter.code_value,
-          required: true,
-          autofocus: true,
-          numeric: false,
-        ) %>
+              'shared/one_time_code_input',
+              name: :code,
+              value: @presenter.code_value,
+              required: true,
+              autofocus: true,
+              numeric: false,
+            ) %>
       </div>
       <%= submit_tag t('forms.buttons.submit.default'),
                      class: 'usa-button usa-button--big usa-button--full-width' %>
@@ -31,16 +31,20 @@
   </div>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
-  <div class="flex flex-row flex-align-center flex-wrap">
-    <%= link_to(t('links.two_factor_authentication.get_another_code'),
-                otp_send_path(otp_delivery_selection_form: {
-                  otp_delivery_preference: @presenter.otp_delivery_preference,
-                  resend: true
-                }),
-                class: 'usa-button usa-button--outline ico ico-refresh flex-no-shrink margin-right-205',
-                form_class: 'inline-block') %>
+  <div class="display-flex flex-row flex-align-center flex-wrap">
+    <%= link_to(
+          t('links.two_factor_authentication.get_another_code'),
+          otp_send_path(
+            otp_delivery_selection_form: {
+              otp_delivery_preference: @presenter.otp_delivery_preference,
+              resend: true,
+            },
+          ),
+          class: 'usa-button usa-button--outline ico ico-refresh flex-no-shrink margin-right-205',
+          form_class: 'inline-block',
+        ) %>
 
-    <span class="text-no-wrap flex-no-shrink flex flex-row flex-align-center">
+    <span class="text-no-wrap flex-no-shrink display-flex flex-row flex-align-center">
       <%= hidden_field_tag 'remember_device', false,
                            id: 'remember_device_preference' %>
       <%= check_box_tag 'remember_device', true,

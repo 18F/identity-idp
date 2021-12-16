@@ -26,6 +26,8 @@ export class ValidatedField extends HTMLElement {
     /** @type {HTMLInputElement?} */
     this.input = this.querySelector('.validated-field__input');
     /** @type {HTMLElement?} */
+    this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
+    /** @type {HTMLElement?} */
     this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
     try {
@@ -36,6 +38,7 @@ export class ValidatedField extends HTMLElement {
     } catch {}
 
     this.input?.addEventListener('input', () => this.setErrorMessage());
+    this.input?.addEventListener('input', () => this.setInputIsValid(true));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
   }
 
@@ -47,7 +50,12 @@ export class ValidatedField extends HTMLElement {
    */
   toggleErrorMessage(event) {
     event.preventDefault();
-    this.setErrorMessage(this.getNormalizedValidationMessage(this.input));
+
+    const errorMessage = this.getNormalizedValidationMessage(this.input);
+    const isValid = !errorMessage;
+
+    this.setErrorMessage(errorMessage);
+    this.setInputIsValid(isValid);
   }
 
   /**
@@ -58,13 +66,23 @@ export class ValidatedField extends HTMLElement {
   setErrorMessage(message) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
-      this.input?.focus();
+      if (!document.activeElement?.classList.contains('usa-input--error')) {
+        this.input?.focus();
+      }
     } else if (this.errorMessage) {
-      this.removeChild(this.errorMessage);
+      this.inputWrapper?.removeChild(this.errorMessage);
       this.errorMessage = null;
     }
+  }
 
-    this.input?.classList.toggle('usa-input--error', !!message);
+  /**
+   * Sets input attributes corresponding to given validity state.
+   *
+   * @param {boolean} isValid Whether input is valid.
+   */
+  setInputIsValid(isValid) {
+    this.input?.classList.toggle('usa-input--error', !isValid);
+    this.input?.setAttribute('aria-invalid', String(!isValid));
   }
 
   /**
@@ -106,7 +124,7 @@ export class ValidatedField extends HTMLElement {
         this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
       }
 
-      this.appendChild(this.errorMessage);
+      this.inputWrapper?.appendChild(this.errorMessage);
     }
 
     return this.errorMessage;

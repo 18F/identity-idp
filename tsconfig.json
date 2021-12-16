@@ -21,9 +21,7 @@
   "exclude": [
     "**/fixtures",
     "**/*.spec.js",
-    "app/javascript/packs/accept-terms-button.js",
     "app/javascript/packs/application.js",
-    "app/javascript/packs/email-validation.js",
     "app/javascript/packs/personal-key-page-controller.js",
     "app/javascript/packs/pw-strength.js",
     "app/javascript/packs/reactivate-account-modal.js",
@@ -32,7 +30,6 @@
     "app/javascript/packs/upload-step.js",
     "app/javascript/packs/webauthn-authenticate.js",
     "app/javascript/packs/webauthn-setup.js",
-    "app/javascript/packs/webauthn-unhide-signin.js",
-    "app/javascript/packs/webauthn-unhide-signup.js"
+    "app/javascript/packs/webauthn-unhide.js"
   ]
 }

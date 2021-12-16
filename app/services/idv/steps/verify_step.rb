@@ -42,6 +42,7 @@ module Idv
           should_proof_state_id: should_use_aamva?(pii_from_doc),
           trace_id: amzn_trace_id,
           document_expired: document_expired,
+          flow_path: flow_path,
         )
       end
 

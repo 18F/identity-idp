@@ -25,35 +25,38 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     render_inline(described_class.new(**options))
   end
 
-  it 'renders with error message texts' do
-    expect(rendered).to have_css(
-      'script',
-      text: { valueMissing: t('simple_form.required.text') }.to_json,
-      visible: :all,
-    )
-  end
-
-  context 'boolean type' do
-    let(:tag_options) { { as: :boolean } }
-
-    it 'renders with error message texts' do
-      expect(rendered).to have_css(
-        'script',
-        text: { valueMissing: t('forms.validation.required_checkbox') }.to_json,
-        visible: :all,
-      )
+  describe 'error message strings' do
+    subject(:strings) do
+      script = rendered.at_css('script[type="application/json"]')
+      JSON.parse(script.content, symbolize_names: true)
     end
-  end
-
-  context 'custom error message texts' do
-    let(:error_messages) { { valueMissing: 'missing', tooLong: 'too long' } }
 
     it 'renders with error message texts' do
-      expect(rendered).to have_css(
-        'script',
-        text: { valueMissing: 'missing', tooLong: 'too long' }.to_json,
-        visible: :all,
-      )
+      expect(strings[:valueMissing]).to eq t('simple_form.required.text')
+    end
+
+    context 'boolean type' do
+      let(:tag_options) { { as: :boolean } }
+
+      it 'renders with error message texts' do
+        expect(strings[:valueMissing]).to eq t('forms.validation.required_checkbox')
+      end
+    end
+
+    context 'email type' do
+      let(:tag_options) { { as: :email } }
+
+      it 'renders with error message texts' do
+        expect(strings[:typeMismatch]).to eq t('valid_email.validations.email.invalid')
+      end
+    end
+
+    context 'custom error message texts' do
+      let(:error_messages) { { valueMissing: 'missing', tooLong: 'too long' } }
+
+      it 'renders with error message texts' do
+        expect(strings).to include(valueMissing: 'missing', tooLong: 'too long')
+      end
     end
   end
 end

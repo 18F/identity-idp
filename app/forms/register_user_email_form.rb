@@ -38,7 +38,7 @@ class RegisterUserEmailForm
   end
 
   def submit(params, instructions = nil)
-    @terms_accepted = params[:terms_accepted] == 'true'
+    @terms_accepted = params[:terms_accepted] == '1'
     build_user_and_email_address_with_email(
       email: params[:email],
       email_language: params[:email_language],

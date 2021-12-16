@@ -72,6 +72,7 @@ fr:
           système, recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       dpi:
+        failed_short: L’image est trop petite ou floue, veuillez réessayer.
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
           image est peut-être trop petite ou il se peut que votre pièce
           d’identité soit trop petite ou floue sur la photo. Assurez-vous que la
@@ -86,6 +87,7 @@ fr:
         invalid: Ce type de fichier n’est pas accepté, veuillez choisir un fichier JPG
           ou PNG.
       general:
+        fallback_field_level: Veuillez ajouter une nouvelle image
         liveness: Nous n’avons pas pu vérifier votre pièce d’identité et votre photo.
           Essayez de prendre de nouvelles photos.
         multiple_back_id_failures: Nous n’avons pas pu vérifier le verso de votre pièce
@@ -135,6 +137,7 @@ fr:
       upload_error: Désolé, quelque chose a mal tourné de notre côté.
     forms:
       address1: Adresse
+      captured_image: Image capturée
       change_file: Changer de fichier
       choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez un
         dossier</lg-underline>
@@ -189,10 +192,6 @@ fr:
         vous en lisant votre pièce d’identité officielle. Nous ne stockons pas
         les images que vous téléchargez. Nous vérifions uniquement votre
         identité.
-      document_capture_upload_image: Nous n’utilisons votre identifiant que pour
-        vérifier votre identité, et nous n’enregistrerons aucune image.
-      get_help_at_sp_html: '<strong>Vous avez des problèmes?</strong> Obtenez de
-        l’aide à %{sp_name}'
       image_updated: Image mise à jour
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
         chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.
@@ -271,6 +270,8 @@ fr:
         ce lien vers votre navigateur pour prendre des photos du recto et du
         verso de votre identifiant.
       switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
+      test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” sont
+        considérés comme valides. N’entrez pas de vrais PII dans ce champ.
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.

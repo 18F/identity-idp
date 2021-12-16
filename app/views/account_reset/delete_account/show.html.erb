@@ -12,13 +12,13 @@
 </h4>
 
 <%= button_to(
-  root_url,
-  method: :get,
-  class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
-  'data-toggle': 'modal'
-) { t('account_reset.request.no_cancel') } %>
+      root_url,
+      method: :get,
+      class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
+      'data-toggle': 'modal',
+    ) { t('account_reset.request.no_cancel') } %>
 <%= button_to(
-  account_reset_delete_account_path,
-  method: :delete,
-  class: 'usa-button usa-button--unstyled'
-) { t('account_reset.request.yes_continue') } %>
+      account_reset_delete_account_path,
+      method: :delete,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('account_reset.request.yes_continue') } %>

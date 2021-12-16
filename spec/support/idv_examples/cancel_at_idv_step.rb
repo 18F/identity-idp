@@ -1,9 +1,12 @@
 shared_examples 'cancel at idv step' do |step, sp|
   include SamlAuthHelper
 
+  let(:fake_analytics) { FakeAnalytics.new }
+
   before do
     start_idv_from_sp(sp)
     complete_idv_steps_before_step(step)
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
   end
 
   it 'shows the user a cancellation message with the option to go back to the step' do
@@ -13,10 +16,18 @@ shared_examples 'cancel at idv step' do |step, sp|
 
     expect(page).to have_content(t('headings.cancellations.prompt'))
     expect(current_path).to eq(idv_cancel_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::IDV_CANCELLATION,
+      step: step.to_s,
+    )
 
     click_on t('links.go_back')
 
     expect(current_path).to eq(original_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::IDV_CANCELLATION_GO_BACK,
+      step: step.to_s,
+    )
   end
 
   context 'with an sp', if: sp do
@@ -29,11 +40,16 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
+      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: step.to_s)
 
       click_on t('forms.buttons.cancel')
 
       expect(page).to have_content(t('headings.cancellations.confirmation', app_name: APP_NAME))
       expect(current_path).to eq(idv_cancel_path)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::IDV_CANCELLATION_CONFIRMED,
+        step: step.to_s,
+      )
 
       expect(page).to have_link(
         "‹ #{t('links.back_to_sp', sp: sp_name)}",
@@ -53,6 +69,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
+      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: step.to_s)
 
       click_on t('forms.buttons.cancel')
 
@@ -61,6 +78,10 @@ shared_examples 'cancel at idv step' do |step, sp|
       expect(page).to have_link(
         "‹ #{t('links.back_to_sp', sp: t('links.my_account'))}",
         href: account_url,
+      )
+      expect(fake_analytics).to have_logged_event(
+        Analytics::IDV_CANCELLATION_CONFIRMED,
+        step: step.to_s,
       )
 
       # After visiting /verify, expect to redirect to the jurisdiction step,

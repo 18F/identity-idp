@@ -67,6 +67,12 @@ fr:
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé
       webauthn_delete: Supprimer la clé
+      webauthn_platform: Le déverouillage facial ou déverrouillage par empreinte digitale
+      webauthn_platform_add: Ajouter le déverouillage facial ou déverrouillage par empreinte digitale
+      webauthn_platform_confirm_delete: Oui, supprimer le déverouillage facial ou
+        déverrouillage par empreinte digitale
+      webauthn_platform_delete: Supprimer le déverouillage facial ou déverrouillage
+        par empreinte digitale
     items:
       delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle
@@ -89,6 +95,7 @@ fr:
       add_email: Ajouter une adresse e-mail
       add_federal_id: Ajouter un identifiant d’employé fédéral
       add_phone_number: Ajouter un numéro de téléphone
+      add_platform_authenticator: Ajouter déverouillage facial ou déverrouillage par empreinte digitale
       add_security_key: Ajouter une clé de sécurité
       connected_accounts: Vos comptes connectés
       customer_support: Service client

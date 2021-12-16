@@ -25,6 +25,7 @@ const config = {
     'no-console': 'error',
     'no-empty': ['error', { allowEmptyCatch: true }],
     'no-param-reassign': ['off', 'never'],
+    'no-promise-executor-return': 'off',
     'no-confusing-arrow': 'off',
     'no-plusplus': 'off',
     'no-restricted-syntax': 'off',
@@ -52,13 +53,23 @@ if (isInstalled('prettier')) {
 if (isInstalled('react') || isInstalled('preact')) {
   config.extends.push('airbnb');
   Object.assign(config.rules, {
+    'react/function-component-definition': [
+      'error',
+      {
+        namedComponents: 'function-declaration',
+        unnamedComponents: 'arrow-function',
+      },
+    ],
     'react/jsx-curly-newline': 'off',
     'react/jsx-indent': 'off',
     'react/jsx-no-bind': 'off',
+    'react/jsx-no-constructed-context-values': 'off',
+    'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
     'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-uses-react': 'off',
+    'react/no-unstable-nested-components': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/require-default-props': 'off',
     'react/prop-types': 'off',

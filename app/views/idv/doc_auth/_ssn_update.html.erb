@@ -9,24 +9,30 @@
   <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
-<%= validated_form_for(
-  :doc_auth,
-  url: url_for,
-  method: :put,
-  html: { autocomplete: 'off', class: 'margin-top-2' }
-) do |f| %>
-  <div class='clearfix margin-x-neg-1'>
-    <div class='sm-col sm-col-8 padding-x-1 margin-top-2'>
-      <%= render 'shared/ssn_field', f: f %>
+<% if IdentityConfig.store.proofer_mock_fallback %>
+  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <%= t('doc_auth.instructions.test_ssn') %>
+      </p>
     </div>
+  </div>
+<% end %>
+
+<%= simple_form_for(
+      :doc_auth,
+      url: url_for,
+      method: :put,
+      html: { autocomplete: 'off', class: 'margin-top-4' },
+    ) do |f| %>
+  <div class="tablet:grid-col-8">
+    <%= render 'shared/ssn_field', f: f %>
   </div>
 
   <p><%= flow_session[:error_message] %></p>
 
-  <div class='margin-top-0'>
-    <button type='submit' class='usa-button usa-button--big usa-button--wide'>
-      <%= t('forms.buttons.submit.update') %>
-    </button>
-  </div>
+  <button type="submit" class="usa-button usa-button--big usa-button--wide">
+    <%= t('forms.buttons.continue') %>
+  </button>
 <% end %>
 <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>

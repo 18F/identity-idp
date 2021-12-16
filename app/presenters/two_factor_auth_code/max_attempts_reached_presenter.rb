@@ -7,8 +7,6 @@ module TwoFactorAuthCode
 
     COUNTDOWN_ID = 'countdown'.freeze
 
-    T_SCOPE = 'two_factor_authentication'.freeze
-
     def initialize(type, decorated_user)
       super(:locked)
       @type = type
@@ -24,7 +22,22 @@ module TwoFactorAuthCode
     end
 
     def description
-      t("max_#{type}_reached", scope: T_SCOPE)
+      case type.to_s
+      when 'backup_code_login_attempts'
+        t('two_factor_authentication.max_backup_code_login_attempts_reached')
+      when 'generic_login_attempts'
+        t('two_factor_authentication.max_generic_login_attempts_reached')
+      when 'otp_login_attempts'
+        t('two_factor_authentication.max_otp_login_attempts_reached')
+      when 'otp_requests'
+        t('two_factor_authentication.max_otp_requests_reached')
+      when 'personal_key_login_attempts'
+        t('two_factor_authentication.max_personal_key_login_attempts_reached')
+      when 'piv_cac_login_attempts'
+        t('two_factor_authentication.max_piv_cac_login_attempts_reached')
+      else
+        raise "Unsupported description type: #{type}"
+      end
     end
 
     def message
@@ -48,19 +61,19 @@ module TwoFactorAuthCode
 
     def please_try_again
       t(
-        :please_try_again_html,
-        scope: T_SCOPE, id: COUNTDOWN_ID,
-        time_remaining: decorated_user.lockout_time_remaining_in_words
+        'two_factor_authentication.please_try_again_html',
+        id: COUNTDOWN_ID,
+        time_remaining: decorated_user.lockout_time_remaining_in_words,
       )
     end
 
     def read_about_two_factor_authentication
       link = link_to(
-        t('read_about_two_factor_authentication.link', scope: T_SCOPE),
+        t('two_factor_authentication.read_about_two_factor_authentication.link'),
         MarketingSite.help_url,
       )
 
-      t('read_about_two_factor_authentication.text_html', scope: T_SCOPE, link: link)
+      t('two_factor_authentication.read_about_two_factor_authentication.text_html', link: link)
     end
   end
 end

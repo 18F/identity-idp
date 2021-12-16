@@ -133,49 +133,58 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
       it 'generates a report by iaa + order number and issuer and year month' do
         csv = CSV.parse(report.perform(Time.zone.today), headers: true)
 
-        row = csv.first
-        expect(row['iaa_order_number']).to eq('gtc1234-0001')
-        expect(row['iaa_start_date']).to eq('2020-04-15')
-        expect(row['iaa_end_date']).to eq('2021-04-14')
+        expect(csv.length).to eq(3)
 
-        expect(row['issuer']).to eq(iaa1_sp.issuer)
-        expect(row['friendly_name']).to eq(iaa1_sp.friendly_name)
+        aggregate_failures do
+          row = csv.find { |r| r['issuer'] == iaa1_sp.issuer }
+          expect(row['iaa_order_number']).to eq('gtc1234-0001')
+          expect(row['iaa_start_date']).to eq('2020-04-15')
+          expect(row['iaa_end_date']).to eq('2021-04-14')
 
-        expect(row['year_month']).to eq('202004')
-        expect(row['year_month_readable']).to eq('April 2020')
-        expect(row['dates_billed_start_date']).to eq('2020-04-15')
-        expect(row['dates_billed_end_date']).to eq('2020-04-30')
+          expect(row['issuer']).to eq(iaa1_sp.issuer)
+          expect(row['friendly_name']).to eq(iaa1_sp.friendly_name)
 
-        expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
-        expect(row['iaa_ial2_unique_users'].to_i).to eq(0)
-        expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(1)
-        expect(row['iaa_ial2_new_unique_users'].to_i).to eq(0)
+          expect(row['year_month']).to eq('202004')
+          expect(row['year_month_readable']).to eq('April 2020')
+          expect(row['dates_billed_start_date']).to eq('2020-04-15')
+          expect(row['dates_billed_end_date']).to eq('2020-04-30')
 
-        expect(row['issuer_ial1_total_auth_count'].to_i).to eq(1)
-        expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
-        expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+          expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
+          expect(row['iaa_ial2_unique_users'].to_i).to eq(0)
+          expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(1)
+          expect(row['iaa_ial2_new_unique_users'].to_i).to eq(0)
 
-        row = csv[1]
-        expect(row['iaa_order_number']).to eq('gtc5678-0002')
-        expect(row['iaa_start_date']).to eq('2020-09-01')
-        expect(row['iaa_end_date']).to eq('2021-08-30')
+          expect(row['issuer_ial1_total_auth_count'].to_i).to eq(1)
+          expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
+          expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+        end
 
-        expect(row['issuer']).to eq(iaa2_sp1.issuer)
-        expect(row['friendly_name']).to eq(iaa2_sp1.friendly_name)
+        [iaa2_sp1, iaa2_sp2].each do |sp|
+          aggregate_failures do
+            row = csv.find { |r| r['issuer'] == sp.issuer }
 
-        expect(row['year_month']).to eq('202009')
-        expect(row['year_month_readable']).to eq('September 2020')
-        expect(row['dates_billed_start_date']).to eq('2020-09-01')
-        expect(row['dates_billed_end_date']).to eq('2020-09-30')
+            expect(row['iaa_order_number']).to eq('gtc5678-0002')
+            expect(row['iaa_start_date']).to eq('2020-09-01')
+            expect(row['iaa_end_date']).to eq('2021-08-30')
 
-        expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
-        expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
-        expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(2)
-        expect(row['iaa_ial2_new_unique_users'].to_i).to eq(2)
+            expect(row['issuer']).to eq(sp.issuer)
+            expect(row['friendly_name']).to eq(sp.friendly_name)
 
-        expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
-        expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
-        expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+            expect(row['year_month']).to eq('202009')
+            expect(row['year_month_readable']).to eq('September 2020')
+            expect(row['dates_billed_start_date']).to eq('2020-09-01')
+            expect(row['dates_billed_end_date']).to eq('2020-09-30')
+
+            expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
+            expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
+            expect(row['iaa_ial1_plus_2_unique_users'].to_i).to eq(2)
+            expect(row['iaa_ial2_new_unique_users'].to_i).to eq(2)
+
+            expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
+            expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
+            expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+          end
+        end
       end
     end
   end

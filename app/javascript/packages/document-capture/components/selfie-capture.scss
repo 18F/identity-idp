@@ -2,7 +2,7 @@
   @include u-margin-top(1);
   align-items: center;
   border: 2px dashed color('primary');
-  border-radius: .375rem;
+  border-radius: 0.375rem;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -28,7 +28,7 @@
 
 .selfie-capture--error {
   border-color: color('error');
-  border-radius: .375rem;
+  border-radius: 0.375rem;
 
   &:hover {
     border-color: color('error-dark');
@@ -52,7 +52,7 @@
 // non-interactive content not included in regular tab order, expected to be used only for
 // programmatic fallback, and with exception to allow supported `:focus-visible` to restore
 // identified indicator.
-div.selfie-capture__label[tabindex="-1"]:focus {
+div.selfie-capture__label[tabindex='-1']:focus {
   outline: none;
 
   &:focus-visible {

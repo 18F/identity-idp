@@ -1,4 +1,4 @@
-class VerifyAccountForm
+class GpoVerifyForm
   include ActiveModel::Model
 
   validates :otp, presence: true

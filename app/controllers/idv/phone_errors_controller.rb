@@ -9,10 +9,6 @@ module Idv
       @remaining_step_attempts = throttle.remaining_count
     end
 
-    def timeout
-      @remaining_step_attempts = throttle.remaining_count
-    end
-
     def jobfail
       @remaining_step_attempts = throttle.remaining_count
     end

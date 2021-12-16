@@ -3,34 +3,38 @@
 <h1><%= t('titles.rules_of_use') %></h1>
 
 <p>
-<%= t('users.rules_of_use.overview_html',
-      link: new_window_link_to(t('titles.rules_of_use'),
-                               MarketingSite.rules_of_use_url)) %>
+<%= t(
+      'users.rules_of_use.overview_html',
+      link: new_window_link_to(
+        t('titles.rules_of_use'),
+        MarketingSite.rules_of_use_url,
+      ),
+    ) %>
 </p>
 
 <%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
-<div class='margin-bottom-6'>
-  <%= validated_form_for(@rules_of_use_form,
+<%= simple_form_for(
+      @rules_of_use_form,
       html: { autocomplete: 'off' },
-      url: rules_of_use_path) do |f| %>
+      url: rules_of_use_path,
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :terms_accepted,
+        as: :boolean,
+        label: capture do %>
+          <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
+          <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+        <% end,
+        required: true,
+      ) %>
 
-    <div class="margin-bottom-3">
-      <%= f.check_box :terms_accepted, { id: 'user_terms_accepted', class: 'usa-checkbox__input',
-                                         required: true, aria: { invalid: false } }, true, false %>
-      <%= f.label :terms_accepted, for: 'user_terms_accepted', class: 'usa-checkbox__label' do %>
-        <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
-        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-      <% end %>
-      <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">
-        <%= t('errors.rules_of_use') %>
-      </div>
-    </div>
-
-    <%= f.button :button, t('forms.buttons.continue'), type: :submit,
-                 class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
+    <%= f.button(
+          :button,
+          t('forms.buttons.continue'),
+          type: :submit,
+          class: 'usa-button--big usa-button--wide margin-y-5',
+        ) %>
 <% end %>
-</div>
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
-
-<%= javascript_packs_tag_once 'accept-terms-button' %>

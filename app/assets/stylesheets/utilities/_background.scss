@@ -1,9 +1,21 @@
-.bg-gray-lighter { background-color: $gray-lighter; }
-.bg-light-blue { background-color: $blue-light; }
-.bg-lightest-blue { background-color: $blue-lightest; }
+.bg-gray-lighter {
+  background-color: $gray-lighter;
+}
+.bg-light-blue {
+  background-color: $blue-light;
+}
+.bg-lightest-blue {
+  background-color: $blue-lightest;
+}
 
 @media #{$breakpoint-sm} {
-  .sm-bg-light-blue { background-color: $blue-light; }
-  .sm-bg-none { background-color: transparent; }
-  .sm-bg-navy { background-color: $navy; }
+  .sm-bg-light-blue {
+    background-color: $blue-light;
+  }
+  .sm-bg-none {
+    background-color: transparent;
+  }
+  .sm-bg-navy {
+    background-color: $navy;
+  }
 }

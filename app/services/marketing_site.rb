@@ -1,5 +1,17 @@
+require 'set'
+
 class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
+
+  HELP_CENTER_ARTICLES = %w[
+    authentication-methods/which-authentication-method-should-i-use
+    creating-an-account/authentication-application
+    signing-in/what-is-a-hardware-security-key
+    verify-your-identity/accepted-state-issued-identification
+    verify-your-identity/how-to-add-images-of-your-state-issued-id
+    verify-your-identity/phone-number-and-phone-plan-in-your-name
+    verify-your-identity/verify-your-address-by-mail
+  ].to_set.freeze
 
   def self.locale_segment
     active_locale = I18n.locale
@@ -39,54 +51,39 @@ class MarketingSite
   end
 
   def self.help_authentication_app_url
-    URI.join(BASE_URL, locale_segment, 'help/creating-an-account/authentication-application/').to_s
-  end
-
-  def self.help_idv_supported_documents_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help/verify-your-identity/accepted-state-issued-identification/',
-    ).to_s
-  end
-
-  def self.help_idv_verify_by_mail_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help/verify-your-identity/verify-your-address-by-mail/',
-    ).to_s
-  end
-
-  def self.help_idv_verify_by_phone_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help/verify-your-identity/phone-number-and-phone-plan-in-your-name/',
-    ).to_s
+    help_center_article_url(
+      category: 'creating-an-account',
+      article: 'authentication-application',
+    )
   end
 
   def self.help_which_authentication_method_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help/authentication-methods/which-authentication-method-should-i-use/',
-    ).to_s
+    help_center_article_url(
+      category: 'authentication-methods',
+      article: 'which-authentication-method-should-i-use',
+    )
   end
 
   def self.help_hardware_security_key_url
-    URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-a-hardware-security-key/').to_s
-  end
-
-  def self.help_document_capture_tips_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
-    ).to_s
+    help_center_article_url(
+      category: 'signing-in',
+      article: 'what-is-a-hardware-security-key',
+    )
   end
 
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
+  end
+
+  def self.help_center_article_url(category:, article:)
+    if !valid_help_center_article?(category: category, article: article)
+      raise ArgumentError.new("Unknown help center article category #{category}/#{article}")
+    end
+
+    URI.join(BASE_URL, locale_segment, "help/#{category}/#{article}/").to_s
+  end
+
+  def self.valid_help_center_article?(category:, article:)
+    HELP_CENTER_ARTICLES.include?("#{category}/#{article}")
   end
 end

@@ -29,10 +29,10 @@
 <div class='clearfix'>
   <div class='sm-col sm-col-3'>
     <%= image_tag(
-      asset_url('idv/phone.png'),
-      alt: t('image_description.camera_mobile_phone'),
-      width: 80,
-    ) %>
+          asset_url('idv/phone.png'),
+          alt: t('image_description.camera_mobile_phone'),
+          width: 80,
+        ) %>
   </div>
   <div id="recommended-tag"
        class='usa-tag caps text-ink bg-primary-lighter margin-top-1 display-inline-block <%= 'hidden' if liveness_checking_enabled? %>'>
@@ -49,11 +49,11 @@
     <%= t('doc_auth.info.upload_from_phone') %>
     <br/>
     <%= validated_form_for(
-      :doc_auth,
-      url: url_for(type: :mobile),
-      method: 'PUT',
-      html: { autocomplete: 'off', class: 'margin-top-2' },
-    ) do %>
+          :doc_auth,
+          url: url_for(type: :mobile),
+          method: 'PUT',
+          html: { autocomplete: 'off', class: 'margin-top-2' },
+        ) do %>
       <button type="submit" class="usa-button usa-button--big margin-top-05">
         <%= t('doc_auth.buttons.use_phone') %>
       </button>
@@ -68,11 +68,11 @@
     class='sm-col sm-col-12 <%= 'hidden' if liveness_checking_enabled? %>'>
     <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
     <%= validated_form_for(
-      :doc_auth,
-      url: url_for(type: :desktop),
-      method: 'PUT',
-      html: { autocomplete: 'off', class: 'inline' }
-    ) do %>
+          :doc_auth,
+          url: url_for(type: :desktop),
+          method: 'PUT',
+          html: { autocomplete: 'off', class: 'inline' },
+        ) do %>
       <button type="submit" class="usa-button usa-button--unstyled">
         <%= t('doc_auth.info.upload_computer_link') %>
       </button>

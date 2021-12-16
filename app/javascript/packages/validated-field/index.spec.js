@@ -8,26 +8,31 @@ describe('ValidatedField', () => {
     customElements.define('lg-validated-field', ValidatedField);
   });
 
+  let idCounter = 0;
+
   function createAndConnectElement({ hasInitialError = false } = {}) {
     const element = document.createElement('lg-validated-field');
+    const errorMessageId = ++idCounter;
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
         {
           "valueMissing": "This field is required"
         }
       </script>
-      <input
-        aria-invalid="false"
-        aria-describedby="validated-field-error-298658fb"
-        required="required"
-        aria-required="true"
-        class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
-      />
-      ${
-        hasInitialError
-          ? '<div class="usa-error-message" id="validated-field-error-298658fb">Invalid value</div>'
-          : ''
-      }
+      <div class="validated-field__input-wrapper">
+        <input
+          aria-invalid="false"
+          aria-describedby="validated-field-error-${errorMessageId}"
+          required="required"
+          aria-required="true"
+          class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
+        />
+        ${
+          hasInitialError
+            ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
+            : ''
+        }
+      </div>
     `;
 
     const form = document.createElement('form');
@@ -48,6 +53,7 @@ describe('ValidatedField', () => {
     form.checkValidity();
 
     expect(input.classList.contains('usa-input--error')).to.be.true();
+    expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
     const message = getByText(element, 'This field is required');
     expect(message).to.be.ok();
@@ -82,7 +88,23 @@ describe('ValidatedField', () => {
     userEvent.type(input, '5');
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
+    expect(input.getAttribute('aria-invalid')).to.equal('false');
     expect(() => getByText(element, 'This field is required')).to.throw();
+  });
+
+  it('focuses the first element with an error', () => {
+    const firstElement = createAndConnectElement();
+    createAndConnectElement();
+
+    /** @type {HTMLInputElement} */
+    const firstInput = getByRole(firstElement, 'textbox');
+
+    /** @type {HTMLFormElement} */
+    const form = document.querySelector('form');
+
+    form.checkValidity();
+
+    expect(document.activeElement).to.equal(firstInput);
   });
 
   context('with initial error message', () => {
@@ -99,6 +121,7 @@ describe('ValidatedField', () => {
       userEvent.type(input, '5');
 
       expect(input.classList.contains('usa-input--error')).to.be.false();
+      expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
     });
   });

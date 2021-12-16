@@ -1,7 +1,9 @@
 <h1 class="margin-y-0"><%= t('headings.personal_key') %></h1>
 <p class="mt-tiny margin-bottom-6">
-  <%= t('instructions.personal_key.info_html',
-        accent: content_tag(:strong, t('instructions.personal_key.accent'))) %>
+  <%= t(
+        'instructions.personal_key.info_html',
+        accent: content_tag(:strong, t('instructions.personal_key.accent')),
+      ) %>
 </p>
 <div class="full-width-box">
   <%= render 'partials/personal_key/key', code: code %>
@@ -13,11 +15,11 @@
 </div>
 <div class="sm-col sm-col-4 center">
   <%= link_to t('users.personal_key.print'), '#', data: {print: true},
-              class: 'usa-button usa-button--outline' %>
+                                                  class: 'usa-button usa-button--outline' %>
 </div>
 <div class="sm-col sm-col-4 center">
   <%= link_to t('links.copy'), '#', data: {"clipboard-text": code},
-              class: 'usa-button usa-button--outline clipboard' %>
+                                    class: 'usa-button usa-button--outline clipboard' %>
 </div>
 <br>
 <br>

@@ -26,11 +26,15 @@ module Idv
     end
 
     def fallback_back_path
-      user_needs_address_otp_verification? ? verify_account_path : idv_phone_path
+      user_needs_address_otp_verification? ? idv_gpo_verify_path : idv_phone_path
     end
 
     def gpo_mail_bounced?
       current_user.decorate.gpo_mail_bounced?
+    end
+
+    def letter_already_sent?
+      gpo_mail_service.any_mail_sent?
     end
 
     def url_options
@@ -41,10 +45,6 @@ module Idv
 
     def gpo_mail_service
       @gpo_mail_service ||= Idv::GpoMail.new(current_user)
-    end
-
-    def letter_already_sent?
-      gpo_mail_service.any_mail_sent?
     end
 
     def user_needs_address_otp_verification?

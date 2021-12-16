@@ -49,19 +49,22 @@ module DocAuth
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
 
-    # rubocop:disable Metrics/PerceivedComplexity
     def generate_doc_auth_errors(response_info)
       liveness_enabled = response_info[:liveness_enabled]
-      alert_error_count = response_info[:alert_failure_count]
+      alert_error_count = response_info[:doc_auth_result] == 'Passed' ?
+        0 : response_info[:alert_failure_count]
 
       unknown_fail_count = scan_for_unknown_alerts(response_info)
       alert_error_count -= unknown_fail_count
 
       image_metric_errors = get_image_metric_errors(response_info[:image_metrics])
-      return image_metric_errors unless image_metric_errors.empty?
+      return image_metric_errors.to_h unless image_metric_errors.empty?
 
-      errors = get_error_messages(liveness_enabled, response_info)
-      alert_error_count += 1 if errors.include?(SELFIE)
+      alert_errors = get_error_messages(liveness_enabled, response_info)
+      alert_error_count += 1 if alert_errors.include?(SELFIE)
+
+      error = ''
+      side = nil
 
       if alert_error_count < 1
         config.warn_notifier&.call(
@@ -69,33 +72,37 @@ module DocAuth
           response_info: response_info,
         )
 
-        return self.class.wrapped_general_error(liveness_enabled)
-      # if the alert_error_count is 1 it is just passed along
+        error = self.class.general_error(liveness_enabled)
+        side = ID
+      elsif alert_error_count == 1
+        error = alert_errors.values[0].to_a.pop
+        side = alert_errors.keys[0]
       elsif alert_error_count > 1
         # Simplify multiple errors into a single error for the user
-        error_fields = errors.keys
+        error_fields = alert_errors.keys
         if error_fields.length == 1
-          case error_fields.first
+          side = error_fields.first
+          case side
           when ID
-            errors[ID] = Set[self.class.general_error(false)]
+            error = self.class.general_error(false)
           when FRONT
-            errors[ID] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
-            errors.delete(FRONT)
+            error = Errors::MULTIPLE_FRONT_ID_FAILURES
           when BACK
-            errors[ID] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
-            errors.delete(BACK)
+            error = Errors::MULTIPLE_BACK_ID_FAILURES
           end
         elsif error_fields.length > 1
-          return self.class.wrapped_general_error(liveness_enabled) if error_fields.include?(SELFIE)
-
-          # If we don't have a selfie error don't give the message suggesting retaking selfie.
-          return self.class.wrapped_general_error(false)
+          if error_fields.include?(SELFIE)
+            error = self.class.general_error(liveness_enabled)
+          else
+            # If we don't have a selfie error don't give the message suggesting retaking selfie.
+            error = self.class.general_error(false)
+          end
+          side = ID
         end
       end
 
-      errors.transform_values(&:to_a)
+      ErrorResult.new(error, side).to_h
     end
-    # rubocop:enable Metrics/PerceivedComplexity
 
     # private
 
@@ -104,41 +111,43 @@ module DocAuth
       sharpness_threshold = config&.sharpness_threshold&.to_i || 40
       glare_threshold = config&.glare_threshold&.to_i || 40
 
-      front_dpi_fail, back_dpi_fail = false, false
-      front_sharp_fail, back_sharp_fail = false, false
-      front_glare_fail, back_glare_fail = false, false
+      dpi_metrics, sharp_metrics, glare_metrics = {}, {}, {}
+      error_result = ErrorResult.new
 
       processed_image_metrics.each do |side, img_metrics|
+        dpi_metrics[side] = img_metrics.slice('HorizontalResolution', 'VerticalResolution')
+        sharp_metrics[side] = img_metrics.slice('SharpnessMetric')
+        glare_metrics[side] = img_metrics.slice('GlareMetric')
+      end
+
+      dpi_metrics.each do |side, img_metrics|
         hdpi = img_metrics['HorizontalResolution']&.to_i || 0
         vdpi = img_metrics['VerticalResolution']&.to_i || 0
         if hdpi < dpi_threshold || vdpi < dpi_threshold
-          front_dpi_fail = true if side == :front
-          back_dpi_fail = true if side == :back
+          error_result.set_error(Errors::DPI_LOW)
+          error_result.add_side(side)
         end
+      end
+      return error_result unless error_result.empty?
 
+      sharp_metrics.each do |side, img_metrics|
         sharpness = img_metrics['SharpnessMetric']&.to_i
         if sharpness.present? && sharpness < sharpness_threshold
-          front_sharp_fail = true if side == :front
-          back_sharp_fail = true if side == :back
+          error_result.set_error(Errors::SHARP_LOW)
+          error_result.add_side(side)
         end
+      end
+      return error_result unless error_result.empty?
 
+      glare_metrics.each do |side, img_metrics|
         glare = img_metrics['GlareMetric']&.to_i
         if glare.present? && glare < glare_threshold
-          front_glare_fail = true if side == :front
-          back_glare_fail = true if side == :back
+          error_result.set_error(Errors::GLARE_LOW)
+          error_result.add_side(side)
         end
       end
 
-      return { GENERAL => [Errors::DPI_LOW_BOTH_SIDES] } if front_dpi_fail && back_dpi_fail
-      return { GENERAL => [Errors::DPI_LOW_ONE_SIDE] } if front_dpi_fail || back_dpi_fail
-
-      return { GENERAL => [Errors::SHARP_LOW_BOTH_SIDES] } if front_sharp_fail && back_sharp_fail
-      return { GENERAL => [Errors::SHARP_LOW_ONE_SIDE] } if front_sharp_fail || back_sharp_fail
-
-      return { GENERAL => [Errors::GLARE_LOW_BOTH_SIDES] } if front_glare_fail && back_glare_fail
-      return { GENERAL => [Errors::GLARE_LOW_ONE_SIDE] } if front_glare_fail || back_glare_fail
-
-      {}
+      error_result
     end
 
     def get_error_messages(liveness_enabled, response_info)
@@ -148,7 +157,10 @@ module DocAuth
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ALERT_MESSAGES[alert[:name].to_sym]
 
-          errors[alert_msg_hash[:type]] << alert_msg_hash[:msg_key] if alert_msg_hash.present?
+          if alert_msg_hash.present?
+            field_type = alert[:side] || alert_msg_hash[:type]
+            errors[field_type.to_sym] << alert_msg_hash[:msg_key]
+          end
         end
       end
 
@@ -192,7 +204,7 @@ module DocAuth
     end
 
     def self.wrapped_general_error(liveness_enabled)
-      { general: [ErrorGenerator.general_error(liveness_enabled)] }
+      { general: [ErrorGenerator.general_error(liveness_enabled)], hints: true }
     end
   end
 end

@@ -14,10 +14,8 @@
   <%= t('service_providers.errors.inactive.instructions2', sp_link: @sp_link) %>
 </p>
 
-<%=
-  link_to(
-    t('service_providers.errors.inactive.button_text', app_name: APP_NAME),
-    root_path,
-    class: 'usa-button usa-button--wide usa-button--big margin-top-3'
-  )
-%>
+<%= link_to(
+      t('service_providers.errors.inactive.button_text', app_name: APP_NAME),
+      root_path,
+      class: 'usa-button usa-button--wide usa-button--big margin-top-3',
+    ) %>

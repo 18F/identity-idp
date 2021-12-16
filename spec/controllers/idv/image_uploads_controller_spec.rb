@@ -14,6 +14,7 @@ describe Idv::ImageUploadsController do
         back_image_metadata: '{"glare":99.99}',
         selfie: DocAuthImageFixtures.selfie_image_multipart,
         document_capture_session_uuid: document_capture_session.uuid,
+        flow_path: 'standard',
       }
     end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
@@ -51,6 +52,7 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -105,6 +107,7 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -203,6 +206,7 @@ describe Idv::ImageUploadsController do
           attempts: IdentityConfig.store.doc_auth_max_attempts,
           remaining_attempts: 0,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -236,6 +240,7 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -256,6 +261,7 @@ describe Idv::ImageUploadsController do
             back: { glare: 99.99 },
           },
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -266,6 +272,7 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         action
@@ -312,6 +319,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -332,6 +340,7 @@ describe Idv::ImageUploadsController do
                 back: { glare: 99.99 },
               },
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -347,6 +356,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             action
@@ -367,6 +377,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -387,6 +398,7 @@ describe Idv::ImageUploadsController do
                 back: { glare: 99.99 },
               },
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -402,6 +414,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             action
@@ -422,6 +435,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -442,6 +456,7 @@ describe Idv::ImageUploadsController do
                 back: { glare: 99.99 },
               },
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -457,6 +472,7 @@ describe Idv::ImageUploadsController do
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
+              flow_path: 'standard',
             )
 
             action
@@ -501,6 +517,7 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -521,6 +538,7 @@ describe Idv::ImageUploadsController do
             back: { glare: 99.99 },
           },
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         action
@@ -538,9 +556,12 @@ describe Idv::ImageUploadsController do
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
-            field: 'back',
+            field: 'general',
             message: I18n.t('doc_auth.errors.alerts.barcode_content_check'),
-          },
+          }, {
+            field: 'back',
+            message: I18n.t('doc_auth.errors.general.fallback_field_level'),
+          }
         ]
       end
 
@@ -555,13 +576,16 @@ describe Idv::ImageUploadsController do
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         expect(@analytics).to receive(:track_event).with(
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           success: false,
           errors: {
-            back: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
+            general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
+            back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
+            hints: true,
           },
           async: false,
           billed: true,
@@ -577,6 +601,7 @@ describe Idv::ImageUploadsController do
             back: { glare: 99.99 },
           },
           pii_like_keypaths: [[:pii]],
+          flow_path: 'standard',
         )
 
         action

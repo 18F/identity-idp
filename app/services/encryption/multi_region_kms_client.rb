@@ -98,13 +98,14 @@ module Encryption
       # checking if it looks like the JSON hash we want
       if ciphertext.start_with?('{"regions"')
         parsed_payload = JSON.parse(ciphertext)
-        if parsed_payload.is_a?(Hash) # rubocop:disable Style/GuardClause
+        if parsed_payload.is_a?(Hash)
           regions = parsed_payload['regions']
           resolve_region_decryption(regions)
         else
           raise EncryptionError, 'Malformed JSON ciphertext, not a hash'
         end
-      else resolve_legacy_decryption(ciphertext)
+      else
+        resolve_legacy_decryption(ciphertext)
       end
     end
   end

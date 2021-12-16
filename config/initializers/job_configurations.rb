@@ -114,6 +114,11 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      agreement_summary_report: {
+        class: 'Reports::AgreementSummaryReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Total SP Costs Report to S3
       total_sp_costs: {
         class: 'Reports::TotalSpCostReport',

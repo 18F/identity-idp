@@ -1,14 +1,12 @@
 <% title t('titles.totp_setup.new') %>
-<% help_link = new_window_link_to t('links.what_is_webauthn'),
-                                  MarketingSite.help_hardware_security_key_url %>
 
-<%= image_tag asset_url('security-key.svg'), alt: '', width: '90', class: 'margin-left-1' %>
+<%= image_tag asset_url(@presenter.image_path), alt: '', width: '90', class: 'margin-left-1' %>
 
-<h1 class='margin-y-0'>
-  <%= t('headings.webauthn_setup.new') %>
+<h1 class="margin-bottom-0">
+  <%= @presenter.heading %>
 </h1>
 <p class='mt-tiny margin-bottom-4'>
-  <%= t('forms.webauthn_setup.intro_html', link: help_link) %>
+  <%= @presenter.intro %>
 </p>
 
 <div>
@@ -21,34 +19,50 @@
       <%= hidden_field_tag :webauthn_public_key, '', id: 'webauthn_public_key' %>
       <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
       <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
-      <%= label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold', for: 'nickname' %>
-      <%= text_field_tag :name, '', required: true, aria: { invalid: false }, id: 'nickname',
-            class: 'block col-12 field monospace', size: 16, maxlength: 20 %>
+      <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
+      <%= label_tag 'code', @presenter.nickname_label, class: 'block bold', for: 'nickname' %>
+      <%= text_field_tag(
+            :name,
+            '',
+            required: true,
+            aria: { invalid: false },
+            id: 'nickname',
+            class: 'block col-12 field monospace',
+            size: 16,
+            maxlength: 20,
+          ) %>
      <div class='border border-primary-light radius-lg padding-x-2 padding-y-1 margin-top-4'>
        <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
        <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
-       <%= label_tag 'remember_device',
-         t('forms.messages.remember_device'),
-         class: 'text-primary mt-1p' %>
+       <%= label_tag(
+             'remember_device',
+             t('forms.messages.remember_device'),
+             class: 'text-primary mt-1p',
+           ) %>
      </div>
      <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden' %>
    <% end %>
    <br>
-   <%= link_to t('forms.webauthn_setup.continue'), '#', method: :get,
-           class: 'usa-button usa-button--big usa-button--wide', id: 'continue-button' %>
+   <%= button_tag(
+         @presenter.button_text,
+         class: 'usa-button usa-button--big usa-button--wide',
+         id: 'continue-button',
+       ) %>
 </div>
 
 <div class='spinner hidden' id='spinner'>
   <br>
   <div class='center'>
-    <%= image_tag(asset_url('spinner.gif'),
-            srcset: asset_url('spinner@2x.gif'),
-            height: 144,
-            width: 144,
-            alt: '') %>
+    <%= image_tag(
+          asset_url('spinner.gif'),
+          srcset: asset_url('spinner@2x.gif'),
+          height: 144,
+          width: 144,
+          alt: '',
+        ) %>
   </div>
-  <h2 class='h4 half-center'><%= t('forms.webauthn_setup.instructions_title') %></h2>
-  <p class='half-center'><%= t('forms.webauthn_setup.instructions_text', app_name: APP_NAME) %></p>
+  <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
+  <p class='half-center'><%= @presenter.setup_instructions %></p>
 </div>
 <br>
 

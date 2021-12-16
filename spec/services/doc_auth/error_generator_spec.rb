@@ -42,8 +42,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:back)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed' do
@@ -54,8 +56,25 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::ID_NOT_VERIFIED)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::ID_NOT_VERIFIED)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
+    end
+
+    it 'DocAuthResult is Failed with single alert with a side' do
+      error_info = build_error_info(
+        doc_result: 'Failed',
+        failed: [{ name: 'Visible Pattern', result: 'Failed', side: 'front' }],
+      )
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::ID_NOT_VERIFIED)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with multiple different alerts' do
@@ -69,8 +88,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with multiple id alerts' do
@@ -84,8 +106,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with multiple front alerts' do
@@ -99,8 +124,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with multiple back alerts' do
@@ -114,8 +141,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with an unknown alert' do
@@ -129,8 +158,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with multiple alerts including an unknown' do
@@ -147,8 +179,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::BIRTH_DATE_CHECKS)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::BIRTH_DATE_CHECKS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Failed with an unknown passed alert' do
@@ -163,8 +198,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:id)
-      expect(output[:id]).to contain_exactly(DocAuth::Errors::BIRTH_DATE_CHECKS)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::BIRTH_DATE_CHECKS)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
   end
 
@@ -178,8 +216,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:back)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Attention and selfie has failed' do
@@ -191,8 +231,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult is Attention and selfie has succeeded' do
@@ -204,8 +246,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:back)
-      expect(output[:back]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::BARCODE_READ_CHECK)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(true)
     end
 
     it 'DocAuthResult has passed but liveness failed' do
@@ -213,8 +257,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:selfie)
-      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output.keys).to contain_exactly(:general, :selfie, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SELFIE_FAILURE)
+      expect(output[:selfie]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(output[:hints]).to eq(false)
     end
   end
 
@@ -242,8 +288,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_ONE_SIDE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'front image VDPI is too low' do
@@ -252,8 +300,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_ONE_SIDE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'back image HDPI is too low' do
@@ -262,8 +312,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'front and back image DPI is too low' do
@@ -273,8 +325,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_BOTH_SIDES)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'front image sharpness is too low' do
@@ -283,8 +338,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'back image sharpness is too low' do
@@ -293,8 +350,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'both images sharpness is too low' do
@@ -304,8 +363,11 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_BOTH_SIDES)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'both images sharpness is too low' do
@@ -315,8 +377,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'front image glare is too low' do
@@ -325,8 +389,10 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GLARE_LOW_ONE_SIDE)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
     it 'back image glare is too low' do
@@ -335,40 +401,50 @@ RSpec.describe DocAuth::ErrorGenerator do
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GLARE_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
-    it 'front image glare is too low' do
-      metrics[:back]['GlareMetric'] = 25
-      error_info = build_error_info(image_metrics: metrics)
-
-      output = described_class.new(config).generate_doc_auth_errors(error_info)
-
-      expect(output.keys).to contain_exactly(:general)
-      expect(output[:general]).to contain_exactly(DocAuth::Errors::GLARE_LOW_ONE_SIDE)
-    end
-
-    it 'both images sharpness is too low' do
+    it 'both images glare is too low' do
       metrics[:front]['GlareMetric'] = 25
       metrics[:back]['GlareMetric'] = 25
       error_info = build_error_info(image_metrics: metrics)
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GLARE_LOW_BOTH_SIDES)
+      expect(output[:front]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
 
-    it 'both images sharpness is too low' do
+    it 'both images glare is too low' do
       metrics[:front].delete('GlareMetric')
       metrics[:back]['GlareMetric'] = 25
       error_info = build_error_info(image_metrics: metrics)
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
 
-      expect(output.keys).to contain_exactly(:general)
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
       expect(output[:general]).to contain_exactly(DocAuth::Errors::GLARE_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::GLARE_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
+    end
+
+    it 'both images have different problems' do
+      metrics[:front]['GlareMetric'] = 20
+      metrics[:back]['SharpnessMetric'] = 25
+      error_info = build_error_info(image_metrics: metrics)
+
+      output = described_class.new(config).generate_doc_auth_errors(error_info)
+
+      expect(output.keys).to contain_exactly(:general, :back, :hints)
+      expect(output[:general]).to contain_exactly(DocAuth::Errors::SHARP_LOW_ONE_SIDE)
+      expect(output[:back]).to contain_exactly(DocAuth::Errors::SHARP_LOW_FIELD)
+      expect(output[:hints]).to eq(false)
     end
   end
 end

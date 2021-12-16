@@ -116,7 +116,6 @@ fr:
     registration:
       terms: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
-    rules_of_use: Veuillez cocher cette case pour continuer
     sign_in:
       bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion.
     two_factor_auth_setup:
@@ -125,6 +124,20 @@ fr:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     verify_profile:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
+    webauthn_platform_setup:
+      already_registered: Le déverrouillage facial ou tactile est déjà enregistré.
+        Veuillez essayer une autre méthode de plateforme pour vous connecter.
+      attestation_error: Désolé, mais votre déverrouillage facial ou tactile ne semble
+        pas fonctionner. Veuillez vous assurer que votre appareil est répertorié
+        sur https://fidoalliance.org/certification/fido-certified-products/ et
+        si vous pensez qu’il s’agit d’une erreur de notre part, veuillez nous
+        contacter à %{link}.
+      general_error: Une erreur s’est produite lors de l’ajout de votre méthode
+        d’authentification. Veuillez réessayer.
+      not_supported: Nous sommes désolés, mais votre navigateur ne prend pas en charge
+        le déverrouillage du visage ou du toucher.
+      unique_name: Ce nom d’appareil a été utilisé. Veuillez sélectionner un autre nom
+        d’appareil.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.

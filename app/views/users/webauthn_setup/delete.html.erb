@@ -1,16 +1,34 @@
-<% title t('forms.webauthn_delete.confirm') %>
+<% if @webauthn.platform_authenticator %>
+  <% title t('forms.webauthn_platform_delete.confirm') %>
+<% else %>
+  <% title t('forms.webauthn_delete.confirm') %>
+<% end %>
 <%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54) %>
 
-<h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t('forms.webauthn_delete.confirm') %></h1>
+<% if @webauthn.platform_authenticator %>
+  <h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t('forms.webauthn_platform_delete.confirm') %></h1>
+<% else %>
+  <h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t('forms.webauthn_delete.confirm') %></h1>
+<% end %>
 
 <div class="col-2">
   <hr class="margin-top-4 margin-bottom-2 border-width-05 border-yellow" />
 </div>
 <br />
-<p><%= t('forms.webauthn_delete.caution', app_name: APP_NAME) %></p>
+<% if @webauthn.platform_authenticator %>
+  <p><%= t('forms.webauthn_platform_delete.caution', app_name: APP_NAME) %></p>
+<% else %>
+  <p><%= t('forms.webauthn_delete.caution', app_name: APP_NAME) %></p>
+<% end %>
 <br />
 <br />
-<%= button_to(webauthn_setup_path(id: params[:id]), method: :delete, class: 'usa-button usa-button--big usa-button--wide margin-bottom-2') { t('account.index.webauthn_confirm_delete') } %>
+
+<% if @webauthn.platform_authenticator %>
+  <%= button_to(webauthn_setup_path(id: params[:id]), method: :delete, class: 'usa-button usa-button--big usa-button--wide margin-bottom-2') { t('account.index.webauthn_platform_confirm_delete') } %>
+<% else %>
+  <%= button_to(webauthn_setup_path(id: params[:id]), method: :delete, class: 'usa-button usa-button--big usa-button--wide margin-bottom-2') { t('account.index.webauthn_confirm_delete') } %>
+<% end %>
+
 <%= link_to t('links.cancel'),
-    account_two_factor_authentication_path,
-    class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
+            account_two_factor_authentication_path,
+            class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>

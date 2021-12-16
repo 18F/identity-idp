@@ -130,15 +130,30 @@ fr:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
         l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
+    webauthn_platform_delete:
+      caution: Si vous supprimez votre déverouillage facial ou déverrouillage par
+        empreinte digitale, vous ne pourrez plus l’utiliser pour accéder à votre
+        compte %{app_name}.
+      confirm: Êtes-vous sûr de vouloir supprimer votre déverouillage facial ou
+        déverrouillage par empreinte digitale?
+    webauthn_platform_setup:
+      continue: Continuer
+      instructions_text: Utilisez le déverrouillage par empreinte digitale ou le
+        déverouillage facial pour accéder à votre compte avec %{app_name}.
+      instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
+        déverouillage facial pour accéder à votre compte.
+      intro: Utilisez le déverrouillage par empreinte digitale ou le déverouillage
+        facial pour accéder à votre compte.
+      login_text: Lorsque vous êtes prêt, appuyez sur le bouton.
+      nickname: Pseudo dispositivo
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
         l’enregistrer avec %{app_name}
       instructions_title: Connectez votre clé de sécurité
-      intro_html: Ajoutez une clé de sécurité en tant que méthode d’authentification à
-        votre compte. Votre clé de sécurité doit prendre en charge le standard
-        FIDO. Vous pouvez ajouter autant de clés de sécurité que vous le
-        souhaitez et nous en recommandons au moins deux pour faciliter la
-        récupération du compte.
+      intro: Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
+        d’authentification. Vous pouvez ajouter autant de clés de sécurité que
+        vous le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé
+        de sécurité.
       login_text: Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton
       nickname: Pseudo clé de sécurité

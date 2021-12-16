@@ -8,6 +8,12 @@ describe Idv::CancellationsController do
   end
 
   describe '#new' do
+    let(:go_back_path) { '/path/to/return' }
+
+    before do
+      allow(controller).to receive(:go_back_path).and_return(go_back_path)
+    end
+
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
@@ -57,6 +63,12 @@ describe Idv::CancellationsController do
 
         expect(response).to render_template(:new)
       end
+
+      it 'stores go back path' do
+        get :new
+
+        expect(session[:go_back_path]).to eq(go_back_path)
+      end
     end
 
     context 'when regular session' do
@@ -68,6 +80,60 @@ describe Idv::CancellationsController do
         get :new
 
         expect(response).to render_template(:new)
+      end
+
+      it 'stores go back path' do
+        get :new
+
+        expect(controller.user_session[:idv][:go_back_path]).to eq(go_back_path)
+      end
+    end
+  end
+
+  describe '#update' do
+    before do
+      stub_sign_in
+      stub_analytics
+    end
+
+    context 'without cancel param' do
+      it 'renders new template' do
+        put :update
+
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'with cancel param' do
+      it 'logs cancellation go back' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::IDV_CANCELLATION_GO_BACK,
+          step: 'first',
+        )
+
+        put :update, params: { step: 'first', cancel: 'true' }
+      end
+
+      it 'redirects to idv_path' do
+        put :update, params: { cancel: 'true' }
+
+        expect(response).to redirect_to idv_url
+      end
+
+      context 'with go back path stored in session' do
+        let(:go_back_path) { '/path/to/return' }
+
+        before do
+          allow(controller).to receive(:user_session).and_return(
+            idv: { go_back_path: go_back_path },
+          )
+        end
+
+        it 'redirects to go back path' do
+          put :update, params: { cancel: 'true' }
+
+          expect(response).to redirect_to go_back_path
+        end
       end
     end
   end

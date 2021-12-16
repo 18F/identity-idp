@@ -13,7 +13,8 @@
         },
         action_secondary: {
           text: t('links.go_back'),
-          url: @go_back_path,
+          url: idv_cancel_path(step: params[:step], cancel: true),
+          method: :put,
         },
       },
     ) do %>

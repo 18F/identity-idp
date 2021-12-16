@@ -1,18 +1,44 @@
 // additional, ad-hoc spacing utilities added as needed
 
-.mxn-tiny { margin-left: -$space-tiny; margin-right: -$space-tiny; }
-.mb-tiny { margin-bottom: $space-tiny; }
-.ml-tiny { margin-left: $space-tiny; }
-.mt-tiny { margin-top: $space-tiny; }
-.pt-tiny { padding-top: $space-tiny; }
-.py-tiny { padding-bottom: $space-tiny; padding-top: $space-tiny; }
+.mxn-tiny {
+  margin-left: -$space-tiny;
+  margin-right: -$space-tiny;
+}
+.mb-tiny {
+  margin-bottom: $space-tiny;
+}
+.ml-tiny {
+  margin-left: $space-tiny;
+}
+.mt-tiny {
+  margin-top: $space-tiny;
+}
+.pt-tiny {
+  padding-top: $space-tiny;
+}
+.py-tiny {
+  padding-bottom: $space-tiny;
+  padding-top: $space-tiny;
+}
 
-.px-12p { padding-left: 12px; padding-right: 12px; }
-.py-12p { padding-bottom: 12px; padding-top: 12px; }
+.px-12p {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.py-12p {
+  padding-bottom: 12px;
+  padding-top: 12px;
+}
 
-.pl-24p { padding-left: 24px; }
+.pl-24p {
+  padding-left: 24px;
+}
 
 @media #{$breakpoint-sm} {
-  .sm-mr-20p { margin-right: 20px; }
-  .sm-ml-28p { margin-left: 28px; }
+  .sm-mr-20p {
+    margin-right: 20px;
+  }
+  .sm-ml-28p {
+    margin-left: 28px;
+  }
 }

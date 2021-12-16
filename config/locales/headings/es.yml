@@ -66,5 +66,7 @@ es:
       new: Agregar una aplicación de autenticación
     verify_email: Revise su email
     verify_personal_key: Verifica tu clave personal
+    webauthn_platform_setup:
+      new: Utilice su dispositivo
     webauthn_setup:
       new: Añade tu clave de seguridad

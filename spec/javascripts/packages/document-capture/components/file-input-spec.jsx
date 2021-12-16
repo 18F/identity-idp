@@ -232,6 +232,37 @@ describe('document-capture/components/file-input', () => {
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
 
+  it('has a blank aria-label with no input added', () => {
+    const { getByLabelText } = render(<FileInput label="File" />);
+
+    const queryByAriaLabel = getByLabelText('');
+
+    expect(queryByAriaLabel).to.exist();
+  });
+
+  it('has aria-label same as file name', () => {
+    const fileName = 'file2.jpg';
+    const file2 = new window.File([file], fileName);
+    const { getByLabelText } = render(<FileInput label="File" value={file2} />);
+
+    const queryByAriaLabel = getByLabelText(fileName);
+
+    expect(queryByAriaLabel).to.exist();
+  });
+
+  it('has aria-label with Captured Image', () => {
+    const { getByLabelText } = render(
+      <FileInput
+        label="File"
+        value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+      />,
+    );
+
+    const queryByAriaLabel = getByLabelText('doc_auth.forms.captured_image');
+
+    expect(queryByAriaLabel).to.exist();
+  });
+
   it('calls onClick when clicked', () => {
     const onClick = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onClick={onClick} />);

@@ -51,32 +51,32 @@
       </div>
       <div class='grid-auto'>
         <%= button_to(
-          idv_doc_auth_step_path(step: :redo_ssn),
-          method: :put,
-          class: 'usa-button usa-button--unstyled',
-          'aria-label': t('doc_auth.buttons.change_ssn_label')
-        ) { t('doc_auth.buttons.change_ssn') } %>
+              idv_doc_auth_step_path(step: :redo_ssn),
+              method: :put,
+              class: 'usa-button usa-button--unstyled',
+              'aria-label': t('doc_auth.buttons.change_ssn_label'),
+            ) { t('doc_auth.buttons.change_ssn') } %>
       </div>
     </div>  
   <div class="margin-top-5">
     <%= render 'shared/spinner_button',
-              action_message: t('doc_auth.info.verifying'),
-              class: 'grid-col-12 tablet:grid-col-6' do %>
+               action_message: t('doc_auth.info.verifying'),
+               class: 'grid-col-12 tablet:grid-col-6' do %>
       <%= button_to(
-        url_for,
-        method: :put,
-        form: {
-          class: 'button_to read-after-submit',
-          data: {
-            form_steps_wait: '',
-            error_message: t('idv.failure.exceptions.internal_error'),
-            alert_target: '#form-steps-wait-alert',
-            wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
-            poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
-          },
-        },
-        class: 'usa-button usa-button--big usa-button--full-width',
-      ) { t('forms.buttons.continue') } %>
+            url_for,
+            method: :put,
+            form: {
+              class: 'button_to read-after-submit',
+              data: {
+                form_steps_wait: '',
+                error_message: t('idv.failure.exceptions.internal_error'),
+                alert_target: '#form-steps-wait-alert',
+                wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
+                poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+              },
+            },
+            class: 'usa-button usa-button--big usa-button--full-width',
+          ) { t('forms.buttons.continue') } %>
     <% end %>
   </div>
 </div>

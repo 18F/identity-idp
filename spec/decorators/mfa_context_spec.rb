@@ -119,7 +119,7 @@ describe MfaContext do
     end
 
     context 'with webauthn configuration' do
-      let(:user) { build(:user, :with_webauthn) }
+      let(:user) { create(:user, :with_webauthn) }
 
       it 'returns 1 for webauthn' do
         hash = { webauthn: 1 }
@@ -219,6 +219,17 @@ describe MfaContext do
       it 'returns 2' do
         user = create(:user)
         create_list(:webauthn_configuration, 2, user: user)
+        subject = described_class.new(user.reload)
+
+        expect(subject.enabled_mfa_methods_count).to eq(2)
+      end
+    end
+
+    context 'with 1 webauthn roaming authenticator and one platform authenticator' do
+      it 'returns 2' do
+        user = create(:user)
+        create(:webauthn_configuration, user: user)
+        create(:webauthn_configuration, platform_authenticator: true, user: user)
         subject = described_class.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)

@@ -37,7 +37,7 @@ describe SignUp::RegistrationsController, devise: true do
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
 
-        post :create, params: { user: { email: 'new@example.com', terms_accepted: 'true' } }
+        post :create, params: { user: { email: 'new@example.com', terms_accepted: '1' } }
 
         user = User.find_with_email('new@example.com')
 
@@ -58,7 +58,7 @@ describe SignUp::RegistrationsController, devise: true do
 
       it 'sets the users preferred email locale and sends an email in that locale' do
         post :create, params: { user: { email: 'test@test.com', email_language: 'es',
-                                        terms_accepted: 'true' } }
+                                        terms_accepted: '1' } }
 
         expect(User.find_with_email('test@test.com').email_language).to eq('es')
 
@@ -68,7 +68,7 @@ describe SignUp::RegistrationsController, devise: true do
       end
 
       it 'sets the email in the session and redirects to sign_up_verify_email_path' do
-        post :create, params: { user: { email: 'test@test.com', terms_accepted: 'true' } }
+        post :create, params: { user: { email: 'test@test.com', terms_accepted: '1' } }
 
         expect(session[:email]).to eq('test@test.com')
         expect(response).to redirect_to(sign_up_verify_email_path)
@@ -78,7 +78,7 @@ describe SignUp::RegistrationsController, devise: true do
         user = create(:user)
         stub_sign_in(user)
 
-        post :create, params: { user: { email: user.email, terms_accepted: 'true' } }
+        post :create, params: { user: { email: user.email, terms_accepted: '1' } }
 
         expect(response).to redirect_to account_path
       end
@@ -102,7 +102,7 @@ describe SignUp::RegistrationsController, devise: true do
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
       expect(subject).to_not receive(:create_user_event)
 
-      post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: 'true' } }
+      post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: '1' } }
     end
 
     it 'tracks unsuccessful user registration' do
@@ -112,7 +112,7 @@ describe SignUp::RegistrationsController, devise: true do
         success: false,
         throttled: false,
         errors: { email: [t('valid_email.validations.email.invalid')] },
-        error_details: { email: [t('valid_email.validations.email.invalid')] },
+        error_details: { email: [:invalid] },
         email_already_exists: false,
         user_id: 'anonymous-uuid',
         domain_name: 'invalid',
@@ -121,11 +121,11 @@ describe SignUp::RegistrationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
-      post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: 'true' } }
+      post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: '1' } }
     end
 
     it 'renders new if email is nil' do
-      post :create, params: { user: { request_id: '123789', terms_accepted: 'true' } }
+      post :create, params: { user: { request_id: '123789', terms_accepted: '1' } }
 
       expect(response).to render_template(:new)
     end
