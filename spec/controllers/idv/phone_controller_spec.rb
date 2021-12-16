@@ -78,6 +78,23 @@ describe Idv::PhoneController do
       end
     end
 
+    context 'when the user has chosen to use a different number' do
+      let(:step) { 'path_where_user_asked_to_use_different_number' }
+      let(:params) { { step: step } }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'logs an event showing that the user wants to choose a different number' do
+        get :new, params: params
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_USE_DIFFERENT, step: step)
+      end
+    end
+
     it 'shows phone form if async process times out and allows successful resubmission' do
       stub_analytics
       allow(@analytics).to receive(:track_event)

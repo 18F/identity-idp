@@ -173,6 +173,7 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'.freeze
+  IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
