@@ -115,7 +115,7 @@ describe ApplicationHelper do
                 :profile,
                 :verified,
                 deactivation_reason: :password_reset,
-                proofing_components: { liveness_check: DocAuthRouter.doc_auth_vendor }.to_json,
+                proofing_components: { liveness_check: DocAuthRouter.doc_auth_vendor },
               ),
             ],
           )
