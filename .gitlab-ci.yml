@@ -82,18 +82,6 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
-lint:
-  extends: .on_push
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint
-
 specs:
   extends: .on_push
   stage: test
@@ -147,6 +135,18 @@ specs:
     - >
         ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
+
+lint:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
 
 js_build:
   extends: .on_push
