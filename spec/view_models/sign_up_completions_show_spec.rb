@@ -111,23 +111,5 @@ describe SignUpCompletionsShow do
     let(:create_identity) do
       create(:service_provider_identity, user_id: @user.id)
     end
-
-    describe '#identities' do
-      it 'returns a users identities' do
-        identity = create_identity
-        expect(view_model.identities).to eq([identity])
-      end
-    end
-
-    describe '#user_has_identities?' do
-      it 'returns true if user has identities' do
-        create_identity
-        expect(view_model.user_has_identities?).to eq(true)
-      end
-
-      it 'returns false if user has no identities' do
-        expect(view_model.user_has_identities?).to eq(false)
-      end
-    end
   end
 end
