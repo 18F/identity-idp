@@ -257,11 +257,7 @@ jobs:
             mv coverage/.resultset.json coverage_summary/
             aws s3 --region us-west-2 rm s3://login-gov-test-coverage/coverage-artifacts/$CIRCLE_BUILD_NUM --recursive
       - store_artifacts:
-          path: coverage_summary/index.html
-      - store_artifacts:
-          path: coverage_summary/.resultset.json
-      - store_artifacts:
-          path: coverage_summary/assets
+          path: coverage_summary/
 
   javascript_test:
     working_directory: ~/identity-idp
