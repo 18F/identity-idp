@@ -61,7 +61,6 @@
     ) do |f| %>
   <%= render PhoneInputComponent.new(
         form: f,
-        confirmed_phone: @idv_form.phone.present?,
         allowed_countries: ['US'],
         required: true,
         class: 'margin-bottom-4',

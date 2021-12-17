@@ -6,7 +6,7 @@ class PhoneInputComponent < BaseComponent
 
   def initialize(
     form:,
-    confirmed_phone:,
+    confirmed_phone: true,
     allowed_countries: nil,
     delivery_methods: [:sms, :voice],
     required: false,
