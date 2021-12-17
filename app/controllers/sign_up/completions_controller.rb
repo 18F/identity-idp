@@ -7,8 +7,8 @@ module SignUp
     before_action :apply_secure_headers_override, only: [:show, :update]
 
     def show
+      @view_model = view_model
       if needs_completions_screen?
-        @view_model = view_model
         @pii = displayable_attributes
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
@@ -20,7 +20,7 @@ module SignUp
     end
 
     def update
-      track_completion_event('agency-page')
+      track_completion_event('agency-page') if needs_completions_screen?
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
