@@ -27,8 +27,10 @@ module FormPasswordValidator
     return if errors.messages.present?
     if password.grapheme_clusters.length < Devise.password_length.min
       errors.add(
-        :password, :too_short, count: Devise.password_length.min,
-                               type: :too_short
+        :password,
+        :too_short,
+        count: Devise.password_length.min,
+        type: :too_short,
       )
     elsif password.grapheme_clusters.length > Devise.password_length.max
       errors.add(:password, :too_long, count: Devise.password_length.max, type: :too_long)
