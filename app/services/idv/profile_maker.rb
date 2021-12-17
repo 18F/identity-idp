@@ -26,7 +26,7 @@ module Idv
     private
 
     def current_proofing_components
-      ProofingComponent.find_by(user_id: user.id)&.as_json || {}
+      user.proofing_component&.as_json || {}
     end
 
     attr_accessor :user, :user_password, :phone_confirmed, :document_expired
