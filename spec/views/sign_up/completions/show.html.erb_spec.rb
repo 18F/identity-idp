@@ -13,43 +13,6 @@ describe 'sign_up/completions/show.html.erb' do
     )
   end
 
-  it 'lists the users multiple sps' do
-    identities = create_identities(@user, 3)
-    render
-    identities.each do |identity|
-      expect(rendered).to have_content(identity.agency_name)
-    end
-    expect(rendered).to have_content(t('idv.messages.agencies_login'))
-  end
-
-  it 'shows the users service_provider' do
-    identity = create_identities(@user).first
-    render
-    content = strip_tags(
-      t('idv.messages.agency_login_html', sp: identity.display_name),
-    )
-    expect(rendered).to have_content(content)
-  end
-
-  context 'loging into sp for the first time after account creation' do
-    before do
-      @view_model = SignUpCompletionsShow.new(
-        current_user: @user,
-        ial2_requested: false,
-        decorated_session: SessionDecorator.new,
-        handoff: true,
-        ialmax_requested: false,
-        consent_has_expired: false,
-      )
-      create_identities(@user)
-    end
-
-    it 'informs user they are logging into an SP for the first time' do
-      render
-      expect(rendered).to have_content(t('titles.sign_up.new_sp'))
-    end
-  end
-
   context 'signing in through an SP' do
     let(:service_provider) do
       create(
@@ -84,6 +47,11 @@ describe 'sign_up/completions/show.html.erb' do
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       assign(:pii, { email: 'foo@example.com', all_emails: ['foo@example.com', 'bar@example.com'] })
+    end
+
+    it 'informs user they are logging into an SP for the first time' do
+      render
+      expect(rendered).to have_content(t('titles.sign_up.new_sp'))
     end
 
     it 'shows the app name, not the agency name' do
