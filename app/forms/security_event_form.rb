@@ -175,7 +175,7 @@ class SecurityEventForm
     elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
-        t('risc.security_event.errors.event_type_unsupported', event_type: :"#{event_type}"),
+        t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
         type: :event_type_unsupported,
       )
       @error_code = ErrorCodes::SET_TYPE
