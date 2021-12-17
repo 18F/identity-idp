@@ -25,7 +25,7 @@ describe Idv::ProfileMaker do
       expect(profile.id).to_not be_nil
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Some'
-      expect(profile.proofing_components).to match proofing_component.to_json
+      expect(profile.proofing_components).to match proofing_component.as_json
       expect(profile.reproof_at).to be_nil
 
       expect(pii).to be_a Pii::Attributes
