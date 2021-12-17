@@ -2,7 +2,7 @@ class ProfileProofingComponentsBackfillJob < ApplicationJob
   queue_as :long_running
 
   def perform
-    Profile.find_in_batches do |batch|
+    Profile.where("proofing_components->'id' IS NULL").find_in_batches do |batch|
       updated_count = 0
 
       batch.each do |profile|
