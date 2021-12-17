@@ -93,8 +93,6 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link}.
       activated_link: Contáctenos
-      agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
-      agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
       cancel: Para continuar %{app_name} necesita verificar su identidad. Necesitamos
         recopilar información personal básica, así como su información
         financiera para completar este proceso. Si no tiene la información que

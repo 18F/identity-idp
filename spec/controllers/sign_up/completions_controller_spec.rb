@@ -100,15 +100,6 @@ describe SignUp::CompletionsController do
 
     context 'renders partials' do
       render_views
-      it 'renders show if the user has an invalid sp in the active session' do
-        user = create(:user)
-        stub_sign_in(user)
-        subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
-        get :show
-
-        expect(response).to render_template(:show)
-        expect(response).to render_template(partial: 'sign_up/completions/_show_identities')
-      end
 
       it 'renders show if the user has identities and no active session' do
         user = create(:user)
@@ -118,7 +109,6 @@ describe SignUp::CompletionsController do
         get :show
 
         expect(response).to render_template(:show)
-        expect(response).to render_template(partial: 'sign_up/completions/_show_sp')
       end
     end
   end
@@ -156,6 +146,7 @@ describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in
         subject.session[:sp] = {
+          issuer: 'foo',
           ial: 1,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
@@ -188,8 +179,9 @@ describe SignUp::CompletionsController do
       it 'tracks analytics' do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
+        sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
-          issuer: 'foo',
+          issuer: sp.issuer,
           ial2: true,
           request_url: 'http://example.com',
         }
@@ -207,7 +199,9 @@ describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
+        sp = create(:service_provider, issuer: 'https://awesome')
         subject.session[:sp] = {
+          issuer: sp.issuer,
           ial: 2,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name verified_at],
