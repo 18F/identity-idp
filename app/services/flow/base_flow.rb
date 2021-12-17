@@ -41,15 +41,6 @@ module Flow
       wrap_send(handler)
     end
 
-    def mark_step_complete(step)
-      return if step.nil?
-
-      klass = steps[step]
-      return if klass.nil?
-
-      flow_session[klass.to_s] = true
-    end
-
     def extra_view_variables(step)
       handler = step_handler(step)
       return failure("Unhandled step #{step}") unless handler

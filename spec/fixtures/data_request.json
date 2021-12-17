@@ -1,0 +1,39 @@
+[
+  {
+    "user_id": 4,
+    "login_uuid": "30b69585-312a-4d33-8038-724c2544cd88",
+    "requesting_issuer_uuid": "6feddda4-7ebb-4ae9-9632-db342774f48c",
+    "email_addresses": [
+      {
+        "email": "test@example.com",
+        "created_at": "2021-10-20T14:02:55.978Z",
+        "confirmed_at": "2021-10-20T14:03:09.551Z"
+      }
+    ],
+    "mfa_configurations": {
+      "phone_configurations": [
+        {
+          "phone": "+1 555-555-5555",
+          "created_at": "2021-10-21T14:53:08.803Z",
+          "confirmed_at": "2021-10-21T14:53:08.790Z"
+        }
+      ],
+      "auth_app_configurations": [],
+      "webauthn_configurations": [
+      ],
+      "piv_cac_configurations": [],
+      "backup_code_configurations": [
+      ]
+    },
+    "user_events": [
+      {
+        "event_name": "account_created",
+        "date_time": "2021-10-20T14:02:56.582Z",
+        "ip": "127.0.0.1",
+        "disavowed_at": null,
+        "user_agent": "Mozilla/5.0 (Macintosh) Gecko/20100101 Firefox/100.0",
+        "device_cookie": "abc123"
+      }
+    ]
+  }
+]

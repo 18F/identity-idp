@@ -40,10 +40,6 @@ class NewPhoneForm
     VendorStatus.new.vendor_outage?(:sms)
   end
 
-  def already_has_phone?
-    user.phone_configurations.map(&:phone).include?(phone)
-  end
-
   private
 
   attr_accessor :user, :submitted_phone
