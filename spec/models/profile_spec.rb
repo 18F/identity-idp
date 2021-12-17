@@ -37,13 +37,6 @@ describe Profile do
       end
     end
 
-    context 'when the value is legacy encoding (JSON object as a JSON string atom)' do
-      let(:proofing_components) { { 'foo' => true }.to_json }
-      it 'is the object' do
-        expect(profile.proofing_components).to eq('foo' => true)
-      end
-    end
-
     context 'when the value is a JSON object' do
       let(:proofing_components) { { 'foo' => true } }
       it 'is the object' do
