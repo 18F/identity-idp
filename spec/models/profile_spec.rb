@@ -20,6 +20,38 @@ describe Profile do
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:gpo_confirmation_codes).dependent(:destroy) }
 
+  describe '#proofing_components' do
+    let(:profile) { create(:profile, proofing_components: proofing_components) }
+
+    context 'when the value is nil' do
+      let(:proofing_components) { nil }
+      it 'is nil' do
+        expect(profile.proofing_components).to eq(nil)
+      end
+    end
+
+    context 'when the value is the empty string' do
+      let(:proofing_components) { '' }
+      it 'is nil' do
+        expect(profile.proofing_components).to eq(nil)
+      end
+    end
+
+    context 'when the value is legacy encoding (JSON object as a JSON string atom)' do
+      let(:proofing_components) { { 'foo' => true }.to_json }
+      it 'is the object' do
+        expect(profile.proofing_components).to eq('foo' => true)
+      end
+    end
+
+    context 'when the value is a JSON object' do
+      let(:proofing_components) { { 'foo' => true } }
+      it 'is the object' do
+        expect(profile.proofing_components).to eq('foo' => true)
+      end
+    end
+  end
+
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
