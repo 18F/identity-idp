@@ -36,15 +36,9 @@ module SamlIdpLogoutConcern
     uuid = saml_request.session_index
     issuer = saml_request.issuer
     agency_id = ServiceProvider.find_by(issuer: issuer).agency_id
-    AgencyIdentity.find_by(agency_id: agency_id, uuid: uuid)&.user_id
-  end
-
-  def valid_remote_logout_user_id?(user_id)
-    return false unless user_id.present?
-    ServiceProviderIdentity.where(
-      user_id: user_id,
-      service_provider: saml_request.issuer,
-    ).count.positive?
+    user_id = AgencyIdentity.find_by(agency_id: agency_id, uuid: uuid)&.user_id
+    # ensure that the user has authenticated to that SP
+    ServiceProviderIdentity.find_by(user_id: user_id, service_provider: issuer)&.user_id
   end
 
   def logout_response
