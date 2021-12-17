@@ -14,7 +14,7 @@ RSpec.describe ProfileProofingComponentsBackfillJob do
       json_obj = create(
         :profile,
         proofing_components: { 'foo' => true },
-        updated_at: old_updated_at
+        updated_at: old_updated_at,
       )
       blank_val = create(:profile, proofing_components: '', updated_at: old_updated_at)
       nil_val = create(:profile, proofing_components: nil, updated_at: old_updated_at)

@@ -24,9 +24,9 @@ class Profile < ApplicationRecord
   def proofing_components
     value = super
     if value.present?
-      if value.kind_of?(Hash)
+      if value.is_a?(Hash)
         value
-      elsif value.kind_of?(String)
+      elsif value.is_a?(String)
         JSON.parse(value)
       end
     end
@@ -37,7 +37,7 @@ class Profile < ApplicationRecord
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
-      Profile.where(user_id:  user_id).update_all(active: false)
+      Profile.where(user_id: user_id).update_all(active: false)
       update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
     end
     send_push_notifications if is_reproof
