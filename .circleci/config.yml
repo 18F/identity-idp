@@ -236,6 +236,7 @@ jobs:
       - run:
           name: Code Climate Test Coverage
           command: |
+            aws s3 sync coverage/ "s3://login-gov-test-coverage/coverage-artifacts/$CIRCLE_BUILD_NUM/$CIRCLE_NODE_INDEX" --exclude '*' --include '.resultset.json' --include '.resultset.json.lock'
             ./cc-test-reporter format-coverage -t simplecov -o "coverage/codeclimate.$CIRCLE_NODE_INDEX.json"
             aws s3 sync coverage/ "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM"
       # collect reports
@@ -248,6 +249,16 @@ jobs:
           command: |
             aws s3 sync "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM" coverage/
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+            aws s3 sync "s3://login-gov-test-coverage/coverage-artifacts/$CIRCLE_BUILD_NUM" coverage/
+            bundle exec spec/simplecov_merger.rb
+            mkdir coverage_summary
+            mv coverage/index.html coverage_summary/
+            mv coverage/assets coverage_summary/
+            mv coverage/.resultset.json coverage_summary/
+            aws s3 --region us-west-2 rm s3://login-gov-test-coverage/coverage-artifacts/$CIRCLE_BUILD_NUM --recursive
+      - store_artifacts:
+          path: coverage_summary/
+
   javascript_test:
     working_directory: ~/identity-idp
     executor: ruby_browsers

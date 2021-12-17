@@ -6,7 +6,7 @@ module SimpleCov
   module ResultMerger
     def self.merging!
       SimplecovHelper.configure
-      fix_paths
+      fix_gitlab_paths if ENV['GITLAB_CI']
       SimpleCov.collate Dir['coverage/**/.resultset.json'] do
         merge_timeout 365 * 24 * 3600
       end
@@ -28,7 +28,7 @@ module SimpleCov
     # This brittle function reads the third nested key to get each original absolute path, and
     # replaces it with the current host's absolute path with everything before 'identity-idp'.
     #
-    def self.fix_paths
+    def self.fix_gitlab_paths
       Dir['coverage/**/.resultset.json'].each do |file|
         content = File.read(file)
         json = JSON.parse(content)
