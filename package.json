@@ -51,6 +51,7 @@
     "@types/sinon": "^9.0.11",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "clipboard-polyfill": "^3.0.3",
     "dirty-chai": "^2.0.1",
     "eslint": "^8.3.0",
     "jsdom": "^16.4.0",

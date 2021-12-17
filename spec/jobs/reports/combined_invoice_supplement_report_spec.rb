@@ -146,8 +146,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
 
           expect(row['year_month']).to eq('202004')
           expect(row['year_month_readable']).to eq('April 2020')
-          expect(row['dates_billed_start_date']).to eq('2020-04-15')
-          expect(row['dates_billed_end_date']).to eq('2020-04-30')
 
           expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
           expect(row['iaa_ial2_unique_users'].to_i).to eq(0)
@@ -157,6 +155,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
           expect(row['issuer_ial1_total_auth_count'].to_i).to eq(1)
           expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
           expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+          expect(row['issuer_ial2_new_unique_users'].to_i).to eq(0)
         end
 
         [iaa2_sp1, iaa2_sp2].each do |sp|
@@ -172,8 +171,6 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
 
             expect(row['year_month']).to eq('202009')
             expect(row['year_month_readable']).to eq('September 2020')
-            expect(row['dates_billed_start_date']).to eq('2020-09-01')
-            expect(row['dates_billed_end_date']).to eq('2020-09-30')
 
             expect(row['iaa_ial1_unique_users'].to_i).to eq(0)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
@@ -183,6 +180,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
             expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
             expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
             expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+            expect(row['issuer_ial2_new_unique_users'].to_i).to eq(1)
           end
         end
       end
