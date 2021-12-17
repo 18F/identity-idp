@@ -5,22 +5,19 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
+    before_action :verify_needs_completions_screen
 
     def show
       @view_model = view_model
-      if needs_completions_screen?
-        @pii = displayable_attributes
-        analytics.track_event(
-          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-          analytics_attributes(''),
-        )
-      else
-        return_to_account
-      end
+      @pii = displayable_attributes
+      analytics.track_event(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+        analytics_attributes(''),
+      )
     end
 
     def update
-      track_completion_event('agency-page') if needs_completions_screen?
+      track_completion_event('agency-page')
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -30,6 +27,11 @@ module SignUp
     end
 
     private
+
+    def verify_needs_completions_screen
+      return if needs_completions_screen?
+      return_to_account
+    end
 
     def handle_verified_attributes
       update_verified_attributes
