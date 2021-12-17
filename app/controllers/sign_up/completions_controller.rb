@@ -5,15 +5,18 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
-    before_action :verify_needs_completions_screen
 
     def show
-      @view_model = view_model
-      @pii = displayable_attributes
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        analytics_attributes(''),
-      )
+      if needs_completions_screen?
+        @view_model = view_model
+        @pii = displayable_attributes
+        analytics.track_event(
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+          analytics_attributes(''),
+        )
+      else
+        return_to_account
+      end
     end
 
     def update
@@ -27,11 +30,6 @@ module SignUp
     end
 
     private
-
-    def verify_needs_completions_screen
-      return if needs_completions_screen?
-      return_to_account
-    end
 
     def handle_verified_attributes
       update_verified_attributes
