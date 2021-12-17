@@ -1,3 +1,4 @@
+import LocalTime from 'local-time';
 import { I18n } from '@18f/identity-i18n';
 
 /**
@@ -17,3 +18,5 @@ require('../app/pw-toggle');
 require('../app/print-personal-key');
 require('../app/i18n-dropdown');
 require('../app/accessible-forms');
+
+LocalTime.start();

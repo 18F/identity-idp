@@ -12,3 +12,4 @@
 
 //= link_tree ../../../node_modules/identity-style-guide/dist/assets/img
 //= link_tree ../../../node_modules/identity-style-guide/dist/assets/fonts
+//= link_tree ../builds

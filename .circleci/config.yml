@@ -167,6 +167,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            # TODO: Update these to jsbundling-rails output
             - tmp/cache/webpacker/last-compilation-digest-test
             - tmp/cache/assets
             - public/assets

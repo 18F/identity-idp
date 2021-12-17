@@ -352,6 +352,8 @@ GEM
     irb (1.3.7)
       reline (>= 0.2.7)
     jmespath (1.4.0)
+    jsbundling-rails (1.0.0)
+      railties (>= 6.0.0)
     jwt (2.3.0)
     knapsack (4.0.0)
       rake
@@ -446,8 +448,6 @@ GEM
     rack-headers_filter (0.0.1)
     rack-mini-profiler (2.3.3)
       rack (>= 1.2.0)
-    rack-proxy (0.7.0)
-      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.6.0)
@@ -592,7 +592,6 @@ GEM
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2)
-    semantic_range (3.0.0)
     shellany (0.0.1)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
@@ -673,11 +672,6 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.4.3)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     webrick (1.7.0)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
@@ -741,6 +735,7 @@ DEPENDENCIES
   identity-logging!
   identity_validations!
   irb
+  jsbundling-rails
   jwt
   knapsack
   local_time
@@ -806,7 +801,6 @@ DEPENDENCIES
   webauthn (~> 2.1)
   webdrivers (~> 4.0)
   webmock
-  webpacker (~> 5.1)
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
