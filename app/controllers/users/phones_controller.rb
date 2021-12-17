@@ -35,10 +35,6 @@ module Users
       )
     end
 
-    def already_has_phone?
-      @user_has_phone ||= @new_phone_form.already_has_phone?
-    end
-
     def confirm_phone
       flash[:info] = t('devise.registrations.phone_update_needs_confirmation')
       prompt_to_confirm_phone(
