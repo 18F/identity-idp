@@ -3,14 +3,31 @@ class ProfileProofingComponentsBackfillJob < ApplicationJob
 
   def perform
     Profile.find_in_batches do |batch|
+      updated_count = 0
+
       batch.each do |profile|
-        update_profile(profile)
+        did_update = update_profile(profile)
+        updated_count += 1 if did_update
       end
+
+      Rails.logger.info(
+        {
+          name: 'profile_proofing_components_update_batch',
+          batch_size: batch.size,
+          batch_updated: updated_count,
+          batch_start: batch.first.id,
+          batch_end: batch.last.id,
+        }.to_json,
+      )
     end
   end
 
+  # @return [Boolean]
   def update_profile(profile)
     profile.proofing_components = profile.proofing_components
-    profile.save! if profile.proofing_components_changed?
+    if profile.proofing_components_changed?
+      profile.save!
+      true
+    end
   end
 end
