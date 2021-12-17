@@ -5,7 +5,7 @@ describe DataRequests::WriteUserEvents do
     it 'writes a file with event information' do
       user_report = JSON.parse(
         File.read('spec/fixtures/data_request.json'), symbolize_names: true
-      )[0]
+      ).first
 
       Dir.mktmpdir do |dir|
         described_class.new(user_report, dir).call
