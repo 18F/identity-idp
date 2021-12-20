@@ -40,6 +40,8 @@ module Idv
       end
 
       def save_proofing_components
+        return unless current_user
+
         session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
           discriminator: flow_session[document_capture_session_uuid_key],
         )
