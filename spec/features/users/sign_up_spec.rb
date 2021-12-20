@@ -112,7 +112,7 @@ feature 'Sign Up' do
       page.driver.browser.execute_cdp(
         'Browser.grantPermissions',
         origin: page.server_url,
-        permissions: ['clipboardReadWrite'],
+        permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
       )
     end
 
