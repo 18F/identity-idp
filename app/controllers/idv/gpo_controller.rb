@@ -55,7 +55,9 @@ module Idv
     def update_tracking
       analytics.track_event(Analytics::IDV_GPO_ADDRESS_LETTER_REQUESTED)
       create_user_event(:gpo_mail_sent, current_user)
-      Db::ProofingComponent::Add.call(current_user.id, :address_check, 'gpo_letter')
+
+      proofing_component = current_user.proofing_component || current_user.build_proofing_component
+      proofing_component.update(address_check: 'gpo_letter')
     end
 
     def failure

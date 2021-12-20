@@ -43,10 +43,16 @@ module Idv
         session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
           discriminator: flow_session[document_capture_session_uuid_key],
         )
-        Db::ProofingComponent::Add.call(user_id, :document_check, session_doc_auth_vendor)
-        Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
-        return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, session_doc_auth_vendor)
+
+        proofing_component = current_user.proofing_component || current_user.build_proofing_component
+        component_attributes = {
+          document_check: session_doc_auth_vendor,
+          document_type: 'state_id',
+        }
+        if liveness_checking_enabled?
+          component_attributes[:liveness_check] = session_doc_auth_vendor
+        end
+        proofing_component.update(component_attributes)
       end
 
       # @param [DocAuth::Response,
