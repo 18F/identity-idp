@@ -40,14 +40,16 @@
     <%= link_to t('forms.backup_code.print'), '#',
                 data: { print: true },
                 class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-print' -%>
-    <%= link_to t('links.copy'), '#',
-                class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 clipboard ico ico-copy',
-                data: { "clipboard-text": @codes.join(' ') } -%>
+    <%= render ClipboardButtonComponent.new(
+          clipboard_text: @codes.join(' '),
+          outline: true,
+          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-copy',
+        ) do %>
+      <%= t('links.copy') %>
+    <% end %>
   </div>
 </div>
 
 <%= form_tag(backup_code_continue_path, method: :patch) do %>
   <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
-
-<%= javascript_packs_tag_once 'clipboard' %>
