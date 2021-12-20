@@ -203,6 +203,7 @@ module Idv
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
+      save_proofing_components
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
         client_response.to_h.merge(
@@ -246,6 +247,16 @@ module Idv
         Funnel::DocAuth::RegisterStep.new(user_id, issuer).
           call(step.to_s, :update, client_response.success?)
       end
+    end
+
+    def save_proofing_components
+      session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
+        discriminator: document_capture_session_uuid,
+      )
+      Db::ProofingComponent::Add.call(user_id, :document_check, session_doc_auth_vendor)
+      Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
+      return unless liveness_checking_enabled?
+      Db::ProofingComponent::Add.call(user_id, :liveness_check, session_doc_auth_vendor)
     end
 
     def store_pii(client_response)
