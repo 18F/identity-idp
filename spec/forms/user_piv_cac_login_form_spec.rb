@@ -75,4 +75,14 @@ describe UserPivCacLoginForm do
       end
     end
   end
+
+  describe '#valid_token?' do
+    context 'when token is blank' do
+      let(:token) { '' }
+
+      it 'returns false' do
+        expect(form.valid_token?).to eq false
+      end
+    end
+  end
 end
