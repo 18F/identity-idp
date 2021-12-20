@@ -44,7 +44,8 @@ module Idv
           discriminator: flow_session[document_capture_session_uuid_key],
         )
 
-        proofing_component = current_user.proofing_component || current_user.build_proofing_component
+        proofing_component = current_user.proofing_component ||
+                             current_user.build_proofing_component
         component_attributes = {
           document_check: session_doc_auth_vendor,
           document_type: 'state_id',

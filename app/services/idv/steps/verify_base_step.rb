@@ -18,7 +18,8 @@ module Idv
       end
 
       def add_proofing_components
-        proofing_component = current_user.proofing_component || current_user.build_proofing_component
+        proofing_component = current_user.proofing_component ||
+                             current_user.build_proofing_component
         proofing_component.update(
           resolution_check: 'lexis_nexis',
           source_check: 'aamva',

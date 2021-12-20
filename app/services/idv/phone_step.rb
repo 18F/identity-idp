@@ -109,7 +109,7 @@ module Idv
       idv_session.user_phone_confirmation = phone_matches_user_phone?
 
       proofing_component = idv_session.current_user.proofing_component ||
-        idv_session.current_user.build_proofing_component
+                           idv_session.current_user.build_proofing_component
       proofing_component.update(address_check: 'lexis_nexis_address')
     end
 
