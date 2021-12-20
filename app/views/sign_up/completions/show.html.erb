@@ -25,6 +25,18 @@
           sp: content_tag(:strong, decorated_session.sp_name),
         ) %>
   </p>
+
+  <% if @view_model.show_recovery_mfa_alert? %>
+    <div class="usa-alert usa-alert--warning">
+      <div class="usa-alert__body">
+        <p class="usa-alert__text">
+          <%= link_to t('two_factor_authentication.recovery_alert.link'), two_factor_options_path %>
+          <%= t('two_factor_authentication.recovery_alert.details') %>
+        </p>
+      </div>
+    </div>
+  <% end %>
+
   <p>
     <div class="center">
       <%= validated_form_for(:idv_form, url: sign_up_completed_path) do %>

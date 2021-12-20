@@ -107,6 +107,9 @@ en:
     read_about_two_factor_authentication:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
+    recovery_alert:
+      details: You will have to delete your account and start over if you lose your only authentication method.
+      link: Add a second authentication method.
     totp_fallback:
       question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code

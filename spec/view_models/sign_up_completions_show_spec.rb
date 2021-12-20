@@ -1,17 +1,14 @@
 require 'rails_helper'
 
 describe SignUpCompletionsShow do
-  before do
-    @user = create(:user)
-  end
-
+  let(:current_user) { create(:user, ) }
   let(:handoff) { false }
   let(:consent_has_expired?) { false }
   let(:sp_session) {}
 
   subject(:view_model) do
     SignUpCompletionsShow.new(
-      current_user: @user,
+      current_user: current_user,
       ial2_requested: false,
       decorated_session: decorated_session,
       handoff: handoff,
@@ -56,7 +53,7 @@ describe SignUpCompletionsShow do
 
       context 'for ial2 flow' do
         before do
-          allow(@user).to receive(:active_profile).and_return(Profile.new)
+          allow(current_user).to receive(:active_profile).and_return(Profile.new)
         end
 
         it 'returns proper title name' do
@@ -67,7 +64,7 @@ describe SignUpCompletionsShow do
 
       context 'for ial1 flow' do
         before do
-          allow(@user).to receive(:active_profile).and_return(nil)
+          allow(current_user).to receive(:active_profile).and_return(nil)
         end
 
         it 'returns proper title name' do
@@ -101,6 +98,20 @@ describe SignUpCompletionsShow do
         end
       end
     end
+
+    describe '#show_recovery_mfa_alert?' do
+      it 'returns true when the user only has 1 MFA method' do
+        create(:phone_configuration, user: current_user)
+
+        expect(view_model.show_recovery_mfa_alert?).to eq(true)
+      end
+
+      it 'returns fals when the user has multiple MFA methods' do
+        create_list(:phone_configuration, 2, user: current_user)
+
+        expect(view_model.show_recovery_mfa_alert?).to eq(false)
+      end
+    end
   end
 
   context 'with no sp session' do
@@ -109,7 +120,7 @@ describe SignUpCompletionsShow do
     end
 
     let(:create_identity) do
-      create(:service_provider_identity, user_id: @user.id)
+      create(:service_provider_identity, user_id: current_user.id)
     end
   end
 end

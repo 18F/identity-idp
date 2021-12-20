@@ -5,7 +5,7 @@ module Users
 
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :confirm_user_needs_2fa_setup
+    # before_action :confirm_user_needs_2fa_setup
     before_action :handle_empty_selection, only: :create
 
     def index

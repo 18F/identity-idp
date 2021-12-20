@@ -83,6 +83,10 @@ class SignUpCompletionsShow
     SORTED_IAL1_ATTRIBUTE_MAPPING
   end
 
+  def show_recovery_mfa_alert?
+    !MfaPolicy.new(@current_user).multiple_factors_enabled?
+  end
+
   private
 
   def handoff_heading
