@@ -20,6 +20,7 @@ describe SignUp::CompletionsController do
             ial2: false,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
           )
         end
       end
@@ -44,6 +45,7 @@ describe SignUp::CompletionsController do
             ial2: true,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
+            needs_completion_screen_reason: :new_sp,
           )
         end
 
@@ -140,6 +142,7 @@ describe SignUp::CompletionsController do
           ial2: false,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
+          needs_completion_screen_reason: :new_sp,
         )
       end
 
@@ -193,6 +196,7 @@ describe SignUp::CompletionsController do
           ial2: true,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
+          needs_completion_screen_reason: :new_sp,
         )
       end
 

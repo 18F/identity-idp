@@ -76,7 +76,8 @@ module SignUp
     def analytics_attributes(page_occurence)
       { ial2: sp_session[:ial2],
         service_provider_name: decorated_session.sp_name,
-        page_occurence: page_occurence }
+        page_occurence: page_occurence,
+        needs_completion_screen_reason: needs_completion_screen_reason }
     end
 
     def track_completion_event(last_page)

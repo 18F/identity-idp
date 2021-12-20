@@ -7,6 +7,20 @@ module VerifySpAttributesConcern
         consent_was_revoked?)
   end
 
+  def needs_completion_screen_reason
+    return nil if sp_session[:issuer].blank?
+
+    if sp_session_identity.nil?
+      :new_sp
+    elsif !requested_attributes_verified?
+      :new_attributes
+    elsif consent_has_expired?
+      :consent_expired
+    elsif consent_was_revoked?
+      :consent_revoked
+    end
+  end
+
   def needs_sp_attribute_verification?
     if needs_completions_screen?
       set_verify_shared_attributes_session
