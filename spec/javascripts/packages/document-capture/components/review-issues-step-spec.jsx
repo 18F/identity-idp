@@ -66,6 +66,15 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
     expect(getByText('idv.failure.attempts.other')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
+
+    expect(
+      getByRole('link', { name: 'idv.troubleshooting.options.doc_capture_tips links.new_window' }),
+    ).to.exist();
+    expect(
+      getByRole('link', {
+        name: 'idv.troubleshooting.options.supported_documents links.new_window',
+      }),
+    ).to.exist();
   });
 
   it('renders warning page with error and displays one attempt remaining then continues on', () => {

@@ -1,9 +1,11 @@
+import { isValidElement } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
+/** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef WarningProps
@@ -13,7 +15,7 @@ import PageHeading from './page-heading';
  * @prop {(() => void)=} actionOnClick Primary action button text.
  * @prop {import('react').ReactNode} children Component children.
  * @prop {string=} troubleshootingHeading Heading text preceding troubleshooting options.
- * @prop {(TroubleshootingOption[])=} troubleshootingOptions Array of troubleshooting options.
+ * @prop {TroubleshootingOption[]|ReactNode=} troubleshootingOptions Troubleshooting options.
  */
 
 /**
@@ -52,10 +54,11 @@ function Warning({
           </button>
         </div>
       )}
-      {troubleshootingOptions && (
+      {troubleshootingOptions && isValidElement(troubleshootingOptions) && troubleshootingOptions}
+      {troubleshootingOptions && !isValidElement(troubleshootingOptions) && (
         <TroubleshootingOptions
           heading={troubleshootingHeading || t('idv.troubleshooting.headings.having_trouble')}
-          options={troubleshootingOptions}
+          options={/** @type {TroubleshootingOption[]} */ (troubleshootingOptions)}
         />
       )}
     </>
