@@ -3,12 +3,12 @@ module Users
     include AuthorizationCountConcern
     include SecureHeadersConcern
 
-    before_action :ensure_sp_in_session_with_request_url, only: :show
+    before_action :ensure_sp_in_session_with_request_url, only: [:new, :create]
     before_action :bump_auth_count
     before_action :confirm_two_factor_authenticated
-    before_action :apply_secure_headers_override, only: [:show]
+    before_action :apply_secure_headers_override, only: [:new]
 
-    def show
+    def new
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
       @sp = ServiceProvider.find_by(issuer: sp_session[:issuer])
       @email = EmailContext.new(current_user).last_sign_in_email_address.email
@@ -16,7 +16,7 @@ module Users
 
     def create
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE)
-      redirect_to(sp_session_request_url_without_prompt_login || account_url)
+      redirect_to sp_session_request_url_without_prompt_login
     end
 
     def destroy
