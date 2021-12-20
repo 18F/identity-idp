@@ -222,7 +222,7 @@ en:
       send_sms: We’ll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity.
-      test_ssn: In the test environment only SSNs that begin with “900-” are
+      test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
       text1: ''
       text1a: such as a phone or computer.
