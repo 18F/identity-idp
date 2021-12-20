@@ -26,7 +26,6 @@
     "basscss-sass": "^3.0.0",
     "classlist-polyfill": "^1.2.0",
     "cleave.js": "^1.6.0",
-    "clipboard": "^2.0.6",
     "fast-glob": "^3.2.7",
     "focus-trap": "^6.2.3",
     "identity-style-guide": "^6.2.0",

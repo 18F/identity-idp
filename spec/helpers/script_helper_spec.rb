@@ -28,8 +28,7 @@ RSpec.describe ScriptHelper do
 
     context 'scripts enqueued' do
       before do
-        javascript_packs_tag_once('clipboard', 'clipboard')
-        javascript_packs_tag_once('document-capture')
+        javascript_packs_tag_once('document-capture', 'document-capture')
         javascript_packs_tag_once('application', prepend: true)
       end
 
@@ -44,7 +43,6 @@ RSpec.describe ScriptHelper do
           "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.en.js']",
           "script[src^='/#{output_path}/js/runtime~application-']",
           "script[src^='/#{output_path}/js/application-'][src$='.chunk.js']",
-          "script[src^='/#{output_path}/js/clipboard-'][src$='.chunk.js']",
           "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.js']",
         ]
 
