@@ -91,7 +91,8 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 
 normalize_yaml:
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
-	find ./config/locales -type f | xargs yarn normalize-yaml \
+	find ./config/locales/telephony "./config/locales/telephony*" -type f | xargs yarn normalize-yaml --disable-smart-punctuation
+	find ./config/locales -not -path "./config/locales/telephony*" -type f | xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
