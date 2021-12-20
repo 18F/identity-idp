@@ -1,16 +1,19 @@
 class PhoneInputComponent < BaseComponent
-  attr_reader :form, :required, :allowed_countries, :delivery_methods, :tag_options
+  attr_reader :form, :confirmed_phone, :required, :allowed_countries, :delivery_methods,
+              :tag_options
 
   alias_method :f, :form
 
   def initialize(
     form:,
+    confirmed_phone: true,
     allowed_countries: nil,
     delivery_methods: [:sms, :voice],
     required: false,
     **tag_options
   )
     @allowed_countries = allowed_countries
+    @confirmed_phone = confirmed_phone
     @form = form
     @required = required
     @delivery_methods = delivery_methods
@@ -66,9 +69,15 @@ class PhoneInputComponent < BaseComponent
   end
 
   def international_phone_codes_data(code_data)
+    supports_sms = code_data['supports_sms']
+    supports_sms_unconfirmed = code_data.fetch('supports_sms_unconfirmed', supports_sms)
+
+    supports_voice = code_data['supports_voice']
+    supports_voice_unconfirmed = code_data.fetch('supports_voice_unconfirmed', supports_voice)
+
     {
-      supports_sms: code_data['supports_sms'],
-      supports_voice: code_data['supports_voice'],
+      supports_sms: supports_sms_unconfirmed || (confirmed_phone && supports_sms),
+      supports_voice: supports_voice_unconfirmed || (confirmed_phone && supports_voice),
       country_code: code_data['country_code'],
       country_name: code_data['name'],
     }
