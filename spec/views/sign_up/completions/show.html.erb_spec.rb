@@ -8,7 +8,6 @@ describe 'sign_up/completions/show.html.erb' do
       ial2_requested: false,
       decorated_session: SessionDecorator.new,
       handoff: false,
-      ialmax_requested: false,
       consent_has_expired: false,
     )
   end
@@ -42,7 +41,6 @@ describe 'sign_up/completions/show.html.erb' do
         ial2_requested: false,
         decorated_session: decorated_session,
         handoff: true,
-        ialmax_requested: false,
         consent_has_expired: false,
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)

@@ -1,17 +1,16 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:, ialmax_requested:,
+  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:,
                  consent_has_expired:)
     @ial2_requested = ial2_requested
     @decorated_session = decorated_session
     @current_user = current_user
     @handoff = handoff
-    @ialmax_requested = ialmax_requested
     @consent_has_expired = consent_has_expired
   end
 
-  attr_reader :ial2_requested, :ialmax_requested, :decorated_session
+  attr_reader :ial2_requested, :decorated_session
 
   SORTED_IAL2_ATTRIBUTE_MAPPING = [
     [%i[given_name family_name], :full_name],

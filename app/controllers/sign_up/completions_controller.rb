@@ -5,22 +5,19 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
+    before_action :verify_needs_completions_screen
 
     def show
       @view_model = view_model
-      if needs_completions_screen?
-        @pii = displayable_attributes
-        analytics.track_event(
-          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-          analytics_attributes(''),
-        )
-      else
-        return_to_account
-      end
+      @pii = displayable_attributes
+      analytics.track_event(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+        analytics_attributes(''),
+      )
     end
 
     def update
-      track_completion_event('agency-page') if needs_completions_screen?
+      track_completion_event('agency-page')
       handle_verified_attributes
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
@@ -42,7 +39,6 @@ module SignUp
         decorated_session: decorated_session,
         current_user: current_user,
         handoff: new_service_provider_attributes,
-        ialmax_requested: ialmax?,
         consent_has_expired: consent_has_expired?,
       )
     end
@@ -51,12 +47,12 @@ module SignUp
       redirect_to idv_url if current_user.decorate.identity_not_verified?
     end
 
-    def ial2?
-      sp_session[:ial2] == true
+    def verify_needs_completions_screen
+      return_to_account unless needs_completions_screen?
     end
 
-    def ialmax?
-      sp_session[:ialmax] == true
+    def ial2?
+      sp_session[:ial2] == true
     end
 
     def return_to_account
