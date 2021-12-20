@@ -2,6 +2,8 @@ module PivCacFormHelpers
   extend ActiveSupport::Concern
 
   def valid_token?
+    return false unless token.present?
+
     token_decoded &&
       token_has_correct_nonce &&
       not_error_token
