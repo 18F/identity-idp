@@ -14,7 +14,13 @@ module Users
       @email = EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
-    def update
+    def create
+      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE)
+      redirect_to(sp_session_request_url_without_prompt_login || account_url)
+    end
+
+    def destroy
+      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_RESET)
       sign_out :user
       redirect_to new_user_session_url(request_id: sp_session[:request_id])
     end
