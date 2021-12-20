@@ -96,6 +96,7 @@ module Idv
 
       def handle_stored_result
         if stored_result.success?
+          save_proofing_components
           extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
