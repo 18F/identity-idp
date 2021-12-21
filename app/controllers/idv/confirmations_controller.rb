@@ -68,8 +68,7 @@ module Idv
     end
 
     def add_proofing_component
-      ProofingComponent.create_or_find_by(user: current_user).
-        update(verified_at: Time.zone.now)
+      ProofingComponent.create_or_find_by(user: current_user).update(verified_at: Time.zone.now)
     end
 
     def finish_idv_session
