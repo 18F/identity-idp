@@ -18,8 +18,10 @@ module Idv
       end
 
       def add_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :resolution_check, 'lexis_nexis')
-        Db::ProofingComponent::Add.call(user_id, :source_check, 'aamva')
+        ProofingComponent.create_or_find_by(user: current_user).update(
+          resolution_check: 'lexis_nexis',
+          source_check: 'aamva',
+        )
       end
 
       def check_ssn(pii_from_doc)

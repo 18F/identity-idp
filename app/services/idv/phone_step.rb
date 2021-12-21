@@ -107,10 +107,9 @@ module Idv
       idv_session.applicant = applicant
       idv_session.vendor_phone_confirmation = true
       idv_session.user_phone_confirmation = phone_matches_user_phone?
-      Db::ProofingComponent::Add.call(
-        idv_session.current_user.id, :address_check,
-        'lexis_nexis_address'
-      )
+
+      ProofingComponent.create_or_find_by(user: idv_session.current_user).
+        update(address_check: 'lexis_nexis_address')
     end
 
     def start_phone_confirmation_session
