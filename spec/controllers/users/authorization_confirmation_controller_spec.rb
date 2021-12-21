@@ -9,6 +9,8 @@ describe Users::AuthorizationConfirmationController do
   let(:sp_session) { { issuer: issuer, request_url: sp_request_url, request_id: sp_request_id } }
 
   before do
+    stub_analytics
+    allow(@analytics).to receive(:track_event)
     stub_sign_in(user)
     controller.session[:sp] = sp_session
   end
@@ -26,6 +28,7 @@ describe Users::AuthorizationConfirmationController do
       get :new
 
       expect(response).to render_template(:new)
+      expect(@analytics).to have_received(:track_event).with(Analytics::AUTHENTICATION_CONFIRMATION)
     end
   end
 
@@ -34,6 +37,9 @@ describe Users::AuthorizationConfirmationController do
       post :create
 
       expect(response).to redirect_to(sp_request_url)
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE,
+      )
     end
   end
 
@@ -44,6 +50,9 @@ describe Users::AuthorizationConfirmationController do
       delete :destroy
 
       expect(response).to redirect_to(new_user_session_url(request_id: sp_request_id))
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::AUTHENTICATION_CONFIRMATION_RESET,
+      )
     end
   end
 end
