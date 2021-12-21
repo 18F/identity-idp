@@ -108,14 +108,16 @@ describe ImageUploadResponsePresenter do
           errors: {
             limit: t('errors.doc_auth.throttled_heading'),
           },
-          extra: {},
+          extra: { remaining_attempts: 0 },
         )
       end
 
       it 'returns hash of properties' do
         expected = {
           success: false,
+          errors: [{ field: :limit, message: t('errors.doc_auth.throttled_heading') }],
           redirect: idv_session_errors_throttled_url,
+          remaining_attempts: 0,
         }
 
         expect(presenter.as_json).to eq expected
@@ -143,6 +145,31 @@ describe ImageUploadResponsePresenter do
         }
 
         expect(presenter.as_json).to eq expected
+      end
+
+      context 'no remaining attempts' do
+        let(:form_response) do
+          FormResponse.new(
+            success: false,
+            errors: {
+              front: t('doc_auth.errors.not_a_file'),
+              hints: true,
+            },
+            extra: { remaining_attempts: 0 },
+          )
+        end
+
+        it 'returns hash of properties' do
+          expected = {
+            success: false,
+            errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
+            hints: true,
+            redirect: idv_session_errors_throttled_url,
+            remaining_attempts: 0,
+          }
+
+          expect(presenter.as_json).to eq expected
+        end
       end
     end
   end
