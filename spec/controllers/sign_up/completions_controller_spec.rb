@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe SignUp::CompletionsController do
   describe '#show' do
+    let(:current_sp) { create(:service_provider) }
+
     context 'user signed in, sp info present' do
       before do
         stub_analytics
@@ -12,12 +14,15 @@ describe SignUp::CompletionsController do
         it 'tracks page visit' do
           user = create(:user)
           stub_sign_in(user)
-          subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
+          subject.session[:sp] = {
+            issuer: current_sp.issuer, ial2: false, requested_attributes: [:email]
+          }
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
             ial2: false,
+            ialmax: nil,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
@@ -33,7 +38,9 @@ describe SignUp::CompletionsController do
 
         before do
           stub_sign_in(user)
-          subject.session[:sp] = { issuer: 'awesome sp', ial2: true }
+          subject.session[:sp] = {
+            issuer: current_sp.issuer, ial2: true, requested_attributes: [:email]
+          }
           allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
         end
 
@@ -43,28 +50,11 @@ describe SignUp::CompletionsController do
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
             ial2: true,
+            ialmax: nil,
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
           )
-        end
-
-        context 'with american-style birthday data' do
-          let(:pii) { { ssn: '123456789', dob: '12/31/1970' } }
-
-          it 'renders data' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('December 31, 1970')
-          end
-        end
-
-        context 'with international style birthday data' do
-          let(:pii) { { ssn: '123456789', dob: '1970-01-01' } }
-
-          it 'renders data' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('January 01, 1970')
-          end
         end
       end
     end
@@ -140,6 +130,7 @@ describe SignUp::CompletionsController do
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_COMPLETE,
           ial2: false,
+          ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
@@ -171,6 +162,7 @@ describe SignUp::CompletionsController do
         subject.session[:sp] = {
           ial2: false,
           issuer: 'foo',
+          requested_attributes: ['email'],
         }
 
         patch :update
@@ -187,6 +179,7 @@ describe SignUp::CompletionsController do
           issuer: sp.issuer,
           ial2: true,
           request_url: 'http://example.com',
+          requested_attributes: ['email'],
         }
 
         patch :update
@@ -194,6 +187,7 @@ describe SignUp::CompletionsController do
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_COMPLETE,
           ial2: true,
+          ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,

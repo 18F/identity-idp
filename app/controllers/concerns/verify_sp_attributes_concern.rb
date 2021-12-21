@@ -21,16 +21,6 @@ module VerifySpAttributesConcern
     end
   end
 
-  def needs_sp_attribute_verification?
-    if needs_completions_screen?
-      set_verify_shared_attributes_session
-      true
-    else
-      clear_verify_attributes_sessions
-      false
-    end
-  end
-
   def update_verified_attributes
     IdentityLinker.new(
       current_user,
@@ -41,19 +31,6 @@ module VerifySpAttributesConcern
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
     )
-  end
-
-  def set_verify_shared_attributes_session
-    user_session[:verify_shared_attributes] = true
-  end
-
-  def new_service_provider_attributes
-    user_session[:verify_shared_attributes] if
-      user_session.instance_of?(ActiveSupport::HashWithIndifferentAccess)
-  end
-
-  def clear_verify_attributes_sessions
-    user_session[:verify_shared_attributes] = false
   end
 
   def consent_has_expired?

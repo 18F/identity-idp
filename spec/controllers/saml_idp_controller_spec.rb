@@ -877,7 +877,6 @@ describe SamlIdpController do
 
         it 'redirects to verify attributes' do
           expect(response).to redirect_to sign_up_completed_url
-          expect(subject.user_session.key?(:verify_shared_attributes)).to eq(true)
         end
 
         it 'does not redirect after verifying attributes' do

@@ -1,94 +1,93 @@
 require 'rails_helper'
 
 describe 'sign_up/completions/show.html.erb' do
-  before do
-    @user = User.new
-    @view_model = SignUpCompletionsShow.new(
-      current_user: @user,
-      ial2_requested: false,
-      decorated_session: SessionDecorator.new,
-      handoff: false,
-      consent_has_expired: false,
+  let(:user) { create(:user, :signed_up) }
+  let(:service_provider) { create(:service_provider) }
+  let(:decrypted_pii) { {} }
+  let(:requested_attributes) { [:email] }
+  let(:ial2_requested) { false }
+  let(:completion_context) { :new_sp }
+
+  let(:view_context) { ActionController::Base.new.view_context }
+  let(:decorated_session) do
+    ServiceProviderSessionDecorator.new(
+      sp: service_provider,
+      view_context: view_context,
+      sp_session: {},
+      service_provider_request: ServiceProviderRequestProxy.new,
     )
   end
 
-  context 'signing in through an SP' do
-    let(:service_provider) do
-      create(
-        :service_provider,
-        friendly_name: 'My Agency App',
-        agency: create(:agency, name: 'Department of Agencies'),
-      )
-    end
+  let(:presenter) do
+    CompletionsPresenter.new(
+      current_user: user,
+      current_sp: service_provider,
+      decrypted_pii: decrypted_pii,
+      requested_attributes: requested_attributes,
+      ial2_requested: ial2_requested,
+      completion_context: completion_context,
+    )
+  end
 
-    let(:view_context) { ActionController::Base.new.view_context }
-    let(:requested_attributes) { [:email] }
-    let(:decorated_session) do
-      ServiceProviderSessionDecorator.new(
-        sp: service_provider,
-        view_context: view_context,
-        sp_session: {
-          requested_attributes: requested_attributes,
-        },
-        service_provider_request: ServiceProviderRequestProxy.new,
-      )
-    end
+  before do
+    @user = user
+    @presenter = presenter
+    allow(view).to receive(:decorated_session).and_return(decorated_session)
+  end
 
-    before do
-      @user.save!
-      @view_model = SignUpCompletionsShow.new(
-        current_user: @user,
-        ial2_requested: false,
-        decorated_session: decorated_session,
-        handoff: true,
-        consent_has_expired: false,
-      )
-      allow(view).to receive(:decorated_session).and_return(decorated_session)
-      assign(:pii, { email: 'foo@example.com', all_emails: ['foo@example.com', 'bar@example.com'] })
-    end
+  it 'shows the app name, not the agency name' do
+    render
 
-    it 'informs user they are logging into an SP for the first time' do
-      render
-      expect(rendered).to have_content(t('titles.sign_up.new_sp'))
-    end
+    text = view_context.strip_tags(rendered)
+    expect(text).to include(service_provider.friendly_name)
+    expect(text).to_not include(service_provider.agency.name)
+    expect(text).to include(
+      I18n.t(
+        'help_text.requested_attributes.intro_html',
+        app_name: APP_NAME, sp: service_provider.friendly_name,
+      ),
+    )
+  end
 
-    it 'shows the app name, not the agency name' do
+  context 'the all_emails scope is requested' do
+    let(:requested_attributes) { [:email, :all_emails] }
+
+    it 'renders all of the user email addresses' do
+      create(:email_address, user: user)
+      user.reload
+
       render
 
-      text = view_context.strip_tags(rendered)
-      expect(text).to include('My Agency App')
-      expect(text).to_not include('Department of Agencies')
-      expect(text).to include(
-        I18n.t(
-          'help_text.requested_attributes.intro_html',
-          app_name: APP_NAME, sp: 'My Agency App',
-        ),
-      )
-    end
+      emails = user.reload.email_addresses.map(&:email)
 
-    context 'the all_emails scope is requested' do
-      let(:requested_attributes) { [:email, :all_emails] }
-
-      it 'renders all of the user email addresses' do
-        render
-
-        expect(rendered).to include(t('help_text.requested_attributes.all_emails'))
-        expect(rendered).to include('foo@example.com')
-        expect(rendered).to include('bar@example.com')
-      end
+      expect(rendered).to include(t('help_text.requested_attributes.all_emails'))
+      expect(rendered).to include(emails.first)
+      expect(rendered).to include(emails.last)
     end
   end
 
-  private
+  context 'ial2' do
+    let(:ial2_requested) { true }
+    let(:requested_attributes) { [:email, :social_security_number] }
+    let(:decrypted_pii) do
+      {
+        first_name: 'Testy',
+        last_name: 'Testerson',
+        ssn: '900123456',
+        address1: '123 main st',
+        address2: 'apt 123',
+        city: 'Washington',
+        state: 'DC',
+        zipcode: '20405',
+        dob: '1990-01-01',
+        phone: '+12022121000',
+      }
+    end
 
-  def create_identities(user, count = 0)
-    (0..count).map do |index|
-      sp = create(
-        :service_provider,
-        friendly_name: "SP app #{index}",
-        agency: create(:agency, name: "Agency #{index}"),
-      )
-      create(:service_provider_identity, service_provider: sp.issuer, user: user)
+    it 'masks the SSN' do
+      render
+
+      expect(rendered).to include('9**-**-***6')
     end
   end
 end
