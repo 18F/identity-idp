@@ -56,7 +56,7 @@ module Idv
       analytics.track_event(Analytics::IDV_GPO_ADDRESS_LETTER_REQUESTED)
       create_user_event(:gpo_mail_sent, current_user)
 
-      proofing_component = current_user.proofing_component || current_user.build_proofing_component
+      proofing_component = ProofingComponent.create_or_find_by(user: current_user)
       proofing_component.update(address_check: 'gpo_letter')
     end
 

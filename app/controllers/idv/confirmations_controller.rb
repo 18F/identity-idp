@@ -68,7 +68,7 @@ module Idv
     end
 
     def add_proofing_component
-      proofing_component = current_user.proofing_component || current_user.build_proofing_component
+      proofing_component = ProofingComponent.create_or_find_by(user: current_user)
       proofing_component.update(verified_at: Time.zone.now)
     end
 

@@ -46,15 +46,12 @@ module Idv
           discriminator: flow_session[document_capture_session_uuid_key],
         )
 
-        proofing_component = current_user.proofing_component ||
-                             current_user.build_proofing_component
+        proofing_component = ProofingComponent.create_or_find_by(user: current_user)
         component_attributes = {
           document_check: session_doc_auth_vendor,
           document_type: 'state_id',
-        }
-        if liveness_checking_enabled?
-          component_attributes[:liveness_check] = session_doc_auth_vendor
-        end
+          liveness_check: session_doc_auth_vendor if liveness_checking_enabled?
+        }.compact
         proofing_component.update(component_attributes)
       end
 
