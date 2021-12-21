@@ -2,3 +2,4 @@ es:
   forms:
     button:
       submit: Enviar
+      cancel: Cancelar

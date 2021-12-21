@@ -1,3 +1,5 @@
+import './common.js';
+
 const text = t('forms.button.submit');
 
 // i18n-tasks-use t('item.1')
