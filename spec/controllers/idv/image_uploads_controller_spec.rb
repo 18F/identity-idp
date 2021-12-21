@@ -177,7 +177,9 @@ describe Idv::ImageUploadsController do
         expect(json).to eq(
           {
             success: false,
+            errors: [{ field: 'limit', message: 'We could not verify your ID' }],
             redirect: idv_session_errors_throttled_url,
+            remaining_attempts: 0,
           },
         )
       end
