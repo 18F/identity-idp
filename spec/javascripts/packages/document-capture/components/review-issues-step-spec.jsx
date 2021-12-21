@@ -177,7 +177,7 @@ describe('document-capture/components/review-issues-step', () => {
     userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(
-      getByRole('heading', { name: 'idv.troubleshooting.headings.having_trouble' }),
+      getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
     ).to.be.ok();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })

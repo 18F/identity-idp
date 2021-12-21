@@ -24,7 +24,6 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <TroubleshootingOptions
-      heading={t('idv.troubleshooting.headings.having_trouble')}
       options={
         /** @type {TroubleshootingOption[]} */ ([
           {

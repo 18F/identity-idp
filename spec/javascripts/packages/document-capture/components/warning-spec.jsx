@@ -14,7 +14,12 @@ describe('document-capture/components/warning', () => {
         actionText="Try again"
         actionOnClick={actionOnClick}
         troubleshootingHeading="Having trouble?"
-        troubleshootingOptions={[{ text: 'Get help', url: 'https://example.com/' }]}
+        troubleshootingOptions={
+          <TroubleshootingOptions
+            heading="Having trouble?"
+            options={[{ text: 'Get help', url: 'https://example.com/' }]}
+          />
+        }
       >
         Something went wrong
       </Warning>,
@@ -29,28 +34,5 @@ describe('document-capture/components/warning', () => {
     expect(getByText('Something went wrong')).to.exist();
     expect(getByRole('heading', { name: 'Having trouble?' })).to.exist();
     expect(getByRole('link', { name: 'Get help' }).href).to.equal('https://example.com/');
-  });
-
-  context('with troubleshooting options element', () => {
-    it('renders a warning', () => {
-      const { getByRole } = render(
-        <Warning
-          heading="Oops!"
-          actionText="Try again"
-          actionOnClick={() => {}}
-          troubleshootingOptions={
-            <TroubleshootingOptions
-              heading="Having trouble?"
-              options={[{ text: 'Get help', url: 'https://example.com/' }]}
-            />
-          }
-        >
-          Something went wrong
-        </Warning>,
-      );
-
-      expect(getByRole('heading', { name: 'Having trouble?' })).to.exist();
-      expect(getByRole('link', { name: 'Get help' }).href).to.equal('https://example.com/');
-    });
   });
 });
