@@ -42,15 +42,13 @@ const getTranslationKeys = (source) =>
   Array.from(source.matchAll(TRANSLATE_CALL)).map(([, key]) => key);
 
 /**
- * Given a Webpack chunk, returns true if the chunk is for a JavaScript entry module, or false
- * otherwise.
+ * Given a file name, returns true if the file is a JavaScript file, or false otherwise.
  *
- * @param {import('webpack').Chunk} chunk
+ * @param {string} filename
  *
  * @return {boolean}
  */
-const isJavaScriptChunk = (chunk) =>
-  !!chunk.entryModule && chunk.entryModule.type.startsWith('javascript/');
+const isJavaScriptFile = (filename) => filename.endsWith('.js');
 
 /**
  * @template {Record<string,any>} Options
@@ -80,9 +78,9 @@ class ExtractKeysWebpackPlugin {
     compiler.hooks.compilation.tap('compile', (compilation) => {
       compilation.hooks.additionalAssets.tapPromise(PLUGIN, () =>
         Promise.all(
-          compilation.chunks.filter(isJavaScriptChunk).map((chunk) =>
+          compilation.chunks.map((chunk) =>
             Promise.all(
-              chunk.files.map(async (filename) => {
+              chunk.files.filter(isJavaScriptFile).map(async (filename) => {
                 const source = compilation.assets[filename].source();
                 const keys = getTranslationKeys(source);
                 const additionalAssets = await this.getAdditionalAssets(keys);
@@ -103,4 +101,4 @@ class ExtractKeysWebpackPlugin {
 module.exports = ExtractKeysWebpackPlugin;
 module.exports.getAdditionalAssetFilename = getAdditionalAssetFilename;
 module.exports.getTranslationKeys = getTranslationKeys;
-module.exports.isJavaScriptChunk = isJavaScriptChunk;
+module.exports.isJavaScriptFile = isJavaScriptFile;

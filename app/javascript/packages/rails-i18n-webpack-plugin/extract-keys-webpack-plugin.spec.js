@@ -1,11 +1,8 @@
-const webpack = require('webpack');
 const {
   getAdditionalAssetFilename,
   getTranslationKeys,
-  isJavaScriptChunk,
+  isJavaScriptFile,
 } = require('./extract-keys-webpack-plugin.js');
-
-const { Compiler, Module } = webpack;
 
 describe('getAdditionalAssetFilename', () => {
   it('adds suffix to an existing file name', () => {
@@ -41,22 +38,20 @@ describe('getTranslationKeys', () => {
   });
 });
 
-describe('isJavaScriptChunk', () => {
-  context('non-js chunk', () => {
-    const chunk = new Compiler('').createCompilation().addChunk('example.json');
-    chunk.entryModule = new Module('json');
+describe('isJavaScriptFile', () => {
+  context('non-js filename', () => {
+    const filename = 'example.json';
 
     it('returns false', () => {
-      expect(isJavaScriptChunk(chunk)).to.be.false();
+      expect(isJavaScriptFile(filename)).to.be.false();
     });
   });
 
-  context('js chunk', () => {
-    const chunk = new Compiler('').createCompilation().addChunk('example.js');
-    chunk.entryModule = new Module('javascript/auto');
+  context('js filename', () => {
+    const filename = 'example.js';
 
     it('returns true', () => {
-      expect(isJavaScriptChunk(chunk)).to.be.true();
+      expect(isJavaScriptFile(filename)).to.be.true();
     });
   });
 });
