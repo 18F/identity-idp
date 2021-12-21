@@ -57,8 +57,12 @@ module Reports
 
     def write_json_report_to_analytics(report_name, body, extension)
       return unless extension == 'json'
-      build_analytics.track_event(Analytics::REPORT_RESULTS,
-                                  user_id: '', report_name: report_name, report_body: JSON.parse(body))
+      build_analytics.track_event(
+        Analytics::REPORT_RESULTS,
+        user_id: '',
+        report_name: report_name,
+        report_body: JSON.parse(body),
+      )
     end
 
     def build_analytics
