@@ -58,8 +58,6 @@
   </section>
   <nav aria-label="main-navigation">
     <% if content_for?(:nav) %>
-      <%= yield(:nav) %>
-
     <% else %>
       <% if decorated_session.sp_name %>
         <%= render 'shared/nav_branded' %>
