@@ -232,6 +232,7 @@ class Analytics
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
   REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'.freeze
+  REPORT_RESULTS = "Report Results".freeze
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'.freeze
   RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'.freeze
   RULES_OF_USE_VISIT = 'Rules Of Use Visited'.freeze

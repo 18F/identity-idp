@@ -47,11 +47,22 @@ module Reports
     end
 
     def save_report(report_name, body, extension:)
+      write_json_report_to_analytics(report_name, body, extension)
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end
       upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
+    end
+
+    def write_json_report_to_analytics(report_name, body, extension)
+      return unless extension == 'json'
+      build_analytics.track_event(Analytics::REPORT_RESULTS,
+                                  user_id: '', report_name: report_name, report_body: JSON.parse(body))
+    end
+
+    def build_analytics
+      Analytics.new(user: nil, request: nil, session: {}, sp: nil)
     end
 
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)

@@ -5,9 +5,18 @@ describe Reports::SpUserCountsReport do
 
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   it 'is empty' do
     expect(subject.perform(Time.zone.today)).to eq('[]')
+  end
+
+  it 'logs to analytics' do
+    allow(subject).to receive(:build_analytics).and_return(fake_analytics)
+
+    subject.perform(Time.zone.today)
+    expect(fake_analytics).to have_logged_event(Analytics::REPORT_RESULTS,
+                                                user_id: '', report_name: 'sp-user-counts-report', report_body: [])
   end
 
   it 'returns the total user counts per sp broken down by ial1 and ial2' do
