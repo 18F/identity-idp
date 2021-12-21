@@ -9,6 +9,7 @@ import HelpCenterContext from '../context/help-center';
 /**
  * @typedef DocumentCaptureTroubleshootingOptionsProps
  *
+ * @prop {string=} heading Custom heading to show in place of default.
  * @prop {string=} location Location parameter to append to links.
  */
 
@@ -16,6 +17,7 @@ import HelpCenterContext from '../context/help-center';
  * @param {DocumentCaptureTroubleshootingOptionsProps} props
  */
 function DocumentCaptureTroubleshootingOptions({
+  heading,
   location = 'document_capture_troubleshooting_options',
 }) {
   const { t } = useI18n();
@@ -24,6 +26,7 @@ function DocumentCaptureTroubleshootingOptions({
 
   return (
     <TroubleshootingOptions
+      heading={heading}
       options={
         /** @type {TroubleshootingOption[]} */ ([
           {

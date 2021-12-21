@@ -105,4 +105,14 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       });
     });
   });
+
+  context('with heading prop', () => {
+    it('shows heading text', () => {
+      const { getByRole } = render(
+        <DocumentCaptureTroubleshootingOptions heading="custom heading" />,
+      );
+
+      expect(getByRole('heading', { name: 'custom heading' })).to.exist();
+    });
+  });
 });
