@@ -1,6 +1,6 @@
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
-  MANIFEST_RELATIVE_PATH = ['app', 'assets', 'builds', 'assets-manifest.json'].freeze
+  MANIFEST_PATH = Rails.root.join('public', 'packs', 'assets-manifest.json').freeze
 
   def javascript_include_tag_without_preload(*sources)
     original_preload_links_header = ActionView::Helpers::AssetTagHelper.preload_links_header
@@ -42,7 +42,7 @@ module ScriptHelper
   private
 
   def manifest
-    @manifest ||= JSON.parse(File.read(Rails.root.join(*MANIFEST_RELATIVE_PATH)))
+    @manifest ||= JSON.parse(File.read(MANIFEST_PATH))
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

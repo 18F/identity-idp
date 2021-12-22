@@ -5,6 +5,7 @@ const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin'
 
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
+const hashSuffix = isProduction ? '-[contenthash:8].digested' : '';
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
@@ -14,9 +15,11 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     return result;
   }, {}),
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
-    path: resolve(__dirname, 'app/assets/builds'),
+    filename: `[name]${hashSuffix}.js`,
+    chunkFilename: `[name].chunk${hashSuffix}.js`,
+    sourceMapFilename: `[name]${hashSuffix}.js.map`,
+    path: resolve(__dirname, 'public/packs'),
+    publicPath: '/packs/',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
