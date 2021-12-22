@@ -144,7 +144,10 @@ describe 'idv/shared/_error.html.erb' do
       end
 
       it 'shows an appropriate troubleshooting heading' do
-        expect(rendered).to have_css('h2', text: t('idv.troubleshooting.headings.having_trouble'))
+        expect(rendered).to have_css(
+          'h2',
+          text: t('components.troubleshooting_options.default_heading'),
+        )
       end
     end
 

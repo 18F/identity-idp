@@ -1,9 +1,7 @@
-import { useI18n } from '@18f/identity-react-i18n';
-import { TroubleshootingOptions } from '@18f/identity-components';
 import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';
 
-/** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
+/** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef WarningProps
@@ -12,22 +10,13 @@ import PageHeading from './page-heading';
  * @prop {string=} actionText Primary action button text.
  * @prop {(() => void)=} actionOnClick Primary action button text.
  * @prop {import('react').ReactNode} children Component children.
- * @prop {string=} troubleshootingHeading Heading text preceding troubleshooting options.
- * @prop {(TroubleshootingOption[])=} troubleshootingOptions Array of troubleshooting options.
+ * @prop {ReactNode=} troubleshootingOptions Troubleshooting options.
  */
 
 /**
  * @param {WarningProps} props
  */
-function Warning({
-  heading,
-  actionText,
-  actionOnClick,
-  children,
-  troubleshootingHeading,
-  troubleshootingOptions,
-}) {
-  const { t } = useI18n();
+function Warning({ heading, actionText, actionOnClick, children, troubleshootingOptions }) {
   const { getAssetPath } = useAsset();
 
   return (
@@ -52,12 +41,7 @@ function Warning({
           </button>
         </div>
       )}
-      {troubleshootingOptions && (
-        <TroubleshootingOptions
-          heading={troubleshootingHeading || t('idv.troubleshooting.headings.having_trouble')}
-          options={troubleshootingOptions}
-        />
-      )}
+      {troubleshootingOptions}
     </>
   );
 }

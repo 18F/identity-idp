@@ -3,3 +3,5 @@ en:
   components:
     phone_input:
       country_code_label: Country code
+    troubleshooting_options:
+      default_heading: 'Having trouble? Here’s what you can do:'

@@ -1,4 +1,5 @@
 import { BlockLink } from '@18f/identity-components';
+import { useI18n } from '@18f/identity-react-i18n';
 
 /**
  * @typedef TroubleshootingOption
@@ -12,7 +13,7 @@ import { BlockLink } from '@18f/identity-components';
  * @typedef TroubleshootingOptionsProps
  *
  * @prop {'h1'|'h2'|'h3'|'h4'|'h5'|'h6'=} headingTag
- * @prop {string} heading
+ * @prop {string=} heading
  * @prop {TroubleshootingOption[]} options
  */
 
@@ -20,11 +21,15 @@ import { BlockLink } from '@18f/identity-components';
  * @param {TroubleshootingOptionsProps} props
  */
 function TroubleshootingOptions({ headingTag = 'h2', heading, options }) {
+  const { t } = useI18n();
+
   const HeadingTag = headingTag;
 
   return (
     <section className="troubleshooting-options">
-      <HeadingTag className="troubleshooting-options__heading">{heading}</HeadingTag>
+      <HeadingTag className="troubleshooting-options__heading">
+        {heading ?? t('components.troubleshooting_options.default_heading')}
+      </HeadingTag>
       <ul className="troubleshooting-options__options">
         {options.map(({ url, text, isExternal }) => (
           <li key={url}>
