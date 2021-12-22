@@ -215,13 +215,14 @@ describe SamlIdpController do
       )
     end
 
-    it 'accepts requests from a correct cert and correct session index' do
-      saml_request = UriService.params(
-        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
+    it 'accepts requests with correct cert and correct session index and renders logout response' do
+      saml_request = OneLogin::RubySaml::Logoutrequest.new
+      encoded_saml_request = UriService.params(
+        saml_request.create(right_cert_settings),
       )[:SAMLRequest]
 
       payload = [
-        ['SAMLRequest', saml_request],
+        ['SAMLRequest', encoded_saml_request],
         ['RelayState', 'aaa'],
         ['SigAlg', 'SHA256'],
       ]
@@ -245,6 +246,10 @@ describe SamlIdpController do
 
       expect(response).to be_ok
       expect(User.find(user.id).unique_session_id).to be_nil
+
+      logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
+      expect(logout_response.success?).to eq(true)
+      expect(logout_response.in_response_to).to eq(saml_request.uuid)
     end
 
     it 'rejects requests from a correct cert but no session index' do
