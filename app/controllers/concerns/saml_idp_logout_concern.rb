@@ -25,11 +25,7 @@ module SamlIdpLogoutConcern
     # Remotely invalidate the user's current session, see config/initializers/session_limitable.rb
     User.find(user_id).update!(unique_session_id: nil)
 
-    render_template_for(
-      Base64.strict_encode64(logout_response),
-      saml_request.response_url,
-      'SAMLResponse',
-    )
+    render inline: logout_response, content_type: 'text/xml'
   end
 
   def find_user_from_session_index
