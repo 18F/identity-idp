@@ -9,7 +9,7 @@ const hashSuffix = isProduction ? '-[contenthash:8].digested' : '';
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool: 'cheap-source-map',
+  devtool: 'eval-source-map',
   entry: glob('app/{components,javascript/packs}/*.{js,jsx}').reduce((result, path) => {
     result[parse(path).name] = resolve(path);
     return result;
