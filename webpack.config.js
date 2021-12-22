@@ -4,6 +4,7 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
+const isProduction = mode === 'production';
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
@@ -22,6 +23,12 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   module: {
     rules: [
+      !isProduction && {
+        test: /\.js$/,
+        include: /node_modules/,
+        enforce: 'pre',
+        use: ['source-map-loader'],
+      },
       {
         test: /\.jsx?$/,
         exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
@@ -29,7 +36,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
           loader: 'babel-loader',
         },
       },
-    ],
+    ].filter(Boolean),
   },
   optimization: {
     chunkIds: 'natural',
