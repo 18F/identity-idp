@@ -1,6 +1,6 @@
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
-  include Webpacker::Helper
+  MANIFEST_RELATIVE_PATH = ['app', 'assets', 'builds', 'assets-manifest.json'].freeze
 
   def javascript_include_tag_without_preload(*sources)
     original_preload_links_header = ActionView::Helpers::AssetTagHelper.preload_links_header
@@ -30,13 +30,19 @@ module ScriptHelper
     regexp_locale_suffix = %r{\.(#{I18n.available_locales.join('|')})\.js$}
 
     locale_sources, sources = @scripts.flat_map do |name|
-      current_webpacker_instance.manifest.lookup_pack_with_chunks!(name, type: :javascript)
+      manifest.dig('entrypoints', name, 'assets', 'js')
     end.uniq.partition { |source| regexp_locale_suffix.match?(source) }
 
     javascript_include_tag(
       *locale_sources.filter { |source| source.end_with? ".#{I18n.locale}.js" },
       *sources,
     )
+  end
+
+  private
+
+  def manifest
+    @manifest ||= JSON.parse(File.read(Rails.root.join(*MANIFEST_RELATIVE_PATH)))
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable
