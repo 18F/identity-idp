@@ -177,7 +177,6 @@ jobs:
             - tmp/cache/assets
             - public/assets
             - public/packs
-            - public/packs-test
 
   ruby_test:
     executor: ruby_browsers
