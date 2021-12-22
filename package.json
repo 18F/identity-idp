@@ -14,7 +14,8 @@
     "test": "mocha 'spec/javascripts/**/**spec.js?(x)' 'app/javascript/packages/**/*.spec.js?(x)'",
     "es5-safe": "is-es5-safe 'public/packs?(-test)/js/*.js'",
     "normalize-yaml": "normalize-yaml",
-    "prebuild": "find public/packs -type f -not -name '.keep' -delete",
+    "clean": "find public/packs -type f -not -name '.keep' -delete",
+    "prebuild": "yarn run clean",
     "build": "webpack --config webpack.config.js"
   },
   "dependencies": {
