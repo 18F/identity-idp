@@ -13,7 +13,6 @@ describe 'shared/_banner.html.erb' do
       service_provider_request: nil,
     )
     allow(view).to receive(:decorated_session).and_return(decorated_session)
-    render
   end
 
   it 'properly HTML escapes the secure notification' do
