@@ -5,9 +5,9 @@ describe 'shared/_banner.html.erb' do
     sp_with_logo = build_stubbed(
       :service_provider, logo: 'generic.svg', friendly_name: 'Best SP ever'
     )
+
     decorated_session = ServiceProviderSessionDecorator.new(
       sp: sp_with_logo,
-      sp_name: 'Example App',
       view_context: '',
       sp_session: {},
       service_provider_request: nil,
