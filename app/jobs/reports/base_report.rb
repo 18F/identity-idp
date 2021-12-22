@@ -66,7 +66,7 @@ module Reports
     end
 
     def build_analytics
-      Analytics.new(user: nil, request: nil, session: {}, sp: nil)
+      Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
     end
 
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)

@@ -16,7 +16,10 @@ describe Reports::SpUserCountsReport do
 
     subject.perform(Time.zone.today)
     expect(fake_analytics).to have_logged_event(
-      Analytics::REPORT_RESULTS, user_id: '', report_name: 'sp-user-counts-report', report_body: []
+      Analytics::REPORT_RESULTS,
+      user_id: AnonymousUser.uuid,
+      report_name: 'sp-user-counts-report',
+      report_body: [],
     )
   end
 
