@@ -7,6 +7,7 @@ describe 'shared/_banner.html.erb' do
     )
     decorated_session = ServiceProviderSessionDecorator.new(
       sp: sp_with_logo,
+      sp_name: 'Example App',
       view_context: '',
       sp_session: {},
       service_provider_request: nil,
