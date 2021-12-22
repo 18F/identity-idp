@@ -157,7 +157,6 @@ en:
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
-        having_trouble: 'Having trouble? Here’s what you can do:'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
