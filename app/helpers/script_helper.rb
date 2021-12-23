@@ -43,7 +43,11 @@ module ScriptHelper
   private
 
   def manifest
-    @manifest ||= JSON.parse(File.read(MANIFEST_PATH))
+    @manifest ||= begin
+      JSON.parse(File.read(MANIFEST_PATH))
+    rescue JSON::ParserError, Errno::ENOENT
+      {}
+    end
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable
