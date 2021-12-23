@@ -3,6 +3,19 @@ require 'rails_helper'
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
+  before do
+    allow_any_instance_of(ScriptHelper).to receive(:manifest).and_return(
+      'entrypoints' => {
+        'application' => {
+          'assets' => { 'js' => ['/packs/application.js', '/packs/application.en.js'] },
+        },
+        'document-capture' => {
+          'assets' => { 'js' => ['/packs/document-capture.js', '/packs/document-capture.en.js'] },
+        },
+      },
+    )
+  end
+
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
       javascript_include_tag_without_preload 'application'
