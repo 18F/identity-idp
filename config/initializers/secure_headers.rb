@@ -45,7 +45,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
 
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(
-                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'", 'localhost:3035'],
                    style_src: ["'self'", "'unsafe-inline'"],
                  )
                else
