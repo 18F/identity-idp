@@ -11,6 +11,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
@@ -22,8 +23,8 @@ import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
 
 /** @typedef {import('react').ReactNode} ReactNode */
-/** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
-/** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
+/** @typedef {import('./acuant-camera').AcuantSuccessResponse} AcuantSuccessResponse */
+/** @typedef {import('./acuant-camera').AcuantDocumentType} AcuantDocumentType */
 /** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
 /** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
 
@@ -105,7 +106,7 @@ const noop = () => {};
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  *
- * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ * @param {import('./acuant-camera').AcuantCaptureFailureError} error
  *
  * @return {boolean}
  */
@@ -130,7 +131,7 @@ function getDocumentTypeLabel(documentType) {
 }
 
 /**
- * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ * @param {import('./acuant-camera').AcuantCaptureFailureError} error
  * @param {string=} code
  *
  * @return {string}
@@ -275,6 +276,7 @@ function AcuantCapture(
   const isSuppressingClickLogging = useRef(false);
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
+  const [hasStartedCropping, setHasStartedCropping] = useState(false);
   const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
@@ -504,50 +506,55 @@ function AcuantCapture(
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
-        <FullScreen
-          ref={fullScreenRef}
-          label={t('doc_auth.accessible_labels.document_capture_dialog')}
-          onRequestClose={() => setIsCapturingEnvironment(false)}
-        >
-          <AcuantCaptureCanvas
-            onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-            onImageCaptureFailure={(error, code) => {
-              const {
-                SEQUENCE_BREAK_CODE,
-              } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
-              if (isAcuantCameraAccessFailure(error)) {
-                if (fullScreenRef.current?.focusTrap) {
-                  suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
-                }
-
-                // Internally, Acuant sets a cookie to bail on guided capture if initialization had
-                // previously failed for any reason, including declined permission. Since the cookie
-                // never expires, and since we want to re-prompt even if the user had previously
-                // declined, unset the cookie value when failure occurs for permissions.
-                setAcuantFailureCookie(null);
-
-                onCameraAccessDeclined();
-              } else if (code === SEQUENCE_BREAK_CODE) {
-                setOwnErrorMessage(
-                  `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
-                    .split(' ')
-                    .join(NBSP_UNICODE)}`,
-                );
-              } else {
-                setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+        <AcuantCamera
+          onCropStart={() => setHasStartedCropping(true)}
+          onImageCaptureSuccess={onAcuantImageCaptureSuccess}
+          onImageCaptureFailure={(error, code) => {
+            const {
+              SEQUENCE_BREAK_CODE,
+            } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+            if (isAcuantCameraAccessFailure(error)) {
+              if (fullScreenRef.current?.focusTrap) {
+                suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
               }
 
-              setIsCapturingEnvironment(false);
-              addPageAction({
-                label: 'IdV: Image capture failed',
-                payload: {
-                  field: name,
-                  error: getNormalizedAcuantCaptureFailureMessage(error, code),
-                },
-              });
-            }}
-          />
-        </FullScreen>
+              // Internally, Acuant sets a cookie to bail on guided capture if initialization had
+              // previously failed for any reason, including declined permission. Since the cookie
+              // never expires, and since we want to re-prompt even if the user had previously
+              // declined, unset the cookie value when failure occurs for permissions.
+              setAcuantFailureCookie(null);
+
+              onCameraAccessDeclined();
+            } else if (code === SEQUENCE_BREAK_CODE) {
+              setOwnErrorMessage(
+                `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
+                  .split(' ')
+                  .join(NBSP_UNICODE)}`,
+              );
+            } else {
+              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+            }
+
+            setIsCapturingEnvironment(false);
+            addPageAction({
+              label: 'IdV: Image capture failed',
+              payload: {
+                field: name,
+                error: getNormalizedAcuantCaptureFailureMessage(error, code),
+              },
+            });
+          }}
+        >
+          {!hasStartedCropping && (
+            <FullScreen
+              ref={fullScreenRef}
+              label={t('doc_auth.accessible_labels.document_capture_dialog')}
+              onRequestClose={() => setIsCapturingEnvironment(false)}
+            >
+              <AcuantCaptureCanvas />
+            </FullScreen>
+          )}
+        </AcuantCamera>
       )}
       <FileInput
         ref={inputRef}
