@@ -64,6 +64,14 @@ RSpec.describe ScriptHelper do
       end
     end
 
+    context 'with named scripts argument' do
+      it 'enqueues those scripts before printing them' do
+        output = render_javascript_pack_once_tags('application')
+
+        expect(output).to have_css('script[src="/packs/application.js"]', visible: :all)
+      end
+    end
+
     context 'script that does not exist' do
       before do
         javascript_packs_tag_once('nope')
