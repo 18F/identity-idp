@@ -59,7 +59,7 @@ class UserPivCacSetupForm
 
   def name_is_unique
     return unless PivCacConfiguration.exists?(user_id: @user.id, name: @name)
-    errors.add :name, I18n.t('errors.piv_cac_setup.unique_name')
+    errors.add :name, I18n.t('errors.piv_cac_setup.unique_name'), type: :unique_name
     @name_taken = true
   end
 end

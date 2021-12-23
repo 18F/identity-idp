@@ -57,9 +57,9 @@ class WebauthnSetupForm
   def name_is_unique
     return unless WebauthnConfiguration.exists?(user_id: @user.id, name: @name)
     if @platform_authenticator
-      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name')
+      errors.add :name, I18n.t('errors.webauthn_platform_setup.unique_name'), type: :unique_name
     else
-      errors.add :name, I18n.t('errors.webauthn_setup.unique_name')
+      errors.add :name, I18n.t('errors.webauthn_setup.unique_name'), type: :unique_name
     end
     @name_taken = true
   end
@@ -79,12 +79,12 @@ class WebauthnSetupForm
       errors.add :name, I18n.t(
         'errors.webauthn_platform_setup.attestation_error',
         link: MarketingSite.contact_url,
-      )
+      ), type: :attestation_error
     else
       errors.add :name, I18n.t(
         'errors.webauthn_setup.attestation_error',
         link: MarketingSite.contact_url,
-      )
+      ), type: :attestation_error
     end
     false
   end

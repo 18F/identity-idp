@@ -74,9 +74,9 @@ class NewPhoneForm
 
     if phone_info.type == :voip &&
        !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
-      errors.add(:phone, I18n.t('errors.messages.voip_phone'))
+      errors.add(:phone, I18n.t('errors.messages.voip_phone'), type: :voip_phone)
     elsif phone_info.error
-      errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
+      errors.add(:phone, I18n.t('errors.messages.voip_check_error'), type: :voip_check_error)
     end
   end
 
@@ -86,12 +86,12 @@ class NewPhoneForm
     end
 
     return unless current_user_phones.include?(phone)
-    errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
+    errors.add(:phone, I18n.t('errors.messages.phone_duplicate'), type: :phone_duplicate)
   end
 
   def validate_not_premium_rate
     if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
-      errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'))
+      errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'), type: :premium_rate_phone)
     end
   end
 
@@ -108,7 +108,7 @@ class NewPhoneForm
     @warning_message = 'AWS pinpoint phone info rate limit'
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   rescue Aws::Pinpoint::Errors::BadRequestException
-    errors.add(:phone, :improbable_phone)
+    errors.add(:phone, :improbable_phone, type: :improbable_phone)
     @redacted_phone = redact(phone)
     @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end

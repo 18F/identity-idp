@@ -32,19 +32,28 @@ class AccessTokenVerifier
     if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
       @identity = identity
     else
-      errors.add(:access_token, t('openid_connect.user_info.errors.not_found'))
+      errors.add(
+        :access_token, t('openid_connect.user_info.errors.not_found'),
+        type: :not_found
+      )
     end
   end
 
   def extract_access_token(header)
     if header.blank?
-      errors.add(:access_token, t('openid_connect.user_info.errors.no_authorization'))
+      errors.add(
+        :access_token, t('openid_connect.user_info.errors.no_authorization'),
+        type: :no_authorization
+      )
       return
     end
 
     bearer, access_token = header.split(' ', 2)
     if bearer != 'Bearer'
-      errors.add(:access_token, t('openid_connect.user_info.errors.malformed_authorization'))
+      errors.add(
+        :access_token, t('openid_connect.user_info.errors.malformed_authorization'),
+        type: :malformed_authorization
+      )
       return
     end
 
