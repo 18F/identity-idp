@@ -23,7 +23,7 @@ module ScriptHelper
   alias_method :enqueue_component_scripts, :javascript_packs_tag_once
 
   def render_javascript_pack_once_tags(*names)
-    javascript_packs_tags_once(*names) if names.present?
+    javascript_packs_tag_once(*names) if names.present?
     return if !@scripts
 
     # RailsI18nWebpackPlugin will generate additional assets suffixed per locale, e.g. `.fr.js`.
