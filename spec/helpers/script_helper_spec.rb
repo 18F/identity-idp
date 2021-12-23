@@ -34,16 +34,12 @@ RSpec.describe ScriptHelper do
 
       it 'prints all unique packs in order, locale scripts first' do
         output = render_javascript_pack_once_tags
-        public_output_path = current_webpacker_instance.config.public_output_path
-        public_path = current_webpacker_instance.config.public_path
-        output_path = public_output_path.relative_path_from(public_path)
 
         selectors = [
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/runtime~application-']",
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.js']",
+          "script[src^='/packs/application.en.js']",
+          "script[src^='/packs/document-capture.en.js']",
+          "script[src^='/packs/application.js']",
+          "script[src^='/packs/document-capture.js']",
         ]
 
         selectors.each_with_index do |selector, i|

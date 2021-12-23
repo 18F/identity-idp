@@ -49,8 +49,9 @@ describe 'throttling requests' do
 
     context 'when the request is for a pack' do
       it 'does not throttle' do
+        pack_url = Dir['public/packs/*'].first.gsub(/^public/, '')
         (requests_per_ip_limit + 1).times do
-          get Webpacker.manifest.lookup('application.js'), headers: { REMOTE_ADDR: '1.2.3.4' }
+          get pack_url, headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
         expect(response.status).to eq(200)
