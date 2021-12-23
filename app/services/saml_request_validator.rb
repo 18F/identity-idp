@@ -30,13 +30,16 @@ class SamlRequestValidator
   # SamlIdpAuthConcern#check_sp_active checks that it's currently active
   def authorized_service_provider
     return if service_provider
-    errors.add(:service_provider, :unauthorized_service_provider)
+    errors.add(
+      :service_provider, :unauthorized_service_provider,
+      type: :unauthorized_service_provider
+    )
   end
 
   def authorized_authn_context
     if !valid_authn_context? ||
        (ial2_context_requested? && service_provider&.ial != 2)
-      errors.add(:authn_context, :unauthorized_authn_context)
+      errors.add(:authn_context, :unauthorized_authn_context, type: :unauthorized_authn_context)
     end
   end
 
@@ -71,7 +74,7 @@ class SamlRequestValidator
     return unless email_nameid_format?
     return if service_provider&.email_nameid_format_allowed
 
-    errors.add(:nameid_format, :unauthorized_nameid_format)
+    errors.add(:nameid_format, :unauthorized_nameid_format, type: :unauthorized_nameid_format)
   end
 
   def email_nameid_format?

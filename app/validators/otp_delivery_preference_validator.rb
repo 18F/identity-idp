@@ -28,6 +28,7 @@ module OtpDeliveryPreferenceValidator
         'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: phone_number_capabilities.unsupported_location,
       ),
+      type: :voice_unsupported,
     )
   end
 

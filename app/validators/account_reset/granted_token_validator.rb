@@ -20,12 +20,18 @@ module AccountReset
     def token_exists
       return if account_reset_request
 
-      errors.add(:token, I18n.t('errors.account_reset.granted_token_invalid', app_name: APP_NAME))
+      errors.add(
+        :token, I18n.t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
+        type: :granted_token_invalid
+      )
     end
 
     def token_not_expired
       return unless account_reset_request&.granted_token_expired?
-      errors.add(:token, I18n.t('errors.account_reset.granted_token_expired', app_name: APP_NAME))
+      errors.add(
+        :token, I18n.t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
+        type: :granted_token_expired
+      )
     end
 
     def token_present?

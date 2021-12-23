@@ -22,6 +22,9 @@ class Agreements::IntegrationUsage < ApplicationRecord
     return unless integration.present? && iaa_order.present?
     return if integration.partner_account == iaa_order.partner_account
 
-    errors.add(:iaa_order, 'must belong to same partner account as integration')
+    errors.add(
+      :iaa_order, 'must belong to same partner account as integration',
+      type: :partner_account_does_match_integration
+    )
   end
 end

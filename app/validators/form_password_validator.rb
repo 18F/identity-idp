@@ -20,15 +20,20 @@ module FormPasswordValidator
   def strong_password
     return unless errors.messages.blank? && password_score.score < min_password_score
 
-    errors.add :password, :weak_password, **i18n_variables
+    errors.add :password, :weak_password, **i18n_variables, type: :weak_password
   end
 
   def password_graphemes_length
     return if errors.messages.present?
     if password.grapheme_clusters.length < Devise.password_length.min
-      errors.add(:password, :too_short, count: Devise.password_length.min)
+      errors.add(
+        :password,
+        :too_short,
+        count: Devise.password_length.min,
+        type: :too_short,
+      )
     elsif password.grapheme_clusters.length > Devise.password_length.max
-      errors.add(:password, :too_long, count: Devise.password_length.max)
+      errors.add(:password, :too_long, count: Devise.password_length.max, type: :too_long)
     end
   end
 
@@ -42,7 +47,7 @@ module FormPasswordValidator
   def not_pwned
     return if password.blank? || !PwnedPasswords::LookupPassword.call(password)
 
-    errors.add :password, :pwned_password
+    errors.add :password, :pwned_password, type: :pwned_password
   end
 
   def min_password_score
