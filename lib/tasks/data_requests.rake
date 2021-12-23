@@ -40,7 +40,9 @@ namespace :data_requests do
       FileUtils.mkdir_p(user_output_dir)
 
       DataRequests::WriteUserInfo.new(user_report, user_output_dir).call
-      DataRequests::WriteUserEvents.new(user_report, user_output_dir).call
+      DataRequests::WriteUserEvents.new(
+        user_report, user_output_dir, user_report[:requesting_issuer_uuid],
+      ).call
 
       cloudwatch_dates = user_report[:user_events].map { |row| row[:date_time] }.map do |date_time|
         Time.zone.parse(date_time).to_date
