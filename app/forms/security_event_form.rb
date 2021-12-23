@@ -102,24 +102,28 @@ class SecurityEventForm
 
     error_code = nil
     error_message = nil
+    error_reason = nil
 
     matching_public_key = service_provider&.ssl_certs&.find do |ssl_cert|
       error_code = nil
       error_message = nil
+      error_reason = nil
       JWT.decode(body, ssl_cert.public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
     rescue JWT::IncorrectAlgorithm
       error_code = ErrorCodes::JWT_CRYPTO
       error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
+      error_reason = :incorrect_algorithm
       nil
     rescue JWT::VerificationError => err
       error_code = ErrorCodes::JWS
       error_message = err.message
+      error_reason = :verification_failed
       nil
     end
 
-    if error_code && error_message
+    if error_code && error_message && error_reason
       @error_code = error_code
-      errors.add(:jwt, error_message, type: :"#{error_message.split('.').last}")
+      errors.add(:jwt, error_message, type: error_reason)
     else
       check_public_key_error(matching_public_key)
     end
