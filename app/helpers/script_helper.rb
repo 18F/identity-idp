@@ -32,7 +32,7 @@ module ScriptHelper
 
     locale_sources, sources = @scripts.flat_map do |name|
       manifest.dig('entrypoints', name, 'assets', 'js')
-    end.uniq.partition { |source| regexp_locale_suffix.match?(source) }
+    end.uniq.compact.partition { |source| regexp_locale_suffix.match?(source) }
 
     javascript_include_tag(
       *locale_sources.filter { |source| source.end_with? ".#{I18n.locale}.js" },

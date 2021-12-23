@@ -50,5 +50,15 @@ RSpec.describe ScriptHelper do
         end
       end
     end
+
+    context 'script that does not exist' do
+      before do
+        javascript_packs_tag_once('nope')
+      end
+
+      it 'gracefully outputs nothing' do
+        expect(render_javascript_pack_once_tags).to be_empty
+      end
+    end
   end
 end
