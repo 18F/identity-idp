@@ -45,7 +45,6 @@ cache:
   - &assets_cache
     key: $CI_COMMIT_SHA
     paths:
-      - tmp/cache/webpacker/last-compilation-digest-test
       - tmp/cache/assets
       - public/assets
       - public/packs
