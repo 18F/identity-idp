@@ -3,7 +3,7 @@
 # be run periodically, like metric exporters or syncs.
 
 default:
-  image: campuscode/ruby-gitlab-ci:2.7.3
+  image: mitchh/ruby-node-yarn-chrome-chromedriver:3.0.3
 
 variables:
   GITLAB_CI: 'true'
@@ -59,6 +59,8 @@ stages:
 
 .on_push:
   rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_OPEN_MERGE_REQUESTS
       when: never
