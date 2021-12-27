@@ -60,7 +60,7 @@ RSpec.describe Telephony do
 
       expect(Telephony.sms_character_length("Login.gov\nParty")).to eq 15
 
-      random_double_character = Telephony::GSM_DOUBLE_CHARACTERS.sample
+      random_double_character = Telephony::GSM_DOUBLE_CHARACTERS.to_a.sample
       expect(Telephony.sms_character_length("abc\n¥ΔΦΓΛΩΠΨΣΘΞ#{random_double_character}")).
              to eq 17
     end
