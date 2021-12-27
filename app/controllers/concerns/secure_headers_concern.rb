@@ -34,6 +34,6 @@ module SecureHeadersConcern
   private
 
   def stored_url_for_user
-    sp_session_request_url_without_prompt_login
+    sp_session_request_url_with_updated_params
   end
 end
