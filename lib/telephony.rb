@@ -96,7 +96,7 @@ module Telephony
   #
   # This method does not handle message length added for multi-part message headers.
   def self.sms_character_length(text)
-    if text.chars.all? { |x| GSM_CHARACTERS.include?(x) }
+    if gsm_chars_only?(text)
       text.chars.sum do |character|
         if GSM_DOUBLE_CHARACTERS.include?(character)
           2
@@ -125,11 +125,15 @@ module Telephony
   def self.sms_parts(text)
     length = sms_character_length(text)
 
-    if text.chars.all? { |x| GSM_CHARACTERS.include?(x) }
+    if gsm_chars_only?(text)
       gsm_parts(length)
     else
       non_gsm_parts(length)
     end
+  end
+
+  def self.gsm_chars_only?(text)
+    text.chars.all? { |x| GSM_CHARACTERS.include?(x) }
   end
 
   def self.gsm_parts(length)

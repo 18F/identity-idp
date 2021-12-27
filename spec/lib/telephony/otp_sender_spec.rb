@@ -273,7 +273,7 @@ RSpec.describe Telephony::OtpSender do
         it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
           message = sender.authentication_message
           expect(Telephony.sms_parts(message)).to eq 1
-          expect(message.chars.all? { |x| Telephony::GSM_CHARACTERS.include?(x) }).to eq true
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         end
       end
 
@@ -296,7 +296,7 @@ RSpec.describe Telephony::OtpSender do
 
           message = sender.authentication_message
           expect(Telephony.sms_parts(message)).to eq 1
-          expect(message.chars.all? { |x| Telephony::GSM_CHARACTERS.include?(x) }).to eq true
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end
@@ -321,7 +321,7 @@ RSpec.describe Telephony::OtpSender do
         it 'does not contain any non-GSM characters and is sent in one part' do
           message = sender.confirmation_message
           expect(Telephony.sms_parts(message)).to eq 1
-          expect(message.chars.all? { |x| Telephony::GSM_CHARACTERS.include?(x) }).to eq true
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         end
       end
 
@@ -344,7 +344,7 @@ RSpec.describe Telephony::OtpSender do
 
           message = sender.confirmation_message
           expect(Telephony.sms_parts(message)).to eq 1
-          expect(message.chars.all? { |x| Telephony::GSM_CHARACTERS.include?(x) }).to eq true
+          expect(Telephony.gsm_chars_only?(message)).to eq true
         ensure
           I18n.locale = :en
         end
