@@ -10,7 +10,7 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
     end
 
     click_agree_and_continue
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: :es) if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
