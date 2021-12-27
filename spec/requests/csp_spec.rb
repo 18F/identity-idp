@@ -24,9 +24,9 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")
       expect(content_security_policy['script-src']).to match(
-        /'self' 'unsafe-eval' 'unsafe-inline' 'nonce-[\w\d=\/+]+'/,
+        /'self' js-agent\.newrelic\.com \*\.nr-data\.net dap\.digitalgov\.gov \*\.google-analytics\.com( 'nonce-[\w\d=\/+]+')?/,
       )
-      expect(content_security_policy['style-src']).to eq("'self' 'unsafe-inline'")
+      expect(content_security_policy['style-src']).to eq("'self'")
     end
   end
 
@@ -45,12 +45,14 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq("'self'")
       expect(content_security_policy['img-src']).to eq(
-        "'self' data: login.gov idscangoweb.acuant.com s3.us-west-2.amazonaws.com",
+        "'self' data: login.gov idscangoweb.acuant.com https://s3.us-west-2.amazonaws.com",
       )
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")
-      expect(content_security_policy['script-src']).to eq("'self' 'unsafe-eval' 'unsafe-inline'")
-      expect(content_security_policy['style-src']).to eq("'self' 'unsafe-inline'")
+      expect(content_security_policy['script-src']).to eq(
+        "'self' js-agent.newrelic.com *.nr-data.net dap.digitalgov.gov *.google-analytics.com",
+      )
+      expect(content_security_policy['style-src']).to eq("'self'")
     end
   end
 

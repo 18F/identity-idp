@@ -1,3 +1,5 @@
+require 'feature_management'
+
 SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/BlockLength
   config.hsts = "max-age=#{365.days.to_i}; includeSubDomains; preload"
   config.x_frame_options = 'DENY'
@@ -36,6 +38,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     ],
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
+    preserve_schemes: true,
+    disable_nonce_backwards_compatibility: true,
   }
 
   if IdentityConfig.store.rails_mailer_previews_enabled
@@ -43,14 +47,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_csp_config[:frame_ancestors] = %w['self']
   end
 
-  config.csp = if !Rails.env.production?
-                 default_csp_config.merge(
-                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
-                   style_src: ["'self'", "'unsafe-inline'"],
-                 )
-               else
-                 default_csp_config
-               end
+  if !FeatureManagement.rails_csp_tooling_enabled?
+    config.csp = default_csp_config
+  end
 
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
@@ -72,36 +71,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   # }
 end
 
-# A tiny middleware that calls a block on each request. When both:
-# 1) the block returns true
-# 2) the response is a 2XX response
-# It deletes the Content-Security-Policy header. This is intended so that we can override
-# SecureHeaders behavior and not set the headers on asset files, because the headers should be set
-# on the document that links to the assets, not the assets themselves.
-class SecureHeaders::RemoveContentSecurityPolicy
-  # @yieldparam [Rack::Request] request
-  def initialize(app, &block)
-    @app = app
-    @block = block
-  end
-
-  def call(env)
-    status, headers, body = @app.call(env)
-
-    if (200...300).cover?(status) && @block.call(Rack::Request.new(env))
-      headers.delete('Content-Security-Policy')
-    end
-
-    [status, headers, body]
-  end
-end
-
-# We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
-Rails.application.configure do |config|
-  config.middleware.insert_before(
-    SecureHeaders::Middleware,
-    SecureHeaders::RemoveContentSecurityPolicy,
-  ) do |request|
-    request.path.start_with?('/acuant/')
+if FeatureManagement.rails_csp_tooling_enabled?
+  Rails.application.configure do |config|
+    config.middleware.delete SecureHeaders::Middleware
   end
 end

@@ -5,6 +5,7 @@ module SignUp
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
     before_action :apply_secure_headers_override, only: [:show, :update]
+    apply_secure_headers_override only: [:show, :update]
 
     def show
       @view_model = view_model

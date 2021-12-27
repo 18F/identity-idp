@@ -3,6 +3,7 @@ module Idv
     def override_document_capture_step_csp
       return if params[:step] != 'document_capture'
 
+      # TODO: Address this
       SecureHeaders.append_content_security_policy_directives(
         request,
         # required to run wasm until wasm-eval is available

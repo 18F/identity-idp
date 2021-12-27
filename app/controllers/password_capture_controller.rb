@@ -5,6 +5,7 @@ class PasswordCaptureController < ApplicationController
 
   before_action :confirm_two_factor_authenticated
   before_action :apply_secure_headers_override
+  apply_secure_headers_override
 
   def new
     session[:password_attempts] ||= 0

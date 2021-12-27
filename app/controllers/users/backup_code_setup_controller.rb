@@ -9,6 +9,7 @@ module Users
     before_action :ensure_backup_codes_in_session, only: %i[continue download]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
+    apply_secure_headers_override
 
     def index
       @presenter = BackupCodeCreatePresenter.new

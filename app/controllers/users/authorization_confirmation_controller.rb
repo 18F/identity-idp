@@ -7,6 +7,7 @@ module Users
     before_action :bump_auth_count
     before_action :confirm_two_factor_authenticated
     before_action :apply_secure_headers_override, only: [:new]
+    apply_secure_headers_override only: [:new]
 
     def new
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)

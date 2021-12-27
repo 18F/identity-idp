@@ -26,7 +26,7 @@
       ) %>
 
 
-  <%= nonced_javascript_tag do %>
+  <%= backwards_compatible_javascript_tag do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   <% end %>
   <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2') %>

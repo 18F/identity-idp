@@ -5,6 +5,7 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :apply_secure_headers_override, only: :show
+    apply_secure_headers_override only: :show
 
     def show
       personal_key = user_session[:personal_key]

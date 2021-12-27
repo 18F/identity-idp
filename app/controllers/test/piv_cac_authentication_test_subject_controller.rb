@@ -9,6 +9,7 @@ module Test
 
     before_action :must_be_in_development
     before_action :apply_secure_headers_override
+    apply_secure_headers_override
 
     def new
       @referrer = request.headers['Referer']

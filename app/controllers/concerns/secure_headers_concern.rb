@@ -1,7 +1,21 @@
 module SecureHeadersConcern
   extend ActiveSupport::Concern
 
+  class_methods do
+    def apply_secure_headers_override(options = {})
+      return unless FeatureManagement.rails_csp_tooling_enabled?
+
+      before_action(options) do
+        policy = current_content_security_policy
+        policy.form_action *csp_uris
+        request.content_security_policy = policy
+      end
+    end
+  end
+
   def apply_secure_headers_override
+    return if FeatureManagement.rails_csp_tooling_enabled?
+
     return if stored_url_for_user.blank?
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
@@ -14,7 +28,6 @@ module SecureHeadersConcern
   def override_csp_with_uris
     override_content_security_policy_directives(
       form_action: csp_uris,
-      preserve_schemes: true,
     )
   end
 
