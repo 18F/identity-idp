@@ -122,6 +122,7 @@ class IdentityConfig
     config.add(:deliver_mail_async, type: :boolean)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
+    config.add(:disposable_email_services, type: :json)
     config.add(:doc_auth_attempt_window_in_minutes, type: :integer)
     config.add(:doc_auth_client_glare_threshold, type: :integer)
     config.add(:doc_auth_client_sharpness_threshold, type: :integer)
