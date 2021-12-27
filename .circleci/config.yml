@@ -13,11 +13,11 @@ executors:
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: cimg/ruby:2.7.3-browsers
+      - image: cimg/ruby:3.0.3-browsers
         environment:
           CIRCLE_CI: 'true'
           RAILS_ENV: test
-          BUNDLER_VERSION: 2.2.20
+          BUNDLER_VERSION: 2.2.32
           # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
           # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM
           # to use the version from .nvmrc instead.
