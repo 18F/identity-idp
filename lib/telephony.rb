@@ -25,11 +25,11 @@ module Telephony
     A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e
     f g h i j k l m n o p q r s t u v w x y z à Å å Ä ä Ç É é è ì Ñ ñ ò Ø ø Ö ö ù Ü ü Æ æ ß 0 1 2 3
     4 5 6 7 8 9 & * @ : , ¤ $ = ! > # - ¡ ¿ ( < % . + £ ? " ) § ; ' / _ ¥ Δ Φ Γ Λ Ω Π Ψ Σ Θ Ξ
-  ]
-  GSM_WHITESPACE_CHARACTERS = ["\n", "\r", ' ']
-  GSM_DOUBLE_CHARACTERS = ['^', '{', '}', '\\', '[', ']', '~', '|', '€']
-  GSM_CHARACTERS = GSM_NON_WHITE_SPACE_CHARACTERS + GSM_WHITESPACE_CHARACTERS +
-                   GSM_DOUBLE_CHARACTERS
+  ].to_set.freeze
+  GSM_WHITESPACE_CHARACTERS = ["\n", "\r", ' '].to_set.freeze
+  GSM_DOUBLE_CHARACTERS = ['^', '{', '}', '\\', '[', ']', '~', '|', '€'].to_set.freeze
+  GSM_CHARACTERS = (GSM_NON_WHITE_SPACE_CHARACTERS + GSM_WHITESPACE_CHARACTERS +
+                   GSM_DOUBLE_CHARACTERS).freeze
 
   UCS_2_BASIC_CHAR_MAX = 0xFFFF
 
