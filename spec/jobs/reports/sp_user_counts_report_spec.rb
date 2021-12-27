@@ -12,15 +12,16 @@ describe Reports::SpUserCountsReport do
   end
 
   it 'logs to analytics' do
-    allow(subject).to receive(:build_analytics).and_return(fake_analytics)
-
-    subject.perform(Time.zone.today)
-    expect(fake_analytics).to have_logged_event(
-      Analytics::REPORT_RESULTS,
-      user_id: AnonymousUser.new.uuid,
-      report_name: 'sp-user-counts-report',
-      report_body: [],
-    )
+    freeze_time do
+      timestamp = Time.zone.now.iso8601
+      log_hash = {
+        time: timestamp,
+        report_name: 'sp-user-counts-report',
+        report_body: [],
+      }
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
+      subject.perform(Time.zone.today)
+    end
   end
 
   it 'returns the total user counts per sp broken down by ial1 and ial2' do

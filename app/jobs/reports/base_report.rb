@@ -47,7 +47,7 @@ module Reports
     end
 
     def save_report(report_name, body, extension:)
-      write_json_report_to_analytics(report_name, body, extension)
+      write_data_to_analytics_logs(report_name, body, extension)
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
@@ -55,14 +55,22 @@ module Reports
       upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
     end
 
-    def write_json_report_to_analytics(report_name, body, extension)
+    def write_data_to_analytics_logs(report_name, body, extension)
       return unless extension == 'json'
-      build_analytics.track_event(
-        Analytics::REPORT_RESULTS,
-        user_id: '',
+      log_hash = {
+        time: Time.zone.now.iso8601,
         report_name: report_name,
         report_body: JSON.parse(body),
-      )
+      }
+      write_hash_to_reports_log(log_hash)
+    end
+
+    def write_hash_to_reports_log(log_hash)
+      reports_logger.info(log_hash.to_json)
+    end
+
+    def reports_logger
+      @reports_log ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
     end
 
     def build_analytics
