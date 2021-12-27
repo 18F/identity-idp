@@ -61,17 +61,6 @@
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <%= render 'shared/banner' %>
-  <div aria-label="main-navigation" role="navigation">
-    <% if content_for?(:nav) %>
-      <%= yield(:nav) %>
-    <% else %>
-      <% if decorated_session.sp_name %>
-        <%= render 'shared/nav_branded' %>
-      <% else %>
-        <%= render 'shared/nav_lite' %>
-      <% end %>
-    <% end %>
-  </div>
   <main class="site-wrap bg-light-blue" id="main-content">
     <div class="container">
       <div class="padding-x-2 padding-y-4 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
