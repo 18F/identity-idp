@@ -813,7 +813,7 @@ DEPENDENCIES
   zxcvbn (= 0.1.7)
 
 RUBY VERSION
-   ruby 2.7.3p183
+   ruby 3.0.3p157
 
 BUNDLED WITH
-   2.2.20
+   2.2.32
