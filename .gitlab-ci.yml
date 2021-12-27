@@ -104,7 +104,7 @@ specs:
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
   services:
-    - name: postgres:9.6
+    - name: postgres:13.4
       alias: db-postgres
     - name: redis
       alias: db-redis
