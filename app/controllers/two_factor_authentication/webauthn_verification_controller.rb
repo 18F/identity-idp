@@ -62,7 +62,7 @@ module TwoFactorAuthentication
         data: { credential_ids: credential_ids,
                 user_opted_remember_device_cookie: user_opted_remember_device_cookie },
         remember_device_default: remember_device_default,
-        platform_authenticator: platform_authenticator?,
+        platform_authenticator: params[:platform].to_s == 'true',
       )
     end
 
@@ -80,7 +80,7 @@ module TwoFactorAuthentication
     end
 
     def analytics_properties
-      auth_method = if platform_authenticator?
+      auth_method = if form&.webauthn_configuration&.platform_authenticator
                       'webauthn_platform'
                     else
                       'webauthn'
@@ -94,12 +94,6 @@ module TwoFactorAuthentication
 
     def form
       @form ||= WebauthnVerificationForm.new(current_user, user_session)
-    end
-
-    private
-
-    def platform_authenticator?
-      params[:platform].to_s == 'true'
     end
   end
 end

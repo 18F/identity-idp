@@ -46,17 +46,37 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
       end
       before do
         controller.user_session[:webauthn_challenge] = webauthn_challenge
-        create(
+      end
+
+      it 'tracks a valid non-platform authenticator submission' do
+        webauthn_configuration = create(
           :webauthn_configuration,
           user: controller.current_user,
           credential_id: credential_id,
           credential_public_key: credential_public_key,
         )
-      end
-
-      it 'tracks a valid submission' do
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
+                   success: true, webauthn_configuration_id: webauthn_configuration.id }
+        expect(@analytics).to receive(:track_mfa_submit_event).
+          with(result)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+
+        patch :confirm, params: params
+      end
+
+      it 'tracks a valid platform authenticator submission' do
+        create(
+          :webauthn_configuration,
+          user: controller.current_user,
+          credential_id: credential_id,
+          credential_public_key: credential_public_key,
+          platform_authenticator: true,
+        )
+        allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
+        result = { context: 'authentication', errors: {},
+                   multi_factor_auth_method: 'webauthn_platform',
                    success: true, webauthn_configuration_id: WebauthnConfiguration.first.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
@@ -67,8 +87,15 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
       end
 
       it 'tracks an invalid submission' do
+        webauthn_configuration = create(
+          :webauthn_configuration,
+          user: controller.current_user,
+          credential_id: credential_id,
+          credential_public_key: credential_public_key,
+        )
+
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
-                   success: false, webauthn_configuration_id: WebauthnConfiguration.first.id }
+                   success: false, webauthn_configuration_id: webauthn_configuration.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 
