@@ -11,11 +11,6 @@ module Proofing
 
       stage :state_id
 
-      SUPPORTED_STATES = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM PA
-        RI SC SD TX VA VT WA WI WY
-      ].to_set.freeze
-
       SUPPORTED_STATE_ID_TYPES = %w[
         drivers_license drivers_permit state_id_card
       ].to_set.freeze
@@ -47,7 +42,7 @@ module Proofing
       private
 
       def state_not_supported?(state_id_jurisdiction)
-        !SUPPORTED_STATES.include? state_id_jurisdiction
+        !Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS.include? state_id_jurisdiction
       end
 
       def invalid_state_id_number?(state_id_number)

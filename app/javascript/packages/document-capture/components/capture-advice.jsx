@@ -1,9 +1,7 @@
-import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import ServiceProviderContext from '../context/service-provider';
-import HelpCenterContext from '../context/help-center';
 import useAsset from '../hooks/use-asset';
 import Warning from './warning';
+import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
@@ -19,8 +17,6 @@ import Warning from './warning';
  * @param {CaptureAdviceProps} props
  */
 function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
-  const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
-  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
 
@@ -29,24 +25,11 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
       heading={t('doc_auth.headings.capture_troubleshooting_tips')}
       actionText={t('idv.failure.button.warning')}
       actionOnClick={onTryAgain}
-      troubleshootingHeading={t('idv.troubleshooting.headings.still_having_trouble')}
       troubleshootingOptions={
-        /** @type {TroubleshootingOption[]} */ ([
-          {
-            url: getHelpCenterURL({
-              category: 'verify-your-identity',
-              article: 'how-to-add-images-of-your-state-issued-id',
-              location: 'capture_tips',
-            }),
-            text: t('idv.troubleshooting.options.doc_capture_tips'),
-            isExternal: true,
-          },
-          spName && {
-            url: getFailureToProofURL('capture_tips'),
-            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
-            isExternal: true,
-          },
-        ].filter(Boolean))
+        <DocumentCaptureTroubleshootingOptions
+          heading={t('idv.troubleshooting.headings.still_having_trouble')}
+          location="capture_tips"
+        />
       }
     >
       <p>

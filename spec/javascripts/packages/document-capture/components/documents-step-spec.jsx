@@ -106,7 +106,7 @@ describe('document-capture/components/documents-step', () => {
     );
 
     expect(
-      getByRole('heading', { name: 'idv.troubleshooting.headings.having_trouble' }),
+      getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
     ).to.be.ok();
     expect(
       getByRole('link', { name: 'idv.troubleshooting.options.get_help_at_sp links.new_window' })

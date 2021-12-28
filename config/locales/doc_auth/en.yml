@@ -57,6 +57,7 @@ en:
           instead.
         failed: Camera failed to start, please try again.
       dpi:
+        failed_short: Image is too small or blurry, please try again.
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID
           is too small or blurry in the photo. Make sure your ID is large within
           the image frame and try taking a new picture.
@@ -66,6 +67,7 @@ en:
       file_type:
         invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
+        fallback_field_level: Please add a new image
         liveness: We couldn’t verify your ID and photo of yourself. Try taking new
           pictures.
         multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking a new picture.
@@ -104,6 +106,7 @@ en:
       upload_error: Sorry, something went wrong on our end.
     forms:
       address1: Address
+      captured_image: Captured Image
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
@@ -219,7 +222,7 @@ en:
       send_sms: We’ll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity.
-      test_ssn: In the test environment only SSNs that begin with “900-” are
+      test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
       text1: ''
       text1a: such as a phone or computer.

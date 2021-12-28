@@ -35,7 +35,7 @@ class VerifyPersonalKeyForm
 
   def validate_personal_key
     return check_personal_key if personal_key_decrypts?
-    errors.add :personal_key, :personal_key_incorrect
+    errors.add :personal_key, :personal_key_incorrect, type: :personal_key
   end
 
   def reset_sensitive_fields

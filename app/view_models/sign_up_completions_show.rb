@@ -34,8 +34,6 @@ class SignUpCompletionsShow
     [[:verified_at], :verified_at],
   ].freeze
 
-  MAX_RECENT_IDENTITIES = 5
-
   # rubocop:disable Rails/OutputSafety
   def heading
     return handoff_heading if handoff?
@@ -83,24 +81,6 @@ class SignUpCompletionsShow
   def sorted_attribute_mapping
     return SORTED_IAL2_ATTRIBUTE_MAPPING if user_verified?
     SORTED_IAL1_ATTRIBUTE_MAPPING
-  end
-
-  def identities
-    if @current_user
-      @identities ||= @current_user.identities.order(
-        last_authenticated_at: :desc,
-      ).limit(MAX_RECENT_IDENTITIES)
-    else
-      false
-    end
-  end
-
-  def user_has_identities?
-    if identities
-      identities.length.positive?
-    else
-      false
-    end
   end
 
   private

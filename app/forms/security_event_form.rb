@@ -82,14 +82,17 @@ class SecurityEventForm
   def check_jwt_parse_error
     return false if @error_code != ErrorCodes::JWT_PARSE
 
-    errors.add(:jwt, t('risc.security_event.errors.jwt_could_not_parse'))
+    errors.add(
+      :jwt, t('risc.security_event.errors.jwt_could_not_parse'),
+      type: :jwt_could_not_parse
+    )
     true
   end
 
   def check_public_key_error(public_key)
     return false if public_key.present?
 
-    errors.add(:jwt, t('risc.security_event.errors.no_public_key'))
+    errors.add(:jwt, t('risc.security_event.errors.no_public_key'), type: :no_public_key)
     @error_code = ErrorCodes::JWS
     true
   end
@@ -99,24 +102,28 @@ class SecurityEventForm
 
     error_code = nil
     error_message = nil
+    error_reason = nil
 
     matching_public_key = service_provider&.ssl_certs&.find do |ssl_cert|
       error_code = nil
       error_message = nil
+      error_reason = nil
       JWT.decode(body, ssl_cert.public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
     rescue JWT::IncorrectAlgorithm
       error_code = ErrorCodes::JWT_CRYPTO
       error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
+      error_reason = :incorrect_algorithm
       nil
     rescue JWT::VerificationError => err
       error_code = ErrorCodes::JWS
       error_message = err.message
+      error_reason = :verification_failed
       nil
     end
 
-    if error_code && error_message
+    if error_code && error_message && error_reason
       @error_code = error_code
-      errors.add(:jwt, error_message)
+      errors.add(:jwt, error_message, type: error_reason)
     else
       check_public_key_error(matching_public_key)
     end
@@ -124,7 +131,7 @@ class SecurityEventForm
 
   def validate_jti
     if jti.blank?
-      errors.add(:jti, t('risc.security_event.errors.jti_required'))
+      errors.add(:jti, t('risc.security_event.errors.jti_required'), type: :jti_required)
       return
     end
 
@@ -132,7 +139,7 @@ class SecurityEventForm
 
     return unless record_already_exists?
 
-    errors.add(:jti, t('risc.security_event.errors.jti_not_unique'))
+    errors.add(:jti, t('risc.security_event.errors.jti_not_unique'), type: :jti_not_unique)
     @error_code = ErrorCodes::DUP
   end
 
@@ -148,24 +155,32 @@ class SecurityEventForm
   end
 
   def validate_iss
-    errors.add(:iss, 'invalid issuer') if service_provider.blank?
+    errors.add(:iss, 'invalid issuer', type: :invalid_issuer) if service_provider.blank?
   end
 
   def validate_aud
     return if jwt_payload.blank?
     return if jwt_payload['aud'] == api_risc_security_events_url
 
-    errors.add(:aud, t('risc.security_event.errors.aud_invalid', url: api_risc_security_events_url))
+    errors.add(
+      :aud,
+      t('risc.security_event.errors.aud_invalid', url: api_risc_security_events_url),
+      type: :aud_invalid,
+    )
     @error_code = ErrorCodes::JWT_AUD
   end
 
   def validate_event_type
     if event_type.blank?
-      errors.add(:event_type, t('risc.security_event.errors.event_type_missing'))
+      errors.add(
+        :event_type, t('risc.security_event.errors.event_type_missing'),
+        type: :event_type_missing
+      )
     elsif !SecurityEvent::EVENT_TYPES.include?(event_type)
       errors.add(
         :event_type,
         t('risc.security_event.errors.event_type_unsupported', event_type: event_type),
+        type: :event_type_unsupported,
       )
       @error_code = ErrorCodes::SET_TYPE
     end
@@ -177,26 +192,40 @@ class SecurityEventForm
     errors.add(
       :subject_type,
       t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss-sub'),
+      type: :subject_type_unsupported,
     )
   end
 
   def validate_sub
-    errors.add(:sub, t('risc.security_event.errors.sub_unsupported')) if jwt_payload['sub'].present?
-    errors.add(:sub, t('risc.security_event.errors.sub_not_found')) if user.blank?
+    if jwt_payload['sub'].present?
+      errors.add(
+        :sub, t('risc.security_event.errors.sub_unsupported'),
+        type: :sub_unsupported
+      )
+    end
+    if user.blank?
+      errors.add(
+        :sub, t('risc.security_event.errors.sub_not_found'),
+        type: :sub_not_found
+      )
+    end
   end
 
   def validate_typ
     return if jwt_headers.blank?
     return if jwt_headers['typ'] == 'secevent+jwt'
 
-    errors.add(:typ, t('risc.security_event.errors.typ_error', expected_typ: 'secevent+jwt'))
+    errors.add(
+      :typ, t('risc.security_event.errors.typ_error', expected_typ: 'secevent+jwt'),
+      type: :typ_error
+    )
     @error_code = ErrorCodes::JWT_HDR
   end
 
   def validate_exp
     return if jwt_payload['exp'].blank?
 
-    errors.add(:exp, t('risc.security_event.errors.exp_present'))
+    errors.add(:exp, t('risc.security_event.errors.exp_present'), type: :exp_present)
   end
 
   def client_id

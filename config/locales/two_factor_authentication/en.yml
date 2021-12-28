@@ -7,13 +7,6 @@ en:
       pending_html: You currently have a pending request to delete your account. It
         takes 24 hours from the time you made the request to complete the
         process. Please check back later. %{cancel_link}
-      recover_html: If you can’t use any of the authentication methods above, you can
-        %{reverify_link}. Your name, address, and social security number must
-        match your account profile. If they don’t, you can %{reset_link}
-        instead.
-      reset_link: reset your account
-      reset_your_account: Reset your account
-      reverify_link: re-verify your identity
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
@@ -24,12 +17,6 @@ en:
     backup_code_prompt: You can use this security code once. After you enter it,
       you’ll need to use a new key.
     choose_another_option: '‹ Choose another option'
-    devices:
-      auth_app: Authentication app
-      backup_code: Backup codes
-      phone: Phone
-      piv_cac: PIV/CAC
-      webauthn: Security key
     header_text: Enter your security code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
@@ -56,13 +43,15 @@ en:
       piv_cac_info_html: Use your PIV/CAC card instead of a security code.
       sms: Text message
       sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
-      sms_setup_info_html: Get security code via text message.
       voice: Automated phone call
       voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
         (North America phone numbers only).
-      voice_setup_info_html: Get security code via phone call (North America phone numbers only).
       webauthn: Security key
       webauthn_info_html: Use your security key to access your account.
+      webauthn_platform: Face or Touch Unlock
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+        another level of security to your %{app_name} account. Recommended
+        because it is more phishing resistant.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -110,10 +99,6 @@ en:
     phone_fee_disclosure: Message and data rates may apply.
     phone_info_html: We’ll send you a security code <strong>each time you sign in</strong>.
     phone_label: Phone number
-    phone_sms_info_html: We’ll text a security code <strong>each time you sign in</strong>.
-    phone_sms_label: Mobile phone number
-    phone_voice_info_html: We’ll call you with a security code <strong>each time you sign in</strong>.
-    phone_voice_label: Phone number
     piv_cac_fallback:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
@@ -142,8 +127,7 @@ en:
       least_secure_label: Least secure
       less_secure_label: Less secure
       more_secure_label: More Secure
-      most_secure_label: Most Secure
-      phone: Phone
+      phone: Text or Voice Message
       phone_info_html: Get security codes by text message (SMS) or phone call.
       phone_info_no_voip: Please do not use web-based (VOIP) phone services.
       piv_cac: Government employee ID
@@ -158,6 +142,10 @@ en:
         that you plug in or that is built in to your computer or phone (it often
         looks like a USB flash drive). Recommended because it is more phishing
         resistant.
+      webauthn_platform: Face or Touch Unlock
+      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+        another level of security to your %{app_name} account. Recommended
+        because it is more phishing resistant.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
@@ -166,6 +154,13 @@ en:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your PIV or CAC
+    webauthn_platform_fallback:
+      question: Don’t have your device available?
+    webauthn_platform_header_text: Use Face or Touch Unlock
+    webauthn_platform_use_key: Use Face or Touch Unlock
+    webauthn_platform_verified:
+      header: Device verified
+      info: We have verified your device. Click continue to sign in.
     webauthn_use_key: Use security key
     webauthn_verified:
       header: Security key verified

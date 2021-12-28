@@ -95,7 +95,7 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
-  gem 'erb_lint', '~> 0.0.37', require: false
+  gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.12.5'

@@ -8,7 +8,7 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(t('two_factor_authentication.devices.auth_app'))
+      expect(page).to have_content(t('two_factor_authentication.login_options.auth_app'))
       expect(page.find('.remove-auth-app')).to_not be_nil
       page.find('.remove-auth-app').click
 
@@ -26,7 +26,9 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      expect(page).to have_content(t('two_factor_authentication.devices.auth_app'))
+      expect(page).to have_content(
+        t('two_factor_authentication.login_options.auth_app'),
+      )
       form = find_form(page, action: disable_totp_url)
       expect(form).to be_nil
     end

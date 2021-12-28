@@ -121,27 +121,46 @@ describe SamlIdpController do
       delete :remotelogout, params: { SAMLRequest: 'foo' }
     end
 
+    let(:agency) { create(:agency) }
     let(:service_provider) do
       create(
         :service_provider,
         certs: ['sp_sinatra_demo', 'saml_test_sp'],
         active: true,
         assertion_consumer_logout_service_url: 'https://example.com',
+        agency_id: agency.id,
       )
     end
+    let(:other_sp) { create(:service_provider, active: true, agency_id: agency.id) }
 
     let(:user) { create(:user, :signed_up, unique_session_id: 'abc123') }
+    let(:other_user) { create(:user, :signed_up) }
+
     let!(:identity) do
       ServiceProviderIdentity.create(
         service_provider: service_provider.issuer,
         user: user,
       )
     end
+    let!(:other_identity) do
+      ServiceProviderIdentity.create(
+        service_provider: other_sp.issuer,
+        user: other_user,
+      )
+    end
+
     let!(:agency_identity) do
       AgencyIdentity.create!(
-        agency: service_provider.agency,
+        agency: agency,
         user: user,
         uuid: identity.uuid,
+      )
+    end
+    let!(:other_agency_identity) do
+      AgencyIdentity.create!(
+        agency: agency,
+        user: other_user,
+        uuid: other_identity.uuid,
       )
     end
 
@@ -174,6 +193,16 @@ describe SamlIdpController do
       )
     end
 
+    let(:right_cert_bad_user_settings) do
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          assertion_consumer_logout_service_url: 'https://example.com',
+          sessionindex: other_agency_identity.uuid,
+        },
+      )
+    end
+
     let(:wrong_cert_settings) do
       saml_settings(
         overrides: {
@@ -186,13 +215,14 @@ describe SamlIdpController do
       )
     end
 
-    it 'accepts requests from a correct cert and correct session index' do
-      saml_request = UriService.params(
-        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
+    it 'accepts requests with correct cert and correct session index and renders logout response' do
+      saml_request = OneLogin::RubySaml::Logoutrequest.new
+      encoded_saml_request = UriService.params(
+        saml_request.create(right_cert_settings),
       )[:SAMLRequest]
 
       payload = [
-        ['SAMLRequest', saml_request],
+        ['SAMLRequest', encoded_saml_request],
         ['RelayState', 'aaa'],
         ['SigAlg', 'SHA256'],
       ]
@@ -216,6 +246,10 @@ describe SamlIdpController do
 
       expect(response).to be_ok
       expect(User.find(user.id).unique_session_id).to be_nil
+
+      logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
+      expect(logout_response.success?).to eq(true)
+      expect(logout_response.in_response_to).to eq(saml_request.uuid)
     end
 
     it 'rejects requests from a correct cert but no session index' do
@@ -252,6 +286,37 @@ describe SamlIdpController do
     it 'rejects requests from a correct cert but bad session index' do
       saml_request = UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(right_cert_bad_session_settings),
+      )[:SAMLRequest]
+
+      payload = [
+        ['SAMLRequest', saml_request],
+        ['RelayState', 'aaa'],
+        ['SigAlg', 'SHA256'],
+      ]
+      canon_string = payload.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
+
+      private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
+      signature = private_sp_key.sign(OpenSSL::Digest.new('SHA256'), canon_string)
+
+      certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
+
+      # This is the same verification process we expect the SAML gem will run
+      expect(
+        certificate.public_key.verify(
+          OpenSSL::Digest.new('SHA256'),
+          signature,
+          canon_string,
+        ),
+      ).to eq(true)
+
+      delete :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+
+      expect(response).to be_bad_request
+    end
+
+    it 'rejects requests from a correct cert but a non-associated user' do
+      saml_request = UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_bad_user_settings),
       )[:SAMLRequest]
 
       payload = [

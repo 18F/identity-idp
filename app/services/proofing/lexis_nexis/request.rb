@@ -19,12 +19,11 @@ module Proofing
       def send(response_options: {})
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
+          f.request :basic_auth, config.username, config.password
           f.options.timeout = timeout
           f.options.read_timeout = timeout
           f.options.open_timeout = timeout
           f.options.write_timeout = timeout
-
-          f.basic_auth config.username, config.password
         end
 
         Response.new(

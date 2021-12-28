@@ -110,12 +110,25 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def handle_invalid_otp(type: 'otp')
     update_invalid_user
 
-    flash.now[:error] = t("two_factor_authentication.invalid_#{type}")
+    flash.now[:error] = invalid_otp_error(type)
 
     if decorated_user.locked_out?
       handle_second_factor_locked_user(type)
     else
       render_show_after_invalid
+    end
+  end
+
+  def invalid_otp_error(type)
+    case type
+    when 'otp'
+      t('two_factor_authentication.invalid_otp')
+    when 'personal_key'
+      t('two_factor_authentication.invalid_personal_key')
+    when 'piv_cac'
+      t('two_factor_authentication.invalid_piv_cac')
+    else
+      raise "Unsupported otp method: #{type}"
     end
   end
 

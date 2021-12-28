@@ -653,6 +653,7 @@ ActiveRecord::Schema.define(version: 2021_12_07_125122) do
     t.text "credential_public_key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "platform_authenticator"
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 

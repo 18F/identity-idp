@@ -97,9 +97,6 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
-      agencies_login: Vous pouvez maintenant continuer à vous connecter à ces agences.
-      agency_login_html: Vous pouvez maintenant accéder et vous connecter à
-        <br><strong>%{sp}</strong>.
       cancel: Pour continuer, %{app_name} doit vérifier votre identité. Nous devons
         recueillir quelques informations personnelles de base ainsi que
         certaines informations financières pour compléter ce processus. Si vous
@@ -179,7 +176,6 @@ fr:
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
-        having_trouble: 'Des difficultés? Voici ce que vous pouvez faire:'
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'

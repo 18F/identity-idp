@@ -60,7 +60,7 @@ class SamlIdpController < ApplicationController
 
     user_id = find_user_from_session_index
 
-    return head(:bad_request) unless valid_remote_logout_user_id?(user_id)
+    return head(:bad_request) unless user_id.present?
 
     handle_valid_sp_remote_logout_request(user_id)
   end

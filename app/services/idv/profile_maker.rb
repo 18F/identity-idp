@@ -15,7 +15,7 @@ module Idv
         user: user,
       )
       profile.encrypt_pii(pii_attributes, user_password)
-      profile.proofing_components = current_proofing_components_to_json
+      profile.proofing_components = current_proofing_components
       if document_expired
         profile.reproof_at = IdentityConfig.store.proofing_expired_license_reproof_at
       end
@@ -25,9 +25,8 @@ module Idv
 
     private
 
-    def current_proofing_components_to_json
-      proofing_component = ProofingComponent.find_by(user_id: user.id)
-      (proofing_component || {}).to_json
+    def current_proofing_components
+      user.proofing_component&.as_json || {}
     end
 
     attr_accessor :user, :user_password, :phone_confirmed, :document_expired

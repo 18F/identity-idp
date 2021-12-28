@@ -129,6 +129,8 @@ class Analytics
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
+  AUTHENTICATION_CONFIRMATION_CONTINUE = 'Authentication Confirmation: Continue selected'.freeze
+  AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'.freeze
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   DOC_AUTH_WARNING = 'Doc Auth Warning'.freeze
@@ -173,6 +175,7 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'.freeze
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'.freeze
+  IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze

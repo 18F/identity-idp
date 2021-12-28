@@ -91,25 +91,32 @@ class OpenidConnectTokenForm
 
   def validate_pkce_or_private_key_jwt
     return if pkce? || private_key_jwt?
-    errors.add :code, t('openid_connect.token.errors.invalid_authentication')
+    errors.add :code,
+               t('openid_connect.token.errors.invalid_authentication'),
+               type: :invalid_authentication
   end
 
   def validate_expired
     if identity&.updated_at && identity.updated_at < session_expiration
-      errors.add :code, t('openid_connect.token.errors.expired_code')
+      errors.add :code, t('openid_connect.token.errors.expired_code'), type: :expired_code
     end
   end
 
   def validate_code
-    errors.add :code, t('openid_connect.token.errors.invalid_code') if identity.blank? ||
-                                                                       !identity.user
+    if identity.blank? || !identity.user
+      errors.add :code,
+                 t('openid_connect.token.errors.invalid_code'),
+                 type: :invalid_code
+    end
   end
 
   def validate_code_verifier
     expected_code_challenge = remove_base64_padding(identity.try(:code_challenge))
     given_code_challenge = remove_base64_padding(Digest::SHA256.base64digest(code_verifier.to_s))
     return if expected_code_challenge == given_code_challenge
-    errors.add :code_verifier, t('openid_connect.token.errors.invalid_code_verifier')
+    errors.add :code_verifier,
+               t('openid_connect.token.errors.invalid_code_verifier'),
+               type: :invalid_code_verifier
   end
 
   def validate_client_assertion
@@ -136,6 +143,7 @@ class OpenidConnectTokenForm
       errors.add(
         :client_assertion,
         err&.message || t('openid_connect.token.errors.invalid_signature'),
+        type: :invalid_signature,
       )
     end
   end
@@ -149,6 +157,7 @@ class OpenidConnectTokenForm
     errors.add(
       :client_assertion,
       t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
+      type: :invalid_aud,
     )
   end
 
@@ -157,7 +166,10 @@ class OpenidConnectTokenForm
     iat = payload['iat']
     return true if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
 
-    errors.add(:client_assertion, t('openid_connect.token.errors.invalid_iat'))
+    errors.add(
+      :client_assertion, t('openid_connect.token.errors.invalid_iat'),
+      type: :invalid_iat
+    )
   end
 
   def service_provider

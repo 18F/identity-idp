@@ -25,7 +25,7 @@ class VerifyPasswordForm
 
   def validate_password
     return if valid_password?
-    errors.add :password, :password_incorrect
+    errors.add :password, :password_incorrect, type: :password_incorrect
   end
 
   def valid_password?

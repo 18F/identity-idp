@@ -111,7 +111,7 @@ RSpec.configure do |config|
 
     # Always get the logs, even if logs are allowed for the spec, since otherwise unexpected
     # messages bleed over between specs.
-    javascript_errors = page.driver.browser.manage.logs.get(:browser).map(&:message)
+    javascript_errors = page.driver.browser.logs.get(:browser).map(&:message)
     next if spec.metadata[:allow_browser_log]
 
     # Temporarily allow for document-capture bundle, since it uses React error boundaries to poll.

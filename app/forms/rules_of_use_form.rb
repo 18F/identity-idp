@@ -13,7 +13,7 @@ class RulesOfUseForm
   def validate_terms_accepted
     return if @terms_accepted
 
-    errors.add(:terms_accepted, t('forms.validation.required_checkbox'))
+    errors.add(:terms_accepted, t('forms.validation.required_checkbox'), type: :required_checkbox)
   end
 
   def submit(params)

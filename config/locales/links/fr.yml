@@ -26,4 +26,3 @@ fr:
     two_factor_authentication:
       get_another_code: Obtenir un autre code
     what_is_totp: Qu’est-ce qu’une application d’authentification?
-    what_is_webauthn: Qu’est-ce qu’une clé de sécurité physique?

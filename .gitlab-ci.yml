@@ -59,7 +59,10 @@ stages:
 
 .on_push:
   rules:
-    - if: $CI_PIPELINE_SOURCE != "schedule"
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
 
 install:
   extends: .on_push
@@ -78,18 +81,6 @@ install:
     - *bundle_install
     - *yarn_install
     - bundle exec rake assets:precompile
-
-lint:
-  extends: .on_push
-  stage: test
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - make lint
 
 specs:
   extends: .on_push
@@ -144,6 +135,18 @@ specs:
     - >
         ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
+
+lint:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
 
 js_build:
   extends: .on_push
@@ -204,14 +207,16 @@ coverage:
   script:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
+    - mv coverage/coverage/* coverage/
   artifacts:
+      reports:
+        cobertura: coverage/coverage.xml
       name: coverage
       expire_in: 31d
       paths:
-        - coverage/coverage/index.html
-        - coverage/coverage/assets/
-      reports:
-        cobertura: coverage/coverage/coverage.xml
+        - coverage/index.html
+        - coverage/assets/
+        - coverage/coverage.xml
 
 sync_from_github:
   image: mirror.gcr.io/alpine/git:latest

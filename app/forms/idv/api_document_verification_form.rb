@@ -92,7 +92,7 @@ module Idv
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-      errors.add(:limit, t('errors.doc_auth.throttled_heading'))
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
     def throttled_else_increment
@@ -108,10 +108,25 @@ module Idv
     end
 
     def validate_image_urls
-      errors.add(:front_image_url, invalid_link) unless valid_url?(:front_image_url)
-      errors.add(:back_image_url, invalid_link) unless valid_url?(:back_image_url)
+      unless valid_url?(:front_image_url)
+        errors.add(
+          :front_image_url, invalid_link,
+          type: :invalid_link
+        )
+      end
+      unless valid_url?(:back_image_url)
+        errors.add(
+          :back_image_url, invalid_link,
+          type: :invalid_link
+        )
+      end
       return if valid_url?(:selfie_image_url)
-      errors.add(:selfie_image_url, invalid_link) if liveness_checking_enabled?
+      if liveness_checking_enabled?
+        errors.add(
+          :selfie_image_url, invalid_link,
+          type: :invalid_link
+        )
+      end
     end
 
     def invalid_link

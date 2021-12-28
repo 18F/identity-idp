@@ -2,6 +2,15 @@ import { render } from '@testing-library/react';
 import TroubleshootingOptions from './troubleshooting-options';
 
 describe('TroubleshootingOptions', () => {
+  it('renders the default heading', () => {
+    const { getByRole } = render(<TroubleshootingOptions options={[]} />);
+
+    const heading = getByRole('heading');
+
+    expect(heading.tagName).to.be.equal('H2');
+    expect(heading.textContent).to.equal('components.troubleshooting_options.default_heading');
+  });
+
   it('renders a given heading', () => {
     const { getByRole } = render(<TroubleshootingOptions heading="Need help?" options={[]} />);
 

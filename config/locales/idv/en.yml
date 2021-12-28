@@ -88,8 +88,6 @@ en:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
       activated_link: contact us
-      agencies_login: You can now continue to and sign in to these agencies.
-      agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
       cancel: To continue, %{app_name} needs to verify your identity. We need to
         collect some basic personal information as well as some financial
         information from you to complete this process. If you don’t have the
@@ -159,7 +157,6 @@ en:
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
-        having_trouble: 'Having trouble? Here’s what you can do:'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?

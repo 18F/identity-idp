@@ -14,12 +14,12 @@ module Idv
 
     def session_exists
       return if document_capture_session
-      errors.add(:session_uuid, 'invalid session')
+      errors.add(:session_uuid, 'invalid session', type: :doc_capture_sessions)
     end
 
     def session_not_expired
       return unless document_capture_session&.expired?
-      errors.add(:session_uuid, 'session expired')
+      errors.add(:session_uuid, 'session expired', type: :doc_capture_sessions)
     end
 
     def session_uuid_present?

@@ -11,6 +11,7 @@ RSpec.describe PhoneInputComponent, type: :component do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
   end
   let(:allowed_countries) { nil }
+  let(:confirmed_phone) { true }
   let(:required) { nil }
   let(:delivery_methods) { nil }
   let(:tag_options) { {} }
@@ -18,6 +19,7 @@ RSpec.describe PhoneInputComponent, type: :component do
     {
       form: form_builder,
       allowed_countries: allowed_countries,
+      confirmed_phone: confirmed_phone,
       required: required,
       delivery_methods: delivery_methods,
       **tag_options,
@@ -91,6 +93,54 @@ RSpec.describe PhoneInputComponent, type: :component do
         visible: false,
         text: t('two_factor_authentication.otp_delivery_preference.voice_unsupported'),
       )
+    end
+  end
+
+  context 'with delivery unsupported country' do
+    before do
+      stub_const(
+        'PhoneNumberCapabilities::INTERNATIONAL_CODES',
+        PhoneNumberCapabilities::INTERNATIONAL_CODES.merge(
+          'US' => PhoneNumberCapabilities::INTERNATIONAL_CODES['US'].merge('supports_sms' => false),
+        ),
+      )
+    end
+
+    it 'renders with delivery supports' do
+      expect(rendered).to have_css('option[value=US][data-supports-sms=false]')
+    end
+
+    context 'with unconfirmed phone' do
+      let(:confirmed_phone) { false }
+
+      it 'renders with delivery supports' do
+        expect(rendered).to have_css('option[value=US][data-supports-sms=false]')
+      end
+    end
+  end
+
+  context 'with delivery unsupported unconfirmed country' do
+    before do
+      stub_const(
+        'PhoneNumberCapabilities::INTERNATIONAL_CODES',
+        PhoneNumberCapabilities::INTERNATIONAL_CODES.merge(
+          'US' => PhoneNumberCapabilities::INTERNATIONAL_CODES['US'].merge(
+            'supports_sms_unconfirmed' => false,
+          ),
+        ),
+      )
+    end
+
+    it 'renders with delivery supports' do
+      expect(rendered).to have_css('option[value=US][data-supports-sms=true]')
+    end
+
+    context 'with unconfirmed phone' do
+      let(:confirmed_phone) { false }
+
+      it 'renders with delivery supports' do
+        expect(rendered).to have_css('option[value=US][data-supports-sms=false]')
+      end
     end
   end
 end

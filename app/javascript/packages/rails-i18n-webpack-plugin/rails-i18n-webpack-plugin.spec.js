@@ -21,7 +21,8 @@ describe('RailsI18nWebpackPlugin', () => {
     webpack(
       {
         entry: {
-          actual: path.resolve(__dirname, 'spec/fixtures/in.js'),
+          actual1: path.resolve(__dirname, 'spec/fixtures/in1.js'),
+          actual2: path.resolve(__dirname, 'spec/fixtures/in2.js'),
         },
         plugins: [
           new RailsI18nWebpackPlugin({
@@ -32,20 +33,35 @@ describe('RailsI18nWebpackPlugin', () => {
         output: {
           path: path.resolve(__dirname, 'spec/fixtures'),
         },
+        optimization: {
+          splitChunks: {
+            chunks: 'all',
+            minSize: 0,
+          },
+        },
       },
       async () => {
-        const [script, en, es, fr] = await Promise.all([
-          fs.readFile(path.resolve(__dirname, 'spec/fixtures/actual.js')),
-          ...['.en.js', '.es.js', '.fr.js'].map(async (suffix) => [
-            await fs.readFile(path.resolve(__dirname, `spec/fixtures/expected${suffix}`), 'utf-8'),
-            await fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${suffix}`), 'utf-8'),
-          ]),
-        ]);
-
         try {
-          expect(script).to.not.be.empty();
-          for (const [expected, actual] of [en, es, fr]) {
-            expect(expected).to.equal(actual);
+          for (const chunkSuffix of ['1', '1~actual2']) {
+            // eslint-disable-next-line no-await-in-loop
+            const [script, en, es, fr] = await Promise.all([
+              fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}.js`)),
+              ...['.en.js', '.es.js', '.fr.js'].map(async (localeSuffix) => [
+                await fs.readFile(
+                  path.resolve(__dirname, `spec/fixtures/expected${chunkSuffix}${localeSuffix}`),
+                  'utf-8',
+                ),
+                await fs.readFile(
+                  path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}${localeSuffix}`),
+                  'utf-8',
+                ),
+              ]),
+            ]);
+
+            expect(script).to.not.be.empty();
+            for (const [expected, actual] of [en, es, fr]) {
+              expect(expected).to.equal(actual);
+            }
           }
 
           expect(onMissingString).to.have.callCount(7);

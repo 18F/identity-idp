@@ -39,9 +39,9 @@ module Proofing
       end
 
       # To reduce the chances of allowing real PII in the mock proofer, we only allow SSNs that
-      # start with 900 or appear in the configurable allow list
+      # start with 900 or 666 or appear in the configurable allow list
       def verified_ssn?(ssn)
-        ssn.start_with?('900') ||
+        ssn.start_with?('900', '666') ||
           IdentityConfig.store.test_ssn_allowed_list.include?(ssn.delete('-'))
       end
     end

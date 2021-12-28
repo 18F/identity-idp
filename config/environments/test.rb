@@ -53,6 +53,7 @@ Rails.application.configure do
       :backup_code_configurations,
       :webauthn_configurations,
       :email_addresses,
+      :proofing_component,
     ].each do |association|
       Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end

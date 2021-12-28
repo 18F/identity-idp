@@ -61,10 +61,10 @@
 
 <%= render(
       'shared/troubleshooting_options',
-      heading: t('idv.troubleshooting.headings.having_trouble'),
+      heading: t('components.troubleshooting_options.default_heading'),
       options: [
         {
-          url: idv_phone_path,
+          url: idv_phone_path(step: 'phone_otp_delivery_selection'),
           text: t('idv.troubleshooting.options.change_phone_number'),
         },
         gpo_letter_available && {

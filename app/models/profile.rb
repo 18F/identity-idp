@@ -18,12 +18,26 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  # Rails natively handles JSONB columns, however we have been double-serializing our data
+  # until now (saving JSON objects as JSON atoms)
+  # We can remove this override once run the backfill job to re-encode older values
+  def proofing_components
+    value = super
+    if value.present?
+      if value.is_a?(Hash)
+        value
+      elsif value.is_a?(String)
+        JSON.parse(value)
+      end
+    end
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     now = Time.zone.now
     is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
-      Profile.where('user_id=?', user_id).update_all(active: false)
+      Profile.where(user_id: user_id).update_all(active: false)
       update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
     end
     send_push_notifications if is_reproof
@@ -81,7 +95,7 @@ class Profile < ApplicationRecord
 
   def includes_liveness_check?
     return if proofing_components.blank?
-    JSON.parse(proofing_components)['liveness_check']
+    proofing_components['liveness_check']
   end
 
   private

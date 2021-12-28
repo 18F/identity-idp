@@ -27,12 +27,20 @@ module DocAuth
     VISIBLE_COLOR_CHECK = 'visible_color_check'
     VISIBLE_PHOTO_CHECK = 'visible_photo_check'
     # Image metrics
+    DPI_LOW = 'dpi_low'
+    DPI_LOW_FIELD = 'dpi_low_field'
     DPI_LOW_ONE_SIDE = 'dpi_low_one_side'
     DPI_LOW_BOTH_SIDES = 'dpi_low_both_sides'
+    SHARP_LOW = 'sharp_low'
+    SHARP_LOW_FIELD = 'sharp_low_field'
     SHARP_LOW_ONE_SIDE = 'sharp_low_one_side'
     SHARP_LOW_BOTH_SIDES = 'sharp_low_both_sides'
+    GLARE_LOW = 'glare_low'
+    GLARE_LOW_FIELD = 'glare_low_field'
     GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
     GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
+    # Other
+    FALLBACK_FIELD_LEVEL= 'fallback_field_level'
 
     ALL = [
       BARCODE_CONTENT_CHECK,
@@ -56,12 +64,56 @@ module DocAuth
       SEX_CHECK,
       VISIBLE_COLOR_CHECK,
       VISIBLE_PHOTO_CHECK,
+      DPI_LOW,
       DPI_LOW_ONE_SIDE,
       DPI_LOW_BOTH_SIDES,
+      SHARP_LOW,
       SHARP_LOW_ONE_SIDE,
       SHARP_LOW_BOTH_SIDES,
+      GLARE_LOW,
       GLARE_LOW_ONE_SIDE,
       GLARE_LOW_BOTH_SIDES,
+      FALLBACK_FIELD_LEVEL,
     ].freeze
+
+    # rubocop:disable Layout/LineLength
+    USER_DISPLAY = {
+      # Image metrics
+      DPI_LOW => { long_msg: DPI_LOW_ONE_SIDE, long_msg_plural: DPI_LOW_BOTH_SIDES, field_msg: DPI_LOW_FIELD },
+      SHARP_LOW => { long_msg: SHARP_LOW_ONE_SIDE, long_msg_plural: SHARP_LOW_BOTH_SIDES, field_msg: SHARP_LOW_FIELD },
+      GLARE_LOW => { long_msg: GLARE_LOW_ONE_SIDE, long_msg_plural: GLARE_LOW_BOTH_SIDES, field_msg: GLARE_LOW_FIELD },
+      # Alerts
+      REF_CONTROL_NUMBER_CHECK => { long_msg: REF_CONTROL_NUMBER_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      BARCODE_CONTENT_CHECK => { long_msg: BARCODE_CONTENT_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      BARCODE_READ_CHECK => { long_msg: BARCODE_READ_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      BIRTH_DATE_CHECKS => { long_msg: BIRTH_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      BIRTH_DATE_CHECKS => { long_msg: BIRTH_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      CONTROL_NUMBER_CHECK => { long_msg: CONTROL_NUMBER_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ID_NOT_RECOGNIZED => { long_msg: ID_NOT_RECOGNIZED, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      DOC_CROSSCHECK => { long_msg: DOC_CROSSCHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      DOCUMENT_EXPIRED_CHECK => { long_msg: DOCUMENT_EXPIRED_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      DOC_NUMBER_CHECKS => { long_msg: DOC_NUMBER_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      EXPIRATION_CHECKS => { long_msg: EXPIRATION_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      EXPIRATION_CHECKS => { long_msg: EXPIRATION_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      FULL_NAME_CHECK => { long_msg: FULL_NAME_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ISSUE_DATE_CHECKS => { long_msg: ISSUE_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ISSUE_DATE_CHECKS => { long_msg: ISSUE_DATE_CHECKS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ID_NOT_VERIFIED => { long_msg: ID_NOT_VERIFIED, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ID_NOT_VERIFIED => { long_msg: ID_NOT_VERIFIED, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      VISIBLE_PHOTO_CHECK => { long_msg: VISIBLE_PHOTO_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ID_NOT_VERIFIED => { long_msg: ID_NOT_VERIFIED, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      SEX_CHECK => { long_msg: SEX_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      VISIBLE_COLOR_CHECK => { long_msg: VISIBLE_COLOR_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      ID_NOT_VERIFIED => { long_msg: ID_NOT_VERIFIED, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      VISIBLE_PHOTO_CHECK => { long_msg: VISIBLE_PHOTO_CHECK, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      # Multiple Errors
+      MULTIPLE_FRONT_ID_FAILURES => { long_msg: MULTIPLE_FRONT_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      MULTIPLE_BACK_ID_FAILURES => { long_msg: MULTIPLE_BACK_ID_FAILURES, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      GENERAL_ERROR_LIVENESS => { long_msg: GENERAL_ERROR_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      GENERAL_ERROR_NO_LIVENESS => { long_msg: GENERAL_ERROR_NO_LIVENESS, field_msg: FALLBACK_FIELD_LEVEL, hints: true },
+      # Liveness
+      SELFIE_FAILURE => { long_msg: SELFIE_FAILURE, field_msg: FALLBACK_FIELD_LEVEL, hints: false },
+    }
+    # rubocop:enable Layout/LineLength
   end
 end

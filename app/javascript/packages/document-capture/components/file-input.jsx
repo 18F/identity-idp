@@ -179,6 +179,19 @@ function FileInput(props, ref) {
     }
   }
 
+  /**
+   * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
+   */
+  function getLabelFromValue(fileValue) {
+    if (fileValue instanceof window.File) {
+      return fileValue.name;
+    }
+    if (fileValue) {
+      return t('doc_auth.forms.captured_image');
+    }
+    return '';
+  }
+
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
 
   return (
@@ -278,6 +291,7 @@ function FileInput(props, ref) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
+            aria-label={getLabelFromValue(value)}
             onChange={onChangeIfValid}
             capture={capture}
             onClick={onClick}

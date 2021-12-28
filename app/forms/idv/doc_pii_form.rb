@@ -27,15 +27,15 @@ module Idv
 
     def validate_pii
       if error_count > 1
-        errors.add(:pii, generic_error)
+        errors.add(:pii, generic_error, type: :generic_error)
       elsif !name_valid?
-        errors.add(:pii, name_error)
+        errors.add(:pii, name_error, type: :name_error)
       elsif dob.blank?
-        errors.add(:pii, dob_error)
+        errors.add(:pii, dob_error, type: :dob_error)
       elsif !dob_meets_min_age?
-        errors.add(:pii, dob_min_age_error)
+        errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
       elsif !state_valid?
-        errors.add(:pii, generic_error)
+        errors.add(:pii, generic_error, type: :generic_error)
       end
     end
 

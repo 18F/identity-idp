@@ -13,12 +13,9 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
-import HelpCenterContext from '../context/help-center';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import './review-issues-step.scss';
-
-/** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -61,6 +58,7 @@ function reviewIssuesStepValidator(value = {}) {
 /**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
  *  remainingAttempts: number,
+ *  captureHints: boolean,
  * }} props Props object.
  */
 function ReviewIssuesStep({
@@ -71,15 +69,14 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   remainingAttempts,
+  captureHints,
 }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
-  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
-  const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
   const { onPageTransition } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
@@ -94,13 +91,17 @@ function ReviewIssuesStep({
       <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       {!!unknownFieldErrors &&
         unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
-      <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
-        <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
-      </ul>
+      {captureHints && (
+        <>
+          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
+          <ul>
+            <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text2')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
+            <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
+          </ul>
+        </>
+      )}
       {DOCUMENT_SIDES.map((side) => (
         <DocumentSideAcuantCapture
           key={side}
@@ -162,26 +163,13 @@ function ReviewIssuesStep({
       actionText={t('idv.failure.button.warning')}
       actionOnClick={onWarningPageDismissed}
       troubleshootingOptions={
-        /** @type {TroubleshootingOption[]} */ ([
-          {
-            url: getHelpCenterURL({
-              category: 'verify-your-identity',
-              article: 'how-to-add-images-of-your-state-issued-id',
-              location: 'post_submission_warning',
-            }),
-            text: t('idv.troubleshooting.options.doc_capture_tips'),
-            isExternal: true,
-          },
-          spName && {
-            url: getFailureToProofURL('post_submission_warning'),
-            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
-            isExternal: true,
-          },
-        ].filter(Boolean))
+        <DocumentCaptureTroubleshootingOptions location="post_submission_warning" />
       }
     >
       {!!unknownFieldErrors &&
-        unknownFieldErrors.map(({ error }) => <p key={error.message}>{error.message}</p>)}
+        unknownFieldErrors
+          .filter((error) => !['front', 'back', 'selfie'].includes(error.field))
+          .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
       {remainingAttempts <= DISPLAY_ATTEMPTS && (
         <p>

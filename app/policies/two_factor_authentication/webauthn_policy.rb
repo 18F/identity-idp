@@ -13,6 +13,14 @@ module TwoFactorAuthentication
       configured?
     end
 
+    def platform_configured?
+      mfa_user.webauthn_platform_configurations.any?
+    end
+
+    def platform_enabled?
+      platform_configured?
+    end
+
     def visible?
       true
     end

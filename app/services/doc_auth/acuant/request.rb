@@ -92,10 +92,7 @@ module DocAuth
         }
 
         Faraday.new(url: url.to_s, headers: headers) do |conn|
-          conn.basic_auth(
-            config.assure_id_username,
-            config.assure_id_password,
-          )
+          conn.request :basic_auth, config.assure_id_username, config.assure_id_password
           conn.request :instrumentation, name: 'request_metric.faraday'
           conn.request :retry, retry_options
           conn.adapter :net_http
