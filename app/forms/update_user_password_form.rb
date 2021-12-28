@@ -38,6 +38,6 @@ class UpdateUserPasswordForm
   end
 
   def encryptor
-    @_encryptor ||= ActiveProfileEncryptor.new(user, user_session, password)
+    @encryptor ||= ActiveProfileEncryptor.new(user, user_session, password)
   end
 end

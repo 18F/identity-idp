@@ -87,9 +87,11 @@ module SignUp
       analytics.track_event(Analytics::USER_REGISTRATION_COMPLETE, analytics_attributes(last_page))
     end
 
+    # rubocop:disable Naming/MemoizedInstanceVariableName
     def pii
       @parsed_pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
     end
+    # rubocop:enable Naming/MemoizedInstanceVariableName
 
     def address
       addr = pii[:address2]

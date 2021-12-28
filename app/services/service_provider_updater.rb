@@ -69,7 +69,7 @@ class ServiceProviderUpdater
   end
 
   def dashboard_response
-    @_dashboard_response ||= Faraday.get(url)
+    @dashboard_response ||= Faraday.get(url)
   end
 
   def log_error(msg)

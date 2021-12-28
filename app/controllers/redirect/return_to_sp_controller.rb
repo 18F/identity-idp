@@ -23,7 +23,7 @@ module Redirect
     end
 
     def sp_request_params
-      @request_params ||= begin
+      @sp_request_params ||= begin
         if sp_request_url.present?
           UriService.params(sp_request_url)
         else

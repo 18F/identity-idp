@@ -170,7 +170,7 @@ class UserDecorator
   end
 
   def lockout_period_config
-    @config ||= IdentityConfig.store.lockout_period_in_minutes
+    @lockout_period_config ||= IdentityConfig.store.lockout_period_in_minutes
   end
 
   def lockout_period_expired?

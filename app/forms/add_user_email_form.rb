@@ -55,6 +55,6 @@ class AddUserEmailForm
   end
 
   def existing_user
-    @_user ||= User.find_with_email(email) || AnonymousUser.new
+    @existing_user ||= User.find_with_email(email) || AnonymousUser.new
   end
 end

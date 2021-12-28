@@ -34,7 +34,7 @@ class EventsController < ApplicationController
   end
 
   def device_id
-    @device_id_param ||= begin
+    @device_id ||= begin
       id = params[:id].try(:to_i)
       id || 0
     end

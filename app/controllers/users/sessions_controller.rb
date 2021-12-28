@@ -138,7 +138,7 @@ module Users
     end
 
     def now
-      @_now ||= Time.zone.now
+      @now ||= Time.zone.now
     end
 
     def update_sp_return_logs_with_user(user_id)

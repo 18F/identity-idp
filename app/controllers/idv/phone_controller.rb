@@ -81,7 +81,7 @@ module Idv
     end
 
     def step
-      @_step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
+      @step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
     end
 
     def step_params
@@ -93,7 +93,7 @@ module Idv
     end
 
     def set_idv_form
-      @idv_form ||= Idv::PhoneForm.new(
+      @idv_form = Idv::PhoneForm.new(
         user: current_user,
         previous_params: idv_session.previous_phone_step_params,
         allowed_countries: ['US'],
@@ -127,8 +127,8 @@ module Idv
     end
 
     def gpo_letter_available
-      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                 !Idv::GpoMail.new(current_user).mail_spammed?
+      @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end

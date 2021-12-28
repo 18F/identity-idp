@@ -101,7 +101,7 @@ module SamlAuthHelper
   end
 
   def saml_test_sp_key
-    @private_key ||= OpenSSL::PKey::RSA.new(
+    @saml_test_sp_key ||= OpenSSL::PKey::RSA.new(
       File.read(Rails.root + 'keys/saml_test_sp.key'),
     ).to_pem
   end

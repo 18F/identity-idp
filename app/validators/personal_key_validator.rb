@@ -18,6 +18,6 @@ module PersonalKeyValidator
   end
 
   def personal_key_generator
-    @_personal_key_generator ||= PersonalKeyGenerator.new(user)
+    @personal_key_generator ||= PersonalKeyGenerator.new(user)
   end
 end

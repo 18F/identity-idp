@@ -50,7 +50,7 @@ module DataRequests
     end
 
     def looked_up_user_uuids
-      @looked_up_users ||= Set.new
+      @looked_up_user_uuids ||= Set.new
     end
 
     def users_to_lookup

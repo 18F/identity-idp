@@ -103,7 +103,7 @@ module Users
     end
 
     def token_user
-      @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 
     def build_user
