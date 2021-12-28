@@ -255,4 +255,100 @@ RSpec.describe Telephony::OtpSender do
       end
     end
   end
+
+  describe '#authentication_message' do
+    let(:sender) do
+      sender = Telephony::OtpSender.new(
+        to: '+18888675309',
+        otp: 'ABC123',
+        channel: 'sms',
+        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        domain: 'secure.login.gov',
+        country_code: 'US',
+      )
+    end
+
+    context 'sms' do
+      context 'English' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
+          message = sender.authentication_message
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
+        end
+      end
+
+      # The Spanish-language translation currently includes the 'ó', character, which is not
+      # in the GSM 03.38 character set
+      context 'Spanish' do
+        it 'is sent in three parts' do
+          I18n.locale = :es
+
+          message = sender.authentication_message
+          expect(Telephony.sms_parts(message)).to eq 3
+        ensure
+          I18n.locale = :en
+        end
+      end
+
+      context 'French' do
+        it 'does not contain any non-GSM characters and is less than or equal to 160 characters' do
+          I18n.locale = :fr
+
+          message = sender.authentication_message
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
+        ensure
+          I18n.locale = :en
+        end
+      end
+    end
+  end
+
+  describe '#confirmation_message' do
+    let(:sender) do
+      sender = Telephony::OtpSender.new(
+        to: '+18888675309',
+        otp: 'ABC123',
+        channel: 'sms',
+        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        domain: 'secure.login.gov',
+        country_code: 'US',
+      )
+    end
+
+    context 'sms' do
+      context 'English' do
+        it 'does not contain any non-GSM characters and is sent in one part' do
+          message = sender.confirmation_message
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
+        end
+      end
+
+      # The Spanish-language translation currently includes the 'ó', character, which is not
+      # in the GSM 03.38 character set
+      context 'Spanish' do
+        it 'is sent in three parts' do
+          I18n.locale = :es
+
+          message = sender.confirmation_message
+          expect(Telephony.sms_parts(message)).to eq 3
+        ensure
+          I18n.locale = :en
+        end
+      end
+
+      context 'French' do
+        it 'does not contain any non-GSM characters and is sent in one part' do
+          I18n.locale = :fr
+
+          message = sender.confirmation_message
+          expect(Telephony.sms_parts(message)).to eq 1
+          expect(Telephony.gsm_chars_only?(message)).to eq true
+        ensure
+          I18n.locale = :en
+        end
+      end
+    end
+  end
 end
