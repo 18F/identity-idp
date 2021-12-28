@@ -98,6 +98,16 @@ RSpec.describe OpenidConnect::LogoutController do
           action
         end
       end
+
+      context 'with a bad id_token_hint' do
+        let(:id_token_hint) { 'foo' }
+
+        it 'does not destroy the session' do
+          expect(controller).to_not receive(:sign_out)
+
+          action
+        end
+      end
     end
 
     context 'user is not signed in' do
