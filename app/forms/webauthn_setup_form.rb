@@ -102,9 +102,14 @@ class WebauthnSetupForm
   end
 
   def extra_analytics_attributes
+    auth_method = if platform_authenticator?
+                    'webauthn_platform'
+                  else
+                    'webauthn'
+                  end
     {
       mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash,
-      multi_factor_auth_method: 'webauthn',
+      multi_factor_auth_method: auth_method,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
     }
   end
