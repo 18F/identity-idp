@@ -19,9 +19,9 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
     click_agree_and_continue
 
-    expect(current_url).to eq @saml_authn_request if sp == :saml
-
-    if sp == :oidc
+    if sp == :saml
+      expect(current_url).to eq UriService.add_params(@saml_authn_request, locale: 'es')
+    elsif sp == :oidc
       redirect_uri = URI(current_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')

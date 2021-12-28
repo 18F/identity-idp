@@ -190,7 +190,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(_user)
     service_provider_mfa_setup_url || add_piv_cac_setup_url ||
-      user_session.delete(:stored_location) || sp_session_request_url_without_prompt_login ||
+      user_session.delete(:stored_location) || sp_session_request_url_with_updated_params ||
       signed_in_url
   end
 
@@ -351,12 +351,18 @@ class ApplicationController < ActionController::Base
     session.fetch(:sp, {})
   end
 
-  def sp_session_request_url_without_prompt_login
+  def sp_session_request_url_with_updated_params
     # Login.gov redirects to the orginal request_url after a user authenticates
     # replace prompt=login with prompt=select_account to prevent sign_out
     # which should only every occur once when the user lands on Login.gov with prompt=login
-    url = sp_session[:request_url]
-    url ? url.gsub('prompt=login', 'prompt=select_account') : nil
+    url = sp_session[:request_url]&.gsub('prompt=login', 'prompt=select_account')
+
+    # If the user has changed the locale, we should preserve that as well
+    if url && locale_url_param && UriService.params(url)[:locale] != locale_url_param
+      UriService.add_params(url, locale: locale_url_param)
+    else
+      url
+    end
   end
 
   def render_not_found
