@@ -69,8 +69,14 @@ class WebauthnVerificationForm
   end
 
   def extra_analytics_attributes
+    auth_method = if @webauthn_configuration&.platform_authenticator
+                    'webauthn_platform'
+                  else
+                    'webauthn'
+                  end
+
     {
-      multi_factor_auth_method: 'webauthn',
+      multi_factor_auth_method: auth_method,
       webauthn_configuration_id: @webauthn_configuration&.id,
     }
   end
