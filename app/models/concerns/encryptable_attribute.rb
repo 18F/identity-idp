@@ -54,7 +54,7 @@ module EncryptableAttribute
   private
 
   def encrypted_attributes
-    @_encrypted_attributes ||= {}
+    @encrypted_attributes ||= {}
   end
 
   def get_encrypted_attribute(name:)

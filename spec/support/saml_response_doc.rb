@@ -45,14 +45,14 @@ class SamlResponseDoc
   end
 
   def saml_response(settings)
-    @_saml_response ||= OneLogin::RubySaml::Response.new(
+    @saml_response ||= OneLogin::RubySaml::Response.new(
       raw_xml_response,
       settings: settings,
     )
   end
 
   def saml_document
-    @_saml_document ||= Saml::XML::Document.parse(raw_xml_response)
+    @saml_document ||= Saml::XML::Document.parse(raw_xml_response)
   end
 
   def response_doc
@@ -73,11 +73,11 @@ class SamlResponseDoc
   end
 
   def status_code
-    @_status_code ||= status.xpath('//samlp:StatusCode', samlp: Saml::XML::Namespaces::PROTOCOL)
+    @status_code ||= status.xpath('//samlp:StatusCode', samlp: Saml::XML::Namespaces::PROTOCOL)
   end
 
   def status
-    @_status ||= response_doc.xpath('//samlp:Status', samlp: Saml::XML::Namespaces::PROTOCOL)
+    @status ||= response_doc.xpath('//samlp:Status', samlp: Saml::XML::Namespaces::PROTOCOL)
   end
 
   def response_assertion_nodeset
@@ -185,14 +185,14 @@ class SamlResponseDoc
   end
 
   def transforms_nodeset
-    @_transforms ||= response_doc.xpath(
+    @transforms_nodeset ||= response_doc.xpath(
       '//ds:Reference/ds:Transforms',
       ds: Saml::XML::Namespaces::SIGNATURE,
     )
   end
 
   def transform(algorithm)
-    @_transform ||= transforms_nodeset[0].xpath(
+    transforms_nodeset[0].xpath(
       "//ds:Transform[@Algorithm='#{algorithm}']",
       ds: Saml::XML::Namespaces::SIGNATURE,
     )[0]

@@ -29,10 +29,12 @@ module Users
       redirect_to root_url
     end
 
+    # rubocop:disable Naming/MemoizedInstanceVariableName
     # @return [Pii::Attributes, nil]
     def decrypted_pii
       @_decrypted_pii ||= reactivate_account_session.decrypted_pii
     end
+    # rubocop:enable Naming/MemoizedInstanceVariableName
 
     def handle_success(result)
       flash[:personal_key] = result.extra[:personal_key]

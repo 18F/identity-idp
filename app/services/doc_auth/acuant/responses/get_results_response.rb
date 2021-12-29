@@ -83,7 +83,7 @@ module DocAuth
         end
 
         def processed_image_metrics
-          @image_metrics ||= raw_images_data.index_by do |image|
+          @processed_image_metrics ||= raw_images_data.index_by do |image|
             image.delete('Uri')
             get_image_side_name(image['Side'])
           end

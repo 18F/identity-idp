@@ -15,7 +15,7 @@ class SamlRequestParser
   attr_reader :request
 
   def authn_context_attr_nodes
-    @_attr_nodes ||= begin
+    @authn_context_attr_nodes ||= begin
       doc = Saml::XML::Document.parse(request.raw_xml)
       doc.xpath(
         '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',

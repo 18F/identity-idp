@@ -11,6 +11,6 @@ class ForgotPasswordShow
   end
 
   def email
-    @_email ||= session.delete(:email)
+    @email ||= session.delete(:email)
   end
 end

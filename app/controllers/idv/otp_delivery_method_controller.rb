@@ -79,8 +79,8 @@ module Idv
     end
 
     def gpo_letter_available
-      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                 !Idv::GpoMail.new(current_user).mail_spammed?
+      @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end

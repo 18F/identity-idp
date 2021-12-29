@@ -24,7 +24,7 @@ class VerifyPersonalKeyForm
 
   # @return [Pii::Attributes,nil]
   def decrypted_pii
-    @_pii ||= password_reset_profile.recover_pii(personal_key)
+    @decrypted_pii ||= password_reset_profile.recover_pii(personal_key)
   end
 
   private

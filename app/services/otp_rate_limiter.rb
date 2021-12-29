@@ -41,9 +41,11 @@ class OtpRateLimiter
 
   attr_reader :phone, :user, :phone_confirmed
 
+  # rubocop:disable Naming/MemoizedInstanceVariableName
   def entry_for_current_phone
     @entry ||= OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone, phone_confirmed)
   end
+  # rubocop:enable Naming/MemoizedInstanceVariableName
 
   def otp_last_sent_at
     entry_for_current_phone.otp_last_sent_at
