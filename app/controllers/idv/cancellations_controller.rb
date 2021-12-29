@@ -46,6 +46,9 @@ module Idv
     end
 
     def cancel_document_capture_session
+      # Goal: reset the Idv::Steps::LinkSentStep but we don't have access to the
+      # flow_session from here (because this is the mobile session and that is only
+      # on the desktop session)
       document_capture_session&.update(cancelled_at: Time.zone.now)
     end
 
