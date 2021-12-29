@@ -80,12 +80,6 @@ module Upaya
 
     config.time_zone = 'UTC'
 
-    # Generate CSRF tokens that are encoded in URL-safe Base64.
-    #
-    # This change is not backwards compatible with earlier Rails versions.
-    # It's best enabled when your entire app is migrated and stable on 6.1.
-    Rails.application.config.action_controller.urlsafe_csrf_tokens = false
-
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = %w[en es fr]
     config.i18n.default_locale = :en
