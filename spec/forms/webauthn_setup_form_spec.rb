@@ -41,7 +41,8 @@ describe WebauthnSetupForm do
           platform_authenticator: true,
         }
 
-        subject.submit(protocol, params)
+        result = subject.submit(protocol, params)
+        expect(result.extra[:multi_factor_auth_method]).to eq 'webauthn_platform'
 
         expect(user.reload.webauthn_configurations.platform_authenticators.count).to eq(1)
       end
