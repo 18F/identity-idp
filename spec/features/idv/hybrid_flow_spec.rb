@@ -12,7 +12,7 @@ describe 'Hybrid Flow' do
   end
 
   before do
-    expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+    allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
       impl.call(**config)
     end.at_least(1).times
