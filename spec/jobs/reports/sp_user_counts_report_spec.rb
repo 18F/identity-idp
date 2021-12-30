@@ -26,6 +26,12 @@ describe Reports::SpUserCountsReport do
         user_total: 1,
       }
       allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
+      log_hash = {
+        name: Analytics::REPORT_REGISTERED_USERS_COUNT,
+        time: timestamp,
+        count: 0,
+      }
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
       subject.perform(Time.zone.today)
     end
   end

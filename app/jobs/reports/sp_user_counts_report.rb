@@ -17,7 +17,10 @@ module Reports
       end
 
       track_report_data_events(user_counts)
-      save_report(REPORT_NAME, user_counts.to_json, extension: 'json')
+      results = save_report(REPORT_NAME, user_counts.to_json, extension: 'json')
+
+      track_global_user_total_events
+      results
     end
 
     private
@@ -31,6 +34,15 @@ module Reports
           ial1_user_total: hash['ial1_total'],
           ial2_user_total: hash['ial2_total'],
           app_id: hash['app_id'].to_s,
+        )
+      end
+    end
+
+    def track_global_user_total_events
+      transaction_with_timeout do
+        track_report_data_event(
+          Analytics::REPORT_REGISTERED_USERS_COUNT,
+          count: Funnel::Registration::TotalRegisteredCount.call,
         )
       end
     end
