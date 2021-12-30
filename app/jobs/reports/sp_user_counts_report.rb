@@ -25,7 +25,7 @@ module Reports
     def track_report_data_events(user_counts)
       user_counts.each do |hash|
         track_report_data_event(
-          Analytics::REPORT_USER_COUNTS,
+          Analytics::REPORT_SP_USER_COUNTS,
           issuer: hash['issuer'],
           user_total: hash['total'],
           ial1_user_total: hash['ial1_total'],

@@ -21,7 +21,7 @@ describe Reports::SpUserCountsReport do
         ial1_user_total: 1,
         ial2_user_total: 0,
         issuer: issuer,
-        name: Analytics::REPORT_USER_COUNTS,
+        name: Analytics::REPORT_SP_USER_COUNTS,
         time: timestamp,
         user_total: 1,
       }

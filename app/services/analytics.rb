@@ -229,7 +229,7 @@ class Analytics
   PROOFING_DOCUMENT_TIMEOUT = 'Proofing Document Timeout'.freeze
   PROOFING_RESOLUTION_TIMEOUT = 'Proofing Resolution Timeout'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
-  REPORT_USER_COUNTS = 'Report User Counts'.freeze
+  REPORT_SP_USER_COUNTS = 'Report SP User Counts'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
   REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'.freeze
