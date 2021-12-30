@@ -1,12 +1,4 @@
 module VerifySpAttributesConcern
-  def needs_completions_screen?
-    sp_session[:issuer].present? &&
-      (sp_session_identity.nil? ||
-        !requested_attributes_verified? ||
-        consent_has_expired? ||
-        consent_was_revoked?)
-  end
-
   def needs_completion_screen_reason
     return nil if sp_session[:issuer].blank?
 

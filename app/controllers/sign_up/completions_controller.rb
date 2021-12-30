@@ -32,7 +32,7 @@ module SignUp
     end
 
     def verify_needs_completions_screen
-      return_to_account unless needs_completions_screen?
+      return_to_account unless needs_completion_screen_reason
     end
 
     def completions_presenter

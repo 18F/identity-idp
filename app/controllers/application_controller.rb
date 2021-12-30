@@ -199,7 +199,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_mfa_setup_path
-    if needs_completions_screen?
+    if needs_completion_screen_reason
       sign_up_completed_url
     elsif user_needs_to_reactivate_account?
       reactivate_account_url
