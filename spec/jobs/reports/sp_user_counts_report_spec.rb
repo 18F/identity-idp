@@ -5,7 +5,6 @@ describe Reports::SpUserCountsReport do
 
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
-  let(:fake_analytics) { FakeAnalytics.new }
 
   it 'is empty' do
     expect(subject.perform(Time.zone.today)).to eq('[]')
