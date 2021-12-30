@@ -47,7 +47,6 @@ module Reports
     end
 
     def save_report(report_name, body, extension:)
-      write_data_to_analytics_logs(report_name, body, extension)
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
@@ -55,14 +54,13 @@ module Reports
       upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
     end
 
-    def write_data_to_analytics_logs(report_name, body, extension)
-      return unless extension == 'json'
-      log_hash = {
+    def track_report_data_event(event, hash = {})
+      analytics_hash = {
+        name: event,
         time: Time.zone.now.iso8601,
-        report_name: report_name,
-        report_body: JSON.parse(body),
       }
-      write_hash_to_reports_log(log_hash)
+      analytics_hash.merge!(hash)
+      write_hash_to_reports_log(analytics_hash)
     end
 
     def write_hash_to_reports_log(log_hash)
