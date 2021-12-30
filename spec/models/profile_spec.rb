@@ -32,15 +32,12 @@ describe Profile do
 
     context 'when the value is the empty string' do
       let(:proofing_components) { '' }
-      it 'is nil' do
-        expect(profile.proofing_components).to eq(nil)
+      it 'is the empty string' do
+        expect(profile.proofing_components).to eq('')
       end
-    end
 
-    context 'when the value is legacy encoding (JSON object as a JSON string atom)' do
-      let(:proofing_components) { { 'foo' => true }.to_json }
-      it 'is the object' do
-        expect(profile.proofing_components).to eq('foo' => true)
+      it 'does not blow up in #includes_liveness_check?' do
+        expect(profile.includes_liveness_check?).to be_falsey
       end
     end
 
