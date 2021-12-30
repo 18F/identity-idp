@@ -7,8 +7,8 @@ gem 'rails', '~> 6.1.4'
 
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
-gem 'identity_validations', github: '18F/saml_idp', tag: '0.15.0-18f'
-gem 'saml_idp', github: '18F/identity-validations', tag: 'v0.7.1'
+gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.1'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.15.0-18f'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'autoprefixer-rails', '~> 10.0'
