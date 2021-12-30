@@ -7,6 +7,8 @@
 CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
+ARTIFACT_DESTINATION_FILE ?= 'idp.tar.gz'
+GZIP_COMMAND ?= gzip
 
 all: check
 
@@ -123,3 +125,16 @@ lint_country_dialing_codes: update_pinpoint_supported_countries
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
+
+build_artifact:
+	bundle config set --local cache_all true
+	bundle package
+	tar --exclude './config/agencies.yml' --exclude './config/iaa_gtcs.yml' \
+		--exclude './config/iaa_orders.yml' --exclude './config/iaa_statuses.yml' \
+		--exclude './config/integration_statuses.yml' --exclude './config/integrations.yml' \
+		--exclude './config/partner_account_statuses.yml' --exclude './config/partner_accounts.yml' \
+		--exclude './config/service_providers.yml' --exclude='./certs/sp' \
+		--exclude='./identity-idp-config' --exclude='./tmp' --exclude='./node_modules' \
+		--exclude='./geo_data/GeoLite2-City.mmdb' --exclude='./pwned_passwords/pwned_passwords.txt' \
+		--exclude='./vendor/ruby' \
+		--exclude='./config/application.yml' -cf - $(ARTIFACT_DIRECTORY) | $(GZIP_COMMAND) > $(ARTIFACT_DESTINATION_FILE)
