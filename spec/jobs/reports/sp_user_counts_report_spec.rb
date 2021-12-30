@@ -5,9 +5,29 @@ describe Reports::SpUserCountsReport do
 
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   it 'is empty' do
     expect(subject.perform(Time.zone.today)).to eq('[]')
+  end
+
+  it 'logs to analytics' do
+    ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
+    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
+    freeze_time do
+      timestamp = Time.zone.now.iso8601
+      log_hash = {
+        app_id: app_id,
+        ial1_user_total: 1,
+        ial2_user_total: 0,
+        issuer: issuer,
+        name: Analytics::REPORT_USER_COUNTS,
+        time: timestamp,
+        user_total: 1,
+      }
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
+      subject.perform(Time.zone.today)
+    end
   end
 
   it 'returns the total user counts per sp broken down by ial1 and ial2' do
