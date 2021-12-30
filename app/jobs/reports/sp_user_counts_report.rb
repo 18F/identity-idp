@@ -37,7 +37,7 @@ module Reports
           app_id: hash['app_id'].to_s,
         )
         total_ial1_count += ial1_count
-        total_ial2_count += ial1_count
+        total_ial2_count += ial2_count
       end
 
       track_report_data_event(
