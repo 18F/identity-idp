@@ -124,6 +124,12 @@ RSpec.describe Idv::GpoVerifyController do
 
         expect(response).to redirect_to(idv_gpo_verify_url)
       end
+
+      it 'does not 500 with missing form keys' do
+        expect { post(:create, params: { otp: submitted_otp }) }.to raise_exception(
+          ActionController::ParameterMissing,
+        )
+      end
     end
 
     context 'with throttle reached' do
