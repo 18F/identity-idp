@@ -28,9 +28,9 @@ module Idv
       end
 
       def render_document_capture_cancelled
-        failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
         mark_steps_incomplete
         redirect_to idv_url
+        failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
       end
 
       def render_step_incomplete_error
