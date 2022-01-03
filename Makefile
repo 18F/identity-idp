@@ -123,9 +123,3 @@ lint_country_dialing_codes: update_pinpoint_supported_countries
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
-
-local_gems_bundle:
-	BUNDLE_GEMFILE=Gemfile-dev bundle install
-
-local_gems_run: local_gems_bundle
-	BUNDLE_GEMFILE=Gemfile-dev make run
