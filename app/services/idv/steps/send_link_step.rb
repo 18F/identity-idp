@@ -54,10 +54,6 @@ module Idv
 
       def update_document_capture_session_requested_at(session_uuid)
         document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
-        if document_capture_session.cancelled_at
-          # See note at CancellationsController#cancel_document_capture_session
-          mark_step_incomplete(:link_sent)
-        end
         return unless document_capture_session
         document_capture_session.update!(
           requested_at: Time.zone.now,
