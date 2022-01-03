@@ -36,9 +36,9 @@ executors:
 commands:
   install-browser-tools-no-firefox:
     steps:
-      browser-tools/install-browser-tools:
-        install-firefox: false
-        install-geckodriver: false
+      - browser-tools/install-browser-tools:
+          install-firefox: false
+          install-geckodriver: false
   node-install:
     steps:
       - run:
