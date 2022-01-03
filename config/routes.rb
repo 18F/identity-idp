@@ -263,9 +263,9 @@ Rails.application.routes.draw do
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'
-      get '/confirmations' => 'confirmations#show'
-      post '/confirmations' => 'confirmations#update'
-      get '/download_personal_key' => 'confirmations#download'
+      get '/personal_key' => 'personal_key#show'
+      post '/personal_key' => 'personal_key#update'
+      get '/download_personal_key' => 'personal_key#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'

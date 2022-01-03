@@ -1,5 +1,5 @@
 module Idv
-  class ConfirmationsController < ApplicationController
+  class PersonalKeyController < ApplicationController
     include IdvSession
     include SecureHeadersConcern
 
