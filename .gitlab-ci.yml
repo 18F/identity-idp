@@ -229,7 +229,7 @@ artifact:
     NODE_ENV: 'production'
     RAILS_ENV: 'production'
   script:
-    - 'echo -e "production:\n  secret_key_base: 451c5d4990cacf95517a28d206970c1a1880d629e32b4d266877c39868bcaeef98bdae6b3f6f68f4f46399f3ac772af34e0ec7392d2de54accf6bde560ffdcbc\n  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25\n  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c\n  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c\n  piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f\n  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120" > config/application.yml'
+    - cp config/application.yml.default.ci config/application.yml
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DIRECTORY=. ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
