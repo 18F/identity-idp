@@ -9,11 +9,6 @@ orbs:
   jq: circleci/jq@2.2.0
   slack: circleci/slack@3.4.2
 
-definitions:
-  browser-tools/install-browser-tools: &skip_firefox_geckodriver
-    install-firefox: false
-    install-geckodriver: false
-
 executors:
   # Common container definition used by all jobs
   ruby_browsers:
@@ -39,6 +34,11 @@ executors:
       - image: redis:5.0.8
 
 commands:
+  install-browser-tools-no-firefox:
+    steps:
+      - browser-tools/install-browser-tools:
+          install-firefox: false
+          install-geckodriver: false
   node-install:
     steps:
       - run:
@@ -191,7 +191,7 @@ jobs:
     working_directory: ~/identity-idp
 
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install
@@ -269,7 +269,7 @@ jobs:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install
@@ -309,7 +309,7 @@ jobs:
     environment:
       MONITOR_ENV: DEV
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
@@ -328,7 +328,7 @@ jobs:
     environment:
       MONITOR_ENV: INT
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
@@ -347,7 +347,7 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
@@ -366,7 +366,7 @@ jobs:
     environment:
       MONITOR_ENV: PROD
     steps:
-      - browser-tools/install-browser-tools: *skip_firefox_geckodriver
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install
