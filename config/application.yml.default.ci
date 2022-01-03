@@ -1,3 +1,4 @@
+# These secrets are used in CI to run a production build of assets, they are not used in live production requests
 production:
   secret_key_base: 451c5d4990cacf95517a28d206970c1a1880d629e32b4d266877c39868bcaeef98bdae6b3f6f68f4f46399f3ac772af34e0ec7392d2de54accf6bde560ffdcbc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
