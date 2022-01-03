@@ -126,6 +126,8 @@ lint_country_dialing_codes: update_pinpoint_supported_countries
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
 
+# ARTIFACT_DIRECTORY is the source directory containing the IDP repository that is being
+# turned into a file artifact
 build_artifact:
 	bundle config set --local cache_all true
 	bundle package
