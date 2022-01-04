@@ -319,6 +319,41 @@ describe('document-capture/components/acuant-capture', () => {
       expect(document.activeElement).to.equal(outsideInput);
     });
 
+    it('renders pending state while cropping', async () => {
+      const { getByLabelText, getByText, container } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+        { isMockClient: false },
+      );
+
+      let onCropped;
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          onCropped = async () => {
+            await Promise.resolve();
+            callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+          };
+        }),
+      });
+
+      const input = getByLabelText('Image');
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      await waitFor(() => !container.querySelector('.full-screen'));
+      expect(input.getAttribute('aria-busy')).to.equal('true');
+
+      onCropped();
+
+      await waitFor(() => expect(input.getAttribute('aria-busy')).to.equal('false'));
+    });
+
     it('calls onChange with the captured image on successful capture', async () => {
       const onChange = sinon.mock();
       const { getByText } = render(
