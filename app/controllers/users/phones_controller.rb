@@ -1,9 +1,12 @@
 module Users
+
   class PhonesController < ReauthnRequiredController
+
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
+    before_action :check_max_phone_numbers_per_account, only: %i[show add]
 
     def add
       user_session[:phone_id] = nil
@@ -43,5 +46,12 @@ module Users
         selected_default_number: @new_phone_form.otp_make_default_number
       )
     end
+
+    def check_max_phone_numbers_per_account
+      return if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account
+      flash[:phone_error] = "you've added the maximum number of phone numbers"
+      redirect_to account_url + '#phones'
+    end
+
   end
 end
