@@ -8,6 +8,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { SpinnerDots } from '@18f/identity-components';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
@@ -31,6 +32,8 @@ import usePrevious from '../hooks/use-previous';
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {boolean=} isValuePending Whether to show the input in an indeterminate loading state,
+ * pending an incoming value.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(event:ReactDragEvent)=>void=} onDrop Input drop handler.
  * @prop {(nextValue:File?)=>void=} onChange Input change handler.
@@ -110,6 +113,7 @@ function FileInput(props, ref) {
     capture,
     value,
     errorMessage,
+    isValuePending,
     onClick,
     onDrop,
     onChange = () => {},
@@ -241,6 +245,7 @@ function FileInput(props, ref) {
           'usa-file-input usa-file-input--single-value',
           isDraggingOver && 'usa-file-input--drag',
           value && 'usa-file-input--has-value',
+          isValuePending && 'usa-file-input--value-pending',
         ]
           .filter(Boolean)
           .join(' ')}
@@ -271,7 +276,7 @@ function FileInput(props, ref) {
               )}
             </div>
           )}
-          {!value && (
+          {!value && !isValuePending && (
             <div className="usa-file-input__instructions" aria-hidden="true">
               {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
               {isMobile && bannerText ? null : (
@@ -285,13 +290,16 @@ function FileInput(props, ref) {
               )}
             </div>
           )}
-          <div className="usa-file-input__box" />
+          <div className="usa-file-input__box">
+            {isValuePending && <SpinnerDots isCentered className="text-base" />}
+          </div>
           <input
             ref={inputRef}
             id={inputId}
             className="usa-file-input__input"
             type="file"
             aria-label={getLabelFromValue(value)}
+            aria-busy={isValuePending}
             onChange={onChangeIfValid}
             capture={capture}
             onClick={onClick}

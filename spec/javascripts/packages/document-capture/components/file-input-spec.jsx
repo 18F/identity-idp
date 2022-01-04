@@ -457,4 +457,16 @@ describe('document-capture/components/file-input', () => {
 
     expect(ref.current.nodeName).to.equal('INPUT');
   });
+
+  it('renders pending value', () => {
+    const { getByLabelText, queryByText, container } = render(
+      <FileInput bannerText="Banner" label="File" isValuePending />,
+    );
+    const input = getByLabelText('File');
+
+    expect(container.querySelector('.usa-file-input--value-pending')).to.exist();
+    expect(container.querySelector('.spinner-dots')).to.exist();
+    expect(queryByText('Banner')).to.not.exist();
+    expect(input.getAttribute('aria-busy')).to.equal('true');
+  });
 });
