@@ -12,10 +12,10 @@ locals:
 <%= tag.div class: classes do %>
   <div class="spinner-button__content">
     <%= content %>
-    <span class="spinner-button__spinner" aria-hidden="true">
-      <span class="spinner-button__spinner-dot"></span>
-      <span class="spinner-button__spinner-dot"></span>
-      <span class="spinner-button__spinner-dot"></span>
+    <span class="spinner-dots spinner-dots--centered text-white" aria-hidden="true">
+      <span class="spinner-dots__dot"></span>
+      <span class="spinner-dots__dot"></span>
+      <span class="spinner-dots__dot"></span>
     </span>
   </div>
   <% if local_assigns[:action_message] %>

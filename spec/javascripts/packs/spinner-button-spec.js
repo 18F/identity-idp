@@ -13,10 +13,10 @@ describe('SpinnerButton', () => {
       <div class="spinner-button" data-long-wait-duration-ms="${longWaitDurationMs}">
         <div class="spinner-button__content">
           ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
-          <span class="spinner-button__spinner" aria-hidden="true">
-            <span class="spinner-button__spinner-dot"></span>
-            <span class="spinner-button__spinner-dot"></span>
-            <span class="spinner-button__spinner-dot"></span>
+          <span class="spinner-dots" aria-hidden="true">
+            <span class="spinner-dots__dot"></span>
+            <span class="spinner-dots__dot"></span>
+            <span class="spinner-dots__dot"></span>
           </span>
         </div>
         ${
