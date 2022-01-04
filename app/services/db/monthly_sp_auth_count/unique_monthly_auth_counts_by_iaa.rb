@@ -102,8 +102,8 @@ module Db
       def partial_month_subqueries(issuers:, partial_months:)
         partial_months.map do |month_range|
           params = {
-            range_start: month_range.begin,
-            range_end: month_range.end,
+            range_start: month_range.begin.strftime('%Y%m%d'),
+            range_end: month_range.end.strftime('%Y%m%d'),
             year_month: month_range.begin.strftime('%Y%m'),
             issuers: issuers,
           }.transform_values { |value| quote(value) }
@@ -116,7 +116,7 @@ module Db
             , sp_return_logs.ial
             FROM sp_return_logs
             WHERE
-                  sp_return_logs.requested_at BETWEEN %{range_start} AND %{range_end}
+                  (date_part('year'::text, requested_at) || right(('00' || date_part('month', requested_at)), 2) || right(('00' || date_part('day', requested_at)), 2)) BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.returned_at IS NOT NULL
               AND sp_return_logs.issuer IN %{issuers}
             GROUP BY
