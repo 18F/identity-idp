@@ -18,6 +18,7 @@ fr:
         Pour créer un mot de passe plus fort, utilisez quelques mots séparés par
         des espaces, mais évitez les phrases communes
       names_and_surnames_by_themselves_are_easy_to_guess: Les prénoms et noms de famille seuls sont faciles à deviner
+      no_need_for_symbols_digits_or_uppercase_letters: Pas besoin de symboles, de chiffres ou de lettres majuscules
       predictable_substitutions_like__instead_of_a_dont_help_very_much:
         Les remplacements prévisibles comme es « @ » au lieu de « à » n’aident
         pas beaucoup
