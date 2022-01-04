@@ -19,6 +19,7 @@ import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
 
@@ -295,6 +296,7 @@ function AcuantCapture(
       setIsCapturingEnvironment(false);
     }
   }, [hasCapture]);
+  useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
   useImperativeHandle(ref, () => inputRef.current);
 
   /**

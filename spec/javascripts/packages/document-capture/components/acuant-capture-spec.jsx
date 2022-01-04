@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
+import { waitFor, createEvent, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
@@ -43,6 +43,29 @@ describe('document-capture/components/acuant-capture', () => {
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
   });
+
+  /**
+   * Uploads a file to the given input. Unlike `@testing-library/user-event`, this does not call any
+   * click handlers associated with the input.
+   *
+   * @param {HTMLInputElement} input
+   * @param {File} value
+   */
+  function uploadFile(input, value) {
+    fireEvent(
+      input,
+      createEvent('input', input, {
+        target: { files: [value] },
+        bubbles: true,
+        cancelable: false,
+        composed: true,
+      }),
+    );
+
+    fireEvent.change(input, {
+      target: { files: [value] },
+    });
+  }
 
   describe('getNormalizedAcuantCaptureFailureMessage', () => {
     beforeEach(() => {
@@ -459,7 +482,7 @@ describe('document-capture/components/acuant-capture', () => {
       userEvent.click(getByText('doc_auth.buttons.upload_picture'));
       expect(onClick).to.have.been.calledOnce();
 
-      userEvent.upload(input, validUpload);
+      uploadFile(input, validUpload);
       await new Promise((resolve) => onChange.callsFake(resolve));
       expect(onChange).to.have.been.calledWith(
         validUpload,
@@ -613,14 +636,14 @@ describe('document-capture/components/acuant-capture', () => {
       const file = new window.File([''], 'upload.txt', { type: 'text/plain' });
 
       const input = getByLabelText('Image');
-      userEvent.upload(input, file);
+      uploadFile(input, file);
 
       expect(await findByText('doc_auth.errors.file_type.invalid')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      expect(getByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
+      expect(await findByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
       expect(() => getByText('doc_auth.errors.file_type.invalid')).to.throw();
     });
 
@@ -909,7 +932,7 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
@@ -1006,14 +1029,14 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
       payload: sinon.match({ attempt: 1 }),
     });
 
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
