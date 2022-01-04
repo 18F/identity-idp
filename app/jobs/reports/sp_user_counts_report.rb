@@ -39,10 +39,34 @@ module Reports
     end
 
     def track_global_user_total_events
+      track_global_registered_users
+      track_ial1_users_linked_to_sps
+      track_ial2_users_linked_to_sps
+    end
+
+    def track_global_registered_users
       transaction_with_timeout do
         track_report_data_event(
           Analytics::REPORT_REGISTERED_USERS_COUNT,
           count: Funnel::Registration::TotalRegisteredCount.call,
+        )
+      end
+    end
+
+    def track_ial1_users_linked_to_sps
+      transaction_with_timeout do
+        track_report_data_event(
+          Analytics::REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT,
+          count: ServiceProviderIdentity.where(ial: 1).select(:user_id).distinct.count,
+        )
+      end
+    end
+
+    def track_ial2_users_linked_to_sps
+      transaction_with_timeout do
+        track_report_data_event(
+          Analytics::REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT,
+          count: ServiceProviderIdentity.where(ial: 2).select(:user_id).distinct.count,
         )
       end
     end

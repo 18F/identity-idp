@@ -25,12 +25,27 @@ describe Reports::SpUserCountsReport do
         user_total: 1,
       }
       allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
-      log_hash = {
+      log_hash1 = {
         name: Analytics::REPORT_REGISTERED_USERS_COUNT,
         time: timestamp,
         count: 0,
       }
-      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash1)
+      ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2', ial: 1)
+      ServiceProviderIdentity.create(user_id: 3, service_provider: issuer, uuid: 'foo3', ial: 1)
+      log_hash2 = {
+        name: Analytics::REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT,
+        time: timestamp,
+        count: 1,
+      }
+      ServiceProviderIdentity.create(user_id: 4, service_provider: issuer, uuid: 'foo4', ial: 2)
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash2)
+      log_hash3 = {
+        name: Analytics::REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT,
+        time: timestamp,
+        count: 2,
+      }
+      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash3)
       subject.perform(Time.zone.today)
     end
   end
