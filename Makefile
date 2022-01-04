@@ -7,7 +7,6 @@
 CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
-ARTIFACT_DESTINATION_FILE ?= 'idp.tar.gz'
 GZIP_COMMAND ?= gzip
 
 all: check
