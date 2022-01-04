@@ -569,7 +569,7 @@ function AcuantCapture(
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
-        isValuePending={!value && hasStartedCropping}
+        isValuePending={hasStartedCropping}
         onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
         onDrop={withLoggedClick('placeholder', { isDrop: true })(noop)}
         onChange={onUpload}
