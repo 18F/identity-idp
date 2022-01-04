@@ -4,12 +4,20 @@
       <%= t('account.index.phone') %>
     </h2>
     <div class="grid-col-auto">
-      <% if EmailPolicy.new(current_user).can_add_email? %>
+      <% if can_add_phone? %>
         <%= link_to(
               prefix_with_plus(t('account.index.phone_add')),
               add_phone_path,
               class: 'account-action-button',
             ) %>
+      <% end %>
+    </div>
+  </div>
+  <div class="grid-row margin-bottom-1 margin-top-0">
+    <div class="grid-col">
+      <a id="phones"></a>
+      <% if flash[:phone_error] %>
+        <%= render partial: "layouts/alert_error", locals: { message: flash[:phone_error] } %>
       <% end %>
     </div>
   </div>

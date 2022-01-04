@@ -12,10 +12,24 @@ describe Users::PhonesController do
   end
 
   context 'user adds phone' do
+
     it 'gives the user a form to enter a new phone number' do
       get :add
 
       expect(response).to render_template(:add)
+      expect(response.request.flash[:alert]).to be_nil
+
+    end
+
+    it 'displays error if phone number exceeds limit' do
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+
+      get :add
+      expect(response).to redirect_to(account_url + '#phones')
+      expect(response.request.flash[:phone_error]).to_not be_nil
     end
   end
 
