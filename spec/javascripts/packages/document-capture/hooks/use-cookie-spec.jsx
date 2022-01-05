@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useCookie from '@18f/identity-document-capture/hooks/use-cookie';
 
@@ -9,44 +10,38 @@ describe('document-capture/hooks/use-cookie', () => {
 
     const { result } = renderHook(() => useCookie('foo'));
 
-    const [value] = result.current;
+    const [getValue] = result.current;
 
-    expect(value).to.equal('baz');
-  });
-
-  it('does not interfere with default cookie setting behavior', () => {
-    renderHook(() => useCookie('foo'));
-
-    document.cookie = 'foo=bar';
-
-    expect(document.cookie).to.equal('foo=bar');
+    expect(getValue()).to.equal('baz');
   });
 
   it('sets a new cookie value', () => {
-    const { result } = renderHook(() => useCookie('foo'));
+    const render = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result } = renderHook(render);
 
-    const [, setValue] = result.current;
+    const [getValue, setValue] = result.current;
 
+    render.reset();
     setValue('bar');
-
-    const [value] = result.current;
+    expect(render).to.have.been.called();
 
     expect(document.cookie).to.equal('foo=bar');
-    expect(value).to.equal('bar');
+    expect(getValue()).to.equal('bar');
   });
 
   it('unsets a cookie value by null', () => {
     document.cookie = 'foo=bar';
 
-    const { result } = renderHook(() => useCookie('foo'));
+    const render = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result } = renderHook(render);
 
-    const [, setValue] = result.current;
+    const [getValue, setValue] = result.current;
 
+    render.reset();
     setValue(null);
-
-    const [value] = result.current;
+    expect(render).to.have.been.called();
 
     expect(document.cookie).to.equal('');
-    expect(value).to.be.null();
+    expect(getValue()).to.be.null();
   });
 });

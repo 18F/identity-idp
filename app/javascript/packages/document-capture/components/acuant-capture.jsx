@@ -281,7 +281,7 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const [acuantFailureCookie, setAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
+  const [getAcuantFailureCookie, setAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -394,7 +394,7 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
+      const isAcuantCaptureCapable = hasCapture && !getAcuantFailureCookie();
       const shouldStartAcuantCapture =
         isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
       const shouldStartSelfieCapture =
