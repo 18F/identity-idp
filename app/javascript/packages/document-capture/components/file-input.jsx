@@ -197,7 +197,6 @@ function FileInput(props, ref) {
   }
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
-  const hasEffectiveValue = value && !isValuePending;
 
   return (
     <div
@@ -245,7 +244,7 @@ function FileInput(props, ref) {
         className={[
           'usa-file-input usa-file-input--single-value',
           isDraggingOver && 'usa-file-input--drag',
-          hasEffectiveValue && 'usa-file-input--has-value',
+          value && !isValuePending && 'usa-file-input--has-value',
           isValuePending && 'usa-file-input--value-pending',
         ]
           .filter(Boolean)
@@ -255,7 +254,7 @@ function FileInput(props, ref) {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {hasEffectiveValue && !isMobile && (
+          {value && !isValuePending && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value instanceof window.File && (
@@ -268,7 +267,7 @@ function FileInput(props, ref) {
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
-          {hasEffectiveValue && isImage(value) && (
+          {value && !isValuePending && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
               {value instanceof window.Blob ? (
                 <FileImage file={value} alt="" className="usa-file-input__preview-image" />
