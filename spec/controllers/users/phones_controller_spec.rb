@@ -20,10 +20,10 @@ describe Users::PhonesController do
     end
 
     it 'displays error if phone number exceeds limit' do
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555551')
+      user.phone_configurations.create(encrypted_phone: '4105555552')
+      user.phone_configurations.create(encrypted_phone: '4105555553')
+      user.phone_configurations.create(encrypted_phone: '4105555554')
 
       get :add
       expect(response).to redirect_to(account_url(anchor: 'phones'))
@@ -31,10 +31,10 @@ describe Users::PhonesController do
     end
 
     it 'renders the #phone anchor when it exceeds limit' do
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
-      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555551')
+      user.phone_configurations.create(encrypted_phone: '4105555552')
+      user.phone_configurations.create(encrypted_phone: '4105555553')
+      user.phone_configurations.create(encrypted_phone: '4105555554')
 
       get :add
       expect(response.location).to include('#phone')
