@@ -294,6 +294,7 @@ describe Idv::PhoneController do
         context = { stages: [{ address: 'AddressMock' }] }
         result = {
           success: true,
+          new_phone_added: true,
           errors: {},
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
@@ -343,6 +344,7 @@ describe Idv::PhoneController do
         context = { stages: [{ address: 'AddressMock' }] }
         result = {
           success: false,
+          new_phone_added: true,
           errors: {
             phone: ['The phone number could not be verified.'],
           },

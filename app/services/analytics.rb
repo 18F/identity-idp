@@ -157,13 +157,14 @@ class Analytics
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'.freeze
-  IDV_DOWNLOAD_PERSONAL_KEY = 'IdV: download personal key'.freeze
-  IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'.freeze
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
+  IDV_PERSONAL_KEY_DOWNLOADED = 'IdV: personal key downloaded'.freeze
+  IDV_PERSONAL_KEY_VISITED = 'IdV: personal key visited'.freeze
+  IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'.freeze
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'.freeze
   IDV_PHONE_CONFIRMATION_VENDOR = 'IdV: phone confirmation vendor'.freeze
   IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_ATTEMPTS = 'Idv: Phone OTP attempts rate limited'.freeze
