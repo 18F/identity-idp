@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_143540) do
+ActiveRecord::Schema.define(version: 2022_01_05_174343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(version: 2022_01_05_143540) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
-    t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
   end
 
