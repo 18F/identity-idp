@@ -44,4 +44,17 @@ describe('document-capture/hooks/use-cookie', () => {
     expect(document.cookie).to.equal('');
     expect(getValue()).to.be.null();
   });
+
+  it('returns the same updated value between instances', () => {
+    const { result: result1 } = renderHook(() => useCookie('foo'));
+    const { result: result2 } = renderHook(() => useCookie('foo'));
+
+    const [getValue1, setValue] = result1.current;
+    const [getValue2] = result2.current;
+
+    setValue('bar');
+
+    expect(getValue1()).to.equal('bar');
+    expect(getValue2()).to.equal('bar');
+  });
 });
