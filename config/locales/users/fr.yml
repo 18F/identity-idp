@@ -27,6 +27,8 @@ fr:
       generated_on_html: Générée le %{date}
       header: Votre clé personnelle
       print: Imprimer cette page
+    phones:
+      error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
     rules_of_use:
       check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
       details_html: |-
@@ -39,5 +41,3 @@ fr:
         </ul>
       overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
         la case ci-dessous pour continuer.
-    phones:
-      error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.

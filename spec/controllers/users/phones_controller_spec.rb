@@ -26,7 +26,7 @@ describe Users::PhonesController do
       user.phone_configurations.create(encrypted_phone: '4105555555')
 
       get :add
-      expect(response).to redirect_to(account_url + '#phones')
+      expect(response).to redirect_to(account_url(anchor: 'phones'))
       expect(response.request.flash[:phone_error]).to_not be_nil
     end
 
