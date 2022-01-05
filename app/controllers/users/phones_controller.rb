@@ -1,7 +1,5 @@
 module Users
-
   class PhonesController < ReauthnRequiredController
-
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
@@ -52,6 +50,5 @@ module Users
       flash[:phone_error] = "you've added the maximum number of phone numbers"
       redirect_to account_url + '#phones'
     end
-
   end
 end

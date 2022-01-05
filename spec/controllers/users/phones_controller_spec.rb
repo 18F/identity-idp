@@ -11,8 +11,7 @@ describe Users::PhonesController do
     allow(@analytics).to receive(:track_event)
   end
 
-  context 'user adds phone' do
-
+  context 'user adds phone' d
     it 'gives the user a form to enter a new phone number' do
       get :add
 
