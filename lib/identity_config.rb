@@ -185,7 +185,7 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_liveness_nocropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_noliveness_cropping_workflow, type: :string)
     config.add(:lexisnexis_trueid_noliveness_nocropping_workflow, type: :string)
-    config.add(:lexisnexis_trueid_timeout, type: :integer)
+    config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
