@@ -13,6 +13,7 @@ import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
+import useAnnouncer from '../hooks/use-announcer';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').DragEvent} ReactDragEvent */
@@ -126,9 +127,20 @@ function FileInput(props, ref) {
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previousValue = usePrevious(value);
+  const previousIsValuePending = usePrevious(isValuePending);
   const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [
     value,
   ]);
+  const announce = useAnnouncer();
+  const isPendingValueReceived = useMemo(
+    () => previousIsValuePending && !isValuePending && !!value,
+    [value, isValuePending, previousIsValuePending],
+  );
+  useEffect(() => {
+    if (isPendingValueReceived) {
+      announce('Image loaded');
+    }
+  }, [isPendingValueReceived]);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
@@ -187,6 +199,9 @@ function FileInput(props, ref) {
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    */
   function getLabelFromValue(fileValue) {
+    if (isValuePending) {
+      return 'image loading';
+    }
     if (fileValue instanceof window.File) {
       return fileValue.name;
     }
