@@ -18,6 +18,9 @@ class IdentityConfig
     integer: proc do |value|
       Integer(value)
     end,
+    float: proc do |value|
+      Float(value)
+    end,
     json: proc do |value, options: {}|
       JSON.parse(value, symbolize_names: options[:symbolize_names])
     end,
@@ -64,13 +67,13 @@ class IdentityConfig
 
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
-    config.add(:aamva_auth_request_timeout, type: :integer)
+    config.add(:aamva_auth_request_timeout, type: :float)
     config.add(:aamva_auth_url, type: :string)
     config.add(:aamva_cert_enabled, type: :boolean)
     config.add(:aamva_private_key, type: :string)
     config.add(:aamva_public_key, type: :string)
     config.add(:aamva_sp_banlist_issuers, type: :json)
-    config.add(:aamva_verification_request_timeout, type: :integer)
+    config.add(:aamva_verification_request_timeout, type: :float)
     config.add(:aamva_verification_url)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
@@ -85,7 +88,10 @@ class IdentityConfig
     config.add(:acuant_passlive_url)
     config.add(:acuant_sdk_initialization_creds)
     config.add(:acuant_sdk_initialization_endpoint)
-    config.add(:acuant_timeout, type: :integer)
+    config.add(:acuant_timeout, type: :float)
+    config.add(:acuant_upload_image_timeout, type: :float)
+    config.add(:acuant_get_results_timeout, type: :float)
+    config.add(:acuant_create_document_timeout, type: :float)
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:asset_host, type: :string)
     config.add(:async_wait_timeout_seconds, type: :integer)
@@ -168,9 +174,10 @@ class IdentityConfig
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_username, type: :string)
     config.add(:lexisnexis_password, type: :string)
+    config.add(:lexisnexis_phone_finder_timeout, type: :float)
     config.add(:lexisnexis_phone_finder_workflow, type: :string)
+    config.add(:lexisnexis_instant_verify_timeout, type: :float)
     config.add(:lexisnexis_instant_verify_workflow, type: :string)
-    config.add(:lexisnexis_timeout, type: :integer)
     config.add(:lexisnexis_trueid_account_id, type: :string)
     config.add(:lexisnexis_trueid_username, type: :string)
     config.add(:lexisnexis_trueid_password, type: :string)
