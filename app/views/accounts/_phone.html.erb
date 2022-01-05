@@ -6,9 +6,8 @@
   </div>
   <div class="grid-row margin-bottom-1 margin-top-0">
     <div class="grid-col">
-      <a id="phones"></a>
       <% if flash[:phone_error] %>
-        <%= render AlertComponent.new(type: :error, message: flash[:phone_error]) %>
+        <%= render AlertComponent.new(type: :error, id: 'phones', message: flash[:phone_error]) %>
       <% end %>
     </div>
   </div>
