@@ -10,23 +10,25 @@ describe('document-capture/hooks/use-cookie', () => {
 
     const { result } = renderHook(() => useCookie('foo'));
 
-    const [getValue] = result.current;
+    const [value] = result.current;
 
-    expect(getValue()).to.equal('baz');
+    expect(value).to.equal('baz');
   });
 
   it('sets a new cookie value', () => {
     const render = sinon.stub().callsFake(() => useCookie('foo'));
     const { result } = renderHook(render);
 
-    const [getValue, setValue] = result.current;
+    const [, setValue] = result.current;
 
-    render.reset();
+    render.resetHistory();
     setValue('bar');
-    expect(render).to.have.been.called();
+    expect(render).to.have.been.calledOnce();
+
+    const [value] = result.current;
 
     expect(document.cookie).to.equal('foo=bar');
-    expect(getValue()).to.equal('bar');
+    expect(value).to.equal('bar');
   });
 
   it('unsets a cookie value by null', () => {
@@ -35,26 +37,36 @@ describe('document-capture/hooks/use-cookie', () => {
     const render = sinon.stub().callsFake(() => useCookie('foo'));
     const { result } = renderHook(render);
 
-    const [getValue, setValue] = result.current;
+    const [, setValue] = result.current;
 
-    render.reset();
+    render.resetHistory();
     setValue(null);
-    expect(render).to.have.been.called();
+    expect(render).to.have.been.calledOnce();
+
+    const [value] = result.current;
 
     expect(document.cookie).to.equal('');
-    expect(getValue()).to.be.null();
+    expect(value).to.be.null();
   });
 
   it('returns the same updated value between instances', () => {
-    const { result: result1 } = renderHook(() => useCookie('foo'));
-    const { result: result2 } = renderHook(() => useCookie('foo'));
+    const render1 = sinon.stub().callsFake(() => useCookie('foo'));
+    const render2 = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result: result1 } = renderHook(render1);
+    const { result: result2 } = renderHook(render2);
 
-    const [getValue1, setValue] = result1.current;
-    const [getValue2] = result2.current;
+    const [, setValue] = result1.current;
 
+    render1.resetHistory();
+    render2.resetHistory();
     setValue('bar');
+    expect(render1).to.have.been.calledOnce();
+    expect(render2).to.have.been.calledOnce();
 
-    expect(getValue1()).to.equal('bar');
-    expect(getValue2()).to.equal('bar');
+    const [value1] = result1.current;
+    const [value2] = result2.current;
+
+    expect(value1).to.equal('bar');
+    expect(value2).to.equal('bar');
   });
 });
