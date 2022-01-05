@@ -60,7 +60,6 @@ class AddressProofingJob < ApplicationJob
         username: IdentityConfig.store.lexisnexis_username,
         password: IdentityConfig.store.lexisnexis_password,
         request_mode: IdentityConfig.store.lexisnexis_request_mode,
-        request_timeout: IdentityConfig.store.lexisnexis_timeout,
       )
     end
   end

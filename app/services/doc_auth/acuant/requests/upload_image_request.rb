@@ -37,6 +37,10 @@ module DocAuth
         def metric_name
           'acuant_doc_auth_upload_image'
         end
+
+        def timeout
+          IdentityConfig.store.acuant_upload_image_timeout
+        end
       end
     end
   end

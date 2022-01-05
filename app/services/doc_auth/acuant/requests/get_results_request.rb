@@ -28,6 +28,10 @@ module DocAuth
         def metric_name
           'acuant_doc_auth_get_results'
         end
+
+        def timeout
+          IdentityConfig.store.acuant_get_results_timeout
+        end
       end
     end
   end
