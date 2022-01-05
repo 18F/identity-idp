@@ -3,15 +3,6 @@
     <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('account.index.phone') %>
     </h2>
-    <div class="grid-col-auto">
-      <% if can_add_phone? %>
-        <%= link_to(
-              prefix_with_plus(t('account.index.phone_add')),
-              add_phone_path,
-              class: 'account-action-button',
-            ) %>
-      <% end %>
-    </div>
   </div>
   <div class="grid-row margin-bottom-1 margin-top-0">
     <div class="grid-col">
