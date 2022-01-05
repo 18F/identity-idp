@@ -4,7 +4,7 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
-    before_action :check_max_phone_numbers_per_account, only: %i[show add]
+    before_action :check_max_phone_numbers_per_account, only: %i[add]
 
     def add
       user_session[:phone_id] = nil
@@ -46,8 +46,9 @@ module Users
     end
 
     def check_max_phone_numbers_per_account
-      return if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account
-      flash[:phone_error] =  t('users.phones.error_message')
+      max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
+      return if current_user.phone_configurations.count < max_phones_count
+      flash[:phone_error] = t('users.phones.error_message')
       redirect_to account_url(anchor: 'phones')
     end
   end
