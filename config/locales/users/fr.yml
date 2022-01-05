@@ -39,3 +39,5 @@ fr:
         </ul>
       overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
         la case ci-dessous pour continuer.
+    phones:
+      error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.

@@ -47,8 +47,8 @@ module Users
 
     def check_max_phone_numbers_per_account
       return if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account
-      flash[:phone_error] = "you've added the maximum number of phone numbers"
-      redirect_to account_url + '#phones'
+      flash[:phone_error] =  t('users.phones.error_message')
+      redirect_to account_url(anchor: 'phones')
     end
   end
 end

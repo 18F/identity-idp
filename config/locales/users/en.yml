@@ -36,3 +36,5 @@ en:
         </ul>
       overview_html: We’ve updated our %{link}. Please review and check the box below
         to continue.
+    phones:
+      error_message: You've added the maximum number of phone numbers.

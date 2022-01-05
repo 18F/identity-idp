@@ -37,3 +37,5 @@ es:
         </ul>
       overview_html: Actualizamos nuestro %{link}. Revise y marque la casilla a
         continuación para continuar.
+    phones:
+      error_message: Agregó el número máximo de números de teléfono.

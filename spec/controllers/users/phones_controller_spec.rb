@@ -11,13 +11,12 @@ describe Users::PhonesController do
     allow(@analytics).to receive(:track_event)
   end
 
-  context 'user adds phone' d
+  context 'user adds phone' do
     it 'gives the user a form to enter a new phone number' do
       get :add
 
       expect(response).to render_template(:add)
       expect(response.request.flash[:alert]).to be_nil
-
     end
 
     it 'displays error if phone number exceeds limit' do
@@ -29,6 +28,16 @@ describe Users::PhonesController do
       get :add
       expect(response).to redirect_to(account_url + '#phones')
       expect(response.request.flash[:phone_error]).to_not be_nil
+    end
+
+    it 'renders the #phone anchor when it exceeds limit' do
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+      user.phone_configurations.create(encrypted_phone: '4105555555')
+
+      get :add
+      expect(response.location).to include('#phone')
     end
   end
 

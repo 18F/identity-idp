@@ -8,7 +8,7 @@
     <div class="grid-col">
       <a id="phones"></a>
       <% if flash[:phone_error] %>
-        <%= render partial: "layouts/alert_error", locals: { message: flash[:phone_error] } %>
+        <%= render AlertComponent.new(type: :error, message: flash[:phone_error]) %>
       <% end %>
     </div>
   </div>
