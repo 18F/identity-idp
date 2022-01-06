@@ -6,7 +6,7 @@ describe 'Add a new phone number' do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: phone
@@ -29,7 +29,7 @@ describe 'Add a new phone number' do
       and_call_original
 
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: phone
@@ -41,7 +41,7 @@ describe 'Add a new phone number' do
   scenario 'adding a new phone number validates number', js: true do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
 
