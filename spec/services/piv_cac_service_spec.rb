@@ -224,6 +224,26 @@ describe PivCacService do
           )
         end
       end
+
+      describe 'with HTTP failure' do
+        before(:each) do
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
+          allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
+            'http://localhost:8443/'
+          end
+        end
+
+        let!(:request) do
+          stub_request(:post, 'localhost:8443').
+            to_raise(Faraday::ConnectionFailed)
+        end
+
+        it 'returns an error' do
+          expect(PivCacService.decode_token('foo')).to eq(
+            'error' => 'token.http_failure',
+          )
+        end
+      end
     end
   end
 end
