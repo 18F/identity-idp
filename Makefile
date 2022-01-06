@@ -16,7 +16,8 @@ help: ## Show this help
 
 all: check
 
-setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
+$(CONFIG) \
+setup: config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
 
 fast_setup: ## Abbreviated setup script that skips linking some files
