@@ -1,5 +1,5 @@
 # Script that parses description strings (## help) out of the Makefile
-# and also uses the `make --print-database` output to expand out targets based on variables
+# and also uses the `make --print-data-base` output to expand out targets based on variables
 
 expanded_makefile = `make --dry-run --print-data-base --no-builtin-rules`
 
