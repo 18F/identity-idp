@@ -232,7 +232,7 @@ artifact:
     - cp config/application.yml.default.ci config/application.yml
     - ./deploy/build
     - ./deploy/build-post-config
-    - make build_artifact ARTIFACT_DIRECTORY=. ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - ARTIFACT_DIRECTORY=. ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz' ./scripts/build_artifact
 
 sync_from_github:
   image: mirror.gcr.io/alpine/git:latest
