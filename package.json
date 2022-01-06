@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=12.22",
-    "npm": "6.x.x"
+    "node": ">=14"
   },
   "workspaces": [
     "app/javascript/packages/*"
