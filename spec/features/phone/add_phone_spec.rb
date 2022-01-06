@@ -108,7 +108,7 @@ describe 'Add a new phone number' do
     phone = user.phone_configurations.first.phone
 
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: phone
@@ -126,7 +126,7 @@ describe 'Add a new phone number' do
     user = create(:user, :signed_up)
 
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
     fill_in :new_phone_form_phone, with: telephony_gem_voip_number
@@ -138,7 +138,7 @@ describe 'Add a new phone number' do
     user = create(:user, :signed_up)
 
     sign_in_and_2fa_user(user)
-    within('.sidenav') do
+    within('.sidenav-mobile') do
       click_on t('account.navigation.add_phone_number')
     end
 
@@ -160,7 +160,7 @@ describe 'Add a new phone number' do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
       sign_in_and_2fa_user(user)
-      within('.sidenav') do
+      within('.sidenav-mobile') do
         click_on t('account.navigation.add_phone_number')
       end
       fill_in :new_phone_form_phone, with: phone
