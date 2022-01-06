@@ -14,10 +14,6 @@ cd "$(dirname "$0")/.."
 
 set -x
 
-env
-
-id
-which bundle
 # default bundle directory to shared directory
 : ${BUNDLE_DIR=/srv/idp/shared/bundle}
 : ${IDP_LOCAL_DEPENDENCIES=false}
@@ -31,10 +27,10 @@ bundle config set --local without 'deploy development doc test'
 if [ "$IDP_LOCAL_DEPENDENCIES" == "true" ]
 then
   bundle install --jobs 4 --local
-  yarn install --production --frozen-lockfile --offline
+  yarn install --production --frozen-lockfile --offline --cache-folder .yarn-cache
 else
   bundle install --jobs 4
-  yarn install --production --frozen-lockfile
+  yarn install --production --frozen-lockfile --cache-folder .yarn-cache
 fi
 
 bundle binstubs --all
