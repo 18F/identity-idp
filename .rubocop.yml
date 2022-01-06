@@ -30,6 +30,7 @@ AllCops:
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
+  NewCops: enable
 
 Rails:
   Enabled: true
@@ -776,10 +777,19 @@ Rails/HttpPositionalArguments:
     - spec/**/*
     - test/**/*
 
+Rails/I18nLocaleAssignment:
+  Enabled: false
+
+Rails/NegateInclude:
+  Enabled: false
+
 Rails/Present:
   Enabled: false
 
 Rails/RelativeDateConstant:
+  Enabled: false
+
+Rails/SquishedSQLHeredocs:
   Enabled: false
 
 Rails/TimeZone:
@@ -790,6 +800,9 @@ Rails/TimeZone:
   SupportedStyles:
     - strict
     - flexible
+
+Rails/WhereNot:
+  Enabled: false
 
 Security/Eval:
   Enabled: true
