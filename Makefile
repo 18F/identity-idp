@@ -109,10 +109,10 @@ optimize_svg: ## Optimizes SVG images
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
-lint_optimized_assets: optimize_assets ## Checks that assets are optimizes
+lint_optimized_assets: optimize_assets ## Checks that assets are optimized
 	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
-update_pinpoint_supported_countries: ## Updates list of countries suppored by Pinpoint for voice and SMS
+update_pinpoint_supported_countries: ## Updates list of countries supported by Pinpoint for voice and SMS
 	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
 	bundle exec ./scripts/deep-merge-yaml \
 		--comment 'Generated from `make update_pinpoint_supported_countries`' \
