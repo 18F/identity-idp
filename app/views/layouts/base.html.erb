@@ -17,9 +17,6 @@
   <meta content="noindex,nofollow" name="robots" />
   <% end %>
 
-  <%= yield(:meta_tags) if content_for?(:meta_tags) %>
-
-
   <%= content_tag(
         'title',
         content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
@@ -54,6 +51,8 @@
   <% if IdentityConfig.store.newrelic_browser_key.present? && IdentityConfig.store.newrelic_browser_app_id.present? %>
   <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>
+
+  <%= yield(:head) if content_for?(:head) %>
 </head>
 
 <body class="site <%= yield(:background_cls) %>">

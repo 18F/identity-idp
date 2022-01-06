@@ -7,7 +7,6 @@ import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
-import './form-steps.scss';
 
 /**
  * @typedef FormStepError
