@@ -230,6 +230,8 @@ class Analytics
   PROOFING_RESOLUTION_TIMEOUT = 'Proofing Resolution Timeout'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'.freeze
+  REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'.freeze
+  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT= 'Report IAL2 Users Linked to SPs Count'.freeze
   REPORT_SP_USER_COUNTS = 'Report SP User Counts'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
