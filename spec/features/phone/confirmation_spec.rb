@@ -64,7 +64,7 @@ describe 'phone otp confirmation' do
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
-      within('.sidenav-mobile') do
+      within('.sidenav') do
         click_on t('account.navigation.add_phone_number')
       end
       fill_in :new_phone_form_phone, with: phone

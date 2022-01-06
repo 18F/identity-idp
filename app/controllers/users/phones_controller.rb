@@ -49,7 +49,7 @@ module Users
       max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
       return if current_user.phone_configurations.count < max_phones_count
       flash[:phone_error] = t('users.phones.error_message')
-      redirect_to account_url(anchor: 'phones')
+      redirect_back fallback_location: account_url(anchor: 'phones'), allow_other_host: false
     end
   end
 end
