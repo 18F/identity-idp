@@ -5,6 +5,7 @@ module Funnel
         Analytics::IDV_PHONE_RECORD_VISIT => :verify_phone,
         Analytics::IDV_REVIEW_VISIT => :encrypt,
         Analytics::IDV_PERSONAL_KEY_VISITED => :verified,
+        Analytics::IDV_FINAL => :verified, # deprecated
         Analytics::IDV_GPO_ADDRESS_VISITED => :usps_address,
       }.freeze
 

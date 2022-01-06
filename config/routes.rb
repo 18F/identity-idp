@@ -304,6 +304,10 @@ Rails.application.routes.draw do
       get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
+
+      # deprecated routes
+      get '/confirmations' => 'personal_key#show'
+      post '/confirmations' => 'personal_key#update'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
