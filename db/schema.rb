@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_05_143347) do
+ActiveRecord::Schema.define(version: 2022_01_05_143540) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -554,9 +554,8 @@ ActiveRecord::Schema.define(version: 2022_01_05_143347) do
     t.integer "user_id"
     t.datetime "returned_at"
     t.boolean "billable"
-    t.index ["issuer", "requested_at"], name: "index_sp_return_logs_on_issuer_and_requested_at"
+    t.index "((requested_at)::date), issuer", name: "index_sp_return_logs_on_requested_at_date_issuer", where: "(returned_at IS NOT NULL)"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
-    t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
   end
 
   create_table "throttles", force: :cascade do |t|
