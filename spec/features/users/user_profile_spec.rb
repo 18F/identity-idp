@@ -110,7 +110,9 @@ feature 'User profile' do
   describe 'Editing the password' do
     it 'includes the password strength indicator when JS is on', js: true do
       sign_in_and_2fa_user
-      click_link 'Edit', href: manage_password_path
+      within('.sidenav') do
+        click_link 'Edit', href: manage_password_path
+      end
 
       expect(page).to_not have_css('#pw-strength-cntnr.display-none')
       expect(page).to have_content '...'
