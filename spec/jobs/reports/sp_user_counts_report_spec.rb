@@ -12,40 +12,35 @@ describe Reports::SpUserCountsReport do
 
   it 'logs to analytics' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
+    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo2', ial: 1)
+    ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo3', ial: 1)
+    ServiceProviderIdentity.create(user_id: 3, service_provider: issuer, uuid: 'foo4', ial: 2)
     freeze_time do
       timestamp = Time.zone.now.iso8601
-      log_hash = {
+      expect(subject).to receive(:write_hash_to_reports_log).with(
         app_id: app_id,
-        ial1_user_total: 1,
+        ial1_user_total: 3,
         ial2_user_total: 0,
         issuer: issuer,
         name: Analytics::REPORT_SP_USER_COUNTS,
         time: timestamp,
-        user_total: 1,
-      }
-      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash)
-      log_hash1 = {
+        user_total: 3,
+      )
+      expect(subject).to receive(:write_hash_to_reports_log).with(
         name: Analytics::REPORT_REGISTERED_USERS_COUNT,
         time: timestamp,
         count: 0,
-      }
-      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash1)
-      ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2', ial: 1)
-      ServiceProviderIdentity.create(user_id: 3, service_provider: issuer, uuid: 'foo3', ial: 1)
-      log_hash2 = {
+      )
+      expect(subject).to receive(:write_hash_to_reports_log).with(
         name: Analytics::REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT,
         time: timestamp,
-        count: 1,
-      }
-      ServiceProviderIdentity.create(user_id: 4, service_provider: issuer, uuid: 'foo4', ial: 2)
-      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash2)
-      log_hash3 = {
+        count: 2,
+      )
+      expect(subject).to receive(:write_hash_to_reports_log).with(
         name: Analytics::REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT,
         time: timestamp,
-        count: 2,
-      }
-      allow(subject).to receive(:write_hash_to_reports_log).with(log_hash3)
+        count: 1,
+      )
       subject.perform(Time.zone.today)
     end
   end

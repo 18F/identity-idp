@@ -55,12 +55,7 @@ module Reports
     end
 
     def track_report_data_event(event, hash = {})
-      analytics_hash = {
-        name: event,
-        time: Time.zone.now.iso8601,
-      }
-      analytics_hash.merge!(hash)
-      write_hash_to_reports_log(analytics_hash)
+      write_hash_to_reports_log({name: event, time: Time.zone.now.iso8601}.merge(hash))
     end
 
     def write_hash_to_reports_log(log_hash)
