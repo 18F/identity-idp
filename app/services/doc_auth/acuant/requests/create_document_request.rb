@@ -51,6 +51,10 @@ module DocAuth
           'acuant_doc_auth_create_document'
         end
 
+        def timeout
+          IdentityConfig.store.acuant_create_document_timeout
+        end
+
         private
 
         def acuant_sdk_source?

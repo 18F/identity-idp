@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     private
 
     def process_token
-      result = piv_cac_verfication_form.submit
+      result = piv_cac_verification_form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
       )
@@ -40,8 +40,8 @@ module TwoFactorAuthentication
     def handle_valid_piv_cac
       clear_piv_cac_nonce
       save_piv_cac_information(
-        subject: piv_cac_verfication_form.x509_dn,
-        issuer: piv_cac_verfication_form.x509_issuer,
+        subject: piv_cac_verification_form.x509_dn,
+        issuer: piv_cac_verification_form.x509_issuer,
         presented: true,
       )
 
@@ -72,7 +72,7 @@ module TwoFactorAuthentication
       }.merge(generic_data)
     end
 
-    def piv_cac_verfication_form
+    def piv_cac_verification_form
       @piv_cac_verification_form ||= UserPivCacVerificationForm.new(
         user: current_user,
         token: params[:token],
@@ -99,7 +99,7 @@ module TwoFactorAuthentication
       {
         context: context,
         multi_factor_auth_method: 'piv_cac',
-        piv_cac_configuration_id: piv_cac_verfication_form&.piv_cac_configuration&.id,
+        piv_cac_configuration_id: piv_cac_verification_form&.piv_cac_configuration&.id,
       }
     end
   end

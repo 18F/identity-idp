@@ -72,7 +72,7 @@ module Idv
     end
 
     def params_otp
-      params[:gpo_verify_form].permit(:otp)[:otp]
+      params.require(:gpo_verify_form).permit(:otp)[:otp]
     end
 
     def confirm_verification_needed

@@ -641,6 +641,10 @@ Naming/HeredocDelimiterCase:
   Enabled: true
   EnforcedStyle: uppercase
 
+Naming/MemoizedInstanceVariableName:
+  Enabled: true
+  EnforcedStyleForLeadingUnderscores: disallowed
+
 Naming/MethodParameterName:
   MinNameLength: 2
 

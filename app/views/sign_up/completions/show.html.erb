@@ -1,11 +1,11 @@
-<% title @view_model.title %>
+<% title @presenter.heading %>
 <div class="clearfix col-10 sm-col-12 margin-x-auto">
   <div class="center">
-    <%= image_tag asset_url(@view_model.image_name), width: 140, alt: '', class: 'margin-bottom-2' %>
+    <%= image_tag asset_url(@presenter.image_name), width: 140, alt: '', class: 'margin-bottom-2' %>
   </div>
 
   <h1 class="margin-bottom-2 margin-y-0 tablet:margin-right-1 tablet:margin-left-1 center">
-    <%= @view_model.heading %>
+    <%= @presenter.heading %>
   </h1>
 
   <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
@@ -16,7 +16,7 @@
         ) %>
   </p>
   <div class='tablet:margin-left-1 tablet:margin-right-1' >
-    <%= render 'sign_up/completions/requested_attributes', requested_attributes: @view_model.requested_attributes_sorted %>
+    <%= render 'sign_up/completions/requested_attributes', pii: @presenter.pii %>
   </div>
   <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
     <%= t(

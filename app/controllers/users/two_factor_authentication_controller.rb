@@ -232,7 +232,7 @@ module Users
     end
 
     def otp_rate_limiter
-      @_otp_rate_limited ||= OtpRateLimiter.new(
+      @otp_rate_limiter ||= OtpRateLimiter.new(
         phone: phone_to_deliver_to,
         user: current_user,
         phone_confirmed: UserSessionContext.authentication_context?(context),

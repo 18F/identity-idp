@@ -101,7 +101,7 @@ module SamlAuthHelper
   end
 
   def saml_test_sp_key
-    @private_key ||= OpenSSL::PKey::RSA.new(
+    @saml_test_sp_key ||= OpenSSL::PKey::RSA.new(
       File.read(Rails.root + 'keys/saml_test_sp.key'),
     ).to_pem
   end
@@ -197,7 +197,7 @@ module SamlAuthHelper
     click_submit_default
 
     expect(current_url).to match new_user_session_path
-    expect(page).to have_content(t('titles.sign_up.new_sp'))
+    expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
 
     click_agree_and_continue
   end

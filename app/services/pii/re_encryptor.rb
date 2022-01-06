@@ -3,7 +3,7 @@ module Pii
     def initialize(user: nil, user_session: nil, pii: nil, profile: nil)
       @user = user
       @user_session = user_session
-      @pii = pii
+      @pii_attributes = pii
       @profile = profile
     end
 
@@ -17,11 +17,11 @@ module Pii
     attr_reader :user, :user_session
 
     def pii_attributes
-      @pii ||= cacher.fetch
+      @pii_attributes ||= cacher.fetch
     end
 
     def cacher
-      @_cacher ||= Pii::Cacher.new(user, user_session)
+      @cacher ||= Pii::Cacher.new(user, user_session)
     end
 
     def profile

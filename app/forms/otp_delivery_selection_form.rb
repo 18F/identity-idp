@@ -49,7 +49,7 @@ class OtpDeliverySelectionForm
   end
 
   def parsed_phone
-    @_parsed_phone ||= Phonelib.parse(phone)
+    @parsed_phone ||= Phonelib.parse(phone)
   end
 
   def confirmed_phone?

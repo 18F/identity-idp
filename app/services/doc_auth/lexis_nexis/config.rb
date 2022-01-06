@@ -11,8 +11,6 @@ module DocAuth
       :trueid_noliveness_nocropping_workflow,
       :trueid_password,
       :trueid_username,
-      :trueid_timeout, # optional
-      :timeout, # optional
       :warn_notifier, # optional
       :locale,
       :dpi_threshold,
@@ -23,12 +21,10 @@ module DocAuth
         :account_id,
         :base_url,
         :request_mode,
-        :timeout,
         :trueid_liveness_cropping_workflow,
         :trueid_liveness_nocropping_workflow,
         :trueid_noliveness_cropping_workflow,
         :trueid_noliveness_nocropping_workflow,
-        :trueid_timeout,
         :locale,
         :dpi_threshold,
         :sharpness_threshold,

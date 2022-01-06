@@ -36,13 +36,11 @@ module Proofing
         end
 
         def send
-          with_retries(max_tries: 2, rescue: [Faraday::TimeoutError, Faraday::ConnectionFailed]) do
-            Response::AuthenticationTokenResponse.new(
-              http_client.post(url, body, headers) do |req|
-                req.options.context = { service_name: 'aamva_authentication_token' }
-              end,
-            )
-          end
+          Response::AuthenticationTokenResponse.new(
+            http_client.post(url, body, headers) do |req|
+              req.options.context = { service_name: 'aamva_authentication_token' }
+            end,
+          )
         rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
           message =
             "AAMVA raised #{e.class} waiting for authentication token response: #{e.message}"
@@ -114,7 +112,7 @@ module Proofing
         end
 
         def timeout
-          (config.auth_request_timeout || 5).to_i
+          (config.auth_request_timeout || 5).to_f
         end
       end
     end

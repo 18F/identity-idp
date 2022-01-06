@@ -80,9 +80,14 @@ module TwoFactorAuthentication
     end
 
     def analytics_properties
+      auth_method = if form&.webauthn_configuration&.platform_authenticator
+                      'webauthn_platform'
+                    else
+                      'webauthn'
+                    end
       {
         context: context,
-        multi_factor_auth_method: 'webauthn',
+        multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
       }
     end

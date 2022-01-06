@@ -85,7 +85,7 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    @_active_profile ||= profiles.verified.find(&:active?)
+    @active_profile ||= profiles.verified.find(&:active?)
   end
 
   def pending_profile?

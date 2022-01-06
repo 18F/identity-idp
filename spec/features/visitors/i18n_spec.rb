@@ -106,4 +106,34 @@ feature 'Internationalization' do
       end
     end
   end
+
+  context 'preserving locale choice in IDV' do
+    include SamlAuthHelper
+    include IdvStepHelper
+
+    it 'preserves the locale', js: true do
+      user = user_with_2fa
+
+      visit_idp_from_sp_with_ial2(:oidc)
+      visit root_path # help out following the redirect
+
+      using_wait_time(5) do
+        within(:css, '.i18n-desktop-toggle') do
+          click_button t('i18n.language', locale: 'en')
+          click_link t('i18n.locale.es')
+        end
+      end
+
+      I18n.with_locale(:es) do
+        fill_in_credentials_and_submit(user.email, user.password)
+        continue_as(user.email, user.password)
+        uncheck(t('forms.messages.remember_device'))
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+      end
+
+      expect(current_path).to eq idv_doc_auth_step_path(step: :welcome, locale: :es)
+      expect(page.document.find('html')['lang']).to eq('es')
+    end
+  end
 end

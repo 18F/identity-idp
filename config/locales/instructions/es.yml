@@ -49,6 +49,7 @@ es:
           (PIV o CAC) para acceder a su información.
         did_not_work_html: '%{please_try_again}. Comuníquese con el encargado de su
           organismo si persiste este problema.'
+        http_failure: El servidor tardó demasiado en responder. Inténtalo de nuevo.
         no_certificate_html: Asegúrese de su PIV/CAC esté conectada e %{try_again}.
           Comuníquese con el encargado de su organismo si persiste este
           problema.

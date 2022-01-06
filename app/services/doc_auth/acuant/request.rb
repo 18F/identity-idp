@@ -97,12 +97,15 @@ module DocAuth
           conn.request :retry, retry_options
           conn.adapter :net_http
 
-          timeout = config.timeout&.to_i || 45
           conn.options.timeout = timeout
           conn.options.read_timeout = timeout
           conn.options.open_timeout = timeout
           conn.options.write_timeout = timeout
         end
+      end
+
+      def timeout
+        IdentityConfig.store.acuant_timeout
       end
 
       def create_http_exception(http_response)

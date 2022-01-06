@@ -8,16 +8,17 @@ orbs:
   browser-tools: circleci/browser-tools@1.1
   jq: circleci/jq@2.2.0
   slack: circleci/slack@3.4.2
+
 executors:
   # Common container definition used by all jobs
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: cimg/ruby:2.7.3-browsers
+      - image: cimg/ruby:3.0.3-browsers
         environment:
           CIRCLE_CI: 'true'
           RAILS_ENV: test
-          BUNDLER_VERSION: 2.2.20
+          BUNDLER_VERSION: 2.2.32
           # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
           # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM
           # to use the version from .nvmrc instead.
@@ -26,13 +27,18 @@ executors:
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
-      - image: circleci/postgres:9.6-alpine
+      - image: cimg/postgres:13.4
         environment:
           POSTGRES_USER: circleci
 
       - image: redis:5.0.8
 
 commands:
+  install-browser-tools-no-firefox:
+    steps:
+      - browser-tools/install-browser-tools:
+          install-firefox: false
+          install-geckodriver: false
   node-install:
     steps:
       - run:
@@ -185,7 +191,7 @@ jobs:
     working_directory: ~/identity-idp
 
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install
@@ -263,7 +269,7 @@ jobs:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install
@@ -303,7 +309,7 @@ jobs:
     environment:
       MONITOR_ENV: DEV
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
@@ -322,7 +328,7 @@ jobs:
     environment:
       MONITOR_ENV: INT
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
@@ -341,7 +347,7 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
@@ -360,7 +366,7 @@ jobs:
     environment:
       MONITOR_ENV: PROD
     steps:
-      - browser-tools/install-browser-tools
+      - install-browser-tools-no-firefox
       - checkout
       - node-install
       - yarn-install

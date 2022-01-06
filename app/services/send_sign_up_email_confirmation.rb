@@ -22,7 +22,7 @@ class SendSignUpEmailConfirmation
 
   def confirmation_token
     return email_address.confirmation_token if valid_confirmation_token_exists?
-    @token ||= Devise.friendly_token
+    @confirmation_token ||= Devise.friendly_token
   end
 
   def confirmation_sent_at

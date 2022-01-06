@@ -35,6 +35,9 @@ acuant_passlive_url: ''
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
+acuant_upload_image_timeout: '1'
+acuant_get_results_timeout: '1'
+acuant_create_document_timeout: '1'
 add_email_link_valid_for_hours: '24'
 asset_host: ''
 async_wait_timeout_seconds: '60'
@@ -58,6 +61,7 @@ deliver_mail_async: 'false'
 deleted_user_accounts_report_configs: '[]'
 disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
+disposable_email_services: '[]'
 doc_auth_attempt_window_in_minutes: '360'
 doc_auth_extend_timeout_by_minutes: '40'
 doc_capture_polling_enabled: 'true'
@@ -95,13 +99,14 @@ liveness_checking_enabled: 'false'
 logins_per_ip_track_only_mode: 'false'
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
-lexisnexis_timeout: '10'
 lexisnexis_request_mode: testing
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
+lexisnexis_phone_finder_timeout: 1
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
+lexisnexis_instant_verify_timeout: 1
 lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
@@ -276,6 +281,7 @@ development:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   rails_mailer_previews_enabled: 'true'
+  rack_timeout_service_timeout_seconds: 9_999_999_999
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''

@@ -1,30 +1,19 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.7.3'
+ruby '~> 3.0.3'
 
 gem 'rails', '~> 6.1.4'
-
-# Variables can be overridden for local dev in Gemfile-dev
-@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
-@logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@saml_gem ||= { github: '18F/saml_idp', tag: '0.15.0-18f' }
-@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.1' }
-
-gem 'identity-hostdata', @hostdata_gem
-gem 'identity-logging', @logging_gem
-gem 'identity_validations', @validations_gem
-gem 'saml_idp', @saml_gem
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
-gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
+gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
-gem 'bootsnap', '~> 1.9.0', require: false
 gem 'blueprinter', '~> 0.25.3'
+gem 'bootsnap', '~> 1.9.0', require: false
 gem 'browser'
 gem 'connection_pool'
 gem 'devise', '~> 4.8'
@@ -35,6 +24,9 @@ gem 'good_job', '~> 2.7.0'
 gem 'hashie', '~> 4.1'
 gem 'hiredis', '~> 0.6.0'
 gem 'http_accept_language'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.0'
+gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
+gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.1'
 gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
@@ -61,6 +53,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.15.0-18f'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'

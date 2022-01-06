@@ -91,7 +91,7 @@ module Proofing
       end
 
       def timeout
-        (config.request_timeout || 5).to_i
+        raise NotImplementedError
       end
 
       def metric_name

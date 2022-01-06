@@ -41,7 +41,8 @@ module Proofing
       end
 
       def program_exception_nodes
-        @nodes ||= REXML::XPath.match(document, '//ProgramExceptions/ProgramException')
+        @program_exception_nodes ||=
+          REXML::XPath.match(document, '//ProgramExceptions/ProgramException')
       end
 
       def soap_error_reason_text_node

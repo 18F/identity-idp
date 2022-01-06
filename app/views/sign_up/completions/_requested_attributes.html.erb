@@ -1,19 +1,30 @@
 <ul class="margin-bottom-4 list-reset border-bottom border-primary-light success-bullets requested-attributes">
-  <% requested_attributes.each do |attribute| %>
-    <% next if @pii[attribute].blank? %>
+  <% pii.each do |attribute_key, attribute_value| %>
+    <% next if attribute_value.blank? %>
     <li class="success-bullet border-top border-primary-light">
       <div class="bold margin-left-4">
-        <%= t("help_text.requested_attributes.#{attribute}") %>
+        <%= t("help_text.requested_attributes.#{attribute_key}") %>
       </div>
       <div class="margin-left-4">
-        <% if @pii[attribute].is_a? Array %>
+        <% if attribute_value.is_a? Array %>
           <ul class='usa-list usa-list--unstyled'>
-            <% @pii[attribute].each do |item| %>
+            <% attribute_value.each do |item| %>
               <li><%= item %></li>
             <% end %>
           </ul>
+        <% elsif attribute_key == :social_security_number %>
+          <%= render(
+                'shared/masked_text',
+                text: attribute_value,
+                masked_text: SsnFormatter.format_masked(attribute_value),
+                accessible_masked_text: t(
+                  'idv.accessible_labels.masked_ssn',
+                  first_number: attribute_value[0],
+                  last_number: attribute_value[-1],
+                ),
+              ) %>
         <% else %>
-          <%= @pii[attribute].to_s %>
+          <%= attribute_value.to_s %>
         <% end %>
       </div>
     </li>

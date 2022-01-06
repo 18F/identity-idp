@@ -18,6 +18,7 @@ es:
         Para una contraseña más segura, use pocas palabras separadas por
         espacios, pero evite frases comunes
       names_and_surnames_by_themselves_are_easy_to_guess: Nombres y apellidos por si solos son fáciles de adivinar
+      no_need_for_symbols_digits_or_uppercase_letters: No necesita usar símbolos, cifras ni mayúsculas
       predictable_substitutions_like__instead_of_a_dont_help_very_much: No hay necesidad de símbolos, dígitos o letras mayúsculas
       recent_years_are_easy_to_guess: Sustituciones predecibles como ‘@’ en lugar de ‘a’ no ayudan mucho
       repeats_like_aaa_are_easy_to_guess: Los años recientes son fáciles de adivinar
@@ -32,4 +33,5 @@ es:
       this_is_a_top_100_common_password: Esta es una de las 10 contraseñas más comunes.
       this_is_a_very_common_password: Esta es una contraseña muy común
       this_is_similar_to_a_commonly_used_password: Esto es similar a una contraseña comúnmente utilizada
+      use_a_few_words_avoid_common_phrases: Use pocas palabras, evite las frases comunes
       use_a_longer_keyboard_pattern_with_more_turns: Use una combinación larga de teclas con más configuraciones

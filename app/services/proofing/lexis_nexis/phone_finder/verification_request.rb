@@ -39,6 +39,10 @@ module Proofing
         def metric_name
           'lexis_nexis_phone_finder'
         end
+
+        def timeout
+          IdentityConfig.store.lexisnexis_phone_finder_timeout
+        end
       end
     end
   end

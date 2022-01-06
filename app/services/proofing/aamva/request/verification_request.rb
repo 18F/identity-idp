@@ -30,13 +30,11 @@ module Proofing
         end
 
         def send
-          with_retries(max_tries: 2, rescue: [Faraday::TimeoutError, Faraday::ConnectionFailed]) do
-            Response::VerificationResponse.new(
-              http_client.post(url, body, headers) do |req|
-                req.options.context = { service_name: 'aamva_verification' }
-              end,
-            )
-          end
+          Response::VerificationResponse.new(
+            http_client.post(url, body, headers) do |req|
+              req.options.context = { service_name: 'aamva_verification' }
+            end,
+          )
         rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
           message = "AAMVA raised #{err.class} waiting for verification response: #{err.message}"
           raise ::Proofing::TimeoutError, message
@@ -113,7 +111,7 @@ module Proofing
         end
 
         def timeout
-          (config.verification_request_timeout || 5).to_i
+          (config.verification_request_timeout || 5).to_f
         end
       end
     end

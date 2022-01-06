@@ -16,7 +16,7 @@ module Users
 
     def create
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE)
-      redirect_to sp_session_request_url_without_prompt_login
+      redirect_to sp_session_request_url_with_updated_params
     end
 
     def destroy

@@ -351,6 +351,44 @@ describe ApplicationController do
     end
   end
 
+  describe '#sp_session_request_url_with_updated_params' do
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+
+    before do
+      allow(controller).to receive(:session).
+        and_return(sp: { request_url: sp_session_request_url })
+    end
+
+    subject(:url_with_updated_params) do
+      controller.send(:sp_session_request_url_with_updated_params)
+    end
+
+    let(:sp_session_request_url) { nil }
+
+    it 'leaves a nil url alone' do
+      expect(url_with_updated_params).to eq(nil)
+    end
+
+    context 'with a url that has prompt=login' do
+      let(:sp_session_request_url) { '/authorize?prompt=login' }
+      it 'changes it to prompt=select_account' do
+        expect(url_with_updated_params).to eq('/authorize?prompt=select_account')
+      end
+    end
+
+    context 'when the locale has been changed' do
+      before { I18n.locale = :es }
+      let(:sp_session_request_url) { '/authorize' }
+      it 'adds the locale to the url' do
+        expect(url_with_updated_params).to eq('/authorize?locale=es')
+      end
+    end
+  end
+
   def expect_user_event_to_have_been_created(user, event_type)
     device = Device.first
     expect(device.user_id).to eq(user.id)

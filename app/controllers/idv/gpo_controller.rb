@@ -47,7 +47,7 @@ module Idv
     end
 
     def gpo_mail_service
-      @_gpo_mail_service ||= Idv::GpoMail.new(current_user)
+      @gpo_mail_service ||= Idv::GpoMail.new(current_user)
     end
 
     private
