@@ -6,7 +6,9 @@ describe 'Add a new phone number' do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
     fill_in :new_phone_form_phone, with: phone
     click_continue
     fill_in_code_with_last_phone_otp
@@ -27,7 +29,9 @@ describe 'Add a new phone number' do
       and_call_original
 
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
     fill_in :new_phone_form_phone, with: phone
     click_continue
     fill_in_code_with_last_phone_otp
@@ -37,7 +41,9 @@ describe 'Add a new phone number' do
   scenario 'adding a new phone number validates number', js: true do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
 
     hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
 
@@ -102,7 +108,9 @@ describe 'Add a new phone number' do
     phone = user.phone_configurations.first.phone
 
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
     fill_in :new_phone_form_phone, with: phone
     click_continue
 
@@ -118,7 +126,9 @@ describe 'Add a new phone number' do
     user = create(:user, :signed_up)
 
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
     fill_in :new_phone_form_phone, with: telephony_gem_voip_number
     click_continue
     expect(page).to have_content(t('errors.messages.voip_check_error'))
@@ -128,7 +138,9 @@ describe 'Add a new phone number' do
     user = create(:user, :signed_up)
 
     sign_in_and_2fa_user(user)
-    click_on "+ #{t('account.index.phone_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
 
     expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
     expect(page.find_field('Phone call', disabled: false, visible: :all)).to be_present
@@ -148,7 +160,9 @@ describe 'Add a new phone number' do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
       sign_in_and_2fa_user(user)
-      click_on "+ #{t('account.index.phone_add')}"
+      within('.sidenav') do
+        click_on t('account.navigation.add_phone_number')
+      end
       fill_in :new_phone_form_phone, with: phone
       click_continue
       click_link t('links.cancel')
