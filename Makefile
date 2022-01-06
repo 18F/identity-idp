@@ -12,7 +12,7 @@ PORT ?= 3000
 
 help: ## Show this help
 	@echo "--- Help ---"
-	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@ruby scripts/makefile_help.rb
 
 all: check
 
@@ -76,7 +76,7 @@ test: $(CONFIG) ## Runs RSpec and yarn tests
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
-tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
+tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
 	openssl req \
 		-newkey rsa:2048 \
