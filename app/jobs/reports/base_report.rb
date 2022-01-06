@@ -63,7 +63,7 @@ module Reports
     end
 
     def reports_logger
-      @reports_log ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
+      @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
     end
 
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
