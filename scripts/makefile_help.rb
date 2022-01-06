@@ -37,7 +37,7 @@ target_comments.each do |target, (comment, lineno)|
     rule_regexp = Regexp.new(target.gsub(/(\$\([^\)]+\))/, '.+'))
 
     _lineno, rule = expanded_targets[lineno].find do |_lineno, rule|
-      rule_regexp.match?(rule)
+      rule_regexp.match?(rule) && !target_comments.key?(rule)
     end
 
     rule
