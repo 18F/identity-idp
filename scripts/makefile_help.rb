@@ -4,11 +4,15 @@
 expanded_makefile = `make --dry-run --print-data-base --no-builtin-rules`
 
 # Map of lineno => rule name run by printing the Makefile database
-expanded_targets = expanded_makefile.scan(/\n\n(?<target>[^:]+):( (?<sources>[^\n]+))?
+# rubocop:disable Layout/FirstArgumentIndentation
+# rubocop:disable Lint/MixedRegexpCaptureTypes
+expanded_targets = expanded_makefile.scan(
+/\n\n(?<target>[^:]+):( (?<sources>[^\n]+))?
 ((#  [^\n]+)?\n?)*?
-#  commands to execute \(from `Makefile', line (?<lineno>\d+)\):/m).
-  map { |target, *, lineno| [lineno.to_i, target] }.
-  to_h
+#  commands to execute \(from `Makefile', line (?<lineno>\d+)\):/m,
+).map { |target, *, lineno| [lineno.to_i, target] }.to_h
+# rubocop:enable Lint/MixedRegexpCaptureTypes
+# rubocop:enable Layout/FirstArgumentIndentation
 
 raw_makefile = File.readlines('Makefile')
 
@@ -26,9 +30,7 @@ end.to_h
 cleaned_up_targets = {}
 
 target_comments.each do |target, (comment, lineno)|
-  cleaned_up_name = if target.include?('$(')
-    expanded_targets[lineno]
-  end || target
+  cleaned_up_name = (target.include?('$(') && expanded_targets[lineno]) || target
 
   cleaned_up_targets[cleaned_up_name] = comment
 end
