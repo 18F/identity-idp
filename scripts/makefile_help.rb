@@ -26,7 +26,9 @@ end.to_h
 cleaned_up_targets = {}
 
 target_comments.each do |target, (comment, lineno)|
-  cleaned_up_name = expanded_targets[lineno] || target
+  cleaned_up_name = if target.include?('$(')
+    expanded_targets[lineno]
+  end || target
 
   cleaned_up_targets[cleaned_up_name] = comment
 end
