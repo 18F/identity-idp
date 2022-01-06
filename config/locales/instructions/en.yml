@@ -46,6 +46,7 @@ en:
           information.
         did_not_work_html: Please %{please_try_again}. If this problem continues,
           contact your agency administrator.
+        http_failure: The server took too long to respond. Please try again.
         no_certificate_html: Please make sure your PIV/CAC is connected and
           %{try_again}. If this problem continues, contact your agency
           administrator.

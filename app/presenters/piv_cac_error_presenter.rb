@@ -38,7 +38,7 @@ class PivCacErrorPresenter
       t('headings.piv_cac.token.bad')
     when 'token.invalid'
       t('headings.piv_cac.token.invalid')
-    when 'token.missing'
+    when 'token.missing', 'token.http_failure'
       t('headings.piv_cac.token.missing')
     else
       t('headings.piv_cac.did_not_work')
@@ -60,6 +60,8 @@ class PivCacErrorPresenter
       t('instructions.mfa.piv_cac.no_certificate_html', try_again: try_again_link)
     when 'certificate.not_auth_cert'
       t('instructions.mfa.piv_cac.not_auth_cert_html', please_try_again: please_try_again_link)
+    when 'token.http_failure'
+      t('instructions.mfa.piv_cac.http_failure')
     else
       t('instructions.mfa.piv_cac.did_not_work_html', please_try_again: please_try_again_link)
     end
