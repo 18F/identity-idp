@@ -13,7 +13,6 @@ import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
-import useAnnouncer from '../hooks/use-announcer';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').DragEvent} ReactDragEvent */
@@ -27,8 +26,10 @@ import useAnnouncer from '../hooks/use-announcer';
  * @prop {string} label Input label.
  * @prop {string=} hint Optional hint text.
  * @prop {string=} bannerText Optional banner overlay text.
- * @prop {string=} invalidTypeText Error message text to show on invalid file type selection.
- * @prop {string=} fileUpdatedText Success message text to show when selected file is updated.
+ * @prop {string} invalidTypeText Error message text to show on invalid file type selection.
+ * @prop {string} fileUpdatedText Success message text to show when selected file is updated.
+ * @prop {string} fileLoadingText Status message text to show when file is pending.
+ * @prop {string} fileLoadedText Status message text to show once pending file is loaded.
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
@@ -110,6 +111,8 @@ function FileInput(props, ref) {
     bannerText,
     invalidTypeText,
     fileUpdatedText,
+    fileLoadingText,
+    fileLoadedText,
     accept,
     capture,
     value,
@@ -131,16 +134,10 @@ function FileInput(props, ref) {
   const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [
     value,
   ]);
-  const announce = useAnnouncer();
   const isPendingValueReceived = useMemo(
     () => previousIsValuePending && !isValuePending && !!value,
     [value, isValuePending, previousIsValuePending],
   );
-  useEffect(() => {
-    if (isPendingValueReceived) {
-      announce('Image loaded');
-    }
-  }, [isPendingValueReceived]);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
@@ -186,7 +183,7 @@ function FileInput(props, ref) {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
       } else {
-        const nextOwnErrorMessage = invalidTypeText ?? t('errors.file_input.invalid_type');
+        const nextOwnErrorMessage = invalidTypeText;
         setOwnErrorMessage(nextOwnErrorMessage);
         onError(nextOwnErrorMessage);
       }
@@ -199,9 +196,6 @@ function FileInput(props, ref) {
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    */
   function getLabelFromValue(fileValue) {
-    if (isValuePending) {
-      return 'image loading';
-    }
     if (fileValue instanceof window.File) {
       return fileValue.name;
     }
@@ -212,6 +206,23 @@ function FileInput(props, ref) {
   }
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
+
+  /** @type {import('react').PropsWithChildren<object>=} */
+  let statusProps;
+  if (shownErrorMessage) {
+    statusProps = { role: 'alert', className: 'usa-error-message', children: shownErrorMessage };
+  } else if (isUpdated || isValuePending || isPendingValueReceived) {
+    statusProps = { role: 'status', className: 'usa-success-message' };
+    if (isUpdated) {
+      statusProps.children = fileUpdatedText;
+    } else if (isValuePending) {
+      statusProps.children = fileLoadingText;
+      statusProps.className += ' usa-sr-only';
+    } else if (isPendingValueReceived) {
+      statusProps.children = fileLoadedText;
+      statusProps.className += ' usa-sr-only';
+    }
+  }
 
   return (
     <div
@@ -245,16 +256,7 @@ function FileInput(props, ref) {
           {hint}
         </span>
       )}
-      {shownErrorMessage && (
-        <span className="usa-error-message" role="alert">
-          {shownErrorMessage}
-        </span>
-      )}
-      {isUpdated && !shownErrorMessage && (
-        <span className="usa-success-message" role="alert">
-          {fileUpdatedText ?? t('forms.file_input.file_updated')}
-        </span>
-      )}
+      {statusProps && <span {...statusProps} />}
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
