@@ -71,6 +71,8 @@ module PivCacService
       ) do |req|
         req.options.context = { service_name: 'piv_cac_token' }
       end
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+      nil
     end
 
     def verify_token_uri
@@ -88,6 +90,7 @@ module PivCacService
     end
 
     def decode_token_response(res)
+      return { 'error' => 'token.http_failure' } unless res
       return { 'error' => 'token.bad' } unless res.status.to_i == 200
       JSON.parse(res.body)
     rescue JSON::JSONError

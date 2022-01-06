@@ -56,6 +56,7 @@ fr:
           du gouvernement (PIV ou CAC) pour accéder à vos informations.
         did_not_work_html: Veuillez %{please_try_again}. Si ce problème persiste,
           contactez l’administrateur de votre agence.
+        http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
         no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté et
           %{try_again}. Si ce problème persiste, contactez l’administrateur de
           votre agence.
