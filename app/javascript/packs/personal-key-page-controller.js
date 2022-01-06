@@ -6,6 +6,7 @@ const modal = new window.LoginGov.Modal({ el: modalSelector });
 const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
 const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
+const errorMessage = document.getElementById('personal-key-alert');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
@@ -30,13 +31,13 @@ function setInvalidHTML() {
     return;
   }
 
-  document.getElementById('personal-key-alert').classList.remove('display-none');
+  errorMessage.classList.remove('display-none');
 
   isInvalidForm = true;
 }
 
 function unsetInvalidHTML() {
-  document.getElementById('personal-key-alert').classList.add('display-none');
+  errorMessage.classList.add('display-none');
 
   isInvalidForm = false;
 }
@@ -99,7 +100,7 @@ function show(event) {
   modal.on('show', function () {
     input.focus();
   });
-
+  
   modal.show();
 }
 
