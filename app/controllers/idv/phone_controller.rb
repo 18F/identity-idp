@@ -114,10 +114,6 @@ module Idv
     def async_state_done(async_state)
       form_result = step.async_state_done(async_state)
 
-      configured_phones = MfaContext.new(current_user).phone_configurations.map(&:phone)
-      applicant_phone = PhoneFormatter.format(idv_session.applicant['phone'])
-      new_phone_added = !configured_phones.include?(applicant_phone)
-
       analytics.track_event(
         Analytics::IDV_PHONE_CONFIRMATION_VENDOR,
         form_result.to_h.merge(
@@ -125,11 +121,20 @@ module Idv
             [:errors, :phone],
             [:context, :stages, :address],
           ],
-          new_phone_added: new_phone_added,
+          new_phone_added: new_phone_added?,
         ),
       )
       redirect_to_next_step and return if async_state.result[:success]
       handle_proofing_failure
+    end
+
+    def new_phone_added?
+      context = MfaContext.new(current_user)
+      configured_phones = context.phone_configurations.map(&:phone).map do |number|
+        PhoneFormatter.format(number)
+      end
+      applicant_phone = PhoneFormatter.format(idv_session.applicant['phone'])
+      !configured_phones.include?(applicant_phone)
     end
 
     def gpo_letter_available
