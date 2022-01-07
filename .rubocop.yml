@@ -800,6 +800,9 @@ Rails/HttpPositionalArguments:
 Rails/I18nLocaleAssignment:
   Enabled: false
 
+Rails/Inquiry:
+  Enabled: true
+
 Rails/MailerName:
   Enabled: true
 
