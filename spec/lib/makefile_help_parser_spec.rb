@@ -33,9 +33,9 @@ RSpec.describe MakefileHelpParser do
     MAKEFILE
   end
 
-  describe '#expanded_targets' do
+  describe '#build_expanded_targets' do
     it 'is a mapping of line numbers to targets' do
-      expect(parser.expanded_targets).to eq(
+      expect(parser.build_expanded_targets).to eq(
         5 => %w[foo-3000.txt bar-3000.txt].to_set,
         9 => %w[foo-localhost.csv].to_set,
         12 => %w[basic.txt].to_set,

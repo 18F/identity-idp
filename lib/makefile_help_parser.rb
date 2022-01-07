@@ -35,11 +35,17 @@ class MakefileHelpParser
   # @return [Array<Rule>]
   def parse_rules
     target_comments = build_target_comments
+    expanded_targets = build_expanded_targets
 
     target_comments.map do |target, (comment, lineno)|
       if target.include?('$(')
         Rule.new(
-          target: matching_target(lineno, target, target_comments),
+          target: matching_target(
+            lineno: lineno,
+            template: target,
+            target_comments: target_comments,
+            expanded_targets: expanded_targets,
+          ),
           template: target,
           comment: comment,
         )
@@ -55,8 +61,9 @@ class MakefileHelpParser
   # @param [Integer] lineno line number in original Makefile
   # @param [String] template like "tmp/$(HOST)-$(PORT).crt"
   # @param [Hash<String, Array(String, Integer)>] target_comments (see #build_target_comments)
+  # @return [Hash<String, Array(String, Integer)>] expanded_targets (see #build_expanded_targets)
   # @return [String, nil] a target that matches it like "tmp/localhost-3000.crt"
-  def matching_target(lineno, template, target_comments)
+  def matching_target(lineno:, template:, target_comments:, expanded_targets:)
     # "tmp/$(HOST)-$(PORT).crt" into %r|tmp/.+?-.+?.crt|
     rule_regexp = Regexp.new(template.gsub(/\$\([^)]+\)/, '.+?'))
 
@@ -83,7 +90,7 @@ class MakefileHelpParser
 
   # Maps line numbers to expanded targets
   # @return [Hash<Integer, Set<String>>]
-  def expanded_targets
+  def build_expanded_targets
     expanded_makefile, _stderr, _status = Open3.capture3(
       'make', '-f', makefile_path, '--dry-run', '--print-data-base'
     )
