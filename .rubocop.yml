@@ -30,7 +30,6 @@ AllCops:
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
-  NewCops: disable
 
 Rails:
   Enabled: true
