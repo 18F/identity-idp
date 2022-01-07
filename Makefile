@@ -47,7 +47,7 @@ lint: ## Runs all lint tests
 	@echo "--- typescript ---"
 	yarn run typecheck
 	@echo "--- es5-safe ---"
-	NODE_ENV=production ./bin/webpack && yarn es5-safe
+	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
 	@echo "--- asset check ---"
 	make check_asset_strings
