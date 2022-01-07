@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useCookie from '@18f/identity-document-capture/hooks/use-cookie';
 
@@ -14,20 +15,15 @@ describe('document-capture/hooks/use-cookie', () => {
     expect(value).to.equal('baz');
   });
 
-  it('does not interfere with default cookie setting behavior', () => {
-    renderHook(() => useCookie('foo'));
-
-    document.cookie = 'foo=bar';
-
-    expect(document.cookie).to.equal('foo=bar');
-  });
-
   it('sets a new cookie value', () => {
-    const { result } = renderHook(() => useCookie('foo'));
+    const render = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result } = renderHook(render);
 
     const [, setValue] = result.current;
 
+    render.resetHistory();
     setValue('bar');
+    expect(render).to.have.been.calledOnce();
 
     const [value] = result.current;
 
@@ -38,15 +34,39 @@ describe('document-capture/hooks/use-cookie', () => {
   it('unsets a cookie value by null', () => {
     document.cookie = 'foo=bar';
 
-    const { result } = renderHook(() => useCookie('foo'));
+    const render = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result } = renderHook(render);
 
     const [, setValue] = result.current;
 
+    render.resetHistory();
     setValue(null);
+    expect(render).to.have.been.calledOnce();
 
     const [value] = result.current;
 
     expect(document.cookie).to.equal('');
     expect(value).to.be.null();
+  });
+
+  it('returns the same updated value between instances', () => {
+    const render1 = sinon.stub().callsFake(() => useCookie('foo'));
+    const render2 = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result: result1 } = renderHook(render1);
+    const { result: result2 } = renderHook(render2);
+
+    const [, setValue] = result1.current;
+
+    render1.resetHistory();
+    render2.resetHistory();
+    setValue('bar');
+    expect(render1).to.have.been.calledOnce();
+    expect(render2).to.have.been.calledOnce();
+
+    const [value1] = result1.current;
+    const [value2] = result2.current;
+
+    expect(value1).to.equal('bar');
+    expect(value2).to.equal('bar');
   });
 });

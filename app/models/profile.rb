@@ -18,20 +18,6 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
-  # Rails natively handles JSONB columns, however we have been double-serializing our data
-  # until now (saving JSON objects as JSON atoms)
-  # We can remove this override once run the backfill job to re-encode older values
-  def proofing_components
-    value = super
-    if value.present?
-      if value.is_a?(Hash)
-        value
-      elsif value.is_a?(String)
-        JSON.parse(value)
-      end
-    end
-  end
-
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     now = Time.zone.now
@@ -101,7 +87,7 @@ class Profile < ApplicationRecord
   private
 
   def personal_key_generator
-    @_personal_key_generator ||= PersonalKeyGenerator.new(user)
+    @personal_key_generator ||= PersonalKeyGenerator.new(user)
   end
 
   def encrypt_ssn_fingerprint(pii)

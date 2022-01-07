@@ -30,6 +30,7 @@ describe('document-capture/context/upload', () => {
     expect(result.current.isMockClient).to.be.false();
     expect(result.current.backgroundUploadURLs).to.deep.equal({});
     expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
+    expect(result.current.csrf).to.be.null();
     await new Promise((resolve) => result.current.getStatus().catch(resolve));
   });
 

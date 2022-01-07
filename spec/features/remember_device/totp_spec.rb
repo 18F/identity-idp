@@ -38,10 +38,6 @@ describe 'Remembering a TOTP device' do
   end
 
   context 'update totp' do
-    after do
-      travel_back
-    end
-
     def remember_device_and_sign_out_user
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path

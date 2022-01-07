@@ -128,7 +128,7 @@ const noticeError = (error) =>
 loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
-  const csrf = /** @type {string} */ (getMetaContent('csrf-token'));
+  const csrf = getMetaContent('csrf-token');
 
   const formData = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
@@ -152,7 +152,10 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   }
 
   const keepAlive = () =>
-    window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
+    window.fetch(keepAliveEndpoint, {
+      method: 'POST',
+      headers: /** @type {string[][]} */ ([csrf && ['X-CSRF-Token', csrf]].filter(Boolean)),
+    });
 
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,

@@ -33,7 +33,7 @@ function ButtonTo({ url, method, children, ...buttonProps }) {
       {createPortal(
         <form ref={formRef} method="post" action={url}>
           <input type="hidden" name="_method" value={method} />
-          <input type="hidden" name="authenticity_token" value={csrf} />
+          {csrf && <input type="hidden" name="authenticity_token" value={csrf} />}
         </form>,
         document.body,
       )}

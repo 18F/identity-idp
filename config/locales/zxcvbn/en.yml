@@ -17,6 +17,7 @@ en:
         For a stronger password, use a few words separated by spaces, but avoid
         common phrases
       names_and_surnames_by_themselves_are_easy_to_guess: Names and surnames by themselves are easy to guess
+      no_need_for_symbols_digits_or_uppercase_letters: No need for symbols, digits, or uppercase letters
       predictable_substitutions_like__instead_of_a_dont_help_very_much: Predictable substitutions like ‘@’ instead of ‘a’ don’t help very much
       recent_years_are_easy_to_guess: Recent years are easy to guess
       repeats_like_aaa_are_easy_to_guess: Repeats like “aaa” are easy to guess
@@ -30,4 +31,5 @@ en:
       this_is_a_top_100_common_password: This is a top-100 common password
       this_is_a_very_common_password: This is a very common password
       this_is_similar_to_a_commonly_used_password: This is similar to a commonly used password
+      use_a_few_words_avoid_common_phrases: Use a few words, avoid common phrases
       use_a_longer_keyboard_pattern_with_more_turns: Use a longer keyboard pattern with more turns

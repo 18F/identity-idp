@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_07_125122) do
+ActiveRecord::Schema.define(version: 2022_01_05_174343) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -81,21 +82,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_125122) do
     t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
   end
 
-  create_table "delayed_jobs", force: :cascade do |t|
-    t.integer "priority", default: 0, null: false
-    t.integer "attempts", default: 0, null: false
-    t.text "handler", null: false
-    t.text "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string "locked_by"
-    t.string "queue"
-    t.datetime "created_at", precision: 6
-    t.datetime "updated_at", precision: 6
-    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
-  end
-
   create_table "deleted_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "uuid", null: false
@@ -114,7 +100,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_125122) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
-    t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
   end
 
@@ -370,7 +355,6 @@ ActiveRecord::Schema.define(version: 2021_12_07_125122) do
     t.datetime "updated_at"
     t.boolean "phone_confirmed", default: false
     t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
-    t.index ["updated_at"], name: "index_otp_requests_trackers_on_updated_at"
   end
 
   create_table "partner_account_statuses", force: :cascade do |t|
@@ -569,9 +553,8 @@ ActiveRecord::Schema.define(version: 2021_12_07_125122) do
     t.integer "user_id"
     t.datetime "returned_at"
     t.boolean "billable"
-    t.index ["issuer", "requested_at"], name: "index_sp_return_logs_on_issuer_and_requested_at"
+    t.index "((requested_at)::date), issuer", name: "index_sp_return_logs_on_requested_at_date_issuer", where: "(returned_at IS NOT NULL)"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
-    t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
   end
 
   create_table "throttles", force: :cascade do |t|

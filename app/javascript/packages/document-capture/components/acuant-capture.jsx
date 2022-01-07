@@ -20,7 +20,6 @@ import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */

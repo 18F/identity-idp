@@ -8,21 +8,27 @@ CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
 
+.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries
+
+help: ## Show this help
+	@echo "--- Help ---"
+	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
 all: check
 
-setup $(CONFIG): config/application.yml.default
+setup $(CONFIG): config/application.yml.default ## Runs setup scripts (updates packages, dependencies, databases, etc)
 	bin/setup
 
-fast_setup:
+fast_setup: ## Abbreviated setup script that skips linking some files
 	bin/fast_setup
 
-docker_setup:
+docker_setup: ## Setup script for Docker development
 	bin/docker_setup
 
-check: lint test
+check: lint test ## Runs lint tests and spec tests
 
-lint:
-# Ruby
+lint: ## Runs all lint tests
+	# Ruby
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
@@ -33,14 +39,14 @@ lint:
 	bin/rails zeitwerk:check
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
-# JavaScript
+	# JavaScript
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
 	yarn run typecheck
 	@echo "--- es5-safe ---"
 	NODE_ENV=production ./bin/webpack && yarn es5-safe
-# Other
+	# Other
 	@echo "--- asset check ---"
 	make check_asset_strings
 	@echo "--- lint yaml ---"
@@ -50,23 +56,23 @@ lint:
 	@echo "--- stylelint ---"
 	yarn run stylelint app/assets/stylesheets/**/*.scss app/javascript/**/*.scss
 
-lint_erb:
+lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components
 
-lint_yaml: normalize_yaml
+lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
-lintfix:
+lintfix: ## Runs rubocop fix
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -a
 
-brakeman:
+brakeman: ## Runs brakeman
 	bundle exec brakeman
 
-test: $(CONFIG)
+test: $(CONFIG) ## Runs RSpec and yarn tests
 	RAILS_ENV=test bundle exec rake parallel:spec && yarn test
 
-fast_test:
+fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
@@ -81,15 +87,13 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
 		-keyout tmp/$(HOST)-$(PORT).key \
 		-out tmp/$(HOST)-$(PORT).crt
 
-run:
+run: ## Runs the development server
 	foreman start -p $(PORT)
 
-run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
+run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the develpment server with HTTPS
 	HTTPS=on rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
 
-.PHONY: setup all lint run test check brakeman
-
-normalize_yaml:
+normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
 	find ./config/locales/telephony "./config/locales/telephony*" -type f | xargs yarn normalize-yaml --disable-smart-punctuation
 	find ./config/locales -not -path "./config/locales/telephony*" -type f | xargs yarn normalize-yaml \
@@ -97,17 +101,17 @@ normalize_yaml:
 		config/pinpoint_overrides.yml \
 		config/country_dialing_codes.yml
 
-optimize_svg:
+optimize_svg: ## Optimizes SVG images
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
 	# See: https://github.com/svg/svgo/issues/888
 	find app/assets/images public -name '*.svg' | xargs ./node_modules/.bin/svgo --multipass --disable minifyStyles --disable=removeViewBox --config '{"plugins":[{"removeAttrs":{"attrs":"data-name"}}]}'
 
-optimize_assets: optimize_svg
+optimize_assets: optimize_svg ## Optimizes all assets
 
-lint_optimized_assets: optimize_assets
+lint_optimized_assets: optimize_assets ## Checks that assets are optimizes
 	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
-update_pinpoint_supported_countries:
+update_pinpoint_supported_countries: ## Updates list of countries suppored by Pinpoint for voice and SMS
 	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
 	bundle exec ./scripts/deep-merge-yaml \
 		--comment 'Generated from `make update_pinpoint_supported_countries`' \
@@ -118,14 +122,8 @@ update_pinpoint_supported_countries:
 		> config/country_dialing_codes.yml
 	yarn normalize-yaml config/country_dialing_codes.yml config/pinpoint_supported_countries.yml
 
-lint_country_dialing_codes: update_pinpoint_supported_countries
+lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
 
-check_asset_strings:
+check_asset_strings: ## Checks for strings
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
-
-local_gems_bundle:
-	BUNDLE_GEMFILE=Gemfile-dev bundle install
-
-local_gems_run: local_gems_bundle
-	BUNDLE_GEMFILE=Gemfile-dev make run

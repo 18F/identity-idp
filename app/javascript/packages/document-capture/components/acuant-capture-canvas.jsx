@@ -3,7 +3,6 @@ import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useImmutableCallback from '../hooks/use-immutable-callback';
-import './acuant-capture-canvas.scss';
 
 /** @typedef {import('../context/acuant').AcuantJavaScriptWebSDK} AcuantJavaScriptWebSDK */
 

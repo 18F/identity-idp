@@ -32,6 +32,6 @@ class PasswordResetEmailForm
   end
 
   def user
-    @_user ||= User.find_with_email(email)
+    @user ||= User.find_with_email(email)
   end
 end

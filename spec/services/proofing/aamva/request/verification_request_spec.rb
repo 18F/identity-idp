@@ -70,20 +70,8 @@ describe Proofing::Aamva::Request::VerificationRequest do
       end
     end
 
-    context 'when the request times out once' do
-      it 'retries and tries again' do
-        stub_request(:post, config.verification_url).
-          to_timeout.
-          to_return(body: AamvaFixtures.verification_response, status: 200)
-
-        result = subject.send
-
-        expect(result.success?).to eq(true)
-      end
-    end
-
     # rubocop:disable Layout/LineLength
-    context 'when the request times out a second time' do
+    context 'when the request times out' do
       it 'raises an error' do
         stub_request(:post, config.verification_url).
           to_timeout

@@ -519,7 +519,7 @@ describe SamlIdpController do
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
                service_provider: sp1_issuer,
-               endpoint: '/api/saml/auth2021',
+               endpoint: '/api/saml/auth2022',
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
@@ -877,7 +877,6 @@ describe SamlIdpController do
 
         it 'redirects to verify attributes' do
           expect(response).to redirect_to sign_up_completed_url
-          expect(subject.user_session.key?(:verify_shared_attributes)).to eq(true)
         end
 
         it 'does not redirect after verifying attributes' do
@@ -965,7 +964,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -996,7 +995,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -1061,7 +1060,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -1089,7 +1088,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           service_provider: auth_settings.issuer,
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -1117,7 +1116,7 @@ describe SamlIdpController do
           nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -1130,7 +1129,7 @@ describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2021?SAMLRequest=bang!'
+        head '/api/saml/auth2022?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -1294,7 +1293,7 @@ describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2021_cert
+          crt = AppArtifacts.store.saml_2022_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
@@ -1595,7 +1594,7 @@ describe SamlIdpController do
             Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           ],
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: true,
           finish_profile: false,
         }
@@ -1631,7 +1630,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: false,
         }
@@ -1661,7 +1660,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
-          endpoint: '/api/saml/auth2021',
+          endpoint: '/api/saml/auth2022',
           idv: false,
           finish_profile: true,
         }

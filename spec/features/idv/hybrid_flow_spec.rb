@@ -11,14 +11,15 @@ describe 'Hybrid Flow' do
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
 
+  before do
+    allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+      @sms_link = config[:link]
+      impl.call(**config)
+    end.at_least(1).times
+  end
+
   it 'proofs and hands off to mobile', js: true do
     user = nil
-    sms_link = nil
-
-    expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
-      sms_link = config[:link]
-      impl.call(**config)
-    end
 
     perform_in_browser(:desktop) do
       user = sign_in_and_2fa_user
@@ -29,10 +30,10 @@ describe 'Hybrid Flow' do
       expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
 
-    expect(sms_link).to be_present
+    expect(@sms_link).to be_present
 
     perform_in_browser(:mobile) do
-      visit sms_link
+      visit @sms_link
       attach_and_submit_images
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
     end
@@ -56,6 +57,36 @@ describe 'Hybrid Flow' do
 
       expect(page).to have_current_path(account_path)
       expect(page).to have_content(t('headings.account.verified_account'))
+    end
+  end
+
+  it 'shows the waiting screen correctly after cancelling from mobile and restarting', js: true do
+    user = nil
+
+    perform_in_browser(:desktop) do
+      user = sign_in_and_2fa_user
+      complete_doc_auth_steps_before_send_link_step
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
+    end
+
+    expect(@sms_link).to be_present
+
+    perform_in_browser(:mobile) do
+      visit @sms_link
+      click_on t('links.cancel')
+      click_on t('forms.buttons.cancel') # Yes, cancel
+    end
+
+    perform_in_browser(:desktop) do
+      expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+      click_on t('doc_auth.buttons.use_phone')
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
   end
 end

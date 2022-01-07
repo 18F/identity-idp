@@ -163,7 +163,7 @@ module DocAuth
       end
 
       def timeout
-        config.timeout&.to_i || 45
+        IdentityConfig.store.lexisnexis_trueid_timeout
       end
     end
   end

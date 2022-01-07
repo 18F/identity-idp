@@ -23,8 +23,8 @@ module SamlAuthHelper
     settings.double_quote_xml_attribute_values = true
 
     # IdP setting
-    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2021"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2021"
+    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
+    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2022"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -101,13 +101,13 @@ module SamlAuthHelper
   end
 
   def saml_test_sp_key
-    @private_key ||= OpenSSL::PKey::RSA.new(
+    @saml_test_sp_key ||= OpenSSL::PKey::RSA.new(
       File.read(Rails.root + 'keys/saml_test_sp.key'),
     ).to_pem
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2021_cert
+    AppArtifacts.store.saml_2022_cert
   end
 
   public
@@ -197,7 +197,7 @@ module SamlAuthHelper
     click_submit_default
 
     expect(current_url).to match new_user_session_path
-    expect(page).to have_content(t('titles.sign_up.new_sp'))
+    expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', app_name: APP_NAME))
 
     click_agree_and_continue
   end

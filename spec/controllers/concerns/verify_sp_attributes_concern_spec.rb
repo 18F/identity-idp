@@ -137,7 +137,7 @@ RSpec.describe VerifySpAttributesConcern do
     end
   end
 
-  describe '#needs_completions_screen?' do
+  describe '#needs_completion_screen_reason' do
     let(:sp_session_identity) do
       build(
         :service_provider_identity,
@@ -149,7 +149,7 @@ RSpec.describe VerifySpAttributesConcern do
     let(:user) { build(:user) }
     let(:verified_attributes) { nil }
 
-    subject(:needs_completions_screen?) { controller.needs_completions_screen? }
+    subject(:needs_completion_screen_reason) { controller.needs_completion_screen_reason }
 
     before do
       allow(controller).to receive(:sp_session).and_return(sp_session)
@@ -167,8 +167,8 @@ RSpec.describe VerifySpAttributesConcern do
       end
 
       context 'when the sp_session_identity has not been saved' do
-        it 'is true' do
-          expect(needs_completions_screen?).to be_truthy
+        it 'is :new_sp' do
+          expect(needs_completion_screen_reason).to eq(:new_sp)
         end
       end
 
@@ -177,16 +177,16 @@ RSpec.describe VerifySpAttributesConcern do
 
         context 'when requested attributes are nil' do
           let(:requested_attributes) { nil }
-          it 'is false' do
-            expect(needs_completions_screen?).to be_falsy
+          it 'is nil' do
+            expect(needs_completion_screen_reason).to be_nil
           end
         end
 
         context 'when requested attributes exist and are not verified' do
           let(:requested_attributes) { ['first_name'] }
           let(:verified_attributes) { nil }
-          it 'is true' do
-            expect(needs_completions_screen?).to be_truthy
+          it 'is :new_attributes' do
+            expect(needs_completion_screen_reason).to eq(:new_attributes)
           end
         end
 
@@ -194,16 +194,16 @@ RSpec.describe VerifySpAttributesConcern do
           let(:requested_attributes) { ['first_name'] }
           let(:verified_attributes) { ['first_name'] }
 
-          it 'is false' do
-            expect(needs_completions_screen?).to be_falsy
+          it 'is nil' do
+            expect(needs_completion_screen_reason).to be_nil
           end
         end
       end
     end
 
     context 'without an issuer' do
-      it 'is false' do
-        expect(needs_completions_screen?).to be_falsy
+      it 'is nil' do
+        expect(needs_completion_screen_reason).to be_nil
       end
     end
   end

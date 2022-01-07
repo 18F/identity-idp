@@ -128,8 +128,8 @@ en:
     webauthn_platform_setup:
       continue: Continue
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
-      instructions_title: Use Touch or Face Unlock on to access your account.
-      intro: Use Touch or Face Unlock on to access your account.
+      instructions_title: Use Touch or Face Unlock to access your account.
+      intro: Use Touch or Face Unlock to access your account.
       login_text: When you are ready, press the button.
       nickname: Device nickname
     webauthn_setup:

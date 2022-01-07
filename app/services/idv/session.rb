@@ -65,7 +65,7 @@ module Idv
     end
 
     def profile
-      @_profile ||= Profile.find_by(id: profile_id)
+      @profile ||= Profile.find_by(id: profile_id)
     end
 
     def clear

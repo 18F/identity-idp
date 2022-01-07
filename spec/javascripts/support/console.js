@@ -44,15 +44,17 @@ export function chaiConsoleSpy(chai, utils) {
  * `chaiConsoleSpy` Chai plugin.
  */
 export function useConsoleLogSpy() {
+  let originalConsoleError;
   beforeEach(() => {
     console.unverifiedCalls = [];
-    sinon.stub(console, 'error').callsFake((message, ...args) => {
+    originalConsoleError = console.error;
+    console.error = sinon.stub().callsFake((message, ...args) => {
       console.unverifiedCalls = console.unverifiedCalls.concat(format(message, ...args));
     });
   });
 
   afterEach(() => {
-    console.error.restore();
+    console.error = originalConsoleError;
     expect(console.unverifiedCalls).to.be.empty(
       `Unexpected console logging: ${console.unverifiedCalls.join(', ')}`,
     );

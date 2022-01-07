@@ -10,7 +10,7 @@ class EventsController < ApplicationController
     @view_model = AccountShow.new(
       decrypted_pii: nil,
       personal_key: nil,
-      sp_session_request_url: sp_session_request_url_without_prompt_login,
+      sp_session_request_url: sp_session_request_url_with_updated_params,
       sp_name: decorated_session.sp_name,
       decorated_user: current_user.decorate,
       locked_for_session: pii_locked_for_session?(current_user),
@@ -34,7 +34,7 @@ class EventsController < ApplicationController
   end
 
   def device_id
-    @device_id_param ||= begin
+    @device_id ||= begin
       id = params[:id].try(:to_i)
       id || 0
     end

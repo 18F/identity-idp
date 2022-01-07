@@ -64,20 +64,8 @@ describe Proofing::Aamva::Request::AuthenticationTokenRequest do
       end
     end
 
-    context 'when the request times out once' do
-      it 'retries and tries again' do
-        stub_request(:post, config.auth_url).
-          to_timeout.
-          to_return(body: AamvaFixtures.authentication_token_response, status: 200)
-
-        result = subject.send
-
-        expect(result.auth_token).to eq('KEYKEYKEY')
-      end
-    end
-
     # rubocop:disable Layout/LineLength
-    context 'when the request times out a second time' do
+    context 'when the request times out' do
       it 'raises an error' do
         stub_request(:post, config.auth_url).
           to_timeout

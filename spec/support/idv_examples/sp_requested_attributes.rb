@@ -75,7 +75,7 @@ shared_examples 'sp requesting attributes' do |sp|
       if sp == :oidc
         expect(current_url).to include('http://localhost:7654/auth/result')
       elsif sp == :saml
-        expect(current_url).to include(api_saml_auth2021_url)
+        expect(current_url).to include(api_saml_auth2022_url)
       end
     end
   end

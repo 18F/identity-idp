@@ -1,6 +1,7 @@
 //= link_tree ../images
 //= link application.js
 //= link application.css
+//= link document-capture.css
 
 //= link email.css
 //= link es5-shim.min.js

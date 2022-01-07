@@ -21,10 +21,10 @@ module Idv
     attr_reader :current_user
 
     def user_mail_events
-      @_user_mail_events ||= current_user.events.
-                             gpo_mail_sent.
-                             order('updated_at DESC').
-                             limit(MAX_MAIL_EVENTS)
+      @user_mail_events ||= current_user.events.
+                            gpo_mail_sent.
+                            order('updated_at DESC').
+                            limit(MAX_MAIL_EVENTS)
     end
 
     def max_events?

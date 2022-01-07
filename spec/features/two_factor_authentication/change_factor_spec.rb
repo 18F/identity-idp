@@ -10,10 +10,6 @@ feature 'Changing authentication factor' do
       travel_to(reauthn_date)
     end
 
-    after do
-      travel_back
-    end
-
     scenario 'editing password' do
       visit manage_password_path
 

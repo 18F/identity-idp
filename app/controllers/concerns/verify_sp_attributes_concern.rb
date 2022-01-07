@@ -1,19 +1,15 @@
 module VerifySpAttributesConcern
-  def needs_completions_screen?
-    sp_session[:issuer].present? &&
-      (sp_session_identity.nil? ||
-        !requested_attributes_verified? ||
-        consent_has_expired? ||
-        consent_was_revoked?)
-  end
+  def needs_completion_screen_reason
+    return nil if sp_session[:issuer].blank?
 
-  def needs_sp_attribute_verification?
-    if needs_completions_screen?
-      set_verify_shared_attributes_session
-      true
-    else
-      clear_verify_attributes_sessions
-      false
+    if sp_session_identity.nil?
+      :new_sp
+    elsif !requested_attributes_verified?
+      :new_attributes
+    elsif consent_has_expired?
+      :consent_expired
+    elsif consent_was_revoked?
+      :consent_revoked
     end
   end
 
@@ -27,19 +23,6 @@ module VerifySpAttributesConcern
       last_consented_at: Time.zone.now,
       clear_deleted_at: true,
     )
-  end
-
-  def set_verify_shared_attributes_session
-    user_session[:verify_shared_attributes] = true
-  end
-
-  def new_service_provider_attributes
-    user_session[:verify_shared_attributes] if
-      user_session.instance_of?(ActiveSupport::HashWithIndifferentAccess)
-  end
-
-  def clear_verify_attributes_sessions
-    user_session[:verify_shared_attributes] = false
   end
 
   def consent_has_expired?

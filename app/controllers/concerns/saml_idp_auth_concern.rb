@@ -187,12 +187,12 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    return @_sp if defined?(@_sp)
-    @_sp = ServiceProvider.find_by(issuer: current_issuer)
+    return @current_service_provider if defined?(@current_service_provider)
+    @current_service_provider = ServiceProvider.find_by(issuer: current_issuer)
   end
 
   def current_issuer
-    @_issuer ||= saml_request.service_provider&.identifier
+    @current_issuer ||= saml_request.service_provider&.identifier
   end
 
   def request_url

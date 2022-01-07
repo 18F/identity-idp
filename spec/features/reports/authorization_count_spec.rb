@@ -380,7 +380,7 @@ describe 'authorization count' do
   def reset_monthly_auth_count_and_login
     MonthlySpAuthCount.delete_all
     SpReturnLog.delete_all
-    visit api_saml_logout2021_url
+    visit api_saml_logout2022_url
     fill_in_credentials_and_submit(email, RequestHelper::VALID_PASSWORD)
   end
 end

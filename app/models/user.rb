@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
+  self.ignored_columns = %w[totp_timestamp]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
@@ -85,7 +85,7 @@ class User < ApplicationRecord
   end
 
   def active_profile
-    @_active_profile ||= profiles.verified.find(&:active?)
+    @active_profile ||= profiles.verified.find(&:active?)
   end
 
   def pending_profile?

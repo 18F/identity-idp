@@ -6,7 +6,7 @@ class SamlEndpoint
   end
 
   def self.suffixes
-    endpoint_configs.map { |config| config[:suffix] }
+    endpoint_configs.pluck(:suffix)
   end
 
   def self.endpoint_configs
@@ -53,7 +53,7 @@ class SamlEndpoint
 
   def suffix
     @suffix ||= begin
-      suffixes = self.class.endpoint_configs.map { |config| config[:suffix] }
+      suffixes = self.class.endpoint_configs.pluck(:suffix)
       suffixes.find do |suffix|
         request.path.match(/(metadata|auth(post)?|logout)#{suffix}$/)
       end

@@ -19,6 +19,20 @@ require 'telephony/pinpoint/sms_sender'
 require 'telephony/pinpoint/voice_sender'
 
 module Telephony
+  # GSM 03.38 character set
+  # https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-limitations-characters.html
+  GSM_NON_WHITE_SPACE_CHARACTERS = %w[
+    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e
+    f g h i j k l m n o p q r s t u v w x y z à Å å Ä ä Ç É é è ì Ñ ñ ò Ø ø Ö ö ù Ü ü Æ æ ß 0 1 2 3
+    4 5 6 7 8 9 & * @ : , ¤ $ = ! > # - ¡ ¿ ( < % . + £ ? " ) § ; ' / _ ¥ Δ Φ Γ Λ Ω Π Ψ Σ Θ Ξ
+  ].to_set.freeze
+  GSM_WHITESPACE_CHARACTERS = ["\n", "\r", ' '].to_set.freeze
+  GSM_DOUBLE_CHARACTERS = ['^', '{', '}', '\\', '[', ']', '~', '|', '€'].to_set.freeze
+  GSM_CHARACTERS = (GSM_NON_WHITE_SPACE_CHARACTERS + GSM_WHITESPACE_CHARACTERS +
+                   GSM_DOUBLE_CHARACTERS).freeze
+
+  UCS_2_BASIC_CHAR_MAX = 0xFFFF
+
   extend SingleForwardable
 
   def self.config
@@ -72,4 +86,71 @@ module Telephony
 
     sender.phone_info(phone_number)
   end
+
+  # A character in a GSM 03.38 message counts as one character, unless it is explicitly one of
+  # the characters that requires an escape sequence, which makes it count as two characters.
+  #
+  # Messages that contain non-GSM 03.38 characters are encoded as UCS-2 with 2-byte characters.
+  # Codepoints less than 0xFFFF can be represented as one character, but other codepoints are
+  # encoded as two.
+  #
+  # This method does not handle message length added for multi-part message headers.
+  def self.sms_character_length(text)
+    if gsm_chars_only?(text)
+      text.chars.sum do |character|
+        if GSM_DOUBLE_CHARACTERS.include?(character)
+          2
+        else
+          1
+        end
+      end
+    else
+      text.chars.sum do |char|
+        char.codepoints.sum do |codepoint|
+          if codepoint <= UCS_2_BASIC_CHAR_MAX
+            1
+          else
+            2
+          end
+        end
+      end
+    end
+  end
+
+  # A single GSM 03.38 message can contain up to 160 characters. If the length is beyond that,
+  # the message is split into parts containing 153 characters each. The capacity is lower because
+  # messages must now also encode information about message order.
+  #
+  # UCS-2 messages behave similarly, but the size is limited to 70 and 67 characters respectively.
+  def self.sms_parts(text)
+    length = sms_character_length(text)
+
+    if gsm_chars_only?(text)
+      gsm_parts(length)
+    else
+      non_gsm_parts(length)
+    end
+  end
+
+  def self.gsm_chars_only?(text)
+    text.chars.all? { |x| GSM_CHARACTERS.include?(x) }
+  end
+
+  def self.gsm_parts(length)
+    if length <= 160
+      1
+    else
+      (length / 153.0).ceil
+    end
+  end
+
+  def self.non_gsm_parts(length)
+    if length <= 70
+      1
+    else
+      (length / 67.0).ceil
+    end
+  end
+
+  private_class_method :gsm_parts, :non_gsm_parts
 end

@@ -47,6 +47,10 @@ module Proofing
         def metric_name
           'lexis_nexis_instant_verify'
         end
+
+        def timeout
+          IdentityConfig.store.lexisnexis_instant_verify_timeout
+        end
       end
     end
   end

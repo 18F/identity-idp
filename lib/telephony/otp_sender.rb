@@ -33,6 +33,30 @@ module Telephony
       response
     end
 
+    def authentication_message
+      wrap_in_ssml_if_needed(
+        I18n.t(
+          "telephony.authentication_otp.#{channel}",
+          app_name: APP_NAME,
+          code: otp_transformed_for_channel,
+          expiration: expiration,
+          domain: domain,
+        ),
+      )
+    end
+
+    def confirmation_message
+      wrap_in_ssml_if_needed(
+        I18n.t(
+          "telephony.confirmation_otp.#{channel}",
+          app_name: APP_NAME,
+          code: otp_transformed_for_channel,
+          expiration: expiration,
+          domain: domain,
+        ),
+      )
+    end
+
     private
 
     def adapter
@@ -58,30 +82,6 @@ module Telephony
       }
       output = response.to_h.merge(extra).to_json
       Telephony.config.logger.info(output)
-    end
-
-    def authentication_message
-      wrap_in_ssml_if_needed(
-        I18n.t(
-          "telephony.authentication_otp.#{channel}",
-          app_name: APP_NAME,
-          code: otp_transformed_for_channel,
-          expiration: expiration,
-          domain: domain,
-        ),
-      )
-    end
-
-    def confirmation_message
-      wrap_in_ssml_if_needed(
-        I18n.t(
-          "telephony.confirmation_otp.#{channel}",
-          app_name: APP_NAME,
-          code: otp_transformed_for_channel,
-          expiration: expiration,
-          domain: domain,
-        ),
-      )
     end
 
     def otp_transformed_for_channel
