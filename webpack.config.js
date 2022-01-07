@@ -62,6 +62,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       entrypoints: true,
       publicPath: true,
       writeToDisk: true,
+      output: 'manifest.json',
     }),
     new RailsI18nWebpackPlugin(),
   ],
