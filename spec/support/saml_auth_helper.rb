@@ -23,8 +23,8 @@ module SamlAuthHelper
     settings.double_quote_xml_attribute_values = true
 
     # IdP setting
-    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2021"
-    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2021"
+    settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2022"
+    settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2022"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 

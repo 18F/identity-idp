@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe SamlEndpoint do
-  let(:path) { '/api/saml/auth2021' }
+  let(:path) { '/api/saml/auth2022' }
   let(:request) do
     request_double = double
     allow(request_double).to receive(:path).and_return(path)
@@ -75,9 +75,9 @@ describe SamlEndpoint do
     it 'returns the saml metadata with the suffix added to the urls' do
       result = subject.saml_metadata
 
-      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2021\Z})
+      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2022\Z})
       expect(result.configurator.single_logout_service_post_location).to match(
-        %r{api/saml/logout2021\Z},
+        %r{api/saml/logout2022\Z},
       )
     end
   end
