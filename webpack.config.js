@@ -4,8 +4,9 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 
 const mode = process.env.NODE_ENV || 'development';
-const isProduction = mode === 'production';
-const hashSuffix = isProduction ? '-[contenthash:8]' : '';
+const isProductionEnv = mode === 'production';
+const isTestEnv = mode === 'test';
+const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 
 const entries = glob('app/{components,javascript/packs}/*.{js,jsx}');
@@ -38,7 +39,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   module: {
     rules: [
-      !isProduction && {
+      !isProductionEnv && {
         test: /\.js$/,
         include: /node_modules/,
         enforce: 'pre',
@@ -64,6 +65,12 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       writeToDisk: true,
       output: 'manifest.json',
     }),
-    new RailsI18nWebpackPlugin(),
+    new RailsI18nWebpackPlugin({
+      onMissingString(key, locale) {
+        if (isTestEnv) {
+          throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
+        }
+      },
+    }),
   ],
 });
