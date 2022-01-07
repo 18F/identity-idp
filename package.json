@@ -16,8 +16,7 @@
     "normalize-yaml": "normalize-yaml",
     "clean": "rm -f public/packs/*",
     "prebuild": "yarn run clean",
-    "build": "webpack",
-    "dev": "webpack serve"
+    "build": "webpack"
   },
   "dependencies": {
     "@babel/core": "^7.15.5",

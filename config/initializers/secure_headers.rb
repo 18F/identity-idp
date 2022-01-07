@@ -7,7 +7,6 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_permitted_cross_domain_policies = 'none'
 
   connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
-  connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
@@ -45,12 +44,17 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
 
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(
-                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'", 'localhost:3035'],
+                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
                    style_src: ["'self'", "'unsafe-inline'"],
                  )
                else
                  default_csp_config
                end
+
+  if ENV['WEBPACK_PORT']
+    config.csp[:connect_src] << "ws://localhost:#{ENV['WEBPACK_PORT']}"
+    config.csp[:script_src] << "localhost:#{ENV['WEBPACK_PORT']}"
+  end
 
   config.cookies = {
     secure: true, # mark all cookies as "Secure"

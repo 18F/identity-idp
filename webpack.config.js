@@ -6,17 +6,17 @@ const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin'
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
 const hashSuffix = isProduction ? '-[contenthash:8].digested' : '';
-const isDevServer = !!process.env.WEBPACK_SERVE;
+const devServerPort = process.env.WEBPACK_PORT;
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool: 'eval-source-map',
-  devServer: {
+  devServer: devServerPort && {
     static: {
       directory: './public',
       watch: false,
     },
-    port: 3035,
+    port: devServerPort,
     headers: { 'Access-Control-Allow-Origin': '*' },
     hot: false,
   },
@@ -29,7 +29,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     chunkFilename: `[name].chunk${hashSuffix}.js`,
     sourceMapFilename: `[name]${hashSuffix}.js.map`,
     path: resolve(__dirname, 'public/packs'),
-    publicPath: isDevServer ? 'http://localhost:3035/packs/' : '/packs/',
+    publicPath: devServerPort ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
