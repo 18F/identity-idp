@@ -753,6 +753,18 @@ Performance/UnfreezeString:
 Performance/UriDefaultParser:
   Enabled: true
 
+Rails/ActiveRecordCallbacksOrder:
+  Enabled: true
+
+Rails/AddColumnIndex:
+  Enabled: true
+
+Rails/AfterCommitOverride:
+  Enabled: true
+
+Rails/AttributeDefaultBlockValue:
+  Enabled: true
+
 Rails/ApplicationMailer:
   Enabled: false
 
@@ -766,8 +778,17 @@ Rails/DynamicFindBy:
   Exclude:
     - spec/features/**/*.rb
 
+Rails/EagerEvaluationLogMessage:
+  Enabled: true
+
+Rails/ExpandedDateRange:
+  Enabled: true
+
 Rails/FilePath:
   Enabled: false
+
+Rails/FindById:
+  Enabled: true
 
 Rails/HttpPositionalArguments:
   Description: Use keyword arguments instead of positional arguments in http method calls.
@@ -776,10 +797,46 @@ Rails/HttpPositionalArguments:
     - spec/**/*
     - test/**/*
 
+Rails/I18nLocaleAssignment:
+  Enabled: false
+
+Rails/Inquiry:
+  Enabled: true
+
+Rails/MailerName:
+  Enabled: true
+
+Rails/MatchRoute:
+  Enabled: true
+
+Rails/NegateInclude:
+  Enabled: false
+
+Rails/Pluck:
+  Enabled: true
+
+Rails/PluckInWhere:
+  Enabled: true
+
 Rails/Present:
   Enabled: false
 
+Rails/RedundantTravelBack:
+  Enabled: true
+
 Rails/RelativeDateConstant:
+  Enabled: false
+
+Rails/RenderInline:
+  Enabled: true
+
+Rails/RenderPlainText:
+  Enabled: true
+
+Rails/ShortI18n:
+  Enabled: true
+
+Rails/SquishedSQLHeredocs:
   Enabled: false
 
 Rails/TimeZone:
@@ -790,6 +847,21 @@ Rails/TimeZone:
   SupportedStyles:
     - strict
     - flexible
+
+Rails/TimeZoneAssignment:
+  Enabled: true
+
+Rails/UnusedIgnoredColumns:
+  Enabled: true
+
+Rails/WhereEquals:
+  Enabled: true
+
+Rails/WhereExists:
+  Enabled: true
+
+Rails/WhereNot:
+  Enabled: false
 
 Security/Eval:
   Enabled: true

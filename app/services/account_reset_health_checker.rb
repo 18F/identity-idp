@@ -9,10 +9,12 @@ module AccountResetHealthChecker
 
   # @api private
   def request_not_serviced_within_wait_period_plus_2_hours?
-    AccountResetRequest.where(
-      sql,
-      tvalue: Time.zone.now - IdentityConfig.store.account_reset_wait_period_days.days - 2.hours,
-    ).exists?
+    AccountResetRequest.exists?(
+      [
+        sql,
+        tvalue: Time.zone.now - IdentityConfig.store.account_reset_wait_period_days.days - 2.hours,
+      ],
+    )
   end
 
   def sql

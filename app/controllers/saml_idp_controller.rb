@@ -32,7 +32,9 @@ class SamlIdpController < ApplicationController
   end
 
   def metadata
+    # rubocop:disable Rails/RenderInline
     render inline: saml_metadata.signed, content_type: 'text/xml'
+    # rubocop:enable Rails/RenderInline
   end
 
   def logout

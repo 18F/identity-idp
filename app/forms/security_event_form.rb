@@ -147,11 +147,11 @@ class SecurityEventForm
   def record_already_exists?
     return @record_already_exists if defined?(@record_already_exists)
 
-    @record_already_exists = SecurityEvent.where(
+    @record_already_exists = SecurityEvent.exists?(
       issuer: service_provider.issuer,
       jti: jti,
       user_id: user.id,
-    ).exists?
+    )
   end
 
   def validate_iss
