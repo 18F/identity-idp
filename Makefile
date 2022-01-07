@@ -154,4 +154,4 @@ $(ARTIFACT_DESTINATION_FILE):
 	  --exclude='./pwned_passwords/pwned_passwords.txt' \
 	  --exclude='./vendor/ruby' \
 	  --exclude='./config/application.yml' \
-	  -cf - "." | "$(GZIP_COMMAND)" > "$(ARTIFACT_DESTINATION_FILE)"
+	  -cf - "." | "$(GZIP_COMMAND)" > $@
