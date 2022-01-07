@@ -8,6 +8,8 @@ const isProduction = mode === 'production';
 const hashSuffix = isProduction ? '-[contenthash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 
+const entries = glob('app/{components,javascript/packs}/*.{js,jsx}');
+
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool: 'eval-source-map',
@@ -20,7 +22,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     headers: { 'Access-Control-Allow-Origin': '*' },
     hot: false,
   },
-  entry: glob('app/{components,javascript/packs}/*.{js,jsx}').reduce((result, path) => {
+  entry: entries.reduce((result, path) => {
     result[parse(path).name] = resolve(path);
     return result;
   }, {}),
