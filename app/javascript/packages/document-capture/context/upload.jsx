@@ -11,7 +11,7 @@ const UploadContext = createContext({
   flowPath: /** @type {FlowPath} */ ('standard'),
   startOverURL: /** @type {string} */ (''),
   cancelURL: /** @type {string} */ (''),
-  csrf: /** @type {string} */ (''),
+  csrf: /** @type {string?} */ (null),
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -34,7 +34,7 @@ UploadContext.displayName = 'UploadContext';
  *
  * @prop {'POST'|'PUT'} method HTTP method to send payload.
  * @prop {string} endpoint Endpoint to which payload should be sent.
- * @prop {string} csrf CSRF token to send as parameter to upload implementation.
+ * @prop {string?} csrf CSRF token to send as parameter to upload implementation.
  */
 
 /**
@@ -73,7 +73,7 @@ UploadContext.displayName = 'UploadContext';
  * @prop {string=} statusEndpoint Endpoint from which to request async upload status.
  * @prop {number=} statusPollInterval Interval at which to poll for status, in milliseconds.
  * @prop {'POST'|'PUT'} method HTTP method to send payload.
- * @prop {string} csrf CSRF token to send as parameter to upload implementation.
+ * @prop {string?} csrf CSRF token to send as parameter to upload implementation.
  * @prop {Record<string,any>=} formData Extra form data to merge into the payload before uploading
  * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
  * @prop {string} startOverURL URL to application DELETE path for session restart.
