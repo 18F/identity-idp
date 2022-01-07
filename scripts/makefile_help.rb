@@ -33,8 +33,8 @@ cleaned_up_targets = {}
 
 target_comments.each do |target, (comment, lineno)|
   cleaned_up_name = if target.include?('$(')
-    # "tmp/$(HOST)-$(PORT).crt" into %r|tmp/.+-.+.crt|
-    rule_regexp = Regexp.new(target.gsub(/(\$\([^)]+\))/, '.+'))
+    # "tmp/$(HOST)-$(PORT).crt" into %r|tmp/.+?-.+?.crt|
+    rule_regexp = Regexp.new(target.gsub(/\$\([^)]+\)/, '.+?'))
 
     _lineno, rule = expanded_targets[lineno].find do |_lineno, rule|
       rule_regexp.match?(rule) && !target_comments.key?(rule)
