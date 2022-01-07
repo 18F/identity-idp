@@ -1,5 +1,5 @@
 import { encodeInput } from '@18f/identity-personal-key-input';
-import { trackEvent } from "@18f/identity-analytics";
+import { trackEvent } from '@18f/identity-analytics';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
