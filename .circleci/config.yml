@@ -18,7 +18,6 @@ executors:
         environment:
           CIRCLE_CI: 'true'
           RAILS_ENV: test
-          NODE_ENV: test
           BUNDLER_VERSION: 2.2.32
           # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
           # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM

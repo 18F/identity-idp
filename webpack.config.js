@@ -3,7 +3,7 @@ const { sync: glob } = require('fast-glob');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
