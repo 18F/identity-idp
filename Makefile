@@ -14,7 +14,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
 help: ## Show this help
 	@echo "--- Help ---"
-	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@ruby lib/makefile_help_parser.rb
 
 all: check
 
@@ -77,7 +77,7 @@ test: $(CONFIG) ## Runs RSpec and yarn tests
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
-tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
+tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
 	openssl req \
 		-newkey rsa:2048 \
@@ -92,7 +92,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
 run: ## Runs the development server
 	foreman start -p $(PORT)
 
-run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the develpment server with HTTPS
+run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
 	HTTPS=on rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
@@ -110,10 +110,10 @@ optimize_svg: ## Optimizes SVG images
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
-lint_optimized_assets: optimize_assets ## Checks that assets are optimizes
+lint_optimized_assets: optimize_assets ## Checks that assets are optimized
 	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
-update_pinpoint_supported_countries: ## Updates list of countries suppored by Pinpoint for voice and SMS
+update_pinpoint_supported_countries: ## Updates list of countries supported by Pinpoint for voice and SMS
 	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
 	bundle exec ./scripts/deep-merge-yaml \
 		--comment 'Generated from `make update_pinpoint_supported_countries`' \
