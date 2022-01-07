@@ -61,7 +61,7 @@ shared_examples 'idv confirmation step' do |sp|
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       else
-        expect(current_path).to eq(api_saml_auth2021_path)
+        expect(current_path).to eq(api_saml_auth2022_path)
       end
     end
 
