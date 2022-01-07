@@ -85,6 +85,10 @@ class MakefileHelpParser
       'make', '-f', makefile_path, '--dry-run', '--print-data-base'
     )
 
+    puts "DEBUG DEBUG"
+    puts expanded_makefile
+    puts "DEBUG DEBUG"
+
     targets = Hash.new { |h, k| h[k] = Set.new }
 
     expanded_makefile.split("\n\n").map do |stanza|
