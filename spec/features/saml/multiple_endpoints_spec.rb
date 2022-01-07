@@ -4,7 +4,7 @@ describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:endpoint_suffix) { '2021' }
+  let(:endpoint_suffix) { '2022' }
   let(:user) { create(:user, :signed_up) }
 
   let(:endpoint_saml_settings) do
