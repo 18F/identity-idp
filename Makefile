@@ -12,7 +12,7 @@ PORT ?= 3000
 
 help: ## Show this help
 	@echo "--- Help ---"
-	@ruby scripts/makefile_help.rb
+	@ruby lib/makefile_help_parser.rb
 
 all: check
 
