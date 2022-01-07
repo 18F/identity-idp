@@ -5,7 +5,7 @@ const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin'
 
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
-const hashSuffix = isProduction ? '-[contenthash:8].digested' : '';
+const hashSuffix = isProduction ? '-[contenthash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
