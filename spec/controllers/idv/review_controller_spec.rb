@@ -297,6 +297,7 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, success: true)
         expect(response).to redirect_to idv_personal_key_path
       end
 
