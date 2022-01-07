@@ -107,7 +107,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2021_cert
+    AppArtifacts.store.saml_2022_cert
   end
 
   public

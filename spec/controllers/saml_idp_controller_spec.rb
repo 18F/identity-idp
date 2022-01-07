@@ -1293,7 +1293,7 @@ describe SamlIdpController do
             ds: Saml::XML::Namespaces::SIGNATURE,
           )
 
-          crt = AppArtifacts.store.saml_2021_cert
+          crt = AppArtifacts.store.saml_2022_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
