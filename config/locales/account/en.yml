@@ -37,13 +37,11 @@ en:
       device: '%{browser} on %{os}'
       dob: Date of birth
       email: Email address
-      email_add: Add email
       email_addresses: Email addresses
       email_preferences: Email preferences
       full_name: Full name
       password: Password
       phone: Phone numbers
-      phone_add: Add phone
       piv_cac_add: Add ID
       piv_cac_confirm_delete: Yes, remove card
       reactivation:
