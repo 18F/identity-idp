@@ -92,7 +92,7 @@ class MakefileHelpParser
     targets = Hash.new { |h, k| h[k] = Set.new }
 
     expanded_makefile.split("\n\n").map do |stanza|
-      m = stanza.match(/^#  commands to execute \(from [`']#{makefile_path}', line (?<lineno>\d+)\):$/)
+      m = stanza.match(/^#  .* \(from [`']#{makefile_path}', line (?<lineno>\d+)\):$/)
       [stanza, m && m[:lineno].to_i]
     end.
       select { |_stanza, lineno| lineno }.
