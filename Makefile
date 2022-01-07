@@ -130,9 +130,7 @@ lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that c
 check_asset_strings: ## Checks for strings
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
 
-build_artifact: $(ARTIFACT_DESTINATION_FILE) ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
-
-$(ARTIFACT_DESTINATION_FILE):
+build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
 	bundle config set --local cache_all true
 	bundle package
@@ -154,4 +152,4 @@ $(ARTIFACT_DESTINATION_FILE):
 	  --exclude='./pwned_passwords/pwned_passwords.txt' \
 	  --exclude='./vendor/ruby' \
 	  --exclude='./config/application.yml' \
-	  -cf - "." | "$(GZIP_COMMAND)" > $@
+	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
