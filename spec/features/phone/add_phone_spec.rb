@@ -103,6 +103,17 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('forms.two_factor.code'))
   end
 
+  scenario 'does display an error message when max phones reached' do
+    allow(IdentityConfig.store).to receive(:max_phone_numbers_per_account).and_return(1)
+    user = create(:user, :signed_up)
+    sign_in_and_2fa_user(user)
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
+    expect(page).to have_css('#phones.usa-alert.usa-alert--error')
+    expect(page).to have_content(t('users.phones.error_message'))
+  end
+
   scenario 'adding a phone that is already on the user account shows error message' do
     user = create(:user, :signed_up)
     phone = user.phone_configurations.first.phone

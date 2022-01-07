@@ -24,7 +24,7 @@ describe Users::PhonesController do
       user.phone_configurations.create(encrypted_phone: '4105555552')
       user.phone_configurations.create(encrypted_phone: '4105555553')
       user.phone_configurations.create(encrypted_phone: '4105555554')
-      controller.request.headers.merge({ 'HTTP_REFERER': account_url })
+      controller.request.headers.merge({ HTTP_REFERER: account_url })
 
       get :add
       expect(response).to redirect_to(account_url(anchor: 'phones'))
@@ -36,7 +36,7 @@ describe Users::PhonesController do
       user.phone_configurations.create(encrypted_phone: '4105555552')
       user.phone_configurations.create(encrypted_phone: '4105555553')
       user.phone_configurations.create(encrypted_phone: '4105555554')
-      controller.request.headers.merge({ 'HTTP_REFERER': account_url })
+      controller.request.headers.merge({ HTTP_REFERER: account_url })
 
       get :add
       expect(response.location).to include('#phone')

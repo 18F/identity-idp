@@ -52,7 +52,6 @@ module Users
       redirect_path = request.referer.match(account_two_factor_authentication_url) ?
                         account_two_factor_authentication_url(anchor: 'phones') :
                         account_url(anchor: 'phones')
-      #redirect_back fallback_location: account_url(anchor: 'phones'), allow_other_host: false
       redirect_to redirect_path
     end
   end
