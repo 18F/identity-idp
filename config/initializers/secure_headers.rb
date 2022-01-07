@@ -47,7 +47,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_csp_config[:frame_ancestors] = %w['self']
   end
 
-  if !FeatureManagement.rails_csp_tooling_enabled?
+  if FeatureManagement.rails_csp_tooling_enabled?
+    config.csp = SecureHeaders::OPT_OUT
+  else
     config.csp = default_csp_config
   end
 
@@ -69,12 +71,4 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   #     { sha256: '123' }
   #   ]
   # }
-end
-
-
-if FeatureManagement.rails_csp_tooling_enabled?
-  Rails.application.configure do |config|
-    # TODO: Add other headers when the middleware is removed
-    config.middleware.delete SecureHeaders::Middleware
-  end
 end
