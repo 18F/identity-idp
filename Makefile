@@ -7,8 +7,11 @@
 CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
+PORT ?= 3000
+GZIP_COMMAND ?= gzip
+ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
-.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries
+.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries build_artifact
 
 help: ## Show this help
 	@echo "--- Help ---"
@@ -127,3 +130,27 @@ lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that c
 
 check_asset_strings: ## Checks for strings
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
+
+build_artifact: ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
+	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
+	bundle config set --local cache_all true
+	bundle package
+	tar \
+	  --exclude './config/agencies.yml' \
+	  --exclude './config/iaa_gtcs.yml' \
+	  --exclude './config/iaa_orders.yml' \
+	  --exclude './config/iaa_statuses.yml' \
+	  --exclude './config/integration_statuses.yml' \
+	  --exclude './config/integrations.yml' \
+	  --exclude './config/partner_account_statuses.yml' \
+	  --exclude './config/partner_accounts.yml' \
+	  --exclude './config/service_providers.yml' \
+	  --exclude='./certs/sp' \
+	  --exclude='./identity-idp-config' \
+	  --exclude='./tmp' \
+	  --exclude='./node_modules' \
+	  --exclude='./geo_data/GeoLite2-City.mmdb' \
+	  --exclude='./pwned_passwords/pwned_passwords.txt' \
+	  --exclude='./vendor/ruby' \
+	  --exclude='./config/application.yml' \
+	  -cf - "." | "$(GZIP_COMMAND)" > "$(ARTIFACT_DESTINATION_FILE)"
