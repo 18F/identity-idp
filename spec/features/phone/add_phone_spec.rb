@@ -103,7 +103,7 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('forms.two_factor.code'))
   end
 
-  scenario 'does display an error message when max phones reached' do
+  scenario 'Displays an error message when max phone numbers are reached' do
     allow(IdentityConfig.store).to receive(:max_phone_numbers_per_account).and_return(1)
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
