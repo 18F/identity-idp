@@ -43,9 +43,9 @@ RSpec.describe MakefileHelpParser do
     end
   end
 
-  describe '#target_comments' do
+  describe '#build_target_comments' do
     it 'is a mapping of target to its line number and comment' do
-      expect(parser.target_comments).to eq(
+      expect(parser.build_target_comments).to eq(
         'foo-$(PORT).txt' => ['Makes the text files', 5],
         'bar-$(PORT).txt' => ['Makes the text files', 5],
         'foo-$(HOST).csv' => ['Makes the CSV', 9],

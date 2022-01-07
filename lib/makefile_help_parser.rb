@@ -34,10 +34,12 @@ class MakefileHelpParser
 
   # @return [Array<Rule>]
   def parse_rules
+    target_comments = build_target_comments
+
     target_comments.map do |target, (comment, lineno)|
       if target.include?('$(')
         Rule.new(
-          target: matching_target(lineno, target),
+          target: matching_target(lineno, target, target_comments),
           template: target,
           comment: comment,
         )
@@ -52,8 +54,9 @@ class MakefileHelpParser
 
   # @param [Integer] lineno line number in original Makefile
   # @param [String] template like "tmp/$(HOST)-$(PORT).crt"
+  # @param [Hash<String, Array(String, Integer)>] target_comments (see #build_target_comments)
   # @return [String, nil] a target that matches it like "tmp/localhost-3000.crt"
-  def matching_target(lineno, template)
+  def matching_target(lineno, template, target_comments)
     # "tmp/$(HOST)-$(PORT).crt" into %r|tmp/.+?-.+?.crt|
     rule_regexp = Regexp.new(template.gsub(/\$\([^)]+\)/, '.+?'))
 
@@ -65,10 +68,10 @@ class MakefileHelpParser
   # Map of target => [comment, lineno]
   # target might have variables like $(HOST)
   # @return [Hash<String, Array(String, Integer)>]
-  def target_comments
+  def build_target_comments
     raw_makefile = File.readlines(makefile_path)
 
-    target_comments = raw_makefile.map.with_index.select do |line, _lineno|
+    raw_makefile.map.with_index.select do |line, _lineno|
       line =~ / ## /
     end.flat_map do |line, lineno|
       targets, rest = line.chomp.split(':', 2)
