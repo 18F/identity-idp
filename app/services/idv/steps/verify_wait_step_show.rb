@@ -29,8 +29,9 @@ module Idv
       def async_state_done(current_async_state)
         add_proofing_costs(current_async_state.result)
         form_response = idv_result_to_form_response(
-          idv_result: current_async_state.result,
+          result: current_async_state.result,
           state: flow_session[:pii_from_doc][:state],
+          state_id_jurisdiction: flow_session[:pii_from_doc][:state_id_jurisdiction],
           extra: {
             address_edited: !!flow_session['address_edited'],
             pii_like_keypaths: [[:errors, :ssn]],
@@ -67,6 +68,19 @@ module Idv
 
       def delete_async
         flow_session.delete(verify_step_document_capture_session_uuid_key)
+      end
+
+      def idv_result_to_form_response(result:, state: nil, state_id_jurisdiction: nil, extra: {})
+        state_id = result.dig(:context, :stages, :state_id)
+        if state_id
+          state_id[:state] = state if state
+          state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
+        end
+        FormResponse.new(
+          success: idv_success(result),
+          errors: idv_errors(result),
+          extra: extra.merge(proofing_results: idv_extra(result)),
+        )
       end
     end
   end
