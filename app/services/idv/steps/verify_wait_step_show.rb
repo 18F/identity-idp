@@ -72,9 +72,9 @@ module Idv
 
       def idv_result_to_form_response(result:, state: nil, state_id_jurisdiction: nil, extra: {})
         state_id = result.dig(:context, :stages, :state_id)
-        state_id[:state] = state if state && state_id
-        if state_id_jurisdiction && state_id
-          state_id[:state_id_jurisdiction] = state_id_jurisdiction
+        if state_id
+          state_id[:state] = state if state
+          state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
         end
         FormResponse.new(
           success: idv_success(result),
