@@ -110,8 +110,10 @@ describe 'Add a new phone number' do
     within('.sidenav') do
       click_on t('account.navigation.add_phone_number')
     end
-    expect(page).to have_css('#phones.usa-alert.usa-alert--error')
-    expect(page).to have_content(t('users.phones.error_message'))
+    expect(page).to have_css(
+      '#phones.usa-alert.usa-alert--error',
+      text: t('users.phones.error_message'),
+    )
   end
 
   scenario 'adding a phone that is already on the user account shows error message' do
