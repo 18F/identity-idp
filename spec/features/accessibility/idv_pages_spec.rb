@@ -57,7 +57,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to eq idv_confirmations_path
+      expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
@@ -71,7 +71,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to eq idv_confirmations_path
+      expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
@@ -85,7 +85,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to eq idv_confirmations_path
+      expect(current_path).to eq idv_personal_key_path
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled

@@ -1,4 +1,5 @@
 import { encodeInput } from '@18f/identity-personal-key-input';
+import { trackEvent } from '@18f/identity-analytics';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
@@ -100,6 +101,7 @@ function show(event) {
     input.focus();
   });
 
+  trackEvent('IdV: show personal key modal');
   modal.show();
 }
 
@@ -108,6 +110,7 @@ function hide() {
     resetForm();
   });
 
+  trackEvent('IdV: hide personal key modal');
   modal.hide();
 }
 
