@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitFor, createEvent, waitForElementToBeRemoved } from '@testing-library/dom';
+import { waitFor, createEvent } from '@testing-library/dom';
 import AcuantCapture, {
   isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
@@ -691,7 +691,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('doc_auth.errors.sharpness.failed_short');
 
       fireEvent.click(button);
-      await waitForElementToBeRemoved(error);
+      await waitFor(() => !error.textContent);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
         label: 'IdV: test image added',

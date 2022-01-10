@@ -250,16 +250,16 @@ function FileInput(props, ref) {
           {hint}
         </span>
       )}
+      <StatusMessage status={Status.ERROR}>{shownErrorMessage}</StatusMessage>
       <StatusMessage
-        status={shownErrorMessage ? Status.ERROR : Status.SUCCESS}
+        status={Status.SUCCESS}
         className={
-          !shownErrorMessage &&
-          (successMessage === fileLoadingText || successMessage === fileLoadedText)
+          successMessage === fileLoadingText || successMessage === fileLoadedText
             ? 'usa-sr-only'
             : undefined
         }
       >
-        {shownErrorMessage || successMessage}
+        {!shownErrorMessage && successMessage}
       </StatusMessage>
       <div
         className={[
