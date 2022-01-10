@@ -84,34 +84,9 @@ describe 'accounts/show.html.erb' do
         record.phone_configurations = []
         record
       end
-
-      it 'shows the add phone link' do
-        render
-
-        expect(rendered).to have_link(
-          t('account.index.phone_add'), href: add_phone_path
-        )
-      end
     end
 
     context 'user has a phone' do
-      it 'shows add phone link' do
-        render
-
-        expect(rendered).to have_content t('account.index.phone_add')
-        expect(rendered).to have_link(
-          t('account.index.phone_add'), href: add_phone_path
-        )
-      end
-
-      it 'shows an edit link' do
-        render
-
-        expect(rendered).to have_link(
-          t('account.index.phone'), href: manage_phone_path(id: user.phone_configurations.first.id)
-        )
-      end
-
       context 'phone number formatting' do
         before do
           user.phone_configurations.first.tap do |phone_configuration|

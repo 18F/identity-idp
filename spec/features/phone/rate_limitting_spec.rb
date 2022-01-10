@@ -25,7 +25,9 @@ describe 'phone rate limitting' do
 
     def visit_otp_confirmation(delivery_method)
       sign_in_live_with_2fa(user)
-      click_on "+ #{t('account.index.phone_add')}"
+      within('.sidenav-mobile') do
+        click_on t('account.navigation.add_phone_number')
+      end
       fill_in :new_phone_form_phone, with: phone
       select_phone_delivery_option(delivery_method)
       click_continue

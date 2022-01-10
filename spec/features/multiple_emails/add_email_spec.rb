@@ -106,15 +106,6 @@ feature 'adding email address' do
     expect(page).to have_content(t('errors.messages.confirmation_invalid_token'))
   end
 
-  it 'does not show add email button when max emails is reached' do
-    allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(1)
-    user = create(:user, :signed_up)
-    sign_in_and_2fa_user(user)
-
-    visit account_path
-    expect(page).to_not have_link("+ #{t('account.index.email_add')}", href: add_email_path)
-  end
-
   it 'does not allow the user to add an email when max emails is reached' do
     allow(IdentityConfig.store).to receive(:max_emails_per_account).and_return(1)
     user = create(:user, :signed_up)
@@ -128,7 +119,9 @@ feature 'adding email address' do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
     visit account_path
-    click_link "+ #{t('account.index.email_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_email')
+    end
 
     expect(page).to have_current_path(add_email_path)
 
@@ -142,7 +135,9 @@ feature 'adding email address' do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
     visit account_path
-    click_link "+ #{t('account.index.email_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_email')
+    end
 
     expect(page).to have_current_path(add_email_path)
 
@@ -188,7 +183,9 @@ feature 'adding email address' do
     sign_in_and_2fa_user(user)
 
     visit account_path
-    click_link "+ #{t('account.index.email_add')}"
+    within('.sidenav') do
+      click_on t('account.navigation.add_email')
+    end
 
     fake_email = instance_double(EmailAddress)
     expect(fake_email).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique)
@@ -207,7 +204,10 @@ feature 'adding email address' do
     sign_in_and_2fa_user(user)
 
     visit account_path
-    click_link "+ #{t('account.index.email_add')}"
+
+    within('.sidenav') do
+      click_on t('account.navigation.add_email')
+    end
 
     expect(page).to have_current_path(add_email_path)
 

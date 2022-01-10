@@ -39,13 +39,11 @@ fr:
       device: '%{browser} sur %{os}'
       dob: Date de naissance
       email: Adresse e-mail
-      email_add: Ajouter un email
       email_addresses: Adresses courriel
       email_preferences: Préférences de messagerie
       full_name: Nom complet
       password: Mot de passe
       phone: Numéro de téléphone
-      phone_add: Ajouter un téléphone
       piv_cac_add: Ajouter un identifiant
       piv_cac_confirm_delete: Oui, retirer la carte
       reactivation:

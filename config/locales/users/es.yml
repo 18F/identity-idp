@@ -25,6 +25,8 @@ es:
       generated_on_html: Generado el %{date}
       header: Su clave personal
       print: Imprima esta página
+    phones:
+      error_message: Agregó el número máximo de números de teléfono.
     rules_of_use:
       check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de %{app_name}
       details_html: |-

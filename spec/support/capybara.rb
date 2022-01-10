@@ -8,6 +8,7 @@ Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--headless' if !ENV['SHOW_BROWSER']
   browser_options.args << '--disable-gpu' if !ENV['SHOW_BROWSER']
+  browser_options.args << '--window-size=1200x700'
   browser_options.args << '--no-sandbox'
   browser_options.args << '--disable-dev-shm-usage'
 
