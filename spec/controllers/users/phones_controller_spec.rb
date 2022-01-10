@@ -18,12 +18,17 @@ describe Users::PhonesController do
       expect(response).to render_template(:add)
       expect(response.request.flash[:alert]).to be_nil
     end
+  end
 
-    it 'displays error if phone number exceeds limit' do
+  context 'user exceeds phone number limit' do
+    before do
       user.phone_configurations.create(encrypted_phone: '4105555551')
       user.phone_configurations.create(encrypted_phone: '4105555552')
       user.phone_configurations.create(encrypted_phone: '4105555553')
       user.phone_configurations.create(encrypted_phone: '4105555554')
+    end
+
+    it 'displays error if phone number exceeds limit' do
       controller.request.headers.merge({ HTTP_REFERER: account_url })
 
       get :add
@@ -32,14 +37,24 @@ describe Users::PhonesController do
     end
 
     it 'renders the #phone anchor when it exceeds limit' do
-      user.phone_configurations.create(encrypted_phone: '4105555551')
-      user.phone_configurations.create(encrypted_phone: '4105555552')
-      user.phone_configurations.create(encrypted_phone: '4105555553')
-      user.phone_configurations.create(encrypted_phone: '4105555554')
       controller.request.headers.merge({ HTTP_REFERER: account_url })
 
       get :add
       expect(response.location).to include('#phone')
+    end
+
+    it 'it redirects to two factor auth url if the referer was two factor auth' do
+      controller.request.headers.merge({ HTTP_REFERER: account_two_factor_authentication_url })
+
+      get :add
+      expect(response).to redirect_to(account_two_factor_authentication_url(anchor: 'phones'))
+    end
+
+    it 'defaults to account url if the url is anything but two factor auth url' do
+      controller.request.headers.merge({ HTTP_REFERER: add_phone_url })
+
+      get :add
+      expect(response).to redirect_to(account_url(anchor: 'phones'))
     end
   end
 
