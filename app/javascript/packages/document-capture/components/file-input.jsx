@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import { SpinnerDots } from '@18f/identity-components';
 import FileImage from './file-image';
+import StatusMessage, { Status } from './status-message';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
@@ -207,21 +208,14 @@ function FileInput(props, ref) {
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
 
-  /** @type {import('react').PropsWithChildren<object>=} */
-  let statusProps;
-  if (shownErrorMessage) {
-    statusProps = { role: 'alert', className: 'usa-error-message', children: shownErrorMessage };
-  } else if (isUpdated || isValuePending || isPendingValueReceived) {
-    statusProps = { role: 'status', className: 'usa-success-message' };
-    if (isUpdated) {
-      statusProps.children = fileUpdatedText;
-    } else if (isValuePending) {
-      statusProps.children = fileLoadingText;
-      statusProps.className += ' usa-sr-only';
-    } else if (isPendingValueReceived) {
-      statusProps.children = fileLoadedText;
-      statusProps.className += ' usa-sr-only';
-    }
+  /** @type {string=} */
+  let successMessage;
+  if (isUpdated) {
+    successMessage = fileUpdatedText;
+  } else if (isValuePending) {
+    successMessage = fileLoadingText;
+  } else if (isPendingValueReceived) {
+    successMessage = fileLoadedText;
   }
 
   return (
@@ -256,7 +250,17 @@ function FileInput(props, ref) {
           {hint}
         </span>
       )}
-      {statusProps && <span {...statusProps} />}
+      <StatusMessage
+        status={shownErrorMessage ? Status.ERROR : Status.SUCCESS}
+        className={
+          !shownErrorMessage &&
+          (successMessage === fileLoadingText || successMessage === fileLoadedText)
+            ? 'usa-sr-only'
+            : undefined
+        }
+      >
+        {shownErrorMessage || successMessage}
+      </StatusMessage>
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
