@@ -1,5 +1,4 @@
 class DocumentProofingJob < ApplicationJob
-  include JobHelpers::FaradayHelper
   include JobHelpers::StaleJobHelper
 
   queue_as :default
@@ -55,17 +54,15 @@ class DocumentProofingJob < ApplicationJob
     doc_auth_client = build_doc_auth_client(analytics, dcs)
 
     proofer_result = timer.time('proof_documents') do
-      with_retries(**faraday_retry_options) do
-        doc_auth_client.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          selfie_image: selfie_image || '',
-          image_source: image_source(image_metadata),
-          liveness_checking_enabled: liveness_checking_enabled,
-          user_uuid: user_uuid,
-          uuid_prefix: uuid_prefix,
-        )
-      end
+      doc_auth_client.post_images(
+        front_image: front_image,
+        back_image: back_image,
+        selfie_image: selfie_image || '',
+        image_source: image_source(image_metadata),
+        liveness_checking_enabled: liveness_checking_enabled,
+        user_uuid: user_uuid,
+        uuid_prefix: uuid_prefix,
+      )
     end
 
     dcs.store_doc_auth_result(
