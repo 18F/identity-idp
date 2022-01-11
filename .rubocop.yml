@@ -305,6 +305,9 @@ Layout/SpaceInLambdaLiteral:
 Layout/SpaceInsideBlockBraces:
   Enabled: true
 
+Layout/SpaceInsideParens:
+  Enabled: true
+
 Layout/TrailingEmptyLines:
   Enabled: true
   EnforcedStyle: final_newline

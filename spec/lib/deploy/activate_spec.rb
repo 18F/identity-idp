@@ -72,7 +72,7 @@ describe Deploy::Activate do
     end
 
     let(:geolite_content) { 'geolite test' }
-    let(:pwned_passwords_content ) { 'pwned passwords test' }
+    let(:pwned_passwords_content) { 'pwned passwords test' }
 
     it 'downloads the pwned passwords and geolite files from s3' do
       subject.run
