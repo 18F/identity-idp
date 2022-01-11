@@ -71,10 +71,13 @@ lintfix: ## Runs rubocop fix
 brakeman: ## Runs brakeman
 	bundle exec brakeman
 
-test: $(CONFIG) ## Runs RSpec and yarn tests
+public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
+	yarn build
+
+test: $(CONFIG) public/packs/manifest.json ## Runs RSpec and yarn tests
 	RAILS_ENV=test bundle exec rake parallel:spec && yarn test
 
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
+fast_test: public/packs/manifest.json ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
