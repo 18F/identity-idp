@@ -28,7 +28,7 @@ RSpec.describe BackupCodeGenerator do
     generator.generate
 
     success = generator.verify 'This is a string which will never result from code generation'
-    expect(success).to be_falsy
+    expect(success).to eq false
   end
 
   it 'creates codes with the same salt for that batch' do
