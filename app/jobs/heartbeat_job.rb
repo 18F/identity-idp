@@ -2,7 +2,7 @@ class HeartbeatJob < ApplicationJob
   queue_as :default
 
   def perform
-    Rails.logger.info(
+    IdentityJobLogSubscriber.new.logger.info(
       {
         name: 'queue_metric.good_job',
         # borrowed from: https://github.com/bensheldon/good_job/blob/main/engine/app/controllers/good_job/dashboards_controller.rb#L35

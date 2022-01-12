@@ -122,6 +122,18 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     error(json.to_json)
   end
 
+  def logger
+    if Rails.env.test?
+      Rails.logger
+    else
+      IdentityJobLogSubscriber.worker_logger
+    end
+  end
+
+  def self.worker_logger
+    @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+  end
+
   private
 
   def default_attributes(event, job)
@@ -148,14 +160,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def scheduled_at(event)
     Time.zone.at(event.payload[:job].scheduled_at).utc
-  end
-
-  def logger
-    if Rails.env.test?
-      Rails.logger
-    else
-      ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
-    end
   end
 
   def trace_id(job)
