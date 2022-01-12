@@ -70,6 +70,12 @@ RSpec.describe AssetSources do
   end
 
   describe '.load_manifest' do
+    it 'sets the manifest' do
+      AssetSources.load_manifest
+
+      expect(AssetSources.manifest).to be_kind_of(Hash).and eq(JSON.parse(manifest_content))
+    end
+
     context 'missing file' do
       let(:manifest_content) { nil }
 
