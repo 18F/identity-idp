@@ -38,7 +38,6 @@ RSpec.describe AssetSources do
   end
 
   before do
-    AssetSources.manifest = nil
     File.open(manifest_file.path, 'w') { |f| f.puts manifest_content }
     allow(AssetSources).to receive(:manifest_path).and_return(manifest_file.path)
     allow(I18n).to receive(:available_locales).and_return([:en, :es, :fr])
@@ -47,7 +46,6 @@ RSpec.describe AssetSources do
 
   after do
     manifest_file.unlink
-    AssetSources.manifest = nil
   end
 
   describe '.get_sources' do
@@ -66,6 +64,26 @@ RSpec.describe AssetSources do
 
       it 'returns an empty array' do
         expect(AssetSources.get_sources('missing')).to eq([])
+      end
+    end
+
+    it 'loads the manifest' do
+      expect(AssetSources).to receive(:load_manifest).twice.and_call_original
+
+      AssetSources.get_sources('application')
+      AssetSources.get_sources('input')
+    end
+
+    context 'cached manifest' do
+      before do
+        allow(AssetSources).to receive(:cache_manifest).and_return(true)
+      end
+
+      it 'loads the manifest once' do
+        expect(AssetSources).to receive(:load_manifest).once.and_call_original
+
+        AssetSources.get_sources('application')
+        AssetSources.get_sources('input')
       end
     end
   end

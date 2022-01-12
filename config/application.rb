@@ -25,6 +25,7 @@ module Upaya
     IdentityConfig.build_store(configuration)
 
     AssetSources.manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
+    AssetSources.cache_manifest = Rails.env.production?
     AssetSources.load_manifest if Rails.env.production?
 
     console do
