@@ -47,20 +47,27 @@ module Idv
         UserMailer.doc_auth_desktop_link_to_sp(
           current_user, current_user.email, application, link
         ).deliver_now_or_later
+        form_response(destination: :email_sent)
       end
 
       def send_user_to_send_link_step
         mark_step_complete(:email_sent)
+        form_response(destination: :send_link)
       end
 
       def bypass_send_link_steps
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         mark_step_complete(:email_sent)
+        form_response(destination: :document_capture)
       end
 
       def mobile_device?
         BrowserCache.parse(request.user_agent).mobile?
+      end
+
+      def form_response(destination:)
+        FormResponse.new(success: true, errors: {}, extra: { destination: destination })
       end
     end
   end
