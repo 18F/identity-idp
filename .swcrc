@@ -1,0 +1,22 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "ecmascript",
+      "jsx": true,
+      "exportDefaultFrom": true
+    },
+    "transform": {
+      "react": {
+        "runtime": "automatic"
+      }
+    }
+  },
+  "module": {
+    "type": "commonjs"
+  },
+  "env": {
+    "targets": ["defaults", "IE 11"],
+    "mode": "usage",
+    "coreJs": 3
+  }
+}

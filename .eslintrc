@@ -1,6 +1,9 @@
 {
   "extends": "plugin:@18f/eslint-plugin-identity/recommended",
   "plugins": ["@18f/eslint-plugin-identity"],
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
   "env": {
     "browser": true,
     "commonjs": true

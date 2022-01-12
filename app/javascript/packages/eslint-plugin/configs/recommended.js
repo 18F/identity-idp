@@ -39,12 +39,6 @@ const config = {
   },
 };
 
-if (isInstalled('@babel/core')) {
-  config.parser = '@babel/eslint-parser';
-  config.plugins.push('@babel');
-  config.rules['@babel/no-unused-expressions'] = 'error';
-}
-
 if (isInstalled('prettier')) {
   config.plugins.push('prettier');
   config.rules['prettier/prettier'] = 'error';
@@ -52,6 +46,9 @@ if (isInstalled('prettier')) {
 
 if (isInstalled('react') || isInstalled('preact')) {
   config.extends.push('airbnb');
+  config.parserOptions = config.parserOptions || {};
+  config.parserOptions.ecmaFeatures = config.parserOptions.ecmaFeatures || {};
+  config.parserOptions.ecmaFeatures.jsx = true;
   Object.assign(config.rules, {
     'react/function-component-definition': [
       'error',

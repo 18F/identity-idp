@@ -1,3 +1,3 @@
-const babelRegister = require('@babel/register');
+const swcRegister = require('@swc/register');
 
-babelRegister({ ignore: [/node_modules\/(?!@18f\/identity-)/] });
+swcRegister({ ignore: [/node_modules\/(?!@18f\/identity-)/] });

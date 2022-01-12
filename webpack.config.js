@@ -49,9 +49,9 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       {
         test: /\.jsx?$/,
-        exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+        exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|receptor|elem-dataset)/,
         use: {
-          loader: 'babel-loader',
+          loader: 'swc-loader',
         },
       },
     ].filter(Boolean),
