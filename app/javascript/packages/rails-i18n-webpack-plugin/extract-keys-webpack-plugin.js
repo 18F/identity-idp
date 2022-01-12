@@ -78,16 +78,16 @@ class ExtractKeysWebpackPlugin {
     compiler.hooks.compilation.tap('compile', (compilation) => {
       compilation.hooks.additionalAssets.tapPromise(PLUGIN, () =>
         Promise.all(
-          compilation.chunks.map((chunk) =>
+          [...compilation.chunks].map((chunk) =>
             Promise.all(
-              chunk.files.filter(isJavaScriptFile).map(async (filename) => {
+              [...chunk.files].filter(isJavaScriptFile).map(async (filename) => {
                 const source = compilation.assets[filename].source();
                 const keys = getTranslationKeys(source);
                 const additionalAssets = await this.getAdditionalAssets(keys);
                 for (const [locale, content] of Object.entries(additionalAssets)) {
                   const assetFilename = getAdditionalAssetFilename(filename, locale);
                   compilation.emitAsset(assetFilename, new sources.RawSource(content));
-                  chunk.files.push(assetFilename);
+                  chunk.files.add(assetFilename);
                 }
               }),
             ),

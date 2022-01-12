@@ -1,7 +1,4 @@
 Rails.application.configure do
-  # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = false
-
   config.cache_classes = true
   config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url }
   config.eager_load = true
