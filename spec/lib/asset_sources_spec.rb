@@ -38,6 +38,7 @@ RSpec.describe AssetSources do
   end
 
   before do
+    AssetSources.manifest = nil
     File.open(manifest_file.path, 'w') { |f| f.puts manifest_content }
     allow(AssetSources).to receive(:manifest_path).and_return(manifest_file.path)
     allow(I18n).to receive(:available_locales).and_return([:en, :es, :fr])
