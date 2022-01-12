@@ -12,6 +12,7 @@ Rails.application.configure do
   config.action_controller.allow_forgery_protection = false
   config.active_support.test_order = :random
   config.active_support.deprecation = :stderr
+  config.assets.gzip = false
   config.i18n.raise_on_missing_translations = true
 
   config.action_mailer.delivery_method = :test
