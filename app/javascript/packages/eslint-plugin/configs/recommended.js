@@ -62,6 +62,7 @@ if (isInstalled('react') || isInstalled('preact')) {
     ],
     'react/jsx-curly-newline': 'off',
     'react/jsx-indent': 'off',
+    'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
     'react/jsx-no-bind': 'off',
     'react/jsx-no-constructed-context-values': 'off',
     'react/jsx-no-useless-fragment': ['error', { allowExpressions: true }],
@@ -76,6 +77,20 @@ if (isInstalled('react') || isInstalled('preact')) {
   });
 } else {
   config.extends.push('airbnb-base');
+}
+
+if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/eslint-plugin')) {
+  config.parser = '@typescript-eslint/parser';
+  config.plugins.push('@typescript-eslint');
+  config.extends.push('plugin:import/typescript');
+  Object.assign(config.rules, {
+    '@typescript-eslint/no-shadow': 'error',
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-use-before-define': 'error',
+    'no-shadow': 'off',
+    'no-unused-vars': 'off',
+    'no-use-before-define': 'off',
+  });
 }
 
 if (isInstalled('mocha')) {

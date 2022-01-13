@@ -2,7 +2,7 @@
 
 ESLint plugin and shareable configurations for Login.gov JavaScript standards.
 
-These configurations largely inherit from the [TTS JavaScript coding standards](https://engineering.18f.gov/javascript/#style), pre-bundled with recommended rulesets and extended to provide support for Login.gov-specific implementation choices (Babel, React, Mocha).
+These configurations largely inherit from the [TTS JavaScript coding standards](https://engineering.18f.gov/javascript/#style), pre-bundled with recommended rulesets and extended to provide support for Login.gov-specific implementation choices (Babel, React, Mocha, TypeScript).
 
 ## Installation
 
@@ -18,6 +18,7 @@ The configuration automatically includes additional behavior if any of the follo
 - If `mocha` is installed, the Mocha environment and Mocha-specific rules are enabled.
 - If `react` or `preact` is installed, JSX and React rules are enabled.
 - If `prettier` is installed, Prettier rules are enabled.
+- If `@typescript-eslint/parser` and `@typescript-eslint/eslint-plugin` are installed, TypeScript rules are enabled.
 
 ## Usage
 
