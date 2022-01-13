@@ -1,11 +1,18 @@
 {
-  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
-  "plugins": ["@18f/eslint-plugin-identity"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@18f/eslint-plugin-identity", "@typescript-eslint"],
+  "extends": ["plugin:@18f/eslint-plugin-identity/recommended", "plugin:import/typescript"],
   "env": {
     "browser": true,
     "commonjs": true
   },
+  "globals": {
+    "globalThis": true
+  },
   "rules": {
+    "@typescript-eslint/no-shadow": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-use-before-define": "error",
     "no-restricted-syntax": [
       "error",
       {
@@ -16,7 +23,11 @@
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
       }
-    ]
+    ],
+    "no-shadow": "off",
+    "no-unused-vars": "off",
+    "no-use-before-define": "off",
+    "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }]
   },
   "settings": {
     "import/internal-regex": "^@18f/identity-"

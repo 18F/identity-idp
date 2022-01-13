@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
+import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import HelpCenterContext from '../context/help-center';
-import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
