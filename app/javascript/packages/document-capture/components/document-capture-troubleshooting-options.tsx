@@ -3,23 +3,24 @@ import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import ServiceProviderContext from '../context/service-provider';
 import HelpCenterContext from '../context/help-center';
+import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 
-/** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
+interface DocumentCaptureTroubleshootingOptionsProps {
+  /**
+   * Custom heading to show in place of default.
+   */
+  heading?: string;
 
-/**
- * @typedef DocumentCaptureTroubleshootingOptionsProps
- *
- * @prop {string=} heading Custom heading to show in place of default.
- * @prop {string=} location Location parameter to append to links.
- */
+  /**
+   * Location parameter to append to links.
+   */
+  location?: string;
+}
 
-/**
- * @param {DocumentCaptureTroubleshootingOptionsProps} props
- */
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
-}) {
+}: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
@@ -28,7 +29,7 @@ function DocumentCaptureTroubleshootingOptions({
     <TroubleshootingOptions
       heading={heading}
       options={
-        /** @type {TroubleshootingOption[]} */ ([
+        [
           {
             url: getHelpCenterURL({
               category: 'verify-your-identity',
@@ -52,7 +53,7 @@ function DocumentCaptureTroubleshootingOptions({
             text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
             isExternal: true,
           },
-        ].filter(Boolean))
+        ].filter(Boolean) as TroubleshootingOption[]
       }
     />
   );

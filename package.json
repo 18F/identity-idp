@@ -41,6 +41,7 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.16.7",
     "@peculiar/webcrypto": "^1.1.6",
     "@testing-library/dom": "^7.29.0",
     "@testing-library/react": "^11.2.2",
