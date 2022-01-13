@@ -14,7 +14,6 @@ import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
-import './selfie-capture.scss';
 import AppContext from '../context/app';
 
 /** @typedef {import('react').ReactNode} ReactNode */

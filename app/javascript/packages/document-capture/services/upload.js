@@ -54,13 +54,12 @@ export function toFormEntryError(uploadFieldError) {
  * @type {import('../context/upload').UploadImplementation}
  */
 async function upload(payload, { method = 'POST', endpoint, csrf }) {
-  const response = await window.fetch(endpoint, {
-    method,
-    headers: {
-      'X-CSRF-Token': csrf,
-    },
-    body: toFormData(payload),
-  });
+  /** @type {HeadersInit} */
+  const headers = {};
+  if (csrf) {
+    headers['X-CSRF-Token'] = csrf;
+  }
+  const response = await window.fetch(endpoint, { method, headers, body: toFormData(payload) });
 
   if (!response.ok && !response.status.toString().startsWith('4')) {
     // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK

@@ -67,7 +67,7 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
       lowercase_code = code.downcase
       uppercase_code = code.upcase
 
-      expect(subject.matches_code?(random_case_code )).to eq(true)
+      expect(subject.matches_code?(random_case_code)).to eq(true)
       expect(subject.matches_code?(lowercase_code)).to eq(true)
       expect(subject.matches_code?(uppercase_code)).to eq(true)
     end

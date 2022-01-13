@@ -4,6 +4,7 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_phone_vendor_outage
+    before_action :check_max_phone_numbers_per_account, only: %i[add create]
 
     def add
       user_session[:phone_id] = nil
@@ -42,6 +43,16 @@ module Users
         selected_delivery_method: @new_phone_form.otp_delivery_preference,
         selected_default_number: @new_phone_form.otp_make_default_number
       )
+    end
+
+    def check_max_phone_numbers_per_account
+      max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
+      return if current_user.phone_configurations.count < max_phones_count
+      flash[:phone_error] = t('users.phones.error_message')
+      redirect_path = request.referer.match(account_two_factor_authentication_url) ?
+                        account_two_factor_authentication_url(anchor: 'phones') :
+                        account_url(anchor: 'phones')
+      redirect_to redirect_path
     end
   end
 end

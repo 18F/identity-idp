@@ -112,10 +112,6 @@ describe Reports::IaaBillingReport do
     travel_to(now)
   end
 
-  after do
-    travel_back
-  end
-
   it 'works with no SPs' do
     expect(subject.perform(Time.zone.today)).to eq([].to_json)
   end

@@ -214,7 +214,7 @@ class UserMailer < ActionMailer::Base
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
-      @date = I18n.localize(date_time, format: t('time.formats.event_date'))
+      @date = I18n.l(date_time, format: :event_date)
       @sp_name = sp_name
       @disavowal_token = disavowal_token
       mail(

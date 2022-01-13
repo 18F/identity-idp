@@ -15,7 +15,6 @@ import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
-import './review-issues-step.scss';
 
 /**
  * @typedef {'front'|'back'} DocumentSide

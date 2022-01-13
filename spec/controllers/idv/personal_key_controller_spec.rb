@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::ConfirmationsController do
+describe Idv::PersonalKeyController do
   include SamlAuthHelper
   include PersonalKeyValidator
 
@@ -125,47 +125,6 @@ describe Idv::ConfirmationsController do
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
 
-    context 'user used 2FA phone as phone of record' do
-      before do
-        subject.idv_session.applicant['phone'] =
-          MfaContext.new(user).phone_configurations.first.phone
-      end
-
-      it 'tracks final IdV event' do
-        stub_analytics
-
-        result = {
-          success: true,
-          new_phone_added: false,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::IDV_FINAL, result)
-
-        get :show
-      end
-    end
-
-    context 'user confirmed a new phone' do
-      before do
-        subject.idv_session.applicant['phone'] = '+1 (202) 555-9876'
-      end
-
-      it 'tracks final IdV event' do
-        stub_analytics
-
-        result = {
-          success: true,
-          new_phone_added: true,
-        }
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::IDV_FINAL, result)
-
-        get :show
-      end
-    end
-
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
@@ -245,7 +204,7 @@ describe Idv::ConfirmationsController do
 
       expect(response.body).to eq(code + "\r\n")
       expect(response.header['Content-Type']).to eq('text/plain')
-      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
+      expect(@analytics).to have_logged_event(Analytics::IDV_PERSONAL_KEY_DOWNLOADED, success: true)
     end
 
     it 'recovers pii and verifies personal key digest with the code' do
@@ -264,7 +223,10 @@ describe Idv::ConfirmationsController do
       get :download
 
       expect(response).to be_bad_request
-      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: false)
+      expect(@analytics).to have_logged_event(
+        Analytics::IDV_PERSONAL_KEY_DOWNLOADED,
+        success: false,
+      )
     end
   end
 end

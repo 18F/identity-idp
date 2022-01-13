@@ -1,7 +1,7 @@
 class ImageUploadResponsePresenter
   include Rails.application.routes.url_helpers
 
-  def initialize(form_response:, url_options: )
+  def initialize(form_response:, url_options:)
     @form_response = form_response
     @url_options = url_options
   end

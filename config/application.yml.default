@@ -132,6 +132,7 @@ max_bad_passwords_window_in_seconds: '60'
 max_emails_per_account: '12'
 max_mail_events: '4'
 max_mail_events_window_in_days: '30'
+max_phone_numbers_per_account: '5'
 max_piv_cac_per_account: '2'
 min_password_score: '3'
 mx_timeout: '3'
@@ -285,7 +286,7 @@ development:
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"},{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
@@ -320,6 +321,10 @@ production:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
+  database_worker_jobs_name: ''
+  database_worker_jobs_username: ''
+  database_worker_jobs_host: ''
+  database_worker_jobs_password: ''
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   doc_auth_vendor: 'acuant'
@@ -432,7 +437,7 @@ test:
   reset_password_email_window_in_minutes: '80'
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120

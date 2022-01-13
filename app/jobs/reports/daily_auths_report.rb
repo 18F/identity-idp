@@ -60,8 +60,7 @@ module Reports
         LEFT JOIN
           agencies ON service_providers.agency_id = agencies.id
         WHERE
-          %{start} <= sp_return_logs.requested_at
-          AND sp_return_logs.requested_at <= %{finish}
+          sp_return_logs.requested_at::date BETWEEN %{start} AND %{finish}
           AND sp_return_logs.returned_at IS NOT NULL
         GROUP BY
           sp_return_logs.ial

@@ -5,15 +5,16 @@ require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
-  browser_options = Selenium::WebDriver::Chrome::Options.new
-  browser_options.args << '--headless' if !ENV['SHOW_BROWSER']
-  browser_options.args << '--disable-gpu' if !ENV['SHOW_BROWSER']
-  browser_options.args << '--no-sandbox'
-  browser_options.args << '--disable-dev-shm-usage'
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless') if !ENV['SHOW_BROWSER']
+  options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
+  options.add_argument('--window-size=1200x700')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: browser_options
+                                 capabilities: [options]
 end
 Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
@@ -23,18 +24,18 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
                       'AppleWebKit/537.36 (KHTML, like Gecko) ' \
                       'HeadlessChrome/88.0.4324.150 Safari/537.36'
 
-  browser_options = Selenium::WebDriver::Chrome::Options.new
-  browser_options.args << '--headless' if !ENV['SHOW_BROWSER']
-  browser_options.args << '--disable-gpu' if !ENV['SHOW_BROWSER']
-  browser_options.args << '--no-sandbox'
-  browser_options.args << '--disable-dev-shm-usage'
-  browser_options.args << '--window-size=414,736'
-  browser_options.args << "--user-agent='#{user_agent_string}'"
-  browser_options.args << '--use-fake-device-for-media-stream'
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless') if !ENV['SHOW_BROWSER']
+  options.add_argument('--disable-gpu') if !ENV['SHOW_BROWSER']
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--window-size=414,736')
+  options.add_argument("--user-agent='#{user_agent_string}'")
+  options.add_argument('--use-fake-device-for-media-stream')
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: browser_options
+                                 capabilities: [options]
 end
 
 Capybara.server = :puma, { Silent: true }

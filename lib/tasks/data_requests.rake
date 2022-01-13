@@ -44,7 +44,7 @@ namespace :data_requests do
         user_report, user_output_dir, user_report[:requesting_issuer_uuid]
       ).call
 
-      cloudwatch_dates = user_report[:user_events].map { |row| row[:date_time] }.map do |date_time|
+      cloudwatch_dates = user_report[:user_events].pluck(:date_time).map do |date_time|
         Time.zone.parse(date_time).to_date
       end.uniq
       cloudwatch_results = DataRequests::FetchCloudwatchLogs.new(

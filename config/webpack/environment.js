@@ -12,6 +12,7 @@ environment.loaders.delete('nodeModules');
 environment.loaders.delete('moduleSass');
 environment.loaders.delete('moduleCss');
 environment.loaders.delete('css');
+environment.loaders.delete('sass');
 
 // Note: Because chunk splitting is enabled by default as of Webpacker 6+, this line can be removed
 // when upgrading.
@@ -25,16 +26,6 @@ babelLoader.include.push(
   /node_modules\/(@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
 );
 babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/;
-
-const sassLoader = environment.loaders.get('sass');
-// Prepend minimum required design system variables, mixins, and functions to make available to all
-// Webpack-imported SCSS files. Notably, this should _not_ include any actual CSS output on its own.
-sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.additionalData = `
-$font-path: '~identity-style-guide/dist/assets/fonts';
-$image-path: '~identity-style-guide/dist/assets/img';
-@import '~identity-style-guide/dist/assets/scss/packages/required';`;
-
-sassLoader.use.find(({ loader }) => loader === 'css-loader').options.sourceMap = false;
 
 const sourceMapLoader = {
   test: /\.js$/,

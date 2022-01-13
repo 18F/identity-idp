@@ -1,19 +1,10 @@
 <div>
-  <div class="grid-row margin-bottom-1 margin-top-0">
-    <h2 class="grid-col-fill margin-y-0 padding-right-2">
-      <%= t('account.index.phone') %>
-    </h2>
-    <div class="grid-col-auto">
-      <% if EmailPolicy.new(current_user).can_add_email? %>
-        <%= link_to(
-              prefix_with_plus(t('account.index.phone_add')),
-              add_phone_path,
-              class: 'account-action-button',
-            ) %>
-      <% end %>
-    </div>
-  </div>
-
+  <h2 class="margin-top-0">
+    <%= t('account.index.phone') %>
+  </h2>
+  <% if flash[:phone_error] %>
+    <%= render AlertComponent.new(type: :error, id: 'phones', class: 'margin-bottom-1', message: flash[:phone_error]) %>
+  <% end %>
   <div class="border-bottom border-primary-light">
     <% MfaContext.new(current_user).phone_configurations.each do |phone_configuration| %>
       <div class="grid-row padding-1 border-top border-left border-right border-primary-light">

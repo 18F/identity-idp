@@ -297,7 +297,8 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(response).to redirect_to idv_confirmations_path
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, success: true)
+        expect(response).to redirect_to idv_personal_key_path
       end
 
       it 'redirects to confirmation path after user presses the back button' do
@@ -307,7 +308,7 @@ describe Idv::ReviewController do
 
         allow_any_instance_of(User).to receive(:active_profile).and_return(true)
         get :new
-        expect(response).to redirect_to idv_confirmations_path
+        expect(response).to redirect_to idv_personal_key_path
       end
 
       it 'creates Profile with applicant attributes' do

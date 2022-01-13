@@ -263,9 +263,9 @@ Rails.application.routes.draw do
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'
-      get '/confirmations' => 'confirmations#show'
-      post '/confirmations' => 'confirmations#update'
-      get '/download_personal_key' => 'confirmations#download'
+      get '/personal_key' => 'personal_key#show'
+      post '/personal_key' => 'personal_key#update'
+      get '/download_personal_key' => 'personal_key#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'
@@ -304,6 +304,10 @@ Rails.application.routes.draw do
       get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
+
+      # deprecated routes
+      get '/confirmations' => 'personal_key#show'
+      post '/confirmations' => 'personal_key#update'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

@@ -21,20 +21,37 @@ describe('document-capture/components/button-to', () => {
 
   it('creates a form in the body outside the root container', () => {
     const { container } = render(
-      <UploadContextProvider csrf="token-value">
-        <ButtonTo url="/" method="delete" isUnstyled>
-          Click me
-        </ButtonTo>
-      </UploadContextProvider>,
+      <ButtonTo url="/" method="delete" isUnstyled>
+        Click me
+      </ButtonTo>,
     );
 
     const form = document.querySelector('form');
     expect(form).to.be.ok();
     expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
       _method: 'delete',
-      authenticity_token: 'token-value',
     });
     expect(container.contains(form)).to.be.false();
+  });
+
+  context('with csrf token', () => {
+    it('creates a form in the body outside the root container', () => {
+      const { container } = render(
+        <UploadContextProvider csrf="token-value">
+          <ButtonTo url="/" method="delete" isUnstyled>
+            Click me
+          </ButtonTo>
+        </UploadContextProvider>,
+      );
+
+      const form = document.querySelector('form');
+      expect(form).to.be.ok();
+      expect(Object.fromEntries(new window.FormData(form))).to.deep.equal({
+        _method: 'delete',
+        authenticity_token: 'token-value',
+      });
+      expect(container.contains(form)).to.be.false();
+    });
   });
 
   it('submits to form on click', () => {
