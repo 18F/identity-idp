@@ -2,3 +2,4 @@ fr:
   forms:
     button:
       cancel: Annuler
+      reset: Réinitialiser

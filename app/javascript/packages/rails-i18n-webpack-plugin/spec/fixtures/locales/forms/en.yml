@@ -3,3 +3,4 @@ en:
     button:
       submit: Submit
       cancel: Cancel
+      reset: Reset

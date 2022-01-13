@@ -1,1 +1,1 @@
-!function(){var t,i={"forms.button.submit":"Submit","item.1":"First","item.2":"Second","item.3":""},o=window._locale_data=window._locale_data||{};for(t in i)o[t]=i[t]}();
+!function(){var t,o={"forms.button.submit":"Submit","item.1":"First","item.2":"Second","item.3":"","forms.button.reset":"Reset"},e=window._locale_data=window._locale_data||{};for(t in o)e[t]=o[t]}();
