@@ -35,6 +35,7 @@ RC 175.1 - 2022-01-27
 
 ### Bug Fixes Users Might Notice
 - Bug Fix: Fix a bug on the account screen that caused proofed users who reset their password to see a 500 error. (#5864)
+- Performance: Avoid unnecessary database query (#5816)
 
 RC 175 - 2022-01-27
 ----------------------
