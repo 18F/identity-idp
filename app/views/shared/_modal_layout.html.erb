@@ -1,14 +1,13 @@
 <div class="modal-backdrop">
 </div>
-<div   
-  aria-describedby="dialog_description"
-  aria-labelledby="dialog_label"
-  class="padding-x-2 padding-y-6 modal"
-  role="dialog" 
->
-  <div class="modal-center">
-    <div class="modal-content">
-      <%= yield %>
+  <%= tag.div(role: 'dialog', 
+      class: 'padding-x-2 padding-y-6 modal', 
+      aria: { describedby: local_assigns[:description_id], 
+              labelledby: local_assigns[:label_id] }) do %>
+    <div class="modal-center">
+      <div class="modal-content">
+        <%= yield %>
+      </div>
     </div>
-  </div>
+  <% end %>
 </div>

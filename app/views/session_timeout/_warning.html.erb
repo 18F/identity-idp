@@ -1,12 +1,12 @@
 <div id='session-timeout-msg' class='display-none'>
-  <%= render layout: '/shared/modal_layout' do %>
+  <%= render layout: 'shared/modal_layout', description_id: 'dialog_description1', label_id: 'dialog_label1' do %>
     <div class='padding-4 tablet:padding-6 cntnr-xxskinny border-box bg-white rounded-xxl modal-timeout'>
-      <h2 class='margin-y-2 fs-20p sans-serif regular center'>
+      <h2 class='margin-y-2 fs-20p sans-serif regular center' id="dialog_label">
         <%= t('headings.session_timeout_warning') %>
       </h2>
       <hr class='margin-bottom-4 border-width-05' />
       <div class='margin-bottom-6'>
-        <p>
+        <p id="dialog_description">
           <%= modal.message %>
         </p>
       </div>
