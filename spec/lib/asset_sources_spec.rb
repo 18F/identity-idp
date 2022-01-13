@@ -77,6 +77,7 @@ RSpec.describe AssetSources do
     context 'cached manifest' do
       before do
         allow(AssetSources).to receive(:cache_manifest).and_return(true)
+        AssetSources.manifest = nil
       end
 
       it 'loads the manifest once' do
