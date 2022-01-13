@@ -1,5 +1,5 @@
 {
-  "extends": ["plugin:@18f/eslint-plugin-identity/recommended"],
+  "extends": "plugin:@18f/eslint-plugin-identity/recommended",
   "plugins": ["@18f/eslint-plugin-identity"],
   "env": {
     "browser": true,
