@@ -1,10 +1,10 @@
 <div id="personal-key-confirm" class="display-none">
-  <%= render layout: '/shared/modal_layout', description_id: 'dialog_description', label_id: 'dialog_label' do %>
+  <%= render layout: '/shared/modal_layout', locals: {description_id: "personal_key_description", label_id: "personal_key_label"} do %>
     <div class="padding-y-8 padding-x-2 tablet:padding-x-8 cntnr-skinny border-box bg-white radius-lg key-badge">
-      <h2 class="margin-top-0 margin-bottom-2" id="dialog_label">
+      <h2 class="margin-top-0 margin-bottom-2" id="personal_key_label">
         <%= t('forms.personal_key.title') %>
       </h2>
-      <p class="margin-bottom-4" id="dialog_description">
+      <p class="margin-bottom-4" id="personal_key_description">
         <%= t('forms.personal_key.instructions') %>
       </p>
 
