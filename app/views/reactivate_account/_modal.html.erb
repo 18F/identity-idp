@@ -1,7 +1,7 @@
 <div id="reactivate-account-modal" class="display-none">
   <%= render layout: 'shared/modal_layout' do |label_id, description_id| %>
     <div class="padding-6 cntnr-xxskinny border-box bg-white rounded-xxl modal-warning">
-      <h2 class="margin-y-2 fs-20p sans-serif regular center" id='reactivate-modal-label'>
+      <h2 class="margin-y-2 fs-20p sans-serif regular center" id="<%= label_id %>">
         <%= t('instructions.account.reactivate.modal.heading') %>
       </h2>
       <hr class="margin-bottom-4 border-width-05" />
