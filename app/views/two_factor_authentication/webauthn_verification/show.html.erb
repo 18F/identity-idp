@@ -17,8 +17,7 @@
         id: 'webauthn_form',
       },
     ) do |f| %>
-  <%= hidden_field_tag :user_challenge,
-                       '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge' %>
+  <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
   <%= hidden_field_tag :credential_ids, @presenter.credential_ids, id: 'credential_ids' %>
   <%= hidden_field_tag :credential_id, '', id: 'credential_id' %>
   <%= hidden_field_tag :authenticator_data, '', id: 'authenticator_data' %>
