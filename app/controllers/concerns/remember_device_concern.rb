@@ -6,7 +6,7 @@ module RememberDeviceConcern
   end
 
   def save_remember_device_preference
-    return unless params[:remember_device] == 'true'
+    return unless params[:remember_device] == '1'
     cookies.encrypted[:remember_device] = {
       value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
       expires: remember_device_cookie_expiration,

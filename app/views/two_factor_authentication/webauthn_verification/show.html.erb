@@ -8,7 +8,15 @@
   <%= @presenter.webauthn_help %>
 </div>
 
-<%= form_tag(login_two_factor_webauthn_path, method: :patch, class: 'margin-bottom-1 read-after-submit', id: 'webauthn_form') do %>
+<%= simple_form_for(
+      '',
+      url: login_two_factor_webauthn_path,
+      method: :patch,
+      html: {
+        class: 'margin-bottom-1 read-after-submit',
+        id: 'webauthn_form',
+      },
+    ) do |f| %>
   <%= hidden_field_tag :user_challenge,
                        '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge' %>
   <%= hidden_field_tag :credential_ids, @presenter.credential_ids, id: 'credential_ids' %>
@@ -51,13 +59,16 @@
     <p class="half-center">
       <%= @presenter.verified_info_text %>
     </p>
-    <div class="border border-primary-light radius-lg padding-x-2 padding-y-1 margin-top-4">
-      <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-      <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
-      <%= label_tag 'remember_device',
-                    t('forms.messages.remember_device'),
-                    class: 'text-primary mt-1p' %>
-    </div>
+    <%= f.input(
+          'remember_device',
+          as: :boolean,
+          label: t('forms.messages.remember_device'),
+          wrapper_html: { class: 'margin-top-4' },
+          input_html: {
+            class: 'usa-checkbox__input--bordered',
+            checked: @presenter.remember_device_box_checked?,
+          },
+        ) %>
     <%= submit_tag t('forms.buttons.continue'),
                    class: 'usa-button usa-button--big usa-button--wide margin-y-4' %>
   </div>
