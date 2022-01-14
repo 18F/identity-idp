@@ -25,7 +25,6 @@ class AssetSources
       self.manifest = begin
         JSON.parse(File.read(manifest_path))
       rescue JSON::ParserError, Errno::ENOENT
-        raise if Rails.env.production?
         nil
       end
     end

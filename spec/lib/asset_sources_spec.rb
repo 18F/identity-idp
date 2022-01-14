@@ -108,16 +108,6 @@ RSpec.describe AssetSources do
 
         expect(AssetSources.manifest).to be_nil
       end
-
-      context 'production environment' do
-        before do
-          allow(Rails.env).to receive(:production?).and_return(true)
-        end
-
-        it 'raises an exception' do
-          expect { AssetSources.load_manifest }.to raise_exception(Errno::ENOENT)
-        end
-      end
     end
 
     context 'invalid json' do
@@ -127,16 +117,6 @@ RSpec.describe AssetSources do
         AssetSources.load_manifest
 
         expect(AssetSources.manifest).to be_nil
-      end
-
-      context 'production environment' do
-        before do
-          allow(Rails.env).to receive(:production?).and_return(true)
-        end
-
-        it 'raises an exception' do
-          expect { AssetSources.load_manifest }.to raise_exception(JSON::ParserError)
-        end
       end
     end
   end
