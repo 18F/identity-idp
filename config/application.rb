@@ -8,6 +8,7 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
+require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
@@ -22,6 +23,9 @@ module Upaya
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
     IdentityConfig.build_store(configuration)
+
+    AssetSources.manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
+    AssetSources.cache_manifest = Rails.env.production? || Rails.env.test?
 
     console do
       if ENV['ALLOW_CONSOLE_DB_WRITE_ACCESS'] != 'true' &&
