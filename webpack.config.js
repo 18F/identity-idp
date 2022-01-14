@@ -14,7 +14,7 @@ const entries = glob('app/{components,javascript/packs}/*.{js,jsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
-  devtool: isProductionEnv ? false : 'eval-source-map',
+  devtool: isProductionEnv || isTestEnv ? false : 'eval-source-map',
   target: ['web', 'es5'],
   devServer: devServerPort && {
     static: {

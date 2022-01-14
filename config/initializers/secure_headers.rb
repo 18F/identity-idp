@@ -45,9 +45,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_csp_config[:frame_ancestors] = %w['self']
   end
 
-  if !Rails.env.production?
-    default_csp_config[:script_src] += ["'self'", "'unsafe-eval'", "'unsafe-inline'"]
-    default_csp_config[:style_src] += ["'self'", "'unsafe-inline'"]
+  if Rails.env.development?
+    default_csp_config[:script_src] += ["'self'", "'unsafe-eval'"]
   end
 
   if ENV['WEBPACK_PORT']
