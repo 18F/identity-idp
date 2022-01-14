@@ -26,12 +26,8 @@ class AccountShow
   end
 
   def show_manage_personal_key_partial?
-    if TwoFactorAuthentication::PersonalKeyPolicy.new(decorated_user.user).visible? &&
-       decorated_user.password_reset_profile.blank?
-      true
-    else
-      false
-    end
+    TwoFactorAuthentication::PersonalKeyPolicy.new(decorated_user.user).visible? &&
+      decorated_user.password_reset_profile.blank?
   end
 
   def show_service_provider_continue_partial?
@@ -43,7 +39,7 @@ class AccountShow
   end
 
   def showing_any_partials?
-    show_service_provider_continue_partial? || show_manage_personal_key_partial? ||
+    show_service_provider_continue_partial? ||
       show_pii_partial? || show_password_reset_partial? || show_personal_key_partial? ||
       show_gpo_partial?
   end
