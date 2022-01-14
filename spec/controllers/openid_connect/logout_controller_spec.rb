@@ -98,6 +98,28 @@ RSpec.describe OpenidConnect::LogoutController do
           action
         end
       end
+
+      context 'with a bad id_token_hint' do
+        let(:id_token_hint) { { id_token_hint: 'abc123' } }
+        it 'tracks analytics' do
+          stub_analytics
+          errors = {
+            id_token_hint: [t('openid_connect.logout.errors.id_token_hint')],
+            redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
+          }
+
+          expect(@analytics).to receive(:track_event).
+            with(Analytics::LOGOUT_INITIATED,
+                 success: false,
+                 client_id: nil,
+                 errors: hash_including(*errors.keys),
+                 error_details: hash_including(*errors.keys),
+                 sp_initiated: true,
+                 oidc: true)
+
+          action
+        end
+      end
     end
 
     context 'user is not signed in' do
