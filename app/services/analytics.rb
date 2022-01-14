@@ -225,6 +225,7 @@ class Analytics
   PHONE_DELETION = 'Phone Number Deletion: Submitted'.freeze
   PIV_CAC_LOGIN = 'PIV/CAC Login'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
+  PROFILE_PERSONAL_KEY_VISIT = 'Profile: Visited new personal key'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'.freeze
   PROOFING_ADDRESS_TIMEOUT = 'Proofing Address Timeout'.freeze

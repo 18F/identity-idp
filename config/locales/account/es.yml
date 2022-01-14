@@ -71,7 +71,7 @@ es:
       personal_key: Clave personal
     links:
       delete_account: Eliminar
-      regenerate_personal_key: Obtenga una clave nueva.
+      regenerate_personal_key: Restablecer
     login:
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
       piv_cac_info:
@@ -99,7 +99,14 @@ es:
       learn_more: Obtenga más información sobre %{app_name}
       menu: Menú
       two_factor_authentication: Tus métodos de autenticación
+      reset_personal_key: Restablecer la clave personal
       your_account: Su cuenta
+    personal_key:
+      get_new: Restablecer la clave personal
+      get_new_description: TODO
+      last_generated: 'Generada por última vez en %{timestamp}'
+      reset_instructions: Restablezca su clave personal si no la tiene. Necesitará
+        esta clave personal si olvida su contraseña.
     re_verify:
       banner: Hemos ocultado la información de su perfil para proteger su privacidad.
       footer: Autentíquese nuevamente para ver la información de su perfil

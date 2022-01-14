@@ -1,9 +1,13 @@
 module Accounts
   # Lets users generate a new personal key
-  class PersonalKeysController < ApplicationController
+  class PersonalKeysController < ReauthnRequiredController
     include PersonalKeyConcern
 
     before_action :confirm_two_factor_authenticated
+
+    def new
+      analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_VISIT)
+    end
 
     def create
       user_session[:personal_key] = create_new_code

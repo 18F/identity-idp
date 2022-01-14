@@ -1,4 +1,6 @@
 module TwoFactorAuthentication
+  # Checks if a user has a personal key as a 2FA method
+  # (legacy 2FA, independent of having one for a profile)
   class PersonalKeyPolicy
     def initialize(user)
       @user = user

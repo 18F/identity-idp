@@ -15,7 +15,7 @@ class ReauthnRequiredController < ApplicationController
     return false if user_session.blank?
     authn_at = user_session[:authn_at]
     return false if authn_at.blank?
-    authn_at > Time.zone.now - IdentityConfig.store.reauthn_window
+    authn_at > Time.zone.now - IdentityConfig.store.reauthn_window.seconds
   end
 
   def prompt_for_current_password
@@ -38,10 +38,12 @@ class ReauthnRequiredController < ApplicationController
 
   def factor_from_controller_name
     {
+      # see LG-5701, translate these
       'emails' => 'email',
       'passwords' => 'password',
       'phones' => 'phone',
       'delete' => 'delete',
+      'personal_keys' => 'personal key',
     }[controller_name]
   end
 

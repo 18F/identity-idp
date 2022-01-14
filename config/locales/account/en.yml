@@ -70,7 +70,7 @@ en:
       personal_key: Personal key
     links:
       delete_account: Delete
-      regenerate_personal_key: Get a new key
+      regenerate_personal_key: Reset
     login:
       piv_cac: Sign in with your government employee ID
       piv_cac_info:
@@ -98,7 +98,15 @@ en:
       learn_more: Learn more about %{app_name}
       menu: Menu
       two_factor_authentication: Your authentication methods
+      reset_personal_key: Reset personal key
       your_account: Your Account
+    personal_key:
+      get_new: Reset personal key
+      get_new_description: When you receive a new personal key, your old personal key
+        will not work anymore.
+      last_generated: 'Last generated on %{timestamp}'
+      reset_instructions: Reset your personal key if you don’t have it. You’ll need
+        this personal key if you forget your password.
     re_verify:
       banner: We’ve hidden your profile information to protect your privacy.
       footer: Authenticate to view your information.

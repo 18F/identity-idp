@@ -26,7 +26,7 @@ class AccountShow
   end
 
   def show_manage_personal_key_partial?
-    TwoFactorAuthentication::PersonalKeyPolicy.new(decorated_user.user).visible? &&
+    decorated_user.user.encrypted_recovery_code_digest.present? &&
       decorated_user.password_reset_profile.blank?
   end
 
@@ -46,6 +46,11 @@ class AccountShow
 
   def backup_codes_generated_at
     decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
+  end
+
+  def personal_key_generated_at
+    decorated_user.user.encrypted_recovery_code_digest_generated_at ||
+      decorated_user.user.active_profile.verified_at
   end
 
   def header_personalization

@@ -1,6 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Accounts::PersonalKeysController do
+  describe 'before_actions' do
+    it 'require recent reauthn' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_recently_authenticated,
+      )
+    end
+  end
+
+  describe '#new' do
+    it 'tracks an event for viewing profile personal key' do
+      stub_sign_in(create(:user, :with_phone))
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_VISIT)
+
+      get :new
+    end
+  end
+
   describe '#create' do
     it 'generates a new personal key, tracks an analytics event, and redirects' do
       stub_sign_in(create(:user, :with_phone))
