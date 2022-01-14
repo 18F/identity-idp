@@ -6,6 +6,7 @@ Rails.application.configure do
   config.active_record.migration_error = :page_load
   config.assets.debug = true
   config.assets.digest = true
+  config.assets.gzip = false
   config.assets.raise_runtime_errors = true
   config.i18n.raise_on_missing_translations = true
 
