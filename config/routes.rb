@@ -205,9 +205,11 @@ Rails.application.routes.draw do
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
+
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
-    post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
+
+    post '/account/personal_key' => 'accounts/personal_keys#create', as: :create_new_personal_key
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
