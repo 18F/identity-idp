@@ -69,20 +69,20 @@ RSpec.describe AssetSources do
       end
     end
 
-    it 'loads the manifest' do
-      expect(AssetSources).to receive(:load_manifest).twice.and_call_original
+    it 'loads the manifest once' do
+      expect(AssetSources).to receive(:load_manifest).once.and_call_original
 
       AssetSources.get_sources('application')
       AssetSources.get_sources('input')
     end
 
-    context 'cached manifest' do
+    context 'uncached manifest' do
       before do
-        allow(AssetSources).to receive(:cache_manifest).and_return(true)
+        allow(AssetSources).to receive(:cache_manifest).and_return(false)
       end
 
-      it 'loads the manifest once' do
-        expect(AssetSources).to receive(:load_manifest).once.and_call_original
+      it 'loads the manifest' do
+        expect(AssetSources).to receive(:load_manifest).twice.and_call_original
 
         AssetSources.get_sources('application')
         AssetSources.get_sources('input')
