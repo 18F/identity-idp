@@ -54,8 +54,6 @@ es:
       buttons:
         delete: Eliminar correo electrónico
     example: 'Ejemplo:'
-    file_input:
-      file_updated: Archivo actualizado
     messages:
       remember_device: Recuerde este navegador
     password: Contraseña

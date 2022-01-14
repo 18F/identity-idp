@@ -156,6 +156,8 @@ en:
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state-issued ID. We do not store images you upload. We only
         verify your identity.
+      image_loaded: Image loaded
+      image_loading: Image loading
       image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step
         automatically when it’s done.
