@@ -5,9 +5,9 @@
   <%= stylesheet_link_tag 'document-capture' %>
 <% end %>
 <% add_document_capture_image_urls_to_csp(
-      request,
-      [front_image_upload_url, back_image_upload_url, selfie_image_upload_url],
-    )
+     request,
+     [front_image_upload_url, back_image_upload_url, selfie_image_upload_url],
+   )
    session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
