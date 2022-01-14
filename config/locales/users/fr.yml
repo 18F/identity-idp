@@ -29,6 +29,8 @@ fr:
       print: Imprimer cette page
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
+    emails:
+      error_message: Vous avez ajouté le nombre maximum de numéros de get translation before pr.
     rules_of_use:
       check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
       details_html: |-

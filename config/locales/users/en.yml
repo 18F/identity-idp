@@ -26,6 +26,8 @@ en:
       print: Print
     phones:
       error_message: You’ve added the maximum number of phone numbers.
+    emails:
+      error_message: You’ve added the maximum number of email addresses.
     rules_of_use:
       check_box_to_accept: Check this box to accept the %{app_name}
       details_html: |-
