@@ -49,6 +49,9 @@ describe Idv::PhoneErrorsController do
     allow(subject).to receive(:remaining_step_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
+
+    stub_analytics
+    allow(@analytics).to receive(:track_event)
   end
 
   describe '#warning' do
@@ -68,6 +71,15 @@ describe Idv::PhoneErrorsController do
         get action
 
         expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+      end
+
+      it 'logs an event' do
+        logged_attributes = { type: action, remaining_step_attempts: 4 }
+
+        get action
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
       end
     end
   end
@@ -90,6 +102,15 @@ describe Idv::PhoneErrorsController do
 
         expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
       end
+
+      it 'logs an event' do
+        logged_attributes = { type: action, remaining_step_attempts: 4 }
+
+        get action
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
+      end
     end
   end
 
@@ -101,15 +122,29 @@ describe Idv::PhoneErrorsController do
 
     context 'while throttled' do
       let(:user) { create(:user) }
+      let(:attempted_at) { Time.zone.now }
 
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
+        create(:throttle, :with_throttled,
+               user: user, throttle_type: :proof_address, attempted_at: attempted_at)
       end
 
       it 'assigns expiration time' do
         get action
 
         expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+
+      it 'logs an event' do
+        throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minute
+        logged_attributes = {
+          type: action,
+          throttle_expires_at: attempted_at + throttle_window }
+
+        get action
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
       end
     end
   end
