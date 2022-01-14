@@ -8,13 +8,12 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
 
-  connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     form_action: ["'self'"],
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: connect_src.flatten,
+    connect_src: ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net'],
     font_src: ["'self'", 'data:', IdentityConfig.store.asset_host.presence],
     img_src: [
       "'self'",

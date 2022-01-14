@@ -3,7 +3,6 @@ require 'feature_management'
 if FeatureManagement.rails_csp_tooling_enabled?
   Rails.application.config.content_security_policy do |policy|
     connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
-    connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
 
     font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
