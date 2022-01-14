@@ -28,6 +28,11 @@ if FeatureManagement.rails_csp_tooling_enabled?
 
     style_src = [:self, IdentityConfig.store.asset_host.presence].compact
 
+    if ENV['WEBPACK_PORT']
+      connect_src << "ws://localhost:#{ENV['WEBPACK_PORT']}"
+      script_src << "localhost:#{ENV['WEBPACK_PORT']}"
+    end
+
     policy.default_src :self
     policy.child_src :self # CSP 2.0 only; replaces frame_src
     policy.form_action :self

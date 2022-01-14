@@ -46,15 +46,15 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_csp_config[:frame_ancestors] = %w['self']
   end
 
+  if ENV['WEBPACK_PORT']
+    default_csp_config[:connect_src] << "ws://localhost:#{ENV['WEBPACK_PORT']}"
+    default_csp_config[:script_src] << "localhost:#{ENV['WEBPACK_PORT']}"
+  end
+
   if FeatureManagement.rails_csp_tooling_enabled?
     config.csp = SecureHeaders::OPT_OUT
   else
     config.csp = default_csp_config
-  end
-
-  if ENV['WEBPACK_PORT']
-    config.csp[:connect_src] << "ws://localhost:#{ENV['WEBPACK_PORT']}"
-    config.csp[:script_src] << "localhost:#{ENV['WEBPACK_PORT']}"
   end
 
   config.cookies = {
