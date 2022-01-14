@@ -86,7 +86,7 @@ describe 'Unchecking remember device' do
       before do
         sign_in_user(user)
         fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
-        uncheck :remember_device
+        uncheck t('forms.messages.remember_device')
         click_submit_default
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
@@ -132,7 +132,7 @@ describe 'Unchecking remember device' do
 
       before do
         sign_in_user(user)
-        uncheck :remember_device
+        uncheck t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
         click_submit_default
         first(:link, t('links.sign_out')).click
