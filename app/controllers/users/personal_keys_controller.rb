@@ -1,5 +1,5 @@
 module Users
-  # Handles updating a user's personal key if it used for 2FA
+  # Handles updating a user's personal key if it used for 2FA (legacy behavior)
   class PersonalKeysController < ApplicationController
     include PersonalKeyConcern
     include SecureHeadersConcern
