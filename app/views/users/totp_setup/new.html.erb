@@ -74,7 +74,7 @@
   </ul>
   <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--big usa-button--wide margin-y-5' %>
   <%= f.input(
-        'remember_device',
+        :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
         input_html: { checked: @presenter.remember_device_box_checked? },
