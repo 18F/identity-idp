@@ -38,6 +38,7 @@ RSpec.describe AssetSources do
   end
 
   before do
+    AssetSources.manifest = nil
     File.open(manifest_file.path, 'w') { |f| f.puts manifest_content }
     allow(AssetSources).to receive(:manifest_path).and_return(manifest_file.path)
     allow(I18n).to receive(:available_locales).and_return([:en, :es, :fr])
@@ -46,6 +47,7 @@ RSpec.describe AssetSources do
 
   after do
     manifest_file.unlink
+    AssetSources.manifest = nil
   end
 
   describe '.get_sources' do
@@ -77,7 +79,6 @@ RSpec.describe AssetSources do
     context 'cached manifest' do
       before do
         allow(AssetSources).to receive(:cache_manifest).and_return(true)
-        AssetSources.manifest = nil
       end
 
       it 'loads the manifest once' do
