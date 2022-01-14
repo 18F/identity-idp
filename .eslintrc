@@ -5,6 +5,9 @@
     "browser": true,
     "commonjs": true
   },
+  "globals": {
+    "globalThis": true
+  },
   "rules": {
     "no-restricted-syntax": [
       "error",

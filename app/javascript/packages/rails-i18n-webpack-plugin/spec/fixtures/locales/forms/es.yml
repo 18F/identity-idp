@@ -3,3 +3,4 @@ es:
     button:
       submit: Enviar
       cancel: Cancelar
+      reset: Reiniciar

@@ -93,7 +93,7 @@ function success(data) {
   if (timeRemaining < frequency) {
     timeRemaining = timeRemaining < 0 ? 0 : timeRemaining;
     // Disable reason: circular dependency between ping and success
-    // eslint-disable-next-line no-use-before-define
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     setTimeout(ping, timeRemaining);
   }
 }

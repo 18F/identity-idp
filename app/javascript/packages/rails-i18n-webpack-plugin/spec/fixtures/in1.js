@@ -1,4 +1,5 @@
 import './common.js';
+import './resolved';
 
 const text = t('forms.button.submit');
 

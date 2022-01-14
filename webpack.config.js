@@ -37,7 +37,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     publicPath: devServerPort ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   module: {
     rules: [
@@ -48,7 +48,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
         use: {
           loader: 'babel-loader',

@@ -8,7 +8,7 @@ interface OTPCredentialsContainer extends CredentialsContainer {
 /**
  * @see https://wicg.github.io/web-otp/#CredentialRequestOptions
  */
-interface OTPCredentialRequestOptions extends CredentialRequestOptions {
+interface OTPCredentialRequestOptions extends globalThis.CredentialRequestOptions {
   otp: { transport: OTPCredentialTransportType[] };
 }
 
