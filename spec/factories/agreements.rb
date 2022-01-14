@@ -10,7 +10,7 @@ FactoryBot.define do
 
     # wanted to use Faker::Space.agency but there aren't enough options to avoid
     # collisions
-    name { Faker::Types.rb_string(words: 2).split(' ').map(&:capitalize).join(' ') }
+    name { Faker::Types.rb_string(words: 3).split(' ').map(&:capitalize).join(' ') }
     requesting_agency { "#{agency.abbreviation}-#{Faker::Name.initials(number: 3)}" }
   end
 

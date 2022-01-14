@@ -1,5 +1,4 @@
 class AddressProofingJob < ApplicationJob
-  include JobHelpers::FaradayHelper
   include JobHelpers::StaleJobHelper
 
   queue_as :default

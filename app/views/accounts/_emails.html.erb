@@ -1,17 +1,8 @@
 <div class="clearfix border-bottom border-primary-light">
   <div class="col col-12 margin-bottom-1 margin-top-0">
-    <h3 class="h2 col col-6 margin-0">
+    <h3 class="h2 margin-0">
       <%= t('account.index.email_addresses') %>
     </h3>
-    <div class="right-align col col-6">
-      <% if EmailPolicy.new(current_user).can_add_email? %>
-        <%= link_to(
-              prefix_with_plus(t('account.index.email_add')),
-              add_email_path,
-              class: 'account-action-button',
-            ) %>
-      <% end %>
-    </div>
   </div>
   <% @view_model.decorated_user.visible_email_addresses.each do |email| %>
     <div class="padding-1 col col-12 border-top border-left border-right border-primary-light">

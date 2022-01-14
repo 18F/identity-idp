@@ -24,6 +24,8 @@ en:
       generated_on_html: Generated on %{date}
       header: Your personal key
       print: Print
+    phones:
+      error_message: You’ve added the maximum number of phone numbers.
     rules_of_use:
       check_box_to_accept: Check this box to accept the %{app_name}
       details_html: |-

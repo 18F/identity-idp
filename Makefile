@@ -7,12 +7,14 @@
 CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
+GZIP_COMMAND ?= gzip
+ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
-.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries
+.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries build_artifact
 
 help: ## Show this help
 	@echo "--- Help ---"
-	@egrep -h '\s##\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@ruby lib/makefile_help_parser.rb
 
 all: check
 
@@ -45,7 +47,7 @@ lint: ## Runs all lint tests
 	@echo "--- typescript ---"
 	yarn run typecheck
 	@echo "--- es5-safe ---"
-	NODE_ENV=production ./bin/webpack && yarn es5-safe
+	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
 	@echo "--- asset check ---"
 	make check_asset_strings
@@ -69,13 +71,16 @@ lintfix: ## Runs rubocop fix
 brakeman: ## Runs brakeman
 	bundle exec brakeman
 
-test: $(CONFIG) ## Runs RSpec and yarn tests
+public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
+	yarn build
+
+test: $(CONFIG) public/packs/manifest.json ## Runs RSpec and yarn tests
 	RAILS_ENV=test bundle exec rake parallel:spec && yarn test
 
-fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
+fast_test: public/packs/manifest.json ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
-tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
+tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
 	mkdir -p tmp
 	openssl req \
 		-newkey rsa:2048 \
@@ -90,7 +95,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
 run: ## Runs the development server
 	foreman start -p $(PORT)
 
-run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the develpment server with HTTPS
+run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
 	HTTPS=on rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
@@ -108,10 +113,10 @@ optimize_svg: ## Optimizes SVG images
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
-lint_optimized_assets: optimize_assets ## Checks that assets are optimizes
+lint_optimized_assets: optimize_assets ## Checks that assets are optimized
 	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
-update_pinpoint_supported_countries: ## Updates list of countries suppored by Pinpoint for voice and SMS
+update_pinpoint_supported_countries: ## Updates list of countries supported by Pinpoint for voice and SMS
 	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
 	bundle exec ./scripts/deep-merge-yaml \
 		--comment 'Generated from `make update_pinpoint_supported_countries`' \
@@ -127,3 +132,27 @@ lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that c
 
 check_asset_strings: ## Checks for strings
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
+
+build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
+	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
+	bundle config set --local cache_all true
+	bundle package
+	tar \
+	  --exclude './config/agencies.yml' \
+	  --exclude './config/iaa_gtcs.yml' \
+	  --exclude './config/iaa_orders.yml' \
+	  --exclude './config/iaa_statuses.yml' \
+	  --exclude './config/integration_statuses.yml' \
+	  --exclude './config/integrations.yml' \
+	  --exclude './config/partner_account_statuses.yml' \
+	  --exclude './config/partner_accounts.yml' \
+	  --exclude './config/service_providers.yml' \
+	  --exclude='./certs/sp' \
+	  --exclude='./identity-idp-config' \
+	  --exclude='./tmp' \
+	  --exclude='./node_modules' \
+	  --exclude='./geo_data/GeoLite2-City.mmdb' \
+	  --exclude='./pwned_passwords/pwned_passwords.txt' \
+	  --exclude='./vendor/ruby' \
+	  --exclude='./config/application.yml' \
+	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)

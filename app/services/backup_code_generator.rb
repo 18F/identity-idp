@@ -26,7 +26,7 @@ class BackupCodeGenerator
   def verify(plaintext_code)
     backup_code = RandomPhrase.normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
-    return unless code_usable?(code)
+    return false unless code_usable?(code)
     code.update!(used_at: Time.zone.now)
     true
   end

@@ -138,9 +138,7 @@ module Upaya
     end
     # rubocop:enable Metrics/BlockLength
 
-    if IdentityConfig.store.enable_rate_limiting
-      config.middleware.use Rack::Attack
-    else
+    if !IdentityConfig.store.enable_rate_limiting
       # Rack::Attack auto-includes itself as a Railtie, so we need to
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack

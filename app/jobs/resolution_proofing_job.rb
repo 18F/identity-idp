@@ -1,5 +1,4 @@
 class ResolutionProofingJob < ApplicationJob
-  include JobHelpers::FaradayHelper
   include JobHelpers::StaleJobHelper
 
   queue_as :default
@@ -107,9 +106,7 @@ class ResolutionProofingJob < ApplicationJob
   # @return [CallbackLogData]
   def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:, dob_year_only:)
     proofer_result = timer.time('state_id') do
-      with_retries(**faraday_retry_options) do
-        state_id_proofer.proof(applicant_pii)
-      end
+      state_id_proofer.proof(applicant_pii)
     end
 
     result = proofer_result.to_h
@@ -134,9 +131,7 @@ class ResolutionProofingJob < ApplicationJob
 
     if state_id_success
       lexisnexis_result = timer.time('resolution') do
-        with_retries(**faraday_retry_options) do
-          resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
-        end
+        resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
       end
 
       resolution_success = lexisnexis_result.success?
@@ -170,9 +165,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def proof_state_id(timer:, applicant_pii:, result:)
-    proofer_result = with_retries(**faraday_retry_options) do
-      state_id_proofer.proof(applicant_pii)
-    end
+    proofer_result = state_id_proofer.proof(applicant_pii)
 
     result.merge!(proofer_result.to_h) do |key, orig, current|
       key == :messages ? orig + current : current

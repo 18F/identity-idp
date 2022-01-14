@@ -1,7 +1,4 @@
 Rails.application.configure do
-  # Verifies that versions and hashed value of the package contents in the project's package.json
-  config.webpacker.check_yarn_integrity = true
-
   config.cache_classes = false
   config.eager_load = false
   config.consider_all_requests_local = true

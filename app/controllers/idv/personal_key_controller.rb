@@ -1,5 +1,5 @@
 module Idv
-  class ConfirmationsController < ApplicationController
+  class PersonalKeyController < ApplicationController
     include IdvSession
     include SecureHeadersConcern
 
@@ -10,20 +10,22 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
-      track_final_idv_event
+      analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
+      add_proofing_component
 
       finish_idv_session
     end
 
     def update
       user_session[:need_personal_key_confirmation] = false
+      analytics.track_event(Analytics::IDV_PERSONAL_KEY_SUBMITTED)
       redirect_to next_step
     end
 
     def download
       personal_key = user_session[:personal_key]
 
-      analytics.track_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: personal_key.present?)
+      analytics.track_event(Analytics::IDV_PERSONAL_KEY_DOWNLOADED, success: personal_key.present?)
 
       if personal_key.present?
         data = personal_key + "\r\n"
@@ -55,16 +57,6 @@ module Idv
 
     def confirm_profile_has_been_created
       redirect_to account_url if idv_session.profile.blank?
-    end
-
-    def track_final_idv_event
-      configured_phones = MfaContext.new(current_user).phone_configurations.map(&:phone)
-      result = {
-        success: true,
-        new_phone_added: !configured_phones.include?(idv_session.applicant['phone']),
-      }
-      analytics.track_event(Analytics::IDV_FINAL, result)
-      add_proofing_component
     end
 
     def add_proofing_component

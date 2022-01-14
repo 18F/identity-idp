@@ -3,6 +3,19 @@ require 'rails_helper'
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
+  before do
+    allow_any_instance_of(ScriptHelper).to receive(:manifest).and_return(
+      'entrypoints' => {
+        'application' => {
+          'assets' => { 'js' => ['/packs/application.js', '/packs/application.en.js'] },
+        },
+        'document-capture' => {
+          'assets' => { 'js' => ['/packs/document-capture.js', '/packs/document-capture.en.js'] },
+        },
+      },
+    )
+  end
+
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
       javascript_include_tag_without_preload 'application'
@@ -34,16 +47,12 @@ RSpec.describe ScriptHelper do
 
       it 'prints all unique packs in order, locale scripts first' do
         output = render_javascript_pack_once_tags
-        public_output_path = current_webpacker_instance.config.public_output_path
-        public_path = current_webpacker_instance.config.public_path
-        output_path = public_output_path.relative_path_from(public_path)
 
         selectors = [
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/runtime~application-']",
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.js']",
+          "script[src^='/packs/application.en.js']",
+          "script[src^='/packs/document-capture.en.js']",
+          "script[src^='/packs/application.js']",
+          "script[src^='/packs/document-capture.js']",
         ]
 
         selectors.each_with_index do |selector, i|
@@ -52,6 +61,24 @@ RSpec.describe ScriptHelper do
           test_selector += " ~ #{next_selector}" if next_selector
           expect(output).to have_css(test_selector, count: 1, visible: false)
         end
+      end
+    end
+
+    context 'with named scripts argument' do
+      it 'enqueues those scripts before printing them' do
+        output = render_javascript_pack_once_tags('application')
+
+        expect(output).to have_css('script[src="/packs/application.js"]', visible: :all)
+      end
+    end
+
+    context 'script that does not exist' do
+      before do
+        javascript_packs_tag_once('nope')
+      end
+
+      it 'gracefully outputs nothing' do
+        expect(render_javascript_pack_once_tags).to be_empty
       end
     end
   end
