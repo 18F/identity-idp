@@ -205,7 +205,6 @@ Rails.application.routes.draw do
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
-
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
 
