@@ -74,7 +74,7 @@ describe Profile do
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
 
-    it 'updates the personal get digest generation time' do
+    it 'updates the personal key digest generation time' do
       user.encrypted_recovery_code_digest_generated_at = nil
 
       encrypt_pii
