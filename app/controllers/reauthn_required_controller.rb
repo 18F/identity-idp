@@ -15,7 +15,7 @@ class ReauthnRequiredController < ApplicationController
     return false if user_session.blank?
     authn_at = user_session[:authn_at]
     return false if authn_at.blank?
-    authn_at > Time.zone.now - IdentityConfig.store.reauthn_window.seconds
+    authn_at > Time.zone.now - IdentityConfig.store.reauthn_window
   end
 
   def prompt_for_current_password
