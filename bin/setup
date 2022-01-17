@@ -14,7 +14,7 @@ Dir.chdir APP_ROOT do
   # Add necessary setup steps to this file:
 
   puts %q[
-    
+
     ______               _____
     ___  / _____________ ___(_)______   _______ _________   __
     __  /  _  __ \_  __ `/_  /__  __ \  __  __ `/  __ \_ | / /
@@ -55,7 +55,8 @@ Dir.chdir APP_ROOT do
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
-  run "gem install mailcatcher"
+  run "gem install thin -v 1.5.1 -- --with-cflags=\"-Wno-error=implicit-function-declaration\""
+  run "gem install mailcatcher -- --with-cppflags=-I/usr/local/opt/openssl/include"
 
   puts "\n== Preparing database =="
   run 'bin/rake db:create'

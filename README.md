@@ -21,7 +21,7 @@ This installation method is meant for those who are familiar with setting up loc
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby 3.0.3
+- Ruby ~> 3.0.3
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v14](https://nodejs.org)
@@ -67,14 +67,6 @@ If this command errors, you may need to install dependancies outside of the make
 ```
 $ bundle install
 $ yarn install
-```
-
-If setup errors at the mailcatcher installation, ensure you can install the openssl, thin, and mailcatcher gems. For more info, [here is a helpful gist on these errors](https://gist.github.com/pitpit/78fc6b34b1b564c86d80). TL;DR, run:
-
-```
-$ gem install openssl
-$ gem install thin -v 1.5.1 -- --with-cflags="-Wno-error=implicit-function-declaration"
-$ gem install mailcatcher -- --with-cppflags=-I/usr/local/opt/openssl/include
 ```
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
