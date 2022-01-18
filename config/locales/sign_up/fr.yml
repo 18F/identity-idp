@@ -5,4 +5,4 @@ fr:
     cancel:
       success: Le dossier contenant votre information a été effacé
       warning_header: 'Si vous annulez maintenant:'
-    terms: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
+    terms: J’ai lu et j’accepte le %{app_name}
