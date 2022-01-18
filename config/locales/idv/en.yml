@@ -71,7 +71,7 @@ en:
         warning_1: If you forgot your password, you’ll need to reset it and fill out the
           form again.
         warning_2: You’ll have to re-enter your personal information, like your name,
-          state ID number, etc.
+          state-isseud ID, etc.
     form:
       address1: Address
       address2: Address (optional)
