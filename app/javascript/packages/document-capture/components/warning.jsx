@@ -13,7 +13,7 @@ import PageHeading from './page-heading';
  * @prop {(() => void)=} actionOnClick Primary action button text.
  * @prop {import('react').ReactNode} children Component children.
  * @prop {ReactNode=} troubleshootingOptions Troubleshooting options.
- * @prop {string=} location Source component mounting warning.
+ * @prop {string} location Source component mounting warning.
  */
 
 /**
