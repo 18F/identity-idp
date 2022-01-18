@@ -260,7 +260,13 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'iOS 15 sequence break', 'sequence-break-code'),
+        start: sinon.stub().callsFake((_callbacks, onError) => {
+          setTimeout(() => {
+            const code = 'sequence-break-code';
+            document.cookie = `AcuantCameraHasFailed=${code}`;
+            onError('iOS 15 sequence break', code);
+          }, 0);
+        }),
       });
 
       const button = getByLabelText('Image');
@@ -274,6 +280,12 @@ describe('document-capture/components/acuant-capture', () => {
         payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
       });
       expect(document.activeElement).to.equal(button);
+
+      const defaultPrevented = !fireEvent.click(button);
+
+      window.AcuantCameraUI.start.resetHistory();
+      expect(defaultPrevented).to.be.false();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
     it('calls onCameraAccessDeclined if camera access is declined', async () => {
