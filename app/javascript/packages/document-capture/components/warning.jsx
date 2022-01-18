@@ -1,7 +1,7 @@
+import { useContext, useEffect } from 'react';
+import AnalyticsContext from '../context/analytics';
 import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';
-import { useEffect } from 'react';
-import { trackEvent } from '@18f/identity-analytics';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -28,8 +28,9 @@ function Warning({
   location,
 }) {
   const { getAssetPath } = useAsset();
+  const { addPageAction } = useContext(AnalyticsContext);
   useEffect(() => {
-    trackEvent('IdV: warning visited', { location });
+    addPageAction({ label: 'IdV: warning shown', payload: { location } });
   }, []);
 
   return (
@@ -49,7 +50,7 @@ function Warning({
             type="button"
             className="usa-button usa-button--big usa-button--wide"
             onClick={() => {
-              trackEvent('IdV: warning action triggered', { location });
+              addPageAction({ label: 'IdV: warning action triggered', payload: { location } });
               actionOnClick();
             }}
           >

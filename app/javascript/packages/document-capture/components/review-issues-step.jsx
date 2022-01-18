@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsContext, FormStepsContinueButton } from './form-steps';
@@ -15,7 +15,6 @@ import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
-import { trackEvent } from '@18f/identity-analytics';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
