@@ -279,7 +279,7 @@ describe('document-capture/components/acuant-capture', () => {
         label: 'IdV: Image capture failed',
         payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
       });
-      expect(document.activeElement).to.equal(button);
+      await waitFor(() => document.activeElement === button);
 
       const defaultPrevented = !fireEvent.click(button);
 
