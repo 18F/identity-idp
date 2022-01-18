@@ -76,7 +76,7 @@ es:
       warnings:
         warning_1: Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
         warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
-          número de identificación del estado, etc.
+          documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección
       address2: Dirección (opcional)
