@@ -46,8 +46,9 @@ function useCookie(name) {
    * Refresh cookie value for all current subscribers.
    */
   function refreshValue() {
+    const nextValue = getValue();
     const subscribers = /** @type {Subscribers} */ (subscriptions.get(name));
-    subscribers.forEach((setSubscriberValue) => setSubscriberValue(getValue));
+    subscribers.forEach((setSubscriberValue) => setSubscriberValue(nextValue));
   }
 
   /**
