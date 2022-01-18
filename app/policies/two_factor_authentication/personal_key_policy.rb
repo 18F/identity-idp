@@ -14,10 +14,6 @@ module TwoFactorAuthentication
       configured? && user.profiles.none?
     end
 
-    def visible?
-      enabled?
-    end
-
     private
 
     attr_reader :user
