@@ -23,6 +23,16 @@ def get_changelog_diff_lines(base_branch, source_branch)
   diff_lines[(index+1)..].filter { |line| !line.start_with?('@@') && line != ' ' }
 end
 
+def commit_messages_contain_skip_changelog?(base_branch, source_branch)
+  log, status = Open3.capture2(
+    'git', 'log', '--pretty=\'%B\'', "#{base_branch}...#{source_branch}"
+  )
+  raise 'git log failed' unless status.success?
+
+  return true if log.include?('[skip changelog]')
+  return false
+end
+
 def main(args)
   options = { base_branch: 'main' }
   basename = File.basename($0)
@@ -49,6 +59,12 @@ def main(args)
   optparse.parse!
 
   abort(optparse.help) if options[:source_branch].nil?
+
+  skip_check = commit_messages_contain_skip_changelog?(
+    options[:base_branch],
+    options[:source_branch],
+  )
+  return 0 if skip_check
 
   diff_lines = get_changelog_diff_lines(options[:base_branch], options[:source_branch])
 
