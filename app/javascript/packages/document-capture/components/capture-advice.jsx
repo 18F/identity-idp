@@ -25,6 +25,7 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
       heading={t('doc_auth.headings.capture_troubleshooting_tips')}
       actionText={t('idv.failure.button.warning')}
       actionOnClick={onTryAgain}
+      location="doc_auth_capture_advice"
       troubleshootingOptions={
         <DocumentCaptureTroubleshootingOptions
           heading={t('idv.troubleshooting.headings.still_having_trouble')}
