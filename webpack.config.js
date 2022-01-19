@@ -36,7 +36,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     chunkFilename: `js/[name].chunk${hashSuffix}.js`,
     sourceMapFilename: `js/[name]${hashSuffix}.js.map`,
     path: resolve(__dirname, 'public/packs'),
-    publicPath: isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
+    publicPath:
+      devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
