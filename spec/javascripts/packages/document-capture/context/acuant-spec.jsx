@@ -25,16 +25,28 @@ describe('document-capture/context/acuant', () => {
   it('provides default context value', () => {
     const { result } = renderHook(() => useContext(AcuantContext));
 
-    expect(result.current).to.eql({
-      isReady: false,
-      isAcuantLoaded: false,
-      isError: false,
-      isCameraSupported: null,
-      credentials: null,
-      endpoint: null,
-      glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-      sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-    });
+    expect(result.current).to.have.keys([
+      'isReady',
+      'isAcuantLoaded',
+      'isError',
+      'isCameraSupported',
+      'isActive',
+      'setIsActive',
+      'credentials',
+      'endpoint',
+      'glareThreshold',
+      'sharpnessThreshold',
+    ]);
+    expect(result.current.isReady).to.be.false();
+    expect(result.current.isAcuantLoaded).to.be.false();
+    expect(result.current.isError).to.be.false();
+    expect(result.current.isCameraSupported).to.be.null();
+    expect(result.current.isActive).to.be.false();
+    expect(result.current.setIsActive).to.be.a('function');
+    expect(result.current.credentials).to.be.null();
+    expect(result.current.endpoint).to.be.null();
+    expect(result.current.glareThreshold).to.equal(DEFAULT_ACCEPTABLE_GLARE_SCORE);
+    expect(result.current.sharpnessThreshold).to.equal(DEFAULT_ACCEPTABLE_SHARPNESS_SCORE);
   });
 
   it('allows configurable acceptable scores', () => {
@@ -72,16 +84,10 @@ describe('document-capture/context/acuant', () => {
         ),
       });
 
-      expect(result.current).to.eql({
-        isReady: true,
-        isAcuantLoaded: false,
-        isError: false,
-        isCameraSupported: false,
-        credentials: null,
-        endpoint: null,
-        glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-        sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-      });
+      expect(result.current.isReady).to.be.true();
+      expect(result.current.isAcuantLoaded).to.be.false();
+      expect(result.current.isError).to.be.false();
+      expect(result.current.isCameraSupported).to.be.false();
     });
   });
 
@@ -114,16 +120,8 @@ describe('document-capture/context/acuant', () => {
         ),
       });
 
-      expect(result.current).to.eql({
-        isReady: false,
-        isAcuantLoaded: false,
-        isError: false,
-        isCameraSupported: null,
-        credentials: 'a',
-        endpoint: 'b',
-        glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-        sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-      });
+      expect(result.current.credentials).to.equal('a');
+      expect(result.current.endpoint).to.equal('b');
     });
 
     context('successful initialization', () => {
@@ -151,16 +149,10 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('provides ready context', () => {
-          expect(result.current).to.eql({
-            isReady: true,
-            isAcuantLoaded: true,
-            isError: false,
-            isCameraSupported: true,
-            credentials: null,
-            endpoint: null,
-            glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-            sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-          });
+          expect(result.current.isReady).to.be.true();
+          expect(result.current.isAcuantLoaded).to.be.true();
+          expect(result.current.isError).to.be.false();
+          expect(result.current.isCameraSupported).to.be.true();
         });
 
         it('logs', () => {
@@ -180,16 +172,10 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('provides ready context', () => {
-          expect(result.current).to.eql({
-            isReady: true,
-            isAcuantLoaded: true,
-            isError: false,
-            isCameraSupported: false,
-            credentials: null,
-            endpoint: null,
-            glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-            sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-          });
+          expect(result.current.isReady).to.be.true();
+          expect(result.current.isAcuantLoaded).to.be.true();
+          expect(result.current.isError).to.be.false();
+          expect(result.current.isCameraSupported).to.be.false();
         });
 
         it('logs', () => {
@@ -226,16 +212,10 @@ describe('document-capture/context/acuant', () => {
       });
 
       it('provides error context', () => {
-        expect(result.current).to.eql({
-          isReady: false,
-          isAcuantLoaded: false,
-          isError: true,
-          isCameraSupported: null,
-          credentials: null,
-          endpoint: null,
-          glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-          sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-        });
+        expect(result.current.isReady).to.be.false();
+        expect(result.current.isAcuantLoaded).to.be.false();
+        expect(result.current.isError).to.be.true();
+        expect(result.current.isCameraSupported).to.be.null();
       });
 
       it('logs', () => {
