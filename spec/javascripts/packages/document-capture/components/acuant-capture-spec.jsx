@@ -223,11 +223,12 @@ describe('document-capture/components/acuant-capture', () => {
       const firstInput = getByLabelText('First Image');
       const secondInput = getByLabelText('Second Image');
       fireEvent.click(firstInput);
+
+      await waitFor(() => firstInput.getAttribute('aria-busy') === 'true');
       fireEvent.click(secondInput);
 
       expect(window.AcuantCameraUI.start).to.have.been.calledOnce();
 
-      await waitFor(() => firstInput.getAttribute('aria-busy') === 'true');
       onCropped();
       await waitFor(() => firstInput.getAttribute('aria-busy') === 'false');
 
