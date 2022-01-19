@@ -114,6 +114,8 @@ const AcuantContext = createContext({
   isAcuantLoaded: false,
   isError: false,
   isCameraSupported: /** @type {boolean?} */ (null),
+  isActive: false,
+  setIsActive: /** @type {(nextIsActive: boolean) => void} */ (() => {}),
   credentials: /** @type {string?} */ (null),
   glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
@@ -144,12 +146,15 @@ function AcuantContextProvider({
   // Acuant SDK loads, so assign a value of `null` as representing this unknown state. Other device
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
+  const [isActive, setIsActive] = useState(false);
   const value = useMemo(
     () => ({
       isReady,
       isAcuantLoaded,
       isError,
       isCameraSupported,
+      isActive,
+      setIsActive,
       endpoint,
       credentials,
       glareThreshold,
@@ -160,6 +165,8 @@ function AcuantContextProvider({
       isAcuantLoaded,
       isError,
       isCameraSupported,
+      isActive,
+      setIsActive,
       endpoint,
       credentials,
       glareThreshold,

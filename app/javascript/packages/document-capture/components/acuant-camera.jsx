@@ -182,7 +182,7 @@ function AcuantCamera({
   onCropStart = () => {},
   children,
 }) {
-  const { isReady } = useContext(AcuantContext);
+  const { isReady, setIsActive } = useContext(AcuantContext);
   const { t } = useI18n();
   const onCropped = useImmutableCallback(
     (response) => {
@@ -213,11 +213,13 @@ function AcuantCamera({
           },
         },
       );
+      setIsActive(true);
     }
 
     return () => {
       if (isReady) {
         /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
+        setIsActive(false);
       }
     };
   }, [isReady]);
