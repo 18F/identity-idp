@@ -78,12 +78,19 @@ feature 'doc auth verify step' do
   end
 
   it 'does not proceed to the next page if resolution fails' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     click_idv_continue
 
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth warning visited',
+      step_name: 'VerifyWaitStepShow',
+      remaining_step_attempts: 4,
+    )
     expect(page).to have_current_path(idv_session_errors_warning_path)
 
     click_on t('idv.failure.button.warning')
@@ -92,12 +99,19 @@ feature 'doc auth verify step' do
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
     click_idv_continue
     click_idv_continue
 
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth exception visited',
+      step_name: 'VerifyWaitStepShow',
+      remaining_step_attempts: 4,
+    )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
     click_on t('idv.failure.button.warning')

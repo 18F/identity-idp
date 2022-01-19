@@ -22,18 +22,32 @@ module Idv
         Throttle.for(**idv_throttle_params).throttled?
       end
 
+      def attempts_remaining
+        Throttle.for(**idv_throttle_params).remaining_count
+      end
+
       def idv_failure(result)
         attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
         if attempter_throttled?
           @flow.analytics.track_event(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
             throttle_type: :idv_resolution,
-            step_name: self.class,
+            step_name: self.class.class_name,
           )
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
+          @flow.analytics.track_event(
+            Analytics::IDV_DOC_AUTH_EXCEPTION_VISITED,
+            step_name: self.class.class_name,
+            remaining_step_attempts: attempts_remaining,
+          )
           redirect_to idv_session_errors_exception_url
         else
+          @flow.analytics.track_event(
+            Analytics::IDV_DOC_AUTH_WARNING_VISITED,
+            step_name: self.class.class_name,
+            remaining_step_attempts: attempts_remaining,
+          )
           redirect_to idv_session_errors_warning_url
         end
         result
