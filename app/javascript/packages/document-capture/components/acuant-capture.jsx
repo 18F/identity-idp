@@ -263,6 +263,7 @@ function AcuantCapture(
 ) {
   const {
     isReady,
+    isActive: isAcuantInstanceActive,
     isAcuantLoaded,
     isError,
     isCameraSupported,
@@ -416,7 +417,7 @@ function AcuantCapture(
             onChangeAndResetError(dataURI);
           }),
         );
-      } else if (shouldStartAcuantCapture) {
+      } else if (shouldStartAcuantCapture && !isAcuantInstanceActive) {
         setIsCapturingEnvironment(true);
       }
 
