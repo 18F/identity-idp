@@ -11,7 +11,7 @@ Unreleased
 ### Bug Fixes Users Might Notice
 
 ### Behind the Scenes Changes Users Probably Won't Notice
-- Add CI check to include changelog message in change requests (#5836)
+- Maintenance: Add CI check to include changelog message in change requests (#5836)
 
 RC 173 - 2022-01-13
 ----------------------

@@ -399,7 +399,7 @@ jobs:
             then
               exit 0
             else
-              ./scripts/changelog-check -b "${CIRCLE_BRANCH}" -s main
+              ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}"
             fi
 
 workflows:
