@@ -283,7 +283,9 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const [acuantFailureCookie, setAcuantFailureCookie] = useCookie('AcuantCameraHasFailed');
+  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] = useCookie(
+    'AcuantCameraHasFailed',
+  );
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -533,6 +535,8 @@ function AcuantCapture(
                   .split(' ')
                   .join(NBSP_UNICODE)}`,
               );
+
+              refreshAcuantFailureCookie();
             } else {
               setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
             }

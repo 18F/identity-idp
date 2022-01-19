@@ -14,7 +14,7 @@ const CookieSubscriberContext = createContext(/** @type {Map<string, Subscribers
  *
  * @param {string} name Cookie name.
  *
- * @return {[value: string|null, setValue: (nextValue: string?) => void]}
+ * @return {[value: string|null, setValue: (nextValue: string?) => void, refreshValue: () => void]}
  */
 function useCookie(name) {
   const getValue = () =>
@@ -43,16 +43,24 @@ function useCookie(name) {
   }, [name]);
 
   /**
+   * Refresh cookie value for all current subscribers.
+   */
+  function refreshValue() {
+    const nextValue = getValue();
+    const subscribers = /** @type {Subscribers} */ (subscriptions.get(name));
+    subscribers.forEach((setSubscriberValue) => setSubscriberValue(nextValue));
+  }
+
+  /**
    * @param {string?} nextValue Value to set, or null to delete the value.
    */
   function setValue(nextValue) {
     const cookieValue = nextValue === null ? '; Max-Age=0' : nextValue;
     document.cookie = `${name}=${cookieValue}`;
-    const subscribers = /** @type {Subscribers} */ (subscriptions.get(name));
-    subscribers.forEach((setSubscriberValue) => setSubscriberValue(getValue));
+    refreshValue();
   }
 
-  return [value, setValue];
+  return [value, setValue, refreshValue];
 }
 
 export default useCookie;
