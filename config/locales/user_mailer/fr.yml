@@ -132,23 +132,24 @@ fr:
     personal_key_regenerated:
       help_html: <p>Votre compte %{app_name} vient de recevoir une nouvelle clé
         personnelle de 16 caractères. Le but de cet e-mail est de s’assurer que
-        c’est bien vous qui en êtes à l’origine.</p><p> Si vous venez de vous
-        connecter et de régénérer votre clé personnelle, c’est parfait ! Vous
-        n’avez rien à faire.</p><p> Si vous ne venez pas de régénérer votre clé
-        personnelle, ou en cas de doute, effectuez immédiatement les actions
-        suivantes pour sécuriser votre compte :<ol><li><strong><a
-        href="%{reset_password_url}"> Modifiez votre mot de passe</a>.</strong>
-        Choisissez un mot de passe que vous n’avez pas encore utilisé avec ce
-        compte.</li><li><strong><a href="%{account_url}"> Connectez-vous à votre
-        compte %{app_name}</a></strong> et vérifiez bien que toutes les
-        informations sur la page de votre compte sont correctes, y compris les
-        méthodes que vous utilisez pour l’authentification à deux facteurs, dont
-        le numéro de téléphone, l’application d’authentification ou la clé de
-        sécurité.</li><li><strong>Sur votre <a href="%{account_url}">page de
-        compte %{app_name}</a>, demandez une nouvelle clé personnelle.</strong>
-        N’oubliez pas de ne jamais la partager, sauf si vous l’utilisez pour
-        vous connecter à un site de confiance qui utilise
-        %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
+        c’est bien vous qui en êtes à l’origine.</p><p>Si vous venez de vous
+        connecter et de réinitialiser votre clé personnelle, c’est parfait! Vous
+        n’avez rien à faire.</p><p>Si vous ne venez pas de réinitialiser votre
+        clé personnelle, ou si vous n’êtes pas sûr, veuillez prendre
+        immédiatement les mesures suivantes pour sécuriser votre compte
+        :<ol><li><strong><a href="%{reset_password_url}"> Modifiez votre mot de
+        passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
+        encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">
+        Connectez-vous à votre compte %{app_name}</a></strong> et vérifiez bien
+        que toutes les informations sur la page de votre compte sont correctes,
+        y compris les méthodes que vous utilisez pour l’authentification à deux
+        facteurs, dont le numéro de téléphone, l’application d’authentification
+        ou la clé de sécurité.</li><li><strong>Sur votre <a
+        href="%{account_url}">page de compte %{app_name}</a>, demandez une
+        nouvelle clé personnelle.</strong> N’oubliez pas de ne jamais la
+        partager, sauf si vous l’utilisez pour vous connecter à un site de
+        confiance qui utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe
+        %{app_name}
       intro: Nouvelle clé personnelle émise
       subject: Alerte de sécurité du compte
     personal_key_sign_in:

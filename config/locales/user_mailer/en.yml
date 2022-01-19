@@ -123,10 +123,10 @@ en:
     personal_key_regenerated:
       help_html: <p>Your %{app_name} account was just issued a new 16-character
         personal key. You’re getting this email to make sure it was
-        you.</p><p>If you just signed in and regenerated your personal key,
-        great! There’s nothing you need to do.</p><p>If you did not just
-        regenerate your personal key, or if you’re not sure, please immediately
-        take these steps to secure your account:<ol><li><strong><a
+        you.</p><p>If you just signed in and reset your personal key, great!
+        There’s nothing you need to do.</p><p>If you did not just reset your
+        personal key, or if you’re not sure, please immediately take these steps
+        to secure your account:<ol><li><strong><a
         href="%{reset_password_url}">Change your password</a>.</strong> Choose a
         password that you haven’t already used with this
         account.</li><li><strong><a href="%{account_url}">Sign in to your
