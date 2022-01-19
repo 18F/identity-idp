@@ -40,6 +40,7 @@ RSpec.describe Accounts::PersonalKeysController do
       post :create
 
       expect(response).to redirect_to manage_personal_key_path
+      expect(flash[:info]).to eq(t('account.personal_key.old_key_will_not_work'))
     end
 
     it 'tracks CSRF errors' do

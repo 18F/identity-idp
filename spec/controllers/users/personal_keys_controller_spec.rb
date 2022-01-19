@@ -66,6 +66,7 @@ RSpec.describe Users::PersonalKeysController do
         patch :update
 
         expect(response).to redirect_to account_url
+        expect(flash[:success]).to eq(t('account.personal_key.reset_success'))
       end
     end
 
@@ -81,6 +82,7 @@ RSpec.describe Users::PersonalKeysController do
         patch :update
 
         expect(response).to redirect_to sign_up_completed_url
+        expect(flash[:success]).to be_nil
       end
 
       it 'redirects to the reactivate account url for ial 2' do
@@ -94,6 +96,7 @@ RSpec.describe Users::PersonalKeysController do
         patch :update
 
         expect(response).to redirect_to reactivate_account_url
+        expect(flash[:success]).to be_nil
       end
     end
 
