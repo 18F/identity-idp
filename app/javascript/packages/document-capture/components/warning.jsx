@@ -14,6 +14,7 @@ import PageHeading from './page-heading';
  * @prop {import('react').ReactNode} children Component children.
  * @prop {ReactNode=} troubleshootingOptions Troubleshooting options.
  * @prop {string} location Source component mounting warning.
+ * @prop {number=} remainingAttempts The number of attempts the user can make.
  */
 
 /**
@@ -26,11 +27,19 @@ function Warning({
   children,
   troubleshootingOptions,
   location,
+  remainingAttempts,
 }) {
   const { getAssetPath } = useAsset();
   const { addPageAction } = useContext(AnalyticsContext);
   useEffect(() => {
-    addPageAction({ label: 'IdV: warning shown', payload: { location } });
+    const payload = { location };
+    if (remainingAttempts) {
+      payload.remaining_step_attempts = remainingAttempts;
+    }
+    addPageAction({
+      label: 'IdV: warning shown',
+      payload: payload,
+    });
   }, []);
 
   return (
