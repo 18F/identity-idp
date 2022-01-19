@@ -101,7 +101,7 @@ en:
       two_factor_authentication: Your authentication methods
       your_account: Your Account
     personal_key:
-      get_new: Reset personal key
+      get_new: Get a new personal key
       get_new_description: When you receive a new personal key, your old personal key
         will not work anymore.
       last_generated: 'Last generated on %{timestamp}'

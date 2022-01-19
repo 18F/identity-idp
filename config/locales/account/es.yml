@@ -102,7 +102,7 @@ es:
       two_factor_authentication: Tus métodos de autenticación
       your_account: Su cuenta
     personal_key:
-      get_new: Restablecer la clave personal
+      get_new: TODO
       get_new_description: TODO
       last_generated: 'Generada por última vez en %{timestamp}'
       old_key_will_not_work: Por favor, imprima, copie o descargue la nueva clave

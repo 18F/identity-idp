@@ -1,8 +1,7 @@
 ---
 fr:
   help_text:
-    change_factor: Avant de pouvoir modifier votre %{factor}, vous devrez confirmer
-      votre mot de passe et recevoir un code de sécurité sur votre téléphone.
+    change_factor: TODO
     no_factor:
       delete_account: Pour supprimer votre compte, veuillez confirmer votre mot de
         passe et votre code de sécurité.

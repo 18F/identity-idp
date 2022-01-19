@@ -108,7 +108,7 @@ fr:
       two_factor_authentication: Vos méthodes d’authentification
       your_account: Votre compte
     personal_key:
-      get_new: Réinitialisation de la clé personnelle
+      get_new: TODO
       get_new_description: TODO
       last_generated: 'Dernière génération le %{timestamp}'
       old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé

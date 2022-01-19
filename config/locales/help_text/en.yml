@@ -2,7 +2,7 @@
 en:
   help_text:
     change_factor: Before you’re able to edit your %{factor}, you will need to
-      confirm your password and receive a security code on your phone.
+      confirm your password and use your second factor.
     no_factor:
       delete_account: To delete your account, please confirm your password and security code.
     requested_attributes:
