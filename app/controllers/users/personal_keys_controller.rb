@@ -32,6 +32,7 @@ module Users
       elsif session[:sp] && user_has_not_visited_any_sp_yet?
         sign_up_completed_url
       else
+        flash[:success] = t('account.personal_key.reset_success')
         after_sign_in_path_for(current_user)
       end
     end

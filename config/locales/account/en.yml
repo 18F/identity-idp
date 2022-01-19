@@ -97,16 +97,19 @@ en:
       history: History
       learn_more: Learn more about %{app_name}
       menu: Menu
-      two_factor_authentication: Your authentication methods
       reset_personal_key: Reset personal key
+      two_factor_authentication: Your authentication methods
       your_account: Your Account
     personal_key:
       get_new: Reset personal key
       get_new_description: When you receive a new personal key, your old personal key
         will not work anymore.
       last_generated: 'Last generated on %{timestamp}'
+      old_key_will_not_work: Please print, copy, or download the new personal key
+        below. Your old personal key will not work if you forget your password.
       reset_instructions: Reset your personal key if you don’t have it. You’ll need
         this personal key if you forget your password.
+      reset_success: Your personal key has been reset
     re_verify:
       banner: We’ve hidden your profile information to protect your privacy.
       footer: Authenticate to view your information.

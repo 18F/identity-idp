@@ -104,16 +104,20 @@ fr:
       history: L’histoire
       learn_more: En savoir plus sur %{app_name}
       menu: Menu
-      two_factor_authentication: Vos méthodes d’authentification
       reset_personal_key: Réinitialisation de la clé personnelle
+      two_factor_authentication: Vos méthodes d’authentification
       your_account: Votre compte
     personal_key:
       get_new: Réinitialisation de la clé personnelle
       get_new_description: TODO
       last_generated: 'Dernière génération le %{timestamp}'
+      old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé
+        personnelle ci-dessous. Votre ancienne clé personnelle ne fonctionnera
+        pas si vous oubliez votre mot de passe.
       reset_instructions: Réinitialisez votre clé personnelle si vous ne l’avez pas.
         Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de
         passe.
+      reset_success: Votre code personnel a été réinitialisé
     re_verify:
       banner: Nous avons masqué les informations de votre profil pour protéger votre
         vie privée.
