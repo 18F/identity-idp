@@ -108,8 +108,9 @@ fr:
       two_factor_authentication: Vos méthodes d’authentification
       your_account: Votre compte
     personal_key:
-      get_new: TODO
-      get_new_description: TODO
+      get_new: Obtenir une nouvelle clé personnelle
+      get_new_description: Lorsque vous recevez une nouvelle clé personnelle, votre
+        ancienne clé personnelle ne fonctionnera plus.
       last_generated: 'Dernière génération le %{timestamp}'
       old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé
         personnelle ci-dessous. Votre ancienne clé personnelle ne fonctionnera
