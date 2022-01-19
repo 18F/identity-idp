@@ -1,17 +1,20 @@
-# Changelog
+Changelog
+========
 
-## Unreleased
+Unreleased
+-----------
 
 ### Improvements/Changes
 
 ### Accessibility
 
-## Bug Fixes Users Might Notice
+### Bug Fixes Users Might Notice
 
-## Behind the Scenes Changes Users Probably Won't Notice
+### Behind the Scenes Changes Users Probably Won't Notice
 - Add CI check to include changelog message in change requests (#5836)
 
-## RC 173 - 2022-01-13
+RC 173 - 2022-01-13
+----------------------
 
 ### Improvements/Changes
 - Authentication: Limit maximum number of phone numbers (LG-5493) (#5779)
