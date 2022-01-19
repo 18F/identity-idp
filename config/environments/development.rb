@@ -44,6 +44,10 @@ Rails.application.configure do
     config.action_controller.perform_caching = false
 
     config.cache_store = :null_store
+    config.public_file_server.headers = {
+      'Cache-Control' => 'public, no-cache, must-revalidate',
+      'Vary' => '*',
+    }
   end
 
   # Bullet gem config
