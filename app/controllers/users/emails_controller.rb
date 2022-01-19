@@ -94,7 +94,7 @@ module Users
     def check_max_emails_per_account
       return if EmailPolicy.new(current_user).can_add_email?
       flash[:email_error] = t('users.emails.error_message')
-      redirect_to account_url
+      redirect_to account_url(anchor: 'emails')
     end
 
     def retain_confirmed_emails

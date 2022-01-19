@@ -112,7 +112,9 @@ feature 'adding email address' do
     sign_in_and_2fa_user(user)
 
     visit add_email_path
+    puts current_path
     expect(page).to have_current_path(account_path)
+    expect(page.has_content? t('users.emails.error_message'))
   end
 
   it 'stays on form with bad email' do

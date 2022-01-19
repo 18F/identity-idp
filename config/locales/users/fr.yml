@@ -21,6 +21,8 @@ fr:
       instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
         supprimer votre compte.
       subheading: Si vous supprimez votre compte
+    emails:
+      error_message: Vous avez ajouté le nombre maximum d’adresses électroniques.
     personal_key:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.
@@ -29,8 +31,6 @@ fr:
       print: Imprimer cette page
     phones:
       error_message: Vous avez ajouté le nombre maximum de numéros de téléphone.
-    emails:
-      error_message: Vous avez ajouté le nombre maximum d’adresses électroniques.
     rules_of_use:
       check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
       details_html: |-

@@ -9,4 +9,25 @@ RSpec.describe Users::EmailsController do
       end
     end
   end
+
+  describe '#limit' do
+    context 'user exceeds email limit' do
+      let(:user) { create(:user) }
+      before do
+        stub_sign_in(user)
+
+        while EmailPolicy.new(user).can_add_email? do
+          email = Faker::Internet.safe_email
+          user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
+        end
+      end
+      it 'displays error if email exceeds limit' do
+        controller.request.headers.merge({ HTTP_REFERER: account_url })
+
+        get :show
+        expect(response).to redirect_to(account_url(anchor: 'emails'))
+        expect(response.request.flash[:email_error]).to_not be_nil
+      end
+    end
+  end
 end

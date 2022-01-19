@@ -19,6 +19,8 @@ es:
       heading: '¿Está seguro que desea eliminar su cuenta?'
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: Si elimina su cuenta
+    emails:
+      error_message: Has agregado la cantidad máxima de direcciones de correo electrónico.
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
@@ -27,8 +29,6 @@ es:
       print: Imprima esta página
     phones:
       error_message: Agregó el número máximo de números de teléfono.
-    emails:
-      error_message: Has agregado la cantidad máxima de direcciones de correo electrónico.
     rules_of_use:
       check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de %{app_name}
       details_html: |-
