@@ -32,13 +32,9 @@ function Warning({
   const { getAssetPath } = useAsset();
   const { addPageAction } = useContext(AnalyticsContext);
   useEffect(() => {
-    const payload = { location };
-    if (remainingAttempts) {
-      payload.remaining_step_attempts = remainingAttempts;
-    }
     addPageAction({
       label: 'IdV: warning shown',
-      payload: payload,
+      payload: { location, remaining_step_attempts: remainingAttempts },
     });
   }, []);
 
