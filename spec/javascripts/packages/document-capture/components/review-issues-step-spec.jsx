@@ -74,7 +74,7 @@ describe('document-capture/components/review-issues-step', () => {
       label: 'IdV: warning shown',
       payload: {
         location: 'doc_auth_review_issues',
-        remaining_step_attempts: 3,
+        remaining_attempts: 3,
       },
     });
 

@@ -46,7 +46,7 @@ describe Idv::PhoneErrorsController do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
     allow(idv_session).to receive(:current_user).and_return(user)
-    allow(subject).to receive(:remaining_step_attempts).and_return(5)
+    allow(subject).to receive(:remaining_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
     stub_sign_in(user) if user
 
@@ -70,11 +70,11 @@ describe Idv::PhoneErrorsController do
       it 'assigns remaining count' do
         get action
 
-        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_step_attempts: 4 }
+        logged_attributes = { type: action, remaining_attempts: 4 }
 
         get action
 
@@ -100,11 +100,11 @@ describe Idv::PhoneErrorsController do
       it 'assigns remaining count' do
         get action
 
-        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
       end
 
       it 'logs an event' do
-        logged_attributes = { type: action, remaining_step_attempts: 4 }
+        logged_attributes = { type: action, remaining_attempts: 4 }
 
         get action
 

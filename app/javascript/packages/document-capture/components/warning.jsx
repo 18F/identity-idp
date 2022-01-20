@@ -34,7 +34,7 @@ function Warning({
   useEffect(() => {
     addPageAction({
       label: 'IdV: warning shown',
-      payload: { location, remaining_step_attempts: remainingAttempts },
+      payload: { location, remaining_attempts: remainingAttempts },
     });
   }, []);
 

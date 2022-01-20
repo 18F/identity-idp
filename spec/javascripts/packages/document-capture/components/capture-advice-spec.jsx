@@ -21,7 +21,7 @@ describe('document-capture/components/capture-advice', () => {
       label: 'IdV: warning shown',
       payload: {
         location: 'doc_auth_capture_advice',
-        remaining_step_attempts: undefined,
+        remaining_attempts: undefined,
       },
     });
 

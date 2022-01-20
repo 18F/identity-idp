@@ -6,12 +6,12 @@ module Idv
     before_action :confirm_idv_phone_step_needed
 
     def warning
-      @remaining_step_attempts = throttle.remaining_count
+      @remaining_attempts = throttle.remaining_count
       track_event(type: :warning)
     end
 
     def jobfail
-      @remaining_step_attempts = throttle.remaining_count
+      @remaining_attempts = throttle.remaining_count
       track_event(type: :jobfail)
     end
 
@@ -36,7 +36,7 @@ module Idv
       if type == :failure
         attributes[:throttle_expires_at] = @expires_at
       else
-        attributes[:remaining_step_attempts] = @remaining_step_attempts
+        attributes[:remaining_attempts] = @remaining_attempts
       end
 
       analytics.track_event(Analytics::IDV_PHONE_ERROR_VISITED, attributes)

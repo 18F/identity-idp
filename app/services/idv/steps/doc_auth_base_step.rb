@@ -39,14 +39,14 @@ module Idv
           @flow.analytics.track_event(
             Analytics::IDV_DOC_AUTH_EXCEPTION_VISITED,
             step_name: self.class.class_name,
-            remaining_step_attempts: attempts_remaining,
+            remaining_attempts: attempts_remaining,
           )
           redirect_to idv_session_errors_exception_url
         else
           @flow.analytics.track_event(
             Analytics::IDV_DOC_AUTH_WARNING_VISITED,
             step_name: self.class.class_name,
-            remaining_step_attempts: attempts_remaining,
+            remaining_attempts: attempts_remaining,
           )
           redirect_to idv_session_errors_warning_url
         end

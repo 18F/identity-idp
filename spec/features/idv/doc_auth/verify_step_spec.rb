@@ -89,7 +89,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth warning visited',
       step_name: 'VerifyWaitStepShow',
-      remaining_step_attempts: 4,
+      remaining_attempts: 4,
     )
     expect(page).to have_current_path(idv_session_errors_warning_path)
 
@@ -110,7 +110,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
       step_name: 'VerifyWaitStepShow',
-      remaining_step_attempts: 4,
+      remaining_attempts: 4,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
