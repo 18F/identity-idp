@@ -419,6 +419,19 @@ workflows:
               only:
                 - main
 
+
+  # DEV
+  smoketest-dev-test-workflow:
+    triggers:
+      - schedule:
+          cron: '15 * * * *'
+          filters:
+            branches:
+              only:
+                - pauldoom/fixed-ip-fix
+    jobs:
+      - smoketest-dev
+
   # DEV
   smoketest-dev-workflow:
     triggers:
@@ -428,7 +441,6 @@ workflows:
             branches:
               only:
                 - main
-                - pauldoom/fixed-ip-fix
     jobs:
       - smoketest-dev
 
