@@ -6,8 +6,6 @@ import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/capture-advice', () => {
-  const sandbox = useSandbox();
-
   it('logs warning events', () => {
     const addPageAction = sinon.spy();
 
