@@ -4,6 +4,7 @@
   <%= t('headings.passwords.confirm') %>
 </h1>
 <p class='mt-tiny margin-bottom-0'>
+  <%# for follow up: translate factor_to_change (LG-5701) %>
   <%= user_session[:no_factor_message] ||
         t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>

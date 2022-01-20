@@ -165,7 +165,7 @@ es:
       headings:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
-        still_having_trouble: ¿Sigue teniendo dificultades?
+        still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
         change_phone_number: Utiliza un número de teléfono diferente
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}

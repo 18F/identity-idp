@@ -1,9 +1,4 @@
-<%= button_to(
-      create_new_personal_key_url,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-      form_class: 'inline-block padding-left-1',
-    ) do %>
+<%= link_to(create_new_personal_key_url) do %>
   <span class='usa-sr-only'>
     <%= t('account.items.personal_key') %>
   </span>

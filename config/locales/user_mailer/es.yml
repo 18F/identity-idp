@@ -130,10 +130,10 @@ es:
     personal_key_regenerated:
       help_html: <p>Tu cuenta de %{app_name} acaba de emitir una nueva clave personal
         de 16 caracteres. Estás recibiendo este correo electrónico para
-        verificar que eras tú. </p><p>Si acabas de iniciar sesión y has
-        regenerado tu clave personal, ¡fantástico! No es necesario que hagas
-        nada.</p><p>Si no acabas de regenerar tu clave personal, o si no estás
-        seguro, sigue estos pasos para proteger tu cuenta:<ol><li><strong><a
+        verificar que eras tú. </p><p>Si acaba de iniciar sesión y restablecer
+        su clave personal, ¡estupendo! No tiene que hacer nada.</p><p>Si no
+        acaba de restablecer su clave personal o no está seguro, siga de
+        inmediato estos pasos para proteger su cuenta:<ol><li><strong><a
         href="%{reset_password_url}">Cambia tu contraseña</a>.</strong> Elige
         una contraseña que aún no hayas utilizado con esta cuenta.
         </li><li><strong><a href="%{account_url}">Inicia sesión en tu cuenta de

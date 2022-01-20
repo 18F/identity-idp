@@ -3,6 +3,9 @@
     <%= t('account.items.personal_key') %>
   </h2>
 </div>
+<p>
+  <%= t('account.personal_key.reset_instructions') %>
+</p>
 <div class="grid-row padding-1 border border-primary-light">
   <div class="grid-col-7">
     ************
@@ -11,3 +14,13 @@
     <%= render 'accounts/actions/manage_personal_key' %>
   </div>
 </div>
+<% if @view_model.personal_key_generated_at %>
+  <p class="margin-top-1 margin-bottom-0 font-body-2xs">
+    <em>
+      <%= t(
+            'account.personal_key.last_generated',
+            timestamp: I18n.l(@view_model.personal_key_generated_at, format: :event_date),
+          ) %>
+    </em>
+  </p>
+<% end %>
