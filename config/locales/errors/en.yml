@@ -35,8 +35,6 @@ en:
       throttled_text_html: '<strong>Please try again in %{timeout}.</strong> For your
         security, we limit the number of times you can attempt to verify a
         document online.'
-    file_input:
-      invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You’ve entered too many incorrect passwords. You

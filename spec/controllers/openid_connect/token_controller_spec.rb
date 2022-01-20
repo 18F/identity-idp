@@ -81,5 +81,18 @@ RSpec.describe OpenidConnect::TokenController do
         action
       end
     end
+
+    context 'with invalid form' do
+      let(:code) { { nested: 'code' } }
+
+      it 'is a 400 and has an error response and no id_token' do
+        action
+        expect(response).to be_bad_request
+
+        json = JSON.parse(response.body).with_indifferent_access
+        expect(json[:error]).to be_present
+        expect(json).to_not have_key(:id_token)
+      end
+    end
   end
 end

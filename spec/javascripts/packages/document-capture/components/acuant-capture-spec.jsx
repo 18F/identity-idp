@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
+import { waitFor, createEvent } from '@testing-library/dom';
 import AcuantCapture, {
   isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
@@ -43,6 +43,29 @@ describe('document-capture/components/acuant-capture', () => {
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
   });
+
+  /**
+   * Uploads a file to the given input. Unlike `@testing-library/user-event`, this does not call any
+   * click handlers associated with the input.
+   *
+   * @param {HTMLInputElement} input
+   * @param {File} value
+   */
+  function uploadFile(input, value) {
+    fireEvent(
+      input,
+      createEvent('input', input, {
+        target: { files: [value] },
+        bubbles: true,
+        cancelable: false,
+        composed: true,
+      }),
+    );
+
+    fireEvent.change(input, {
+      target: { files: [value] },
+    });
+  }
 
   describe('getNormalizedAcuantCaptureFailureMessage', () => {
     beforeEach(() => {
@@ -177,6 +200,43 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
+    it('does not start capturing if an acuant instance is already active', async () => {
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="First Image" />
+            <AcuantCapture label="Second Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      let onCropped;
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          onCropped = () => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+        }),
+      });
+
+      const firstInput = getByLabelText('First Image');
+      const secondInput = getByLabelText('Second Image');
+      fireEvent.click(firstInput);
+
+      await waitFor(() => firstInput.getAttribute('aria-busy') === 'true');
+      fireEvent.click(secondInput);
+
+      expect(window.AcuantCameraUI.start).to.have.been.calledOnce();
+
+      onCropped();
+      await waitFor(() => firstInput.getAttribute('aria-busy') === 'false');
+
+      fireEvent.click(secondInput);
+
+      expect(window.AcuantCameraUI.start).to.have.been.calledTwice();
+    });
+
     it('starts capturing when clicking input on supported device', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -237,7 +297,13 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'iOS 15 sequence break', 'sequence-break-code'),
+        start: sinon.stub().callsFake((_callbacks, onError) => {
+          setTimeout(() => {
+            const code = 'sequence-break-code';
+            document.cookie = `AcuantCameraHasFailed=${code}`;
+            onError('iOS 15 sequence break', code);
+          }, 0);
+        }),
       });
 
       const button = getByLabelText('Image');
@@ -250,7 +316,13 @@ describe('document-capture/components/acuant-capture', () => {
         label: 'IdV: Image capture failed',
         payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
       });
-      expect(document.activeElement).to.equal(button);
+      await waitFor(() => document.activeElement === button);
+
+      const defaultPrevented = !fireEvent.click(button);
+
+      window.AcuantCameraUI.start.resetHistory();
+      expect(defaultPrevented).to.be.false();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
     it('calls onCameraAccessDeclined if camera access is declined', async () => {
@@ -317,6 +389,41 @@ describe('document-capture/components/acuant-capture', () => {
 
       await waitFor(() => !container.querySelector('.full-screen'));
       expect(document.activeElement).to.equal(outsideInput);
+    });
+
+    it('renders pending state while cropping', async () => {
+      const { getByLabelText, getByText, container } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+        { isMockClient: false },
+      );
+
+      let onCropped;
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          onCropped = async () => {
+            await Promise.resolve();
+            callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+          };
+        }),
+      });
+
+      const input = getByLabelText('Image');
+      const button = getByText('doc_auth.buttons.take_picture');
+      fireEvent.click(button);
+
+      await waitFor(() => !container.querySelector('.full-screen'));
+      expect(input.getAttribute('aria-busy')).to.equal('true');
+
+      onCropped();
+
+      await waitFor(() => expect(input.getAttribute('aria-busy')).to.equal('false'));
     });
 
     it('calls onChange with the captured image on successful capture', async () => {
@@ -424,7 +531,7 @@ describe('document-capture/components/acuant-capture', () => {
       userEvent.click(getByText('doc_auth.buttons.upload_picture'));
       expect(onClick).to.have.been.calledOnce();
 
-      userEvent.upload(input, validUpload);
+      uploadFile(input, validUpload);
       await new Promise((resolve) => onChange.callsFake(resolve));
       expect(onChange).to.have.been.calledWith(
         validUpload,
@@ -578,14 +685,14 @@ describe('document-capture/components/acuant-capture', () => {
       const file = new window.File([''], 'upload.txt', { type: 'text/plain' });
 
       const input = getByLabelText('Image');
-      userEvent.upload(input, file);
+      uploadFile(input, file);
 
       expect(await findByText('doc_auth.errors.file_type.invalid')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      expect(getByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
+      expect(await findByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
       expect(() => getByText('doc_auth.errors.file_type.invalid')).to.throw();
     });
 
@@ -633,7 +740,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('doc_auth.errors.sharpness.failed_short');
 
       fireEvent.click(button);
-      await waitForElementToBeRemoved(error);
+      await waitFor(() => !error.textContent);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
         label: 'IdV: test image added',
@@ -874,7 +981,7 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
@@ -971,14 +1078,14 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
       payload: sinon.match({ attempt: 1 }),
     });
 
-    userEvent.upload(input, validUpload);
+    uploadFile(input, validUpload);
 
     await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',

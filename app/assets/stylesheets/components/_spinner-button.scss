@@ -1,48 +1,10 @@
-@keyframes spinner-button-dot-one {
-  0% {
-    transform: scale(0);
-  }
-  25% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0);
-  }
-}
-
-@keyframes spinner-button-dot-two {
-  0% {
-    transform: scale(0);
-  }
-  20% {
-    transform: scale(0);
-  }
-  45% {
-    transform: scale(1);
-  }
-  70% {
-    transform: scale(0);
-  }
-}
-
-@keyframes spinner-button-dot-three {
-  0% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(0);
-  }
-  65% {
-    transform: scale(1);
-  }
-  90% {
-    transform: scale(0);
-  }
-}
-
 .spinner-button {
   @include at-media('mobile-lg') {
     display: inline-block;
+  }
+
+  &:not(.spinner-button--spinner-active) .spinner-dots {
+    display: none;
   }
 }
 
@@ -57,53 +19,6 @@
       background-color: color('primary-darker');
       color: transparent;
       opacity: 1;
-    }
-  }
-
-  .spinner-button__spinner {
-    display: flex;
-    height: 12px;
-    left: 50%;
-    margin-left: -23px;
-    margin-top: -6px;
-    pointer-events: none;
-    position: absolute;
-    top: 50%;
-    width: 46px;
-  }
-
-  .spinner-button__spinner-dot {
-    height: 12px;
-    margin-left: 5px;
-    width: 12px;
-
-    &::after {
-      animation-duration: 1.25s;
-      animation-iteration-count: infinite;
-      animation-timing-function: linear;
-      background-color: color('white');
-      border-radius: 50%;
-      content: '';
-      display: block;
-      height: 100%;
-      transform: scale(0);
-      width: 100%;
-    }
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    &:nth-child(1)::after {
-      animation-name: spinner-button-dot-one;
-    }
-
-    &:nth-child(2)::after {
-      animation-name: spinner-button-dot-two;
-    }
-
-    &:nth-child(3)::after {
-      animation-name: spinner-button-dot-three;
     }
   }
 }

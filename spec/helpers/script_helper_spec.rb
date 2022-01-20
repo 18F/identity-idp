@@ -30,28 +30,41 @@ RSpec.describe ScriptHelper do
       before do
         javascript_packs_tag_once('document-capture', 'document-capture')
         javascript_packs_tag_once('application', prepend: true)
+        allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
+          and_return(['/application.js', '/document-capture.js'])
       end
 
-      it 'prints all unique packs in order, locale scripts first' do
+      it 'prints script sources' do
         output = render_javascript_pack_once_tags
-        public_output_path = current_webpacker_instance.config.public_output_path
-        public_path = current_webpacker_instance.config.public_path
-        output_path = public_output_path.relative_path_from(public_path)
 
-        selectors = [
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.en.js']",
-          "script[src^='/#{output_path}/js/runtime~application-']",
-          "script[src^='/#{output_path}/js/application-'][src$='.chunk.js']",
-          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.js']",
-        ]
+        expect(output).to have_css(
+          "script[src^='/application.js'] ~ script[src^='/document-capture.js']",
+          count: 1,
+          visible: :all,
+        )
+      end
+    end
 
-        selectors.each_with_index do |selector, i|
-          next_selector = selectors[i + 1]
-          test_selector = selector
-          test_selector += " ~ #{next_selector}" if next_selector
-          expect(output).to have_css(test_selector, count: 1, visible: false)
-        end
+    context 'with named scripts argument' do
+      before do
+        allow(AssetSources).to receive(:get_sources).with('application').
+          and_return(['/application.js'])
+      end
+
+      it 'enqueues those scripts before printing them' do
+        output = render_javascript_pack_once_tags('application')
+
+        expect(output).to have_css('script[src="/application.js"]', visible: :all)
+      end
+    end
+
+    context 'script that does not exist' do
+      before do
+        javascript_packs_tag_once('nope')
+      end
+
+      it 'gracefully outputs nothing' do
+        expect(render_javascript_pack_once_tags).to be_empty
       end
     end
   end

@@ -8,7 +8,9 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { SpinnerDots } from '@18f/identity-components';
 import FileImage from './file-image';
+import StatusMessage, { Status } from './status-message';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
@@ -25,12 +27,16 @@ import usePrevious from '../hooks/use-previous';
  * @prop {string} label Input label.
  * @prop {string=} hint Optional hint text.
  * @prop {string=} bannerText Optional banner overlay text.
- * @prop {string=} invalidTypeText Error message text to show on invalid file type selection.
- * @prop {string=} fileUpdatedText Success message text to show when selected file is updated.
+ * @prop {string} invalidTypeText Error message text to show on invalid file type selection.
+ * @prop {string} fileUpdatedText Success message text to show when selected file is updated.
+ * @prop {string} fileLoadingText Status message text to show when file is pending.
+ * @prop {string} fileLoadedText Status message text to show once pending file is loaded.
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {boolean=} isValuePending Whether to show the input in an indeterminate loading state,
+ * pending an incoming value.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(event:ReactDragEvent)=>void=} onDrop Input drop handler.
  * @prop {(nextValue:File?)=>void=} onChange Input change handler.
@@ -106,10 +112,13 @@ function FileInput(props, ref) {
     bannerText,
     invalidTypeText,
     fileUpdatedText,
+    fileLoadingText,
+    fileLoadedText,
     accept,
     capture,
     value,
     errorMessage,
+    isValuePending,
     onClick,
     onDrop,
     onChange = () => {},
@@ -122,9 +131,14 @@ function FileInput(props, ref) {
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previousValue = usePrevious(value);
+  const previousIsValuePending = usePrevious(isValuePending);
   const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [
     value,
   ]);
+  const isPendingValueReceived = useMemo(
+    () => previousIsValuePending && !isValuePending && !!value,
+    [value, isValuePending, previousIsValuePending],
+  );
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   useImperativeHandle(ref, () => inputRef.current);
@@ -170,7 +184,7 @@ function FileInput(props, ref) {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
       } else {
-        const nextOwnErrorMessage = invalidTypeText ?? t('errors.file_input.invalid_type');
+        const nextOwnErrorMessage = invalidTypeText;
         setOwnErrorMessage(nextOwnErrorMessage);
         onError(nextOwnErrorMessage);
       }
@@ -193,6 +207,16 @@ function FileInput(props, ref) {
   }
 
   const shownErrorMessage = errorMessage ?? ownErrorMessage;
+
+  /** @type {string=} */
+  let successMessage;
+  if (isUpdated) {
+    successMessage = fileUpdatedText;
+  } else if (isValuePending) {
+    successMessage = fileLoadingText;
+  } else if (isPendingValueReceived) {
+    successMessage = fileLoadedText;
+  }
 
   return (
     <div
@@ -226,21 +250,23 @@ function FileInput(props, ref) {
           {hint}
         </span>
       )}
-      {shownErrorMessage && (
-        <span className="usa-error-message" role="alert">
-          {shownErrorMessage}
-        </span>
-      )}
-      {isUpdated && !shownErrorMessage && (
-        <span className="usa-success-message" role="alert">
-          {fileUpdatedText ?? t('forms.file_input.file_updated')}
-        </span>
-      )}
+      <StatusMessage status={Status.ERROR}>{shownErrorMessage}</StatusMessage>
+      <StatusMessage
+        status={Status.SUCCESS}
+        className={
+          successMessage === fileLoadingText || successMessage === fileLoadedText
+            ? 'usa-sr-only'
+            : undefined
+        }
+      >
+        {!shownErrorMessage && successMessage}
+      </StatusMessage>
       <div
         className={[
           'usa-file-input usa-file-input--single-value',
           isDraggingOver && 'usa-file-input--drag',
-          value && 'usa-file-input--has-value',
+          value && !isValuePending && 'usa-file-input--has-value',
+          isValuePending && 'usa-file-input--value-pending',
         ]
           .filter(Boolean)
           .join(' ')}
@@ -249,7 +275,7 @@ function FileInput(props, ref) {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && !isMobile && (
+          {value && !isValuePending && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value instanceof window.File && (
@@ -262,7 +288,7 @@ function FileInput(props, ref) {
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
           )}
-          {value && isImage(value) && (
+          {value && !isValuePending && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
               {value instanceof window.Blob ? (
                 <FileImage file={value} alt="" className="usa-file-input__preview-image" />
@@ -271,7 +297,7 @@ function FileInput(props, ref) {
               )}
             </div>
           )}
-          {!value && (
+          {!value && !isValuePending && (
             <div className="usa-file-input__instructions" aria-hidden="true">
               {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
               {isMobile && bannerText ? null : (
@@ -285,13 +311,16 @@ function FileInput(props, ref) {
               )}
             </div>
           )}
-          <div className="usa-file-input__box" />
+          <div className="usa-file-input__box">
+            {isValuePending && <SpinnerDots isCentered className="text-base" />}
+          </div>
           <input
             ref={inputRef}
             id={inputId}
             className="usa-file-input__input"
             type="file"
             aria-label={getLabelFromValue(value)}
+            aria-busy={isValuePending}
             onChange={onChangeIfValid}
             capture={capture}
             onClick={onClick}

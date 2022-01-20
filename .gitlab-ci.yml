@@ -45,11 +45,9 @@ cache:
   - &assets_cache
     key: $CI_COMMIT_SHA
     paths:
-      - tmp/cache/webpacker/last-compilation-digest-test
       - tmp/cache/assets
       - public/assets
       - public/packs
-      - public/packs-test
     policy: pull
 
 stages:
@@ -134,8 +132,6 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://localhost:6379/1'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - >
-        ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
     - bundle exec rake knapsack:rspec
 
 lint:

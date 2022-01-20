@@ -115,7 +115,8 @@ RSpec.configure do |config|
     next if spec.metadata[:allow_browser_log]
 
     # Temporarily allow for document-capture bundle, since it uses React error boundaries to poll.
-    javascript_errors.reject! { |e| e.include? 'js/document-capture-' }
+    javascript_errors.reject! { |e| e.include? 'submission-complete' }
+
     # Consider any browser console logging as a failure.
     raise BrowserConsoleLogError.new(javascript_errors) if javascript_errors.present?
   end

@@ -47,8 +47,7 @@ identify issues in your code as you write.
 - Site should work if JS is off (and have enhanced features if JS is on).
 - Uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/).
 - JS modules are installed & managed via `yarn` (see `package.json`).
-- JS is transpiled, bundled, and minified via `webpacker` (using `rails-webpacker` gem to utilize
-  Rails asset pipeline).
+- JS is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/).
 - Reusable code is organized using
   [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
 

@@ -31,6 +31,8 @@
   },
   "peerDependencies": {
     "@babel/core": "*",
+    "@typescript-eslint/parser": "*",
+    "@typescript-eslint/eslint-plugin": "*",
     "eslint": ">=8",
     "mocha": "*",
     "preact": "*",
@@ -39,6 +41,12 @@
   },
   "peerDependenciesMeta": {
     "@babel/core": {
+      "optional": true
+    },
+    "@typescript-eslint/parser": {
+      "optional": true
+    },
+    "@typescript-eslint/eslint-plugin": {
       "optional": true
     },
     "mocha": {

@@ -21,8 +21,8 @@ describe('RailsI18nWebpackPlugin', () => {
     webpack(
       {
         entry: {
-          actual1: path.resolve(__dirname, 'spec/fixtures/in1.js'),
-          actual2: path.resolve(__dirname, 'spec/fixtures/in2.js'),
+          1: path.resolve(__dirname, 'spec/fixtures/in1.js'),
+          2: path.resolve(__dirname, 'spec/fixtures/in2.js'),
         },
         plugins: [
           new RailsI18nWebpackPlugin({
@@ -30,19 +30,26 @@ describe('RailsI18nWebpackPlugin', () => {
             onMissingString,
           }),
         ],
+        resolve: {
+          extensions: ['.js', '.foo'],
+        },
         output: {
           path: path.resolve(__dirname, 'spec/fixtures'),
+          filename: 'actual[name].js',
         },
         optimization: {
+          chunkIds: 'deterministic',
           splitChunks: {
             chunks: 'all',
             minSize: 0,
           },
         },
       },
-      async () => {
+      async (webpackError) => {
         try {
-          for (const chunkSuffix of ['1', '1~actual2']) {
+          expect(webpackError).to.be.null();
+
+          for (const chunkSuffix of ['1', '946']) {
             // eslint-disable-next-line no-await-in-loop
             const [script, en, es, fr] = await Promise.all([
               fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}.js`)),

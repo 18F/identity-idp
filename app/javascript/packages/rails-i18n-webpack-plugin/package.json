@@ -8,7 +8,7 @@
     "yaml": "^1.10.2"
   },
   "peerDependencies": {
-    "webpack": "*",
+    "webpack": ">=5",
     "sinon": "*"
   }
 }

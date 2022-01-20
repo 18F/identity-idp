@@ -5,7 +5,7 @@ module OpenidConnect
     skip_before_action :verify_authenticity_token
 
     def create
-      @token_form = OpenidConnectTokenForm.new(params)
+      @token_form = OpenidConnectTokenForm.new(token_params)
 
       result = @token_form.submit
       analytics.track_event(Analytics::OPENID_CONNECT_TOKEN, result.to_h)
@@ -16,6 +16,10 @@ module OpenidConnect
 
     def options
       head :ok
+    end
+
+    def token_params
+      params.permit(:client_assertion, :client_assertion_type, :code, :code_verifier, :grant_type)
     end
   end
 end

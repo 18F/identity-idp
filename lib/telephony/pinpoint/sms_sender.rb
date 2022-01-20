@@ -80,7 +80,8 @@ module Telephony
             number_validate_request: { phone_number: phone_number },
           )
           break if response
-        rescue Seahorse::Client::NetworkingError => error
+        rescue Seahorse::Client::NetworkingError,
+               Aws::Pinpoint::Errors::InternalServerErrorException => error
           notify_pinpoint_failover(
             error: error,
             region: sms_config.region,

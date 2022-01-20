@@ -5,6 +5,7 @@ import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 import useFocusTrap from '../hooks/use-focus-trap';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -57,8 +58,9 @@ export function useInertSiblingElements(containerRef) {
 function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
+  const ifStillMounted = useIfStillMounted();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
-  const onFocusTrapDeactivate = useImmutableCallback(onRequestClose);
+  const onFocusTrapDeactivate = useImmutableCallback(ifStillMounted(onRequestClose));
   const focusTrap = useFocusTrap(containerRef, {
     clickOutsideDeactivates: true,
     onDeactivate: onFocusTrapDeactivate,
