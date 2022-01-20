@@ -305,6 +305,7 @@ jobs:
     executor: ruby_browsers
     environment:
       MONITOR_ENV: DEV
+    circleci_ip_ranges: true
     steps:
       - install-browser-tools-no-firefox
       - jq/install
@@ -427,6 +428,7 @@ workflows:
             branches:
               only:
                 - main
+                - pauldoom/fixed-ip-fix
     jobs:
       - smoketest-dev
 
