@@ -32,7 +32,7 @@ describe('document-capture/components/warning', () => {
 
     expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: warning shown',
-      payload: { location: 'example' },
+      payload: { location: 'example', remaining_step_attempts: undefined },
     });
 
     const tryAgainButton = getByRole('button', { name: 'Try again' });
