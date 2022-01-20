@@ -1,4 +1,4 @@
-<div class="usa-accordion usa-accordion--bordered">
+<%= tag.div(**tag_options, class: css_class) do %>
   <div class="usa-accordion__heading">
     <button
       type="button"
@@ -14,4 +14,4 @@
       <%= content %>
     </div>
   </div>
-</div>
+<% end %>
