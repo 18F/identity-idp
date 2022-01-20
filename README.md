@@ -63,7 +63,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
 
-If this command errors, you may need to install dependancies outside of the makefile with:
+If this command errors, you may need to install dependencies outside of the Makefile with:
 ```
 $ bundle install
 $ yarn install
