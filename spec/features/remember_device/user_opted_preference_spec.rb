@@ -15,9 +15,6 @@ describe 'Unchecking remember device' do
 
         click_button 'Submit'
 
-        click_continue
-        set_up_2fa_with_backup_code
-
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
       end
@@ -43,8 +40,6 @@ describe 'Unchecking remember device' do
 
         mock_press_button_on_hardware_key_on_setup
         click_continue
-
-        set_up_2fa_with_backup_code
 
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
@@ -72,9 +67,6 @@ describe 'Unchecking remember device' do
         uncheck 'remember_device'
 
         click_submit_default
-
-        click_continue
-        set_up_2fa_with_backup_code
 
         first(:link, t('links.sign_out')).click
         sign_in_user(user)
