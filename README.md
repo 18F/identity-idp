@@ -88,6 +88,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
+  To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
+  ```
+  test:
+    rack_timeout_service_timeout_seconds: 9_999_999_999
+  ```
+
 ##### Showing the Browser
 
   By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:

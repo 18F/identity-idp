@@ -16,7 +16,7 @@ RSpec.describe Users::EmailsController do
       before do
         stub_sign_in(user)
 
-        while EmailPolicy.new(user).can_add_email? do
+        while EmailPolicy.new(user).can_add_email?
           email = Faker::Internet.safe_email
           user.email_addresses.create(email: email, confirmed_at: Time.zone.now)
         end
