@@ -4,7 +4,6 @@
   <%= t('doc_auth.headings.capture_complete') %>
 <% end %>
 
-<h1 class='margin-bottom-2 margin-top-4 margin-y-0'>
-  <%= t('doc_auth.instructions.switch_back') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.instructions.switch_back')) %>
+
 <%= image_tag(asset_url('idv/switch.png'), width: 193) %>

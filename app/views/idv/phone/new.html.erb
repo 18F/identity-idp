@@ -17,9 +17,7 @@
 
 <% title t('titles.idv.phone') %>
 
-<h1 class="margin-y-0">
-  <%= t('idv.titles.session.phone') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.phone')) %>
 
 <div class="padding-y-1 margin-0">
   <%= t('idv.messages.phone.description') %>

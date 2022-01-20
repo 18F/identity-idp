@@ -1,9 +1,8 @@
 <% title t('headings.piv_cac_login.success') %>
 
-<%= image_tag asset_url('alert/success.svg'), width: 90 %>
+<%= image_tag asset_url('alert/success.svg'), width: 90, class: 'margin-bottom-2' %>
 
-<h1 class="margin-bottom-2 margin-top-4 margin-y-0"><%= t('headings.piv_cac_login.success') %></h1>
-<br>
+<%= render PageHeadingComponent.new.with_content(t('headings.piv_cac_login.success')) %>
 
 <%= button_to t('forms.buttons.continue'), login_add_piv_cac_success_path,
               class: 'usa-button usa-button--big usa-button--wide', method: :post %>

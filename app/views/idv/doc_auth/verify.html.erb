@@ -2,9 +2,7 @@
 
 <% title t('titles.doc_auth.verify_info') %>
 
-<h1 class='margin-y-0'>
-  <%= t('doc_auth.headings.verify') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
   <div>
     <%= "#{t('doc_auth.forms.first_name')}: #{flow_session[:pii_from_doc][:first_name]}" %>
@@ -29,10 +27,10 @@
         <div>
           <%= "#{t('doc_auth.forms.zip_code')}: #{flow_session[:pii_from_doc][:zipcode]}" %>
         </div>
-      </div>  
+      </div>
       <div class='grid-auto'>
         <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url, 'aria-label': t('doc_auth.buttons.change_address_label')) %>
-      </div>        
+      </div>
     </div>
     <div class='grid-row padding-top-1'>
       <div class='grid-col-fill'>
@@ -57,7 +55,7 @@
               'aria-label': t('doc_auth.buttons.change_ssn_label'),
             ) { t('doc_auth.buttons.change_ssn') } %>
       </div>
-    </div>  
+    </div>
   <div class="margin-top-5">
     <%= render 'shared/spinner_button',
                action_message: t('doc_auth.info.verifying'),

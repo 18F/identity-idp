@@ -9,9 +9,7 @@
 
 <% title t('titles.doc_auth.address') %>
 
-<h1 class="margin-y-0">
-  <%= t('doc_auth.headings.address') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
 <div class="margin-top-4 margin-bottom-4">
   <%= validated_form_for(

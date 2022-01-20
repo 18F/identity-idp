@@ -11,9 +11,7 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 
-<h1 class="margin-y-0">
-  <%= t('idv.titles.otp_delivery_method') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.otp_delivery_method')) %>
 <p class="margin-top-1">
   <%= t('idv.messages.otp_delivery_method.phone_number_html', phone: @idv_phone) %>
 </p>
