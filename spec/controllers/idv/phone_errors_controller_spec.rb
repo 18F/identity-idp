@@ -125,8 +125,10 @@ describe Idv::PhoneErrorsController do
       let(:attempted_at) { Time.zone.now }
 
       before do
-        create(:throttle, :with_throttled,
-               user: user, throttle_type: :proof_address, attempted_at: attempted_at)
+        create(
+          :throttle, :with_throttled,
+          user: user, throttle_type: :proof_address, attempted_at: attempted_at
+        )
       end
 
       it 'assigns expiration time' do
@@ -139,7 +141,8 @@ describe Idv::PhoneErrorsController do
         throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minute
         logged_attributes = {
           type: action,
-          throttle_expires_at: attempted_at + throttle_window }
+          throttle_expires_at: attempted_at + throttle_window,
+        }
 
         get action
 
