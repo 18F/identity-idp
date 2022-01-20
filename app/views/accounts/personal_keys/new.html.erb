@@ -9,7 +9,8 @@
 <%= button_to(
       create_new_personal_key_path,
       method: 'post',
-      class: 'usa-button usa-button--wide usa-button--big margin-top-4',
+      class: 'usa-button usa-button--wide usa-button--big',
+      form_class: 'margin-y-5',
     ) do %>
   <%= t('forms.buttons.continue') %>
 <% end %>
