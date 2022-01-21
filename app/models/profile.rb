@@ -18,6 +18,16 @@ class Profile < ApplicationRecord
 
   attr_reader :personal_key
 
+  def broken_personal_key?
+    window_start = IdentityConfig.store.broken_personal_key_window_start
+    window_finish = IdentityConfig.store.broken_personal_key_window_finish
+    last_personal_key_at = user.encrypted_recovery_code_digest_generated_at
+
+    active? &&
+      (window_start..window_finish).cover?(verified_at) &&
+      (!last_personal_key_at || last_personal_key_at < window_finish)
+  end
+
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     now = Time.zone.now
