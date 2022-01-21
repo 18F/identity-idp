@@ -21,8 +21,6 @@ fr:
       instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
         supprimer votre compte.
       subheading: Si vous supprimez votre compte
-    emails:
-      error_message: Vous avez ajouté le nombre maximum d’adresses électroniques.
     personal_key:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.

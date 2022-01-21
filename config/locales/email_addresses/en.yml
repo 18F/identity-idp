@@ -3,6 +3,7 @@ en:
   email_addresses:
     add:
       duplicate: This email address is already registered to your account.
+      limit: You’ve added the maximum number of email addresses.
     delete:
       bullet1: You won’t be able to sign in to %{app_name} (or any of the government
         applications linked to your account) using this email address

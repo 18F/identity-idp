@@ -19,8 +19,6 @@ es:
       heading: '¿Está seguro que desea eliminar su cuenta?'
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: Si elimina su cuenta
-    emails:
-      error_message: Has agregado la cantidad máxima de direcciones de correo electrónico.
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.

@@ -18,8 +18,6 @@ en:
       heading: Are you sure you want to delete your account?
       instructions: Enter your password to confirm that you want to delete your account.
       subheading: If you delete your account
-    emails:
-      error_message: You’ve added the maximum number of email addresses.
     personal_key:
       close: Close
       confirmation_error: You’ve entered an incorrect personal key.
