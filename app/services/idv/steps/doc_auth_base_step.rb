@@ -20,20 +20,20 @@ module Idv
           @flow.analytics.track_event(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
             throttle_type: :idv_resolution,
-            step_name: self.class.class_name,
+            step_name: self.class,
           )
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
           @flow.analytics.track_event(
             Analytics::IDV_DOC_AUTH_EXCEPTION_VISITED,
-            step_name: self.class.class_name,
+            step_name: self.class,
             remaining_attempts: throttle.remaining_count,
           )
           redirect_to idv_session_errors_exception_url
         else
           @flow.analytics.track_event(
             Analytics::IDV_DOC_AUTH_WARNING_VISITED,
-            step_name: self.class.class_name,
+            step_name: self.class,
             remaining_attempts: throttle.remaining_count,
           )
           redirect_to idv_session_errors_warning_url

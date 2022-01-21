@@ -152,7 +152,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_resolution,
-      step_name: Idv::Steps::VerifyWaitStepShow.class_name,
+      step_name: Idv::Steps::VerifyWaitStepShow,
     )
 
     travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
