@@ -3,7 +3,6 @@ import sinon from 'sinon';
 import { AnalyticsContext } from '@18f/identity-document-capture';
 import CaptureAdvice from '@18f/identity-document-capture/components/capture-advice';
 import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/capture-advice', () => {
   it('logs warning events', () => {
