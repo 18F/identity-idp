@@ -16,7 +16,7 @@ RSpec.describe 'content security policy' do
       )
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq(
-        "'self' http://localhost:7654/auth/result https://example.com http://www.example.com/test/oidc",
+        "'self' http://localhost:7654 https://example.com",
       )
       expect(content_security_policy['img-src']).to eq(
         "'self' data: login.gov idscangoweb.acuant.com https://s3.us-west-2.amazonaws.com",
