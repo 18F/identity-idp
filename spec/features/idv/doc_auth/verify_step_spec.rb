@@ -88,7 +88,7 @@ feature 'doc auth verify step' do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth warning visited',
-      step_name: 'VerifyWaitStepShow',
+      step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 4,
     )
     expect(page).to have_current_path(idv_session_errors_warning_path)
@@ -109,7 +109,7 @@ feature 'doc auth verify step' do
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth exception visited',
-      step_name: 'VerifyWaitStepShow',
+      step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 5,
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
@@ -152,7 +152,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_resolution,
-      step_name: Idv::Steps::VerifyWaitStepShow,
+      step_name: 'Idv::Steps::VerifyWaitStepShow',
     )
 
     travel_to(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now + 1) do
