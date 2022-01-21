@@ -51,9 +51,11 @@ RSpec.describe 'content security policy' do
       )
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")
+      # rubocop:disable Layout/LineLength
       expect(content_security_policy['script-src']).to eq(
-        "'self' js-agent.newrelic.com *.nr-data.net dap.digitalgov.gov *.google-analytics.com",
+        "'self' js-agent.newrelic.com *.nr-data.net dap.digitalgov.gov *.google-analytics.com 'unsafe-eval'",
       )
+      # rubocop:enable Layout/LineLength
       expect(content_security_policy['style-src']).to eq("'self'")
     end
   end

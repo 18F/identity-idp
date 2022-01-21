@@ -77,3 +77,37 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   #   ]
   # }
 end
+
+# A tiny middleware that calls a block on each request. When both:
+# 1) the block returns true
+# 2) the response is a 2XX response
+# It deletes the Content-Security-Policy header. This is intended so that we can override
+# SecureHeaders behavior and not set the headers on asset files, because the headers should be set
+# on the document that links to the assets, not the assets themselves.
+class SecureHeaders::RemoveContentSecurityPolicy
+  # @yieldparam [Rack::Request] request
+  def initialize(app, &block)
+    @app = app
+    @block = block
+  end
+
+  def call(env)
+    status, headers, body = @app.call(env)
+
+    if (200...300).cover?(status) && @block.call(Rack::Request.new(env))
+      headers.delete('Content-Security-Policy')
+    end
+
+    [status, headers, body]
+  end
+end
+
+# We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
+Rails.application.configure do |config|
+  config.middleware.insert_before(
+    SecureHeaders::Middleware,
+    SecureHeaders::RemoveContentSecurityPolicy,
+  ) do |request|
+    request.path.start_with?('/acuant/')
+  end
+end
