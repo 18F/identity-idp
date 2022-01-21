@@ -74,9 +74,11 @@ brakeman: ## Runs brakeman
 public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Builds JavaScript assets
 	yarn build
 
+test: export RAILS_ENV := test
 test: $(CONFIG) public/packs/manifest.json ## Runs RSpec and yarn tests
-	RAILS_ENV=test bundle exec rake parallel:spec && yarn test
+	bundle exec rake parallel:spec && yarn test
 
+fast_test: export RAILS_ENV := test
 fast_test: public/packs/manifest.json ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
@@ -96,7 +98,7 @@ run: ## Runs the development server
 	foreman start -p $(PORT)
 
 run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
-	HTTPS=on rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
+	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt" foreman start -p $(PORT)
 
 normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, smart quotes)
 	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation

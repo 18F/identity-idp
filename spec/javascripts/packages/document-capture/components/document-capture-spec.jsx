@@ -152,7 +152,7 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('renders unhandled submission failure', async () => {
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+    const { getByLabelText, getByText, getAllByText, findAllByText, findByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
         <DocumentCapture />
       </AcuantContextProvider>,
@@ -178,8 +178,7 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
-    const notice = await findByRole('alert');
-    expect(notice.textContent).to.equal('doc_auth.errors.general.network_error');
+    await findByText('doc_auth.errors.general.network_error');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -202,7 +201,7 @@ describe('document-capture/components/document-capture', () => {
     const interstitialHeading = getByText('doc_auth.headings.interstitial');
     expect(interstitialHeading).to.be.ok();
 
-    await findByRole('alert');
+    await findByText('doc_auth.errors.general.network_error');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -527,7 +526,7 @@ describe('document-capture/components/document-capture', () => {
         completeUploadAsFailure();
         const { findAllByRole, getByLabelText } = renderResult;
 
-        const alerts = await findAllByRole('alert');
+        const alerts = (await findAllByRole('alert')).filter((alert) => alert.textContent);
         expect(alerts).to.have.lengthOf(2);
         expect(alerts[0].textContent).to.equal('doc_auth.errors.general.network_error');
         expect(alerts[1].textContent).to.equal(

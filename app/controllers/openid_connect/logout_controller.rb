@@ -5,7 +5,7 @@ module OpenidConnect
     before_action :apply_secure_headers_override, only: [:index]
 
     def index
-      @logout_form = OpenidConnectLogoutForm.new(params)
+      @logout_form = OpenidConnectLogoutForm.new(logout_params)
 
       result = @logout_form.submit
 
@@ -13,10 +13,14 @@ module OpenidConnect
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out
-        redirect_to redirect_uri unless params['prevent_logout_redirect'] == 'true'
+        redirect_to redirect_uri unless logout_params[:prevent_logout_redirect] == 'true'
       else
         render :error
       end
+    end
+
+    def logout_params
+      params.permit(:id_token_hint, :post_logout_redirect_uri, :state, :prevent_logout_redirect)
     end
   end
 end

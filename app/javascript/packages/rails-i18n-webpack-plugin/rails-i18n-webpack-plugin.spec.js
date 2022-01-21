@@ -30,6 +30,9 @@ describe('RailsI18nWebpackPlugin', () => {
             onMissingString,
           }),
         ],
+        resolve: {
+          extensions: ['.js', '.foo'],
+        },
         output: {
           path: path.resolve(__dirname, 'spec/fixtures'),
           filename: 'actual[name].js',
@@ -42,8 +45,10 @@ describe('RailsI18nWebpackPlugin', () => {
           },
         },
       },
-      async () => {
+      async (webpackError) => {
         try {
+          expect(webpackError).to.be.null();
+
           for (const chunkSuffix of ['1', '946']) {
             // eslint-disable-next-line no-await-in-loop
             const [script, en, es, fr] = await Promise.all([

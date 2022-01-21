@@ -4,6 +4,8 @@ const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
+const host = process.env.HOST || 'localhost';
+const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
 const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
@@ -16,7 +18,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,
   devtool: isProductionEnv || isTestEnv ? false : 'eval-source-map',
   target: ['web', 'es5'],
-  devServer: devServerPort && {
+  devServer: {
     static: {
       directory: './public',
       watch: false,
@@ -34,10 +36,11 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     chunkFilename: `js/[name].chunk${hashSuffix}.js`,
     sourceMapFilename: `js/[name]${hashSuffix}.js.map`,
     path: resolve(__dirname, 'public/packs'),
-    publicPath: devServerPort ? `http://localhost:${devServerPort}/packs/` : '/packs/',
+    publicPath:
+      devServerPort && isLocalhost ? `http://localhost:${devServerPort}/packs/` : '/packs/',
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   module: {
     rules: [
@@ -48,7 +51,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         use: ['source-map-loader'],
       },
       {
-        test: /\.jsx?$/,
+        test: /\.[jt]sx?$/,
         exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
         use: {
           loader: 'babel-loader',

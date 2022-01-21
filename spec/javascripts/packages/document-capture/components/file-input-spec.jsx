@@ -362,14 +362,20 @@ describe('document-capture/components/file-input', () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
-      <FileInput label="File" accept={['text/*']} onChange={onChange} onError={onError} />,
+      <FileInput
+        label="File"
+        accept={['text/*']}
+        invalidTypeText="Invalid type"
+        onChange={onChange}
+        onError={onError}
+      />,
     );
 
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
-    expect(getByText('errors.file_input.invalid_type')).to.be.ok();
-    expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
+    expect(getByText('Invalid type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('Invalid type');
   });
 
   it('allows customization of invalid file type error message', () => {
@@ -395,60 +401,52 @@ describe('document-capture/components/file-input', () => {
   it('shows an error from rendering parent', () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
-    const props = { label: 'File', accept: ['text/*'], onChange, onError };
+    const props = {
+      label: 'File',
+      accept: ['text/*'],
+      onChange,
+      onError,
+      invalidTypeText: 'Invalid type',
+    };
     const { getByLabelText, getByText, rerender } = render(<FileInput {...props} />);
 
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
-    expect(getByText('errors.file_input.invalid_type')).to.be.ok();
-    expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
+    expect(getByText('Invalid type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('Invalid type');
 
     rerender(<FileInput {...props} errorMessage="Oops!" />);
 
     expect(getByText('Oops!')).to.be.ok();
-    expect(() => getByText('errors.file_input.invalid_type')).to.throw();
+    expect(() => getByText('Invalid type')).to.throw();
     expect(onError.callCount).to.equal(1);
   });
 
   it('shows an updated state', () => {
     const file2 = new window.File([file], 'file2.jpg');
 
-    const { getByText, rerender } = render(<FileInput label="File" />);
+    const props = { fileUpdatedText: 'File updated', label: 'File' };
 
-    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+    const { getByText, rerender } = render(<FileInput {...props} />);
 
-    rerender(<FileInput label="File" value={file} />);
+    expect(() => getByText('File updated')).to.throw();
 
-    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+    rerender(<FileInput {...props} value={file} />);
 
-    rerender(<FileInput label="File" value={file} />);
+    expect(() => getByText('File updated')).to.throw();
 
-    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+    rerender(<FileInput {...props} value={file} />);
 
-    rerender(<FileInput label="File" value={file2} />);
+    expect(() => getByText('File updated')).to.throw();
 
-    expect(getByText('forms.file_input.file_updated')).to.be.ok();
+    rerender(<FileInput {...props} value={file2} />);
 
-    rerender(<FileInput label="File" value={file2} />);
+    expect(getByText('File updated')).to.be.ok();
 
-    expect(getByText('forms.file_input.file_updated')).to.be.ok();
-  });
+    rerender(<FileInput {...props} value={file2} />);
 
-  it('allows customization of updated file text', () => {
-    const file2 = new window.File([file], 'file2.jpg');
-
-    const { getByText, rerender } = render(<FileInput label="File" fileUpdatedText="Updated" />);
-
-    expect(() => getByText('Updated')).to.throw();
-
-    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file} />);
-
-    expect(() => getByText('Updated')).to.throw();
-
-    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file2} />);
-
-    expect(getByText('Updated')).to.be.ok();
+    expect(getByText('File updated')).to.be.ok();
   });
 
   it('forwards ref', () => {
@@ -456,5 +454,37 @@ describe('document-capture/components/file-input', () => {
     render(<FileInput ref={ref} label="File" />);
 
     expect(ref.current.nodeName).to.equal('INPUT');
+  });
+
+  it('renders pending value', () => {
+    const { getByLabelText, queryByRole, queryByText, container } = render(
+      <FileInput
+        bannerText="Banner"
+        fileLoadingText="File loading"
+        value={file}
+        label="File"
+        isValuePending
+      />,
+    );
+    const input = getByLabelText('File');
+
+    expect(container.querySelector('.usa-file-input--value-pending')).to.exist();
+    expect(container.querySelector('.usa-file-input--has-value')).not.to.exist();
+    expect(container.querySelector('.usa-file-input__preview-heading')).not.to.exist();
+    expect(queryByRole('img', { hidden: true })).not.to.exist();
+    expect(queryByText('File loading').classList.contains('usa-sr-only')).to.be.true();
+    expect(container.querySelector('.spinner-dots')).to.exist();
+    expect(queryByText('Banner')).not.to.exist();
+    expect(input.getAttribute('aria-busy')).to.equal('true');
+  });
+
+  it('renders updated status', () => {
+    const { getByText, rerender } = render(
+      <FileInput fileLoadedText="File loaded" value={file} isValuePending />,
+    );
+
+    rerender(<FileInput fileLoadedText="File loaded" value={file} />);
+
+    expect(getByText('File loaded').classList.contains('usa-sr-only')).to.be.true();
   });
 });

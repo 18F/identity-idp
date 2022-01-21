@@ -126,6 +126,18 @@ describe TwoFactorAuthentication::TotpVerificationController do
         end
       end
 
+      describe 'when user submits an invalid form' do
+        it 'fails with empty code' do
+          expect { post :create, params: { code: '' } }.
+            to raise_error(ActionController::ParameterMissing)
+        end
+
+        it 'fails with no code parameter' do
+          expect { post :create, params: { fake_code: 'abc123' } }.
+            to raise_error(ActionController::ParameterMissing)
+        end
+      end
+
       describe 'when user submits a valid TOTP' do
         before do
           post :create, params: { code: generate_totp_code(@secret) }

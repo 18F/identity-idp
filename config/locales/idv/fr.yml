@@ -80,7 +80,7 @@ fr:
         warning_1: Si vous avez oublié votre mot de passe, vous devrez le réinitialiser
           et remplir à nouveau le formulaire.
         warning_2: Vous devrez ressaisir vos informations personnelles, comme votre nom,
-          votre numéro d’identification, etc.
+          pièce d’identité officielle, etc.
     form:
       address1: Adresse
       address2: Adresse (optional)

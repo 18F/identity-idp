@@ -69,4 +69,21 @@ describe('document-capture/hooks/use-cookie', () => {
     expect(value1).to.equal('bar');
     expect(value2).to.equal('bar');
   });
+
+  it('refreshes a cookie value', () => {
+    const render = sinon.stub().callsFake(() => useCookie('foo'));
+    const { result } = renderHook(render);
+
+    document.cookie = 'foo=bar';
+
+    const [, , refreshValue] = result.current;
+
+    render.resetHistory();
+    refreshValue();
+    expect(render).to.have.been.calledOnce();
+
+    const [value] = result.current;
+
+    expect(value).to.equal('bar');
+  });
 });

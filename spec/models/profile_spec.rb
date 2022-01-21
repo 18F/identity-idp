@@ -74,6 +74,15 @@ describe Profile do
       expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
     end
 
+    it 'updates the personal key digest generation time' do
+      user.encrypted_recovery_code_digest_generated_at = nil
+
+      encrypt_pii
+
+      expect(user.reload.encrypted_recovery_code_digest_generated_at.to_i).
+        to be_within(1).of(Time.zone.now.to_i)
+    end
+
     context 'ssn fingerprinting' do
       it 'fingerprints the ssn' do
         expect { encrypt_pii }.

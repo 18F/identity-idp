@@ -192,6 +192,8 @@ fr:
         vous en lisant votre pièce d’identité officielle. Nous ne stockons pas
         les images que vous téléchargez. Nous vérifions uniquement votre
         identité.
+      image_loaded: Image chargée
+      image_loading: Chargement de l’image
       image_updated: Image mise à jour
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous
         chargerons automatiquement l’étape suivante lorsqu’elle sera terminée.

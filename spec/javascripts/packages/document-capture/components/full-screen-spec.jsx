@@ -94,6 +94,15 @@ describe('document-capture/components/full-screen', () => {
     expect(onRequestClose.calledOnce).to.be.true();
   });
 
+  it('does not call close callback when unmounted', () => {
+    const onRequestClose = sinon.spy();
+    const { unmount } = render(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
+
+    unmount();
+
+    expect(onRequestClose).not.to.have.been.called();
+  });
+
   it('transitions focus into the modal', (done) => {
     const { baseElement } = render(<FullScreen>Content</FullScreen>);
 
