@@ -35,7 +35,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     ],
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
-    disable_nonce_backwards_compatibility: true,
+    disable_nonce_backwards_compatibility: IdentityConfig.store.disable_csp_unsafe_inline,
   }
 
   if IdentityConfig.store.rails_mailer_previews_enabled
