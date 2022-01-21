@@ -2,13 +2,13 @@ require 'rails_helper'
 
 describe 'idv/session_errors/warning.html.erb' do
   let(:sp_name) { 'Example SP' }
-  let(:remaining_step_attempts) { 5 }
+  let(:remaining_attempts) { 5 }
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
-    assign(:remaining_step_attempts, remaining_step_attempts)
+    assign(:remaining_attempts, remaining_attempts)
 
     render
   end
@@ -18,7 +18,7 @@ describe 'idv/session_errors/warning.html.erb' do
   end
 
   it 'shows remaining attempts' do
-    expect(rendered).to have_text(t('idv.failure.attempts', count: remaining_step_attempts))
+    expect(rendered).to have_text(t('idv.failure.attempts', count: remaining_attempts))
   end
 
   it 'renders a list of troubleshooting options' do

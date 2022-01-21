@@ -37,7 +37,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
     preserve_schemes: true,
-    disable_nonce_backwards_compatibility: true,
+    disable_nonce_backwards_compatibility: IdentityConfig.store.disable_csp_unsafe_inline,
   }
 
   if IdentityConfig.store.rails_mailer_previews_enabled
@@ -45,7 +45,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_csp_config[:frame_ancestors] = %w['self']
   end
 
-  default_csp_config[:script_src] += ["'self'", "'unsafe-eval'"] if !Rails.env.production?
+  default_csp_config[:script_src] = ["'self' 'unsafe-eval'"] if !Rails.env.production?
 
   if ENV['WEBPACK_PORT']
     default_csp_config[:connect_src] << "ws://localhost:#{ENV['WEBPACK_PORT']}"
