@@ -1,6 +1,7 @@
 require 'feature_management'
 
 if FeatureManagement.rails_csp_tooling_enabled?
+  # rubocop:disable Metrics/BlockLength
   Rails.application.config.content_security_policy do |policy|
     connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
 
@@ -36,13 +37,14 @@ if FeatureManagement.rails_csp_tooling_enabled?
     policy.child_src :self # CSP 2.0 only; replaces frame_src
     policy.form_action :self
     policy.block_all_mixed_content true # CSP 2.0 only;
-    policy.connect_src *connect_src.flatten.compact
-    policy.font_src *font_src
-    policy.img_src *image_src
+    policy.connect_src(*connect_src.flatten.compact)
+    policy.font_src(*font_src)
+    policy.img_src(*image_src)
     policy.media_src :self
     policy.object_src :none
-    policy.script_src *script_src
-    policy.style_src *style_src
+    policy.script_src(*script_src)
+    policy.style_src(*style_src)
     policy.base_uri :self
   end
+  # rubocop:enable Metrics/BlockLength
 end
