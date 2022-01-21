@@ -1,8 +1,8 @@
 class SecureHeadersAllowList
   def self.csp_with_sp_redirect_uris(action_url_domain, sp_redirect_uris)
     csp_uris = [action_url_domain]
-    csp_uris += sp_redirect_uris.compact if sp_redirect_uris.present?
-    ["'self'"] + reduce_sp_redirect_uris_for_csp(csp_uris)
+    csp_uris += sp_redirect_uris if sp_redirect_uris.present?
+    ["'self'"] + reduce_sp_redirect_uris_for_csp(csp_uris.compact)
   end
 
   ##
