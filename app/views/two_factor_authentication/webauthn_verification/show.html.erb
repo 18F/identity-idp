@@ -2,9 +2,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
-<div class='mt-tiny margin-bottom-4'>
+<p>
   <%= @presenter.webauthn_help %>
-</div>
+</p>
 
 <%= simple_form_for(
       '',
@@ -23,21 +23,21 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
 
   <%= content_tag :div, id: 'webauthn-auth-in-progress', data: { webauthn_not_enabled_url: login_two_factor_options_path } do %>
-    <div class="spinner hidden" id="spinner">
-      <div class="col-12 center margin-bottom-2">
-        <%= image_tag(
-              asset_url('spinner.gif'),
-              srcset: asset_url('spinner@2x.gif'),
-              height: 144,
-              width: 144,
-              alt: '',
-            ) %>
-      </div>
+    <div class="hidden spinner center margin-bottom-4" id="spinner">
+      <%= image_tag(
+            asset_url('spinner.gif'),
+            srcset: asset_url('spinner@2x.gif'),
+            height: 144,
+            width: 144,
+            alt: '',
+          ) %>
     </div>
-    <p class="half-center">
-      <span class="h2"><%= @presenter.login_text %></span>
-      <input type="button" id="webauthn-button" class="margin-top-2 usa-button usa-button--big usa-button--wide" value="<%= @presenter.authenticate_button_text %>">
+    <p class="text-bold">
+      <%= @presenter.login_text %>
     </p>
+    <button type="button" id="webauthn-button" class="display-block margin-y-4 usa-button usa-button--big usa-button--wide">
+      <%= @presenter.authenticate_button_text %>
+    </button>
     <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
 
@@ -67,7 +67,7 @@
           },
         ) %>
     <%= submit_tag t('forms.buttons.continue'),
-                   class: 'usa-button usa-button--big usa-button--wide margin-y-4' %>
+                   class: 'display-block usa-button usa-button--big usa-button--wide margin-y-4' %>
   </div>
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

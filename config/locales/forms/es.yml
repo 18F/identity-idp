@@ -137,7 +137,7 @@ es:
         con %{app_name}.
       instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
       intro: Use el desbloqueo facial o táctil para acceder a su cuenta.
-      login_text: Cuando esté listo, presione el botón.
+      login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
     webauthn_setup:
       continue: Continuar
@@ -147,5 +147,5 @@ es:
       intro: Añada una clave de seguridad que cumpla el estándar FIDO como método de
         autenticación. Puede añadir tantas claves de seguridad como desee. Para
         empezar, primero asigne un apodo a su clave de seguridad.
-      login_text: Cuando esté listo para autenticarse, presione el botón
+      login_text: 'Cuando esté listo para autenticarse, presione el botón:'
       nickname: Apodo clave de seguridad
