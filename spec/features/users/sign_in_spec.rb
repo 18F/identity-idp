@@ -101,8 +101,7 @@ feature 'Sign in' do
 
     expected_form_action = <<-STR.squish
       form-action https://*.pivcac.test.example.com 'self'
-      http://localhost:7654/auth/result https://example.com
-      http://www.example.com/test/oidc;
+      http://localhost:7654 https://example.com
     STR
 
     expect(page.response_headers['Content-Security-Policy']).

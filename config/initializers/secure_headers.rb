@@ -35,6 +35,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     ],
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
+    preserve_schemes: true,
     disable_nonce_backwards_compatibility: IdentityConfig.store.disable_csp_unsafe_inline,
   }
 
