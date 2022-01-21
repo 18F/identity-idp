@@ -35,6 +35,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     ],
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
+    preserve_schemes: true,
   }
 
   if IdentityConfig.store.rails_mailer_previews_enabled
