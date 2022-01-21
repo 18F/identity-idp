@@ -411,4 +411,86 @@ RSpec.describe User do
       end
     end
   end
+
+  describe '#broken_personal_key?' do
+    before do
+      allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
+        and_return(3.days.ago)
+      allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
+        and_return(1.day.ago)
+    end
+
+    let(:user) { build(:user) }
+
+    context 'for a user with no profile' do
+      it { expect(user.broken_personal_key?).to eq(false) }
+    end
+
+    context 'for a user with a profile that is not verified' do
+      before do
+        create(:profile, user: user, activated_at: nil, verified_at: nil)
+      end
+
+      it { expect(user.broken_personal_key?).to eq(false) }
+    end
+
+    context 'for a user with a profile verified before the broken key window' do
+      before do
+        create(
+          :profile,
+          user: user,
+          active: true,
+          activated_at: 5.days.ago,
+          verified_at: 5.days.ago,
+        )
+      end
+
+      it { expect(user.broken_personal_key?).to eq(false) }
+    end
+
+    context 'for a user with a profile verified after the broken key window' do
+      before do
+        create(:profile, :active, :verified, user: user)
+      end
+
+      it { expect(user.broken_personal_key?).to eq(false) }
+    end
+
+    context 'for a user with a profile verified during the broken key window' do
+      let(:personal_key_generated_at) { nil }
+      let(:verified_at) { 2.days.ago }
+
+      let(:user) do
+        build(:user, encrypted_recovery_code_digest_generated_at: personal_key_generated_at)
+      end
+
+      before do
+        create(
+          :profile,
+          user: user,
+          active: true,
+          activated_at: verified_at,
+          verified_at: verified_at,
+        )
+      end
+
+      context 'for a user missing the personal key verified timestamp (legacy data)' do
+        let(:personal_key_generated_at) { nil }
+
+        it { expect(user.broken_personal_key?).to eq(true) }
+      end
+
+      context 'for a personal key generated before the window ends' do
+        let(:personal_key_generated_at) { 2.days.ago }
+
+        it { expect(user.broken_personal_key?).to eq(true) }
+      end
+
+      context 'for a personal key generated after the window (fixed)' do
+        let(:personal_key_generated_at) { Time.zone.now }
+
+        it { expect(user.broken_personal_key?).to eq(false) }
+      end
+    end
+  end
 end
