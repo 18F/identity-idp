@@ -1,6 +1,8 @@
 <% title @presenter.title %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+<%= render PageHeadingComponent.new do %>
+  <%= @presenter.heading %>
+<% end %>
 
 <p class="margin-top-2 margin-bottom-2">
   <%= @presenter.description %>
