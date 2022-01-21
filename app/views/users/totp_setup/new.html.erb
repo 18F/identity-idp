@@ -68,13 +68,16 @@
       </div>
     </li>
   </ul>
-  <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--big usa-button--wide margin-y-5' %>
   <%= f.input(
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
-        input_html: { checked: @presenter.remember_device_box_checked? },
+        input_html: {
+          class: 'usa-checkbox__input--bordered',
+          checked: @presenter.remember_device_box_checked?,
+        },
       ) %>
+  <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--big usa-button--wide margin-y-5' %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
