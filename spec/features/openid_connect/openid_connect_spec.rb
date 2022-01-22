@@ -151,7 +151,7 @@ describe 'OpenID Connect' do
     )
 
     expect(page.response_headers['Content-Security-Policy']).to include(
-      'form-action \'self\' gov.gsa.openidconnect.test://',
+      'form-action \'self\' gov.gsa.openidconnect.test:',
     )
 
     visit account_path
