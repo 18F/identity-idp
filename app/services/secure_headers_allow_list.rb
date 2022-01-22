@@ -48,6 +48,6 @@ class SecureHeadersAllowList
   end
 
   def self.reduce_native_app_sp_uri(uri)
-    "#{uri.scheme}://"
+    "#{uri.scheme}:"
   end
 end

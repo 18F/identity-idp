@@ -26,7 +26,7 @@ if FeatureManagement.rails_csp_tooling_enabled?
       IdentityConfig.store.asset_host.presence,
     ].compact
 
-    script_src << "'unsafe-eval'" if !Rails.env.production?
+    script_src = [:self, :unsafe_eval] if !Rails.env.production?
 
     style_src = [:self, IdentityConfig.store.asset_host.presence].compact
 
