@@ -26,11 +26,18 @@ if FeatureManagement.rails_csp_tooling_enabled?
       IdentityConfig.store.asset_host.presence,
     ].compact
 
+    script_src << "'unsafe-eval'" if !Rails.env.production?
+
     style_src = [:self, IdentityConfig.store.asset_host.presence].compact
 
     if ENV['WEBPACK_PORT']
       connect_src << "ws://localhost:#{ENV['WEBPACK_PORT']}"
       script_src << "localhost:#{ENV['WEBPACK_PORT']}"
+    end
+
+    if IdentityConfig.store.rails_mailer_previews_enabled
+      # CSP 2.0 only; overriden by x_frame_options in some browsers
+      policy.frame_ancestors :self
     end
 
     policy.default_src :self
@@ -47,4 +54,8 @@ if FeatureManagement.rails_csp_tooling_enabled?
     policy.base_uri :self
   end
   # rubocop:enable Metrics/BlockLength
+  Rails.application.configure do
+    config.content_security_policy_nonce_generator = -> (request) { request.session.id.to_s }
+    config.content_security_policy_nonce_directives = ['script-src']
+  end
 end
