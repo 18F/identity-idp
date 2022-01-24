@@ -8,7 +8,7 @@
       ) %>
 <% end %>
 
-<h1 class="margin-top-0"><%= t('headings.verify_email') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
 <p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
    <strong><%= email %></strong>

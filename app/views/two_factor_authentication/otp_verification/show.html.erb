@@ -1,8 +1,6 @@
 <% title t('titles.enter_2fa_code') %>
 
-<h1 class="margin-y-0">
-  <%= @presenter.header %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
 <p>
   <%= @presenter.phone_number_message %>

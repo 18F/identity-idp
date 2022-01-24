@@ -10,7 +10,7 @@
       ) %>
 <% end %>
 
-<h1 class="margin-y-0"><%= @presenter.heading %></h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <p class="mt-tiny"><%== @presenter.intro %></p>
 

@@ -1,6 +1,6 @@
 <% title t('titles.verify_email') %>
 
-<h1 class="margin-top-0"><%= t('headings.verify_email') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
 <p><%= t('account_reset.confirm_request.instructions_start') %>
   <strong><%= email %></strong>

@@ -1,6 +1,6 @@
 <% title t('account_reset.request.title') %>
 
-<h1 class='margin-y-0'><%= t('account_reset.request.title') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('account_reset.request.title')) %>
 
 <p class='mt-tiny margin-bottom-0'>
   <%= t('account_reset.request.info').html_safe %>

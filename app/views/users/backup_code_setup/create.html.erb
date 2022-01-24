@@ -1,8 +1,6 @@
 <% title t('forms.backup_code.title') %>
 
-<h1 class="margin-y-0 margin-top-0">
-  <%= t('forms.backup_code.subtitle') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('forms.backup_code.subtitle')) %>
 
 <%= t(
       'users.backup_code.generated_on_html',

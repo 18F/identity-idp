@@ -10,7 +10,7 @@
       message: flow_session[:error_message].presence || t('errors.doc_auth.consent_form'),
     ) %>
 
-<h1><%= t('doc_auth.headings.lets_go') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.lets_go')) %>
 <p><%= t('doc_auth.info.lets_go') %></p>
 <h2><%= t('doc_auth.headings.verify_identity') %></h2>
 <p><%= t('doc_auth.info.verify_identity') %></p>

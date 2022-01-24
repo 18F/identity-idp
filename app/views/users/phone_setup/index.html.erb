@@ -4,7 +4,7 @@
 
 <%= image_tag asset_url('2FA-voice.svg'), alt: '', width: 200, class: 'margin-bottom-2' %>
 
-<h1><%= t('titles.phone_setup') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('titles.phone_setup')) %>
 
 <p>
   <%= t('two_factor_authentication.phone_info_html') %>

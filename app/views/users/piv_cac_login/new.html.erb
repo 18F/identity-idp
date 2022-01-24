@@ -1,8 +1,6 @@
 <% title @presenter.title %>
 
-<h1 class='margin-y-0'>
-  <%= @presenter.heading %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
 <p class='margin-top-2 margin-bottom-2'>
   <%= raw @presenter.info %>
