@@ -2,13 +2,12 @@
 require 'open3'
 require 'optparse'
 
-CHANGELOG_REGEX = %r{^\+- (?<category>[\w ]{2,}): (?<change>[\w ]{2,})}
-PR_REGEX = %r{ \([#\d+, ]*\d+\)$}
+CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:#\d+, ?)*(?:#\d+))\)$}
 # A valid diff line is in the form of:
 # +- CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
 def is_valid_changelog_diff_addition?(line)
   matches = CHANGELOG_REGEX.match(line)
-  !matches.nil? && line.match?(PR_REGEX)
+  !matches.nil?
 end
 
 def get_changelog_diff_lines(base_branch, source_branch)
