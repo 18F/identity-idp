@@ -30,8 +30,7 @@ def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   )
   raise 'git log failed' unless status.success?
 
-  return true if log.include?('[skip changelog]')
-  return false
+  log.include?('[skip changelog]')
 end
 
 def main(args)
