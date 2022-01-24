@@ -9,9 +9,7 @@
       } %>
 <% end %>
 
-<h1>
-  <%= t('idv.titles.session.review', app_name: APP_NAME) %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.review', app_name: APP_NAME)) %>
 
 <p>
   <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>

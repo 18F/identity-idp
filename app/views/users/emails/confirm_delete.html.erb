@@ -1,8 +1,6 @@
 <% title t('titles.confirmations.delete') %>
 
-<h1 class='margin-y-0'>
-  <%= @presenter.confirm_delete_message %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.confirm_delete_message) %>
 
 <br/>
 

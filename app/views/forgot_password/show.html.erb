@@ -5,7 +5,7 @@
   <%= render 'forgot_password/resend_alert' %>
 <% end %>
 
-<h1 class="margin-top-0"><%= t('headings.verify_email') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
 <p><%= t('notices.forgot_password.first_paragraph_start') %>
    <strong><%= @view_model.email %></strong>

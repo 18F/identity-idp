@@ -3,12 +3,14 @@
 <% else %>
   <% title t('forms.webauthn_delete.confirm') %>
 <% end %>
-<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54) %>
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54, class: 'margin-bottom-2') %>
 
-<% if @webauthn.platform_authenticator %>
-  <h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t('forms.webauthn_platform_delete.confirm') %></h1>
-<% else %>
-  <h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t('forms.webauthn_delete.confirm') %></h1>
+<%= render PageHeadingComponent.new do %>
+  <% if @webauthn.platform_authenticator %>
+    <%= t('forms.webauthn_platform_delete.confirm') %>
+  <% else %>
+    <%= t('forms.webauthn_delete.confirm') %>
+  <% end %>
 <% end %>
 
 <div class="col-2">

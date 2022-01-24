@@ -9,7 +9,7 @@
       } %>
 <% end %>
 
-<h1 class="margin-top-0"><%= @presenter.title %></h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
   <%= @presenter.byline %>

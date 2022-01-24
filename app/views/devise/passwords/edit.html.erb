@@ -1,8 +1,6 @@
 <% title t('titles.passwords.change') %>
 
-<h1 class="margin-y-0">
-  <%= t('headings.passwords.change') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
 <%= validated_form_for(
       @reset_password_form,

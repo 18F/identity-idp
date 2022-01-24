@@ -1,7 +1,5 @@
 <% title t('titles.edit_info.phone') %>
-<h1 class="margin-y-0">
-  <%= t('headings.edit_info.phone') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.edit_info.phone')) %>
 
 <%= validated_form_for(
       @edit_phone_form,

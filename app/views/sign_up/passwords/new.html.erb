@@ -1,8 +1,6 @@
 <% title t('titles.confirmations.show') %>
 
-<h1 class="margin-y-0">
-  <%= t('forms.confirmation.show_hdr') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('forms.confirmation.show_hdr')) %>
 
 <p class="margin-top-2 margin-bottom-0" id="password-description">
   <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>

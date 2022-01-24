@@ -11,9 +11,7 @@
   <% end %>
 </div>
 
-<h1 class="margin-top-0 margin-bottom-2">
-  <%= t('headings.account.reactivate') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.account.reactivate')) %>
 
 <p class="margin-bottom-6">
   <%= t('instructions.account.reactivate.intro') %>

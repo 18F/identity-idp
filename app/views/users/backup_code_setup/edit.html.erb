@@ -1,10 +1,8 @@
 <% title t('forms.backup_code_regenerate.confirm') %>
 
-<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54) %>
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54, class: 'margin-bottom-2') %>
 
-<h1 class="margin-bottom-1 margin-top-4 margin-y-0">
-  <%= t('forms.backup_code_regenerate.confirm') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('forms.backup_code_regenerate.confirm')) %>
 
 <div class="col-2 margin-bottom-2">
   <hr class="margin-top-4 margin-bottom-2 border-width-05 border-yellow"></hr>

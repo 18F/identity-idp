@@ -207,7 +207,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             params: {
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
-              remember_device: 'true',
+              remember_device: '1',
             },
           )
 
@@ -437,7 +437,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             params: {
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
-              remember_device: 'true',
+              remember_device: '1',
             },
           )
 

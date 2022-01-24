@@ -10,9 +10,7 @@
   <body>
     <div class="container tablet:padding-y-6">
       <div class="card margin-x-auto sm-col-6">
-        <h1 class="margin-y-0">
-          <%= t('saml_idp.shared.saml_post_binding.heading') %>
-        </h1>
+        <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
 
         <p>
           <%= t('saml_idp.shared.saml_post_binding.no_js') %>
