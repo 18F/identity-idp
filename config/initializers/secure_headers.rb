@@ -47,7 +47,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   default_csp_config[:script_src] = ["'self'", "'unsafe-eval'"] if !Rails.env.production?
 
   if IdentityConfig.store.rails_mailer_previews_enabled
-    default_csp_config[:style_src] = ["'self'", "'unsafe-inline'"]
+    default_csp_config[:style_src] << "'unsafe-inline'"
   end
 
   config.csp = default_csp_config
