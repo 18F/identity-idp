@@ -55,7 +55,7 @@ if FeatureManagement.rails_csp_tooling_enabled?
   end
   # rubocop:enable Metrics/BlockLength
   Rails.application.configure do
-    config.content_security_policy_nonce_generator = -> (request) { request.session.id.to_s }
+    config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
     config.content_security_policy_nonce_directives = ['script-src']
   end
 end
