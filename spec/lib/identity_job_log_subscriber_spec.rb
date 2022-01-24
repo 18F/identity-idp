@@ -30,6 +30,27 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
     )
   end
 
+  it 'does not log events when it is told not do' do
+    stub_request(:post, 'https://llljjjj.com/').with(
+      body: 'abc123',
+      headers: {
+        'Accept' => 'application/json',
+        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'Content-Type' => 'application/secevent+jwt',
+        'User-Agent' => 'Faraday v1.8.0',
+      },
+    ).to_return(status: 200, body: '', headers: {})
+
+    expect(Rails.logger).to receive(:error).exactly(0).times
+
+    RiscDeliveryJob.perform_later(
+      push_notification_url: 'https://llljjjj.com/',
+      jwt: 'abc123',
+      event_type: 'something',
+      issuer: 'test',
+    )
+  end
+
   it 'logs errors when exception occurs in job' do
     expect(Rails.logger).to receive(:error).exactly(2).times do |log|
       json = JSON.parse(log)

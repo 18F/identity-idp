@@ -13,9 +13,14 @@ class RiscDeliveryJob < ApplicationJob
     wait: :exponentially_longer,
     attempts: 2,
   )
+
   retry_on RedisRateLimiter::LimitError,
            wait: :exponentially_longer,
            attempts: 10
+
+  def self.skip_log_on_failure?
+    true
+  end
 
   def perform(
     push_notification_url:,
@@ -49,17 +54,20 @@ class RiscDeliveryJob < ApplicationJob
       )
     end
   rescue *NETWORK_ERRORS, RedisRateLimiter::LimitError => err
-    raise err if !inline?
+    if !RiscDeliveryJob.skip_log_on_failure?
+      raise err if !inline?
 
-    Rails.logger.warn(
-      {
-        event: err.is_a?(RedisRateLimiter::LimitError) ? 'http_push_rate_limit' : 'http_push_error',
-        transport: 'direct',
-        event_type: event_type,
-        service_provider: issuer,
-        error: err.message,
-      }.to_json,
-    )
+      Rails.logger.warn(
+        {
+          event: err.is_a?(RedisRateLimiter::LimitError) ? 'http_push_rate_limit'
+            : 'http_push_error',
+          transport: 'direct',
+          event_type: event_type,
+          service_provider: issuer,
+          error: err.message,
+        }.to_json,
+      )
+    end
   end
 
   def rate_limiter(url)

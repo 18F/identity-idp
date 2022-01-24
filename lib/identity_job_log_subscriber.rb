@@ -4,122 +4,142 @@
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def enqueue(event)
     job = event.payload[:job]
-    ex = event.payload[:exception_object]
 
-    json = default_attributes(event, job)
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:exception_object]
 
-    if ex
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
+      json = default_attributes(event, job)
 
-      error(json.to_json)
-    elsif event.payload[:aborted]
-      json[:halted] = true
+      if ex
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
 
-      info(json.to_json)
-    else
-      info(json.to_json)
+        error(json.to_json)
+      elsif event.payload[:aborted]
+        json[:halted] = true
+
+        info(json.to_json)
+      else
+        info(json.to_json)
+      end
     end
   end
 
   def enqueue_at(event)
     job = event.payload[:job]
-    ex = event.payload[:exception_object]
 
-    json = default_attributes(event, job)
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:exception_object]
 
-    if ex
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
+      json = default_attributes(event, job)
 
-      error(json.to_json)
-    elsif event.payload[:aborted]
-      json[:halted] = true
+      if ex
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
 
-      info(json.to_json)
-    else
-      json[:scheduled_at] = scheduled_at(event)
+        error(json.to_json)
+      elsif event.payload[:aborted]
+        json[:halted] = true
 
-      info(json.to_json)
+        info(json.to_json)
+      else
+        json[:scheduled_at] = scheduled_at(event)
+
+        info(json.to_json)
+      end
     end
   end
 
   def perform_start(event)
     job = event.payload[:job]
 
-    json = default_attributes(event, job).merge(
-      enqueued_at: job.enqueued_at,
-      queued_duration_ms: queued_duration(job),
-    )
+    if !job.class.try(:skip_log_on_failure?)
+      json = default_attributes(event, job).merge(
+        enqueued_at: job.enqueued_at,
+        queued_duration_ms: queued_duration(job),
+      )
 
-    info(json.to_json)
+      info(json.to_json)
+    end
   end
 
   def perform(event)
     job = event.payload[:job]
-    ex = event.payload[:exception_object]
 
-    json = default_attributes(event, job).merge(
-      enqueued_at: job.enqueued_at,
-    )
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:exception_object]
 
-    if ex
-      # NewRelic?
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
-      json[:exception_backtrace] = Array(ex.backtrace).join("\n")
+      json = default_attributes(event, job).merge(
+        enqueued_at: job.enqueued_at,
+      )
 
-      error(json.to_json)
-    elsif event.payload[:aborted]
-      json[:halted] = true
+      if ex
+        # NewRelic?
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
+        json[:exception_backtrace] = Array(ex.backtrace).join("\n")
 
-      error(json.to_json)
-    else
-      info(json.to_json)
+        error(json.to_json)
+      elsif event.payload[:aborted]
+        json[:halted] = true
+
+        error(json.to_json)
+      else
+        info(json.to_json)
+      end
     end
   end
 
   def enqueue_retry(event)
     job = event.payload[:job]
-    ex = event.payload[:error]
-    wait_seconds = event.payload[:wait]
 
-    json = default_attributes(event, job).merge(
-      wait_ms: wait_seconds.to_i.in_milliseconds,
-    )
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:error]
+      wait_seconds = event.payload[:wait]
 
-    json[:exception_class] = ex.class.name if ex
+      json = default_attributes(event, job).merge(
+        wait_ms: wait_seconds.to_i.in_milliseconds,
+      )
 
-    if ex
-      error(json.to_json)
-    else
-      info(json.to_json)
+      json[:exception_class] = ex.class.name if ex
+
+      if ex
+        error(json.to_json)
+      else
+        info(json.to_json)
+      end
+
+      json
     end
-
-    json
   end
 
   def retry_stopped(event)
     job = event.payload[:job]
-    ex = event.payload[:error]
 
-    json = default_attributes(event, job).merge(
-      exception_class: ex.class.name,
-      attempts: job.executions,
-    )
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:error]
 
-    error(json.to_json)
+      json = default_attributes(event, job).merge(
+        exception_class: ex.class.name,
+        attempts: job.executions,
+      )
+
+      error(json.to_json)
+    end
   end
 
   def discard(event)
     job = event.payload[:job]
-    ex = event.payload[:error]
 
-    json = default_attributes(event, job).merge(
-      exception_class: job.class,
-    )
+    if !job.class.try(:skip_log_on_failure?)
+      ex = event.payload[:error]
 
-    error(json.to_json)
+      json = default_attributes(event, job).merge(
+        exception_class: job.class,
+      )
+
+      error(json.to_json)
+    end
   end
 
   def logger
