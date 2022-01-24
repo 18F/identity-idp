@@ -389,7 +389,8 @@ jobs:
           fail_only: true
           failure_message: ':aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date'
   check_changelog:
-    executor: ruby_browsers
+    docker:
+      - image: cimg/ruby:3.0
     steps:
       - checkout
       - run:
@@ -399,7 +400,7 @@ jobs:
             then
               exit 0
             else
-              ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}"
+              ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}" || true
             fi
 
 workflows:
