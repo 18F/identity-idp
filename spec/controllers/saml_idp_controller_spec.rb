@@ -518,6 +518,8 @@ describe SamlIdpController do
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
+               authn_context_comparison: 'exact',
+               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                service_provider: sp1_issuer,
                endpoint: '/api/saml/auth2022',
                idv: false,
@@ -588,6 +590,7 @@ describe SamlIdpController do
           error_details: { authn_context: [:unauthorized_authn_context] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
+          authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
         }
 
@@ -697,6 +700,7 @@ describe SamlIdpController do
           error_details: { service_provider: [:unauthorized_service_provider] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
           service_provider: nil,
         }
 
@@ -739,6 +743,7 @@ describe SamlIdpController do
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
+          authn_context_comparison: 'exact',
           service_provider: nil,
         }
 
@@ -942,6 +947,44 @@ describe SamlIdpController do
       end
     end
 
+    context 'no IAL explicitly requested' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'notes that in the analytics event' do
+        auth_settings = saml_settings(
+          overrides: { authn_context: [
+            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+          ]},
+        )
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
+          authn_context_comparison: 'exact',
+          requested_ial: 'none',
+          service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2022',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
     context 'nameid_format is missing' do
       let(:user) { create(:user, :signed_up) }
 
@@ -963,6 +1006,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -994,6 +1039,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -1025,6 +1072,7 @@ describe SamlIdpController do
           error_details: { nameid_format: [:unauthorized_nameid_format] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
           service_provider: 'http://localhost:3000',
         }
 
@@ -1059,6 +1107,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -1087,6 +1137,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: auth_settings.issuer,
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -1115,6 +1167,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -1214,7 +1268,7 @@ describe SamlIdpController do
 
       it 'sets correct CSP config that includes any custom app scheme uri from SP redirect_uris' do
         form_action = response.request.headers.env['secure_headers_request_config'].csp.form_action
-        csp_array = ["'self'", 'localhost:3000', 'x-example-app://idp_return']
+        csp_array = ["'self'", 'http://localhost:3000', 'x-example-app:']
         expect(form_action).to match_array(csp_array)
       end
 
@@ -1593,6 +1647,8 @@ describe SamlIdpController do
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
             Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           ],
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: true,
@@ -1629,6 +1685,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: false,
@@ -1659,6 +1717,8 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
+          authn_context_comparison: 'exact',
+          requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           endpoint: '/api/saml/auth2022',
           idv: false,

@@ -3,6 +3,8 @@ class Navigation
 
   NavItem = Struct.new(:title, :href, :children)
 
+  attr_reader :user
+
   def initialize(user:, url_options:)
     @user = user
     @url_options = url_options
@@ -15,7 +17,10 @@ class Navigation
           NavItem.new(I18n.t('account.navigation.add_email'), add_email_path),
           NavItem.new(I18n.t('account.navigation.edit_password'), manage_password_path),
           NavItem.new(I18n.t('account.navigation.delete_account'), account_delete_path),
-        ]
+          user.encrypted_recovery_code_digest.present? ? NavItem.new(
+            I18n.t('account.navigation.reset_personal_key'), create_new_personal_key_path
+          ) : nil,
+        ].compact
       ),
       NavItem.new(
         I18n.t('account.navigation.two_factor_authentication'),
@@ -58,7 +63,7 @@ class Navigation
   end
 
   def backup_codes_path
-    if TwoFactorAuthentication::BackupCodePolicy.new(@user).configured?
+    if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
       backup_code_regenerate_path
     else
       backup_code_create_path

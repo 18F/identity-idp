@@ -23,7 +23,8 @@ feature 'View personal key' do
           with(to: user.phone_configurations.first.phone, country_code: 'US')
 
         visit account_two_factor_authentication_path
-        click_button t('account.links.regenerate_personal_key')
+        click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
+        click_continue
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
@@ -31,16 +32,28 @@ feature 'View personal key' do
 
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code' do
-        allow(IdentityConfig.store).to receive(:reauthn_window).and_return(0)
-
         sign_in_and_2fa_user(user)
-
         old_digest = user.encrypted_recovery_code_digest
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
+
+        travel(IdentityConfig.store.reauthn_window + 1)
+
         visit account_two_factor_authentication_path
-        click_on(t('account.links.regenerate_personal_key'))
+        click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
+
+        # reauthn
+        fill_in :user_password, with: user.password
+        click_continue
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+
+        expect(page).to have_content(t('account.personal_key.get_new'))
+        click_continue
+
+        expect(page).to have_content(t('headings.personal_key'))
+        click_acknowledge_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
@@ -50,7 +63,8 @@ feature 'View personal key' do
       before do
         sign_in_and_2fa_user(user)
         visit account_two_factor_authentication_path
-        click_button t('account.links.regenerate_personal_key')
+        click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
+        click_continue
       end
 
       it_behaves_like 'personal key page'
@@ -61,7 +75,8 @@ feature 'View personal key' do
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
-      click_button t('account.links.regenerate_personal_key')
+      click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
+      click_continue
 
       click_acknowledge_personal_key
 
@@ -89,7 +104,8 @@ feature 'View personal key' do
     it 'confirms personal key on mobile', driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
-      click_button t('account.links.regenerate_personal_key')
+      click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
+      click_continue
 
       click_acknowledge_personal_key
 

@@ -208,7 +208,8 @@ Rails.application.routes.draw do
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
 
-    post '/account/personal_key' => 'accounts/personal_keys#create', as: :create_new_personal_key
+    get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key
+    post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'

@@ -38,10 +38,12 @@ class ReauthnRequiredController < ApplicationController
 
   def factor_from_controller_name
     {
+      # see LG-5701, translate these
       'emails' => 'email',
       'passwords' => 'password',
       'phones' => 'phone',
       'delete' => 'delete',
+      'personal_keys' => 'personal key',
     }[controller_name]
   end
 

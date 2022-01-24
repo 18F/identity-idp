@@ -1,8 +1,6 @@
 <% title t('titles.enter_2fa_code') %>
 
-<h1 class='margin-y-0'>
-  <%= t('two_factor_authentication.backup_code_header_text') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.backup_code_header_text')) %>
 
 <p class='mt-tiny margin-bottom-0'>
   <%= t('two_factor_authentication.backup_code_prompt') %>

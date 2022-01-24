@@ -2,7 +2,7 @@
 
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
-<h1><%= t('headings.add_info.phone') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.add_info.phone')) %>
 
 <p>
   <%= t('two_factor_authentication.phone_info_html') %>

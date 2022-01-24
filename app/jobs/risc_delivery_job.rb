@@ -52,7 +52,7 @@ class RiscDeliveryJob < ApplicationJob
     if self.exceptions < 2
       raise err if !inline?
     end
-    
+
     Rails.logger.warn(
       {
         event: err.is_a?(RedisRateLimiter::LimitError) ? 'http_push_rate_limit' : 'http_push_error',

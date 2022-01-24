@@ -21,7 +21,7 @@ This installation method is meant for those who are familiar with setting up loc
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby 3.0
+- Ruby ~> 3.0.3
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v14](https://nodejs.org)
@@ -36,6 +36,11 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
   $ brew services start redis
   $ brew services start postgresql
+  ```
+
+  To confirm the services are running properly, run:
+  ```
+  $ brew services list
   ```
 
 3. Create the development and test databases:
@@ -57,6 +62,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+
+If this command errors, you may need to install dependencies outside of the Makefile with:
+```
+$ bundle install
+$ yarn install
+```
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
@@ -87,6 +98,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
 
   Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
+
+  To test a specific spec file with rspec, you may need to add the following configuration to `/config/application.yml` so the tests do not crash:
+  ```
+  test:
+    rack_timeout_service_timeout_seconds: 9_999_999_999
+  ```
 
 ##### Showing the Browser
 

@@ -75,7 +75,7 @@ describe Idv::SessionErrorsController do
       it 'assigns remaining count' do
         get action
 
-        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+        expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
       end
     end
   end

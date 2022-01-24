@@ -1,8 +1,6 @@
 <% title t('titles.visitors.index') %>
 
-<h1 class='margin-y-0'>
-  <%= t('headings.passwords.confirm') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.passwords.confirm')) %>
 
 <%= validated_form_for(
       current_user,

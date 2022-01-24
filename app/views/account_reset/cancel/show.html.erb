@@ -1,10 +1,6 @@
 <% title t('account_reset.cancel_request.title') %>
 
-<h1 class='margin-y-0'>
-  <%= t('account_reset.cancel_request.title') %>
-</h1>
-
-<br/>
+<%= render PageHeadingComponent.new.with_content(t('account_reset.cancel_request.title')) %>
 
 <h4 class='margin-y-2'>
   <%= t('account_reset.cancel_request.are_you_sure') %>

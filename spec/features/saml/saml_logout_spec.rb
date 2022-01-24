@@ -30,8 +30,7 @@ feature 'SAML logout' do
 
         # contains all redirect_uris in content security policy
         expect(page.response_headers['Content-Security-Policy']).to include(
-          'form-action \'self\' example.com example.com/ example.com/auth/result '\
-          'example.com/logout',
+          "form-action 'self' http://example.com",
         )
       end
 
@@ -53,8 +52,7 @@ feature 'SAML logout' do
 
         # contains all redirect_uris in content security policy
         expect(page.response_headers['Content-Security-Policy']).to include(
-          'form-action \'self\' example.com example.com/ example.com/auth/result '\
-          'example.com/logout',
+          "form-action 'self' http://example.com",
         )
       end
     end

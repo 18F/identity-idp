@@ -1,8 +1,6 @@
 <% title t('idv.titles.activated') %>
 
-<h1 class='margin-y-0'>
-  <%= t('idv.titles.activated') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.activated')) %>
 <p class='mt-tiny margin-bottom-0'>
   <%= t(
         'idv.messages.activated_html',

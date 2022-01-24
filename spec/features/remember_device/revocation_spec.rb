@@ -175,7 +175,7 @@ feature 'taking an action that revokes remember device' do
   def sign_in_with_remember_device_and_sign_out
     sign_in_user(user)
     choose_another_security_option('sms')
-    check :remember_device
+    check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
     first(:link, t('links.sign_out')).click

@@ -12,7 +12,7 @@ describe 'signing in with remember device and idling on the sign in page' do
     # URI.
     user = user_with_2fa
     sign_in_user(user)
-    check :remember_device
+    check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
     first(:link, t('links.sign_out')).click
@@ -33,13 +33,13 @@ describe 'signing in with remember device and idling on the sign in page' do
       visit new_user_session_url(request_id: request_id)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654/auth/result'))
+        to(include('form-action \'self\' http://localhost:7654'))
 
       fill_in_credentials_and_submit(user.email, user.password)
 
       continue_as(user.email, user.password)
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(current_url).to start_with('http://localhost:7654')
     end
   end
 end

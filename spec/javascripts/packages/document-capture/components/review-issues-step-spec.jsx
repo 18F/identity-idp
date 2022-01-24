@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import {
   ServiceProviderContextProvider,
   UploadContextProvider,
+  AnalyticsContext,
 } from '@18f/identity-document-capture';
 import ReviewIssuesStep, {
   reviewIssuesStepValidator,
@@ -57,6 +58,34 @@ describe('document-capture/components/review-issues-step', () => {
       });
 
       expect(isValid).to.be.true();
+    });
+  });
+
+  it('logs warning events', () => {
+    const addPageAction = sinon.spy();
+
+    const { getByRole } = render(
+      <AnalyticsContext.Provider value={{ addPageAction }}>
+        <ReviewIssuesStep remainingAttempts={3} />
+      </AnalyticsContext.Provider>,
+    );
+
+    expect(addPageAction).to.have.been.calledWith({
+      label: 'IdV: warning shown',
+      payload: {
+        location: 'doc_auth_review_issues',
+        remaining_attempts: 3,
+      },
+    });
+
+    const button = getByRole('button');
+    userEvent.click(button);
+
+    expect(addPageAction).to.have.been.calledWith({
+      label: 'IdV: warning action triggered',
+      payload: {
+        location: 'doc_auth_review_issues',
+      },
     });
   });
 

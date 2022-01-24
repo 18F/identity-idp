@@ -4,9 +4,9 @@
     <%= image_tag asset_url(@presenter.image_name), width: 140, alt: '', class: 'margin-bottom-2' %>
   </div>
 
-  <h1 class="margin-bottom-2 margin-y-0 tablet:margin-right-1 tablet:margin-left-1 center">
+  <%= render PageHeadingComponent.new(class: 'tablet:margin-right-1 tablet:margin-left-1 text-center') do %>
     <%= @presenter.heading %>
-  </h1>
+  <% end %>
 
   <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
     <%= t(
