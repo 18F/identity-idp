@@ -27,7 +27,7 @@ module SecureHeadersHelper
   end
 
   def add_document_capture_image_urls_to_csp_with_rails_csp_tooling(request, urls)
-    policy = request.content_security_policy
+    policy = request.content_security_policy.clone
     policy.connect_src(*policy.connect_src, *urls)
     request.content_security_policy = policy
   end
