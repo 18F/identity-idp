@@ -13,6 +13,29 @@ Unreleased
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 
+RC 174 - 2022-01-20
+----------------------
+
+### Improvements/Changes
+- Identity Verification: Update responsiveness of image capture (#5747, #5830, #5834)
+- Rules of Use: Updated Rules of Use timestamp (#5837)
+- Multi-factor authentication: Platform authenticators (such as FaceID, Touch ID) are now supported (#5632)
+
+### Bug Fixes Users Might Notice
+- Errors: Fixed a few unhandled errors from blank fields (#5823)
+
+### Behind the Scenes Changes Users Probably Won't Notice
+- Source code: Update asset compilation pipeline (#5746, #5821)
+- Logging: Send worker metrics to workers.log (#5809)
+- Logging: Add which screen to image upload events (#5810)
+- Source code: Skip generating GZIP assets locally (#5812)
+- Source code: Remove redundant CSS class in forms (#5814)
+- Source code: Update dependencies (#5818)
+- Source code: Add support for TypeScript (#5815)
+- Source code: Simplify logic around regenerating personal keys (#5817)
+- Source code: Persist Webpack assets manifest between requests (#5805)
+- Operations: Add rake task to look up user UUIDs by email address (#5829)
+
 RC 173 - 2022-01-13
 ----------------------
 
