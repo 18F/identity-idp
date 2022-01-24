@@ -82,7 +82,7 @@ en:
           security key or government employee ID (PIV or CAC) to access your
           information.
         confirm_webauthn_platform_html: You have Face or Touch Unlock enabled for your %{app_name} account.
-      wrong_number_html: Entered the wrong phone number? %{link}
+      wrong_number: Entered the wrong phone number?
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
       help_text: The longer and more unusual the password, the harder it is to guess.

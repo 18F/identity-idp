@@ -1,8 +1,8 @@
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-    attr_reader(
-      :otp_delivery_preference, :otp_make_default_number
-    )
+    attr_reader :otp_delivery_preference, :otp_make_default_number, :unconfirmed_phone
+
+    alias_method :unconfirmed_phone?, :unconfirmed_phone
 
     def header
       t('two_factor_authentication.header_text')
@@ -24,12 +24,6 @@ module TwoFactorAuthCode
       ''
     end
 
-    def update_phone_link
-      return unless unconfirmed_phone
-      link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
-      t('instructions.mfa.wrong_number_html', link: link)
-    end
-
     def cancel_link
       locale = LinkLocaleResolver.locale
       if confirmation_for_add_phone || reauthn
@@ -42,9 +36,7 @@ module TwoFactorAuthCode
     private
 
     attr_reader(
-      :reenter_phone_number_path,
       :phone_number,
-      :unconfirmed_phone,
       :account_reset_token,
       :confirmation_for_add_phone,
       :voice_otp_delivery_unsupported,
