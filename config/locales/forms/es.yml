@@ -3,13 +3,13 @@ es:
   forms:
     backup_code:
       are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de autenticación,
-      are_you_sure_desc: '<br> <b> Los códigos de respaldo no son muy seguros </b>
-        porque se pueden perder o robar fácilmente. <b> Si peude, elija otra
-        opción </b>, (usar un teléfono, descargar una aplicación de
-        autenticación o usar una clave de seguridad). <br><br> <b> Si continúa
-        con los códigos de copia de seguridad, manténgalos seguros </b>. Le
-        daremos 10 códigos que puede descargar, imprimir, copiar o escribir. Más
-        tarde, deberás ingresar un codigo cada vez que inicies sesión.'
+      are_you_sure_desc: '<b> Los códigos de respaldo no son muy seguros </b> porque
+        se pueden perder o robar fácilmente. <b> Si peude, elija otra opción
+        </b>, (usar un teléfono, descargar una aplicación de autenticación o
+        usar una clave de seguridad). <br><br> <b> Si continúa con los códigos
+        de copia de seguridad, manténgalos seguros </b>. Le daremos 10 códigos
+        que puede descargar, imprimir, copiar o escribir. Más tarde, deberás
+        ingresar un codigo cada vez que inicies sesión.'
       are_you_sure_title: '¿Estás seguro? Le daremos códigos de respaldo para guardar y usar.'
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
