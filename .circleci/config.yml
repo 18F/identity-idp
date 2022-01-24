@@ -398,6 +398,7 @@ jobs:
           command: |-
             if [ -z "${CIRCLE_PULL_REQUEST}" ] || echo ${CIRCLE_BRANCH} | grep -q '^stages/'
             then
+              echo "Skipping changelock check because this is not a PR or is a release branch"
               exit 0
             else
               ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}" || true
