@@ -77,7 +77,10 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--big usa-button--wide margin-y-5' %>
+  <%= submit_tag(
+        t('forms.buttons.submit.default'),
+        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
+      ) %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
