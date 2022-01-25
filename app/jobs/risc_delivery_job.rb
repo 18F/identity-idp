@@ -48,12 +48,24 @@ class RiscDeliveryJob < ApplicationJob
         }.to_json,
       )
     end
-  rescue *NETWORK_ERRORS, RedisRateLimiter::LimitError => err
-    raise err if !inline?
+  rescue *NETWORK_ERRORS => err
+    raise err if self.executions < 2 && !inline?
 
     Rails.logger.warn(
       {
-        event: err.is_a?(RedisRateLimiter::LimitError) ? 'http_push_rate_limit' : 'http_push_error',
+        event: 'http_push_error',
+        transport: 'direct',
+        event_type: event_type,
+        service_provider: issuer,
+        error: err.message,
+      }.to_json,
+    )
+  rescue RedisRateLimiter::LimitError => err
+    raise err if self.executions < 10 && !inline?
+
+    Rails.logger.warn(
+      {
+        event: 'http_push_rate_limit',
         transport: 'direct',
         event_type: event_type,
         service_provider: issuer,
