@@ -10,8 +10,6 @@ const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
-let isInvalidForm = false;
-
 function scrapePersonalKey() {
   const keywords = [];
 
@@ -27,19 +25,15 @@ const personalKey = scrapePersonalKey();
 // The following methods are strictly fallbacks for IE < 11. There is limited
 // support for HTML5 validation attributes in those browsers
 function setInvalidHTML() {
-  if (isInvalidForm) {
-    return;
-  }
-
-  document.getElementById('personal-key-alert').classList.remove('display-none');
-
-  isInvalidForm = true;
+  const alert = document.getElementById('personal-key-alert');
+  alert.textContent = alert.dataset.message;
+  alert.classList.remove('usa-sr-only');
 }
 
 function unsetInvalidHTML() {
-  document.getElementById('personal-key-alert').classList.add('display-none');
-
-  isInvalidForm = false;
+  const alert = document.getElementById('personal-key-alert');
+  alert.textContent = '';
+  alert.classList.add('usa-sr-only');
 }
 
 function unsetEmptyResponse() {
@@ -47,8 +41,6 @@ function unsetEmptyResponse() {
   input.classList.remove('margin-bottom-3');
   input.classList.add('margin-bottom-6');
   input.classList.remove('usa-input--error');
-
-  isInvalidForm = false;
 }
 
 function resetErrors() {
