@@ -388,11 +388,28 @@ jobs:
       - slack/status:
           fail_only: true
           failure_message: ':aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date'
+  check_changelog:
+    docker:
+      - image: cimg/ruby:3.0
+    steps:
+      - checkout
+      - run:
+          name: Check Changelog
+          command: |-
+            if [ -z "${CIRCLE_PULL_REQUEST}" ] || echo ${CIRCLE_BRANCH} | grep -q '^stages/'
+            then
+              echo "Skipping changelock check because this is not a PR or is a release branch"
+              exit 0
+            else
+              ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}" || true
+            fi
+
 workflows:
   version: 2
   release:
     jobs:
       - setup
+      - check_changelog
       - ruby_test:
           requires:
             - setup

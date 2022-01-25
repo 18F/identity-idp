@@ -1,0 +1,84 @@
+#!/usr/bin/env ruby
+require 'open3'
+require 'optparse'
+
+CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:#\d+, ?)*(?:#\d+))\)$}
+# A valid diff line is in the form of:
+# +- CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
+def is_valid_changelog_diff_addition?(line)
+  matches = CHANGELOG_REGEX.match(line)
+  !matches.nil?
+end
+
+def get_changelog_diff_lines(base_branch, source_branch)
+  diff, status = Open3.capture2(
+    'git', 'diff', '--merge-base', base_branch, source_branch,
+    'CHANGELOG.md'
+  )
+  raise 'git diff failed' unless status.success?
+
+  diff_lines = diff.chomp.split("\n")
+  index = diff_lines.find_index { |line| line.start_with?('@@') }
+  return [] if index.nil?
+  diff_lines[(index+1)..].filter { |line| !line.start_with?('@@') && line != ' ' }
+end
+
+def commit_messages_contain_skip_changelog?(base_branch, source_branch)
+  log, status = Open3.capture2(
+    'git', 'log', '--pretty=\'%B\'', "#{base_branch}...#{source_branch}"
+  )
+  raise 'git log failed' unless status.success?
+
+  log.include?('[skip changelog]')
+end
+
+def main(args)
+  options = { base_branch: 'main' }
+  basename = File.basename($0)
+
+  optparse = OptionParser.new do |opts|
+    opts.banner = <<-EOM
+      usage: #{basename} -s my-feature-branch [OPTIONS]
+
+    EOM
+    opts.on('-h', '--help', 'Display this message') do
+      warn opts
+      exit
+    end
+
+    opts.on('-b', '--base_branch BASE_BRANCH', 'Name of base branch, defaults to main') do |val|
+      options[:base_branch] = val
+    end
+
+    opts.on('-s', '--source_branch SOURCE_BRANCH', 'Name of source branch (required)') do |val|
+      options[:source_branch] = val
+    end
+  end
+
+  optparse.parse!
+
+  abort(optparse.help) if options[:source_branch].nil?
+
+  skip_check = commit_messages_contain_skip_changelog?(
+    options[:base_branch],
+    options[:source_branch],
+  )
+  return 0 if skip_check
+
+  diff_lines = get_changelog_diff_lines(options[:base_branch], options[:source_branch])
+
+  if diff_lines.any? { |x| is_valid_changelog_diff_addition?(x) }
+    exit 0
+  else
+    warn(
+      <<~ERROR,
+        A valid changelog line was not found.
+        Changelog entries should be formatted as: - CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
+      ERROR
+    )
+
+    exit 1
+  end
+end
+
+main(ARGV) if __FILE__ == $0
