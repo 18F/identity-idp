@@ -37,13 +37,12 @@ describe 'idv/shared/_document_capture.html.erb' do
       let(:async_uploads_enabled) { false }
 
       it 'does not modify CSP connect_src headers' do
-        allow(SecureHeaders).to receive(:append_content_security_policy_directives).with(any_args)
-        expect(SecureHeaders).to receive(:append_content_security_policy_directives).with(
-          controller.request,
-          connect_src: [],
-        )
-
         render_partial
+
+        connect_src = controller.request.content_security_policy.connect_src
+        expect(connect_src).to eq(
+          ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net'],
+        )
       end
     end
 
@@ -54,17 +53,12 @@ describe 'idv/shared/_document_capture.html.erb' do
       let(:selfie_image_upload_url) { 'https://s3.example.com/bucket/c?X-Amz-Security-Token=UAOL2' }
 
       it 'does modifies CSP connect_src headers to include upload urls' do
-        allow(SecureHeaders).to receive(:append_content_security_policy_directives).with(any_args)
-        expect(SecureHeaders).to receive(:append_content_security_policy_directives).with(
-          controller.request,
-          connect_src: [
-            'https://s3.example.com/bucket/a',
-            'https://s3.example.com/bucket/b',
-            'https://s3.example.com/bucket/c',
-          ],
-        )
-
         render_partial
+
+        connect_src = controller.request.content_security_policy.connect_src
+        expect(connect_src).to include('https://s3.example.com/bucket/a')
+        expect(connect_src).to include('https://s3.example.com/bucket/b')
+        expect(connect_src).to include('https://s3.example.com/bucket/c')
       end
     end
   end

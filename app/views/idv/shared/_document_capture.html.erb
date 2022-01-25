@@ -4,17 +4,10 @@
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
   <%= stylesheet_link_tag 'document-capture' %>
 <% end %>
-<% SecureHeaders.append_content_security_policy_directives(
+<% add_document_capture_image_urls_to_csp(
      request,
-     connect_src: [
-       front_image_upload_url,
-       back_image_upload_url,
-       selfie_image_upload_url,
-     ].
-       compact.
-       map { |url| URI(url).tap { |uri| uri.query = nil }.to_s },
+     [front_image_upload_url, back_image_upload_url, selfie_image_upload_url],
    )
-
    session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
@@ -147,7 +140,7 @@
       ) %>
 </div>
 
-<%= nonced_javascript_tag do %>
+<%= backwards_compatible_javascript_tag do %>
   <% asset_keys = [
        'close-white-alt.svg',
        'id-card.svg',

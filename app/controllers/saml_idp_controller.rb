@@ -11,6 +11,7 @@ class SamlIdpController < ApplicationController
   include VerifyProfileConcern
   include AuthorizationCountConcern
   include BillableEventTrackable
+  include SecureHeadersConcern
 
   prepend_before_action :skip_session_load, only: :metadata
   prepend_before_action :skip_session_expiration, only: :metadata
@@ -118,7 +119,7 @@ class SamlIdpController < ApplicationController
     csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
       action_url, decorated_session.sp_redirect_uris
     )
-    override_content_security_policy_directives(form_action: csp_uris)
+    override_form_action_csp(csp_uris)
 
     render(
       template: 'saml_idp/shared/saml_post_binding',
