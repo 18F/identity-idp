@@ -194,11 +194,12 @@ function FileInput(props, ref) {
   }
 
   /**
+   * @param {string} label String value of the label for the input to display if a file is uploaded.
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    */
-  function getLabelFromValue(fileValue) {
+  function getInputAriaLabel(label, fileValue) {
     if (fileValue instanceof window.File) {
-      return fileValue.name;
+      return label;
     }
     if (fileValue) {
       return t('doc_auth.forms.captured_image');
@@ -319,7 +320,7 @@ function FileInput(props, ref) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            aria-label={getLabelFromValue(value)}
+            aria-label={getInputAriaLabel(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
             capture={capture}

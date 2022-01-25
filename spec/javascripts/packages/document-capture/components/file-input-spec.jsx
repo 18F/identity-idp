@@ -240,12 +240,12 @@ describe('document-capture/components/file-input', () => {
     expect(queryByAriaLabel).to.exist();
   });
 
-  it('has aria-label same as file name', () => {
+  it('has aria-label same as the file label', () => {
     const fileName = 'file2.jpg';
     const file2 = new window.File([file], fileName);
     const { getByLabelText } = render(<FileInput label="File" value={file2} />);
 
-    const queryByAriaLabel = getByLabelText(fileName);
+    const queryByAriaLabel = getByLabelText('File');
 
     expect(queryByAriaLabel).to.exist();
   });
