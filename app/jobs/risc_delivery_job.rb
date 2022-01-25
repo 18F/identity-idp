@@ -49,9 +49,7 @@ class RiscDeliveryJob < ApplicationJob
       )
     end
   rescue *NETWORK_ERRORS => err
-    if self.executions < 2
-      raise err if !inline?
-    end
+    raise err if self.executions < 2 && !inline?
 
     Rails.logger.warn(
       {
@@ -63,9 +61,7 @@ class RiscDeliveryJob < ApplicationJob
       }.to_json,
     )
   rescue RedisRateLimiter::LimitError => err
-    if self.executions < 10
-      raise err if !inline?
-    end
+    raise err if self.executions < 10 && !inline?
 
     Rails.logger.warn(
       {
