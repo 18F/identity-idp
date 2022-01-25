@@ -35,7 +35,7 @@ if FeatureManagement.rails_csp_tooling_enabled?
       script_src << "localhost:#{ENV['WEBPACK_PORT']}"
     end
 
-    if IdentityConfig.store.disable_csp_unsafe_inline
+    if !IdentityConfig.store.disable_csp_unsafe_inline
       script_src << :unsafe_inline
       style_src << :unsafe_inline
     end
