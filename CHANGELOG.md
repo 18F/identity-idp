@@ -13,6 +13,29 @@ Unreleased
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 
+RC 175 - 2022-01-27
+----------------------
+
+### Improvements/Changes
+- Account management: A new flow was added to reset the personal key from the account screen (#5825)
+- Account management: An error message is displayed if a user attempts to add more than 12 emails. (#58320)
+
+### Accessibility
+- Dialogs: The text in the "Confirm personal key dialog" is now read by screen readers. (#5806)
+
+### Bug Fixes Users Might Notice
+- Content changes: Content was updated to provide clarity to the user. (#5826, #5831, #5833)
+- Layout: The "Check Your Email" icon was removed. (#5827)
+- Layout: Accordions now use consistent vertical margins. (#5828)
+- Layout: Headings are now componentized and consistent across the app. (#5840)
+- Design system: "Remember this device" checkboxes now use the Login.gov design system. (#5820)
+
+### Behind the Scenes Changes Users Probably Won't Notice
+- Development: Assets are no longer gzipped in the development environment. (#5824)
+- Logging: An event is logged when a user sees a warning page during proofing. (#5838)
+- Content security policy: 'unsafe-inline' directives were removed from the content security policy. (#5844, #5852)
+- Content security policy: URL schemes are now preserved in the content security policy origins. (#5842, #5846)
+
 RC 174 - 2022-01-20
 ----------------------
 
