@@ -95,7 +95,7 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 		-out tmp/$(HOST)-$(PORT).crt
 
 run: ## Runs the development server
-	foreman start -p $(PORT)
+	FOREMAN_HOST=$(HOST) foreman start -p $(PORT)
 
 run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
 	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt" foreman start -p $(PORT)
