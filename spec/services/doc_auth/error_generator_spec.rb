@@ -81,8 +81,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Failed',
         failed: [
-          {name: '2D Barcode Read', result: 'Attention'},
-          {name: 'Visible Pattern', result: 'Failed'},
+          { name: '2D Barcode Read', result: 'Attention' },
+          { name: 'Visible Pattern', result: 'Failed' },
         ],
       )
 
@@ -99,8 +99,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Failed',
         failed: [
-          {name: 'Expiration Date Valid', result: 'Attention'},
-          {name: 'Full Name Crosscheck', result: 'Failed'},
+          { name: 'Expiration Date Valid', result: 'Attention' },
+          { name: 'Full Name Crosscheck', result: 'Failed' },
         ],
       )
 
@@ -117,8 +117,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Failed',
         failed: [
-          {name: 'Photo Printing', result: 'Attention'},
-          {name: 'Visible Photo Characteristics', result: 'Failed'},
+          { name: 'Photo Printing', result: 'Attention' },
+          { name: 'Visible Photo Characteristics', result: 'Failed' },
         ],
       )
 
@@ -134,8 +134,8 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Failed',
         failed: [
-          {name: '2D Barcode Read', result: 'Attention'},
-          {name: '2D Barcode Content', result: 'Failed'},
+          { name: '2D Barcode Read', result: 'Attention' },
+          { name: '2D Barcode Content', result: 'Failed' },
         ],
       )
 

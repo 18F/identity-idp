@@ -305,6 +305,9 @@ Layout/SpaceInLambdaLiteral:
 Layout/SpaceInsideBlockBraces:
   Enabled: true
 
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
 Layout/SpaceInsideParens:
   Enabled: true
 

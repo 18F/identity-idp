@@ -959,7 +959,7 @@ describe SamlIdpController do
         auth_settings = saml_settings(
           overrides: { authn_context: [
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ]},
+          ] },
         )
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
