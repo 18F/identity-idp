@@ -115,8 +115,8 @@ RSpec.describe Idv::GpoVerifyController do
         expect(@analytics).to receive(:track_event).with(
           Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
           success: false,
-          errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
-          error_details: { otp: [:confirmation_code_incorrect]},
+          errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
 
@@ -141,8 +141,8 @@ RSpec.describe Idv::GpoVerifyController do
         expect(@analytics).to receive(:track_event).with(
           Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
           success: false,
-          errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
-          error_details: { otp: [:confirmation_code_incorrect]},
+          errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times
 

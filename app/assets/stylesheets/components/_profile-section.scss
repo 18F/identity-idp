@@ -17,23 +17,3 @@
     margin-bottom: $space-3;
   }
 }
-
-.events-info-box {
-  border: $border-width solid $border-color;
-  border-radius: 0;
-  margin-bottom: 0;
-  overflow: hidden;
-
-  .bg-lightest-blue img {
-    margin-top: -2px;
-    vertical-align: middle;
-  }
-}
-
-@include at-media('mobile') {
-  .events-info-box {
-    border: $border-width solid $border-color;
-    border-radius: $border-radius-md;
-    margin-bottom: $space-3;
-  }
-}
