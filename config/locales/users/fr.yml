@@ -5,7 +5,7 @@ fr:
       generated_on_html: Généré le %{date}
     delete:
       actions:
-        cancel: Annuler et retourner à votre profil
+        cancel: Retour au profil
         delete: Supprimer le compte
       bullet_1: Vous n’aurez pas de compte %{app_name}.
       bullet_2_loa1: Nous effacerons votre adresse email, votre mot de passe et votre
@@ -20,7 +20,7 @@ fr:
       heading: Êtes-vous sûr de vouloir supprimer votre compte?
       instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
         supprimer votre compte.
-      subheading: Si vous supprimez votre compte
+      subheading: 'Si vous supprimez votre compte:'
     personal_key:
       close: Fermer
       confirmation_error: Vous avez entré un clé personnelle erronée.

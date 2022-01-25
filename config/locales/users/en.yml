@@ -5,7 +5,7 @@ en:
       generated_on_html: Generated on %{date}
     delete:
       actions:
-        cancel: Cancel and return to your profile
+        cancel: Back to profile
         delete: Delete account
       bullet_1: You won’t have a %{app_name} account
       bullet_2_loa1: We’ll delete your email address, password, and phone number
@@ -17,7 +17,7 @@ en:
         longer have an account
       heading: Are you sure you want to delete your account?
       instructions: Enter your password to confirm that you want to delete your account.
-      subheading: If you delete your account
+      subheading: 'If you delete your account:'
     personal_key:
       close: Close
       confirmation_error: You’ve entered an incorrect personal key.
