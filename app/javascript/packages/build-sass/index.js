@@ -1,9 +1,9 @@
 import { basename, join } from 'path';
 import { writeFile } from 'fs/promises';
-import { compile } from 'sass-embedded';
+import sass from 'sass';
 
-/** @typedef {import('sass-embedded').CompileResult} CompileResult */
-/** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
+/** @typedef {import('sass').CompileResult} CompileResult */
+/** @typedef {import('sass').Options<'sync'>} SyncSassOptions */
 
 /**
  * @typedef BuildOptions
@@ -21,7 +21,7 @@ import { compile } from 'sass-embedded';
  */
 export async function buildFile(file, options) {
   const { outDir, ...sassOptions } = options;
-  const compileResult = compile(file, {
+  const compileResult = sass.compile(file, {
     ...sassOptions,
     loadPaths: ['node_modules'],
     quietDeps: true,

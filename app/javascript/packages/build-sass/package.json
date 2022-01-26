@@ -8,6 +8,6 @@
   },
   "dependencies": {
     "chokidar": "^3.5.3",
-    "sass-embedded": "^1.0.0-rc.1"
+    "sass": "^1.49.0"
   }
 }
