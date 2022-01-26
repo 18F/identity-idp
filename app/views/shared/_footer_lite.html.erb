@@ -26,19 +26,19 @@
   <div class='container padding-y-1 padding-x-2 desktop:padding-x-0 <%= 'tablet:padding-y-0' if show_language_dropdown %>'>
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
-        <div class="tablet:display-none">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-1 tablet:display-none',
+        <div class="display-flex tablet:display-none">
+          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-1 usa-link--alt tablet:display-none',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
                           width: 20, alt: '' %>
           <% end %>
         </div>
 
-        <div class="display-none tablet:display-block">
+        <div class="display-none tablet:display-flex">
           <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-1 usa-link--alt',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa.svg'),
-                          width: 20, class: 'margin-right-1', alt: '' %>
+                          width: 20, class: 'float-left margin-right-1', alt: '' %>
             <span>
               <%= t('shared.footer_lite.gsa') %>
             </span>
