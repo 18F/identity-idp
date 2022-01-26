@@ -5,6 +5,7 @@ Unreleased
 -----------
 
 ### Improvements/Changes
+- Layout: The "Delete Account" confirmation page has a new layout consistent with other content pages. (#5857)
 
 ### Accessibility
 
