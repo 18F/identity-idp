@@ -1,10 +1,12 @@
+@use 'sass:math';
+
 .document-capture-acuant-capture {
   max-width: 375px;
 
   %pad-common-id-card {
     display: block;
     // 2.125" x 3.375" are common standard ID dimensions
-    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+    padding-bottom: (math.div(2.125, 3.375) * 100) + unquote('%');
   }
 
   .usa-file-input:not(.usa-file-input--has-value) {
