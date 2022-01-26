@@ -45,7 +45,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: { type: 'user.piv_cac_mismatch'},
+            with(success: false, errors: { type: 'user.piv_cac_mismatch' },
                  extra: { multi_factor_auth_method: 'piv_cac',
                           piv_cac_configuration_id: nil,
                           key_id: nil }).and_return(result)
@@ -63,7 +63,7 @@ describe UserPivCacVerificationForm do
 
           expect(FormResponse).to receive(:new).
             with(success: true, errors: {}, extra: { multi_factor_auth_method: 'piv_cac',
-                                                     piv_cac_configuration_id: nil}).
+                                                     piv_cac_configuration_id: nil }).
             and_return(result)
           expect(form.submit).to eq result
         end
@@ -117,7 +117,7 @@ describe UserPivCacVerificationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: { multi_factor_auth_method: 'piv_cac',
-                                                    piv_cac_configuration_id: nil}).
+                                                    piv_cac_configuration_id: nil }).
           and_return(result)
         expect(Event).to_not receive(:create)
         expect(form.submit).to eq result

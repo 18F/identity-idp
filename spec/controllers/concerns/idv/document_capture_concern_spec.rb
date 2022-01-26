@@ -13,7 +13,7 @@ RSpec.describe Idv::DocumentCaptureConcern, type: :controller do
     it 'sets the headers for the document capture step' do
       get :index, params: { step: 'document_capture' }
 
-      csp = response.request.headers.env['secure_headers_request_config'].csp
+      csp = response.request.content_security_policy
       expect(csp.script_src).to include("'unsafe-eval'")
       expect(csp.style_src).to include("'unsafe-inline'")
       expect(csp.img_src).to include('blob:')

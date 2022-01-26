@@ -119,7 +119,7 @@ describe 'idv/shared/_error.html.erb' do
     end
 
     context 'with options' do
-      let(:options) { [{text: 'Example', url: '#example'}] }
+      let(:options) { [{ text: 'Example', url: '#example' }] }
 
       it 'renders a list of troubleshooting options' do
         expect(rendered).to have_link('Example', href: '#example')

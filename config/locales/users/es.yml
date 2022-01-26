@@ -5,7 +5,7 @@ es:
       generated_on_html: Generado el %{date}
     delete:
       actions:
-        cancel: Anular y regresar a su perfil
+        cancel: Volver al perfil
         delete: Eliminar cuenta
       bullet_1: Usted no tendrá una %{app_name} cuenta.
       bullet_2_loa1: Eliminaremos su dirección de correo electrónico, contraseña y
@@ -18,7 +18,7 @@ es:
         ya tengo una cuenta
       heading: '¿Está seguro que desea eliminar su cuenta?'
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
-      subheading: Si elimina su cuenta
+      subheading: 'Si elimina su cuenta:'
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.

@@ -959,7 +959,7 @@ describe SamlIdpController do
         auth_settings = saml_settings(
           overrides: { authn_context: [
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ]},
+          ] },
         )
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
@@ -1267,7 +1267,7 @@ describe SamlIdpController do
       end
 
       it 'sets correct CSP config that includes any custom app scheme uri from SP redirect_uris' do
-        form_action = response.request.headers.env['secure_headers_request_config'].csp.form_action
+        form_action = response.request.content_security_policy.form_action
         csp_array = ["'self'", 'http://localhost:3000', 'x-example-app:']
         expect(form_action).to match_array(csp_array)
       end

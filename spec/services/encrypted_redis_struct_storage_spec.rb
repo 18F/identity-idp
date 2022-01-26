@@ -148,7 +148,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
         it 'converts the data and stores it' do
           EncryptedRedisStructStorage.store(
-            struct_class.new(id: id, a: { some: { nested: [data] }}),
+            struct_class.new(id: id, a: { some: { nested: [data] } }),
           )
 
           loaded = EncryptedRedisStructStorage.load(id, type: struct_class)

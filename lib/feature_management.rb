@@ -120,4 +120,8 @@ class FeatureManagement
       allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
     end
   end
+
+  def self.rails_csp_tooling_enabled?
+    IdentityConfig.store.rails_csp_tooling_enabled == true
+  end
 end

@@ -1,4 +1,4 @@
 <!-- <%= t('notices.dap_participation') %> -->
 <% dap_source = 'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA&subagency=TTS' %>
-<%= nonced_javascript_tag({src: dap_source, async: true, id: '_fed_an_ua_tag'}) do %>
+<%= backwards_compatible_javascript_tag({ src: dap_source, async: true, id: '_fed_an_ua_tag' }) do %>
 <% end %>

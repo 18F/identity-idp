@@ -44,13 +44,13 @@
             resend: true,
           },
         ),
-        class: 'usa-button usa-button--outline ico ico-refresh',
+        class: 'usa-button usa-button--outline ico ico-refresh margin-bottom-4',
       ) %>
 <% end %>
 
-<% if @presenter.update_phone_link.present? %>
-  <br />
-  <%= @presenter.update_phone_link %>
+<% if @presenter.unconfirmed_phone? %>
+  <%= t('instructions.mfa.wrong_number') %><br>
+  <%= link_to(t('forms.two_factor.try_again'), phone_setup_path) %>
 <% else %>
   <%= render 'shared/fallback_links', presenter: @presenter %>
 <% end %>
