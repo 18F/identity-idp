@@ -7,7 +7,6 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       phone_number: '***-***-1212',
       code_value: '12777',
       unconfirmed_user: false,
-      reenter_phone_number_path: phone_setup_path,
     }
   end
 

@@ -38,12 +38,13 @@
 
 <%= button_to idv_resend_otp_path,
               method: :post,
-              class: 'usa-button usa-button--outline ico ico-refresh' do %>
+              class: 'usa-button usa-button--outline ico ico-refresh margin-bottom-4' do %>
   <%= t('links.two_factor_authentication.get_another_code') %>
 <% end %>
 
-<p class="margin-top-6">
-  <%= @presenter.update_phone_link %>
+<p>
+  <%= t('instructions.mfa.wrong_number') %><br>
+  <%= link_to(t('forms.two_factor.try_again'), idv_phone_path(step: 'phone_otp_verification')) %>
 </p>
 
 <%= render 'idv/doc_auth/start_over_or_cancel', step: 'phone_otp_verification' %>
