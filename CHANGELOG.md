@@ -8,6 +8,7 @@ Unreleased
 - Layout: The "Delete Account" confirmation page has a new layout consistent with other content pages. (#5857)
 
 ### Accessibility
+- Document capture: The image file field label is no longer set to file names so that screen readers do not read the filenames to users. (#5858)
 
 ### Bug Fixes Users Might Notice
 
