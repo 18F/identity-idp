@@ -50,7 +50,7 @@
   line-height: 1.5;
   // For content to appear as vertically centered, offset the larger line-height of the banner to
   // match the space below the drag text.
-  margin-top: ((1.5rem - size('body', '2xs')) - ((1.625rem * 1.5) - 1.625rem)) / 2;
+  margin-top: ((1.5rem - size('body', '2xs')) - ((1.625rem * 1.5) - 1.625rem)) * 0.5;
   text-transform: uppercase;
 
   + .usa-file-input__drag-text {

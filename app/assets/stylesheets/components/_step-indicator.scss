@@ -119,7 +119,7 @@ $step-indicator-pending-color: #a8b6c6;
   content: '';
   height: $step-indicator-line-height;
   left: calc(50% + 0.5rem + #{$step-indicator-line-height});
-  margin-top: -$step-indicator-line-height / 2;
+  margin-top: -0.5 * $step-indicator-line-height;
   position: absolute;
   top: 0.5rem;
   width: calc(100% - 1rem - #{$step-indicator-line-height * 2});
