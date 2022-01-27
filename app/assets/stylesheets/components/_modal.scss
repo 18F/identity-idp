@@ -86,16 +86,6 @@
   }
 }
 
-.modal-ico {
-  left: 0;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  right: 0;
-  top: -25px;
-  width: 50px;
-}
-
 .modal-timeout {
   &::before {
     background-image: url(image-path('clock.svg'));

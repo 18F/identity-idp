@@ -88,7 +88,8 @@ describe('document-capture/context/capture-troubleshooting', () => {
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledOnceWith({
+    expect(addPageAction).to.have.been.calledTwice();
+    expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: Capture troubleshooting shown',
       payload: { isAssessedAsGlare: false, isAssessedAsBlurry: false },
     });
@@ -96,7 +97,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
     userEvent.click(tryAgainButton);
 
-    expect(addPageAction).to.have.been.calledTwice();
+    expect(addPageAction.callCount).to.equal(4);
     expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: Capture troubleshooting dismissed',
     });

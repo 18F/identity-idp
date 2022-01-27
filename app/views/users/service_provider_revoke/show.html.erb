@@ -1,10 +1,8 @@
 <%= title t('titles.revoke_consent') %>
 
-<h1 class="margin-y-0">
-  <%= t('titles.revoke_consent') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('titles.revoke_consent')) %>
 
-<p class="margin-top-4">
+<p>
   <%= t(
         'account.revoke_consent.longer_description_html',
         service_provider: content_tag(:b, @service_provider.friendly_name),

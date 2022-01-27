@@ -96,7 +96,7 @@ describe 'OpenID Connect' do
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
+        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -116,14 +116,14 @@ describe 'OpenID Connect' do
       sign_in_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
+        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in :code, with: 'wrong otp'
       click_submit_default
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654/auth/result https://example.com'))
+        to(include('form-action \'self\' http://localhost:7654 https://example.com'))
 
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -151,8 +151,7 @@ describe 'OpenID Connect' do
     )
 
     expect(page.response_headers['Content-Security-Policy']).to include(
-      'form-action \'self\' gov.gsa.openidconnect.test://result '\
-      'gov.gsa.openidconnect.test://result/signout',
+      'form-action \'self\' gov.gsa.openidconnect.test:',
     )
 
     visit account_path

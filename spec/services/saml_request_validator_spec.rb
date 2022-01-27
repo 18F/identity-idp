@@ -11,6 +11,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
 
         response = SamlRequestValidator.new.call(
@@ -36,6 +37,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp&.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           service_provider: [t('errors.messages.unauthorized_service_provider')],
@@ -65,6 +67,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
@@ -95,6 +98,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
 
         response = SamlRequestValidator.new.call(
@@ -120,6 +124,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
 
         response = SamlRequestValidator.new.call(
@@ -147,6 +152,7 @@ describe SamlRequestValidator do
             authn_context: authn_context,
             service_provider: sp.issuer,
             nameid_format: name_id_format,
+            authn_context_comparison: 'minimum',
           }
 
           response = SamlRequestValidator.new.call(
@@ -174,6 +180,7 @@ describe SamlRequestValidator do
             authn_context: authn_context,
             service_provider: sp.issuer,
             nameid_format: name_id_format,
+            authn_context_comparison: 'better',
           }
 
           response = SamlRequestValidator.new.call(
@@ -202,6 +209,7 @@ describe SamlRequestValidator do
             authn_context: authn_context,
             service_provider: sp.issuer,
             nameid_format: name_id_format,
+            authn_context_comparison: 'exact',
           }
           errors = {
             authn_context: [t('errors.messages.unauthorized_authn_context')],
@@ -232,6 +240,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           authn_context: [t('errors.messages.unauthorized_authn_context')],
@@ -260,6 +269,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           authn_context: [t('errors.messages.unauthorized_authn_context')],
@@ -289,6 +299,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp&.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           authn_context: [t('errors.messages.unauthorized_authn_context')],
@@ -319,6 +330,7 @@ describe SamlRequestValidator do
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
+          authn_context_comparison: 'exact',
         }
         errors = {
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],

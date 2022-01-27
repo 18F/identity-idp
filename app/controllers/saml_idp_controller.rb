@@ -101,6 +101,7 @@ class SamlIdpController < ApplicationController
       endpoint: remap_auth_post_path(request.env['PATH_INFO']),
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
+      requested_ial: saml_request&.requested_ial_authn_context || 'none',
     )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
   end
@@ -113,11 +114,9 @@ class SamlIdpController < ApplicationController
   end
 
   def render_template_for(message, action_url, type)
-    domain = SecureHeadersAllowList.extract_domain(action_url)
-
     # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
     csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
-      domain, decorated_session.sp_redirect_uris
+      action_url, decorated_session.sp_redirect_uris
     )
     override_content_security_policy_directives(form_action: csp_uris)
 

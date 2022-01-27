@@ -1,0 +1,18 @@
+<% title t('account.personal_key.get_new') %>
+
+<%= render PageHeadingComponent.new.with_content(t('account.personal_key.get_new')) %>
+
+<p>
+  <%= t('account.personal_key.get_new_description') %>
+</p>
+
+<%= button_to(
+      create_new_personal_key_path,
+      method: 'post',
+      class: 'usa-button usa-button--wide usa-button--big',
+      form_class: 'margin-y-5',
+    ) do %>
+  <%= t('forms.buttons.continue') %>
+<% end %>
+
+<%= render 'shared/cancel', link: account_path %>

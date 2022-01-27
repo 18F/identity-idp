@@ -2,7 +2,7 @@
 
 <%= render 'shared/sp_alert' %>
 
-<h1 class='margin-y-0'><%= t('titles.registrations.new') %></h1>
+<%= render PageHeadingComponent.new.with_content(t('titles.registrations.new')) %>
 
 <%= simple_form_for(
       @register_user_email_form,

@@ -113,6 +113,7 @@ feature 'adding email address' do
 
     visit add_email_path
     expect(page).to have_current_path(account_path)
+    expect(page).to have_content t('email_addresses.add.limit')
   end
 
   it 'stays on form with bad email' do

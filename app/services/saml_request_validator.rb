@@ -22,6 +22,7 @@ class SamlRequestValidator
     {
       nameid_format: nameid_format,
       authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
       service_provider: service_provider&.issuer,
     }
   end

@@ -11,7 +11,7 @@ describe 'Remembering a TOTP device' do
     def remember_device_and_sign_out_user
       sign_in_user(user)
       fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
-      check :remember_device
+      check t('forms.messages.remember_device')
       click_submit_default
       first(:link, t('links.sign_out')).click
       user
@@ -27,7 +27,7 @@ describe 'Remembering a TOTP device' do
 
       select_2fa_option('auth_app')
       fill_in :code, with: totp_secret_from_page
-      check :remember_device
+      check t('forms.messages.remember_device')
       click_submit_default
 
       first(:link, t('links.sign_out')).click
@@ -46,7 +46,7 @@ describe 'Remembering a TOTP device' do
       travel_to(10.seconds.from_now) # Travel past the revoked at date from disabling the device
       click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
       fill_in :code, with: totp_secret_from_page
-      check :remember_device
+      check t('forms.messages.remember_device')
       click_submit_default
       expect(page).to have_current_path(account_two_factor_authentication_path)
       first(:link, t('links.sign_out')).click

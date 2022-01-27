@@ -2,9 +2,7 @@
 
 <%= render 'shared/sp_alert' %>
 
-<h1 class="margin-y-0">
-  <%= t('headings.add_email') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
 
 <div class="margin-bottom-6">
   <%= validated_form_for(

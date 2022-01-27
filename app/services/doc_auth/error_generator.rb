@@ -41,7 +41,7 @@ module DocAuth
       'Issue Date Valid': { type: ID, msg_key: Errors::ISSUE_DATE_CHECKS },
       'Layout Valid': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Near-Infrared Response': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
-      'Photo Printing': {type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
+      'Photo Printing': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
       'Physical Document Presence': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Sex Crosscheck': { type: ID, msg_key: Errors::SEX_CHECK },
       'Visible Color Response': { type: ID, msg_key: Errors::VISIBLE_COLOR_CHECK },

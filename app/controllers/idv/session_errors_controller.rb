@@ -7,7 +7,7 @@ module Idv
     before_action :confirm_idv_session_step_needed
 
     def warning
-      @remaining_step_attempts = Throttle.for(
+      @remaining_attempts = Throttle.for(
         user: effective_user,
         throttle_type: :idv_resolution,
       ).remaining_count

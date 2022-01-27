@@ -9,14 +9,12 @@
 
 <% title t('titles.doc_auth.address') %>
 
-<h1 class="margin-y-0">
-  <%= t('doc_auth.headings.address') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
 <div class="margin-top-4 margin-bottom-4">
   <%= validated_form_for(
         :idv_form, url: idv_address_path, method: 'POST',
-                   html: {autocomplete: 'off', class: 'margin-top-2'}
+                   html: { autocomplete: 'off', class: 'margin-top-2' }
       ) do |f| %>
     <div class="margin-bottom-4">
       <%= f.input :address1,  label: t('idv.form.address1'), wrapper: false,

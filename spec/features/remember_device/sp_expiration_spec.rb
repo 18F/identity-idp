@@ -73,7 +73,7 @@ feature 'remember device sp expiration' do
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551212'
     click_send_security_code
-    check :remember_device
+    check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
 

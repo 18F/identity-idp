@@ -19,5 +19,5 @@
       ].compact,
     ) do %>
       <p><%= t('idv.failure.sessions.warning') %></p>
-      <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
+      <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
     <% end %>

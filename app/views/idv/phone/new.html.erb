@@ -17,19 +17,17 @@
 
 <% title t('titles.idv.phone') %>
 
-<h1 class="margin-y-0">
-  <%= t('idv.titles.session.phone') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.phone')) %>
 
-<div class="padding-y-1 margin-0">
+<p>
   <%= t('idv.messages.phone.description') %>
-</div>
+</p>
 
-<div class="margin-top-2">
+<p class="margin-bottom-1">
   <%= t('idv.messages.phone.alert_html') %>
-</div>
+</p>
 
-<ul class="padding-y-1 margin-0">
+<ul>
   <% t('idv.messages.phone.rules').each do |msg| %>
     <li>
       <%= msg %>
@@ -37,11 +35,9 @@
   <% end %>
 </ul>
 
-<div class="margin-top-2">
+<p>
   <%= t('idv.messages.phone.final_note_html') %>
-  <br/>
-  <br/>
-</div>
+</p>
 
 <%= validated_form_for(
       @idv_form,
@@ -56,7 +52,6 @@
       html: {
         autocomplete: 'off',
         method: :put,
-        class: 'margin-top-2',
       },
     ) do |f| %>
   <%= render PhoneInputComponent.new(

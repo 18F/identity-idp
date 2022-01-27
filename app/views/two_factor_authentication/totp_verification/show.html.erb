@@ -1,10 +1,8 @@
 <% title t('titles.enter_2fa_code') %>
 
-<h1 class="margin-y-0">
-  <%= @presenter.header %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
-<%= validated_form_for(:login_two_factor_authenticator, method: :post, class: 'margin-top-4 tablet:margin-top-6') do %>
+<%= validated_form_for('', method: :post, html: { class: 'margin-bottom-5' }) do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
@@ -20,15 +18,20 @@
           class: 'col-12',
         ) %>
   </div>
-  <div class="border border-primary-light radius-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
-    <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-    <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?,
-                      class: 'margin-right-1 margin-left-2' %>
-    <%= label_tag 'remember_device',
-                  t('forms.messages.remember_device'),
-                  class: 'text-primary margin-right-2' %>
-  </div>
-  <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--wide usa-button--big' %>
+  <%= f.input(
+        :remember_device,
+        as: :boolean,
+        label: t('forms.messages.remember_device'),
+        wrapper_html: { class: 'margin-top-2' },
+        input_html: {
+          class: 'usa-checkbox__input--bordered',
+          checked: @presenter.remember_device_box_checked?,
+        },
+      ) %>
+  <%= submit_tag(
+        t('forms.buttons.submit.default'),
+        class: 'display-block usa-button usa-button--wide usa-button--big margin-top-5',
+      ) %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

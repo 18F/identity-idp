@@ -76,7 +76,7 @@ fr:
       personal_key: Clé personnelle
     links:
       delete_account: Effacer
-      regenerate_personal_key: Obtenez une nouvelle clé
+      regenerate_personal_key: Réinitialiser
     login:
       piv_cac: Connectez-vous avec votre ID d’employé du gouvernement
       piv_cac_info:
@@ -104,8 +104,21 @@ fr:
       history: L’histoire
       learn_more: En savoir plus sur %{app_name}
       menu: Menu
+      reset_personal_key: Réinitialisation de la clé personnelle
       two_factor_authentication: Vos méthodes d’authentification
       your_account: Votre compte
+    personal_key:
+      get_new: Obtenir une nouvelle clé personnelle
+      get_new_description: Lorsque vous recevez une nouvelle clé personnelle, votre
+        ancienne clé personnelle ne fonctionnera plus.
+      last_generated: 'Dernière génération le %{timestamp}'
+      old_key_will_not_work: Veuillez imprimer, copier ou télécharger la nouvelle clé
+        personnelle ci-dessous. Votre ancienne clé personnelle ne fonctionnera
+        pas si vous oubliez votre mot de passe.
+      reset_instructions: Réinitialisez votre clé personnelle si vous ne l’avez pas.
+        Vous aurez besoin de cette clé personnelle si vous oubliez votre mot de
+        passe.
+      reset_success: Votre code personnel a été réinitialisé
     re_verify:
       banner: Nous avons masqué les informations de votre profil pour protéger votre
         vie privée.

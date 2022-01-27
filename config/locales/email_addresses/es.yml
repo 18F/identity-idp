@@ -3,6 +3,7 @@ es:
   email_addresses:
     add:
       duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
+      limit: Has agregado la cantidad máxima de direcciones de correo electrónico.
     delete:
       bullet1: No podrá iniciar sesión en %{app_name} (ni en ninguna de las
         aplicaciones gubernamentales vinculadas a su cuenta) utilizando esta

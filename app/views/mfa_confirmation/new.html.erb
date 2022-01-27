@@ -1,9 +1,8 @@
 <% title t('titles.passwords.confirm') %>
 
-<h1 class='margin-y-0'>
-  <%= t('headings.passwords.confirm') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.passwords.confirm')) %>
 <p class='mt-tiny margin-bottom-0'>
+  <%# for follow up: translate factor_to_change (LG-5701) %>
   <%= user_session[:no_factor_message] ||
         t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>

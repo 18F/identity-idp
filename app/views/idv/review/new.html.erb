@@ -9,9 +9,7 @@
       } %>
 <% end %>
 
-<h1>
-  <%= t('idv.titles.session.review', app_name: APP_NAME) %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.titles.session.review', app_name: APP_NAME)) %>
 
 <p>
   <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
@@ -26,20 +24,16 @@
       current_user, url: idv_review_path,
                     html: { autocomplete: 'off', method: :put }
     ) do |f| %>
- 
-  <div class="margin-bottom-4">
-    <%= f.input :password, label: t('idv.form.password'), required: true,
-                           input_html: { aria: { invalid: false }, class: 'password-toggle' }, wrapper: false %>
-    <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-      <%= t('simple_form.required.text') %>
-    </span>
-  </div>
-  <div class="right-align margin-top-neg-2 margin-bottom-6">
+  <%= f.input :password, label: t('idv.form.password'), required: true,
+                         input_html: { aria: { invalid: false }, class: 'password-toggle' }, wrapper: false %>
+  <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+    <%= t('simple_form.required.text') %>
+  </span>
+  <div class="right-align margin-top-2 margin-bottom-4">
     <%= t(
           'idv.forgot_password.link_html',
           link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1'),
         ) %>
-
   </div>
   <%= render AccordionComponent.new do |c| %>
     <% c.header { t('idv.messages.review.intro') } %>
@@ -50,7 +44,7 @@
   <%= f.button(
         :submit,
         t('forms.buttons.continue'),
-        class: 'usa-button--big usa-button--wide margin-top-4',
+        class: 'usa-button--big usa-button--wide margin-top-5',
       ) %>
 <% end %>
 

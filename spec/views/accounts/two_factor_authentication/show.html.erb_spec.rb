@@ -56,9 +56,10 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
       render
 
       expect(rendered).to have_content t('account.items.personal_key')
-      expect(rendered).
-        to have_button t('account.links.regenerate_personal_key')
-      expect(rendered).to have_xpath("//form[@action='#{create_new_personal_key_url}']")
+      expect(rendered).to have_link(
+        t('account.links.regenerate_personal_key'),
+        href: create_new_personal_key_url,
+      )
     end
   end
 

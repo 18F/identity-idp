@@ -1,10 +1,8 @@
 <%= title t('titles.forget_all_browsers') %>
 
-<h1 class="margin-y-0">
-  <%= t('titles.forget_all_browsers') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('titles.forget_all_browsers')) %>
 
-<p class="margin-top-4">
+<p>
   <%= t('account.forget_all_browsers.longer_description') %>
 </p>
 

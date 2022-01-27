@@ -12,7 +12,7 @@ feature 'OIDC Authorization Confirmation' do
       user = user_with_2fa
 
       sign_in_oidc_user(user)
-      check :remember_device
+      check t('forms.messages.remember_device')
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue

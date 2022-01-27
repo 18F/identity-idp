@@ -1,8 +1,6 @@
 <% title t('titles.confirmations.new') %>
 
-<h1 class='margin-y-0'>
-  <%= t('headings.confirmations.new') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('headings.confirmations.new')) %>
 <%= validated_form_for(
       @resend_email_confirmation_form,
       url: sign_up_register_path,

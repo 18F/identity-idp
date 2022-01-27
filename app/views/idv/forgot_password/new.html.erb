@@ -1,10 +1,8 @@
 <% title t('titles.idv.reset_password') %>
 
-<%= image_tag(asset_url('alert/forgot.svg'), width: 54) %>
+<%= image_tag(asset_url('alert/forgot.svg'), width: 54, class: 'margin-bottom-2') %>
 
-<h1 class="margin-bottom-1 margin-top-4 margin-y-0">
-  <%= t('idv.forgot_password.modal_header') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('idv.forgot_password.modal_header')) %>
 
 <hr>
 

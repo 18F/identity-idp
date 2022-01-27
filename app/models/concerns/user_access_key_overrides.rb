@@ -42,6 +42,7 @@ module UserAccessKeyOverrides
       password: new_personal_key,
       user_uuid: uuid || generate_uuid,
     )
+    self.encrypted_recovery_code_digest_generated_at = Time.zone.now
   end
 
   # This is a callback initiated by Devise after successfully authenticating.
