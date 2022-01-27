@@ -12,9 +12,7 @@
   <h2 class='margin-bottom-0'><%= t('doc_auth.instructions.welcome') %></h2>
 
   <%= render ProcessListComponent.new(heading_level: :h3) do |c| %>
-    <%= c.item(heading: t('doc_auth.instructions.bullet1')) do %>
-      <p><%= t('doc_auth.instructions.text1') %></p>
-    <% end %>
+    <%= c.item(heading: t('doc_auth.instructions.bullet1')) %>
     <% if liveness_checking_enabled? %>
       <%= c.item(heading: t('doc_auth.instructions.bullet1a')) do %>
         <p><%= t('doc_auth.instructions.text1a') %></p>
