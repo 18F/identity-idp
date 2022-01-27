@@ -1,5 +1,1 @@
-<%= content_tag(:ol, class: css_class) do %>
-  <% items.each do |item| %>
-    <%= item %>
-  <% end %>
-<% end %>
+<%= content_tag(:ol, safe_join(items.map(&:call)), class: css_class) %>
