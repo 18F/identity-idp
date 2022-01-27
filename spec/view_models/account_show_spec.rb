@@ -144,4 +144,72 @@ describe AccountShow do
       end
     end
   end
+
+  describe '#personal_key_generated_at' do
+    context 'the user has a encrypted_recovery_code_digest_generated_at date' do
+      it 'returns the date in the digest' do
+        digest_generated_at = 1.day.ago
+        profile = create(
+          :profile,
+          :active,
+          :verified,
+          user: create(:user, encrypted_recovery_code_digest_generated_at: digest_generated_at),
+        )
+        user = profile.user
+        profile_index = AccountShow.new(
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: user.decorate,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
+        )
+
+        expect(
+          profile_index.personal_key_generated_at,
+        ).to be_within(1.second).of(digest_generated_at)
+      end
+    end
+
+    context 'the user does not have a encrypted_recovery_code_digest_generated_at but is proofed' do
+      it 'returns the date the user was proofed' do
+        profile = create(
+          :profile,
+          :active,
+          :verified,
+          user: create(:user),
+        )
+        user = profile.user
+        profile_index = AccountShow.new(
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: user.decorate,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
+        )
+
+        expect(
+          profile_index.personal_key_generated_at,
+        ).to be_within(1.second).of(profile.verified_at)
+      end
+    end
+
+    context 'the user has no encrypted_recovery_code_digest_generated_at and is not proofed' do
+      it 'returns nil' do
+        user = create(:user)
+
+        profile_index = AccountShow.new(
+          decrypted_pii: {},
+          personal_key: '',
+          decorated_user: user.decorate,
+          sp_session_request_url: nil,
+          sp_name: nil,
+          locked_for_session: false,
+        )
+
+        expect(profile_index.personal_key_generated_at).to be_nil
+      end
+    end
+  end
 end
