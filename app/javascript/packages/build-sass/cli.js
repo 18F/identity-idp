@@ -4,7 +4,6 @@ import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { buildFile } from './index.js';
 
-/** @typedef {import('sass').CompileResult} CompileResult */
 /** @typedef {import('sass').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('./').BuildOptions} BuildOptions */
 
