@@ -107,11 +107,11 @@ $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator__step--complete:not(.step-indicator__step--pending)::before {
   background-color: color('white');
-  background-image: url(image-path('alert/success.svg'));
+  background-image: url('alert/success.svg');
 }
 
 .step-indicator__step--pending::before {
-  background-image: url(image-path('alert/pending.svg'));
+  background-image: url('alert/pending.svg');
 }
 
 .step-indicator__step:not(:last-child)::after {

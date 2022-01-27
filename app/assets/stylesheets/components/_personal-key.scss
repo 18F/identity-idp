@@ -1,5 +1,5 @@
 .key-badge::before {
-  background-image: url(image-path('p-key.svg'));
+  background-image: url('p-key.svg');
   background-repeat: no-repeat;
   content: '';
   height: 60px;
@@ -39,13 +39,13 @@
 
 .bg-pk-box {
   background-color: $blue-lightest;
-  background-image: image-url('personal-key/pkey-block.svg');
+  background-image: url('personal-key/pkey-block.svg');
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .bg-personal-key {
-  background: image-url('personal-key/shield.svg');
+  background: url('personal-key/shield.svg');
   background-color: $blue-lightest;
   background-position: center 3.3rem;
   background-repeat: no-repeat;
