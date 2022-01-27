@@ -142,7 +142,7 @@ fr:
         déverouillage facial pour accéder à votre compte.
       intro: Utilisez le déverrouillage par empreinte digitale ou le déverouillage
         facial pour accéder à votre compte.
-      login_text: Lorsque vous êtes prêt, appuyez sur le bouton.
+      login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
     webauthn_setup:
       continue: Continuer
@@ -153,5 +153,5 @@ fr:
         d’authentification. Vous pouvez ajouter autant de clés de sécurité que
         vous le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé
         de sécurité.
-      login_text: Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton
+      login_text: 'Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton:'
       nickname: Pseudo clé de sécurité
