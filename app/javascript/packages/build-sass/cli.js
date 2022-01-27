@@ -21,17 +21,12 @@ const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, style: isProduction ? 'compressed' : 'expanded' };
 
-const build = Promise.all(
-  files.map(
-    async (file) => /** @type {[string, CompileResult]} */ ([file, await buildFile(file, options)]),
-  ),
-);
-
-if (isWatching) {
-  build.then((results) => {
-    for (const [file, compileResult] of results) {
-      const loadedPaths = compileResult.loadedUrls.map(fileURLToPath);
+Promise.all(
+  files.map(async (file) => {
+    const { loadedUrls } = await buildFile(file, options);
+    if (isWatching) {
+      const loadedPaths = loadedUrls.map(fileURLToPath);
       watch(loadedPaths).on('change', () => buildFile(file, options));
     }
-  });
-}
+  }),
+);
