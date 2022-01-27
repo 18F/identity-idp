@@ -1,5 +1,7 @@
 class ProcessListComponent < BaseComponent
-  renders_many :items, 'ProcessListItemComponent'
+  renders_many :items, ->(**kwargs, &block) {
+    ProcessListItemComponent.new(heading_level: heading_level, **kwargs, &block)
+  }
 
   attr_reader :heading_level, :big, :connected, :tag_options
 
