@@ -10,8 +10,9 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     if ex
       if duplicate_cron_error?(ex)
-        # The presence of "exception_message" flags this as an error in our alerting
         json[:exception_class_warn] = ex.class.name
+        # The "exception_message" key flags this as an error in our alerting, so
+        # this uses a different name intentionally to avoid triggering alerts
         json[:exception_message_warn] = ex.message
 
         warn(json.to_json)
