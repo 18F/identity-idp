@@ -16,7 +16,8 @@
     "normalize-yaml": "normalize-yaml",
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
-    "build": "webpack"
+    "build": "webpack",
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@babel/core": "^7.15.5",
@@ -31,6 +32,7 @@
     "core-js": "^3.20.2",
     "fast-glob": "^3.2.7",
     "focus-trap": "^6.7.1",
+    "foundation-emails": "^2.3.1",
     "identity-style-guide": "^6.3.0",
     "intl-tel-input": "^17.0.8",
     "react": "^17.0.2",
