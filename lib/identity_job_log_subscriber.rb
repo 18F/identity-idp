@@ -9,10 +9,18 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     json = default_attributes(event, job)
 
     if ex
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
+      if duplicate_cron_error?(ex)
+        # The presence of "exception_message" flags this as an error in our alerting
+        json[:exception_class_warn] = ex.class.name
+        json[:exception_message_warn] = ex.message
 
-      error(json.to_json)
+        warn(json.to_json)
+      else
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
+
+        error(json.to_json)
+      end
     elsif event.payload[:aborted]
       json[:halted] = true
 
@@ -165,6 +173,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def trace_id(job)
     return unless Array(job&.arguments).first.is_a?(Hash)
     job.arguments.first[:trace_id]
+  end
+
+  def duplicate_cron_error?(ex)
+    ex.is_a?(ActiveRecord::RecordNotUnique) && ex.message.include?('(cron_key, cron_at)')
   end
 end
 
