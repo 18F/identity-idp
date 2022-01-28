@@ -1,8 +1,8 @@
 <div class="bg-personal-key">
-  <h2 class="center margin-top-1 padding-top-1 fs-20p">
+  <h2 class="center margin-top-3">
     <%= t('users.personal_key.header') %>
   </h2>
-  <div class="margin-top-6 margin-bottom-6 padding-x-0 tablet:padding-x-1 padding-y-2 center border-width-2px separator-text bg-pk-box">
+  <div class="margin-top-6 margin-bottom-9 padding-x-0 tablet:padding-x-1 padding-y-2 center border-width-2px separator-text bg-pk-box">
     <%- code.split('-').each do |word|
       -%><div class="inline"
         ><strong><code class="separator-text__code monospace" data-personal-key="word"
@@ -12,10 +12,10 @@
     ><%- end -%>
   </div>
 
-  <div class="center h5 margin-top-8 margin-bottom-1 padding-top-1 padding-bottom-2 fs-12p">
+  <p class="center margin-bottom-3">
     <%= t(
           'users.personal_key.generated_on_html',
           date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
         ) %>
-  </div>
+  </p>
 </div>
