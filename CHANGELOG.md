@@ -14,7 +14,7 @@ Unreleased
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 - Dependencies: Upgrade the Login.gov Design System to the latest version (#5860)
-- Alerting: Manage alerts for duplicate scheduled jobs (#TBD)
+- Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 
 RC 175 - 2022-01-27
 ----------------------
