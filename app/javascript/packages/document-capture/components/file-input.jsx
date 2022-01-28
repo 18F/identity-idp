@@ -202,7 +202,7 @@ function FileInput(props, ref) {
       return `${fileLabel} - ${fileValue.name}`;
     }
     if (fileValue) {
-      return t('doc_auth.forms.captured_image');
+      return `${fileLabel} - ${t('doc_auth.forms.captured_image')}`;
     }
     return '';
   }
