@@ -258,6 +258,6 @@ class IconComponent < BaseComponent
   end
 
   def icon_path
-    asset_path("#{design_system_asset_path('img/sprite.svg')}##{icon}")
+    asset_path([design_system_asset_path('img/sprite.svg'), '#', icon].join)
   end
 end
