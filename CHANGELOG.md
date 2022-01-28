@@ -10,6 +10,7 @@ Unreleased
 ### Accessibility
 
 ### Bug Fixes Users Might Notice
+- Layout: Fix visual layout bugs with the personal key screen. (#5869)
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
