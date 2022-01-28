@@ -20,9 +20,9 @@ class ProcessListComponent < BaseComponent
   end
 
   class ProcessListItemComponent < BaseComponent
-    attr_reader :heading, :heading_level
+    attr_reader :heading_level, :heading
 
-    def initialize(heading:, heading_level: :h2)
+    def initialize(heading_level:, heading:)
       @heading_level = heading_level
       @heading = heading
     end
