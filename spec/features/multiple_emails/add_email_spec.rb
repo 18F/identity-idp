@@ -111,7 +111,7 @@ feature 'adding email address' do
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
 
-    expect(page).to_not have_link('+ '+ t('account.index.email_add'))
+    expect(page).to_not have_link('+ ' + t('account.index.email_add'))
     visit add_email_path
     expect(page).to have_current_path(account_path)
     expect(page).to have_content t('email_addresses.add.limit')
@@ -207,7 +207,7 @@ feature 'adding email address' do
 
     visit account_path
 
-    expect(page).to have_link('+ '+ t('account.index.email_add'))
+    expect(page).to have_link('+ ' + t('account.index.email_add'))
     within('.sidenav') do
       click_on t('account.navigation.add_email')
     end
