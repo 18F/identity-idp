@@ -133,6 +133,8 @@ class Analytics
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'
   AUTHENTICATION_CONFIRMATION_CONTINUE = 'Authentication Confirmation: Continue selected'
   AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'
+  BANNED_USER_REDIRECT = 'Banned User redirected'
+  BANNED_USER_VISITED = 'Banned User visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'
   DOC_AUTH_WARNING = 'Doc Auth Warning'

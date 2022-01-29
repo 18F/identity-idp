@@ -49,6 +49,7 @@ class User < ApplicationRecord
   has_many :service_providers,
            through: :identities,
            source: :service_provider_record
+  has_many :sign_in_restrictions, dependent: :destroy
 
   attr_accessor :asserted_attributes
 
