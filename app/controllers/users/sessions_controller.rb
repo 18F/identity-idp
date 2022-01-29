@@ -199,7 +199,10 @@ module Users
     end
 
     def next_url_after_valid_authentication
-      if pending_account_reset_request.present?
+      if user_is_banned?
+        sign_out
+        banned_user_url
+      elsif pending_account_reset_request.present?
         account_reset_pending_url
       elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url

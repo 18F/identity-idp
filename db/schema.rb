@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_14_183203) do
+ActiveRecord::Schema.define(version: 2022_01_29_181752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -532,6 +532,14 @@ ActiveRecord::Schema.define(version: 2022_01_14_183203) do
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "use_legacy_name_id_behavior", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
+  end
+
+  create_table "sign_in_restrictions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "service_provider"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider"
   end
 
   create_table "sp_costs", force: :cascade do |t|
