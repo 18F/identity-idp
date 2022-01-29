@@ -539,7 +539,7 @@ ActiveRecord::Schema.define(version: 2022_01_29_181752) do
     t.string "service_provider"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider"
+    t.index ["user_id", "service_provider"], name: "index_sign_in_restrictions_on_user_id_and_service_provider", unique: true
   end
 
   create_table "sp_costs", force: :cascade do |t|

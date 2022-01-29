@@ -7,6 +7,11 @@ class CreateSignInRestrictions < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :sign_in_restrictions, [:user_id, :service_provider], name: :index_sign_in_restrictions_on_user_id_and_service_provider
+    add_index(
+      :sign_in_restrictions,
+      [:user_id, :service_provider],
+      unique: true,
+      name: :index_sign_in_restrictions_on_user_id_and_service_provider,
+    )
   end
 end
