@@ -16,6 +16,7 @@ Unreleased
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 - Dependencies: Upgrade the Login.gov Design System to the latest version (#5860)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
+- Dependencies: Update various dependencies (#TBD)
 
 RC 175 - 2022-01-27
 ----------------------
