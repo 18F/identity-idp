@@ -92,6 +92,22 @@ module Idv
       end
     end
 
+    def phone_info
+      return @phone_info if defined?(@phone_info)
+
+      if phone.blank? || !IdentityConfig.store.voip_check
+        @phone_info = nil
+      else
+        @phone_info = Telephony.phone_info(phone)
+      end
+    rescue Aws::Pinpoint::Errors::TooManyRequestsException
+      @warning_message = 'AWS pinpoint phone info rate limit'
+      @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
+    rescue Aws::Pinpoint::Errors::BadRequestException
+      errors.add(:phone, :improbable_phone, type: :improbable_phone)
+      @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
+    end
+
     def valid_phone?(phone, phone_confirmed:)
       return false if !valid_phone_for_allowed_countries?(phone)
       capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed)
@@ -108,10 +124,15 @@ module Idv
 
     def extra_analytics_attributes
       {
+        phone_type: phone_info&.type, # comes from pinpoint API
+        types: parsed_phone.types, # comes from Phonelib gem
+        carrier: phone_info&.carrier,
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
         pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]], # see errors.add(:phone)
-      }
+      }.tap do |extra|
+        extra[:warn] = @warning_message if @warning_message
+      end
     end
 
     def parsed_phone
