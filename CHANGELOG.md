@@ -19,7 +19,7 @@ Unreleased
 - Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
-- Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
+- Maintenance: Enable stricter Changelog checks in continuous integration ([#5882](https://github.com/18F/identity-idp/pull/5882))
 
 RC 175.2 - 2022-01-29
 ----------------------
