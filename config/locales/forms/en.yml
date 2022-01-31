@@ -130,7 +130,7 @@ en:
       intro: Enable Face or Touch Unlock as an authentication method on this device.
         You’ll need this device to use this method in the future. Start by
         giving your device a nickname.
-      login_text: When you are ready, press the button.
+      login_text: 'When you are ready, press the button:'
       nickname: Device nickname
     webauthn_setup:
       continue: Continue
@@ -139,5 +139,5 @@ en:
       intro: Add a security key that meets the FIDO standard as your authentication
         method. You can add as many security keys as you want. To get started,
         first give your security key a nickname.
-      login_text: When you are ready to authenticate, press the button
+      login_text: 'When you are ready to authenticate, press the button:'
       nickname: Security key nickname

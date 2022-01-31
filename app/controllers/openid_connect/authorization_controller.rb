@@ -13,6 +13,7 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
+    before_action :handle_banned_user
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :bump_auth_count, only: [:index]

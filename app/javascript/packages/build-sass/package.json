@@ -1,0 +1,13 @@
+{
+  "name": "@18f/identity-build-sass",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "build-sass": "./cli.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "sass": "^1.49.0"
+  }
+}

@@ -45,6 +45,7 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
+    config.assets.resolve_assets_in_css_urls = true
     config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))

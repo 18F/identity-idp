@@ -240,12 +240,12 @@ describe('document-capture/components/file-input', () => {
     expect(queryByAriaLabel).to.exist();
   });
 
-  it('has aria-label same as file name', () => {
+  it('has aria-label with label and filename', () => {
     const fileName = 'file2.jpg';
     const file2 = new window.File([file], fileName);
     const { getByLabelText } = render(<FileInput label="File" value={file2} />);
 
-    const queryByAriaLabel = getByLabelText(fileName);
+    const queryByAriaLabel = getByLabelText(`File - ${fileName}`);
 
     expect(queryByAriaLabel).to.exist();
   });
@@ -258,7 +258,7 @@ describe('document-capture/components/file-input', () => {
       />,
     );
 
-    const queryByAriaLabel = getByLabelText('doc_auth.forms.captured_image');
+    const queryByAriaLabel = getByLabelText(`File - ${'doc_auth.forms.captured_image'}`);
 
     expect(queryByAriaLabel).to.exist();
   });
