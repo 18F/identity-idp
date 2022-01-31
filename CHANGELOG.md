@@ -16,6 +16,7 @@ Unreleased
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 - Dependencies: Upgrade the Login.gov Design System to the latest version (#5860)
+- Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
 
