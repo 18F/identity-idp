@@ -47,7 +47,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
         before do
           first_client.stub_responses(
             :check_if_phone_number_is_opted_out,
-            'InternalServerErrorException'
+            'InternalServerErrorException',
           )
         end
 
@@ -65,10 +65,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
               sms.application_id = 'backup-sms-application-id'
             end
 
-            second_client.stub_responses(
-              :opt_in_phone_number,
-              {}
-            )
+            second_client.stub_responses(:opt_in_phone_number, {})
             second_client.stub_responses(
               :check_if_phone_number_is_opted_out,
               is_opted_out: false,
