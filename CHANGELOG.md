@@ -20,6 +20,7 @@ Unreleased
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
+- Logging: Fix logging of transport attribute in RISC event delivery (#5881)
 
 RC 175.2 - 2022-01-29
 ----------------------
