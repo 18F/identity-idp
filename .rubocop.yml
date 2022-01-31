@@ -49,11 +49,6 @@ IdentityIdp/LocalizedValidationMessageLinter:
 IdentityIdp/MailLaterLinter:
   Enabled: true
 
-IdentityIdp/TranslationLinter:
-  Enabled: true
-  Include:
-    - 'spec/support/monitor/**/*.rb'
-
 IdentityIdp/UrlOptionsLinter:
   Enabled: true
   Exclude:
