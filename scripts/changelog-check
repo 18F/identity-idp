@@ -2,7 +2,7 @@
 require 'open3'
 require 'optparse'
 
-CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:#\d+, ?)*(?:#\d+))\)$}
+CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:\[#\d+\]\(https://github.com/18F/identity-idp/\d+\), ?)*(?:\[#\d+\]\(https://github.com/18F/identity-idp/\d+\)))\)$}
 # A valid diff line is in the form of:
 # +- CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
 def is_valid_changelog_diff_addition?(line)
