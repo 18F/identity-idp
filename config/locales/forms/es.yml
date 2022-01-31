@@ -136,7 +136,9 @@ es:
       instructions_text: Use el desbloqueo facial o táctil para acceder a su cuenta
         con %{app_name}.
       instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
-      intro: Use el desbloqueo facial o táctil para acceder a su cuenta.
+      intro: Habilite el desbloqueo facial o táctil en este dispositivo como método de
+        autenticación. Necesitará este dispositivo para poder usar ese método en
+        el futuro. Comience dándole un apodo a su dispositivo.
       login_text: Cuando esté listo, presione el botón.
       nickname: Apodo de dispositivo.
     webauthn_setup:
