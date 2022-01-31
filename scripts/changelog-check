@@ -2,7 +2,9 @@
 require 'open3'
 require 'optparse'
 
-CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:\[#\d+\]\(https://github.com/18F/identity-idp/\d+\), ?)*(?:\[#\d+\]\(https://github.com/18F/identity-idp/\d+\)))\)$}
+CHANGELOG_REGEX = Regexp.new <<~REGEX
+  ^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:\[#\d+\]\(https://github.com/18F/identity-idp/pull/\d+\), ?)*(?:\[#\d+\]\(https://github.com/18F/identity-idp/pull/\d+\)))\)$}
+REGEX
 # A valid diff line is in the form of:
 # +- CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
 def is_valid_changelog_diff_addition?(line)
@@ -32,6 +34,15 @@ def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log.include?('[skip changelog]')
 end
 
+def autocorrect_pr_links
+  regex = %r{#(\d{4})(?!\]\(https://github\.com/18F/identity-idp/pull/\d+\))}
+  substitution = '[#\1](https://github.com/18F/identity-idp/pull/\1)'
+  contents = File.read('CHANGELOG.md')
+
+  new_contents = contents.gsub(regex, substitution)
+  File.write('CHANGELOG.md', new_contents)
+end
+
 def main(args)
   options = { base_branch: 'main' }
   basename = File.basename($0)
@@ -53,10 +64,15 @@ def main(args)
     opts.on('-s', '--source_branch SOURCE_BRANCH', 'Name of source branch (required)') do |val|
       options[:source_branch] = val
     end
+
+    opts.on('-a', '--autocorrect-pr-links', 'Whether to autocorrect unlinked PR links') do |val|
+      options[:autocorrect_pr_links] = val
+    end
   end
 
   optparse.parse!
 
+  autocorrect_pr_links and return if options[:autocorrect_pr_links]
   abort(optparse.help) if options[:source_branch].nil?
 
   skip_check = commit_messages_contain_skip_changelog?(
@@ -73,7 +89,7 @@ def main(args)
     warn(
       <<~ERROR,
         A valid changelog line was not found.
-        Changelog entries should be formatted as: - CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
+        Changelog entries should be formatted as: - CATEGORY: CHANGE_DESCRIPTION ((#PULL_REQUEST_NUMBER)[PR Link])
       ERROR
     )
 
