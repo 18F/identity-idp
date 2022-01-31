@@ -24,3 +24,22 @@
 @import 'step-indicator';
 @import 'troubleshooting-options';
 @import 'i18n-dropdown';
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/288
+.usa-process-list__item {
+  &::before {
+    margin-top: #{(
+        units($theme-process-list-counter-size) -
+          (1.125rem * lh('heading', $theme-heading-line-height))
+      ) * -0.5};
+  }
+
+  &.usa-process-list--big::before {
+    margin-top: #{(3.125rem - (1.125rem * lh('heading', $theme-heading-line-height))) * -0.5};
+  }
+}
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/288
+.usa-process-list__heading {
+  @include u-line-height('heading', $theme-heading-line-height);
+}
