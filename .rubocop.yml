@@ -9,7 +9,6 @@ require:
   - ./lib/linters/localized_validation_message_linter.rb
   - ./lib/linters/mail_later_linter.rb
   - ./lib/linters/redirect_back_linter.rb
-  - ./lib/linters/translation_linter.rb
   - ./lib/linters/url_options_linter.rb
   - ./lib/linters/errors_add_linter.rb
 
