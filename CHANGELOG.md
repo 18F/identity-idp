@@ -19,7 +19,7 @@ Unreleased
 - Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
-- Testing: Remove smoke tests (#TBD)
+- Testing: Remove smoke tests (#5883)
 
 RC 175.2 - 2022-01-29
 ----------------------
