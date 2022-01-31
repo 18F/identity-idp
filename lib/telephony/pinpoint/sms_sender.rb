@@ -16,7 +16,9 @@ module Telephony
       # rubocop:disable Metrics/BlockLength
       # @return [Response]
       def send(message:, to:, country_code:, otp: nil)
-        return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
+        if Telephony.config.pinpoint.sms_configs.empty?
+          return PinpointHelper.handle_config_failure(:sms)
+        end
 
         response = nil
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
@@ -44,9 +46,10 @@ module Telephony
           finish = Time.zone.now
           response = build_response(pinpoint_response, start: start, finish: finish)
           return response if response.success?
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: response.error,
             region: sms_config.region,
+            channel: :sms,
             extra: response.extra,
           )
         rescue Aws::Pinpoint::Errors::InternalServerErrorException,
@@ -54,20 +57,23 @@ module Telephony
                Seahorse::Client::NetworkingError => e
           finish = Time.zone.now
           response = handle_pinpoint_error(e)
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: e,
             region: sms_config.region,
+            channel: :sms,
             extra: {
               duration_ms: Util.duration_ms(start: start, finish: finish),
             },
           )
         end
-        response || handle_config_failure
+        response || PinpointHelper.handle_config_failure(:sms)
       end
       # rubocop:enable Metrics/BlockLength
 
       def phone_info(phone_number)
-        return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
+        if Telephony.config.pinpoint.sms_configs.empty?
+          return PinpointHelper.handle_config_failure(:sms)
+        end
 
         response = nil
         error = nil
@@ -82,9 +88,10 @@ module Telephony
           break if response
         rescue Seahorse::Client::NetworkingError,
                Aws::Pinpoint::Errors::InternalServerErrorException => error
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: sms_config.region,
+            channel: :sms,
             extra: {},
           )
         end
@@ -161,33 +168,6 @@ module Telephony
         exception_message = "Pinpoint Error: #{delivery_status} - #{status_code}"
         exception_class = ERROR_HASH[delivery_status] || TelephonyError
         exception_class.new(exception_message)
-      end
-
-      def notify_pinpoint_failover(error:, region:, extra:)
-        response = Response.new(
-          success: false,
-          error: error,
-          extra: extra.merge(
-            failover: true,
-            region: region,
-            channel: 'sms',
-          ),
-        )
-        Telephony.config.logger.warn(response.to_h.to_json)
-      end
-
-      def handle_config_failure
-        response = Response.new(
-          success: false,
-          error: unknown_failure_error,
-          extra: {
-            channel: 'sms',
-          },
-        )
-
-        Telephony.config.logger.warn(response.to_h.to_json)
-
-        response
       end
 
       def unknown_failure_error

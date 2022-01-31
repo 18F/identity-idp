@@ -5,7 +5,9 @@ module Telephony
     class VoiceSender
       # rubocop:disable Metrics/BlockLength
       def send(message:, to:, country_code:, otp: nil)
-        return handle_config_failure if Telephony.config.pinpoint.voice_configs.empty?
+        if Telephony.config.pinpoint.voice_configs.empty?
+          return PinpointHelper.handle_config_failure(:voice)
+        end
 
         language_code, voice_id = language_code_and_voice_id
 
@@ -38,9 +40,10 @@ module Telephony
                Seahorse::Client::NetworkingError => e
           finish = Time.zone.now
           last_error = handle_pinpoint_error(e)
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: e,
             region: voice_config.region,
+            channel: :voice,
             extra: {
               message_id: response&.message_id,
               duration_ms: Util.duration_ms(start: start, finish: finish),
@@ -48,7 +51,7 @@ module Telephony
           )
         end
 
-        last_error || handle_config_failure
+        last_error || PinpointHelper.handle_config_failure(:voice)
       end
       # rubocop:enable Metrics/BlockLength
 
@@ -85,19 +88,6 @@ module Telephony
         )
       end
 
-      def notify_pinpoint_failover(error:, region:, extra:)
-        response = Response.new(
-          success: false,
-          error: error,
-          extra: extra.merge(
-            failover: true,
-            region: region,
-            channel: 'voice',
-          ),
-        )
-        Telephony.config.logger.warn(response.to_h.to_json)
-      end
-
       def language_code_and_voice_id
         case I18n.locale.to_sym
         when :en
@@ -109,20 +99,6 @@ module Telephony
         else
           ['en-US', 'Joey']
         end
-      end
-
-      def handle_config_failure
-        response = Response.new(
-          success: false,
-          error: UnknownFailureError.new('Failed to load AWS config'),
-          extra: {
-            channel: 'sms',
-          },
-        )
-
-        Telephony.config.logger.warn(response.to_h.to_json)
-
-        response
       end
     end
   end
