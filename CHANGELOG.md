@@ -9,12 +9,14 @@ Unreleased
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
+- Document capture: The image file field label is no longer set to file names so that screen readers do not read the filenames to users. (#5858)
 
 ### Bug Fixes Users Might Notice
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 - Dependencies: Upgrade the Login.gov Design System to the latest version (#5860)
+- Identity Verification: Add more phone number validation to phone confirmation (#5873)
 
 RC 175 - 2022-01-27
 ----------------------
