@@ -18,10 +18,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: f04d98af2da68c0a193d661fc06c40fb081c2dbc
-  tag: v0.7.3
+  revision: fcaabc4ab596392209b927794a524578a2989f3c
+  tag: v0.7.4
   specs:
-    identity_validations (0.7.3)
+    identity_validations (0.7.4)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
@@ -35,15 +35,6 @@ GIT
       nokogiri (>= 1.10.2)
       pkcs11
       uuid
-
-GIT
-  remote: https://github.com/18f/redis-session-store.git
-  revision: d3f5e38d3a6173737a580d774767a0d8471b1e67
-  tag: v0.11.4-18f
-  specs:
-    redis-session-store (0.11.4.pre.18f)
-      actionpack (>= 3, < 7)
-      redis (>= 3, < 5)
 
 GEM
   remote: https://rubygems.org/
@@ -503,6 +494,9 @@ GEM
     redis (4.5.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
+    redis-session-store (0.11.4)
+      actionpack (>= 3, < 8)
+      redis (>= 3, < 5)
     regexp_parser (2.2.0)
     reline (0.2.7)
       io-console (~> 0.5)
@@ -763,7 +757,7 @@ DEPENDENCIES
   redacted_struct
   redis (>= 3.2.0)
   redis-namespace
-  redis-session-store!
+  redis-session-store (>= 0.11.4)
   retries
   rotp (~> 6.1)
   rqrcode

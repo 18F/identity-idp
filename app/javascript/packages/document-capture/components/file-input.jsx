@@ -194,14 +194,15 @@ function FileInput(props, ref) {
   }
 
   /**
+   * @param {string} fileLabel String velue of the label for input to display
    * @param {Blob|string|null|undefined} fileValue File or string for which to generate label.
    */
-  function getLabelFromValue(fileValue) {
+  function getLabelFromValue(fileLabel, fileValue) {
     if (fileValue instanceof window.File) {
-      return fileValue.name;
+      return `${fileLabel} - ${fileValue.name}`;
     }
     if (fileValue) {
-      return t('doc_auth.forms.captured_image');
+      return `${fileLabel} - ${t('doc_auth.forms.captured_image')}`;
     }
     return '';
   }
@@ -319,7 +320,7 @@ function FileInput(props, ref) {
             id={inputId}
             className="usa-file-input__input"
             type="file"
-            aria-label={getLabelFromValue(value)}
+            aria-label={getLabelFromValue(label, value)}
             aria-busy={isValuePending}
             onChange={onChangeIfValid}
             capture={capture}

@@ -259,6 +259,8 @@ Rails.application.routes.draw do
 
     delete '/users' => 'users#destroy', as: :destroy_user
 
+    get '/restricted' => 'banned_user#show', as: :banned_user
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'

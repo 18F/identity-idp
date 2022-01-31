@@ -168,6 +168,9 @@ describe Idv::PhoneController do
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
           area_code: nil,
+          carrier: 'Test Mobile Carrier',
+          phone_type: :mobile,
+          types: [],
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -195,6 +198,9 @@ describe Idv::PhoneController do
           area_code: '703',
           country_code: 'US',
           pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
+          carrier: 'Test Mobile Carrier',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
         }
 
         expect(@analytics).to have_received(:track_event).with(
