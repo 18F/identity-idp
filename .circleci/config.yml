@@ -93,8 +93,6 @@ commands:
           key: v3-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-  # Custom version of "checkout" that checks out a SHA deployed to sha_url param
-  # Adapter from https://gist.github.com/drazisil/e97dc21454120251472154de1c1b1c7b
 jobs:
   setup:
     working_directory: ~/identity-idp
