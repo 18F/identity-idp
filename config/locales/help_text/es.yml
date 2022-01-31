@@ -12,7 +12,7 @@ es:
       email: Dirección de correo electrónico
       full_name: Nombre completo
       intro_html: 'Compartiremos esta información con %{sp}:'
-      outro_html: '%{sp} solo usará esta información para conectarse a su cuenta'
+      outro_html: '%{sp} solo usará esta información para conectarse a su cuenta.'
       phone: Teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en
