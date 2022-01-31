@@ -11,6 +11,7 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
 gem 'aws-sdk-ses', '~> 1.6'
+gem 'aws-sdk-sns'
 gem 'base32-crockford'
 gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '~> 1.9.0', require: false

@@ -16,6 +16,7 @@ require 'telephony/test/sms_sender'
 require 'telephony/test/voice_sender'
 require 'telephony/pinpoint/aws_credential_builder'
 require 'telephony/pinpoint/pinpoint_helper'
+require 'telephony/pinpoint/opt_out_manager'
 require 'telephony/pinpoint/sms_sender'
 require 'telephony/pinpoint/voice_sender'
 
