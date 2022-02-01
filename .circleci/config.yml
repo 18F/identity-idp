@@ -119,6 +119,7 @@ jobs:
     environment:
       CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
       COVERAGE: true
+      RAILS_ENV: test
 
     parallelism: 5
 

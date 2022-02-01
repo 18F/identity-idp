@@ -114,7 +114,7 @@ module OpenidConnect
       return if result.success?
 
       if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri
+        redirect_to redirect_uri, allow_other_host: true
       else
         render :error
       end

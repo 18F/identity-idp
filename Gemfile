@@ -59,6 +59,7 @@ gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.17.0-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
+gem 'sprockets-rails'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
@@ -102,7 +103,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'psych'
   gem 'puma'
-  gem 'rspec-rails', '~> 4.0'
+  gem 'rspec-rails', '6.0.0.rc1'
   gem 'rubocop', '~> 1.29.1', require: false
   gem 'rubocop-performance', '~> 1.12.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
@@ -116,7 +117,7 @@ group :test do
   gem 'simplecov-cobertura'
   gem 'simplecov_json_formatter'
   gem 'email_spec'
-  gem 'factory_bot_rails', '>= 5.2.0'
+  gem 'factory_bot_rails', '>= 6.2.0'
   gem 'faker'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
