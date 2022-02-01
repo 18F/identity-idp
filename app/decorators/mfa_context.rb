@@ -97,16 +97,6 @@ class MfaContext
       personal_key_method_count
   end
 
-  def enabled_mfa_configurations
-    phone_configurations.select(&:mfa_enabled) +
-      webauthn_configurations.select(&:mfa_enabled) +
-      backup_code_configurations.select(&:mfa_enabled) +
-      piv_cac_configurations.select(&:mfa_enabled) +
-      auth_app_configurations.select(&:mfa_enabled) +
-      (IdentityConfig.store.personal_key_retired ? [] : [personal_key_configuration]).
-        select(&:mfa_enabled)
-  end
-
   # returns a hash showing the count for each enabled 2FA configuration,
   # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.
   def enabled_two_factor_configuration_counts_hash

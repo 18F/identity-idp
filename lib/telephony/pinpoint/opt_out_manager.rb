@@ -7,7 +7,6 @@ module Telephony
           return PinpointHelper.handle_config_failure(:sns)
         end
 
-        # binding.pry
         response = nil
         Telephony.config.pinpoint.sms_configs.each do |config|
           client = build_client(config)
