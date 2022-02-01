@@ -41,10 +41,8 @@
     <%= render ClipboardButtonComponent.new(
           clipboard_text: @codes.join(' '),
           outline: true,
-          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-copy',
-        ) do %>
-      <%= t('links.copy') %>
-    <% end %>
+          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+        ) %>
   </div>
 </div>
 

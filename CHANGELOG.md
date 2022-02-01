@@ -5,7 +5,7 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: "Delete Account" request and confirmation pages have a new layout consistent with other content pages. (#5857, #5884)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)

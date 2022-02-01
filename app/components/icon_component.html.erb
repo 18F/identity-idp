@@ -1,0 +1,10 @@
+<%= content_tag(
+      :svg,
+      aria: { hidden: true },
+      focusable: 'false',
+      role: 'img',
+      **tag_options,
+      class: ['usa-icon', *tag_options[:class]],
+    ) do %>
+  <use href="<%= icon_path %>"></use>
+<% end %>
