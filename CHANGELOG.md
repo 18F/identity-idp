@@ -5,7 +5,7 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884, #5885)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
@@ -19,6 +19,7 @@ Unreleased
 - Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
+- Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
 
 RC 175.2 - 2022-01-29
 ----------------------
