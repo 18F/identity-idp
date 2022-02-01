@@ -41,7 +41,7 @@ describe AccountsController do
 
         sign_in user
 
-        view_model = AccountShow.new(
+        view_model = AccountShowPresenter.new(
           decrypted_pii: nil,
           personal_key: nil,
           sp_session_request_url: nil,
@@ -85,7 +85,7 @@ describe AccountsController do
 
           sign_in user
 
-          view_model = AccountShow.new(
+          view_model = AccountShowPresenter.new(
             decrypted_pii: nil,
             personal_key: nil,
             sp_session_request_url: nil,

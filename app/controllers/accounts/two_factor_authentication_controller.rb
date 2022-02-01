@@ -7,7 +7,7 @@ module Accounts
 
     def show
       session[:account_redirect_path] = account_two_factor_authentication_path
-      @view_model = AccountShow.new(
+      @presenter = AccountShowPresenter.new(
         decrypted_pii: nil,
         personal_key: flash[:personal_key],
         sp_session_request_url: sp_session_request_url_with_updated_params,

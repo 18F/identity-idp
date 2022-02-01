@@ -9,7 +9,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :view_model,
-      AccountShow.new(
+      AccountShowPresenter.new(
         decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
         sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false
@@ -32,7 +32,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     before do
       assign(
         :view_model,
-        AccountShow.new(
+        AccountShowPresenter.new(
           decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
