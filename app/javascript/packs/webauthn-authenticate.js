@@ -1,11 +1,14 @@
 const WebAuthn = require('../app/webauthn');
 
-function webauthn() {
+async function webauthn() {
   // If webauthn is not supported redirect back to the 2fa options list
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress');
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
 
-  if (!WebAuthn.isWebAuthnEnabled()) {
+  const webauthnPlatformRequested = webauthnInProgressContainer.getAttribute('data-platform-authenticator-requested') === 'true';
+  let webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
+
+  if (!WebAuthn.isWebAuthnEnabled() || (webauthnPlatformRequested && !webauthnPlatformEnabled)) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
     window.location.href = href;
   }
