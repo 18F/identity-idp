@@ -28,7 +28,7 @@ textarea {
 
   &[type='number'],
   &.phone {
-    font-family: $monospace-font-family;
+    @include u-font-family('mono');
   }
 
   &:focus {
