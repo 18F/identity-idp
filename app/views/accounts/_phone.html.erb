@@ -23,3 +23,10 @@
     </div>
   <% end %>
 </div>
+<% if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account %>
+  <%= link_to(
+        prefix_with_plus(t('account.index.phone_add')),
+        add_phone_path,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ) %>
+<% end %>

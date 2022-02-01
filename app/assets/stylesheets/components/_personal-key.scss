@@ -9,22 +9,17 @@
   width: 60px;
 }
 
-.separator-text {
-  .separator-text__code {
-    font-size: 1.5rem;
+.separator-text__code {
+  font-size: 1.5rem;
+
+  &::after {
+    content: '-';
+    padding: 0 0.25rem;
   }
 
-  > div {
-    &::after {
-      color: $silver;
-      content: '-';
-      padding: 0 0.25rem;
-    }
-
-    &:last-child::after {
-      content: none;
-      padding: 0;
-    }
+  &:last-child::after {
+    content: none;
+    padding: 0;
   }
 }
 
@@ -38,32 +33,26 @@
 }
 
 .bg-pk-box {
-  background-color: $blue-lightest;
   background-image: url('personal-key/pkey-block.svg');
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .bg-personal-key {
-  background: url('personal-key/shield.svg');
-  background-color: $blue-lightest;
-  background-position: center 3.3rem;
+  height: 145px;
+  background-image: url('personal-key/shield.svg');
+  background-position: center;
   background-repeat: no-repeat;
   background-size: 145px 145px;
-  border-bottom: 1px solid $border-color;
 }
 
 .full-width-box {
-  background-color: $blue-lightest;
-  border-top: 1px solid $border-color;
   margin-left: -1rem;
   width: 110%;
 }
 
 @media #{$breakpoint-sm} {
   .full-width-box {
-    background-color: $blue-lightest;
-    border-top: 1px solid $border-color;
     margin-left: -5rem;
     width: 135%;
   }
