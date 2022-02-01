@@ -1,52 +1,50 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
-<p class="mt-tiny margin-bottom-6">
+<p>
   <%= t(
         'instructions.personal_key.info_html',
         accent: content_tag(:strong, t('instructions.personal_key.accent')),
       ) %>
 </p>
-<div class="full-width-box">
+<div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
-<div class="grid-row text-center margin-y-3">
-  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
-    <%= link_to(
-          t('forms.backup_code.download'),
-          idv_download_personal_key_path,
-          class: 'usa-button usa-button--outline',
-        ) %>
-  </div>
-  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
-    <%= button_tag(
-          t('users.personal_key.print'),
-          type: :button,
-          data: { print: true },
-          class: 'usa-button usa-button--outline',
-        ) %>
-  </div>
-  <div class="grid-col-12 tablet:grid-col-4 margin-y-1">
-    <%= render ClipboardButtonComponent.new(clipboard_text: code, outline: true) do %>
-      <%= t('links.copy') %>
-    <% end %>
-  </div>
-</div>
-<div class="sm-col sm-col-2 padding-right-2">
-  <%= image_tag(asset_url('alert/icon-lock-alert-important.svg'), alt: '', size: '80') %>
-</div>
-<div class="sm-col sm-col-10">
+<%= link_to(
+      idv_download_personal_key_path,
+      class: 'usa-button usa-button--outline margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
+    ) do %>
+  <%= render IconComponent.new(icon: :file_download, class: 'position-absolute') %>
+  <span class="padding-left-3"><%= t('forms.backup_code.download') %></span>
+<% end %>
+<%= button_tag(
+      type: :button,
+      data: { print: true },
+      class: 'usa-button usa-button--outline margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
+    ) do %>
+  <%= render IconComponent.new(icon: :print, class: 'position-absolute') %>
+  <span class="padding-left-3"><%= t('users.personal_key.print') %></span>
+<% end %>
+<%= render ClipboardButtonComponent.new(
+      clipboard_text: code,
+      outline: true,
+      class: 'margin-bottom-2 tablet:margin-bottom-0',
+    ) %>
+<div class="margin-y-5 clearfix">
+  <%= image_tag(
+        asset_url('alert/icon-lock-alert-important.svg'),
+        alt: '',
+        size: '80',
+        class: 'float-left margin-right-2',
+      ) %>
   <p class="margin-bottom-0">
     <strong><%= t('instructions.personal_key.email_title') %></strong>
   </p>
   <p><%= t('instructions.personal_key.email_body') %></p>
 </div>
-<br>
-<br>
-<br>
-<br>
-<p>
-  <%= button_to t('forms.buttons.continue'), update_path,
-                class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue margin-bottom-2',
-                'data-toggle': 'modal' %>
-</p>
+<%= button_to(
+      t('forms.buttons.continue'),
+      update_path,
+      class: 'display-block usa-button usa-button--big usa-button--wide personal-key-continue margin-top-5',
+      'data-toggle': 'modal',
+    ) %>
 <%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>
 <%== javascript_packs_tag_once 'personal-key-page-controller' %>
