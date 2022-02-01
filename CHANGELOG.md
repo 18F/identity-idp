@@ -23,6 +23,7 @@ Unreleased
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
 - Logging: Fix logging of transport attribute in RISC event delivery (#5881)
 - Security: Update JavaScript packages with known vulnerabilities (#5889)
+- Source Code: Reorganized view model classes to be presenters (#TBD)
 
 RC 175.2 - 2022-01-29
 ----------------------
