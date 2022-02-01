@@ -143,7 +143,7 @@ fr:
       intro: Activez le déverrouillage facial ou tactile comme méthode
         d’authentification sur cet appareil. Vous aurez besoin de cet appareil
         pour utiliser cette méthode à l’avenir. Commencez par donner un surnom à
-        votre appareil. facial pour accéder à votre compte.
+        votre appareil.
       login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
     webauthn_setup:
