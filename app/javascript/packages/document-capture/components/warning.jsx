@@ -41,7 +41,7 @@ function Warning({
   return (
     <>
       <img
-        alt=""
+        alt="Warning"
         src={getAssetPath('alert/warning-lg.svg')}
         width={54}
         height={54}
