@@ -111,7 +111,7 @@ normalize_yaml: ## Normalizes YAML files (alphabetizes keys, fixes line length, 
 optimize_svg: ## Optimizes SVG images
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
 	# See: https://github.com/svg/svgo/issues/888
-	find app/assets/images public -name '*.svg' | xargs ./node_modules/.bin/svgo --multipass --disable minifyStyles --disable=removeViewBox --config '{"plugins":[{"removeAttrs":{"attrs":"data-name"}}]}'
+	find app/assets/images public -name '*.svg' -not -name 'sprite.svg' | xargs ./node_modules/.bin/svgo --multipass --disable minifyStyles --disable=removeViewBox --config '{"plugins":[{"removeAttrs":{"attrs":"data-name"}}]}'
 
 optimize_assets: optimize_svg ## Optimizes all assets
 
