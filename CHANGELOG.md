@@ -5,12 +5,11 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: The "Delete Account" confirmation page has a new layout consistent with other content pages. (#5857)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869)
 
 ### Accessibility
 
 ### Bug Fixes Users Might Notice
-- Layout: Fix visual layout bugs with the personal key screen. (#5869)
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
