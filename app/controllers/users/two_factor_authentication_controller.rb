@@ -177,6 +177,8 @@ module Users
           otp_make_default_number: default,
           reauthn: reauthn?,
         )
+      elsif @telephony_result.error.is_a?(Telephony::OptOutError)
+        redirect_to login_two_factor_sms_opt_in_path
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
       end

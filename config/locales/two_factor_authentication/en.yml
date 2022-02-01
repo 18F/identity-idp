@@ -71,6 +71,10 @@ en:
       incorrectly too many times.
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
+    opt_in:
+      title: We could not send a security code to your phone number
+      opted_out_html: "You’ve opted out of receiving text messages at %{phone_number}. You can opt in and receive a security code again to that phone number."
+      cant_use_phone: "Can’t use your phone?"
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.

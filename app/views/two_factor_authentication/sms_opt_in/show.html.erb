@@ -1,0 +1,30 @@
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54, class: 'margin-bottom-2') %>
+
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
+
+<p>
+  <%= t(
+        'two_factor_authentication.opt_in.opted_out_html',
+        phone_number: content_tag(:strong, @phone_configuration&.masked_phone),
+      ) %>
+</p>
+
+<%= link_to t('two_factor_authentication.mobile_terms_of_service'),
+            MarketingSite.messaging_practices_url,
+            class: 'margin-top-2' %>
+
+<%= button_to t('forms.buttons.send_security_code'),
+            login_two_factor_sms_opt_in_path,
+            class: 'usa-button usa-button--big margin-top-4' %>
+
+<% if @has_other_auth_methods %>
+  <h2 class="margin-top-6"><%= t('two_factor_authentication.opt_in.cant_use_phone') %></h2>
+
+  <%= link_to t('two_factor_authentication.login_options_link_text'),
+              login_two_factor_options_path %>
+<% end %>
+
+<div class="margin-top-4 padding-top-1 border-top border-primary-light">
+  <%= link_to t('links.cancel'), sign_out_url %>
+</div>
+

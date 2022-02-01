@@ -20,9 +20,7 @@ class EditPhoneForm
   end
 
   def masked_number
-    phone_number = phone_configuration.phone
-    return '' if !phone_number || phone_number.blank?
-    "***-***-#{phone_number[-4..-1]}"
+    phone_configuration.masked_phone
   end
 
   def delivery_preference_sms?

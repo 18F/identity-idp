@@ -3,6 +3,7 @@ module Telephony
     class SmsSender
       def send(message:, to:, country_code:, otp: nil)
         error = ErrorSimulator.new.error_for_number(to)
+
         if error.nil?
           Message.messages.push(Message.new(body: message, to: to, otp: otp))
           success_response
@@ -20,6 +21,13 @@ module Telephony
           PhoneNumberInfo.new(
             type: :voip,
             carrier: 'Test VOIP Carrier',
+          )
+        # Mask opt out errors because we do a phone_info check before trying to send
+        # so it would prevent us from getting an opt out error where it would actually appaer
+        when OptOutError
+          PhoneNumberInfo.new(
+            type: :mobile,
+            carrier: 'Test Mobile Carrier',
           )
         when TelephonyError
           PhoneNumberInfo.new(

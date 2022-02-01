@@ -30,4 +30,19 @@ describe PhoneConfiguration do
       end
     end
   end
+
+  describe '#masked_phone' do
+    it 'is the masked phone number' do
+      expect(phone_configuration.masked_phone).to eq('***-***-1212')
+    end
+
+    context 'with a blank phone' do
+      let(:phone) { '   ' }
+      let(:phone_configuration) { build(:phone_configuration, phone: phone) }
+
+      it 'is the empty string' do
+        expect(phone_configuration.masked_phone).to eq('')
+      end
+    end
+  end
 end
