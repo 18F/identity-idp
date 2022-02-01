@@ -6,7 +6,7 @@ Unreleased
 
 ### Improvements/Changes
 - Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885)
-- Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#TBD)
+- Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
