@@ -1,6 +1,9 @@
 ---
 fr:
   errors:
+    alt:
+      warning: Avertissement
+      error: Erreur
     account_reset:
       cancel_token_invalid: le jeton d’annulation n’est pas valide
       cancel_token_missing: le jeton d’annulation est manquant

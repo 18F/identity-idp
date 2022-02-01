@@ -1,6 +1,9 @@
 ---
 es:
   errors:
+    alt:
+      warning: Advertencia
+      error: Error
     account_reset:
       cancel_token_invalid: el token de cancelación no es válido
       cancel_token_missing: falta el token de cancelación
