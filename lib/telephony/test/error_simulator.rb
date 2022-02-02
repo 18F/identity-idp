@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module Telephony
   module Test
     class ErrorSimulator
+      OPT_OUT_PHONE_NUMBER = '2255559999'
+
       def error_for_number(number)
         cleaned_number = number.gsub(/^\+1/, '').gsub(/\D/, '')
         case cleaned_number

@@ -344,6 +344,38 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
       end
+
+      context 'when Pinpoint throws an opt-out error' do
+        before do
+          @user.phone_configurations.first.tap do |phone_config|
+            phone_config.phone = Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER
+            phone_config.save!
+          end
+
+          allow(IdentityConfig.store).to receive(:sms_resubscribe_enabled).
+            and_return(sms_resubscribe_enabled)
+        end
+
+        context 'when SMS resubscribing is enabled' do
+          let(:sms_resubscribe_enabled) { true }
+
+          it 'redirects to the opt in controller' do
+            get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+            expect(response).to redirect_to(login_two_factor_sms_opt_in_path)
+          end
+        end
+
+        context 'when SMS resubscribing is disabled' do
+          let(:sms_resubscribe_enabled) { false }
+
+          it 'shows an opt out error flash' do
+            get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+            expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.opt_out'))
+          end
+        end
+      end
     end
 
     context 'when selecting voice OTP delivery' do
