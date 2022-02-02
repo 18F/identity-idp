@@ -25,6 +25,12 @@ Unreleased
 - Logging: Fix logging of transport attribute in RISC event delivery (#5881)
 - Security: Update JavaScript packages with known vulnerabilities (#5889)
 
+RC 175.3 - 2022-02-02
+
+### Bug Fixes Users Might Notice
+
+- Content security policy: An issue with the form action that prevented redirect to service providers was fixed (#5899)
+
 RC 175.2 - 2022-01-29
 ----------------------
 
