@@ -19,7 +19,7 @@
 <%= button_to t('forms.buttons.send_security_code'),
               login_two_factor_sms_opt_in_path,
               class: 'usa-button usa-button--wide usa-button--big',
-              form_class: 'margin-top-5 margin-bottom-5' %>
+              form_class: 'margin-y-5' %>
 
 <% if @has_other_auth_methods %>
   <h2 class="margin-top-5"><%= t('two_factor_authentication.opt_in.cant_use_phone') %></h2>
