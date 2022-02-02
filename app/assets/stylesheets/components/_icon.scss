@@ -13,30 +13,6 @@
   }
 }
 
-.ico {
-  &::before {
-    background-repeat: no-repeat;
-    background-size: 1rem;
-    content: '';
-    display: inline-block;
-    height: 1rem;
-    margin: -0.125rem 0.5rem -0.125rem 0;
-    width: 1rem;
-  }
-
-  &.ico-download::before {
-    background-image: url('ico-download.svg');
-  }
-
-  &.ico-refresh::before {
-    background-image: url('ico-refresh.svg');
-  }
-
-  &.ico-print::before {
-    background-image: url('ico-print.svg');
-  }
-}
-
 .ico-absolute {
   background-repeat: no-repeat;
   background-size: $h4;
