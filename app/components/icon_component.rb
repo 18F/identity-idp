@@ -260,6 +260,16 @@ class IconComponent < BaseComponent
   def icon_path
     # Revert back to using design system image once upstream CSP fix has been patched.
     # See: https://github.com/uswds/uswds/pull/4487
-    [image_path('sprite.svg'), '#', icon].join
+    [image_path('sprite.svg', host: asset_host), '#', icon].join
+  end
+
+  private
+
+  def asset_host
+    if Rails.env.production?
+      IdentityConfig.store.domain_name
+    elsif request
+      request.base_url
+    end
   end
 end
