@@ -16,7 +16,7 @@ module TwoFactorAuthentication
       if configuration.present?
         t(
           'two_factor_authentication.login_options.phone_info_html',
-          phone: configuration.masked_number,
+          phone: configuration.masked_phone,
         )
       else
         voip_note = if IdentityConfig.store.voip_block
