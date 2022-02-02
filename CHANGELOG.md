@@ -5,7 +5,19 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884, #5885, #5888)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5885, #5888)
+
+### Accessibility
+
+### Bug Fixes Users Might Notice
+
+### Behind the Scenes Changes Users Probably Won't Notice
+
+RC 176 - 2022-02-03
+----------------------
+
+### Improvements/Changes
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 
 ### Accessibility
