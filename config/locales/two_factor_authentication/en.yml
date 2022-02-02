@@ -75,6 +75,9 @@ en:
       title: We could not send a security code to your phone number
       opted_out_html: "You’ve opted out of receiving text messages at %{phone_number}. You can opt in and receive a security code again to that phone number."
       cant_use_phone: "Can’t use your phone?"
+      opted_out_last_30d_html: "You’ve opted out of receiving text messages at %{phone_number} within the last 30 days. We can only opt in a phone number once every 30 days."
+      wait_30d_opt_in: "After 30 days, you can opt in and receive a security code to that phone number."
+      error_retry: "Sorry, we are having trouble opting you in. Please try again."
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
         entered a landline, please select “Phone call” below.
