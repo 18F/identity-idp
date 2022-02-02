@@ -30,7 +30,7 @@ es:
     lockout_information: Mantenga esta información de forma segura. En caso de
       perder el método de autenticación, la cuenta se bloqueará y tendrá que
       crear una nueva.
-    login_intro: Usted configuró esto cuando creó su cuenta
+    login_intro: Usted configuró esto cuando creó su cuenta.
     login_options:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Use su aplicación de autenticación para obtener el código de seguridad.

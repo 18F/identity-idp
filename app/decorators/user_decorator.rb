@@ -64,10 +64,6 @@ class UserDecorator
     )
   end
 
-  def masked_two_factor_phone_number
-    MfaContext.new(user).phone_configurations.take&.masked_phone
-  end
-
   def active_identity_for(service_provider)
     user.active_identities.find_by(service_provider: service_provider.issuer)
   end

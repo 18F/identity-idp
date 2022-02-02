@@ -29,7 +29,7 @@ en:
       authentication method.
     lockout_information: Keep this information safe. You will be locked out and have
       to create a new account if you lose your authentication method.
-    login_intro: You set these up when you created your account
+    login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
       auth_app_info_html: Use your authentication application to get security code.
