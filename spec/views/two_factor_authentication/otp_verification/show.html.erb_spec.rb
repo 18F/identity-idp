@@ -4,7 +4,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
   let(:presenter_data) do
     {
       otp_delivery_preference: 'sms',
-      phone_number: '***-***-1212',
+      phone_number: '(***) ***-1212',
       code_value: '12777',
       unconfirmed_user: false,
     }
