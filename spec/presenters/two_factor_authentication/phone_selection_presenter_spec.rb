@@ -8,7 +8,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
 
       it 'includes the masked the number' do
-        expect(presenter.info).to include('***-***-5309')
+        expect(presenter.info).to include('(***) ***-5309')
       end
     end
 
@@ -21,7 +21,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       end
 
       it 'does not include a masked number' do
-        expect(presenter.info).to_not include('***-***')
+        expect(presenter.info).to_not include('***')
       end
 
       context 'when VOIP numbers are blocked' do

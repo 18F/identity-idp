@@ -54,7 +54,7 @@ class RiscDeliveryJob < ApplicationJob
     Rails.logger.warn(
       {
         event: 'http_push_error',
-        transport: 'direct',
+        transport: inline? ? 'direct' : 'async',
         event_type: event_type,
         service_provider: issuer,
         error: err.message,
@@ -66,7 +66,7 @@ class RiscDeliveryJob < ApplicationJob
     Rails.logger.warn(
       {
         event: 'http_push_rate_limit',
-        transport: 'direct',
+        transport: inline? ? 'direct' : 'async',
         event_type: event_type,
         service_provider: issuer,
         error: err.message,

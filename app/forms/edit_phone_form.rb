@@ -5,6 +5,8 @@ class EditPhoneForm
 
   attr_reader :user, :phone_configuration, :delivery_preference, :make_default_number
 
+  delegate :masked_phone, to: :phone_configuration
+
   def initialize(user, phone_configuration)
     @user = user
     @phone_configuration = phone_configuration
@@ -17,10 +19,6 @@ class EditPhoneForm
     success = valid?
     update_phone_configuration if success
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
-  end
-
-  def masked_number
-    phone_configuration.masked_phone
   end
 
   def delivery_preference_sms?

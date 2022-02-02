@@ -127,8 +127,6 @@ Rails.application.routes.draw do
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
 
-        get '/oidc' => 'oidc_test#index'
-
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
         get '/push_notification' => 'push_notification#index'

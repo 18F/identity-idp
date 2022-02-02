@@ -14,7 +14,9 @@ class PhoneConfiguration < ApplicationRecord
 
   def masked_phone
     return '' if phone.blank?
-    "***-***-#{formatted_phone[-4..-1]}"
+
+    formatted = Phonelib.parse(phone).national
+    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
   end
 
   def selection_presenters

@@ -13,8 +13,8 @@ RSpec.describe 'SVG files' do
         )
       end
 
-      it 'defines viewBox attribute on root svg tag' do
-        expect(subject.css(':root[viewBox]')).to be_present
+      it 'defines viewBox attribute' do
+        expect(subject.css('[viewBox]')).to be_present
       end
     end
   end
