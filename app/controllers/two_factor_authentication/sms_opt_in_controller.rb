@@ -60,8 +60,7 @@ module TwoFactorAuthentication
 
     def has_other_auth_methods?
       mfa_context.two_factor_configurations.
-        select { |config| config.mfa_enabled? && config != @phone_configuration }.
-        present?
+        any? { |config| config.mfa_enabled? && config != @phone_configuration }
     end
   end
 end
