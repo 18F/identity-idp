@@ -127,7 +127,9 @@ en:
       continue: Continue
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
-      intro: Use Touch or Face Unlock to access your account.
+      intro: Enable Face or Touch Unlock as an authentication method on this device.
+        You’ll need this device to use this method in the future. Start by
+        giving your device a nickname.
       login_text: 'When you are ready, press the button:'
       nickname: Device nickname
     webauthn_setup:

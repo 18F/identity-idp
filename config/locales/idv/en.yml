@@ -146,7 +146,7 @@ en:
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
-      come_back_later: Come back soon.
+      come_back_later: Come back soon
       mail:
         resend: Want another letter?
         verify: Want a letter?

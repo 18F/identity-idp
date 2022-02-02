@@ -2,17 +2,10 @@ require 'rails_helper'
 
 RSpec.describe ClipboardButtonComponent, type: :component do
   let(:clipboard_text) { 'Copy Text' }
-  let(:content) { 'Button' }
   let(:tag_options) { {} }
 
   subject(:rendered) do
-    render_inline ClipboardButtonComponent.new(clipboard_text: clipboard_text, **tag_options) do
-      content
-    end
-  end
-
-  it 'renders button content' do
-    expect(rendered).to have_content(content)
+    render_inline ClipboardButtonComponent.new(clipboard_text: clipboard_text, **tag_options)
   end
 
   it 'renders with clipboard text as data-attribute' do
