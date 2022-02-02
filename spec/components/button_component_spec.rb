@@ -39,4 +39,12 @@ RSpec.describe ButtonComponent, type: :component do
       expect(rendered).to have_css('button[type=submit]')
     end
   end
+
+  context 'with custom button tag factory' do
+    it 'sends to factory method' do
+      rendered = render_inline ButtonComponent.new('/', factory: :button_to) { content }
+
+      expect(rendered).to have_css('form[action="/"]')
+    end
+  end
 end
