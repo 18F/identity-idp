@@ -64,10 +64,6 @@ class UserDecorator
     )
   end
 
-  def masked_two_factor_phone_number
-    masked_number(MfaContext.new(user).phone_configurations.take&.phone)
-  end
-
   def active_identity_for(service_provider)
     user.active_identities.find_by(service_provider: service_provider.issuer)
   end
@@ -158,11 +154,6 @@ class UserDecorator
   end
 
   private
-
-  def masked_number(number)
-    return '' if number.blank?
-    "***-***-#{number[-4..-1]}"
-  end
 
   def lockout_period
     return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
