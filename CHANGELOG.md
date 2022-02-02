@@ -5,7 +5,8 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885, #5888)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884, #5885, #5888)
+- Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
@@ -19,8 +20,10 @@ Unreleased
 - Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
+- Testing: Remove smoke tests (#5883)
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
 - Logging: Fix logging of transport attribute in RISC event delivery (#5881)
+- Security: Update JavaScript packages with known vulnerabilities (#5889)
 
 RC 175.2 - 2022-01-29
 ----------------------
