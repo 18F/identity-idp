@@ -41,20 +41,22 @@ es:
       are_you_sure: '¿Estás seguro de que no tienes acceso a ninguno de tus métodos de
         seguridad?'
       delete_account: Eliminar su cuenta
-      delete_account_info: Eliminar su cuenta existente y crear una nueva le permite
-        usar la misma dirección de correo electrónico y configurar nuevas
-        opciones de seguridad. Sin embargo, eliminar eliminará cualquier
-        aplicación de agencia que haya vinculado a su cuenta y deberá restaurar
-        cada conexión. <br><br> Si continúas, tú primero recibirá una
-        confirmación por correo electrónico. Como medida de seguridad, lo hará
-        reciba otro correo electrónico con el enlace para seguir eliminando su
-        cuenta las 24 horas después del correo electrónico de confirmación
-        inicial llega.
-      info: Si no puede acceder a su cuenta a través de las opciones de seguridad que
-        configuró anteriormente, eliminar la cuenta y crear una nueva es la
-        única opción.  <br><br> No podemos deshacer la eliminación de una
-        cuenta, así que por favor asegúrese de no tener otra opción de seguridad
-        que puede usar.
+      delete_account_info:
+        - Eliminar su cuenta existente y crear una nueva le permite usar la
+          misma dirección de correo electrónico y configurar nuevas opciones de
+          seguridad. Sin embargo, eliminar eliminará cualquier aplicación de
+          agencia que haya vinculado a su cuenta y deberá restaurar cada
+          conexión.
+        - Si continúas, tú primero recibirá una confirmación por correo
+          electrónico. Como medida de seguridad, lo hará reciba otro correo
+          electrónico con el enlace para seguir eliminando su cuenta las 24
+          horas después del correo electrónico de confirmación inicial llega.
+      info:
+        - Si no puede acceder a su cuenta a través de las opciones de seguridad
+          que configuró anteriormente, eliminar la cuenta y crear una nueva es
+          la única opción.
+        - No podemos deshacer la eliminación de una cuenta, así que por favor
+          asegúrese de no tener otra opción de seguridad que puede usar.
       no_cancel: No, cancelar
       title: Eliminación y restablecimiento de cuenta
-      yes_continue: Sí, continúa la eliminación.
+      yes_continue: Sí, continúa la eliminación

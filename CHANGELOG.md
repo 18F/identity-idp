@@ -5,7 +5,21 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5880, #5885)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5888)
+- Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
+
+### Accessibility
+
+### Bug Fixes Users Might Notice
+
+### Behind the Scenes Changes Users Probably Won't Notice
+- Maintenance: Improve changelog CI check to detail opt-out behavior (#5897)
+
+RC 176 - 2022-02-03
+----------------------
+
+### Improvements/Changes
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
@@ -19,7 +33,16 @@ Unreleased
 - Alerting: Manage alerts for duplicate scheduled jobs (#5871)
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
 - Dependencies: Update various dependencies (#5877)
+- Testing: Remove smoke tests (#5883)
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
+- Logging: Fix logging of transport attribute in RISC event delivery (#5881)
+- Security: Update JavaScript packages with known vulnerabilities (#5889)
+
+RC 175.3 - 2022-02-02
+
+### Bug Fixes Users Might Notice
+
+- Content security policy: An issue with the form action that prevented redirect to service providers was fixed (#5899)
 
 RC 175.2 - 2022-01-29
 ----------------------
@@ -35,6 +58,7 @@ RC 175.1 - 2022-01-27
 
 ### Bug Fixes Users Might Notice
 - Bug Fix: Fix a bug on the account screen that caused proofed users who reset their password to see a 500 error. (#5864)
+- Performance: Avoid unnecessary database query (#5816)
 
 RC 175 - 2022-01-27
 ----------------------

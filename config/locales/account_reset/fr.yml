@@ -40,20 +40,23 @@ fr:
     request:
       are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes de sécurité?
       delete_account: Supprimer votre compte
-      delete_account_info: Supprimer votre compte existant et en créer un nouveau vous
-        permet d’utiliser la même adresse e-mail et de définir de nouvelles
-        options de sécurité. cependant, la suppression supprimera toutes les
-        applications d’agence que vous avez liées à votre compte et vous devrez
-        restaurer chaque connexion. <br> <br> Si vous continuez, vous recevra
-        d’abord un email de confirmation. Par mesure de sécurité, vous devrez
-        recevoir un autre e-mail avec le lien pour continuer la suppression de
-        votre compte 24 heures après l’email de confirmation initial arrive.
-      info: Si vous ne pouvez pas accéder à votre compte via les options de sécurité
-        que vous avez définies auparavant, la suppression de votre compte et la
-        création d’un nouveau compte est la seule option.  <br><br> Nous ne
-        pouvons pas annuler un compte supprimer, alors s’il vous plaît
-        assurez-vous que vous n’avez pas une autre option de sécurité que vous
-        pouvez utiliser à la place.
+      delete_account_info:
+        - Supprimer votre compte existant et en créer un nouveau vous permet
+          d’utiliser la même adresse e-mail et de définir de nouvelles options
+          de sécurité. cependant, la suppression supprimera toutes les
+          applications d’agence que vous avez liées à votre compte et vous
+          devrez restaurer chaque connexion.
+        - Si vous continuez, vous recevra d’abord un email de confirmation. Par
+          mesure de sécurité, vous devrez recevoir un autre e-mail avec le lien
+          pour continuer la suppression de votre compte 24 heures après l’email
+          de confirmation initial arrive.
+      info:
+        - Si vous ne pouvez pas accéder à votre compte via les options de
+          sécurité que vous avez définies auparavant, la suppression de votre
+          compte et la création d’un nouveau compte est la seule option.
+        - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît
+          assurez-vous que vous n’avez pas une autre option de sécurité que vous
+          pouvez utiliser à la place.
       no_cancel: Non, annuler
       title: Suppression de compte et réinitialisation
-      yes_continue: Oui, continuez la suppression.
+      yes_continue: Oui, continuez la suppression

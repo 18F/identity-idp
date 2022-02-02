@@ -54,7 +54,7 @@ describe('document-capture/hooks/use-async', () => {
       .returns(
         new Promise((_resolve, _reject) => {
           reject = () => {
-            _reject();
+            _reject(new Error());
           };
         }),
       )

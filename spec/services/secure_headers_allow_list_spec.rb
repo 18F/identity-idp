@@ -62,5 +62,18 @@ RSpec.describe SecureHeadersAllowList do
         ["'self'", 'https://example1.com', 'http://example2.com'],
       )
     end
+
+    it 'handles URLs that include URL fragments' do
+      redirect_uri = 'https://auth.example.com/#/redirect'
+      allowed_redirect_uris = [
+        'https://example.com/#/another_one',
+      ]
+
+      result = csp_with_sp_redirect_uris(redirect_uri, allowed_redirect_uris)
+
+      expect(result).to match_array(
+        ["'self'", 'https://auth.example.com', 'https://example.com'],
+      )
+    end
   end
 end

@@ -10,6 +10,7 @@
 }
 
 .separator-text__code {
+  @include u-font-family('mono');
   font-size: 1.5rem;
 
   &::after {
