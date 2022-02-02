@@ -16,7 +16,7 @@ module TwoFactorAuthentication
       if configuration.present?
         t(
           'two_factor_authentication.login_options.phone_info_html',
-          phone: masked_number(configuration.phone),
+          phone: configuration.masked_phone,
         )
       else
         voip_note = if IdentityConfig.store.voip_block
@@ -36,13 +36,6 @@ module TwoFactorAuthentication
 
     def disabled?
       VendorStatus.new.all_phone_vendor_outage?
-    end
-
-    private
-
-    def masked_number(number)
-      return '' if number.blank?
-      "***-***-#{number[-4..-1]}"
     end
   end
 end

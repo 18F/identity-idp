@@ -2,31 +2,29 @@
 
 <%= render PageHeadingComponent.new.with_content(t('account_reset.request.title')) %>
 
-<p class='mt-tiny margin-bottom-0'>
-  <%= t('account_reset.request.info').html_safe %>
-</p>
-<br/>
+<% t('account_reset.request.info').each do |info_p| %>
+  <p><%= info_p %></p>
+<% end %>
 
-<h2 class='margin-y-0'><%= t('account_reset.request.delete_account') %></h2>
-<p class='mt-tiny margin-bottom-0'><%= t('account_reset.request.delete_account_info').html_safe %></p>
+<h2><%= t('account_reset.request.delete_account') %></h2>
 
-<br/>
+<% t('account_reset.request.delete_account_info').each do |info_p| %>
+  <p><%= info_p %></p>
+<% end %>
 
-<p class='margin-y-2 text-bold'><%= t('account_reset.request.are_you_sure') %></p>
+<p><strong><%= t('account_reset.request.are_you_sure') %></strong></p>
+
 <%= button_to(
       root_url,
       method: :get,
-      class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
-      'data-toggle': 'modal',
+      form_class: 'margin-top-4 margin-bottom-2',
+      class: 'usa-button usa-button--big usa-button--wide',
     ) { t('account_reset.request.no_cancel') } %>
 <%= button_to(
       account_reset_request_path,
       class: 'usa-button usa-button--unstyled',
     ) { t('account_reset.request.yes_continue') } %>
 
-<br/>
-<br/>
-<br/>
-<hr/>
-
-<%= link_to t('forms.buttons.back'), root_url %>
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('links.cancel'), root_url %>
+<% end %>
