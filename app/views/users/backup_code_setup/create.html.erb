@@ -33,8 +33,8 @@
   <div class="margin-top-0">
     <% if desktop_device? %>
       <%= link_to(backup_code_download_path, class: 'usa-button usa-button--outline') do %>
-        <%= render IconComponent.new(icon: :file_download) %>
-        <%= t('forms.backup_code.download') %>
+        <%= render IconComponent.new(icon: :file_download) -%>
+        <% concat(t('forms.backup_code.download')) %>
       <% end %>
     <% end %>
     <%= button_tag(
@@ -42,8 +42,8 @@
           data: { print: '' },
           class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
         ) do %>
-      <%= render IconComponent.new(icon: :print) %>
-      <%= t('forms.backup_code.print') %>
+      <%= render IconComponent.new(icon: :print) -%>
+      <% concat(t('forms.backup_code.print')) %>
     <% end %>
     <%= render ClipboardButtonComponent.new(
           clipboard_text: @codes.join(' '),

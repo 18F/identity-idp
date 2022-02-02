@@ -45,8 +45,8 @@
         ),
         class: 'usa-button usa-button--outline margin-bottom-neg-1',
       ) do %>
-    <%= render IconComponent.new(icon: :loop) %>
-    <%= t('links.two_factor_authentication.get_another_code') %>
+    <%= render IconComponent.new(icon: :loop) -%>
+    <% concat(t('links.two_factor_authentication.get_another_code')) %>
   <% end %>
 <% end %>
 

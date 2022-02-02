@@ -39,8 +39,8 @@
 <%= button_to idv_resend_otp_path,
               method: :post,
               class: 'usa-button usa-button--outline margin-bottom-4' do %>
-  <%= render IconComponent.new(icon: :loop) %>
-  <%= t('links.two_factor_authentication.get_another_code') %>
+  <%= render IconComponent.new(icon: :loop) -%>
+  <% concat(t('links.two_factor_authentication.get_another_code')) %>
 <% end %>
 
 <p>
