@@ -5,8 +5,21 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884, #5885)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5884)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
+
+### Accessibility
+
+### Bug Fixes Users Might Notice
+
+### Behind the Scenes Changes Users Probably Won't Notice
+- Maintenance: Improve changelog CI check to detail opt-out behavior (#5897)
+
+RC 176 - 2022-02-03
+----------------------
+
+### Improvements/Changes
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
