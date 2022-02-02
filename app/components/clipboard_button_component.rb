@@ -13,11 +13,6 @@ class ClipboardButtonComponent < ButtonComponent
   end
 
   def content
-    safe_join(
-      [
-        render(IconComponent.new(icon: :content_copy, class: 'position-absolute')),
-        content_tag(:span, t('links.copy'), class: 'padding-left-3'),
-      ],
-    )
+    safe_join([render(IconComponent.new(icon: :content_copy)), t('links.copy')])
   end
 end

@@ -12,16 +12,16 @@
       idv_download_personal_key_path,
       class: 'usa-button usa-button--outline margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ) do %>
-  <%= render IconComponent.new(icon: :file_download, class: 'position-absolute') %>
-  <span class="padding-left-3"><%= t('forms.backup_code.download') %></span>
+  <%= render IconComponent.new(icon: :file_download) %>
+  <%= t('forms.backup_code.download') %>
 <% end %>
 <%= button_tag(
       type: :button,
       data: { print: true },
       class: 'usa-button usa-button--outline margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ) do %>
-  <%= render IconComponent.new(icon: :print, class: 'position-absolute') %>
-  <span class="padding-left-3"><%= t('users.personal_key.print') %></span>
+  <%= render IconComponent.new(icon: :print) %>
+  <%= t('users.personal_key.print') %>
 <% end %>
 <%= render ClipboardButtonComponent.new(
       clipboard_text: code,

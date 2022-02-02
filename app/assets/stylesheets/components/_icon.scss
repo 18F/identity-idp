@@ -1,3 +1,18 @@
+// Upstream: https://github.com/uswds/uswds/pull/4493
+.usa-icon {
+  .usa-button > &:first-child {
+    // Note that unlike the upstream pull request, there should not be any margins offsetting to
+    // account for line height, since Login.gov Design System normalizes button line height to 1.
+    float: left;
+    margin-right: 0.25rem;
+  }
+
+  .usa-button:not(.usa-button--unstyled) > &:first-child {
+    margin-left: -0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
 .ico {
   &::before {
     background-repeat: no-repeat;
