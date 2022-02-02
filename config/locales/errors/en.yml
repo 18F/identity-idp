@@ -1,9 +1,6 @@
 ---
 en:
   errors:
-    alt:
-      warning: Warning
-      error: Error
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing
@@ -13,6 +10,9 @@ en:
         Please try clicking the link in your email again.
       granted_token_missing: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
+    alt:
+      error: Error
+      warning: Warning
     attributes:
       password:
         too_short:
