@@ -1,1 +1,8 @@
-<%= public_send(factory, content, *factory_args, **tag_options, type: tag_type, class: css_class) %>
+<%= public_send(
+      factory,
+      safe_join([icon_content, content].compact),
+      *factory_args,
+      **tag_options,
+      type: tag_type,
+      class: css_class,
+    ) %>

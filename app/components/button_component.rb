@@ -1,11 +1,12 @@
 class ButtonComponent < BaseComponent
-  attr_reader :type, :factory_args, :factory, :outline, :tag_options
+  attr_reader :type, :factory_args, :factory, :icon, :outline, :tag_options
 
   DEFAULT_BUTTON_TYPE = :button
 
-  def initialize(*factory_args, factory: :button_tag, outline: false, **tag_options)
+  def initialize(*factory_args, factory: :button_tag, icon: nil, outline: false, **tag_options)
     @factory_args = factory_args
     @factory = factory
+    @icon = icon
     @outline = outline
     @tag_options = tag_options
   end
@@ -18,5 +19,9 @@ class ButtonComponent < BaseComponent
 
   def tag_type
     tag_options.fetch(:type, DEFAULT_BUTTON_TYPE)
+  end
+
+  def icon_content
+    render IconComponent.new(icon: icon) if icon
   end
 end

@@ -40,6 +40,15 @@ RSpec.describe ButtonComponent, type: :component do
     end
   end
 
+  context 'with icon' do
+    it 'renders an icon' do
+      rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+      expect(rendered).to have_css('use[href$="#print"]')
+      expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
+    end
+  end
+
   context 'with custom button tag factory' do
     it 'sends to factory method' do
       rendered = render_inline ButtonComponent.new('/', factory: :button_to) { content }
