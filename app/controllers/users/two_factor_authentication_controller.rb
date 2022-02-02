@@ -179,6 +179,7 @@ module Users
         )
       elsif @telephony_result.error.is_a?(Telephony::OptOutError) &&
             IdentityConfig.store.sms_resubscribe_enabled
+        flash.delete(:info)
         redirect_to login_two_factor_sms_opt_in_path
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
