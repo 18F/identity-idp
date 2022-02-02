@@ -14,7 +14,7 @@ module Telephony
           InvalidPhoneNumberError.new('Simulated phone number error')
         when '2255552000'
           InvalidCallingAreaError.new('Simulated calling area error')
-        when '2255559999'
+        when OPT_OUT_PHONE_NUMBER
           OptOutError.new('Simulated opt out error')
         end
       end
