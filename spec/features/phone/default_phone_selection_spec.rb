@@ -16,7 +16,7 @@ describe 'default phone selection' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
-          number: '***-***-1212',
+          number: '(***) ***-1212',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
@@ -45,7 +45,7 @@ describe 'default phone selection' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
-          number: '***-***-3434',
+          number: '(***) ***-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
@@ -84,7 +84,7 @@ describe 'default phone selection' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
           'instructions.mfa.sms.number_message_html',
-          number: '***-***-3111',
+          number: '(***) ***-3111',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
       end
@@ -115,7 +115,7 @@ describe 'default phone selection' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
           'instructions.mfa.voice.number_message_html',
-          number: '***-***-3434',
+          number: '(***) ***-3434',
         )
       end
     end
