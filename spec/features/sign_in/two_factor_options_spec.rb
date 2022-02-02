@@ -275,8 +275,8 @@ describe '2FA options when signing in' do
         to have_selector("#two_factor_options_form_selection_sms_#{second_id}", count: 1)
       expect(page).to_not have_content('+1 202-555-1212')
       expect(page).to_not have_content('+1 202-555-1213')
-      expect(page).to have_content('***-***-1212')
-      expect(page).to have_content('***-***-1213')
+      expect(page).to have_content('(***) ***-1212')
+      expect(page).to have_content('(***) ***-1213')
       expect(page).
         to have_selector("#two_factor_options_form_selection_voice_#{first_id}", count: 1)
       expect(page).

@@ -11,6 +11,7 @@ Unreleased
 ### Accessibility
 
 ### Bug Fixes Users Might Notice
+- Phone numbers: Improve formatting of masked numbers for international phone numbers (#5895)
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Improve changelog CI check to detail opt-out behavior (#5897)
