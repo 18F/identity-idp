@@ -42,8 +42,9 @@ class SecureHeadersAllowList
   end
 
   def self.reduce_web_sp_uri(uri)
-    uri.path = ''
+    uri.fragment = nil
     uri.query = nil
+    uri.path = ''
     uri.to_s
   end
 
