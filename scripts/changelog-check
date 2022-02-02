@@ -74,6 +74,8 @@ def main(args)
       <<~ERROR,
         A valid changelog line was not found.
         Changelog entries should be formatted as: - CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
+
+        Include "[skip changelog]" in a commit message to bypass this check.
       ERROR
     )
 
