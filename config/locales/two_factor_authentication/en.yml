@@ -74,6 +74,7 @@ en:
     opt_in:
       cant_use_phone: 'Can’t use your phone?'
       error_retry: 'Sorry, we are having trouble opting you in. Please try again.'
+      immediate_assistance: 'Need immediate assistance? Here’s how to get help:'
       opted_out_html: 'You’ve opted out of receiving text messages at %{phone_number}.
         You can opt in and receive a security code again to that phone number.'
       opted_out_last_30d_html: 'You’ve opted out of receiving text messages at

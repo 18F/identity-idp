@@ -21,7 +21,7 @@
 <%= render(
       'shared/troubleshooting_options',
       heading_tag: :h3,
-      heading: 'Need immediate assistance? Here’s how to get help:',
+      heading: t('two_factor_authentication.opt_in.immediate_assistance'),
       options: [
         decorated_session.sp_name && {
           url: return_to_sp_cancel_path(location: 'sms_resubscribe_error'),
