@@ -5,7 +5,7 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5904)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 
 ### Accessibility
