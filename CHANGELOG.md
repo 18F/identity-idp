@@ -28,7 +28,6 @@ RC 176 - 2022-02-03
 - Document capture: The image file field label is no longer set to file names so that screen readers do not read the filenames to users. (#5858)
 
 ### Bug Fixes Users Might Notice
-- Phone numbers: Improve formatting of masked numbers for international phone numbers (#5895)
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
