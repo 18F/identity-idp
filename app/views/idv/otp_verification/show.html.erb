@@ -36,12 +36,14 @@
   </div>
 <% end %>
 
-<%= button_to idv_resend_otp_path,
-              method: :post,
-              class: 'usa-button usa-button--outline margin-bottom-4' do %>
-  <%= render IconComponent.new(icon: :loop) -%>
-  <% concat(t('links.two_factor_authentication.get_another_code')) %>
-<% end %>
+<%= render ButtonComponent.new(
+      idv_resend_otp_path,
+      method: :post,
+      factory: :button_to,
+      outline: true,
+      icon: :loop,
+      class: 'margin-bottom-4',
+    ).with_content(t('links.two_factor_authentication.get_another_code')) %>
 
 <p>
   <%= t('instructions.mfa.wrong_number') %><br>
