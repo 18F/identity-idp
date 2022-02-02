@@ -15,7 +15,18 @@ Unreleased
 - Maintenance: Add CI check to include changelog message in change requests (#5836)
 - Dependencies: Upgrade the Login.gov Design System to the latest version (#5860)
 
-RC 175.2
+RC 175.3 - 2022-02-02
+----------------------
+
+### Bug Fixes Users Might Notice
+
+- Content security policy: An issue with the form action that prevented redirect to service providers was fixed (#5899)
+
+RC 175.2 - 2022-01-29
+----------------------
+
+### Improvements/Changes
+- Authentication: Add the ability to ban users (#5875)
 
 ### Behind the Scenes Changes Users Probably Won't Notice
 - Identity Verification: Add more phone number validation to phone confirmation (#5873)
