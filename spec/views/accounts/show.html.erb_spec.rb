@@ -8,7 +8,7 @@ describe 'accounts/show.html.erb' do
     allow(user).to receive(:decorate).and_return(decorated_user)
     allow(view).to receive(:current_user).and_return(user)
     assign(
-      :view_model,
+      :presenter,
       AccountShowPresenter.new(
         decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
         sp_session_request_url: nil, sp_name: nil,
@@ -130,7 +130,7 @@ describe 'accounts/show.html.erb' do
     let(:sp) { build(:service_provider, return_to_sp_url: 'https://www.example.com/auth') }
     before do
       assign(
-        :view_model,
+        :presenter,
         AccountShowPresenter.new(
           decrypted_pii: nil, personal_key: 'abc123', decorated_user: decorated_user,
           sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,

@@ -41,7 +41,7 @@ describe AccountsController do
 
         sign_in user
 
-        view_model = AccountShowPresenter.new(
+        presenter = AccountShowPresenter.new(
           decrypted_pii: nil,
           personal_key: nil,
           sp_session_request_url: nil,
@@ -49,7 +49,7 @@ describe AccountsController do
           decorated_user: user.decorate,
           locked_for_session: false,
         )
-        allow(subject).to receive(:view_model).and_return(view_model)
+        allow(subject).to receive(:presenter).and_return(presenter)
 
         get :show
 
@@ -85,7 +85,7 @@ describe AccountsController do
 
           sign_in user
 
-          view_model = AccountShowPresenter.new(
+          presenter = AccountShowPresenter.new(
             decrypted_pii: nil,
             personal_key: nil,
             sp_session_request_url: nil,
@@ -93,7 +93,7 @@ describe AccountsController do
             decorated_user: user.decorate,
             locked_for_session: false,
           )
-          allow(subject).to receive(:view_model).and_return(view_model)
+          allow(subject).to receive(:presenter).and_return(presenter)
 
           get :show
 

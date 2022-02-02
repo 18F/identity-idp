@@ -3,11 +3,11 @@
 <% if @presenter.showing_any_partials? %>
   <div class="margin-bottom-8">
     <% if @presenter.show_personal_key_partial? %>
-      <%= render 'accounts/personal_key', view_model: @presenter %>
+      <%= render 'accounts/personal_key', presenter: @presenter %>
     <% end %>
 
     <% if @presenter.show_password_reset_partial? %>
-      <%= render 'accounts/password_reset', view_model: @presenter %>
+      <%= render 'accounts/password_reset', presenter: @presenter %>
     <% end %>
 
     <% if @presenter.show_gpo_partial? %>
@@ -19,12 +19,12 @@
     <% end %>
 
     <% if @presenter.show_service_provider_continue_partial? %>
-      <%= render 'accounts/service_provider_continue', view_model: @presenter %>
+      <%= render 'accounts/service_provider_continue', presenter: @presenter %>
     <% end %>
   </div>
 <% end %>
 
-<%= render 'accounts/header', view_model: @presenter %>
+<%= render 'accounts/header', presenter: @presenter %>
 
 <h2><%= t('account.index.email_preferences') %></h2>
 
