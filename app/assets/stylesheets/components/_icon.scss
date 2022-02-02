@@ -1,9 +1,12 @@
 // Upstream: https://github.com/uswds/uswds/pull/4493
 .usa-icon {
   .usa-button > &:first-child {
-    // Note that unlike the upstream pull request, there should not be any margins offsetting to
-    // account for line height, since Login.gov Design System normalizes button line height to 1.
-    float: left;
+    // Note: This diverges from the upstream pull request in a couple ways:
+    // 1. There should not be any margins offsetting to account for line height, since Login.gov
+    //    Design System normalizes button line height to 1.
+    // 2. Float is replaced by `vertical-align`, since otherwise it will have the effect of having
+    //    the icon appear to the far edge of the button, rather than next to the text.
+    vertical-align: bottom;
     margin-right: 0.25rem;
   }
 
