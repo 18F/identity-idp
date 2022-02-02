@@ -11,7 +11,7 @@ locals:
 <% if local_assigns.fetch(:type, :error) == :error
   image_src = 'alert/fail-x.svg'
   troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
-  alt =  t('errors.alt.error')
+  alt = t('errors.alt.error')
 else
   image_src = 'alert/warning-lg.svg'
   troubleshooting_heading = t('components.troubleshooting_options.default_heading')

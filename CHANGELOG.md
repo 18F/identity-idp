@@ -11,6 +11,7 @@ Unreleased
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
 - Document capture: The image file field label is no longer set to file names so that screen readers do not read the filenames to users. (#5858)
+- Warning and Error informative images had an empty alt atribute. (#5593)
 
 ### Bug Fixes Users Might Notice
 
