@@ -32,12 +32,20 @@
   </table>
   <div class="margin-top-0">
     <% if desktop_device? %>
-      <%= link_to t('forms.backup_code.download'), backup_code_download_path,
-                  class: 'usa-button usa-button--outline ico ico-download' %>
+      <%= render ButtonComponent.new(
+            action: ->(content, **tag_options) do
+              link_to(backup_code_download_path, **tag_options) { content }
+            end,
+            outline: true,
+            icon: :file_download,
+          ).with_content(t('forms.backup_code.download')) %>
     <% end %>
-    <%= link_to t('forms.backup_code.print'), '#',
-                data: { print: true },
-                class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-print' -%>
+    <%= render ButtonComponent.new(
+          icon: :print,
+          outline: true,
+          data: { print: '' },
+          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+        ).with_content(t('forms.backup_code.print')) %>
     <%= render ClipboardButtonComponent.new(
           clipboard_text: @codes.join(' '),
           outline: true,

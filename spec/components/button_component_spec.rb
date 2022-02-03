@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ButtonComponent, type: :component do
+  include ActionView::Context
+  include ActionView::Helpers::TagHelper
+
   let(:type) { nil }
   let(:outline) { false }
   let(:content) { 'Button' }
@@ -10,7 +13,9 @@ RSpec.describe ButtonComponent, type: :component do
     }.compact
   end
 
-  subject(:rendered) { render_inline ButtonComponent.new(outline: outline, **options) { content } }
+  subject(:rendered) do
+    render_inline ButtonComponent.new(outline: outline, **options).with_content(content)
+  end
 
   it 'renders button content' do
     expect(rendered).to have_content(content)
@@ -37,6 +42,31 @@ RSpec.describe ButtonComponent, type: :component do
 
     it 'renders as type' do
       expect(rendered).to have_css('button[type=submit]')
+    end
+  end
+
+  context 'with icon' do
+    it 'renders an icon' do
+      rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+      expect(rendered).to have_css('use[href$="#print"]')
+      expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
+    end
+  end
+
+  context 'with custom button action' do
+    it 'calls the action with content and tag_options' do
+      rendered = render_inline ButtonComponent.new(
+        action: ->(content, **tag_options) do
+          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }) { content }
+        end,
+        class: 'custom-class',
+      ).with_content(content)
+
+      expect(rendered).to have_css(
+        'lg-custom-button[type="button"][data-extra].custom-class',
+        text: content,
+      )
     end
   end
 end
