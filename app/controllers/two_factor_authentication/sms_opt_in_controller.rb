@@ -22,7 +22,7 @@ module TwoFactorAuthentication
         response.to_h.merge(
           new_user: new_user?,
           has_other_auth_methods: has_other_auth_methods?,
-          phone_configuration_id: @phone_configuration.id
+          phone_configuration_id: @phone_configuration.id,
         ),
       )
 

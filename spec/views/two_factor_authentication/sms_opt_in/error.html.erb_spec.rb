@@ -74,7 +74,6 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
         )
 
         doc = Nokogiri::HTML(rendered)
-
         expect(doc.css('.troubleshooting-options__options li').length).to eq(1)
       end
     end
