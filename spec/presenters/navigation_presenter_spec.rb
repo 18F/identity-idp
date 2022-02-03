@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Navigation do
+RSpec.describe NavigationPresenter do
   let(:user) { build(:user) }
 
-  subject(:navigation) { Navigation.new(user: user, url_options: {}) }
+  subject(:navigation) { NavigationPresenter.new(user: user, url_options: {}) }
 
   describe '#navigation_items' do
     describe 'personal key' do

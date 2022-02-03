@@ -144,6 +144,10 @@ describe 'throttling requests' do
     end
 
     context 'when the number of logins per ip is higher than the limit per period' do
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       it 'throttles with a custom response' do
         analytics = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics)

@@ -14,12 +14,12 @@
     <%= render 'accounts/actions/manage_personal_key' %>
   </div>
 </div>
-<% if @view_model.personal_key_generated_at %>
+<% if @presenter.personal_key_generated_at %>
   <p class="margin-top-1 margin-bottom-0 font-body-2xs">
     <em>
       <%= t(
             'account.personal_key.last_generated',
-            timestamp: I18n.l(@view_model.personal_key_generated_at, format: :event_date),
+            timestamp: I18n.l(@presenter.personal_key_generated_at, format: :event_date),
           ) %>
     </em>
   </p>
