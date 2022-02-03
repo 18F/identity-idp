@@ -8,7 +8,8 @@ module TwoFactorAuthentication
 
       analytics.track_event(
         Analytics::SMS_OPT_IN_VISIT,
-        has_other_auth_methods: @has_other_auth_methods,
+        new_user: new_user?,
+        has_other_auth_methods: has_other_auth_methods?,
         phone_configuration_id: @phone_configuration.id,
       )
     end
@@ -18,7 +19,11 @@ module TwoFactorAuthentication
 
       analytics.track_event(
         Analytics::SMS_OPT_IN_SUBMITTED,
-        response.to_h.merge(phone_configuration_id: @phone_configuration.id),
+        response.to_h.merge(
+          new_user: new_user?,
+          has_other_auth_methods: has_other_auth_methods?,
+          phone_configuration_id: @phone_configuration.id
+        ),
       )
 
       if response.success?
