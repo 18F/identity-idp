@@ -1,8 +1,6 @@
 class ButtonComponent < BaseComponent
   attr_reader :action, :icon, :outline, :tag_options
 
-  DEFAULT_BUTTON_TYPE = :button
-
   def initialize(
     action: ->(**tag_options, &block) { button_tag(**tag_options, &block) },
     icon: nil,
@@ -19,10 +17,6 @@ class ButtonComponent < BaseComponent
     classes = ['usa-button', *tag_options[:class]]
     classes << 'usa-button--outline' if outline
     classes
-  end
-
-  def tag_type
-    tag_options.fetch(:type, DEFAULT_BUTTON_TYPE)
   end
 
   def icon_content

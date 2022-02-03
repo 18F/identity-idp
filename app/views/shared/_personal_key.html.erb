@@ -9,7 +9,7 @@
   <%= render 'partials/personal_key/key', code: code %>
 </div>
 <%= render ButtonComponent.new(
-      action: ->(type:, **tag_options, &block) do
+      action: ->(**tag_options, &block) do
         link_to(idv_download_personal_key_path, **tag_options, &block)
       end,
       icon: :file_download,
@@ -19,6 +19,7 @@
 <%= render ButtonComponent.new(
       icon: :print,
       outline: true,
+      type: :button,
       data: { print: '' },
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ).with_content(t('users.personal_key.print')) %>
