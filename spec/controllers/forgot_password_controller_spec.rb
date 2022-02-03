@@ -9,6 +9,7 @@ RSpec.describe ForgotPasswordController do
         get :show
 
         expect(response).to render_template(:show)
+        expect(session[:email]).to eq(nil)
       end
     end
 

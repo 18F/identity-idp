@@ -6,7 +6,7 @@ module Accounts
     layout 'account_side_nav'
 
     def show
-      @view_model = AccountShow.new(
+      @presenter = AccountShowPresenter.new(
         decrypted_pii: nil,
         personal_key: flash[:personal_key],
         sp_session_request_url: sp_session_request_url_with_updated_params,

@@ -7,7 +7,7 @@
       <%= render AlertComponent.new(type: :error, id: 'emails', class: 'margin-bottom-1', message: flash[:email_error]) %>
     <% end %>
   </div>
-  <% @view_model.decorated_user.visible_email_addresses.each do |email| %>
+  <% @presenter.decorated_user.visible_email_addresses.each do |email| %>
     <div class="padding-1 col col-12 border-top border-left border-right border-primary-light">
       <div class="col col-8 sm-6">
         <span class="break-word">

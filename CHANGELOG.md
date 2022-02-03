@@ -40,6 +40,7 @@ RC 176 - 2022-02-03
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
 - Logging: Fix logging of transport attribute in RISC event delivery (#5881)
 - Security: Update JavaScript packages with known vulnerabilities (#5889)
+- Source Code: Reorganized view model classes to be presenters (#5893)
 
 RC 175.3 - 2022-02-02
 

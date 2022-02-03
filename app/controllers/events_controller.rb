@@ -7,7 +7,7 @@ class EventsController < ApplicationController
 
   def show
     analytics.track_event(Analytics::EVENTS_VISIT)
-    @view_model = AccountShow.new(
+    @presenter = AccountShowPresenter.new(
       decrypted_pii: nil,
       personal_key: nil,
       sp_session_request_url: sp_session_request_url_with_updated_params,
