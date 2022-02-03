@@ -18,7 +18,8 @@
     ).with_content(t('forms.backup_code.download')) %>
 <%= render ButtonComponent.new(
       icon: :print,
-      data: { print: true },
+      outline: true,
+      data: { print: '' },
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ).with_content(t('users.personal_key.print')) %>
 <%= render ClipboardButtonComponent.new(
