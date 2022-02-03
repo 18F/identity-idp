@@ -5,7 +5,6 @@ class ClipboardButtonComponent < ButtonComponent
     super(**tag_options, icon: :content_copy)
 
     @clipboard_text = clipboard_text
-    @tag_options = tag_options
   end
 
   def call
