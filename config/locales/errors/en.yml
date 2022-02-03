@@ -1,9 +1,6 @@
 ---
 en:
   errors:
-    alt:
-      warning: Warning
-      error: Error
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing

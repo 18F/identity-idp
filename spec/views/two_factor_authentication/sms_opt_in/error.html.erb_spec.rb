@@ -65,8 +65,13 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
     context 'without an sp' do
       let(:sp_name) { nil }
 
-      it 'does not have a "Get Help At" link' do
+      it 'has a contact support but not a "Get Help At" link' do
         render
+
+        expect(rendered).to have_link(
+          t('links.contact_support', app_name: APP_NAME),
+          href: MarketingSite.contact_url,
+        )
 
         doc = Nokogiri::HTML(rendered)
 
