@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';
@@ -31,6 +32,7 @@ function Warning({
 }) {
   const { getAssetPath } = useAsset();
   const { addPageAction } = useContext(AnalyticsContext);
+  const { t } = useI18n();
   useEffect(() => {
     addPageAction({
       label: 'IdV: warning shown',
@@ -41,7 +43,7 @@ function Warning({
   return (
     <>
       <img
-        alt=""
+        alt={t('errors.alt.warning')}
         src={getAssetPath('alert/warning-lg.svg')}
         width={54}
         height={54}

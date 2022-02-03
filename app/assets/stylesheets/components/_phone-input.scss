@@ -6,11 +6,11 @@ lg-phone-input {
   }
 
   .iti__flag {
-    background-image: image-url('intl-tel-input/build/img/flags.png');
+    background-image: url('intl-tel-input/build/img/flags.png');
 
     /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
     @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-      background-image: image-url('intl-tel-input/build/img/flags@2x.png');
+      background-image: url('intl-tel-input/build/img/flags@2x.png');
     }
   }
 

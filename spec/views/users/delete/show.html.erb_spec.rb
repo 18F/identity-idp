@@ -40,15 +40,13 @@ describe 'users/delete/show.html.erb' do
   it 'contains link to delete account button' do
     render
 
-    expect(rendered).to have_button t('users.delete.actions.delete', href: account_delete_path)
+    expect(rendered).to have_css("form[action='#{account_delete_path}']")
+    expect(rendered).to have_button(t('users.delete.actions.delete'))
   end
 
   it 'contains link to cancel delete account link' do
     render
-    page = Capybara.string(rendered)
-    link = page.find_link(t('users.delete.actions.cancel'), href: account_path)
 
-    expect(link).to be_present
-    expect(link['role']).to eq('button')
+    expect(rendered).to have_link(t('users.delete.actions.cancel'), href: account_path)
   end
 end

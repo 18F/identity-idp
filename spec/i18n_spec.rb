@@ -6,9 +6,11 @@ require 'i18n/tasks'
 module I18n
   module Tasks
     class BaseTask
+      # List of keys allowed to be untranslated or are the same as English
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
+        { key: 'errors.alt.error', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -21,6 +23,7 @@ module I18n
       def untranslated_keys
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, value = key_value
+
           result << key if untranslated_key?(key, value)
           result
         end

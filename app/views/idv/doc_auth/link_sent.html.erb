@@ -13,11 +13,11 @@
 <% end %>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.text_message')) %>
 
-<div class='clearfix margin-x-neg-1'>
-  <div class='sm-col sm-col-3 padding-x-1'>
+<div class="grid-row">
+  <div class="grid-col-12 tablet:grid-col-3">
     <%= image_tag asset_url('idv/phone.png'), alt: t('image_description.camera_mobile_phone') %>
   </div>
-  <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
+  <div class="grid-col-12 tablet:grid-col-9">
     <p><%= t('doc_auth.info.link_sent') %></p>
     <%= render AlertComponent.new(type: :warning) do %>
       <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>

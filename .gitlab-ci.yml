@@ -64,6 +64,19 @@ stages:
       when: never
     - if: $CI_COMMIT_BRANCH
 
+check_changelog:
+  extends: .on_push
+  stage: build
+  script:
+    - |
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" != "main" ]
+      then
+        echo "Skipping because this is not a PR or is not targeting main"
+        exit 0
+      else
+        git fetch origin --quiet
+        ./scripts/changelog-check -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+      fi
 install:
   extends: .on_push
   stage: build
@@ -165,39 +178,6 @@ js_tests:
   script:
     - *yarn_install
     - yarn test
-
-
-smoketest-dev:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $DEV_SMOKETEST == "true"
-  variables:
-    MONITOR_ENV: 'DEV'
-    HEADLESS_BROWSER: 'true'
-    MONITOR_SMS_SIGN_IN_EMAIL: ''
-    MONITOR_GOOGLE_VOICE_PHONE: ''
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bin/smoke_test --remote --no-source-env
-
-smoketest-int:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $INT_SMOKETEST == "true"
-  variables:
-    MONITOR_ENV: 'INT'
-    HEADLESS_BROWSER: 'true'
-    MONITOR_SMS_SIGN_IN_EMAIL: ''
-    MONITOR_GOOGLE_VOICE_PHONE: ''
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bin/smoke_test --remote --no-source-env
 
 coverage:
   extends: .on_push

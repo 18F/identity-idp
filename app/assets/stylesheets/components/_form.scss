@@ -28,7 +28,7 @@ textarea {
 
   &[type='number'],
   &.phone {
-    font-family: $monospace-font-family;
+    @include u-font-family('mono');
   }
 
   &:focus {
@@ -40,6 +40,11 @@ textarea {
   &:invalid,
   &.is-error {
     border-color: $border-color;
+  }
+
+  // Temporary: Remove after LG-3877 (with BassCSS "color-forms")
+  &.usa-input--error:invalid {
+    border-color: color('error');
   }
 }
 
@@ -70,11 +75,6 @@ input::-webkit-inner-spin-button {
 // Pending upstream Login Design System revisions:
 // ===============================================
 
-// Upstream: https://github.com/18F/identity-style-guide/pull/262
-.usa-hint {
-  font-style: italic;
-}
-
 .usa-form-group--error {
   border-left-style: none;
   margin-top: units(3); // Remove after: https://github.com/uswds/uswds/issues/4189
@@ -83,31 +83,4 @@ input::-webkit-inner-spin-button {
   @include at-media('desktop') {
     margin-left: 0;
   }
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/275
-.usa-input--error {
-  &,
-  // Temporary: Remove after LG-3877 (with BassCSS "color-forms")
-  &.field:invalid {
-    border-color: color('error');
-  }
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/265
-.usa-error-message,
-.usa-success-message {
-  @include u-padding-y(0.5);
-  background-position: 0 0.5em;
-  background-repeat: no-repeat;
-  background-size: units($icon-size);
-  font-weight: font-weight('bold');
-  padding-left: 1.5rem;
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/265
-.usa-success-message {
-  background-image: url(image-path('alert/success.svg'));
-  color: color('success');
-  display: block;
 }

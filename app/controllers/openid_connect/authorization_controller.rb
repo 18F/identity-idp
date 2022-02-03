@@ -12,7 +12,7 @@ module OpenidConnect
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
     before_action :check_sp_active, only: [:index]
-    before_action :override_csp_with_uris, only: [:index]
+    before_action :apply_secure_headers_override, only: [:index]
     before_action :handle_banned_user
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]

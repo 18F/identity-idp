@@ -49,7 +49,9 @@ RSpec.describe 'content security policy' do
       )
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")
-      expect(content_security_policy['script-src']).to eq("'self' 'unsafe-eval'")
+      expect(content_security_policy['script-src']).to match(
+        /'self' 'unsafe-eval' 'nonce-[\w\d=\/+]+'/,
+      )
       expect(content_security_policy['style-src']).to eq("'self'")
     end
   end

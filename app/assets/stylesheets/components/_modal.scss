@@ -53,7 +53,7 @@
     position: relative;
 
     &.key-badge::before {
-      background-image: url(image-path('p-key.svg'));
+      background-image: url('p-key.svg');
       background-repeat: no-repeat;
       content: '';
       height: 60px;
@@ -88,7 +88,7 @@
 
 .modal-timeout {
   &::before {
-    background-image: url(image-path('clock.svg'));
+    background-image: url('clock.svg');
   }
 
   hr {
@@ -98,7 +98,7 @@
 
 .modal-warning {
   &::before {
-    background-image: url(image-path('alert/warning-lg.svg'));
+    background-image: url('alert/warning-lg.svg');
   }
 
   hr {

@@ -9,20 +9,16 @@
     width: 1rem;
   }
 
-  &.ico-copy::before {
-    background-image: url(image-path('ico-copy.svg'));
-  }
-
   &.ico-download::before {
-    background-image: url(image-path('ico-download.svg'));
+    background-image: url('ico-download.svg');
   }
 
   &.ico-refresh::before {
-    background-image: url(image-path('ico-refresh.svg'));
+    background-image: url('ico-refresh.svg');
   }
 
   &.ico-print::before {
-    background-image: url(image-path('ico-print.svg'));
+    background-image: url('ico-print.svg');
   }
 }
 
@@ -33,7 +29,7 @@
 
   &-success {
     &::before {
-      background-image: url(image-path('alert/success.svg'));
+      background-image: url('alert/success.svg');
       content: '';
       display: block;
       height: $h4;

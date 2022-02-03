@@ -30,4 +30,31 @@ describe PhoneConfiguration do
       end
     end
   end
+
+  describe '#masked_phone' do
+    let(:phone_configuration) { build(:phone_configuration, phone: phone) }
+    let(:phone) { '+1 703 555 1212' }
+
+    subject(:masked_phone) { phone_configuration.masked_phone }
+
+    it 'masks the phone number, leaving the last 4 digits' do
+      expect(masked_phone).to eq('(***) ***-1212')
+    end
+
+    context 'with a blank phone number' do
+      let(:phone) { '   ' }
+
+      it 'is the empty string' do
+        expect(masked_phone).to eq('')
+      end
+    end
+
+    context 'with an international number' do
+      let(:phone) { '+212 636-023853' }
+
+      it 'keeps the groupings and leaves the last 4 digits' do
+        expect(masked_phone).to eq('****-**3853')
+      end
+    end
+  end
 end
