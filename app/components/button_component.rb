@@ -1,11 +1,15 @@
 class ButtonComponent < BaseComponent
-  attr_reader :type, :factory_args, :factory, :icon, :outline, :tag_options
+  attr_reader :action, :icon, :outline, :tag_options
 
   DEFAULT_BUTTON_TYPE = :button
 
-  def initialize(*factory_args, factory: :button_tag, icon: nil, outline: false, **tag_options)
-    @factory_args = factory_args
-    @factory = factory
+  def initialize(
+    action: ->(content, **tag_options) { button_tag(content, **tag_options) },
+    icon: nil,
+    outline: false,
+    **tag_options
+  )
+    @action = action
     @icon = icon
     @outline = outline
     @tag_options = tag_options
