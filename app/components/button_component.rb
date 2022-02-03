@@ -21,11 +21,7 @@ class ButtonComponent < BaseComponent
     tag_options.fetch(:type, DEFAULT_BUTTON_TYPE)
   end
 
-  def content
-    if icon
-      safe_join([render(IconComponent.new(icon: icon)), super&.strip])
-    else
-      super
-    end
+  def icon_content
+    render IconComponent.new(icon: icon) if icon
   end
 end
