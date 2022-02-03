@@ -8,7 +8,7 @@
 <p>
   <%= t(
         'two_factor_authentication.opt_in.opted_out_last_30d_html',
-        phone_number: content_tag(:strong, @phone_configuration&.masked_phone),
+        phone_number: content_tag(:strong, @phone_configuration.masked_phone),
       ) %>
 </p>
 
