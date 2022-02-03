@@ -100,7 +100,6 @@ module Proofing
         end
 
         def user_provided_data_map
-          applicant_address = applicant.address
           {
             '//ns2:IdentificationID' => applicant.state_id_data.state_id_number,
             '//ns1:MessageDestinationId' => message_destination_id,
