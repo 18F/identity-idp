@@ -166,8 +166,20 @@ module Telephony
         status_code = message_response_result.status_code
         delivery_status = message_response_result.delivery_status
         exception_message = "Pinpoint Error: #{delivery_status} - #{status_code}"
-        exception_class = ERROR_HASH[delivery_status] || TelephonyError
+        exception_class = if permanent_failure_opt_out?(message_response_result)
+          OptOutError
+        else
+          ERROR_HASH[delivery_status] || TelephonyError
+        end
         exception_class.new(exception_message)
+      end
+
+      # Sometimes AWS Pinpoint returns PERMANENT_FAILURE with an "opted out" message
+      # instead of an OPT_OUT error
+      # @param [Aws::Pinpoint::Types::MessageResult] message_response_result
+      def permanent_failure_opt_out?(message_response_result)
+        message_response_result.delivery_status == 'PERMANENT_FAILURE' &&
+          message_response_result.status_message&.include?('opted out')
       end
 
       def unknown_failure_error
