@@ -10,7 +10,9 @@ RSpec.describe ButtonComponent, type: :component do
     }.compact
   end
 
-  subject(:rendered) { render_inline ButtonComponent.new(outline: outline, **options) { content } }
+  subject(:rendered) do
+    render_inline ButtonComponent.new(outline: outline, **options).with_content(content)
+  end
 
   it 'renders button content' do
     expect(rendered).to have_content(content)

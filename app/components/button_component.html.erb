@@ -1,6 +1,6 @@
 <%= public_send(
       factory,
-      safe_join([icon_content, content.strip].compact),
+      content,
       *factory_args,
       **tag_options,
       type: tag_type,
