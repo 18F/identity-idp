@@ -6,17 +6,19 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
     context 'when loaded while using an existing phone' do
       let(:user) { create(:user, :with_phone) }
+      let(:sp_name) { nil }
       before do
-        stub_sign_in(user)
+        stub_sign_in_before_2fa(user)
         stub_analytics
         allow(controller).to receive(:user_session).
           and_return(phone_id: user.phone_configurations.first.id)
+        allow(controller).to receive(:decorated_session).
+          and_return(instance_double('SessionDecorator', sp_name: sp_name))
       end
 
       it 'tracks a visit event' do
         action
 
-        expect(assigns[:has_other_auth_methods]).to eq(false)
         expect(assigns[:phone_configuration]).to eq(user.phone_configurations.first)
 
         expect(@analytics).to have_logged_event(
@@ -29,10 +31,20 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       context 'when the user has other auth methods' do
         let(:user) { create(:user, :with_phone, :with_authentication_app) }
 
-        it 'has other auth methods' do
+        it 'has an other mfa options url' do
           action
 
-          expect(assigns[:has_other_auth_methods]).to eq(true)
+          expect(assigns[:other_mfa_options_url]).to eq(login_two_factor_options_path)
+        end
+      end
+
+      context 'when the user is signing in through an SP' do
+        let(:sp_name) { 'An Example SP' }
+
+        it 'points the cancel link back to the SP' do
+          action
+
+          expect(assigns[:cancel_url]).to eq(return_to_sp_cancel_path)
         end
       end
     end
@@ -49,7 +61,6 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
-        expect(assigns[:has_other_auth_methods]).to eq(false)
         expect(assigns[:phone_configuration].phone).to eq(phone)
       end
     end

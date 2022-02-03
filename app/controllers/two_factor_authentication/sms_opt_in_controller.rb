@@ -71,15 +71,6 @@ module TwoFactorAuthentication
       end
     end
 
-    def has_other_auth_methods?
-      mfa_context.two_factor_configurations.
-        any? { |config| config.mfa_enabled? && config != @phone_configuration }
-    end
-
-    def new_user?
-      mfa_context.two_factor_configurations.none?
-    end
-
     def cancel_url
       if user_fully_authenticated?
         account_path
@@ -88,6 +79,19 @@ module TwoFactorAuthentication
       else
         sign_out_path
       end
+    end
+
+    def has_other_auth_methods?
+      two_factor_configurations.
+        any? { |config| config.mfa_enabled? && config != @phone_configuration }
+    end
+
+    def new_user?
+      two_factor_configurations.none?
+    end
+
+    def two_factor_configurations
+      @two_factor_configurations ||= mfa_context.two_factor_configurations
     end
   end
 end
