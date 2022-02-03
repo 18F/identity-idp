@@ -14,11 +14,11 @@
 
 <p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
 
-<% if @has_other_auth_methods %>
+<% if @other_mfa_options_url %>
   <h2 class="margin-top-6"><%= t('two_factor_authentication.opt_in.cant_use_phone') %></h2>
 
   <%= link_to t('two_factor_authentication.login_options_link_text'),
-              login_two_factor_options_path %>
+              @other_mfa_options_url %>
 <% end %>
 
 <%= render(

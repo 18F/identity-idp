@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     before_action :load_phone_configuration
 
     def new
-      @has_other_auth_methods = has_other_auth_methods?
+      @other_mfa_options_url = other_options_mfa_url
 
       analytics.track_event(
         Analytics::SMS_OPT_IN_VISIT,
@@ -23,7 +23,7 @@ module TwoFactorAuthentication
       if response.success?
         redirect_to otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: :sms })
       else
-        @has_other_auth_methods = has_other_auth_methods?
+        @other_mfa_options_url = other_options_mfa_url
 
         if !response.error
           # unsuccessful, but didn't throw an exception: already opted in last 30 days
@@ -58,9 +58,21 @@ module TwoFactorAuthentication
       end
     end
 
+    def other_options_mfa_url
+      if new_user?
+        two_factor_options_path
+      elsif has_other_auth_methods?
+        login_two_factor_options_path
+      end
+    end
+
     def has_other_auth_methods?
       mfa_context.two_factor_configurations.
         any? { |config| config.mfa_enabled? && config != @phone_configuration }
+    end
+
+    def new_user?
+      mfa_context.two_factor_configurations.none?
     end
   end
 end
