@@ -1,6 +1,5 @@
 <%= action.call(
-      safe_join([icon_content, content&.strip].compact),
       **tag_options,
       type: tag_type,
       class: css_class,
-    ) %>
+    ) { safe_join([icon_content, content&.strip].compact) } %>

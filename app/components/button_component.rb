@@ -4,7 +4,7 @@ class ButtonComponent < BaseComponent
   DEFAULT_BUTTON_TYPE = :button
 
   def initialize(
-    action: ->(content, **tag_options) { button_tag(content, **tag_options) },
+    action: ->(**tag_options, &block) { button_tag(**tag_options, &block) },
     icon: nil,
     outline: false,
     **tag_options

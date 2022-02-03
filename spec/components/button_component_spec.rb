@@ -57,8 +57,8 @@ RSpec.describe ButtonComponent, type: :component do
   context 'with custom button action' do
     it 'calls the action with content and tag_options' do
       rendered = render_inline ButtonComponent.new(
-        action: ->(content, **tag_options) do
-          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }) { content }
+        action: ->(**tag_options, &block) do
+          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }, &block)
         end,
         class: 'custom-class',
       ).with_content(content)
