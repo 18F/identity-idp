@@ -9,7 +9,7 @@
   <%= render 'partials/personal_key/key', code: code %>
 </div>
 <%= render ButtonComponent.new(
-      action: ->(content, **tag_options) do
+      action: ->(content, type:, **tag_options) do
         link_to(idv_download_personal_key_path, **tag_options) { content }
       end,
       icon: :file_download,

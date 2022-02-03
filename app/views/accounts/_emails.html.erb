@@ -32,7 +32,7 @@
 </div>
 <% if EmailPolicy.new(current_user).can_add_email? %>
   <%= render ButtonComponent.new(
-        action: ->(content, **tag_options) { link_to(content, add_email_path, **tag_options) },
+        action: ->(content, type:, **tag_options) { link_to(content, add_email_path, **tag_options) },
         outline: true,
         icon: :add,
         class: 'margin-top-2',

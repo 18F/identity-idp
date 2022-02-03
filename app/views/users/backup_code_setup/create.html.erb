@@ -33,7 +33,7 @@
   <div class="margin-top-0">
     <% if desktop_device? %>
       <%= render ButtonComponent.new(
-            action: ->(content, **tag_options) do
+            action: ->(content, type:, **tag_options) do
               link_to(backup_code_download_path, **tag_options) { content }
             end,
             outline: true,

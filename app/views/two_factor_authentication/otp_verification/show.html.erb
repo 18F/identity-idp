@@ -37,7 +37,7 @@
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
   <%= render ButtonComponent.new(
-        action: ->(content, **tag_options) do
+        action: ->(content, type:, **tag_options) do
           link_to(
             otp_send_path(
               otp_delivery_selection_form: {
