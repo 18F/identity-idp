@@ -8,6 +8,7 @@ Unreleased
 - Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5908)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 - Multi-factor authentication: Add ability to opt numbers back in to receiving SMS that have replied "STOP" (#5894)
+- Icons: Replaced custom button icons using U.S. Web Design system icons. (#5904)
 
 ### Accessibility
 
