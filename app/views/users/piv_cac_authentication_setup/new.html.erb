@@ -1,7 +1,8 @@
 <% title @presenter.title %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_login.add')) %>
-<p class='mt-tiny margin-bottom-4'><%= t('headings.piv_cac_login.add') %></p>
+
+<p><%= t('headings.piv_cac_login.add') %></p>
 
 <%= simple_form_for('', url: submit_new_piv_cac_url) do |f| %>
   <%= render ProcessListComponent.new(connected: true) do |c| %>
