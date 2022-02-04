@@ -54,10 +54,10 @@ module TwoFactorAuthentication
     end
 
     def load_phone_configuration
-      if user_session.present? && (phone_id = user_session[:phone_id]).present?
-        @phone_configuration = mfa_context.phone_configuration(phone_id)
-      elsif user_session.present? && (unconfirmed_phone = user_session[:unconfirmed_phone]).present?
+      if user_session.present? && (unconfirmed_phone = user_session[:unconfirmed_phone]).present?
         @phone_configuration = PhoneConfiguration.new(phone: unconfirmed_phone)
+      elsif user_session.present? && (phone_id = user_session[:phone_id]).present?
+        @phone_configuration = mfa_context.phone_configuration(phone_id)
       else
         render_not_found
       end

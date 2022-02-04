@@ -52,16 +52,32 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
     context 'when loaded while adding a new phone' do
       let(:user) { create(:user) }
       let(:phone) { Faker::PhoneNumber.cell_phone }
+      let(:user_session) { { unconfirmed_phone: phone } }
       before do
         stub_sign_in_before_2fa(user)
         allow(controller).to receive(:user_session).
-          and_return(unconfirmed_phone: phone)
+          and_return(user_session)
       end
 
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
         expect(assigns[:phone_configuration].phone).to eq(phone)
+      end
+
+      context 'when user_session has both an unconfirmed phone and a phone_id' do
+        let(:user_session) do
+          {
+            unconfirmed_phone: phone,
+            phone_id: create(:phone_configuration).id
+          }
+        end
+
+        it 'prefers the unconfirmed_phone' do
+          action
+
+          expect(assigns[:phone_configuration].phone).to eq(phone)
+        end
       end
     end
 
