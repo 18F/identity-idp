@@ -82,8 +82,6 @@ fr:
       cant_use_phone: 'Vous ne pouvez pas utiliser votre téléphone?'
       error_retry: 'Désolé, nous avons des difficultés à vous connecter. Veuillez
         réessayer.'
-      immediate_assistance: 'Vous avez besoin d’une assistance immédiate? Voici
-        comment obtenir de l’aide :'
       opted_out_html: 'Vous avez choisi de ne plus recevoir de SMS à %{phone_number}.
         Vous pouvez vous inscrire et recevoir à nouveau un code de sécurité à ce
         numéro de téléphone.'
