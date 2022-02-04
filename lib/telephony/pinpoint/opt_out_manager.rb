@@ -18,12 +18,12 @@ module Telephony
           PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: config.region,
-            channel: :sns,
+            channel: :notification_service,
             extra: {},
           )
         end
 
-        PinpointHelper.handle_config_failure(:sns)
+        PinpointHelper.handle_config_failure(:notification_service)
       end
 
       # @api private
