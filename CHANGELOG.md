@@ -8,7 +8,6 @@ Unreleased
 - Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5908)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 - Icons: Replaced custom button icons using U.S. Web Design system icons. (#5904)
-- Layout: The "Delete Account" confirmation page has a new layout consistent with other content pages. (#5857)
 - User Interface: Updated styling for process lists following U.S. Web Design System best practices. (#5863)
 
 ### Accessibility
