@@ -9,15 +9,7 @@ class FullySignedInModalPresenter
   def message
     t(
       'notices.timeout_warning.signed_in.message_html',
-      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown', role: 'timer', "aria-atomic": true, ),
-    )
-  end
-
-  # set up a sc_message with role=timer, etc. create new js function to updat
-  def message
-    t(
-      'notices.timeout_warning.signed_in.message_html',
-      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown' ),
+      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
     )
   end
 
