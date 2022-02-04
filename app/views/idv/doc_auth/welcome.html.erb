@@ -29,12 +29,12 @@
   <%= validated_form_for :doc_auth,
                          url: url_for,
                          method: 'put',
-                         html: { autocomplete: 'off', class: 'margin-top-1 margin-bottom-5 js-consent-continue-form' } do |f| %>
-  <%= f.button :button,
-               t('doc_auth.buttons.continue'),
-               type: :submit,
-               class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
-<% end %>
+                         html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
+    <%= f.button :button,
+                 t('doc_auth.buttons.continue'),
+                 type: :submit,
+                 class: 'usa-button--big usa-button--wide' %>
+  <% end %>
 
   <%= render(
         'shared/troubleshooting_options',
