@@ -22,27 +22,27 @@ describe('countdownTimer', () => {
     it('stays at 0s when time is exhausted', () => {
       countdownTimer(el);
 
-      expect(el.innerHTML).to.equal('0:00');
+      expect(el.innerHTML).to.equal('00:00:00');
       clock.tick(1000);
-      expect(el.innerHTML).to.equal('0:00');
+      expect(el.innerHTML).to.equal('00:00:00');
     });
 
     it('updates once per second', () => {
       countdownTimer(el, 10000);
 
-      expect(el.innerHTML).to.equal('0:10');
+      expect(el.innerHTML).to.equal('00:00:10');
       clock.tick(1000);
 
-      expect(el.innerHTML).to.equal('0:09');
+      expect(el.innerHTML).to.equal('00:00:09');
       clock.tick(1000);
 
-      expect(el.innerHTML).to.equal('0:08');
+      expect(el.innerHTML).to.equal('00:00:08');
       clock.tick(1000);
 
-      expect(el.innerHTML).to.equal('0:07');
+      expect(el.innerHTML).to.equal('00:00:07');
       clock.tick(1000);
 
-      expect(el.innerHTML).to.equal('0:06');
+      expect(el.innerHTML).to.equal('00:00:06');
     });
   });
 });
