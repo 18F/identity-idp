@@ -31,6 +31,10 @@
   padding-left: 24px;
 }
 
+.minw-full {
+  min-width: 100%;
+}
+
 @media #{$breakpoint-sm} {
   .sm-mr-20p {
     margin-right: 20px;
