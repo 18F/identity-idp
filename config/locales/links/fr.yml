@@ -9,6 +9,7 @@ fr:
     cancel: Annuler
     cancel_account_creation: '‹ Annuler la création du compte'
     contact: Contact
+    contact_support: 'Contactez %{app_name} le support'
     continue_sign_in: Continuer la connexion
     copy: Copier
     create_account: Créer un compte
