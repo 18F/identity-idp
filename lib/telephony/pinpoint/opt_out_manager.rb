@@ -14,15 +14,12 @@ module Telephony
 
           opt_in_response = client.opt_in_phone_number(phone_number: phone_number)
 
-          response = if opt_in_response.successful?
-            check_response = client.check_if_phone_number_is_opted_out(phone_number: phone_number)
-
-            Response.new(success: !check_response.is_opted_out, error: check_response.error)
-          else
-            Response.new(success: false, error: opt_in_response.error)
-          end
+          return Response.new(success: opt_in_response.successful?)
+        rescue Aws::SNS::Errors::InvalidParameter
+          # This is thrown when the number has been opted in too recently
+          return Response.new(success: false)
         rescue Seahorse::Client::NetworkingError,
-               Aws::SNS::Errors::InternalServerErrorException => error
+               Aws::SNS::Errors::ServiceError => error
           PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: config.region,

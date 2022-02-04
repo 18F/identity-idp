@@ -97,7 +97,6 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
           Aws.config[:sns] = {
             stub_responses: {
               opt_in_phone_number: {},
-              check_if_phone_number_is_opted_out: { is_opted_out: false },
             },
           }
         end
@@ -118,8 +117,10 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         before do
           Aws.config[:sns] = {
             stub_responses: {
-              opt_in_phone_number: {},
-              check_if_phone_number_is_opted_out: { is_opted_out: true },
+              opt_in_phone_number: [
+                'InvalidParameter',
+                'Invalid parameter: Cannot opt in right now, latest opt in is too recent',
+              ]
             },
           }
         end

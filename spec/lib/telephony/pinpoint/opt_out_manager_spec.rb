@@ -21,7 +21,6 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
     context 'when opting in is successful' do
       before do
         first_client.stub_responses(:opt_in_phone_number, {})
-        first_client.stub_responses(:check_if_phone_number_is_opted_out, is_opted_out: false)
       end
 
       it 'has a successful response' do
@@ -32,8 +31,11 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
 
     context 'when opting in is not successful (already opted in w/in last 30 days)' do
       before do
-        first_client.stub_responses(:opt_in_phone_number, {})
-        first_client.stub_responses(:check_if_phone_number_is_opted_out, is_opted_out: true)
+        first_client.stub_responses(
+          :opt_in_phone_number,
+          'InvalidParameter',
+          'Invalid parameter: Cannot opt in right now, latest opt in is too recent',
+        )
       end
 
       it 'returns a response that is unsuccessful, but has no error' do
@@ -45,7 +47,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
     context 'when there is a network error' do
       before do
         first_client.stub_responses(
-          :check_if_phone_number_is_opted_out,
+          :opt_in_phone_number,
           'InternalServerErrorException',
         )
       end
@@ -65,10 +67,6 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
           end
 
           second_client.stub_responses(:opt_in_phone_number, {})
-          second_client.stub_responses(
-            :check_if_phone_number_is_opted_out,
-            is_opted_out: false,
-          )
         end
 
         it 'fails over to the backup region and succeeds' do
