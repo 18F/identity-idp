@@ -120,7 +120,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
               opt_in_phone_number: [
                 'InvalidParameter',
                 'Invalid parameter: Cannot opt in right now, latest opt in is too recent',
-              ]
+              ],
             },
           }
         end
