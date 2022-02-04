@@ -208,7 +208,7 @@ seed_agreements_data: 'true'
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
 session_check_frequency: '30'
-session_timeout_in_minutes: '2'
+session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
 session_total_duration_timeout_in_minutes: '720'
 show_select_account_on_repeat_sp_visits: 'false'
@@ -267,7 +267,7 @@ development:
   doc_auth_vendor_randomize: 'false'
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  domain_name: 10.0.2.2:3000
+  domain_name: localhost:3000
   enable_rate_limiting: 'false'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
