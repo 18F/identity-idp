@@ -14,18 +14,15 @@
 
 <p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
 
-<% if @other_mfa_options_url %>
-  <h2 class="margin-top-6"><%= t('two_factor_authentication.opt_in.cant_use_phone') %></h2>
-
-  <%= link_to t('two_factor_authentication.login_options_link_text'),
-              @other_mfa_options_url %>
-<% end %>
-
 <%= render(
       'shared/troubleshooting_options',
       heading_tag: :h3,
       heading: t('two_factor_authentication.opt_in.immediate_assistance'),
       options: [
+        @other_mfa_options_url && {
+          url: @other_mfa_options_url,
+          text: t('two_factor_authentication.login_options_link_text'),
+        },
         decorated_session.sp_name && {
           url: return_to_sp_cancel_path(location: 'sms_resubscribe_error'),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
