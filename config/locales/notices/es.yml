@@ -49,11 +49,13 @@ es:
       partially_signed_in:
         continue: Continuar el inicio de sesión
         message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su acceso.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Need to translate.
         sign_out: Cancelar el inicio de sesión
       signed_in:
         continue: Manténgame conectado
         message_html: Para su seguridad, terminaremos su sesión en
           %{time_left_in_session} a menos que nos indique lo contrario.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Need to translate.
         sign_out: Desconécteme
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
     totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.

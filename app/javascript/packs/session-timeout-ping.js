@@ -10,6 +10,7 @@
  * @prop {(any)=>void} Modal
  * @prop {(string)=>void} autoLogout
  * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number)=>void} countdownTimer
+ * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number)=>void} srCountdownTimer
  */
 
 /**
@@ -53,6 +54,7 @@ if (csrfEl) {
 }
 
 let countdownInterval;
+let srCountdownInterval;
 
 function notifyNewRelic(request, error, actionName) {
   /** @type {LoginGovGlobal} */ (window).newrelic?.addPageAction('Session Ping Error', {
@@ -83,6 +85,15 @@ function success(data) {
       document.getElementById('countdown'),
       timeRemaining,
       timeTimeout,
+    );
+    if (srCountdownInterval) {
+      clearInterval(srCountdownInterval);
+    }
+    srCountdownInterval = login.srCountdownTimer(
+      document.getElementById('sr-countdown'),
+      timeRemaining,
+      timeTimeout,
+      20 * 1000,
     );
   }
 

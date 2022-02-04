@@ -50,11 +50,13 @@ fr:
         continue: Continuer la connexion
         message_html: Pour votre sécurité, nous annulerons votre connexion dans
           %{time_left_in_session}.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Need to translate.
         sign_out: Annuler la connexion
       signed_in:
         continue: Gardez ma connexion active
         message_html: Pour votre sécurité, nous vous déconnecterons dans
           %{time_left_in_session}, sauf en cas d’avis contraire de votre part.
+        sr_message_html: You will be signed out in %{time_left_in_session}. Need to translate
         sign_out: Déconnectez-moi
     totp_configured: Une application d’authentification a été ajoutée à votre compte.
     totp_disabled: Votre application d’authentification a été supprimée de votre compte.

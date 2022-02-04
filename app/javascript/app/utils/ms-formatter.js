@@ -1,5 +1,5 @@
 function formatMinutes(minutes) {
-  return minutes || 0;
+  return minutes < 10 ? `0${minutes}` : minutes;
 }
 
 function formatSeconds(seconds) {
@@ -14,5 +14,5 @@ export default (milliseconds) => {
   const displayMinutes = formatMinutes(minutes);
   const displaySeconds = formatSeconds(remainingSeconds);
 
-  return `${displayMinutes}:${displaySeconds}`;
+  return `00:${displayMinutes}:${displaySeconds}`;
 };
