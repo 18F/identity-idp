@@ -46,7 +46,7 @@ module TwoFactorAuthentication
     private
 
     def opt_out_manager
-      @opt_out_manager ||= Telephony::Pinpoint::OptOutManager.new
+      Telephony::Pinpoint::OptOutManager.new
     end
 
     def mfa_context
