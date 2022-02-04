@@ -69,7 +69,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         let(:user_session) do
           {
             unconfirmed_phone: phone,
-            phone_id: create(:phone_configuration).id
+            phone_id: create(:phone_configuration).id,
           }
         end
 
