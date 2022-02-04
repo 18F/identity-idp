@@ -3,11 +3,6 @@ module Telephony
     class OptOutManager
       # @return [Response]
       def opt_in_phone_number(phone_number)
-        if Telephony.config.pinpoint.sms_configs.empty?
-          return PinpointHelper.handle_config_failure(:sns)
-        end
-
-        response = nil
         Telephony.config.pinpoint.sms_configs.each do |config|
           client = build_client(config)
           next if client.nil?
@@ -28,7 +23,7 @@ module Telephony
           )
         end
 
-        response || PinpointHelper.handle_config_failure(:sms)
+        PinpointHelper.handle_config_failure(:sns)
       end
 
       # @api private

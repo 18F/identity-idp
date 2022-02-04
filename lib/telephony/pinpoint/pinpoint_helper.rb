@@ -14,6 +14,7 @@ module Telephony
         Telephony.config.logger.warn(response.to_h.to_json)
       end
 
+      # @return [Response]
       def self.handle_config_failure(channel)
         response = Response.new(
           success: false,
