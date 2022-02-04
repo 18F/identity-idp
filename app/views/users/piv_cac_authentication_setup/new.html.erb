@@ -5,7 +5,7 @@
 <p><%= t('headings.piv_cac_login.add') %></p>
 
 <%= simple_form_for('', url: submit_new_piv_cac_url) do |f| %>
-  <%= render ProcessListComponent.new(connected: true) do |c| %>
+  <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
     <%= c.item(heading: t('instructions.mfa.piv_cac.step_1')) do %>
       <p>
         <%= t('instructions.mfa.piv_cac.step_1_info') %>
@@ -33,7 +33,7 @@
 
   <%= f.submit(
         t('forms.piv_cac_setup.submit'),
-        class: 'display-block usa-button usa-button--wide usa-button--big margin-top-1 margin-bottom-5',
+        class: 'display-block usa-button usa-button--wide usa-button--big margin-y-5',
       ) %>
 <% end %>
 
