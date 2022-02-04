@@ -365,6 +365,7 @@ describe Users::TwoFactorAuthenticationController do
             }
 
             expect(response).to redirect_to(login_two_factor_sms_opt_in_path)
+            expect(controller.user_session[:phone_id]).to eq(@user.phone_configurations.first.id)
           end
         end
 
