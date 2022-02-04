@@ -22,7 +22,7 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
     expect(rendered).to have_content('(***) ***-5309')
   end
 
-  context 'other authentication methods' do
+  context 'troubleshooting links' do
     context 'without an other_mfa_options_url' do
       let(:other_mfa_options_url) { nil }
 
@@ -40,16 +40,13 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
       it 'links to other options' do
         render
 
-        expect(rendered).to have_content(t('two_factor_authentication.opt_in.cant_use_phone'))
         expect(rendered).to have_link(
           t('two_factor_authentication.login_options_link_text'),
           href: other_mfa_options_url,
         )
       end
     end
-  end
 
-  context 'troubleshooting links' do
     context 'with an sp' do
       let(:sp_name) { 'An Example SP' }
 
