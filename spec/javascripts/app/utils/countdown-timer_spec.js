@@ -22,9 +22,9 @@ describe('countdownTimer', () => {
     it('stays at 0s when time is exhausted', () => {
       countdownTimer(el);
 
-      expect(el.innerHTML).to.equal('0 second(s)');
+      expect(el.innerHTML).to.equal('00 second(s)');
       clock.tick(1000);
-      expect(el.innerHTML).to.equal('0 second(s)');
+      expect(el.innerHTML).to.equal('00 second(s)');
     });
 
     it('stays at 0s when time is exhausted for screen readers', () => {

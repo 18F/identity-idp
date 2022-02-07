@@ -9,8 +9,8 @@ export default (milliseconds, screenReader) => {
   const displaySeconds = formatTime(remainingSeconds);
 
   const displayTime = screenReader
-    ? `${minutes > 0 ? `${displayMinutes} minute(s) and ` : ''}${displaySeconds} second(s)`
-    : `00:${displayMinutes}:${displaySeconds}`;
+    ? `00:${displayMinutes}:${displaySeconds}`
+    : `${minutes > 0 ? `${displayMinutes} minute(s) and ` : ''}${displaySeconds} second(s)`;
 
   return displayTime;
 };

@@ -3,7 +3,7 @@ import msFormatter from '../../../../app/javascript/app/utils/ms-formatter';
 describe('#msFormatter', () => {
   it('formats milliseconds as 0 second(s)', () => {
     const output = msFormatter(0);
-    expect(output).to.equal('0 second(s)');
+    expect(output).to.equal('00 second(s)');
   });
 
   it('formats milliseconds as XX:XX:XX for screen readers', () => {
