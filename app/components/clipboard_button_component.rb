@@ -2,7 +2,7 @@ class ClipboardButtonComponent < ButtonComponent
   attr_reader :clipboard_text, :tag_options
 
   def initialize(clipboard_text:, **tag_options)
-    super(**tag_options, icon: :content_copy)
+    super(**tag_options, type: :button, icon: :content_copy)
 
     @clipboard_text = clipboard_text
   end

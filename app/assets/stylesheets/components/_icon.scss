@@ -1,3 +1,5 @@
+$icon-min-padding: 2px;
+
 // Upstream: https://github.com/uswds/uswds/pull/4493
 .usa-icon {
   .usa-button > &:first-child {
@@ -11,8 +13,8 @@
   }
 
   .usa-button:not(.usa-button--unstyled) > &:first-child {
-    margin-left: -0.5rem;
-    margin-right: 0.5rem;
+    margin-left: -1 * $icon-min-padding;
+    margin-right: #{0.5rem - px-to-rem($icon-min-padding)};
   }
 }
 
