@@ -10,7 +10,6 @@
  * @prop {(any)=>void} Modal
  * @prop {(string)=>void} autoLogout
  * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} countdownTimer
- * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} srCountdownTimer
  */
 
 /**
