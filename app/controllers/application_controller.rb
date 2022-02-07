@@ -225,18 +225,8 @@ class ApplicationController < ActionController::Base
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
-    if request.format.json?
-      render(
-        status: :unauthorized,
-        json: {
-          success: false,
-          redirect: user_signed_in? ? go_back_path : new_user_session_url,
-        },
-      )
-    else
-      flash[:error] = t('errors.invalid_authenticity_token')
-      redirect_back fallback_location: new_user_session_url, allow_other_host: false
-    end
+    flash[:error] = t('errors.invalid_authenticity_token')
+    redirect_back fallback_location: new_user_session_url, allow_other_host: false
   end
 
   def user_fully_authenticated?

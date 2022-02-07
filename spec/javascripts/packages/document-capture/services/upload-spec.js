@@ -87,6 +87,41 @@ describe('document-capture/services/upload', () => {
     });
   });
 
+  it('handles redirect', async () => {
+    const endpoint = 'https://example.com';
+    const csrf = 'TYsqyyQ66Y';
+
+    sandbox.stub(window, 'fetch').callsFake(() =>
+      Promise.resolve(
+        /** @type {Partial<Response>} */ ({
+          ok: true,
+          status: 200,
+          url: '#teapot',
+          text: () => Promise.resolve(''),
+        }),
+      ),
+    );
+
+    let assertOnHashChange;
+
+    // `Promise.race` because the `upload` promise should never resolve in case of a redirect.
+    await Promise.race([
+      new Promise((resolve) => {
+        assertOnHashChange = () => {
+          expect(window.location.hash).to.equal('#teapot');
+          resolve();
+        };
+
+        window.addEventListener('hashchange', assertOnHashChange);
+      }),
+      upload({}, { endpoint, csrf }).then(() => {
+        throw new Error('Unexpected upload resolution during redirect.');
+      }),
+    ]);
+
+    window.removeEventListener('hashchange', assertOnHashChange);
+  });
+
   it('handles pending success success', async () => {
     const endpoint = 'https://example.com';
     const csrf = 'TYsqyyQ66Y';
