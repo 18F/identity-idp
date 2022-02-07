@@ -1,9 +1,9 @@
 import msFormatter from '../../../../app/javascript/app/utils/ms-formatter';
 
 describe('#msFormatter', () => {
-  it('formats milliseconds as 0 second(s)', () => {
+  it('formats milliseconds as XX:XX)', () => {
     const output = msFormatter(0);
-    expect(output).to.equal('00 second(s)');
+    expect(output).to.equal('00:00');
   });
 
   it('formats milliseconds as XX:XX:XX for screen readers', () => {
@@ -13,12 +13,12 @@ describe('#msFormatter', () => {
 
   it('adds a leading zero if seconds are fewer than 10', () => {
     const output = msFormatter(6000);
-    expect(output).to.equal('06 second(s)');
+    expect(output).to.equal('00:06');
   });
 
   it('adds a leading zero to minutes if minutes are fewer than 10 but greater than 0', () => {
     const output = msFormatter(300000);
-    expect(output).to.equal('05 minute(s) and 00 second(s)');
+    expect(output).to.equal('05:00');
   });
 
   it('adds a leading zero if seconds are fewer than 10 for screen readers', () => {

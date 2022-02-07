@@ -10,7 +10,7 @@ export default (milliseconds, screenReader) => {
 
   const displayTime = screenReader
     ? `00:${displayMinutes}:${displaySeconds}`
-    : `${minutes > 0 ? `${displayMinutes} minute(s) and ` : ''}${displaySeconds} second(s)`;
+    : `${displayMinutes}:${displaySeconds}`;
 
   return displayTime;
 };
