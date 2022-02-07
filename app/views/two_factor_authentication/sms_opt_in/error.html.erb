@@ -26,6 +26,7 @@
         decorated_session.sp_name && {
           url: return_to_sp_cancel_path(location: 'sms_resubscribe_error'),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          new_tab: true,
         },
         {
           url: MarketingSite.contact_url,

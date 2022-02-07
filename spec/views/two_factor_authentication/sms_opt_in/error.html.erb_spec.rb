@@ -50,11 +50,12 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
     context 'with an sp' do
       let(:sp_name) { 'An Example SP' }
 
-      it 'links to the sp' do
+      it 'links to the sp in a new window' do
         render
 
         expect(rendered).to have_link(
           t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+          class: 'usa-link--external',
         )
       end
     end
