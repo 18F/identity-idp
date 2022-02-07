@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySpAttributesConcern
   include EffectiveUser
+  include GoBackHelper
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -224,8 +225,18 @@ class ApplicationController < ActionController::Base
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
-    flash[:error] = t('errors.invalid_authenticity_token')
-    redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    if request.format.json?
+      render(
+        status: :unauthorized,
+        json: {
+          success: false,
+          redirect: user_signed_in? ? go_back_path : new_user_session_url,
+        },
+      )
+    else
+      flash[:error] = t('errors.invalid_authenticity_token')
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    end
   end
 
   def user_fully_authenticated?
