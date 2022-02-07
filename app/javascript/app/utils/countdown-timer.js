@@ -1,6 +1,6 @@
 const msFormatter = require('./ms-formatter').default;
 
-export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
+export default (el, timeLeft = 0, endTime = null, interval = 1000, screenReader = false) => {
   let remaining = timeLeft;
   let currentTime;
   let timer;
@@ -16,7 +16,7 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
       remaining = endTime - currentTime;
     }
 
-    el.innerHTML = msFormatter(remaining);
+    el.innerHTML = msFormatter(remaining, screenReader);
 
     if (remaining <= 0) {
       clearInterval(timer);

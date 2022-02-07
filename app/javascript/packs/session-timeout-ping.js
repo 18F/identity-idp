@@ -9,8 +9,8 @@
  *
  * @prop {(any)=>void} Modal
  * @prop {(string)=>void} autoLogout
- * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number)=>void} countdownTimer
- * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number)=>void} srCountdownTimer
+ * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} countdownTimer
+ * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} srCountdownTimer
  */
 
 /**
@@ -34,6 +34,7 @@ const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
+const SR_MESSAGE_UPDATE_INTERVAL_SECONDS = 20;
 
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
@@ -89,11 +90,12 @@ function success(data) {
     if (srCountdownInterval) {
       clearInterval(srCountdownInterval);
     }
-    srCountdownInterval = login.srCountdownTimer(
+    srCountdownInterval = login.countdownTimer(
       document.getElementById('sr-countdown'),
       timeRemaining,
       timeTimeout,
-      20 * 1000,
+      SR_MESSAGE_UPDATE_INTERVAL_SECONDS * 1000,
+      true,
     );
   }
 

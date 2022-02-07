@@ -1,18 +1,16 @@
-function formatMinutes(minutes) {
-  return minutes < 10 ? `0${minutes}` : minutes;
-}
+const formatTime = (time) => `0${time}`.slice(-2);
 
-function formatSeconds(seconds) {
-  return seconds < 10 ? `0${seconds}` : seconds;
-}
-
-export default (milliseconds) => {
+export default (milliseconds, screenReader) => {
   const seconds = milliseconds / 1000;
   const minutes = parseInt(seconds / 60, 10);
   const remainingSeconds = parseInt(seconds % 60, 10);
 
-  const displayMinutes = formatMinutes(minutes);
-  const displaySeconds = formatSeconds(remainingSeconds);
+  const displayMinutes = formatTime(minutes);
+  const displaySeconds = formatTime(remainingSeconds);
 
-  return `00:${displayMinutes}:${displaySeconds}`;
+  const displayTime = screenReader
+    ? `${minutes > 0 ? `${displayMinutes} minute(s) and ` : ''}${displaySeconds} second(s)`
+    : `00:${displayMinutes}:${displaySeconds}`;
+
+  return displayTime;
 };

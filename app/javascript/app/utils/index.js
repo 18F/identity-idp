@@ -7,5 +7,4 @@ const { LoginGov } = window;
 
 LoginGov.autoLogout = autoLogout;
 LoginGov.countdownTimer = countdownTimer;
-LoginGov.srCountdownTimer = countdownTimer;
 LoginGov.msFormatter = msFormatter;
