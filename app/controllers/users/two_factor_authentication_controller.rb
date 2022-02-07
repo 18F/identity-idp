@@ -177,6 +177,12 @@ module Users
           otp_make_default_number: default,
           reauthn: reauthn?,
         )
+      elsif @telephony_result.error.is_a?(Telephony::OptOutError) &&
+            IdentityConfig.store.sms_resubscribe_enabled
+        # clear message from https://github.com/18F/identity-idp/blob/7ad3feab24f6f9e0e45224d9e9be9458c0a6a648/app/controllers/users/phones_controller.rb#L40
+        flash.delete(:info)
+        user_session[:phone_id] = phone_configuration.id if phone_configuration&.phone
+        redirect_to login_two_factor_sms_opt_in_path
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
       end
