@@ -18,10 +18,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: fcaabc4ab596392209b927794a524578a2989f3c
-  tag: v0.7.4
+  revision: 21aa405b0ad413b88eecf30227132a2b8d6d6835
+  tag: v0.7.2
   specs:
-    identity_validations (0.7.4)
+    identity_validations (0.7.2)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
