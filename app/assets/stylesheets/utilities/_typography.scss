@@ -37,6 +37,13 @@ body {
 
 // given how similar & coupled these are, single line preferred
 h1,
+.h1,
+h2,
+.h2 {
+  line-height: 1.35;
+}
+
+h1,
 .h1 {
   font-size: $h1;
 }
