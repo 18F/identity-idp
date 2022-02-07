@@ -252,7 +252,7 @@ describe Telephony::Pinpoint::SmsSender do
         end
       end
 
-      context 'when the first config errors' do
+      context 'when the first config errors with a transient error' do
         before do
           Pinpoint::MockClient.message_response_result_status_code = 400
           Pinpoint::MockClient.message_response_result_delivery_status = 'DUPLICATE'
@@ -268,6 +268,44 @@ describe Telephony::Pinpoint::SmsSender do
           )
 
           expect(response.success?).to eq(false)
+        end
+      end
+
+      context 'when the first config errors with an opt out error' do
+        before do
+          Pinpoint::MockClient.message_response_result_status_code = 400
+          Pinpoint::MockClient.message_response_result_delivery_status = 'OPT_OUT'
+        end
+
+        it 'only tries one region and returns an error' do
+          expect(backup_mock_client).to_not receive(:send_messages)
+
+          response = subject.send(
+            message: 'This is a test!',
+            to: '+1 (123) 456-7890',
+            country_code: 'US',
+          )
+          expect(response.success?).to eq(false)
+          expect(response.error).to be_present
+        end
+      end
+
+      context 'when the first config errors with a permanent error' do
+        before do
+          Pinpoint::MockClient.message_response_result_status_code = 400
+          Pinpoint::MockClient.message_response_result_delivery_status = 'PERMANENT_FAILURE'
+        end
+
+        it 'only tries one region and returns an error' do
+          expect(backup_mock_client).to_not receive(:send_messages)
+
+          response = subject.send(
+            message: 'This is a test!',
+            to: '+1 (123) 456-7890',
+            country_code: 'US',
+          )
+          expect(response.success?).to eq(false)
+          expect(response.error).to be_present
         end
       end
 
