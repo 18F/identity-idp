@@ -6,21 +6,9 @@ Unreleased
 
 ### Improvements/Changes
 - Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5906, #5908)
-- Typography: Updated font to Public Sans for consistency across login.gov sites. (#5900)
-
-### Accessibility
-
-### Bug Fixes Users Might Notice
-
-### Behind the Scenes Changes Users Probably Won't Notice
-
-RC 176 - 2022-02-03
-----------------------
-
-### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5884, #5885)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
 - Multi-factor authentication: Add ability to opt numbers back in to receiving SMS that have replied "STOP" (#5894)
+- Typography: Updated font to Public Sans for consistency across login.gov sites. (#5900)
 - Icons: Replaced custom button icons using U.S. Web Design system icons. (#5904)
 - Analytics: Add ability to track when users go to Webauthn page to authenticate their device. (#5920)
 - User Interface: Updated styling for process lists following U.S. Web Design System best practices. (#5863)
