@@ -52,9 +52,6 @@ export async function encrypt(key, iv, value) {
     /** @type {AesGcmParams} */ ({
       name: 'AES-GCM',
       iv,
-      // Normally, it would not be expected to assign this value, since the property is optional and
-      // the default is 128. However, if not specified, Internet Explorer will throw an error.
-      tagLength: 128,
     }),
     key,
     data,
