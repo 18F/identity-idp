@@ -24,6 +24,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
   describe 'when signed in before 2fa' do
     before do
       stub_analytics
+      allow(@analytics).to receive(:track_event)
       sign_in_before_2fa
     end
 
