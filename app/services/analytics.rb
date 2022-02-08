@@ -292,5 +292,6 @@ class Analytics
   VENDOR_OUTAGE = 'Vendor Outage'
   WEBAUTHN_DELETED = 'WebAuthn Deleted'
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
+  WEBAUTHN_AUTHENTICATION_VISIT = 'WebAuthn Authentication Visited'
 end
 # rubocop:enable Layout/LineLength
