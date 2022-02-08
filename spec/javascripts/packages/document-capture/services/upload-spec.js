@@ -47,6 +47,7 @@ describe('document-capture/services/upload', () => {
         /** @type {Partial<Response>} */ ({
           ok: true,
           status: 200,
+          url: endpoint,
           json: () =>
             Promise.resolve({
               success: true,
@@ -74,6 +75,7 @@ describe('document-capture/services/upload', () => {
           /** @type {Partial<Response>} */ ({
             ok: true,
             status: 200,
+            url: endpoint,
             json: () =>
               Promise.resolve({
                 success: true,
@@ -136,6 +138,7 @@ describe('document-capture/services/upload', () => {
         /** @type {Partial<Response>} */ ({
           ok: true,
           status: 202,
+          url: endpoint,
           json: () =>
             Promise.resolve({
               success: true,
@@ -149,11 +152,14 @@ describe('document-capture/services/upload', () => {
   });
 
   it('handles invalid request', async () => {
+    const endpoint = 'https://example.com';
+
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(
         /** @type {Partial<Response>} */ ({
           ok: false,
           status: 400,
+          url: endpoint,
           json: () =>
             Promise.resolve({
               success: false,
@@ -167,7 +173,7 @@ describe('document-capture/services/upload', () => {
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
+      await upload({}, { endpoint, csrf: 'TYsqyyQ66Y' });
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
@@ -181,12 +187,15 @@ describe('document-capture/services/upload', () => {
   });
 
   it('redirects error', async () => {
+    const endpoint = 'https://example.com';
+
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(
         /** @type {Partial<Response>} */ ({
           ok: false,
           status: 418,
           statusText: "I'm a teapot",
+          url: endpoint,
           json: () =>
             Promise.resolve({
               success: false,
@@ -208,13 +217,7 @@ describe('document-capture/services/upload', () => {
 
         window.addEventListener('hashchange', assertOnHashChange);
       }),
-      upload(
-        {},
-        {
-          endpoint: 'https://example.com',
-          csrf: 'TYsqyyQ66Y',
-        },
-      ).then(() => {
+      upload({}, { endpoint, csrf: 'TYsqyyQ66Y' }).then(() => {
         throw new Error('Unexpected upload resolution during redirect.');
       }),
     ]);
@@ -223,18 +226,21 @@ describe('document-capture/services/upload', () => {
   });
 
   it('throws unhandled response', async () => {
+    const endpoint = 'https://example.com';
+
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(
         /** @type {Partial<Response>} */ ({
           ok: false,
           status: 500,
           statusText: 'Server error',
+          url: endpoint,
         }),
       ),
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
+      await upload({}, { endpoint, csrf: 'TYsqyyQ66Y' });
     } catch (error) {
       expect(error).to.be.instanceof(Error);
       expect(error.message).to.equal('Server error');
