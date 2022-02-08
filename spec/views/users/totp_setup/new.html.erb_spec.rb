@@ -45,14 +45,11 @@ describe 'users/totp_setup/new.html.erb' do
       expect(rendered).to have_button(t('links.copy'), type: 'button')
     end
 
-    it 'has the correct aria-labelledby on the nickname field' do
+    it 'has labelled fields' do
       render
-      page = Capybara.string(rendered)
 
-      nickname_field = page.find_field(:name)
-      label = page.find(:id, nickname_field['aria-labelledby'])
-
-      expect(label.text).to include(t('forms.totp_setup.totp_step_1'))
+      expect(rendered).to have_field(t('forms.totp_setup.totp_step_1'))
+      expect(rendered).to have_field(t('forms.totp_setup.totp_step_4'))
     end
   end
 

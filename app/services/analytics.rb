@@ -267,6 +267,8 @@ class Analytics
   SESSION_KEPT_ALIVE = 'Session Kept Alive'
   SESSION_TOTAL_DURATION_TIMEOUT = 'User Maximum Session Length Exceeded'
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'
+  SMS_OPT_IN_SUBMITTED = 'SMS Opt-In: Submitted'
+  SMS_OPT_IN_VISIT = 'SMS Opt-In: Visited'
   SP_REDIRECT_INITIATED = 'SP redirect initiated'
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'
   THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'

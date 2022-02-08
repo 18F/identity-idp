@@ -4,25 +4,15 @@ RSpec.describe ButtonComponent, type: :component do
   include ActionView::Context
   include ActionView::Helpers::TagHelper
 
-  let(:type) { nil }
   let(:outline) { false }
   let(:content) { 'Button' }
-  let(:options) do
-    {
-      type: type,
-    }.compact
-  end
 
   subject(:rendered) do
-    render_inline ButtonComponent.new(outline: outline, **options).with_content(content)
+    render_inline ButtonComponent.new(outline: outline).with_content(content)
   end
 
   it 'renders button content' do
     expect(rendered).to have_content(content)
-  end
-
-  it 'renders as type=button' do
-    expect(rendered).to have_css('button[type=button]')
   end
 
   it 'renders with design system classes' do
@@ -37,11 +27,15 @@ RSpec.describe ButtonComponent, type: :component do
     end
   end
 
-  context 'with type' do
-    let(:type) { :submit }
+  context 'with tag options' do
+    it 'renders as attributes' do
+      rendered = render_inline ButtonComponent.new(
+        type: :button,
+        class: 'my-custom-class',
+        data: { foo: 'bar' },
+      )
 
-    it 'renders as type' do
-      expect(rendered).to have_css('button[type=submit]')
+      expect(rendered).to have_css('.usa-button.my-custom-class[type="button"][data-foo="bar"]')
     end
   end
 
@@ -57,14 +51,14 @@ RSpec.describe ButtonComponent, type: :component do
   context 'with custom button action' do
     it 'calls the action with content and tag_options' do
       rendered = render_inline ButtonComponent.new(
-        action: ->(content, **tag_options) do
-          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }) { content }
+        action: ->(**tag_options, &block) do
+          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }, &block)
         end,
         class: 'custom-class',
       ).with_content(content)
 
       expect(rendered).to have_css(
-        'lg-custom-button[type="button"][data-extra].custom-class',
+        'lg-custom-button[data-extra].custom-class',
         text: content,
       )
     end

@@ -44,6 +44,7 @@ Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || '0.5').to
 Capybara::Screenshot.autosave_on_failure = false
 Capybara.asset_host = ENV['RAILS_ASSET_HOST'] || 'http://localhost:3000'
 Capybara.automatic_label_click = true # USWDS styles native checkbox/radio as offscreen
+Capybara.enable_aria_label = true
 
 Capybara.register_driver(:mobile_rack_test) do |app|
   user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \

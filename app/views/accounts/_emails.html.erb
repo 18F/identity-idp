@@ -31,9 +31,10 @@
   <% end %>
 </div>
 <% if EmailPolicy.new(current_user).can_add_email? %>
-  <%= link_to(
-        prefix_with_plus(t('account.index.email_add')),
-        add_email_path,
-        class: 'usa-button usa-button--outline margin-top-2',
-      ) %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) { link_to(add_email_path, **tag_options, &block) },
+        outline: true,
+        icon: :add,
+        class: 'margin-top-2',
+      ).with_content(t('account.index.email_add')) %>
 <% end %>

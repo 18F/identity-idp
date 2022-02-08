@@ -7,7 +7,6 @@ import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
-import { useBrowserCompatibleEncrypt } from './support/crypto';
 
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -38,4 +37,3 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 
 useCleanDOM(dom);
 useConsoleLogSpy();
-useBrowserCompatibleEncrypt();

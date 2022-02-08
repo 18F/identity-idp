@@ -5,10 +5,12 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5908)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5906, #5908)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
+- Multi-factor authentication: Add ability to opt numbers back in to receiving SMS that have replied "STOP" (#5894)
 - Icons: Replaced custom button icons using U.S. Web Design system icons. (#5904)
 - Analytics: Add ability to track when users go to Webauthn page to authenticate their device. (#5920)
+- User Interface: Updated styling for process lists following U.S. Web Design System best practices. (#5863)
 
 ### Accessibility
 
