@@ -39,7 +39,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         get :show
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::WEBAUTHN_AUTHENTICATION_VISIT,
+          Analytics::MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT,
         )
       end
     end

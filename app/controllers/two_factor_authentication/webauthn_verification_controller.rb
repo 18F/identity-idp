@@ -7,7 +7,7 @@ module TwoFactorAuthentication
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
-      analytics.track_event(Analytics::WEBAUTHN_AUTHENTICATION_VISIT, analytics_properties)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT, analytics_properties)
       save_challenge_in_session
       @presenter = presenter_for_two_factor_authentication_method
     end

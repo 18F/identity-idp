@@ -209,6 +209,7 @@ class Analytics
   MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'
   MULTI_FACTOR_AUTH_MAX_SENDS = 'Multi-Factor Authentication: max otp sends reached'
   MULTI_FACTOR_AUTH_SETUP = 'Multi-Factor Authentication Setup'
+  MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT = 'Multi-Factor Authentication: enter webAuthn authentication visited'
   OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'
@@ -292,6 +293,5 @@ class Analytics
   VENDOR_OUTAGE = 'Vendor Outage'
   WEBAUTHN_DELETED = 'WebAuthn Deleted'
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
-  WEBAUTHN_AUTHENTICATION_VISIT = 'WebAuthn Authentication Visited'
 end
 # rubocop:enable Layout/LineLength
