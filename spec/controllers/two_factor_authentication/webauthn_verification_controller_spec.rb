@@ -33,6 +33,14 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
 
         expect(response).to redirect_to(user_two_factor_authentication_url)
       end
+
+      it 'tracks an analytics event' do
+        get :show
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::WEBAUTHN_AUTHENTICATION_VISIT,
+        )
+      end
     end
 
     describe 'patch confirm' do
