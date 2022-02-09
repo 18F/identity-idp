@@ -33,7 +33,7 @@ const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
-const SR_MESSAGE_UPDATE_INTERVAL_SECONDS = 20;
+const SR_MESSAGE_UPDATE_INTERVAL_SECONDS = 30;
 
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
@@ -94,7 +94,6 @@ function success(data) {
       timeRemaining,
       timeTimeout,
       SR_MESSAGE_UPDATE_INTERVAL_SECONDS * 1000,
-      true,
     );
   }
 

@@ -16,7 +16,7 @@ class FullySignedInModalPresenter
   def sr_message
     t(
       'notices.timeout_warning.signed_in.sr_message_html',
-      time_left_in_session: content_tag(:time, time_left_in_session, id: 'sr-countdown'),
+      time_left_in_session: content_tag(:span, time_left_in_session, id: 'sr-countdown'),
     )
   end
 

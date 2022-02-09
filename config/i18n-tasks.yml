@@ -95,7 +95,6 @@ ignore_missing:
 ## any unused translations would fail erroneously.
 ignore_unused:
   - 'account.login.piv_cac_info.*'
-  - 'datetime.dotiw.two_words_connector'
   - 'devise.failure.*'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
