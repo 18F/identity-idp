@@ -10,10 +10,6 @@ module Users
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
 
-    def index
-      @presenter = BackupCodeCreatePresenter.new
-    end
-
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
