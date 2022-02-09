@@ -30,8 +30,24 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
     describe 'GET show' do
       it 'redirects if no webauthn configured' do
         get :show
-
         expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+      context 'with webauthn configured' do
+        before do
+          allow_any_instance_of(TwoFactorAuthentication::WebauthnPolicy).
+            to receive(:enabled?).
+            and_return(true)
+          allow(@analytics).to receive(:track_event)
+        end
+        it 'tracks an analytics event' do
+          get :show, params: { platform: true }
+          result = { context: 'authentication',
+                     multi_factor_auth_method: 'webauthn_platform', webauthn_configuration_id: nil }
+          expect(@analytics).to have_received(:track_event).with(
+            Analytics::MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT,
+            result,
+          )
+        end
       end
     end
 
