@@ -288,8 +288,9 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('redirects from a server error', async () => {
+    const endpoint = '/upload';
     const { getByLabelText, getByText } = render(
-      <UploadContextProvider upload={httpUpload} endpoint="/upload">
+      <UploadContextProvider upload={httpUpload} endpoint={endpoint}>
         <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
             <DocumentCapture />
@@ -300,10 +301,11 @@ describe('document-capture/components/document-capture', () => {
 
     sandbox
       .stub(window, 'fetch')
-      .withArgs('/upload')
+      .withArgs(endpoint)
       .resolves({
         ok: false,
         status: 418,
+        url: endpoint,
         json: () =>
           Promise.resolve({
             redirect: '#teapot',
