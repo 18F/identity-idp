@@ -12,7 +12,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p><%== @presenter.intro %></p>
+<p><%= @presenter.intro %></p>
 
 <%= render(AlertComponent.new) { t('two_factor_authentication.lockout_information') } %>
 
