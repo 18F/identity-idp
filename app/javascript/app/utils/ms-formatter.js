@@ -1,10 +1,12 @@
-const { t } = window.LoginGov.I18n;
+const { I18n } = window.LoginGov;
 const formatTime = (time, unit) =>
   // i18n-tasks-use t('datetime.dotiw.seconds.one')
   // i18n-tasks-use t('datetime.dotiw.seconds.other')
   // i18n-tasks-use t('datetime.dotiw.minutes.one')
   // i18n-tasks-use t('datetime.dotiw.minutes.other')
-  time === 1 ? t(`datetime.dotiw.${unit}.one`) : t(`datetime.dotiw.${unit}.other`, { count: time });
+  time === 1
+    ? I18n.t(`datetime.dotiw.${unit}.one`)
+    : I18n.t(`datetime.dotiw.${unit}.other`, { count: time });
 
 export default (milliseconds) => {
   const seconds = milliseconds / 1000;
@@ -14,7 +16,7 @@ export default (milliseconds) => {
   const displayMinutes = formatTime(minutes, 'minutes');
   const displaySeconds = formatTime(remainingSeconds, 'seconds');
 
-  const displayTime = `${displayMinutes} ${t(
+  const displayTime = `${displayMinutes} ${I18n.t(
     'datetime.dotiw.two_words_connector',
   )} ${displaySeconds}`;
 
