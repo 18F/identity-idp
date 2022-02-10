@@ -33,8 +33,7 @@ global.window.crypto = new Crypto(); // In the future (Node >=15), use native we
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
 global.window.URL.revokeObjectURL = () => {};
 global.window.LoginGov = global.window.LoginGov || {};
-const { _locale_data: strings } = global.window;
-global.window.LoginGov.I18n = new I18n({ strings });
+global.window.LoginGov.I18n = new I18n();
 Object.defineProperty(global.window.Image.prototype, 'src', {
   set() {
     this.onload();
