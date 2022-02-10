@@ -60,9 +60,10 @@ describe('document-capture/context/upload', () => {
   });
 
   it('can be overridden with status endpoint', async () => {
+    const statusEndpoint = 'about:blank';
     const { result } = renderHook(() => useContext(UploadContext), {
       wrapper: ({ children }) => (
-        <UploadContextProvider statusEndpoint="about:blank" statusPollInterval={1000}>
+        <UploadContextProvider statusEndpoint={statusEndpoint} statusPollInterval={1000}>
           {children}
         </UploadContextProvider>
       ),
@@ -70,8 +71,8 @@ describe('document-capture/context/upload', () => {
 
     sandbox
       .stub(window, 'fetch')
-      .withArgs('about:blank')
-      .resolves({ ok: true, json: () => Promise.resolve({ success: true }) });
+      .withArgs(statusEndpoint)
+      .resolves({ ok: true, url: statusEndpoint, json: () => Promise.resolve({ success: true }) });
 
     await result.current.getStatus();
     expect(result.current.statusPollInterval).to.equal(1000);

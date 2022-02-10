@@ -67,6 +67,14 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
     throw new Error(response.statusText);
   }
 
+  if (response.url !== endpoint) {
+    window.onbeforeunload = null;
+    window.location.href = response.url;
+
+    // Avoid settling the promise, allowing the redirect to complete.
+    return new Promise(() => {});
+  }
+
   const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());
   if (!result.success) {
     /** @type {UploadErrorResponse} */
