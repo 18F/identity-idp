@@ -23,8 +23,8 @@ aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
 account_reset_token_valid_for_days: 1
 account_reset_wait_period_days: 1
-acuant_maintenance_window_start: 
-acuant_maintenance_window_finish: 
+acuant_maintenance_window_start:
+acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
 acuant_assure_id_url: ''
@@ -215,7 +215,7 @@ show_select_account_on_repeat_sp_visits: false
 sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
-sms_resubscribe_enabled: 'false'
+sms_resubscribe_enabled: false
 test_ssn_allowed_list: ''
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
@@ -311,7 +311,7 @@ production:
   aamva_private_key: ''
   aamva_public_key: ''
   aamva_verification_url: 'https://verificationservices-cert.aamva.org:18449/dldv/2.1/online'
-  attribute_encryption_key: 
+  attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket: ''
@@ -337,7 +337,7 @@ production:
   domain_name: login.gov
   enable_test_routes: false
   enable_usps_verification: false
-  hmac_fingerprinter_key: 
+  hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
@@ -348,8 +348,8 @@ production:
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
-  password_pepper: 
-  piv_cac_verify_token_secret: 
+  password_pepper:
+  piv_cac_verify_token_secret:
   platform_authentication_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
@@ -362,9 +362,9 @@ production:
   s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
-  secret_key_base: 
+  secret_key_base:
   seed_agreements_data: false
-  session_encryption_key: 
+  session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: false

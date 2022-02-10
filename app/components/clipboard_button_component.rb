@@ -2,10 +2,9 @@ class ClipboardButtonComponent < ButtonComponent
   attr_reader :clipboard_text, :tag_options
 
   def initialize(clipboard_text:, **tag_options)
-    super(**tag_options)
+    super(**tag_options, type: :button, icon: :content_copy)
 
     @clipboard_text = clipboard_text
-    @tag_options = tag_options
   end
 
   def call
@@ -13,11 +12,6 @@ class ClipboardButtonComponent < ButtonComponent
   end
 
   def content
-    safe_join(
-      [
-        render(IconComponent.new(icon: :content_copy, class: 'position-absolute')),
-        content_tag(:span, t('links.copy'), class: 'padding-left-3'),
-      ],
-    )
+    t('links.copy')
   end
 end

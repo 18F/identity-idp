@@ -31,10 +31,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     t('two_factor_authentication.login_intro')
   end
 
-  def label
-    ''
-  end
-
   def options
     mfa = MfaContext.new(user)
 

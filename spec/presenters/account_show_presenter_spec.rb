@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe AccountShow do
+describe AccountShowPresenter do
   describe '#header_personalization' do
-    context 'AccountShow instance has decrypted_pii' do
+    context 'AccountShowPresenter instance has decrypted_pii' do
       it "returns the user's first name" do
         user = User.new
         first_name = 'John'
@@ -12,7 +12,7 @@ describe AccountShow do
           first_name: first_name, last_name: last_name,
           dob: birthday
         )
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
@@ -22,12 +22,12 @@ describe AccountShow do
       end
     end
 
-    context 'AccountShow instance does not have decrypted_pii' do
+    context 'AccountShowPresenter instance does not have decrypted_pii' do
       it 'returns the email the user used to sign in last' do
         decorated_user = create(:user, :with_multiple_emails).decorate
         email_address = decorated_user.user.reload.email_addresses.last
         email_address.update!(last_sign_in_at: 1.minute.from_now)
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
@@ -46,7 +46,7 @@ describe AccountShow do
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
 
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
@@ -62,7 +62,7 @@ describe AccountShow do
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false
@@ -79,7 +79,7 @@ describe AccountShow do
       create(:backup_code_configuration, created_at: 1.day.ago, user: user)
       oldest_code = create(:backup_code_configuration, created_at: 2.days.ago, user: user)
 
-      account_show = AccountShow.new(
+      account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         personal_key: '',
         sp_session_request_url: nil,
@@ -98,7 +98,7 @@ describe AccountShow do
     it 'returns nil if there are not backup codes' do
       user = create(:user)
 
-      account_show = AccountShow.new(
+      account_show = AccountShowPresenter.new(
         decrypted_pii: {},
         personal_key: '',
         sp_session_request_url: nil,
@@ -118,7 +118,7 @@ describe AccountShow do
     end
 
     subject(:account_show) do
-      AccountShow.new(
+      AccountShowPresenter.new(
         decrypted_pii: decrypted_pii,
         personal_key: '',
         sp_session_request_url: nil,
@@ -156,7 +156,7 @@ describe AccountShow do
           user: create(:user, encrypted_recovery_code_digest_generated_at: digest_generated_at),
         )
         user = profile.user
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
           decorated_user: user.decorate,
@@ -180,7 +180,7 @@ describe AccountShow do
           user: create(:user),
         )
         user = profile.user
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
           decorated_user: user.decorate,
@@ -199,7 +199,7 @@ describe AccountShow do
       it 'returns nil' do
         user = create(:user)
 
-        profile_index = AccountShow.new(
+        profile_index = AccountShowPresenter.new(
           decrypted_pii: {},
           personal_key: '',
           decorated_user: user.decorate,

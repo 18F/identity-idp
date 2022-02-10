@@ -36,16 +36,23 @@
       ) %>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
-  <%= link_to(
-        t('links.two_factor_authentication.get_another_code'),
-        otp_send_path(
-          otp_delivery_selection_form: {
-            otp_delivery_preference: @presenter.otp_delivery_preference,
-            resend: true,
-          },
-        ),
-        class: 'usa-button usa-button--outline ico ico-refresh margin-bottom-neg-1',
-      ) %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(
+            otp_send_path(
+              otp_delivery_selection_form: {
+                otp_delivery_preference: @presenter.otp_delivery_preference,
+                resend: true,
+              },
+            ),
+            **tag_options,
+            &block
+          )
+        end,
+        outline: true,
+        icon: :loop,
+        class: 'margin-bottom-neg-1',
+      ).with_content(t('links.two_factor_authentication.get_another_code')) %>
 <% end %>
 
 <% if @presenter.unconfirmed_phone? %>

@@ -13,10 +13,14 @@ RSpec.describe ClipboardButtonComponent, type: :component do
   end
 
   context 'with tag options' do
-    let(:tag_options) { { outline: true } }
+    let(:tag_options) { { outline: true, data: { foo: 'bar' } } }
 
     it 'renders button given the tag options' do
-      expect(rendered).to have_css('button.usa-button.usa-button--outline')
+      expect(rendered).to have_css('button.usa-button[type="button"][data-foo="bar"]')
+    end
+
+    it 'respects keyword arguments of button component' do
+      expect(rendered).to have_css('.usa-button--outline:not([outline])')
     end
   end
 end

@@ -1,23 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe ButtonComponent, type: :component do
-  let(:type) { nil }
+  include ActionView::Context
+  include ActionView::Helpers::TagHelper
+
   let(:outline) { false }
   let(:content) { 'Button' }
-  let(:options) do
-    {
-      type: type,
-    }.compact
-  end
 
-  subject(:rendered) { render_inline ButtonComponent.new(outline: outline, **options) { content } }
+  subject(:rendered) do
+    render_inline ButtonComponent.new(outline: outline).with_content(content)
+  end
 
   it 'renders button content' do
     expect(rendered).to have_content(content)
-  end
-
-  it 'renders as type=button' do
-    expect(rendered).to have_css('button[type=button]')
   end
 
   it 'renders with design system classes' do
@@ -32,11 +27,40 @@ RSpec.describe ButtonComponent, type: :component do
     end
   end
 
-  context 'with type' do
-    let(:type) { :submit }
+  context 'with tag options' do
+    it 'renders as attributes' do
+      rendered = render_inline ButtonComponent.new(
+        type: :button,
+        class: 'my-custom-class',
+        data: { foo: 'bar' },
+      )
 
-    it 'renders as type' do
-      expect(rendered).to have_css('button[type=submit]')
+      expect(rendered).to have_css('.usa-button.my-custom-class[type="button"][data-foo="bar"]')
+    end
+  end
+
+  context 'with icon' do
+    it 'renders an icon' do
+      rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
+
+      expect(rendered).to have_css('use[href$="#print"]')
+      expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
+    end
+  end
+
+  context 'with custom button action' do
+    it 'calls the action with content and tag_options' do
+      rendered = render_inline ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }, &block)
+        end,
+        class: 'custom-class',
+      ).with_content(content)
+
+      expect(rendered).to have_css(
+        'lg-custom-button[data-extra].custom-class',
+        text: content,
+      )
     end
   end
 end

@@ -2,11 +2,11 @@
 
 <%= render PageHeadingComponent.new.with_content('Enter PIV/CAC Test Information') %>
 
-<p class="mt-tiny margin-bottom-4">
+<p>
   Either enter a subject for a certificate or select an error to simulate a piv/cac response.
 </p>
 
-<div class="sm-col-9 sm-ml-28p">
+<div class="sm-col-9">
   <%= form_tag do %>
     <%= hidden_field_tag(:redirect_uri, @referrer) %>
     <div class="clearfix margin-x-neg-1">

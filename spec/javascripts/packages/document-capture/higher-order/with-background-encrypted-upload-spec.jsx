@@ -237,7 +237,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
 
         it('logs and throws on failed encryption', async () => {
           const error = new Error();
-          window.crypto.subtle.encrypt.throws(error);
+          sandbox.stub(window.crypto.subtle, 'encrypt').throws(error);
           const { onChange, onError, addPageAction, noticeError } = await renderWithResponse(
             response,
           );

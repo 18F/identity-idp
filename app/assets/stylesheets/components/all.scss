@@ -5,7 +5,6 @@
 @import 'btn';
 @import 'card';
 @import 'container';
-@import 'external-link';
 @import 'file-input';
 @import 'footer';
 @import 'form';
@@ -25,3 +24,13 @@
 @import 'step-indicator';
 @import 'troubleshooting-options';
 @import 'i18n-dropdown';
+
+// Upstream: https://github.com/18F/identity-style-guide/pull/290
+.usa-process-list {
+  padding-top: 0;
+}
+
+// Upsteram: https://github.com/18F/identity-style-guide/pull/290
+.usa-process-list__item:last-child {
+  padding-bottom: 0;
+}

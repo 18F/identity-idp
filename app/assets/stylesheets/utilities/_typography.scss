@@ -4,15 +4,13 @@ html {
 body {
   -webkit-font-smoothing: antialiased;
 }
-.sans-serif {
-  font-family: $sans-serif-font-family;
-}
-.serif {
-  font-family: $serif-font-family;
-}
 
 .text-decoration-none {
   text-decoration: none;
+}
+
+.text-wrap-anywhere {
+  overflow-wrap: anywhere;
 }
 
 .fs-12p {

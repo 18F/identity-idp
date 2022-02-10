@@ -3888,10 +3888,10 @@ iconv-lite@0.6.3, iconv-lite@^0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
-identity-style-guide@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.3.0.tgz#eb9d776f3e9cbed9640c09fcce07e89881004279"
-  integrity sha512-dmQNHo84HQmNitAt8mt0Rb/kxADJ3ZE7jmwrrSRPSrTh8t6N37ORh1gBjk/qeCGWnZHYnIcGA2bYmUmr6WuEHQ==
+identity-style-guide@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.3.1.tgz#6fee69419956d0a58557823a4fe8df5207fd66ec"
+  integrity sha512-37GKUPXjwDk3r7YH0KBZtNWPdvMDjV5QWS69hFuepCVkwSrYzZ+QfUv0qHDuW1FYOz1cpDIbzaXaoFPniBT8UQ==
   dependencies:
     domready "^1.0.8"
     uswds "^2.13.1"
@@ -6462,10 +6462,10 @@ webcrypto-core@^1.2.0:
     pvtsutils "^1.1.2"
     tslib "^2.1.0"
 
-webcrypto-shim@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/webcrypto-shim/-/webcrypto-shim-0.1.6.tgz#b4554d95c0a63637226c9732440dc674bf96f5cb"
-  integrity sha512-0o612s3S5z3IkDSRghIwd3Ul4X8NRmmZDpt6PWGI9gSM+nygVvrfzGjhIh4vwzlOJxYxS0fcFD1wh3yznuVzFg==
+webcrypto-shim@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/webcrypto-shim/-/webcrypto-shim-0.1.7.tgz#da8be23061a0451cf23b424d4a9b61c10f091c12"
+  integrity sha512-JAvAQR5mRNRxZW2jKigWMjCMkjSdmP5cColRP1U/pTg69VgHXEi1orv5vVpJ55Zc5MIaPc1aaurzd9pjv2bveg==
 
 webidl-conversions@^7.0.0:
   version "7.0.0"

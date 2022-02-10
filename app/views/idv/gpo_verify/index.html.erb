@@ -12,9 +12,11 @@
 <% title t('titles.verify_profile') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.title')) %>
-<p class="mt-tiny margin-bottom-0">
+
+<p>
   <%= t('forms.verify_profile.instructions') %>
 </p>
+
 <%= validated_form_for(
       @gpo_verify_form,
       url: idv_gpo_verify_path,

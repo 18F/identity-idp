@@ -1,5 +1,5 @@
 <% content_for(:nav) do %>
-  <%= render 'accounts/nav_auth', enable_mobile_nav: false, greeting: @view_model.header_personalization %>
+  <%= render 'accounts/nav_auth', enable_mobile_nav: false, greeting: @presenter.header_personalization %>
 <% end %>
 
 <% title t('titles.account') %>

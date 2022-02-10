@@ -1,4 +1,6 @@
-describe Telephony::AlertSender do
+require 'rails_helper'
+
+RSpec.describe Telephony::AlertSender do
   let(:configured_adapter) { :test }
   let(:recipient) { '+1 (202) 555-5000' }
 

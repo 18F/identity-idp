@@ -5,12 +5,32 @@ Unreleased
 -----------
 
 ### Improvements/Changes
-- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5880, #5884, #5887, #5888, #5906, #5908)
 - Typography: Updated monospace font to Roboto Mono for consistency across login.gov sites. (#5891)
+- Multi-factor authentication: Add ability to opt numbers back in to receiving SMS that have replied "STOP" (#5894)
+- Icons: Replaced custom button icons using U.S. Web Design system icons. (#5904)
+- Analytics: Add ability to track when users go to Webauthn page to authenticate their device. (#5920)
+- User Interface: Updated styling for process lists following U.S. Web Design System best practices. (#5863)
+
+### Accessibility
+
+### Bug Fixes Users Might Notice
+- Phone numbers: Improve formatting of masked numbers for international phone numbers (#5895)
+
+### Behind the Scenes Changes Users Probably Won't Notice
+- Maintenance: Improve changelog CI check to detail opt-out behavior (#5897)
+
+RC 176 - 2022-02-03
+----------------------
+
+### Improvements/Changes
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885)
+- Layout: Improve layout margins and typographical consistency across several content pages. (#5857, #5869, #5885, #5886)
 
 ### Accessibility
 - Identity Verification: The Send a Letter "Come back soon" screen has improved grammar and content structure semantics. (#5868)
 - Document capture: The image file field label is no longer set to file names so that screen readers do not read the filenames to users. (#5858)
+- Screen Readers: Warning and Error informative images had an empty alt atribute. (#5593)
 
 ### Bug Fixes Users Might Notice
 
@@ -24,6 +44,13 @@ Unreleased
 - Maintenance: Enable stricter Changelog checks in continuous integration (#5882)
 - Logging: Fix logging of transport attribute in RISC event delivery (#5881)
 - Security: Update JavaScript packages with known vulnerabilities (#5889)
+- Source Code: Reorganized view model classes to be presenters (#5893)
+
+RC 175.3 - 2022-02-02
+
+### Bug Fixes Users Might Notice
+
+- Content security policy: An issue with the form action that prevented redirect to service providers was fixed (#5899)
 
 RC 175.2 - 2022-01-29
 ----------------------

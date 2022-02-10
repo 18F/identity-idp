@@ -281,7 +281,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def display_phone_to_deliver_to
     if UserSessionContext.authentication_context?(context)
-      masked_number(phone_configuration.phone)
+      phone_configuration.masked_phone
     else
       user_session[:unconfirmed_phone]
     end
@@ -320,10 +320,5 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def phone_configuration
     MfaContext.new(current_user).phone_configuration(user_session[:phone_id])
-  end
-
-  def masked_number(number)
-    return '' if number.blank?
-    "***-***-#{number[-4..-1]}"
   end
 end

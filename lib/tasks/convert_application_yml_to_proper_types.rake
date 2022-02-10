@@ -18,7 +18,7 @@ namespace :convert_application_yml_to_proper_types do
             content = "  #{key}: #{converted_val}" if add_spaces
           end
 
-          newfile.puts content
+          newfile.puts content.rstrip
         end
       end
       FileUtils.mv filename+'.tmp', filename
@@ -65,7 +65,7 @@ namespace :convert_application_yml_to_proper_types do
     when 'integer'
       value.tr("'", '').to_i.to_s(:delimited, delimiter: '_')
     else
-      value.nil? ? nil : value.to_s
+      value
     end
   end
 end

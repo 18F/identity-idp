@@ -4,7 +4,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class='mt-tiny margin-bottom-4'>
+<p>
   <%= @presenter.intro %>
 </p>
 
@@ -13,7 +13,7 @@
       url: webauthn_setup_path,
       method: :patch,
       html: {
-        class: 'margin-bottom-1 read-after-submit',
+        class: 'margin-top-4 margin-bottom-1 read-after-submit',
         id: 'webauthn_form',
       },
     ) do |f| %>

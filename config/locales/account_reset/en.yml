@@ -39,18 +39,21 @@ en:
     request:
       are_you_sure: Are you sure you don’t have access to any of your authentication methods?
       delete_account: Delete your account
-      delete_account_info: Deleting your existing account and creating a new one will
-        allow you to use the same email address and set up new authentication
-        methods.  However, deleting will remove any agency applications you have
-        linked to your account and you will need to restore each connection.
-        <br><br> If you continue, you will first receive an email
-        confirmation.  As a security measure, you will receive another email
-        with the link to continue deleting your account 24 hours after the
-        initial confirmation email arrives.
-      info: If you can’t access your account using the authentication methods you set
-        up previously, deleting your account and creating a new one is the only
-        option. <br><br> We can’t undo an account delete, so please verify if
-        you have another authentication method you can use instead.
+      delete_account_info:
+        - Deleting your existing account and creating a new one will allow you
+          to use the same email address and set up new authentication methods.
+          However, deleting will remove any agency applications you have linked
+          to your account and you will need to restore each connection.
+        - If you continue, you will first receive an email confirmation.  As a
+          security measure, you will receive another email with the link to
+          continue deleting your account 24 hours after the initial confirmation
+          email arrives.
+      info:
+        - If you can’t access your account using the authentication methods you
+          set up previously, deleting your account and creating a new one is the
+          only option.
+        - We can’t undo an account delete, so please verify if you have another
+          authentication method you can use instead.
       no_cancel: No, cancel
       title: Account deletion and reset
-      yes_continue: Yes, continue deletion.
+      yes_continue: Yes, continue deletion

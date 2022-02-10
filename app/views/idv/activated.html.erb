@@ -1,7 +1,8 @@
 <% title t('idv.titles.activated') %>
 
 <%= render PageHeadingComponent.new.with_content(t('idv.titles.activated')) %>
-<p class='mt-tiny margin-bottom-0'>
+
+<p class="margin-bottom-0">
   <%= t(
         'idv.messages.activated_html',
         link: link_to(t('idv.messages.activated_link'), MarketingSite.contact_url),
