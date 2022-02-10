@@ -10,7 +10,6 @@ import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
 import { useBrowserCompatibleEncrypt } from './support/crypto';
 
-
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiConsoleSpy);
