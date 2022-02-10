@@ -1,10 +1,4 @@
-<div class='sm-col padding-y-1 tablet:padding-0'>
-  <%= link_to(
-        "‹ #{t(
-          'links.back_to_sp',
-          sp: decorated_session.sp_name,
-        )}",
-        return_to_sp_cancel_path,
-        class: 'inline-block text-bottom',
-      ) %>
-</div>
+<%= link_to(
+      "‹ #{t('links.back_to_sp', sp: decorated_session.sp_name)}",
+      return_to_sp_cancel_path,
+    ) %>
