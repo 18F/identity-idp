@@ -1,6 +1,6 @@
 import autoLogout from './auto-logout';
-import countdownTimer from './countdown-timer';
-import msFormatter from './ms-formatter';
+import { countdownTimer } from './countdown-timer';
+import { msFormatter } from './ms-formatter';
 
 window.LoginGov = window.LoginGov || {};
 const { LoginGov } = window;

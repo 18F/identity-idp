@@ -8,7 +8,7 @@ const formatTime = (time, unit) =>
     ? I18n.t(`datetime.dotiw.${unit}.one`)
     : I18n.t(`datetime.dotiw.${unit}.other`, { count: time });
 
-export default (milliseconds) => {
+export function msFormatter(milliseconds) {
   const seconds = milliseconds / 1000;
   const minutes = parseInt(seconds / 60, 10);
   const remainingSeconds = parseInt(seconds % 60, 10);
@@ -21,4 +21,4 @@ export default (milliseconds) => {
   )} ${displaySeconds}`;
 
   return displayTime;
-};
+}
