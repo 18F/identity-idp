@@ -264,6 +264,14 @@ feature 'Sign in' do
       time2 = page.text[/14:5[0-9]/]
       puts time2
       expect(time2).to be < time1
+
+      time3 = page.text[/14 minutes and 5[0-9] seconds/]
+      puts time3
+      sleep(1)
+      time4 = page.text[/14 minutes and 5[0-9] seconds/]
+      puts time4
+      expect(time4).to be < time3
+
     end
 
     scenario 'user can continue browsing' do
