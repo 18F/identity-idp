@@ -16,8 +16,8 @@ module I18n
         { key: 'simple_form.required.mark' }, # No text content
         { key: 'time.am' }, # "AM" is "AM" in French and Spanish
         { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
-        { key: 'datetime.dotiw.minutes.one' }, # "munute is minute" in French and English
-        { key: 'datetime.dotiw.minutes.other' }, # "munute is minute" in French and Englishs
+        { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
+        { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
       ].freeze
 
       def untranslated_keys
