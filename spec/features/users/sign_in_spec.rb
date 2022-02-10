@@ -258,9 +258,11 @@ feature 'Sign in' do
       expect(page).to have_css('#session-timeout-msg')
 
       time1 = page.text[/14:5[0-9]/]
+      puts time1
       expect(page).to have_content(time1)
       sleep(1)
       time2 = page.text[/14:5[0-9]/]
+      puts time2
       expect(time2).to be < time1
     end
 
