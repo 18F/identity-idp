@@ -8,4 +8,4 @@ fr:
       seconds:
         one: 1 seconde
         other: '%{count} secondes'
-      two_words_connector: et
+      two_words_connector: ' et '
