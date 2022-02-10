@@ -1,0 +1,37 @@
+<%= image_tag asset_url('alert/fail-x.svg'),
+              alt: t('errors.alt.error'),
+              width: 54,
+              class: 'margin-bottom-2' %>
+
+<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
+
+<p>
+  <%= t(
+        'two_factor_authentication.opt_in.opted_out_last_30d_html',
+        phone_number: content_tag(:strong, @phone_configuration.masked_phone),
+      ) %>
+</p>
+
+<p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading_tag: :h3,
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: [
+        @other_mfa_options_url && {
+          url: @other_mfa_options_url,
+          text: t('two_factor_authentication.login_options_link_text'),
+        },
+        decorated_session.sp_name && {
+          url: return_to_sp_cancel_path(location: 'sms_resubscribe_error'),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+        },
+        {
+          url: MarketingSite.contact_url,
+          text: t('links.contact_support', app_name: APP_NAME),
+        },
+      ].select(&:present?),
+    ) %>
+
+<%= render 'shared/cancel', link: sign_out_path %>

@@ -16,7 +16,9 @@ module Telephony
       # rubocop:disable Metrics/BlockLength
       # @return [Response]
       def send(message:, to:, country_code:, otp: nil)
-        return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
+        if Telephony.config.pinpoint.sms_configs.empty?
+          return PinpointHelper.handle_config_failure(:sms)
+        end
 
         response = nil
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
@@ -44,9 +46,10 @@ module Telephony
           finish = Time.zone.now
           response = build_response(pinpoint_response, start: start, finish: finish)
           return response if response.success?
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: response.error,
             region: sms_config.region,
+            channel: :sms,
             extra: response.extra,
           )
         rescue Aws::Pinpoint::Errors::InternalServerErrorException,
@@ -54,20 +57,23 @@ module Telephony
                Seahorse::Client::NetworkingError => e
           finish = Time.zone.now
           response = handle_pinpoint_error(e)
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: e,
             region: sms_config.region,
+            channel: :sms,
             extra: {
               duration_ms: Util.duration_ms(start: start, finish: finish),
             },
           )
         end
-        response || handle_config_failure
+        response || PinpointHelper.handle_config_failure(:sms)
       end
       # rubocop:enable Metrics/BlockLength
 
       def phone_info(phone_number)
-        return handle_config_failure if Telephony.config.pinpoint.sms_configs.empty?
+        if Telephony.config.pinpoint.sms_configs.empty?
+          return PinpointHelper.handle_config_failure(:sms)
+        end
 
         response = nil
         error = nil
@@ -82,9 +88,10 @@ module Telephony
           break if response
         rescue Seahorse::Client::NetworkingError,
                Aws::Pinpoint::Errors::InternalServerErrorException => error
-          notify_pinpoint_failover(
+          PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: sms_config.region,
+            channel: :sms,
             extra: {},
           )
         end
@@ -159,35 +166,20 @@ module Telephony
         status_code = message_response_result.status_code
         delivery_status = message_response_result.delivery_status
         exception_message = "Pinpoint Error: #{delivery_status} - #{status_code}"
-        exception_class = ERROR_HASH[delivery_status] || TelephonyError
+        exception_class = if permanent_failure_opt_out?(message_response_result)
+          OptOutError
+        else
+          ERROR_HASH[delivery_status] || TelephonyError
+        end
         exception_class.new(exception_message)
       end
 
-      def notify_pinpoint_failover(error:, region:, extra:)
-        response = Response.new(
-          success: false,
-          error: error,
-          extra: extra.merge(
-            failover: true,
-            region: region,
-            channel: 'sms',
-          ),
-        )
-        Telephony.config.logger.warn(response.to_h.to_json)
-      end
-
-      def handle_config_failure
-        response = Response.new(
-          success: false,
-          error: unknown_failure_error,
-          extra: {
-            channel: 'sms',
-          },
-        )
-
-        Telephony.config.logger.warn(response.to_h.to_json)
-
-        response
+      # Sometimes AWS Pinpoint returns PERMANENT_FAILURE with an "opted out" message
+      # instead of an OPT_OUT error
+      # @param [Aws::Pinpoint::Types::MessageResult] message_response_result
+      def permanent_failure_opt_out?(message_response_result)
+        message_response_result.delivery_status == 'PERMANENT_FAILURE' &&
+          message_response_result.status_message&.include?('opted out')
       end
 
       def unknown_failure_error

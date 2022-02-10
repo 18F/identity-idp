@@ -226,7 +226,6 @@ en:
       switch_back: Switch back to your computer to finish verifying your identity.
       test_ssn: In the test environment only SSNs that begin with “900-” or “666-” are
         considered valid. Do not enter real PII in this field.
-      text1: ''
       text1a: such as a phone or computer.
       text2: You will not need the card with you.
       text3: You do not need to be the primary account holder on your phone plan. If

@@ -7,7 +7,7 @@
     <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.devices') %>
     </h2>
-    <% @view_model.recent_devices.each do |device| %>
+    <% @presenter.recent_devices.each do |device| %>
       <%= render 'accounts/device_item', device: device %>
     <% end %>
   </div>
@@ -18,7 +18,7 @@
     <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.activity') %>
     </h2>
-    <% @view_model.recent_events.each do |event| %>
+    <% @presenter.recent_events.each do |event| %>
       <% if event.is_a?(ServiceProviderIdentity) %>
         <%= render 'accounts/identity_item', event: event %>
       <% else %>

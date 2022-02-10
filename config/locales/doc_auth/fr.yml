@@ -275,7 +275,6 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
       text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte

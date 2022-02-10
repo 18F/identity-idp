@@ -1,4 +1,4 @@
-class Navigation
+class NavigationPresenter
   include Rails.application.routes.url_helpers
 
   NavItem = Struct.new(:title, :href, :children)

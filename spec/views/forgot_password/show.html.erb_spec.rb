@@ -4,7 +4,9 @@ describe 'forgot_password/show.html.erb' do
   let(:email) { 'foo@bar.com' }
 
   before do
-    @view_model = ForgotPasswordShow.new(resend: nil, session: { email: email })
+    @email = email
+    @password_reset_email_form = PasswordResetEmailForm.new(email)
+    @resend = nil
   end
 
   it 'has a localized title' do
@@ -48,7 +50,7 @@ describe 'forgot_password/show.html.erb' do
   end
 
   it 'displays a notice if resend_confirmation is present' do
-    @view_model = ForgotPasswordShow.new(resend: true, session: {})
+    @resend = true
 
     render
 
