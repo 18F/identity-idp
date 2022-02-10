@@ -267,7 +267,6 @@ feature 'Sign in' do
       sleep(1)
       time4 = page.text[/14 minutes and 5[0-9] seconds/]
       expect(time4).to be < time3
-
     end
 
     scenario 'user can continue browsing' do
