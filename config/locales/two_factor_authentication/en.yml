@@ -32,7 +32,7 @@ en:
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
-      auth_app_info_html: Use your authentication application to get security code.
+      auth_app_info_html: Use your authentication application to get a security code.
       backup_code: Backup codes
       backup_code_info_html: Use a backup code from your list of backup codes to sign in.
       personal_key: Personal Key
