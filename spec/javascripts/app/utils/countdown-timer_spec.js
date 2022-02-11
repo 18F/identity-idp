@@ -18,7 +18,7 @@ describe('countdownTimer', () => {
       window.LoginGov.I18n.strings['datetime.dotiw.minutes.one'] = 'one minute';
       window.LoginGov.I18n.strings['datetime.dotiw.seconds.other'] = '%{count} seconds';
       window.LoginGov.I18n.strings['datetime.dotiw.minutes.other'] = '%{count} minutes';
-      window.LoginGov.I18n.strings['datetime.dotiw.two_words_connector'] = 'and';
+      window.LoginGov.I18n.strings['datetime.dotiw.two_words_connector'] = ' and ';
     });
 
     afterEach(() => {
