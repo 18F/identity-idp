@@ -9,6 +9,9 @@
         <p id='<%= description_id %>'>
           <%= modal.message %>
         </p>
+        <p class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
+          <%= modal.sr_message %>
+        </p>
       </div>
       <div class='center'>
         <%= button_tag modal.continue,

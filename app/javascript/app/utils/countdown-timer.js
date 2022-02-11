@@ -1,6 +1,6 @@
-const msFormatter = require('./ms-formatter').default;
+const { msFormatter } = require('./ms-formatter');
 
-export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
+export function countdownTimer(el, timeLeft = 0, endTime = null, interval = 1000) {
   let remaining = timeLeft;
   let currentTime;
   let timer;
@@ -16,7 +16,7 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
       remaining = endTime - currentTime;
     }
 
-    el.innerHTML = msFormatter(remaining);
+    el.childNodes[0].nodeValue = msFormatter(remaining);
 
     if (remaining <= 0) {
       clearInterval(timer);
@@ -29,4 +29,4 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
   tick();
   timer = setInterval(tick, interval);
   return timer;
-};
+}
