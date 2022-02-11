@@ -75,7 +75,7 @@ describe 'default phone selection' do
 
         expect(page).to have_current_path(account_path)
 
-        node = page.first('.grid-row > .grid-col-5', text: new_phone)
+        node = page.first('.grid-row > .grid-col-fill', text: new_phone)
         expect(node).to have_content '202-555-3111'
         parent = node.first(:xpath, './/..')
         expect(parent).to have_content t('account.index.default')
