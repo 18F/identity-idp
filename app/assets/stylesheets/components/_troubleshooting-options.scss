@@ -17,7 +17,7 @@
 
 .troubleshooting-options__heading {
   @include u-margin-y(1.5);
-  font-size: units(2);
+  @extend %h3;
 }
 
 .troubleshooting-options__options {
