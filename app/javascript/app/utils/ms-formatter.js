@@ -16,9 +16,9 @@ export function msFormatter(milliseconds) {
   const displayMinutes = formatTime(minutes, 'minutes');
   const displaySeconds = formatTime(remainingSeconds, 'seconds');
 
-  const displayTime = `${displayMinutes} ${I18n.t(
+  const displayTime = `${displayMinutes}${I18n.t(
     'datetime.dotiw.two_words_connector',
-  )} ${displaySeconds}`;
+  )}${displaySeconds}`;
 
   return displayTime;
 }
