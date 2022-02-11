@@ -2,17 +2,21 @@
 locals:
 * f: from validated_form_for
 * selection: the current language selection
+* hint: optional hint override
 %>
 <%= f.input(
       :email_language,
       as: :radio_buttons,
       label: t('forms.registration.labels.email_language'),
-      hint: t(
-        'account.email_language.languages_list',
-        app_name: APP_NAME,
-        list: I18n.available_locales.
-          map { |locale| t("account.email_language.name.#{locale}") }.
-          to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
+      hint: local_assigns.fetch(
+        :hint,
+        t(
+          'account.email_language.languages_list',
+          app_name: APP_NAME,
+          list: I18n.available_locales.
+            map { |locale| t("account.email_language.name.#{locale}") }.
+            to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
+        ),
       ),
       collection: I18n.available_locales.map do |locale|
         [

@@ -48,8 +48,8 @@ SimpleForm.setup do |config|
     b.wrapper :legend, tag: 'legend' do |ba|
       ba.use :label_text
     end
-    b.use :hint, wrap_with: { tag: 'div', class: 'usa-hint' }
-    b.wrapper :grid_row, tag: :div, class: 'grid-row margin-y-neg-1' do |gr|
+    b.use :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
+    b.wrapper :grid_row, tag: :div, class: 'grid-row margin-bottom-neg-1' do |gr|
       gr.wrapper :grid_column_radios, tag: :div, class: 'grid-col-fill' do |gc|
         gc.wrapper :column_wrapper, tag: :div, class: 'display-inline-block minw-full' do |cr|
           cr.use :input, class: 'usa-radio__input usa-radio__input--bordered'
