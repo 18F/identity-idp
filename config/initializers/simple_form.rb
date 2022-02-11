@@ -45,7 +45,7 @@ SimpleForm.setup do |config|
                   item_wrapper_tag: nil,
                   item_label_class: 'usa-radio__label width-full text-no-wrap' do |b|
     b.use :html5
-    b.wrapper :legend, tag: 'legend' do |ba|
+    b.wrapper :legend, tag: 'legend', class: 'usa-label' do |ba|
       ba.use :label_text
     end
     b.use :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
