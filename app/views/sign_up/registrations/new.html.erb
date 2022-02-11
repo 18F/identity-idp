@@ -18,24 +18,8 @@
         input_html: { autocorrect: 'off' },
       ) %>
 
-  <fieldset class="usa-fieldset">
-    <legend class="margin-bottom-1">
-      <%= t('forms.registration.labels.email_language') %>
-    </legend>
-
-    <p class="margin-bottom-2">
-      <%= t(
-            'account.email_language.languages_list',
-            app_name: APP_NAME,
-            list: I18n.available_locales.
-              map { |locale| t("account.email_language.name.#{locale}") }.
-              to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
-          ) %>
-    </p>
-
-    <%= render partial: 'shared/email_languages',
-               locals: { f: f, selection: @register_user_email_form.email_language } %>
-  </fieldset>
+  <%= render partial: 'shared/email_languages',
+             locals: { f: f, selection: @register_user_email_form.email_language } %>
 
   <%= render ValidatedFieldComponent.new(
         form: f,
