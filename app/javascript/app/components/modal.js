@@ -37,7 +37,7 @@ class Modal extends Events {
   setElementVisibility(target, showing) {
     this.shown = showing;
     target.classList[showing ? 'remove' : 'add']('display-none');
-    document.body.classList[showing ? 'add' : 'remove']('modal-open');
+    document.body.classList[showing ? 'add' : 'remove']('usa-js-modal--active');
     this.trap[showing ? 'activate' : 'deactivate']();
   }
 }
