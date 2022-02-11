@@ -1,1 +1,1 @@
-!function(){var t,o={"forms.button.submit":"Submit","item.1":"First","item.2":"Second","item.3":"","forms.button.reset":"Reset"},e=window._locale_data=window._locale_data||{};for(t in o)e[t]=o[t]}();
+!function(){var e,t={"forms.button.submit":"Submit","forms.messages":{one:"One message",other:"%{count} messages"},"item.1":"First","item.2":"Second","item.3":"","forms.button.reset":"Reset"},o=window._locale_data=window._locale_data||{};for(e in t)o[e]=t[e]}();
