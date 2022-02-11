@@ -98,6 +98,7 @@ es:
       forget_browsers: Olvídese de todos los navegadores
       get_backup_codes: Obtener códigos de respaldo
       history: Historia
+      landmark_label: Navegación lateral
       learn_more: Obtenga más información sobre %{app_name}
       menu: Menú
       reset_personal_key: Restablecer la clave personal

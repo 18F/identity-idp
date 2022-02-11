@@ -97,6 +97,7 @@ en:
       forget_browsers: Forget all browsers
       get_backup_codes: Get backup codes
       history: History
+      landmark_label: Side navigation
       learn_more: Learn more about %{app_name}
       menu: Menu
       reset_personal_key: Reset personal key
