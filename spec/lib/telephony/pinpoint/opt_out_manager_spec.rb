@@ -116,7 +116,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
             next_token: SecureRandom.hex,
           },
           {
-            phone_numbers: [phone6,]
+            phone_numbers: [phone6],
           },
         ],
       )
@@ -128,9 +128,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
         numbers << phone_number
       end
 
-      expect(numbers).to eq([
-        phone1, phone2, phone3, phone4, phone5, phone6,
-      ])
+      expect(numbers).to eq([phone1, phone2, phone3, phone4, phone5, phone6])
     end
   end
 end

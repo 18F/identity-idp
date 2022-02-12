@@ -32,7 +32,7 @@ RSpec.describe PhoneNumberOptOutSyncJob do
       PhoneNumberOptOutSyncJob.new.perform(Time.zone.now)
 
       [phone1, phone2, phone3].each do |phone|
-        expect(PhoneNumberOptOut.find_by_phone(phone)).to be_present
+        expect(PhoneNumberOptOut.find_with_phone(phone)).to be_present
       end
     end
 

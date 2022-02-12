@@ -6,17 +6,19 @@ class PhoneNumberOptOut < ApplicationRecord
   encrypted_attribute(name: :phone)
 
   # @return [PhoneNumberOptOut, nil]
-  def self.find_by_phone(phone_number)
+  def self.find_with_phone(phone_number)
     normalized = normalize(phone_number)
 
-    find_by(phone_fingerprint: [
-      Pii::Fingerprinter.fingerprint(normalized),
-      *Pii::Fingerprinter.previous_fingerprints(normalized),
-    ])
+    find_by(
+      phone_fingerprint: [
+        Pii::Fingerprinter.fingerprint(normalized),
+        *Pii::Fingerprinter.previous_fingerprints(normalized),
+      ],
+    )
   end
 
   # @return [PhoneNumberOptOut]
-  def self.create_or_find_by_phone(phone_number)
+  def self.create_or_find_with_phone(phone_number)
     normalized = normalize(phone_number)
     create_or_find_by!(phone_fingerprint: Pii::Fingerprinter.fingerprint(normalized)).tap do |row|
       if row.encrypted_phone.blank?
@@ -27,7 +29,7 @@ class PhoneNumberOptOut < ApplicationRecord
   end
 
   class << self
-    alias_method :mark_opted_out, :create_or_find_by_phone
+    alias_method :mark_opted_out, :create_or_find_with_phone
   end
 
   def formatted_phone

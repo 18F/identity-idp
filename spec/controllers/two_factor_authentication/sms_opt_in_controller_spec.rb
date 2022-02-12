@@ -6,9 +6,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
     context 'when loaded while using an existing phone' do
       let(:opt_out_id) do
-        PhoneNumberOptOut.create_or_find_by_phone(
-          user.phone_configurations.first.phone
-        ).id
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).id
       end
 
       let(:user) { create(:user, :with_phone) }
@@ -56,7 +54,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
     context 'when loaded while adding a new phone' do
       let(:user) { create(:user) }
       let(:phone) { Faker::PhoneNumber.cell_phone }
-      let(:opt_out_id) { PhoneNumberOptOut.create_or_find_by_phone(phone).id }
+      let(:opt_out_id) { PhoneNumberOptOut.create_or_find_with_phone(phone).id }
 
       # let(:user_session) { { unconfirmed_phone: phone } }
       before do
@@ -71,7 +69,6 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         expect(assigns[:phone_configuration].formatted_phone).to eq(PhoneFormatter.format(phone))
       end
     end
-
 
     context 'when loaded without any phone context' do
       let(:opt_out_id) { '-111111' }
@@ -88,9 +85,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
     context 'when loaded while using an existing phone' do
       let(:opt_out_id) do
-        PhoneNumberOptOut.create_or_find_by_phone(
-          user.phone_configurations.first.phone
-        ).id
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).id
       end
 
       let(:user) { create(:user, :with_phone) }

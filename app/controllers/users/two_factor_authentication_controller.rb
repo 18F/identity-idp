@@ -198,10 +198,10 @@ module Users
     end
 
     def send_user_otp(method)
-      if PhoneNumberOptOut.find_by_phone(phone_to_deliver_to)
+      if PhoneNumberOptOut.find_with_phone(phone_to_deliver_to)
         return Telephony::Response.new(
           success: false,
-          error: Telephony::OptOutError.new
+          error: Telephony::OptOutError.new,
         )
       end
 

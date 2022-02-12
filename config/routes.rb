@@ -104,7 +104,7 @@ Rails.application.routes.draw do
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
            as: :login_otp, constraints: { otp_delivery_preference: /sms|voice/ }
       get '/login/two_factor/sms/:opt_out_id/opt_in' => 'two_factor_authentication/sms_opt_in#new',
-           as: :login_two_factor_sms_opt_in
+          as: :login_two_factor_sms_opt_in
       post '/login/two_factor/sms/:opt_out_id/opt_in' => 'two_factor_authentication/sms_opt_in#create'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'

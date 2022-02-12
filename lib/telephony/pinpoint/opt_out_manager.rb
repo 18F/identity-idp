@@ -25,9 +25,7 @@ module Telephony
           Response.new(success: false, error: error)
         end.compact
 
-        if responses.empty?
-          return PinpointHelper.handle_config_failure(:notification_service)
-        end
+        return PinpointHelper.handle_config_failure(:notification_service) if responses.empty?
 
         # imitation of FormResponse#merge
         Response.new(

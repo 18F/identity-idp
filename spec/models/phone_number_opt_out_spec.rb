@@ -8,7 +8,7 @@ RSpec.describe PhoneNumberOptOut do
       row = nil
 
       expect do
-        row = PhoneNumberOptOut.create_or_find_by_phone(phone)
+        row = PhoneNumberOptOut.create_or_find_with_phone(phone)
       end.to change { PhoneNumberOptOut.count }.by(1)
 
       expect(row.encrypted_phone).to be_present
@@ -18,8 +18,8 @@ RSpec.describe PhoneNumberOptOut do
     end
 
     it 'returns an existing row if there already is one' do
-      first = PhoneNumberOptOut.create_or_find_by_phone(phone)
-      second = PhoneNumberOptOut.create_or_find_by_phone(phone)
+      first = PhoneNumberOptOut.create_or_find_with_phone(phone)
+      second = PhoneNumberOptOut.create_or_find_with_phone(phone)
 
       expect(first.id).to eq(second.id)
     end
@@ -28,19 +28,19 @@ RSpec.describe PhoneNumberOptOut do
       spaces = '+1 888 867 5309'
       dashes = '+1-888-867-5309'
 
-      expect(PhoneNumberOptOut.create_or_find_by_phone(spaces).id).
-        to eq(PhoneNumberOptOut.create_or_find_by_phone(dashes).id)
+      expect(PhoneNumberOptOut.create_or_find_with_phone(spaces).id).
+        to eq(PhoneNumberOptOut.create_or_find_with_phone(dashes).id)
     end
   end
 
-  describe '.find_by_phone' do
+  describe '.find_with_phone' do
     it 'is nil when the row does not exist' do
-      expect(PhoneNumberOptOut.find_by_phone(Faker::PhoneNumber.cell_phone)).to be_nil
+      expect(PhoneNumberOptOut.find_with_phone(Faker::PhoneNumber.cell_phone)).to be_nil
     end
 
     it 'is the row when it exists' do
-      created = PhoneNumberOptOut.create_or_find_by_phone(phone)
-      found = PhoneNumberOptOut.find_by_phone(phone)
+      created = PhoneNumberOptOut.create_or_find_with_phone(phone)
+      found = PhoneNumberOptOut.find_with_phone(phone)
 
       expect(found.id).to eq(created.id)
     end
@@ -50,18 +50,18 @@ RSpec.describe PhoneNumberOptOut do
     it 'formats the phone internationally' do
       unformatted = '1 (888) 867-5309'
 
-      expect(PhoneNumberOptOut.create_or_find_by_phone(unformatted).formatted_phone).
+      expect(PhoneNumberOptOut.create_or_find_with_phone(unformatted).formatted_phone).
         to eq('+1 888-867-5309')
     end
   end
 
   describe '#opt_in' do
     it 'deletes the row' do
-      row = PhoneNumberOptOut.create_or_find_by_phone(phone)
+      row = PhoneNumberOptOut.create_or_find_with_phone(phone)
 
       expect { row.opt_in }.to change { PhoneNumberOptOut.count }.by(-1)
 
-      expect(PhoneNumberOptOut.find_by_phone(phone)).to be_nil
+      expect(PhoneNumberOptOut.find_with_phone(phone)).to be_nil
     end
   end
 end
