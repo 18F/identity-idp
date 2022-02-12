@@ -56,11 +56,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       let(:phone) { Faker::PhoneNumber.cell_phone }
       let(:opt_out_id) { PhoneNumberOptOut.create_or_find_with_phone(phone).id }
 
-      # let(:user_session) { { unconfirmed_phone: phone } }
       before do
         stub_sign_in_before_2fa(user)
-        # allow(controller).to receive(:user_session).
-        #   and_return(user_session)
       end
 
       it 'assigns an in-memory phone configuration' do
