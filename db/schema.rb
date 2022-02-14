@@ -395,9 +395,11 @@ ActiveRecord::Schema.define(version: 2022_02_07_224754) do
   create_table "phone_number_opt_outs", force: :cascade do |t|
     t.string "encrypted_phone"
     t.string "phone_fingerprint", null: false
+    t.string "uuid"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["phone_fingerprint"], name: "index_phone_number_opt_outs_on_phone_fingerprint", unique: true
+    t.index ["uuid"], name: "index_phone_number_opt_outs_on_uuid", unique: true
   end
 
   create_table "piv_cac_configurations", force: :cascade do |t|

@@ -55,7 +55,7 @@ module TwoFactorAuthentication
     end
 
     def load_phone
-      @phone_number_opt_out = PhoneNumberOptOut.find(params[:opt_out_id])
+      @phone_number_opt_out = PhoneNumberOptOut.from_param(params[:opt_out_uuid])
       @phone_configuration = mfa_context.phone_configurations.find do |phone_config|
         phone_config.formatted_phone == @phone_number_opt_out.formatted_phone
       end || PhoneConfiguration.new(phone: @phone_number_opt_out.formatted_phone)

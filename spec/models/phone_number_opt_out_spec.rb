@@ -15,6 +15,7 @@ RSpec.describe PhoneNumberOptOut do
       expect(row.phone_fingerprint).to eq(
         Pii::Fingerprinter.fingerprint(PhoneNumberOptOut.normalize(phone)),
       )
+      expect(row.uuid).to be_present
     end
 
     it 'returns an existing row if there already is one' do
@@ -62,6 +63,14 @@ RSpec.describe PhoneNumberOptOut do
       expect { row.opt_in }.to change { PhoneNumberOptOut.count }.by(-1)
 
       expect(PhoneNumberOptOut.find_with_phone(phone)).to be_nil
+    end
+  end
+
+  describe '#to_param' do
+    it 'is the uuid' do
+      row = PhoneNumberOptOut.create_or_find_with_phone(phone)
+
+      expect(row.to_param).to eq(row.uuid)
     end
   end
 end

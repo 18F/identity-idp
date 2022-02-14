@@ -182,7 +182,7 @@ module Users
         # clear message from https://github.com/18F/identity-idp/blob/7ad3feab24f6f9e0e45224d9e9be9458c0a6a648/app/controllers/users/phones_controller.rb#L40
         flash.delete(:info)
         opt_out = PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
-        redirect_to login_two_factor_sms_opt_in_path(opt_out_id: opt_out.id)
+        redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
       end

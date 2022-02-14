@@ -2,11 +2,11 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SmsOptInController do
   describe '#new' do
-    subject(:action) { get :new, params: { opt_out_id: opt_out_id } }
+    subject(:action) { get :new, params: { opt_out_uuid: opt_out_uuid } }
 
     context 'when loaded while using an existing phone' do
-      let(:opt_out_id) do
-        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).id
+      let(:opt_out_uuid) do
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).uuid
       end
 
       let(:user) { create(:user, :with_phone) }
@@ -54,7 +54,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
     context 'when loaded while adding a new phone' do
       let(:user) { create(:user) }
       let(:phone) { Faker::PhoneNumber.cell_phone }
-      let(:opt_out_id) { PhoneNumberOptOut.create_or_find_with_phone(phone).id }
+      let(:opt_out_uuid) { PhoneNumberOptOut.create_or_find_with_phone(phone).uuid }
 
       before do
         stub_sign_in_before_2fa(user)
@@ -68,7 +68,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
     end
 
     context 'when loaded without any phone context' do
-      let(:opt_out_id) { '-111111' }
+      let(:opt_out_uuid) { '-111111' }
 
       it 'renders a 404' do
         expect(action).to be_not_found
@@ -78,11 +78,11 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
   end
 
   describe '#create' do
-    subject(:action) { post :create, params: { opt_out_id: opt_out_id } }
+    subject(:action) { post :create, params: { opt_out_uuid: opt_out_uuid } }
 
     context 'when loaded while using an existing phone' do
-      let(:opt_out_id) do
-        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).id
+      let(:opt_out_uuid) do
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).uuid
       end
 
       let(:user) { create(:user, :with_phone) }
@@ -121,7 +121,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         it 'deletes the opt out row' do
           action
 
-          expect(PhoneNumberOptOut.find_by(id: opt_out_id)).to be_nil
+          expect(PhoneNumberOptOut.find_by(uuid: opt_out_uuid)).to be_nil
         end
       end
 
@@ -151,7 +151,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         it 'does not delete the opt out row' do
           action
 
-          expect(PhoneNumberOptOut.find(opt_out_id)).to be
+          expect(PhoneNumberOptOut.from_param(opt_out_uuid)).to be
         end
       end
 
@@ -179,13 +179,13 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         it 'does not delete the opt out row' do
           action
 
-          expect(PhoneNumberOptOut.find(opt_out_id)).to be
+          expect(PhoneNumberOptOut.from_param(opt_out_uuid)).to be
         end
       end
     end
 
     context 'when loaded without any phone context' do
-      let(:opt_out_id) { '-111111' }
+      let(:opt_out_uuid) { '-111111' }
 
       it 'renders a 404' do
         expect(action).to be_not_found

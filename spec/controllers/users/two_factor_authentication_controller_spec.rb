@@ -381,12 +381,12 @@ describe Users::TwoFactorAuthenticationController do
               otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
             }
 
-            opt_out_id = PhoneNumberOptOut.create_or_find_with_phone(
+            opt_out = PhoneNumberOptOut.create_or_find_with_phone(
               Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER,
-            ).id
+            )
 
             expect(response).to redirect_to(
-              login_two_factor_sms_opt_in_path(opt_out_id: opt_out_id),
+              login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out),
             )
           end
         end
