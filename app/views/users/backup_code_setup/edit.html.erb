@@ -1,18 +1,14 @@
 <% title t('forms.backup_code_regenerate.confirm') %>
 
-<%= image_tag(asset_url('alert/warning-lg.svg'), alt: t('errors.alt.warning'), width: 54, class: 'margin-bottom-2') %>
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: t('errors.alt.warning'), width: 54, class: 'display-block margin-bottom-4') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code_regenerate.confirm')) %>
 
-<div class="col-2 margin-bottom-2">
-  <hr class="margin-top-4 margin-bottom-2 border-width-05 border-yellow"></hr>
-</div>
-
-<p class="margin-bottom-6">
+<p>
   <%= t('forms.backup_code_regenerate.caution') %>
 </p>
 
-<%= form_tag(backup_code_setup_path, method: :patch) do %>
+<%= form_tag(backup_code_setup_path, method: :patch, class: 'margin-top-5') do %>
   <%= button_tag t('account.index.backup_code_confirm_regenerate'), type: 'submit',
                                                                     class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
 <% end %>
