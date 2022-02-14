@@ -95,58 +95,6 @@ install:
     - *yarn_install
     - bundle exec rake assets:precompile
 
-specs:
-  extends: .on_push
-  stage: test
-  parallel: 5
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-    - <<: *assets_cache
-  variables:
-    AWS_ACCESS_KEY_ID: test
-    AWS_DEFAULT_REGION: us-west-2
-    AWS_REGION: us-west-2
-    AWS_SECRET_ACCESS_KEY: test
-    CAPYBARA_WAIT_TIME_SECONDS: 5
-    COVERAGE: 'true'
-    DOCKER_DB_HOST: postgres
-    POSTGRES_DB: upaya_test
-    POSTGRES_USER: postgres_user
-    POSTGRES_PASSWORD: postgres_password
-    POSTGRES_HOST_AUTH_METHOD: trust
-    RAILS_ENV: test
-  services:
-    - name: postgres:13.4
-      alias: db-postgres
-    - name: redis
-      alias: db-redis
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage/
-  script:
-    - *bundle_install
-    - *yarn_install
-    - cp config/application.yml.default config/application.yml
-    - cp config/service_providers.localdev.yml config/service_providers.yml
-    - cp config/agencies.localdev.yml config/agencies.yml
-    - cp config/iaa_gtcs{.localdev,}.yml
-    - cp config/iaa_orders{.localdev,}.yml
-    - cp config/iaa_statuses{.localdev,}.yml
-    - cp config/integration_statuses{.localdev,}.yml
-    - cp config/integrations{.localdev,}.yml
-    - cp config/partner_account_statuses{.localdev,}.yml
-    - cp config/partner_accounts{.localdev,}.yml
-    - cp -a keys.example keys
-    - cp -a certs.example certs
-    - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://localhost:6379/1'\" > config/application.yml"
-    - bundle exec rake db:create db:migrate --trace
-    - bundle exec rake db:seed
-    - bundle exec rake knapsack:rspec
-
 lint:
   extends: .on_push
   stage: test
@@ -209,6 +157,7 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - sleep 10000
 
 # Sync from GitHub
 include:
