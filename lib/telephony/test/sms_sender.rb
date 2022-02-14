@@ -21,6 +21,13 @@ module Telephony
             type: :voip,
             carrier: 'Test VOIP Carrier',
           )
+        # Mask opt out errors because we do a phone_info check before trying to send
+        # so it would prevent us from getting an opt out error where it would actually appaer
+        when OptOutError
+          PhoneNumberInfo.new(
+            type: :mobile,
+            carrier: 'Test Mobile Carrier',
+          )
         when TelephonyError
           PhoneNumberInfo.new(
             type: :unknown,

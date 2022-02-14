@@ -183,7 +183,7 @@ fr:
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
     info:
-      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web
+      camera_required: Votre téléphone portable doit avoir une caméra et un navigateur Web.
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
@@ -275,7 +275,6 @@ fr:
       test_ssn: Dans l’environnement de test seuls les SSN commençant par “900-” ou
         “900-” sont considérés comme valides. N’entrez pas de vrais PII dans ce
         champ.
-      text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.
       text3: Il n’est pas nécessaire que vous soyez le titulaire principal du compte

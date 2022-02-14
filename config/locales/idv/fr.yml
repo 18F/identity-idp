@@ -97,11 +97,6 @@ fr:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
       activated_link: communiquer avec nous
-      cancel: Pour continuer, %{app_name} doit vérifier votre identité. Nous devons
-        recueillir quelques informations personnelles de base ainsi que
-        certaines informations financières pour compléter ce processus. Si vous
-        n’avez pas cette information sous la main, vous pouvez continuer plus
-        tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
         connecter à %{app_name}, puis saisissez votre code de confirmation
@@ -164,8 +159,7 @@ fr:
       ssn: Numéro de sécurité sociale (SSN)
     titles:
       activated: Votre identité a déjà été vérifiée
-      cancel: Nous ne pouvons pas vérifier votre identité
-      come_back_later: Revenez vite.
+      come_back_later: Revenez vite
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?

@@ -179,39 +179,6 @@ js_tests:
     - *yarn_install
     - yarn test
 
-
-smoketest-dev:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $DEV_SMOKETEST == "true"
-  variables:
-    MONITOR_ENV: 'DEV'
-    HEADLESS_BROWSER: 'true'
-    MONITOR_SMS_SIGN_IN_EMAIL: ''
-    MONITOR_GOOGLE_VOICE_PHONE: ''
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bin/smoke_test --remote --no-source-env
-
-smoketest-int:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule" && $INT_SMOKETEST == "true"
-  variables:
-    MONITOR_ENV: 'INT'
-    HEADLESS_BROWSER: 'true'
-    MONITOR_SMS_SIGN_IN_EMAIL: ''
-    MONITOR_GOOGLE_VOICE_PHONE: ''
-  cache:
-    - <<: *ruby_cache
-    - <<: *yarn_cache
-  script:
-    - *bundle_install
-    - *yarn_install
-    - bin/smoke_test --remote --no-source-env
-
 coverage:
   extends: .on_push
   stage: after_test

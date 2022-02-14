@@ -113,22 +113,6 @@ $ yarn install
   $ SHOW_BROWSER=true bundle exec rspec spec/features/
   ```
 
-##### Running smoke tests
-
-  The smoke tests are a series of RSpec tests designed to run against deployed environments. To run them against the local Rails server:
-
-  ```bash
-  ./bin/smoke_test --local
-  ```
-
-  To run the smoke tests against a deployed server, make sure you set up a `.env` file with the right configuration values, see [monitor_config.rb](spec/support/monitor/monitor_config.rb) for the full list of environment variables used. The script below will `source` that file and add the variables to the environment.
-
-  ```bash
-  MONITOR_ENV=INT ./bin/smoke_test --remote
-  ```
-
-  For remote smoke tests, we save a screenshot of failed test scenarios to help debugging in `tmp/capybara`, and they are exported to CircleCI as build artifacts as well.
-
 #### Speeding up local development and testing
 
   To automatically run the test that corresponds to the file you are editing,

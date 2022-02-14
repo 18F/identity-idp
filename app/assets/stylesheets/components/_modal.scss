@@ -1,27 +1,3 @@
-.modal-backdrop {
-  background-color: rgba(91, 97, 106, 0.95);
-  display: table;
-  height: 100%;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-}
-
-.modal-open {
-  left: 0;
-  overflow: hidden;
-  position: fixed;
-  right: 0;
-  width: 100%;
-
-  .modal {
-    overflow-x: hidden;
-    overflow-y: scroll;
-  }
-}
-
 .modal {
   bottom: 0;
   display: block;
@@ -104,4 +80,12 @@
   hr {
     border-color: $yellow;
   }
+}
+
+// ===============================================
+// Pending upstream Login Design System revisions:
+// ===============================================
+
+.usa-modal-overlay {
+  background: rgba(color('base-darker'), 50%);
 }

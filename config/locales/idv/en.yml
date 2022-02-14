@@ -88,10 +88,6 @@ en:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
       activated_link: contact us
-      cancel: To continue, %{app_name} needs to verify your identity. We need to
-        collect some basic personal information as well as some financial
-        information from you to complete this process. If you don’t have the
-        information we need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
         confirmation code when prompted.
@@ -145,8 +141,7 @@ en:
       ssn: Social Security Number (SSN)
     titles:
       activated: Your identity has already been verified
-      cancel: We cannot verify your identity
-      come_back_later: Come back soon.
+      come_back_later: Come back soon
       mail:
         resend: Want another letter?
         verify: Want a letter?

@@ -11,13 +11,15 @@ locals:
 <% if local_assigns.fetch(:type, :error) == :error
   image_src = 'alert/fail-x.svg'
   troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
+  alt = t('errors.alt.error')
 else
   image_src = 'alert/warning-lg.svg'
   troubleshooting_heading = t('components.troubleshooting_options.default_heading')
+  alt = t('errors.alt.warning')
 end
 %>
 <% title local_assigns.fetch(:title, heading) %>
-<%= image_tag(image_src, width: 54, alt: '', class: 'display-block margin-bottom-4') %>
+<%= image_tag(image_src, width: 54, alt: alt, class: 'display-block margin-bottom-4') %>
 
 <%= render PageHeadingComponent.new.with_content(heading) %>
 

@@ -2,19 +2,18 @@
 
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code.subtitle')) %>
 
-<%= t(
-      'users.backup_code.generated_on_html',
-      date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
-    ) %>
+<p>
+  <%= t(
+        'users.backup_code.generated_on_html',
+        date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
+      ) %>
+</p>
 
-<br/>
-<br/>
-
-<div class="inline-block margin-bottom-4">
+<p>
   <%= t('forms.backup_code.subinfo_html') %>
-</div>
+</p>
 
-<div class="margin-bottom-6">
+<div class="margin-top-4 margin-bottom-5">
   <table>
     <tr>
       <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
@@ -32,19 +31,26 @@
   </table>
   <div class="margin-top-0">
     <% if desktop_device? %>
-      <%= link_to t('forms.backup_code.download'), backup_code_download_path,
-                  class: 'usa-button usa-button--outline ico ico-download' %>
+      <%= render ButtonComponent.new(
+            action: ->(**tag_options, &block) do
+              link_to(backup_code_download_path, **tag_options, &block)
+            end,
+            outline: true,
+            icon: :file_download,
+          ).with_content(t('forms.backup_code.download')) %>
     <% end %>
-    <%= link_to t('forms.backup_code.print'), '#',
-                data: { print: true },
-                class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-print' -%>
+    <%= render ButtonComponent.new(
+          icon: :print,
+          outline: true,
+          type: :button,
+          data: { print: '' },
+          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+        ).with_content(t('forms.backup_code.print')) %>
     <%= render ClipboardButtonComponent.new(
           clipboard_text: @codes.join(' '),
           outline: true,
-          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-copy',
-        ) do %>
-      <%= t('links.copy') %>
-    <% end %>
+          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+        ) %>
   </div>
 </div>
 

@@ -23,7 +23,7 @@
       <%= t('forms.registration.labels.email_language') %>
     </legend>
 
-    <p class="margin-bottom-4">
+    <p class="margin-bottom-2">
       <%= t(
             'account.email_language.languages_list',
             app_name: APP_NAME,
@@ -45,6 +45,7 @@
           <%= t('sign_up.terms', app_name: APP_NAME) %>
           <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
         <% end,
+        label_html: { class: 'margin-y-0' },
         required: true,
       ) %>
 
@@ -53,7 +54,7 @@
         :button,
         t('forms.buttons.submit.default'),
         type: :submit,
-        class: 'usa-button usa-button--big usa-button--wide margin-y-5',
+        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
       ) %>
 <% end %>
 

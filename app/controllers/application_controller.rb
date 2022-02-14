@@ -407,4 +407,16 @@ class ApplicationController < ActionController::Base
   def mobile?
     BrowserCache.parse(request.user_agent).mobile?
   end
+
+  def user_is_banned?
+    return false unless user_signed_in?
+    BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
+  end
+
+  def handle_banned_user
+    return unless user_is_banned?
+    analytics.track_event(Analytics::BANNED_USER_REDIRECT)
+    sign_out
+    redirect_to banned_user_url
+  end
 end

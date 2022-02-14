@@ -19,8 +19,8 @@ describe('components/modal', () => {
     container.id = id;
     container.className = 'modal display-none';
     container.innerHTML = `
-      <div class="modal-backdrop">
-        <div class="px2 py4 modal" role="dialog">
+      <div class="usa-modal-overlay is-visible">
+        <div class="padding-x-2 padding-y-6 modal" role="dialog">
           <div class="modal-center">
             <div class="modal-content">
               <p>Do action?</p>
@@ -59,7 +59,7 @@ describe('components/modal', () => {
     expect(document.activeElement.textContent).to.equal('Yes');
     const container = document.activeElement.closest('#modal');
     expect(container.classList.contains('display-none')).to.be.false();
-    expect(document.body.classList.contains('modal-open')).to.be.true();
+    expect(document.body.classList.contains('usa-js-modal--active')).to.be.true();
   });
 
   it('allows interaction in most recently activated focus trap', async () => {

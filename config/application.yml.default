@@ -14,15 +14,15 @@
 
 # Make sure any new entries you add are enclosed in single quotes.
 
-aamva_auth_request_timeout: '5'
+aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
-aamva_cert_enabled: 'true'
+aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
-aamva_verification_request_timeout: '5'
+aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
-all_redirect_uris_cache_duration_minutes: '2'
-account_reset_token_valid_for_days: '1'
-account_reset_wait_period_days: '1'
+all_redirect_uris_cache_duration_minutes: 2
+account_reset_token_valid_for_days: 1
+account_reset_wait_period_days: 1
 acuant_maintenance_window_start:
 acuant_maintenance_window_finish:
 acuant_assure_id_password: ''
@@ -34,70 +34,70 @@ acuant_passlive_url: ''
 # These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
-acuant_timeout: '45'
-acuant_upload_image_timeout: '1'
-acuant_get_results_timeout: '1'
-acuant_create_document_timeout: '1'
-add_email_link_valid_for_hours: '24'
+acuant_timeout: 45.0
+acuant_upload_image_timeout: 1.0
+acuant_get_results_timeout: 1.0
+acuant_create_document_timeout: 1.0
+add_email_link_valid_for_hours: 24
 asset_host: ''
-async_wait_timeout_seconds: '60'
-async_stale_job_timeout_seconds: '300'
-aws_http_timeout: '5'
-aws_http_retry_limit: '2'
-aws_http_retry_max_delay: '1'
+async_wait_timeout_seconds: 60
+async_stale_job_timeout_seconds: 300
+aws_http_timeout: 5
+aws_http_retry_limit: 2
+aws_http_retry_max_delay: 1
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket: ''
 aws_region: 'us-west-2'
-aws_kms_multi_region_enabled: 'false'
+aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
 country_phone_number_overrides: '{}'
-doc_auth_error_dpi_threshold: '290'
-doc_auth_error_sharpness_threshold: '40'
-doc_auth_error_glare_threshold: '40'
-database_pool_idp: '5'
-database_statement_timeout: '2500'
-database_timeout: '5000'
-deliver_mail_async: 'false'
+doc_auth_error_dpi_threshold: 290
+doc_auth_error_sharpness_threshold: 40
+doc_auth_error_glare_threshold: 40
+database_pool_idp: 5
+database_statement_timeout: 2_500
+database_timeout: 5_000
+deliver_mail_async: false
 deleted_user_accounts_report_configs: '[]'
-disable_csp_unsafe_inline: 'true'
-disable_email_sending: 'true'
-disallow_all_web_crawlers: 'true'
+disable_csp_unsafe_inline: true
+disable_email_sending: true
+disallow_all_web_crawlers: true
 disposable_email_services: '[]'
-doc_auth_attempt_window_in_minutes: '360'
-doc_auth_extend_timeout_by_minutes: '40'
-doc_capture_polling_enabled: 'true'
-doc_auth_client_glare_threshold: '50'
-doc_auth_client_sharpness_threshold: '50'
-doc_auth_enable_presigned_s3_urls: 'false'
-doc_auth_s3_request_timeout: '5'
-doc_auth_error_dpi_threshold: '290'
-doc_auth_error_glare_threshold: '40'
-doc_auth_error_sharpness_threshold: '40'
-doc_auth_max_attempts: '20'
-doc_auth_max_capture_attempts_before_tips: '3'
-doc_capture_request_valid_for_minutes: '15'
+doc_auth_attempt_window_in_minutes: 360
+doc_auth_extend_timeout_by_minutes: 40
+doc_capture_polling_enabled: true
+doc_auth_client_glare_threshold: 50
+doc_auth_client_sharpness_threshold: 50
+doc_auth_enable_presigned_s3_urls: false
+doc_auth_s3_request_timeout: 5
+doc_auth_error_dpi_threshold: 290
+doc_auth_error_glare_threshold: 40
+doc_auth_error_sharpness_threshold: 40
+doc_auth_max_attempts: 20
+doc_auth_max_capture_attempts_before_tips: 3
+doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
-enable_load_testing_mode: 'false'
-enable_partner_api: 'false'
-enable_rate_limiting: 'true'
-enable_test_routes: 'true'
-enable_usps_verification: 'true'
-event_disavowal_expiration_hours: '240'
+enable_load_testing_mode: false
+enable_partner_api: false
+enable_rate_limiting: true
+enable_test_routes: true
+enable_usps_verification: true
+event_disavowal_expiration_hours: 240
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
-good_job_max_threads: '5'
+good_job_max_threads: 5
 good_job_queues: 'default:5;low:1;*'
 gpo_designated_receiver_pii: '{}'
-hide_phone_mfa_signup: 'false'
-identity_pki_disabled: 'false'
-identity_pki_local_dev: 'false'
-idv_attempt_window_in_hours: '6'
-idv_max_attempts: '5'
-idv_min_age_years: '13'
-idv_send_link_attempt_window_in_minutes: '10'
-idv_send_link_max_attempts: '5'
-liveness_checking_enabled: 'false'
-logins_per_ip_track_only_mode: 'false'
+hide_phone_mfa_signup: false
+identity_pki_disabled: false
+identity_pki_local_dev: false
+idv_attempt_window_in_hours: 6
+idv_max_attempts: 5
+idv_min_age_years: 13
+idv_send_link_attempt_window_in_minutes: 10
+idv_send_link_max_attempts: 5
+liveness_checking_enabled: false
+logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
 lexisnexis_request_mode: testing
@@ -105,142 +105,143 @@ lexisnexis_request_mode: testing
 lexisnexis_account_id: test_account
 lexisnexis_username: test_username
 lexisnexis_password: test_password
-lexisnexis_phone_finder_timeout: 1
+lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
-lexisnexis_instant_verify_timeout: 1
+lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
-lexisnexis_trueid_timeout: '60'
+lexisnexis_trueid_timeout: 60.0
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
-lockout_period_in_minutes: '10'
-log_to_stdout: 'false'
-logins_per_email_and_ip_bantime: '60'
-logins_per_email_and_ip_limit: '5'
-logins_per_email_and_ip_period: '60'
-logins_per_ip_period: '60'
-logo_upload_enabled: 'false'
+lockout_period_in_minutes: 10
+log_to_stdout: false
+logins_per_email_and_ip_bantime: 60
+logins_per_email_and_ip_limit: 5
+logins_per_email_and_ip_period: 60
+logins_per_ip_period: 60
+logo_upload_enabled: false
 mailer_domain_name: http://localhost:3000
-max_auth_apps_per_account: '2'
-max_bad_passwords: '100'
-max_bad_passwords_window_in_seconds: '60'
-max_emails_per_account: '12'
-max_mail_events: '4'
-max_mail_events_window_in_days: '30'
-max_phone_numbers_per_account: '5'
-max_piv_cac_per_account: '2'
-min_password_score: '3'
-mx_timeout: '3'
-otp_delivery_blocklist_maxretry: '10'
-otp_valid_for: '10'
-otps_per_ip_limit: '25'
-otps_per_ip_period: '300'
-otps_per_ip_track_only_mode: 'true'
-outbound_connection_check_retry_count: '2'
-outbound_connection_check_timeout: '5'
+max_auth_apps_per_account: 2
+max_bad_passwords: 100
+max_bad_passwords_window_in_seconds: 60
+max_emails_per_account: 12
+max_mail_events: 4
+max_mail_events_window_in_days: 30
+max_phone_numbers_per_account: 5
+max_piv_cac_per_account: 2
+min_password_score: 3
+mx_timeout: 3
+otp_delivery_blocklist_maxretry: 10
+otp_valid_for: 10
+otps_per_ip_limit: 25
+otps_per_ip_period: 300
+otps_per_ip_track_only_mode: true
+outbound_connection_check_retry_count: 2
+outbound_connection_check_timeout: 5
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
-participate_in_dap: 'false'
+participate_in_dap: false
 partner_api_bucket_prefix: ''
-password_max_attempts: '3'
-personal_key_retired: 'true'
-phone_setups_per_ip_limit: '25'
-phone_setups_per_ip_period: '300'
-phone_setups_per_ip_track_only_mode: 'false'
-pii_lock_timeout_in_minutes: '30'
+password_max_attempts: 3
+personal_key_retired: true
+phone_setups_per_ip_limit: 25
+phone_setups_per_ip_period: 300
+phone_setups_per_ip_track_only_mode: false
+pii_lock_timeout_in_minutes: 30
 pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
 pinpoint_voice_configs: '[]'
 piv_cac_service_url: https://localhost:8443/
-piv_cac_service_timeout: '5'
+piv_cac_service_timeout: 5.0
 piv_cac_verify_token_url: https://localhost:8443/
-platform_authentication_enabled: 'true'
-poll_rate_for_verify_in_seconds: '3'
-proofer_mock_fallback: 'true'
-proofing_allow_expired_license: 'false'
+platform_authentication_enabled: true
+poll_rate_for_verify_in_seconds: 3
+proofer_mock_fallback: true
+proofing_allow_expired_license: false
 proofing_expired_license_after: '2020-03-01'
 proofing_expired_license_reproof_at: '2023-03-01'
-proofing_send_partial_dob: 'false'
-proof_address_max_attempts: '5'
-proof_address_max_attempt_window_in_minutes: '360'
-proof_ssn_max_attempts: '10'
-proof_ssn_max_attempt_window_in_minutes: '60'
-push_notifications_enabled: 'false'
+proofing_send_partial_dob: false
+proof_address_max_attempts: 5
+proof_address_max_attempt_window_in_minutes: 360
+proof_ssn_max_attempts: 10
+proof_ssn_max_attempt_window_in_minutes: 60
+push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
-rack_mini_profiler: 'false'
-rack_timeout_service_timeout_seconds: '15'
-rails_csp_tooling_enabled: 'true'
-rails_mailer_previews_enabled: 'false'
-reauthn_window: '120'
-recovery_code_length: '4'
+rack_mini_profiler: false
+rack_timeout_service_timeout_seconds: 15
+rails_csp_tooling_enabled: true
+rails_mailer_previews_enabled: false
+reauthn_window: 120
+recovery_code_length: 4
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
-reg_confirmed_email_max_attempts: '20'
-reg_confirmed_email_window_in_minutes: '60'
-reg_unconfirmed_email_max_attempts: '20'
-reg_unconfirmed_email_window_in_minutes: '60'
-remember_device_expiration_hours_aal_1: '720'
-remember_device_expiration_hours_aal_2: '12'
-report_timeout: '0'
-requests_per_ip_limit: '300'
-requests_per_ip_period: '300'
-requests_per_ip_track_only_mode: 'false'
-reset_password_email_max_attempts: '20'
-reset_password_email_window_in_minutes: '60'
-risc_notifications_local_enabled: 'false'
-risc_notifications_active_job_enabled: 'false'
-risc_notifications_rate_limit_interval: '60'
-risc_notifications_rate_limit_max_requests: '1000'
+reg_confirmed_email_max_attempts: 20
+reg_confirmed_email_window_in_minutes: 60
+reg_unconfirmed_email_max_attempts: 20
+reg_unconfirmed_email_window_in_minutes: 60
+remember_device_expiration_hours_aal_1: 720
+remember_device_expiration_hours_aal_2: 12
+report_timeout: 0
+requests_per_ip_limit: 300
+requests_per_ip_period: 300
+requests_per_ip_track_only_mode: false
+reset_password_email_max_attempts: 20
+reset_password_email_window_in_minutes: 60
+risc_notifications_local_enabled: false
+risc_notifications_active_job_enabled: false
+risc_notifications_rate_limit_interval: 60
+risc_notifications_rate_limit_max_requests: 1_000
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
-risc_notifications_request_timeout: '3'
-ruby_workers_idv_enabled: 'true'
-rules_of_use_horizon_years: '6'
-rules_of_use_updated_at: '2022-01-19T00:00:00Z'
-s3_public_reports_enabled: 'false'
-s3_reports_enabled: 'false'
-saml_secret_rotation_enabled: 'false'
-seed_agreements_data: 'true'
-service_provider_request_ttl_hours: '24'
-session_check_delay: '30'
-session_check_frequency: '30'
-session_timeout_in_minutes: '15'
-session_timeout_warning_seconds: '150'
-session_total_duration_timeout_in_minutes: '720'
-show_select_account_on_repeat_sp_visits: 'false'
+risc_notifications_request_timeout: 3
+ruby_workers_idv_enabled: true
+rules_of_use_horizon_years: 6
+rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
+s3_public_reports_enabled: false
+s3_reports_enabled: false
+saml_secret_rotation_enabled: false
+seed_agreements_data: true
+service_provider_request_ttl_hours: 24
+session_check_delay: 30
+session_check_frequency: 30
+session_timeout_in_minutes: 15
+session_timeout_warning_seconds: 150
+session_total_duration_timeout_in_minutes: 720
+show_select_account_on_repeat_sp_visits: false
 sp_context_needed_environment: 'prod'
-sp_handoff_bounce_max_seconds: '2'
-show_user_attribute_deprecation_warnings: 'false'
+sp_handoff_bounce_max_seconds: 2
+show_user_attribute_deprecation_warnings: false
+sms_resubscribe_enabled: false
 test_ssn_allowed_list: ''
-unauthorized_scope_enabled: 'false'
-usps_upload_enabled: 'false'
-usps_upload_sftp_timeout: '5'
+unauthorized_scope_enabled: false
+usps_upload_enabled: false
+usps_upload_sftp_timeout: 5
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
 vendor_status_acuant: 'operational'
 vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
-verify_gpo_key_attempt_window_in_minutes: '10'
-verify_gpo_key_max_attempts: '3'
-verify_personal_key_attempt_window_in_minutes: '15'
-verify_personal_key_max_attempts: '5'
-use_dashboard_service_providers: 'false'
-use_kms: 'false'
-usps_confirmation_max_days: '10'
+verify_gpo_key_attempt_window_in_minutes: 10
+verify_gpo_key_max_attempts: 3
+verify_personal_key_attempt_window_in_minutes: 15
+verify_personal_key_max_attempts: 5
+use_dashboard_service_providers: false
+use_kms: false
+usps_confirmation_max_days: 10
 usps_ipp_password: ''
 usps_ipp_root_url: ''
-usps_ipp_request_timeout: '10'
+usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
-voip_check: 'true'
-voip_block: 'true'
+voip_check: true
+voip_block: true
 voip_allowed_phones: '[]'
 
 development:
@@ -264,26 +265,26 @@ development:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
-  enable_rate_limiting: 'false'
+  enable_rate_limiting: false
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
-  identity_pki_local_dev: 'true'
-  liveness_checking_enabled: 'true'
-  logins_per_ip_limit: '5'
-  logo_upload_enabled: 'true'
-  max_bad_passwords: '5'
+  identity_pki_local_dev: true
+  liveness_checking_enabled: true
+  logins_per_ip_limit: 5
+  logo_upload_enabled: true
+  max_bad_passwords: 5
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
-  otp_delivery_blocklist_findtime: '5'
+  otp_delivery_blocklist_findtime: 5
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
-  rails_mailer_previews_enabled: 'true'
+  rails_mailer_previews_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
@@ -294,9 +295,9 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
-  state_tracking_enabled: 'true'
+  state_tracking_enabled: true
   telephony_adapter: test
-  use_dashboard_service_providers: 'true'
+  use_dashboard_service_providers: true
   usps_upload_sftp_directory: "/gsa_order"
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
@@ -327,49 +328,49 @@ production:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  disable_email_sending: 'false'
-  disallow_all_web_crawlers: 'false'
+  disable_email_sending: false
+  disallow_all_web_crawlers: false
   doc_auth_vendor: 'acuant'
-  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
-  enable_test_routes: 'false'
-  enable_usps_verification: 'false'
+  enable_test_routes: false
+  enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  logins_per_ip_limit: '20'
-  logins_per_ip_period: '20'
-  logins_per_ip_track_only_mode: 'true'
+  logins_per_ip_limit: 20
+  logins_per_ip_period: 20
+  logins_per_ip_track_only_mode: true
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '[]'
-  otp_delivery_blocklist_findtime: '5'
-  participate_in_dap: 'true'
+  otp_delivery_blocklist_findtime: 5
+  participate_in_dap: true
   password_pepper:
   piv_cac_verify_token_secret:
-  platform_authentication_enabled: 'false'
+  platform_authentication_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
   ruby_workers_cron_enabled: 'false'
-  ruby_workers_idv_enabled: 'false'
+  ruby_workers_idv_enabled: false
   s3_report_bucket_prefix: login-gov.reports
   s3_report_public_bucket_prefix: login-gov-pubdata
-  s3_reports_enabled: 'true'
+  s3_reports_enabled: true
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
   secret_key_base:
-  seed_agreements_data: 'false'
+  seed_agreements_data: false
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
-  state_tracking_enabled: 'false'
+  state_tracking_enabled: false
   telephony_adapter: pinpoint
-  use_kms: 'true'
-  usps_confirmation_max_days: '30'
+  use_kms: true
+  usps_confirmation_max_days: 30
   usps_upload_sftp_directory: ''
   usps_upload_sftp_host: ''
   usps_upload_sftp_password: ''
@@ -397,46 +398,46 @@ test:
   database_worker_jobs_username: ''
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
-  doc_auth_enable_presigned_s3_urls: 'true'
-  doc_auth_max_attempts: '4'
+  doc_auth_enable_presigned_s3_urls: true
+  doc_auth_max_attempts: 4
   doc_auth_vendor: 'mock'
-  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize: false
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
-  doc_capture_polling_enabled: 'false'
+  doc_capture_polling_enabled: false
   domain_name: www.example.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
-  identity_pki_disabled: 'true'
+  identity_pki_disabled: true
   lexisnexis_trueid_account_id: 'test_account'
-  lockout_period_in_minutes: '5'
-  logins_per_email_and_ip_limit: '2'
-  logins_per_ip_limit: '3'
-  max_bad_passwords: '5'
-  max_mail_events: '2'
+  lockout_period_in_minutes: 5
+  logins_per_email_and_ip_limit: 2
+  logins_per_ip_limit: 3
+  max_bad_passwords: 5
+  max_mail_events: 2
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
-  otp_delivery_blocklist_findtime: '1'
-  otp_delivery_blocklist_maxretry: '2'
-  otps_per_ip_limit: '3'
-  otps_per_ip_period: '10'
-  otps_per_ip_track_only_mode: 'false'
+  otp_delivery_blocklist_findtime: 1
+  otp_delivery_blocklist_maxretry: 2
+  otps_per_ip_limit: 3
+  otps_per_ip_period: 10
+  otps_per_ip_track_only_mode: false
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  phone_setups_per_ip_limit: '3'
-  phone_setups_per_ip_period: '10'
-  phone_setups_per_ip_track_only_mode: 'false'
+  phone_setups_per_ip_limit: 3
+  phone_setups_per_ip_period: 10
+  phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
-  poll_rate_for_verify_in_seconds: '1'
+  poll_rate_for_verify_in_seconds: 1
   recurring_jobs_disabled_names: '["disabled job"]'
-  reg_confirmed_email_max_attempts: '3'
-  reg_unconfirmed_email_max_attempts: '4'
-  reg_unconfirmed_email_window_in_minutes: '70'
-  requests_per_ip_limit: '4'
-  requests_per_ip_period: '60'
-  reset_password_email_max_attempts: '5'
-  reset_password_email_window_in_minutes: '80'
+  reg_confirmed_email_max_attempts: 3
+  reg_unconfirmed_email_max_attempts: 4
+  reg_unconfirmed_email_window_in_minutes: 70
+  requests_per_ip_limit: 4
+  requests_per_ip_period: 60
+  reset_password_email_max_attempts: 5
+  reset_password_email_window_in_minutes: 80
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
@@ -445,13 +446,13 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
-  state_tracking_enabled: 'true'
+  state_tracking_enabled: true
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
-  verify_gpo_key_attempt_window_in_minutes: '3'
-  verify_gpo_key_max_attempts: '2'
-  verify_personal_key_attempt_window_in_minutes: '3'
-  verify_personal_key_max_attempts: '1'
+  verify_gpo_key_attempt_window_in_minutes: 3
+  verify_gpo_key_max_attempts: 2
+  verify_personal_key_attempt_window_in_minutes: 3
+  verify_personal_key_max_attempts: 1
   usps_upload_sftp_directory: "/directory"
   usps_upload_sftp_host: example.com
   usps_upload_sftp_password: pass

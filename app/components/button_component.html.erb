@@ -1,1 +1,4 @@
-<%= button_tag(content, **tag_options, type: tag_type, class: css_class) %>
+<%= action.call(
+      **tag_options,
+      class: css_class,
+    ) { safe_join([icon_content, content&.strip].compact) } %>

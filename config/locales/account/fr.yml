@@ -39,11 +39,13 @@ fr:
       device: '%{browser} sur %{os}'
       dob: Date de naissance
       email: Adresse e-mail
+      email_add: Ajouter un nouvel e-mail
       email_addresses: Adresses courriel
       email_preferences: Préférences de messagerie
       full_name: Nom complet
       password: Mot de passe
       phone: Numéro de téléphone
+      phone_add: Ajouter un téléphone
       piv_cac_add: Ajouter un identifiant
       piv_cac_confirm_delete: Oui, retirer la carte
       reactivation:
@@ -102,6 +104,7 @@ fr:
       forget_browsers: Oubliez tous les navigateurs
       get_backup_codes: Obtenez des codes de secours
       history: L’histoire
+      landmark_label: Navigation latérale
       learn_more: En savoir plus sur %{app_name}
       menu: Menu
       reset_personal_key: Réinitialisation de la clé personnelle

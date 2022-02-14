@@ -4,7 +4,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class='mt-tiny margin-bottom-4'>
+<p>
   <%= @presenter.intro %>
 </p>
 
@@ -13,7 +13,7 @@
       url: webauthn_setup_path,
       method: :patch,
       html: {
-        class: 'margin-bottom-1 read-after-submit',
+        class: 'margin-top-4 margin-bottom-1 read-after-submit',
         id: 'webauthn_form',
       },
     ) do |f| %>
@@ -26,14 +26,14 @@
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= label_tag 'code', @presenter.nickname_label, class: 'block bold', for: 'nickname' %>
+  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block bold', for: 'nickname' %>
   <%= text_field_tag(
         :name,
         '',
         required: true,
         aria: { invalid: false },
         id: 'nickname',
-        class: 'block col-12 field monospace',
+        class: 'display-block col-12 field font-family-mono',
         size: 16,
         maxlength: 20,
       ) %>

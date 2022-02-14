@@ -2,6 +2,7 @@ module Db
   class SpReturnLog
     # rubocop:disable Rails/SkipsModelValidations
     def self.update_user(request_id:, user_id:)
+      return if request_id.blank?
       ::SpReturnLog.where(request_id: request_id).update_all(user_id: user_id)
       nil
     end

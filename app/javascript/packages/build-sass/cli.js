@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { buildFile } from './index.js';
@@ -28,4 +30,4 @@ Promise.all(
       watch(loadedPaths).on('change', () => buildFile(file, options));
     }
   }),
-);
+).catch(console.error);

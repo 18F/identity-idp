@@ -1,7 +1,7 @@
-<% if MfaPolicy.new(@view_model.decorated_user.user).unphishable? %>
+<% if MfaPolicy.new(@presenter.decorated_user.user).unphishable? %>
   <%= render 'accounts/unphishable_badge' %>
 <% end %>
 
-<% if @view_model.decorated_user.identity_verified? %>
+<% if @presenter.decorated_user.identity_verified? %>
   <%= render 'accounts/verified_account_badge' %>
 <% end %>

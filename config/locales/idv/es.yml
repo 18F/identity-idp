@@ -93,10 +93,6 @@ es:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link}.
       activated_link: Contáctenos
-      cancel: Para continuar %{app_name} necesita verificar su identidad. Necesitamos
-        recopilar información personal básica, así como su información
-        financiera para completar este proceso. Si no tiene la información que
-        necesitamos en este momento, puede continuar más tarde.
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
         tu código de confirmación cuando se te solicite.
@@ -151,8 +147,7 @@ es:
       ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
       activated: Ya se verificó tu identidad.
-      cancel: No podemos verificar su identidad.
-      come_back_later: Vuelve pronto.
+      come_back_later: Vuelve pronto
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'

@@ -176,7 +176,7 @@ es:
       verify_identity: Verifique su identidad
       welcome: Empiece con la verificación de su identidad
     info:
-      camera_required: Su teléfono móvil debe tener una cámara y un navegador web
+      camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
       capture_status_capturing: Capturando
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
@@ -261,7 +261,6 @@ es:
         identidad.
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
-      text1: ''
       text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.
       text3: No es necesario que usted sea el titular principal de la cuenta de su

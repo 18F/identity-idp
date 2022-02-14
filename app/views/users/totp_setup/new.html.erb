@@ -1,73 +1,53 @@
 <% title t('titles.totp_setup.new') %>
 
-<% help_link = new_window_link_to t('links.what_is_totp'),
-                                  MarketingSite.help_authentication_app_url %>
 <%= render PageHeadingComponent.new.with_content(t('headings.totp_setup.new')) %>
-<p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
+
+<p>
+  <%= t(
+        'forms.totp_setup.totp_intro_html',
+        link: new_window_link_to(t('links.what_is_totp'), MarketingSite.help_authentication_app_url),
+      ) %>
+</p>
+
 <%= validated_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
-  <ul class="list-reset margin-bottom-0">
-    <li class="padding-y-2 border-top border-primary-light">
-      <div class="margin-bottom-2">
-        <div class="margin-right-1 inline-block circle-number bg-primary text-white">1</div>
-        <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
-        <div class="inline-block margin-left-4"><%= t('forms.totp_setup.totp_step_1a') %></div>
+  <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
+    <%= c.item(heading: t('forms.totp_setup.totp_step_1')) do %>
+      <p><%= t('forms.totp_setup.totp_step_1a') %></p>
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :name,
+            required: true,
+            label: false,
+            wrapper_html: { class: 'margin-bottom-0' },
+            input_html: {
+              aria: { label: t('forms.totp_setup.totp_step_1') },
+              maxlength: 20,
+            },
+          ) %>
+    <% end %>
+    <%= c.item(heading: t('forms.totp_setup.totp_step_2')) %>
+    <%= c.item(heading: t('forms.totp_setup.totp_step_3')) do %>
+      <div class="text-center">
+        <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
       </div>
-      <div class="sm-col-9 sm-ml-28p">
-        <div class="clearfix margin-x-neg-1">
-          <div class="col col-6 sm-col-7 padding-x-1">
-            <%= text_field_tag :name, '', required: true, aria: { invalid: false }, class: 'block col-12 field monospace',
-                                          maxlength: 20, 'aria-labelledby': 'totp-nickname' %>
-          </div>
-        </div>
-      </div>
-    </li>
-    <li class="padding-y-2 border-top border-primary-light">
-      <div class="margin-right-1 inline-block circle-number bg-primary text-white">2</div>
-      <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_2') %></div>
-    </li>
-    <li class="padding-y-2 border-top border-primary-light">
-      <div class="margin-bottom-2">
-        <div class="margin-right-1 inline-block circle-number bg-primary text-white">3</div>
-        <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
-      </div>
-      <div class="sm-col-9 sm-ml-28p">
-        <div class="center">
-          <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
-        </div>
-        <%= t('instructions.mfa.authenticator.manual_entry') %>
-        <code class="display-block margin-y-2 font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px text-bold" id="qr-code">
-          <%= @code %>
-        </code>
-        <%= render ClipboardButtonComponent.new(
-              clipboard_text: @code.upcase,
-              outline: true,
-              class: 'ico ico-copy',
-            ) do %>
-          <%= t('links.copy') %>
-        <% end %>
-      </div>
-    </li>
-    <li class="padding-y-2 border-top border-primary-light">
-      <div class="margin-bottom-2">
-        <div class="margin-right-1 inline-block circle-number bg-primary text-white">4</div>
-        <div class="inline-block bold" id="totp-label"><%= t('forms.totp_setup.totp_step_4') %></div>
-      </div>
-      <div class="sm-col-9 sm-ml-28p">
-        <div class="clearfix margin-x-neg-1">
-          <div class="col col-6 sm-col-7 padding-x-1">
-            <%= render(
-                  'shared/one_time_code_input',
-                  transport: nil,
-                  name: :code,
-                  'aria-labelledby': 'totp-label',
-                  required: true,
-                  class: 'block col-12',
-                ) %>
-          </div>
-        </div>
-      </div>
-    </li>
-  </ul>
+      <p><%= t('instructions.mfa.authenticator.manual_entry') %></p>
+      <code class="display-block margin-y-2 font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px text-bold text-wrap-anywhere" id="qr-code">
+        <%= @code %>
+      </code>
+      <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
+    <% end %>
+    <%= c.item(heading: t('forms.totp_setup.totp_step_4')) do %>
+      <%= render(
+            'shared/one_time_code_input',
+            transport: nil,
+            name: :code,
+            required: true,
+            aria: { label: t('forms.totp_setup.totp_step_4') },
+            size: 18,
+            class: 'width-auto',
+          ) %>
+    <% end %>
+  <% end %>
   <%= f.input(
         :remember_device,
         as: :boolean,

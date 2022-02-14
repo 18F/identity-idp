@@ -102,7 +102,9 @@ Rails.application.routes.draw do
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor, constraints: { otp_delivery_preference: /sms|voice/ }
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
-           as: :login_otp
+           as: :login_otp, constraints: { otp_delivery_preference: /sms|voice/ }
+      get '/login/two_factor/sms/opt_in' => 'two_factor_authentication/sms_opt_in#new'
+      post '/login/two_factor/sms/opt_in' => 'two_factor_authentication/sms_opt_in#create'
 
       get 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#prompt'
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
@@ -124,8 +126,6 @@ Rails.application.routes.draw do
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
         get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
         post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
-
-        get '/oidc' => 'oidc_test#index'
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
@@ -258,6 +258,8 @@ Rails.application.routes.draw do
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     delete '/users' => 'users#destroy', as: :destroy_user
+
+    get '/restricted' => 'banned_user#show', as: :banned_user
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'

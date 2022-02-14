@@ -12,25 +12,26 @@ locals:
 <% name = local_assigns.delete(:name) { :code }
    numeric =local_assigns.delete(:numeric) { true }
    transport = local_assigns.delete(:transport) { 'sms' }
-   classes = ['field monospace usa-input one-time-code-input']
+   classes = ['field font-family-mono usa-input one-time-code-input']
    classes << local_assigns.delete(:class) if local_assigns[:class] %>
 
-
-<%= text_field_tag(
-      name,
-      nil,
-      'aria-invalid': 'false',
-      'data-transport': transport,
-      pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
-      maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-      autocomplete: 'one-time-code',
-      inputmode: numeric ? 'numeric' : 'text',
-      type: 'text',
-      **local_assigns,
-      class: classes,
-    ) %>
-<span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
-  <%= t('simple_form.required.text') %>
-</span>
+<div>
+  <%= text_field_tag(
+        name,
+        nil,
+        'aria-invalid': 'false',
+        'data-transport': transport,
+        pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
+        maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+        autocomplete: 'one-time-code',
+        inputmode: numeric ? 'numeric' : 'text',
+        type: 'text',
+        **local_assigns,
+        class: classes,
+      ) %>
+  <span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
+    <%= t('simple_form.required.text') %>
+  </span>
+</div>
 
 <%= javascript_packs_tag_once 'one-time-code-input' %>
