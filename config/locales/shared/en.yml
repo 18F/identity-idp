@@ -7,6 +7,9 @@ en:
         government organization in the United States.
       gov_heading: Official websites use .gov
       how: Here’s how you know
+      landmark_label: Official government website
+      lock: Lock
+      lock_description: A locked padlock
       official_site: An official website of the United States government
       secure_description_html: A <strong>lock</strong> (%{lock_icon}) or
         <strong>https://</strong> means you’ve safely connected to the .gov
@@ -14,4 +17,6 @@ en:
       secure_heading: Secure .gov websites use HTTPS
     footer_lite:
       gsa: US General Services Administration
+    navigation:
+      landmark_label: Main navigation
     skip_link: Skip to main content

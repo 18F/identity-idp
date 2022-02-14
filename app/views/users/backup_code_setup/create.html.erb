@@ -2,19 +2,18 @@
 
 <%= render PageHeadingComponent.new.with_content(t('forms.backup_code.subtitle')) %>
 
-<%= t(
-      'users.backup_code.generated_on_html',
-      date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
-    ) %>
+<p>
+  <%= t(
+        'users.backup_code.generated_on_html',
+        date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y')),
+      ) %>
+</p>
 
-<br/>
-<br/>
-
-<div class="inline-block margin-bottom-4">
+<p>
   <%= t('forms.backup_code.subinfo_html') %>
-</div>
+</p>
 
-<div class="margin-bottom-6">
+<div class="margin-top-4 margin-bottom-5">
   <table>
     <tr>
       <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>

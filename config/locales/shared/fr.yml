@@ -7,6 +7,9 @@ fr:
         organisation gouvernementale officielle des États-Unis.
       gov_heading: Les sites Web officiels utilisent .gov
       how: Voici comment vous savez
+      landmark_label: Site officiel du gouvernement
+      lock: Serrure
+      lock_description: Un cadenas fermé
       official_site: Un site web officiel du gouvernement des États-Unis
       secure_description_html: Un <strong>verrou</strong> (%{lock_icon}) ou
         <strong>https://</strong> signifie que vous êtes connecté en toute
@@ -15,4 +18,6 @@ fr:
       secure_heading: Les sites Web sécurisés .gov utilisent HTTPS
     footer_lite:
       gsa: Administration des services généraux des États-Unis
+    navigation:
+      landmark_label: Navigation principale
     skip_link: Passer au contenu principal

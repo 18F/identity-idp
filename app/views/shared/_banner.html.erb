@@ -1,6 +1,6 @@
 <header aria-label="banner">
   <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
-  <section class="usa-banner" aria-label="Official government website">
+  <section class="usa-banner" aria-label="<%= t('shared.banner.landmark_label') %>">
     <div class="usa-accordion">
       <div class="usa-banner__header">
         <div class="usa-banner__inner">
@@ -56,7 +56,7 @@
       </div>
     </div>
   </section>
-  <nav aria-label="main-navigation">
+  <nav class="main-navigation" aria-label="<%= t('shared.navigation.landmark_label') %>">
     <% if content_for?(:nav) %>
       <%= yield(:nav) %>
     <% else %>

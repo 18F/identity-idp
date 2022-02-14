@@ -9,7 +9,7 @@
  *
  * @prop {(any)=>void} Modal
  * @prop {(string)=>void} autoLogout
- * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number)=>void} countdownTimer
+ * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} countdownTimer
  */
 
 /**
@@ -33,6 +33,7 @@ const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
+const SR_MESSAGE_UPDATE_INTERVAL_SECONDS = 30;
 
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
@@ -53,6 +54,7 @@ if (csrfEl) {
 }
 
 let countdownInterval;
+let srCountdownInterval;
 
 function notifyNewRelic(request, error, actionName) {
   /** @type {LoginGovGlobal} */ (window).newrelic?.addPageAction('Session Ping Error', {
@@ -83,6 +85,15 @@ function success(data) {
       document.getElementById('countdown'),
       timeRemaining,
       timeTimeout,
+    );
+    if (srCountdownInterval) {
+      clearInterval(srCountdownInterval);
+    }
+    srCountdownInterval = login.countdownTimer(
+      document.getElementById('sr-countdown'),
+      timeRemaining,
+      timeTimeout,
+      SR_MESSAGE_UPDATE_INTERVAL_SECONDS * 1000,
     );
   }
 
