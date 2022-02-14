@@ -1,0 +1,83 @@
+// Remove after `basscss-sass/base-forms` is no longer in use (LG-3876). BassCSS applies default
+// styling to label elements, that this exists to unset to avoid conflicts with design system.
+
+
+// basscss-base-forms
+//------------------------------------------------
+input[type=text],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=email],
+input[type=month],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  vertical-align: middle;
+  -webkit-appearance: none;
+}
+
+// basscss-base-tables
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+th {
+  text-align: left;
+  font-weight: var(--table-header-font-weight);
+}
+
+th,
+td {
+  padding: var(--table-cell-padding-y) var(--table-cell-padding-x);
+  line-height: inherit;
+}
+
+th { vertical-align: bottom }
+td { vertical-align: top }
+
+//basscss-base-topography
+body {
+  font-family: "Source Sans Pro Web","Helvetica Neue","Helvetica","Roboto","Arial",sans-serif;
+  line-height: 1.5;
+  font-size: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Merriweather Web","Georgia","Cambria","Times New Roman","Times",serif;
+  font-weight: bold;
+  line-height: 1.5;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+dl, ol, ul {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+pre, code, samp {
+  font-family:  'Source Code Pro', Consolas, monospace;
+  font-size: inherit;
+}
+
+pre {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  overflow-x: scroll;
+}
+
