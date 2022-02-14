@@ -2,13 +2,13 @@
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
+
   def enqueue(event)
     job = event.payload[:job]
     ex = event.payload[:exception_object]
-
     json = default_attributes(event, job)
 
-    if ex
+    if ex && should_not_warn?(job, ex)
       if duplicate_cron_error?(ex)
         json[:exception_class_warn] = ex.class.name
         # The "exception_message" key flags this as an error in our alerting, so
@@ -37,7 +37,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json = default_attributes(event, job)
 
-    if ex
+    if ex && should_not_warn?(job, ex)
       json[:exception_class] = ex.class.name
       json[:exception_message] = ex.message
 
@@ -72,7 +72,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       enqueued_at: job.enqueued_at,
     )
 
-    if ex
+    if ex && should_not_warn?(job, ex)
       # NewRelic?
       json[:exception_class] = ex.class.name
       json[:exception_message] = ex.message
@@ -99,7 +99,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json[:exception_class] = ex.class.name if ex
 
-    if ex
+    if ex && should_not_warn?(job, ex)
       error(json.to_json)
     else
       info(json.to_json)
@@ -110,25 +110,30 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def retry_stopped(event)
     job = event.payload[:job]
-    ex = event.payload[:error]
+    if should_not_warn?(job, ex)
+      ex = event.payload[:error]
 
-    json = default_attributes(event, job).merge(
-      exception_class: ex.class.name,
-      attempts: job.executions,
-    )
+      json = default_attributes(event, job).merge(
+        exception_class: ex.class.name,
+        attempts: job.executions,
+      )
 
-    error(json.to_json)
+      error(json.to_json)
+    end
   end
 
   def discard(event)
     job = event.payload[:job]
-    ex = event.payload[:error]
 
-    json = default_attributes(event, job).merge(
-      exception_class: job.class,
-    )
+    if should_not_warn?(job, ex)
+      ex = event.payload[:error]
 
-    error(json.to_json)
+      json = default_attributes(event, job).merge(
+        exception_class: job.class,
+      )
+
+      error(json.to_json)
+    end
   end
 
   def logger
@@ -153,7 +158,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       job_class: job.class.name,
       trace_id: trace_id(job),
       queue_name: queue_name(event),
-      job_id: job.job_id,
+      job_id: job.job_id
     }
   end
 
@@ -178,6 +183,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def duplicate_cron_error?(ex)
     ex.is_a?(ActiveRecord::RecordNotUnique) && ex.message.include?('(cron_key, cron_at)')
+  end
+
+  def should_not_warn?(job, ex)
+    !job.class.try(:warning_messages)&.include(ex.class.name)
   end
 end
 
