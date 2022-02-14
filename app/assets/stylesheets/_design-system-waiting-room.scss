@@ -1,6 +1,4 @@
-// Remove after `basscss-sass/base-forms` is no longer in use (LG-3876). BassCSS applies default
-// styling to label elements, that this exists to unset to avoid conflicts with design system.
-
+// To be removed once design system incorporates styles included below.
 
 // basscss-base-forms
 //------------------------------------------------
@@ -39,7 +37,7 @@ th {
 
 th,
 td {
-  padding: .25rem 1rem;
+  padding: $space-tiny $space-2;
   line-height: inherit;
 }
 
@@ -49,36 +47,24 @@ td { vertical-align: top }
 //basscss-base-topography
 //------------------------------------------------
 body {
-  font-family: "Source Sans Pro Web","Helvetica Neue","Helvetica","Roboto","Arial",sans-serif;
-  line-height: 1.5;
+  font-family: $font-family;
+  line-height: $line-height;
   font-size: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Merriweather Web","Georgia","Cambria","Times New Roman","Times",serif;
-  font-weight: bold;
-  line-height: 1.5;
+  font-family: $heading-font-family;
+  line-height: $heading-line-height;
   margin-top: 1em;
   margin-bottom: 0.5em;
 }
 
 p {
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: $space-2;
 }
 
 dl, ol, ul {
   margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-pre, code, samp {
-  font-family:  'Source Code Pro', Consolas, monospace;
-  font-size: inherit;
-}
-
-pre {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  overflow-x: scroll;
+  margin-bottom: $space-2;
 }
