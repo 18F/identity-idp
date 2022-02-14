@@ -2,13 +2,6 @@
   <h2 class="grid-col-fill margin-y-0 padding-right-1">
     <%= t('account.index.webauthn_platform') %>
   </h2>
-  <div class="grid-col-auto">
-    <%= link_to(
-          prefix_with_plus(t('account.index.webauthn_platform_add')),
-          webauthn_setup_path(platform: true),
-          class: 'account-action-button',
-        ) %>
-  </div>
 </div>
 
 <div class="border-bottom border-primary-light">
@@ -28,4 +21,12 @@
     </div>
     <div class="clearfix"></div>
   <% end %>
+</div>
+
+<div class="grid-col-auto">
+  <%= link_to(
+          prefix_with_plus(t('account.index.webauthn_platform_add')),
+          webauthn_setup_path(platform: true),
+          class: 'usa-button usa-button--outline margin-top-2',
+          ) %>
 </div>

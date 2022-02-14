@@ -2,15 +2,6 @@
   <h2 class="grid-col-fill margin-y-0 padding-right-2">
     <%= t('headings.account.federal_employee_id') %>
   </h2>
-  <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
-    <div class="grid-col-auto">
-      <%= link_to(
-            prefix_with_plus(t('account.index.piv_cac_add')),
-            setup_piv_cac_url,
-            class: 'account-action-button',
-          ) %>
-    </div>
-  <% end %>
 </div>
 
 <div class="border-bottom border-primary-light">
@@ -27,3 +18,13 @@
     </div>
   <% end %>
 </div>
+
+<% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
+  <div class="grid-col-auto">
+    <%= link_to(
+            prefix_with_plus(t('account.index.piv_cac_add')),
+            setup_piv_cac_url,
+            class: 'usa-button usa-button--outline margin-top-2',
+            ) %>
+  </div>
+<% end %>
