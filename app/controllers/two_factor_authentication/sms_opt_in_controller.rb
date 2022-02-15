@@ -1,6 +1,6 @@
 module TwoFactorAuthentication
   class SmsOptInController < ApplicationController
-    before_action :load_phone_configuration
+    before_action :load_phone
 
     def new
       @other_mfa_options_url = other_options_mfa_url
@@ -27,6 +27,7 @@ module TwoFactorAuthentication
       )
 
       if response.success?
+        @phone_number_opt_out.opt_in
         redirect_to otp_send_url(otp_delivery_selection_form: { otp_delivery_preference: :sms })
       else
         @other_mfa_options_url = other_options_mfa_url
@@ -53,14 +54,13 @@ module TwoFactorAuthentication
       @mfa_context ||= MfaContext.new(current_user)
     end
 
-    def load_phone_configuration
-      if user_session.present? && (unconfirmed_phone = user_session[:unconfirmed_phone]).present?
-        @phone_configuration = PhoneConfiguration.new(phone: unconfirmed_phone)
-      elsif user_session.present? && (phone_id = user_session[:phone_id]).present?
-        @phone_configuration = mfa_context.phone_configuration(phone_id)
-      else
-        render_not_found
-      end
+    def load_phone
+      @phone_number_opt_out = PhoneNumberOptOut.from_param(params[:opt_out_uuid])
+      @phone_configuration = mfa_context.phone_configurations.find do |phone_config|
+        phone_config.formatted_phone == @phone_number_opt_out.formatted_phone
+      end || PhoneConfiguration.new(phone: @phone_number_opt_out.formatted_phone)
+    rescue ActiveRecord::RecordNotFound
+      render_not_found
     end
 
     def other_options_mfa_url

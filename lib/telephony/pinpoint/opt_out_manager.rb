@@ -1,18 +1,19 @@
 module Telephony
   module Pinpoint
     class OptOutManager
+      # Tries to opt in across *all* regions because AWS keeps separate opt out lists
       # @return [Response]
       def opt_in_phone_number(phone_number)
-        Telephony.config.pinpoint.sms_configs.each do |config|
+        responses = Telephony.config.pinpoint.sms_configs.map do |config|
           client = build_client(config)
           next if client.nil?
 
           opt_in_response = client.opt_in_phone_number(phone_number: phone_number)
 
-          return Response.new(success: opt_in_response.successful?)
+          Response.new(success: opt_in_response.successful?)
         rescue Aws::SNS::Errors::InvalidParameter
           # This is thrown when the number has been opted in too recently
-          return Response.new(success: false)
+          Response.new(success: false)
         rescue Seahorse::Client::NetworkingError,
                Aws::SNS::Errors::ServiceError => error
           PinpointHelper.notify_pinpoint_failover(
@@ -21,9 +22,32 @@ module Telephony
             channel: :notification_service,
             extra: {},
           )
-        end
+          Response.new(success: false, error: error)
+        end.compact
 
-        PinpointHelper.handle_config_failure(:notification_service)
+        return PinpointHelper.handle_config_failure(:notification_service) if responses.empty?
+
+        # imitation of FormResponse#merge
+        Response.new(
+          success: responses.all?(&:success?),
+          error: responses.map(&:error).compact.first,
+          extra: responses.map(&:extra).reduce({}, :merge),
+        )
+      end
+
+      # @yieldparam [String] phone_number
+      def each_opted_out_number
+        Telephony.config.pinpoint.sms_configs.each do |config|
+          client = build_client(config)
+          next if client.nil?
+
+          client.list_phone_numbers_opted_out.each do |response|
+            response.phone_numbers.each do |phone_number|
+              yield phone_number
+            end
+          end
+        end
+        nil
       end
 
       # @api private

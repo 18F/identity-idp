@@ -1,18 +1,14 @@
 <%= title t('forms.piv_cac_delete.confirm') %>
 
-<%= image_tag(asset_url('alert/warning-lg.svg'), alt: t('errors.alt.warning'), width: 54, class: 'margin-bottom-2') %>
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: t('errors.alt.warning'), width: 54, class: 'display-block margin-bottom-4') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.piv_cac_delete.confirm')) %>
 
-<div class="col-2 margin-bottom-2">
-  <hr class="margin-top-4 margin-bottom-2 border-width-05 border-yellow">
-</div>
-<div class="p.margin-bottom-6">
+<p>
   <%= t('forms.piv_cac_delete.caution', app_name: APP_NAME) %>
-</div>
-<br>
+</p>
 
-<%= form_tag(disable_piv_cac_url(id: params[:id]), method: :delete) do %>
+<%= form_tag(disable_piv_cac_url(id: params[:id]), method: :delete, class: 'margin-top-5') do %>
   <%= button_tag t('account.index.piv_cac_confirm_delete'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide margin-bottom-2' %>
 <% end %>
 <%= link_to t('links.cancel'), account_path, class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
