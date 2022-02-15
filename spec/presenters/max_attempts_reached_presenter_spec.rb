@@ -24,7 +24,7 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   end
 
   context 'methods are overriden' do
-    %i[message title header description js].each do |method|
+    %i[title header description js].each do |method|
       describe "##{method}" do
         subject { presenter.send(method) }
 
@@ -33,16 +33,45 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
     end
   end
 
-  describe '#next_steps' do
-    subject { presenter.next_steps }
+  describe '#description' do
+    subject(:description) { presenter.description }
 
-    it 'includes `please_try_again` and `read_about_two_factor_authentication`' do
+    it 'includes failure type and time remaining' do
       expect(subject).to eq(
         [
-          presenter.send(:please_try_again),
-          presenter.send(:read_about_two_factor_authentication),
+          presenter.locked_reason,
+          presenter.please_try_again,
         ],
       )
+    end
+  end
+
+  describe '#troubleshooting_options' do
+    subject { presenter.troubleshooting_options }
+
+    it 'includes links to read more and get help' do
+      expect(subject).to eq(
+        [
+          presenter.read_about_two_factor_authentication,
+          presenter.contact_support,
+        ],
+      )
+    end
+  end
+
+  describe '#locked_reason' do
+    subject(:locked_reason) { presenter.locked_reason }
+
+    it 'returns locked reason' do
+      expect(locked_reason).to eq(t('two_factor_authentication.max_otp_requests_reached'))
+    end
+
+    context 'with unsupported type' do
+      let(:type) { :unsupported }
+
+      it 'raises error' do
+        expect { locked_reason }.to raise_error
+      end
     end
   end
 
@@ -51,6 +80,30 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
 
     it 'includes time remaining' do
       expect(subject).to include('1000 years')
+    end
+  end
+
+  describe '#read_about_two_factor_authentication' do
+    subject(:link) { presenter.read_about_two_factor_authentication }
+
+    it 'includes troubleshooting option link details' do
+      expect(link).to match(
+        text: kind_of(String),
+        url: kind_of(String),
+        new_tab: true,
+      )
+    end
+  end
+
+  describe '#contact_support' do
+    subject(:link) { presenter.contact_support }
+
+    it 'includes troubleshooting option link details' do
+      expect(link).to match(
+        text: kind_of(String),
+        url: kind_of(String),
+        new_tab: true,
+      )
     end
   end
 

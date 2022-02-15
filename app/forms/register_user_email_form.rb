@@ -4,6 +4,7 @@ class RegisterUserEmailForm
   include FormEmailValidator
 
   validate :validate_terms_accepted
+  validates_inclusion_of :email_language, in: I18n.available_locales.map(&:to_s).append(nil)
 
   attr_reader :email_address, :terms_accepted
   attr_accessor :email_language

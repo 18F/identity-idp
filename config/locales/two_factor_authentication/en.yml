@@ -32,7 +32,7 @@ en:
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
-      auth_app_info_html: Use your authentication application to get security code.
+      auth_app_info_html: Use your authentication application to get a security code.
       backup_code: Backup codes
       backup_code_info_html: Use a backup code from your list of backup codes to sign in.
       personal_key: Personal Key
@@ -115,9 +115,7 @@ en:
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
-    read_about_two_factor_authentication:
-      link: read about two-factor authentication
-      text_html: You can %{link} and why we use it at our Help page.
+    read_about_two_factor_authentication: Read about two-factor authentication
     totp_fallback:
       question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code

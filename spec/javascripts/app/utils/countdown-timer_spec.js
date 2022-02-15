@@ -14,11 +14,11 @@ describe('countdownTimer', () => {
       clock = sinon.useFakeTimers();
       el = document.createElement('div');
       el.appendChild(document.createTextNode('test'));
-      window.LoginGov.I18n.strings['datetime.dotiw.seconds.one'] = 'one second';
-      window.LoginGov.I18n.strings['datetime.dotiw.minutes.one'] = 'one minute';
-      window.LoginGov.I18n.strings['datetime.dotiw.seconds.other'] = '%{count} seconds';
-      window.LoginGov.I18n.strings['datetime.dotiw.minutes.other'] = '%{count} minutes';
-      window.LoginGov.I18n.strings['datetime.dotiw.two_words_connector'] = ' and ';
+      window.LoginGov.I18n.strings = {
+        'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
+        'datetime.dotiw.minutes': { one: 'one minute', other: '%{count} minutes' },
+        'datetime.dotiw.two_words_connector': ' and ',
+      };
     });
 
     afterEach(() => {

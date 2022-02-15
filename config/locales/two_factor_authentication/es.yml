@@ -124,9 +124,7 @@ es:
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
-    read_about_two_factor_authentication:
-      link: leer acerca de la autenticación de dos factores
-      text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
+    read_about_two_factor_authentication: Conozca la autenticación de dos factores
     totp_fallback:
       question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación

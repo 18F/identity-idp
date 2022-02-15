@@ -45,8 +45,8 @@ data:
 search:
   ## Paths or `File.find` patterns to search in:
   paths:
-   - app/
-   - lib/
+    - app/
+    - lib/
 
   ## Root directories for relative keys resolution.
   relative_roots:
@@ -110,8 +110,6 @@ ignore_unused:
   - 'user_mailer.email_confirmation_instructions.subject'
   - 'valid_email.validations.email.invalid'
   - 'errors.attributes.*'
-  - 'datetime.dotiw.minutes.*'
-  - 'datetime.dotiw.seconds.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'
