@@ -59,6 +59,15 @@ RSpec.describe OpenidConnect::TokenController do
                user_id: user.uuid,
                errors: {})
         action
+
+        expect(@analytics.events[Analytics::OPENID_CONNECT_TOKEN]).to eq(
+          [{
+            success: true,
+            user_id: user.uuid,
+            client_id: client_id,
+            errors: {},
+          }],
+        )
       end
     end
 
@@ -85,6 +94,16 @@ RSpec.describe OpenidConnect::TokenController do
                error_details: hash_including(:grant_type))
 
         action
+
+        expect(@analytics.events[Analytics::OPENID_CONNECT_TOKEN]).to eq(
+          [{
+            success: false,
+            client_id: client_id,
+            user_id: user.uuid,
+            errors: { grant_type: ['is not included in the list'] },
+            error_details: { grant_type: [:inclusion] },
+          }],
+        )
       end
     end
 
