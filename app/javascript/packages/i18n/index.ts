@@ -21,7 +21,7 @@ const hasOwn = (object: object, key: string): boolean =>
  *
  * @return Pluralization key.
  */
-const getPluralizationKey = (count?: number): keyof PluralizedEntry =>
+const getPluralizationKey = (count: number): keyof PluralizedEntry =>
   count === 1 ? 'one' : 'other';
 
 /**
@@ -43,8 +43,17 @@ const getEntry = (strings: Entries, key: string): Entry =>
  *
  * @return Entry string.
  */
-const getString = (entry: Entry, count?: number): string =>
-  typeof entry === 'object' ? entry[getPluralizationKey(count)] : entry;
+function getString(entry: Entry, count?: number): string {
+  if (typeof entry === 'object') {
+    if (typeof count !== 'number') {
+      throw new TypeError('Expected count for PluralizedEntry');
+    }
+
+    return entry[getPluralizationKey(count)];
+  }
+
+  return entry;
+}
 
 /**
  * Returns string with variable substitution.

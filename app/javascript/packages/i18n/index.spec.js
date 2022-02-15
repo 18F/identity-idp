@@ -33,6 +33,10 @@ describe('I18n', () => {
     });
 
     describe('pluralization', () => {
+      it('throws when count is not given', () => {
+        expect(() => t('messages')).to.throw(TypeError);
+      });
+
       it('returns single count', () => {
         expect(t('messages', { count: 1 })).to.equal('one message');
       });
