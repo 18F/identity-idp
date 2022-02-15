@@ -345,6 +345,23 @@ describe Users::TwoFactorAuthenticationController do
         expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
       end
 
+      context 'when the phone has been marked as opted out in the DB' do
+        before do
+          PhoneNumberOptOut.mark_opted_out(@user.phone_configurations.first.phone)
+
+          allow(IdentityConfig.store).to receive(:sms_resubscribe_enabled)
+        end
+
+        it 'does not send an OTP' do
+          expect(Telephony).to_not receive(:send_authentication_otp)
+          expect(Telephony).to_not receive(:send_confirmation_otp)
+
+          get :send_code, params: {
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          }
+        end
+      end
+
       context 'when Pinpoint throws an opt-out error' do
         before do
           @user.phone_configurations.first.tap do |phone_config|
@@ -364,8 +381,13 @@ describe Users::TwoFactorAuthenticationController do
               otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
             }
 
-            expect(response).to redirect_to(login_two_factor_sms_opt_in_path)
-            expect(controller.user_session[:phone_id]).to eq(@user.phone_configurations.first.id)
+            opt_out = PhoneNumberOptOut.create_or_find_with_phone(
+              Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER,
+            )
+
+            expect(response).to redirect_to(
+              login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out),
+            )
           end
         end
 
