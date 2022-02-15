@@ -184,6 +184,9 @@ def main(args)
         example:
         changelog: Improvements, Authentication, Updating Authentication (LG-9998)
 
+        categories:
+        #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}
+
         Include "[skip changelog]" in a commit message to bypass this check.
       ERROR
     )
