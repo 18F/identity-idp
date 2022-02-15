@@ -1,15 +1,12 @@
-<div class="padding-1 clearfix border-top border-left border-right border-primary-light">
-  <div class="clearfix margin-x-neg-1">
-    <div class="sm-col sm-col-6 padding-x-1">
-      <div class="bold truncate">
-        <%= device.nice_name %>
-      </div>
-      <%= device.last_sign_in_location_and_ip %>
+<div class="padding-1 border-top border-left border-right border-primary-light">
+  <div class="grid-row grid-gap-2">
+    <div class="grid-col-fill">
+      <strong><%= device.nice_name %></strong>
     </div>
-    <div class="sm-col sm-col-6 padding-x-1 sm-right-align">
-      <%= local_time(device.happened_at, t('time.formats.event_timestamp')) %>
-      <br />
+    <div class="grid-col-auto">
       <%= link_to t('headings.account.events'), account_events_path(id: device.id) %>
     </div>
   </div>
+  <%= local_time(device.happened_at, t('time.formats.event_timestamp')) %><br>
+  <%= device.last_sign_in_location_and_ip %>
 </div>
