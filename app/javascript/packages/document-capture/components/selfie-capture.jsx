@@ -97,7 +97,8 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
       return;
     }
 
-    navigator.permissions.query({ name: 'camera' }).then(
+    // Type-casting necessary due to: https://github.com/microsoft/TypeScript/issues/33923
+    navigator.permissions.query({ name: /** @type {PermissionName} */ ('camera') }).then(
       ifStillMounted((/** @type {PermissionStatus} */ result) => {
         if (result.state === 'granted') {
           startCapture();
