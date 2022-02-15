@@ -13,7 +13,12 @@ module OpenidConnect
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out
-        redirect_to redirect_uri unless logout_params[:prevent_logout_redirect] == 'true'
+        unless logout_params[:prevent_logout_redirect] == 'true'
+          redirect_to(
+            redirect_uri,
+            allow_other_host: true,
+          )
+        end
       else
         render :error
       end
