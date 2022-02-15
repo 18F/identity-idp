@@ -13,15 +13,7 @@
 </p>
 
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
-  <fieldset class="usa-fieldset">
-    <legend class="margin-bottom-1">
-      <%= t('account.email_language.please_select') %>
-    </legend>
-    <%= render partial: 'shared/email_languages',
-               locals: {
-                 selection: current_user.email_language,
-                 f: f,
-               } %>
-  </fieldset>
+  <%= render partial: 'shared/email_languages',
+             locals: { f: f, hint: false, selection: current_user.email_language } %>
   <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big usa-button--wide grid-col-8 mobile-lg:grid-col-6' %>
 <% end %>
