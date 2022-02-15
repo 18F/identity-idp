@@ -1,27 +1,21 @@
 <% title presenter.title %>
 
-<%= image_tag(asset_url(presenter.state_icon), alt: '', width: 54, class: 'margin-bottom-2') %>
+<%= image_tag(asset_url(presenter.state_icon), alt: '', width: 54, class: 'display-block margin-bottom-4') %>
 
-<%= render PageHeadingComponent.new.with_content(presenter.header) %>
-
-<p>
-  <%= presenter.description %>
-</p>
-
-<% if presenter.message.present? %>
-  <div class="col-2">
-    <hr class="margin-top-4 margin-bottom-2 border-width-05 border-<%= presenter.state_color %>" />
-  </div>
-
-  <h2 class="h4 margin-bottom-2 margin-top-4 margin-y-0">
-    <%= presenter.message %>
-  </h2>
+<% if presenter.header %>
+  <%= render PageHeadingComponent.new.with_content(presenter.header) %>
 <% end %>
 
-<hr>
+<% Array(presenter.description).each do |description_p| %>
+  <p><%= description_p %></p>
+<% end %>
 
-<% presenter.next_steps.each do |step| %>
-  <p><%== step %></p>
-<% end; if presenter.js %>
+<%= render(
+      'shared/troubleshooting_options',
+      heading: t('components.troubleshooting_options.default_heading'),
+      options: presenter.troubleshooting_options,
+    ) %>
+
+<% if presenter.js %>
   <%= backwards_compatible_javascript_tag presenter.js %>
 <% end %>

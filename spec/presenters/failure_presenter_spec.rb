@@ -11,7 +11,7 @@ describe FailurePresenter do
   end
 
   context 'methods with default values of `nil`' do
-    %i[message title header description].each do |method|
+    %i[title header description].each do |method|
       describe "##{method}" do
         subject { presenter.send(method) }
 
@@ -20,8 +20,8 @@ describe FailurePresenter do
     end
   end
 
-  describe '#next_steps' do
-    subject { presenter.next_steps }
+  describe '#troubleshooting_options' do
+    subject { presenter.troubleshooting_options }
 
     it { is_expected.to be_empty }
   end

@@ -22,6 +22,23 @@ module TwoFactorAuthCode
     end
 
     def description
+      [locked_reason, please_try_again]
+    end
+
+    def troubleshooting_options
+      [read_about_two_factor_authentication, contact_support]
+    end
+
+    def js
+      <<~JS
+        document.addEventListener('DOMContentLoaded', function() {
+          var test = #{decorated_user.lockout_time_remaining} * 1000;
+          window.LoginGov.countdownTimer(document.getElementById('#{COUNTDOWN_ID}'), test);
+        });
+      JS
+    end
+
+    def locked_reason
       case type.to_s
       when 'backup_code_login_attempts'
         t('two_factor_authentication.max_backup_code_login_attempts_reached')
@@ -40,25 +57,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def message
-      t('headings.lock_failure')
-    end
-
-    def next_steps
-      [please_try_again, read_about_two_factor_authentication]
-    end
-
-    def js
-      <<~JS
-        document.addEventListener('DOMContentLoaded', function() {
-          var test = #{decorated_user.lockout_time_remaining} * 1000;
-          window.LoginGov.countdownTimer(document.getElementById('#{COUNTDOWN_ID}'), test);
-        });
-      JS
-    end
-
-    private
-
     def please_try_again
       t(
         'two_factor_authentication.please_try_again_html',
@@ -68,12 +66,19 @@ module TwoFactorAuthCode
     end
 
     def read_about_two_factor_authentication
-      link = link_to(
-        t('two_factor_authentication.read_about_two_factor_authentication.link'),
-        MarketingSite.help_url,
-      )
+      {
+        text: t('two_factor_authentication.read_about_two_factor_authentication'),
+        url: MarketingSite.help_url,
+        new_tab: true,
+      }
+    end
 
-      t('two_factor_authentication.read_about_two_factor_authentication.text_html', link: link)
+    def contact_support
+      {
+        url: MarketingSite.contact_url,
+        text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
+        new_tab: true,
+      }
     end
   end
 end

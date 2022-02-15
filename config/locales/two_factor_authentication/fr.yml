@@ -130,9 +130,7 @@ fr:
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong
       id=%{id}>%{time_remaining}</strong>.
-    read_about_two_factor_authentication:
-      link: lire sur l’authentification à deux facteurs
-      text_html: Vous pouvez %{link} et pourquoi nous l’utilisons sur notre page d’aide.
+    read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?
     totp_header_text: Entrez votre code d’application d’authentification
