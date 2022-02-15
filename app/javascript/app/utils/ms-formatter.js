@@ -1,12 +1,8 @@
 const { I18n } = window.LoginGov;
-const formatTime = (time, unit) =>
-  // i18n-tasks-use t('datetime.dotiw.seconds.one')
-  // i18n-tasks-use t('datetime.dotiw.seconds.other')
-  // i18n-tasks-use t('datetime.dotiw.minutes.one')
-  // i18n-tasks-use t('datetime.dotiw.minutes.other')
-  time === 1
-    ? I18n.t(`datetime.dotiw.${unit}.one`)
-    : I18n.t(`datetime.dotiw.${unit}.other`, { count: time });
+
+// i18n-tasks-use t('datetime.dotiw.seconds')
+// i18n-tasks-use t('datetime.dotiw.minutes')
+const formatTime = (time, unit) => I18n.t(`datetime.dotiw.${unit}`, { count: time });
 
 export function msFormatter(milliseconds) {
   const seconds = milliseconds / 1000;

@@ -1,4 +1,4 @@
-import { I18n, replaceVariables } from './index.js';
+import { I18n, replaceVariables } from './index';
 
 describe('replaceVariables', () => {
   it('replaces all variables', () => {
@@ -16,7 +16,12 @@ describe('replaceVariables', () => {
 });
 
 describe('I18n', () => {
-  const { t } = new I18n({ strings: { known: 'translation' } });
+  const { t } = new I18n({
+    strings: {
+      known: 'translation',
+      messages: { one: 'one message', other: '%{count} messages' },
+    },
+  });
 
   describe('#t', () => {
     it('returns localized key value', () => {
@@ -25,6 +30,20 @@ describe('I18n', () => {
 
     it('falls back to key value', () => {
       expect(t('unknown')).to.equal('unknown');
+    });
+
+    describe('pluralization', () => {
+      it('throws when count is not given', () => {
+        expect(() => t('messages')).to.throw(TypeError);
+      });
+
+      it('returns single count', () => {
+        expect(t('messages', { count: 1 })).to.equal('one message');
+      });
+
+      it('returns other count, with variables replaced', () => {
+        expect(t('messages', { count: 2 })).to.equal('2 messages');
+      });
     });
   });
 });
