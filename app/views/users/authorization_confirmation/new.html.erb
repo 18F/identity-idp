@@ -30,7 +30,7 @@
   </div>
 
   <div class='margin-top-4 text-center'>
-    <%= button_to(user_authorization_confirmation_path, class: 'usa-button usa-button--big usa-button--wide') { t('user_authorization_confirmation.continue') } %>
+    <%= button_to(user_authorization_confirmation_path, class: 'usa-button usa-button--big usa-button--wide', method: :post) { t('user_authorization_confirmation.continue') } %>
   </div>
   <div class='margin-top-4 text-center'>
     <%= t('user_authorization_confirmation.or') %>
