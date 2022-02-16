@@ -1,6 +1,6 @@
 require 'feature_management'
 
-if IdentityConfig.store.rails_csp_tooling_enabled
+if FeatureManagement.rails_csp_tooling_enabled?
   Rails.application.configure do
     config.ssl_options = { hsts: { preload: true, expires: 1.year, subdomains: true } }
 
