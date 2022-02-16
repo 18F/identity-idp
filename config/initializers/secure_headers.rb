@@ -6,6 +6,8 @@ if FeatureManagement.rails_csp_tooling_enabled?
 
     config.action_dispatch.default_headers.merge!(
       'X-Frame-Options' => 'DENY',
+      'X-XSS-Protection' => '1; mode=block',
+      'X-Download-Options' => 'noopen',
     )
   end
 end
