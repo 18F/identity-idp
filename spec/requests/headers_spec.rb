@@ -33,9 +33,7 @@ RSpec.describe 'Headers' do
 
   context 'secure headers' do
     it 'includes Strict-Transport-Security (HSTS)' do
-      get root_path
-
-      pending 'seems to not get set in plain http tests'
+      get root_path, headers: { 'HTTPS' => 'on' }
 
       expect(response.headers['Strict-Transport-Security']).
         to eq('max-age=31536000; includeSubDomains; preload')
