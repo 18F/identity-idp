@@ -2,13 +2,13 @@
 # https://edgeguides.rubyonrails.org/active_support_instrumentation.html#active-job
 # https://github.com/rails/rails/blob/v6.1.3.1/activejob/lib/active_job/log_subscriber.rb
 class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
-
   def enqueue(event)
     job = event.payload[:job]
     ex = event.payload[:exception_object]
+
     json = default_attributes(event, job)
 
-    if ex && should_not_warn?(job, ex)
+    if ex
       if duplicate_cron_error?(ex)
         json[:exception_class_warn] = ex.class.name
         # The "exception_message" key flags this as an error in our alerting, so
@@ -16,11 +16,16 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
         json[:exception_message_warn] = ex.message
 
         warn(json.to_json)
-      else
-        json[:exception_class] = ex.class.name
-        json[:exception_message] = ex.message
+      elsif should_error?(job, ex)
+          json[:exception_class] = ex.class.name
+          json[:exception_message] = ex.message
 
-        error(json.to_json)
+          error(json.to_json)
+      else
+        json[:exception_class_warn] = ex.class.name
+        json[:exception_message_warn] = ex.message
+
+        warn(json.to_json)
       end
     elsif event.payload[:aborted]
       json[:halted] = true
@@ -37,12 +42,19 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json = default_attributes(event, job)
 
-    if ex && should_not_warn?(job, ex)
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
+    if ex
+      if should_error?(job, ex)
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
 
-      error(json.to_json)
-    elsif event.payload[:aborted]
+        error(json.to_json)
+      else
+        json[:exception_class_warn] = ex.class.name
+        json[:exception_message_warn] = ex.message
+
+        warn(json.to_json)
+      end
+  elsif event.payload[:aborted]
       json[:halted] = true
 
       info(json.to_json)
@@ -72,13 +84,21 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       enqueued_at: job.enqueued_at,
     )
 
-    if ex && should_not_warn?(job, ex)
+    if ex
       # NewRelic?
-      json[:exception_class] = ex.class.name
-      json[:exception_message] = ex.message
-      json[:exception_backtrace] = Array(ex.backtrace).join("\n")
+      if should_error?(job, ex)
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
+        json[:exception_backtrace] = Array(ex.backtrace).join("\n")
 
-      error(json.to_json)
+        error(json.to_json)
+      else
+        json[:exception_class_warn] = ex.class.name
+        json[:exception_message_warn] = ex.message
+        json[:exception_backtrace_warn] = Array(ex.backtrace).join("\n")
+
+        warn(json.to_json)
+      end
     elsif event.payload[:aborted]
       json[:halted] = true
 
@@ -97,12 +117,14 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       wait_ms: wait_seconds.to_i.in_milliseconds,
     )
 
-    json[:exception_class] = ex.class.name if ex
-
-    if ex && should_not_warn?(job, ex)
-      error(json.to_json)
-    else
-      info(json.to_json)
+    if ex
+      if should_error?(job, ex)
+        json[:exception_class] = ex.class.name
+        error(json.to_json)
+      else
+        json[:exception_class_warn] = ex.class.name
+        info(json.to_json)
+      end
     end
 
     json
@@ -110,29 +132,41 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
   def retry_stopped(event)
     job = event.payload[:job]
-    if should_not_warn?(job, ex)
-      ex = event.payload[:error]
+    ex = event.payload[:error]
 
+    if should_error?(job, ex)
       json = default_attributes(event, job).merge(
         exception_class: ex.class.name,
         attempts: job.executions,
       )
 
       error(json.to_json)
+    else
+      json = default_attributes(event, job).merge(
+        exception_class_warn: ex.class.name,
+        attempts: job.executions,
+      )
+
+      warn(json.to_json)
     end
   end
 
   def discard(event)
     job = event.payload[:job]
+    ex = event.payload[:error]
 
-    if should_not_warn?(job, ex)
-      ex = event.payload[:error]
-
+    if should_error?(job, ex)
       json = default_attributes(event, job).merge(
         exception_class: job.class,
       )
 
       error(json.to_json)
+    else
+      json = default_attributes(event, job).merge(
+        exception_class_warn: job.class,
+      )
+
+      warn(json.to_json)
     end
   end
 
@@ -158,7 +192,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       job_class: job.class.name,
       trace_id: trace_id(job),
       queue_name: queue_name(event),
-      job_id: job.job_id
+      job_id: job.job_id,
     }
   end
 
@@ -185,8 +219,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex.is_a?(ActiveRecord::RecordNotUnique) && ex.message.include?('(cron_key, cron_at)')
   end
 
-  def should_not_warn?(job, ex)
-    !job.class.try(:warning_messages)&.include(ex.class.name)
+  def should_error?(job, ex)
+    return true if ex.nil?
+
+    !(job.class.try(:warning_messages)&.include(ex.class.name) ||
+      ApplicationJob.warning_error_classes(job).any? { |warning_class|
+        ex.class.is_a? warning_class
+      })
   end
 end
 
