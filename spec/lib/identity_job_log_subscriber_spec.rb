@@ -58,7 +58,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
   end
 
   it 'logs no errors when exception occurs in job and job is set to warn_only' do
-    allow(RiscDeliveryJob).to receive(:perform).with(any_args).and_raise(Faraday::SSLError) 
+    allow(RiscDeliveryJob).to receive(:perform).with(any_args).and_raise(Faraday::SSLError)
 
     expect(Rails.logger).to receive(:error).exactly(0).times
 
@@ -67,7 +67,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         issuer: build(:service_provider).issuer,
         push_notification_url: 'url',
         jwt: 'jwt',
-        event_type: 'event_type'
+        event_type: 'event_type',
       )
     }.to_not raise_error(Faraday::SSLError)
   end
