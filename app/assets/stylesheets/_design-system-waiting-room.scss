@@ -21,29 +21,6 @@ input[type=week] {
   -webkit-appearance: none;
 }
 
-// basscss-base-tables
-//------------------------------------------------
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  max-width: 100%;
-  width: 100%;
-}
-
-th {
-  text-align: left;
-  font-weight: bold;
-}
-
-th,
-td {
-  padding: $space-tiny $space-2;
-  line-height: inherit;
-}
-
-th { vertical-align: bottom }
-td { vertical-align: top }
-
 //basscss-base-topography
 //------------------------------------------------
 body {

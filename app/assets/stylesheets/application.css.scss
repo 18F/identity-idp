@@ -3,8 +3,7 @@
 @import 'required';
 @import 'vendor';
 @import 'vendor-overrides';
-// Remove after `basscss-sass/base-forms` is no longer in use (LG-3876). BassCSS applies default
-// styling to label elements, that this exists to unset to avoid conflicts with design system.
+// To be removed once design system incorporates styles included below.
 @import '_design-system-waiting-room.scss';
 // ----------------------------------------
 @import 'identity-style-guide/dist/assets/scss/packages/required';
