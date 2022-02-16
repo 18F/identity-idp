@@ -5,7 +5,7 @@ function togglePw() {
 
   if (inputs) {
     [].slice.call(inputs).forEach((input, i) => {
-      input.parentNode.classList.add('relative');
+      input.parentNode.classList.add('position-relative');
 
       const el = `
         <div class="password-toggle__toggle">
