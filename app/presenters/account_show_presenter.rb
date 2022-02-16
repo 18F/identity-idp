@@ -39,8 +39,10 @@ class AccountShowPresenter
   end
 
   def showing_any_partials?
-    show_service_provider_continue_partial? || show_password_reset_partial? ||
-      show_personal_key_partial? || show_gpo_partial?
+    show_service_provider_continue_partial? ||
+      show_password_reset_partial? ||
+      show_personal_key_partial? ||
+      show_gpo_partial?
   end
 
   def show_unphishable_badge?
