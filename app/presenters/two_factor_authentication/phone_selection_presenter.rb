@@ -24,7 +24,7 @@ module TwoFactorAuthentication
         end
 
         safe_join(
-          [t('two_factor_authentication.two_factor_choice_options.phone_info_html'), *voip_note],
+          [t('two_factor_authentication.two_factor_choice_options.phone_info'), *voip_note],
           ' ',
         )
       end
