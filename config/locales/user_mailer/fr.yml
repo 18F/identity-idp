@@ -117,7 +117,7 @@ fr:
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     new_device_sign_in:
       disavowal_link: réinitialiser votre mot de passe
-      help_html: Si vous n’avez pas changé votre mot de passe, %{disavowal_link}. Pour
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
         plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
         %{contact_link}.
       info_html: '<p>Votre compte %{app_name} a été connecté sur un nouvel
@@ -125,7 +125,7 @@ fr:
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
       disavowal_link: réinitialiser votre mot de passe
-      help_html: Si vous n’avez pas changé votre mot de passe, %{disavowal_link}. Pour
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
         plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
         %{contact_link}.
       intro_html: Le mot de passe de votre compte %{app_name} a été changé.
