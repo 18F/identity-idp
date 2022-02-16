@@ -18,13 +18,11 @@
   <% end %>
 </div>
 <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
-  <div class="grid-col-auto">
-    <%= render ButtonComponent.new(
-          action: ->(**tag_options, &block) do
-            link_to(authenticator_setup_url, **tag_options, &block)
-          end,
-          icon: :add,
-          class: 'usa-button usa-button--outline margin-top-2',
-        ).with_content(t('account.index.auth_app_add')) %>
-  </div>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(authenticator_setup_url, **tag_options, &block)
+        end,
+        icon: :add,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ).with_content(t('account.index.auth_app_add')) %>
 <% end %>
