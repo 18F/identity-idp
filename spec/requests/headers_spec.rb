@@ -30,4 +30,25 @@ RSpec.describe 'Headers' do
 
     expect(response.status).to eq 200
   end
+
+  context 'secure headers' do
+    it 'includes Strict-Transport-Security (HSTS)' do
+      get root_path, headers: { 'HTTPS' => 'on' }
+
+      expect(response.headers['Strict-Transport-Security']).
+        to eq('max-age=31536000; includeSubDomains; preload')
+    end
+
+    it 'sets the right values for X-headers' do
+      get root_path
+
+      aggregate_failures do
+        expect(response.headers['X-Frame-Options']).to eq('DENY')
+        expect(response.headers['X-Content-Type-Options']).to eq('nosniff')
+        expect(response.headers['X-XSS-Protection']).to eq('1; mode=block')
+        expect(response.headers['X-Download-Options']).to eq('noopen')
+        expect(response.headers['X-Permitted-Cross-Domain-Policies']).to eq('none')
+      end
+    end
+  end
 end
