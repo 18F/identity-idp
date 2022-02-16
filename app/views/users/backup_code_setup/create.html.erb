@@ -13,20 +13,18 @@
   <%= t('forms.backup_code.subinfo_html') %>
 </p>
 
-<div class="margin-top-4 margin-bottom-5">
-  <div class="grid-row">
-    <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
-      <div class="grid-col-6">
-        <% section.each do |code| %>
-          <code class="bold h2">
-            <%= RandomPhrase.format(code, separator: '-') %>
-          </code>
-          <br/>
-          <br/>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+<div class="grid-row margin-top-4 margin-bottom-5">
+  <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+    <div class="grid-col-6">
+      <% section.each do |code| %>
+        <code class="bold h2">
+          <%= RandomPhrase.format(code, separator: '-') %>
+        </code>
+        <br/>
+        <br/>
+      <% end %>
+    </div>
+  <% end %>
   <div class="margin-top-0">
     <% if desktop_device? %>
       <%= render ButtonComponent.new(
