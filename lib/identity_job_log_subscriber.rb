@@ -223,7 +223,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     return true if ex.nil?
 
     !(job.class.try(:warning_messages)&.include(ex.class.name) ||
-      ApplicationJob.warning_error_classes(job).any? { |warning_class|
+      RiscDeliveryJob.warning_error_classes.any? { |warning_class|
         ex.class.is_a? warning_class
       })
   end

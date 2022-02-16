@@ -100,4 +100,8 @@ class RiscDeliveryJob < ApplicationJob
   def inline?
     queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
   end
+
+  def self.warning_error_classes
+    NETWORK_ERRORS + [ RedisRateLimiter::LimitError ]
+  end
 end
