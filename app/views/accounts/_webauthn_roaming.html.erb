@@ -12,10 +12,11 @@
       </div>
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
         <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
-          <%= link_to(
-                t('account.index.webauthn_delete'),
-                webauthn_setup_delete_path(id: cfg.id),
-              ) %>
+          <%= render ButtonComponent.new(
+                action: ->(**tag_options, &block) do
+                  link_to(webauthn_setup_delete_path(id: cfg.id), **tag_options, &block)
+                end,
+              ).with_content(t('account.index.webauthn_delete')) %>
         </div>
       <% end %>
     </div>
@@ -24,9 +25,10 @@
 </div>
 
 <div class="grid-col-auto">
-  <%= link_to(
-        prefix_with_plus(t('account.index.webauthn_add')),
-        webauthn_setup_path,
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(webauthn_setup_path, **tag_options, &block)
+        end,
         class: 'usa-button usa-button--outline margin-top-2',
-      ) %>
+      ).with_content(t('account.index.webauthn_add')) %>
 </div>
