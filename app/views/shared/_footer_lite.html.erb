@@ -4,7 +4,7 @@
 <footer class='footer bg-primary-lighter tablet:bg-primary-darker'>
   <% if show_language_dropdown %>
     <div class='tablet:display-none border-bottom border-primary-light'>
-      <div class="padding-y-1 padding-x-2 desktop:padding-x-0 h5">
+      <div class="padding-y-1 padding-x-2 tablet:padding-x-0 h5">
         <div class="i18n-mobile-toggle display-flex flex-align-center flex-justify-center">
             <button class="text-primary fs-13p language-mobile-button" aria-expanded="false">
               <%= image_tag asset_url('globe-blue.svg'), width: 12,
@@ -23,7 +23,7 @@
       </ul>
     </div>
   <% end %>
-  <div class="padding-y-1 padding-x-2 desktop:padding-x-0 <%= 'tablet:padding-y-0' if show_language_dropdown %>">
+  <div class="padding-y-1 padding-x-2 tablet:padding-x-0 <%= 'tablet:padding-y-0' if show_language_dropdown %>">
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
         <div class="display-flex tablet:display-none">

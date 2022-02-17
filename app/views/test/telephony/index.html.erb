@@ -7,7 +7,7 @@
   <div class="padding-4">
     <%= button_to 'Clear messages and calls', test_telephony_path, method: :delete, class: 'usa-button' %>
     <div class="grid-row grid-gap margin-top-2">
-      <div class="desktop:grid-col-6">
+      <div class="tablet:grid-col-6">
         <h2>Messages</h2>
 
         <% @messages.each do |message| %>
@@ -25,7 +25,7 @@
         <% end %>
       </div>
 
-      <div class="desktop:grid-col-6">
+      <div class="tablet:grid-col-6">
         <h2>Calls</h2>
 
         <% @calls.each do |call| %>

@@ -3,3 +3,15 @@ $theme-font-path: 'identity-style-guide/dist/assets/fonts';
 $theme-image-path: 'identity-style-guide/dist/assets/img';
 $theme-global-border-box-sizing: true;
 $theme-grid-container-max-width: 'tablet-lg';
+$theme-header-min-width: 'tablet';
+$theme-utility-breakpoints: (
+  'card': false,
+  'card-lg': false,
+  'mobile': false,
+  'mobile-lg': true,
+  'tablet': true,
+  'tablet-lg': false,
+  'desktop': false,
+  'desktop-lg': false,
+  'widescreen': false,
+);
