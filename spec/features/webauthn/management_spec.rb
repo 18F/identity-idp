@@ -27,8 +27,11 @@ describe 'webauthn management' do
   def visit_webauthn_platform_setup
     sign_in_and_2fa_user(user)
     visit account_two_factor_authentication_path
-    first(:link, t('account.index.webauthn_platform_add'),
-          href: webauthn_setup_path(platform: true)).click
+    first(
+      :link,
+      t('account.index.webauthn_platform_add'),
+      href: webauthn_setup_path(platform: true),
+    ).click
   end
 
   def expect_webauthn_platform_setup_success
