@@ -116,18 +116,18 @@ fr:
         %{link} et en entrant le code de confirmation.
       subject: Nous avons envoyé une lettre à l’adresse que vous avez en dossier
     new_device_sign_in:
-      disavowal_link: ici
-      help_html: Si vous n’avez pas changé votre mot de passe, vous pouvez
-        réinitialiser votre mot de passe %{disavowal_link}. Pour plus d’aide,
-        veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
+      disavowal_link: réinitialiser votre mot de passe
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
+        plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
+        %{contact_link}.
       info_html: '<p>Votre compte %{app_name} a été connecté sur un nouvel
         appareil.</p><br/><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nouvelle connexion avec votre compte %{app_name}
     password_changed:
-      disavowal_link: ici
-      help_html: Si vous n’avez pas changé votre mot de passe, vous pouvez
-        réinitialiser votre mot de passe %{disavowal_link}. Pour plus d’aide,
-        veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
+      disavowal_link: réinitialiser votre mot de passe
+      help_html: Si vous n’avez pas effectué ce changement, %{disavowal_link}. Pour
+        plus d’aide, veuillez visiter le %{help_link} de %{app_name} ou
+        %{contact_link}.
       intro_html: Le mot de passe de votre compte %{app_name} a été changé.
     personal_key_regenerated:
       help_html: <p>Votre compte %{app_name} vient de recevoir une nouvelle clé

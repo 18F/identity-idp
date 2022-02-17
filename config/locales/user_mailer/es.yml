@@ -113,19 +113,17 @@ es:
         ingresando el código de confirmación.
       subject: Le enviamos una carta a la dirección que tiene archivada
     new_device_sign_in:
-      disavowal_link: aquí
-      help_html: Si no realizó este cambio puede restablecer su contraseña
-        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o
-        el %{contact_link}.
+      disavowal_link: restablecer su contraseña
+      help_html: Si no realizó este cambio, %{disavowal_link}. Para más ayuda, visite
+        el %{app_name} %{help_link} o el %{contact_link}.
       info_html: '<p>Su cuenta %{app_name} acaba de iniciar sesión en un nuevo
         dispositivo.</p><br/><br/>
         <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nuevo initio de sesion con su %{app_name} cuenta
     password_changed:
-      disavowal_link: aquí
-      help_html: Si no realizó este cambio puede restablecer su contraseña
-        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o
-        el %{contact_link}.
+      disavowal_link: restablecer su contraseña
+      help_html: Si no realizó este cambio, %{disavowal_link}. Para más ayuda, visite
+        el %{app_name} %{help_link} o el %{contact_link}.
       intro_html: Tiene una contraseña nueva para su cuenta de %{app_name}.
     personal_key_regenerated:
       help_html: <p>Tu cuenta de %{app_name} acaba de emitir una nueva clave personal

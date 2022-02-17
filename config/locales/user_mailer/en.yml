@@ -107,18 +107,16 @@ en:
         confirmation code.
       subject: We mailed a letter to the address you have on file
     new_device_sign_in:
-      disavowal_link: here
-      help_html: If you did not make this change, you can reset your password
-        %{disavowal_link}. For more help, please visit the %{app_name}
-        %{help_link} or %{contact_link}.
+      disavowal_link: reset your password
+      help_html: If you did not make this change, %{disavowal_link}. For more help,
+        please visit the %{app_name} %{help_link} or %{contact_link}.
       info_html: '<p>Your %{app_name} account was just used to sign in on a new
         device.</p><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: New sign-in with your %{app_name} account
     password_changed:
-      disavowal_link: here
-      help_html: If you did not make this change, you can reset your password
-        %{disavowal_link}. For more help, please visit the %{app_name}
-        %{help_link} or %{contact_link}.
+      disavowal_link: reset your password
+      help_html: If you did not make this change, %{disavowal_link}. For more help,
+        please visit the %{app_name} %{help_link} or %{contact_link}.
       intro_html: You have a new password for your %{app_name} account.
     personal_key_regenerated:
       help_html: <p>Your %{app_name} account was just issued a new 16-character
