@@ -222,10 +222,9 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def should_error?(job, ex)
     return true if ex.nil?
 
-    !(job.class.try(:warning_messages)&.include(ex.class.name) ||
-      RiscDeliveryJob.warning_error_classes.any? { |warning_class|
-        ex.class.is_a? warning_class
-      })
+    RiscDeliveryJob.warning_error_classes.none? { |warning_class|
+      ex.is_a? warning_class
+    }
   end
 end
 
