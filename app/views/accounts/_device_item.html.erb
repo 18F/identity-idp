@@ -7,6 +7,6 @@
       <%= link_to t('headings.account.events'), account_events_path(id: device.id) %>
     </div>
   </div>
-  <%= local_time(device.happened_at, t('time.formats.event_timestamp')) %><br>
+  <%= render TimeComponent.new(time: device.happened_at) %><br>
   <%= device.last_sign_in_location_and_ip %>
 </div>
