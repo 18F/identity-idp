@@ -2,9 +2,8 @@
 @import 'variables/app';
 @import 'required';
 @import 'vendor';
-@import 'vendor-overrides';
 // To be removed once design system incorporates styles included below.
-@import '_design-system-waiting-room.scss';
+@import 'design-system-waiting-room.scss';
 // ----------------------------------------
 @import 'identity-style-guide/dist/assets/scss/packages/required';
 @import 'identity-style-guide/dist/assets/scss/packages/global';
