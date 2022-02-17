@@ -40,8 +40,21 @@ class AccountShowPresenter
 
   def showing_any_partials?
     show_service_provider_continue_partial? ||
-      show_pii_partial? || show_password_reset_partial? || show_personal_key_partial? ||
+      show_password_reset_partial? ||
+      show_personal_key_partial? ||
       show_gpo_partial?
+  end
+
+  def show_unphishable_badge?
+    MfaPolicy.new(decorated_user.user).unphishable?
+  end
+
+  def show_verified_badge?
+    decorated_user.identity_verified?
+  end
+
+  def showing_any_badges?
+    show_unphishable_badge? || show_verified_badge?
   end
 
   def backup_codes_generated_at
