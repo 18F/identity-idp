@@ -26,5 +26,6 @@
       action: ->(**tag_options, &block) do
         link_to(webauthn_setup_path, **tag_options, &block)
       end,
+      icon: :add,
       class: 'usa-button usa-button--outline margin-top-2',
     ).with_content(t('account.index.webauthn_add')) %>
