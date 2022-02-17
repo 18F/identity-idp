@@ -7,15 +7,13 @@
       as: :user,
       url: capture_password_url,
       method: :post,
-      html: { autocomplete: 'off' },
+      html: { autocomplete: 'off', class: 'margin-top-6' },
     ) do |f| %>
   <%= f.input :password, label: t('account.index.password'), required: true,
                          input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
-  <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big usa-button--wide margin-bottom-4' %>
+  <%= f.button :submit, t('forms.buttons.submit.default'), class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
 <% end %>
 
-<div class='clearfix padding-top-1 border-top border-primary-light'>
-  <div class='sm-col-right margin-x-neg-1'>
-    <%= link_to t('links.passwords.forgot'), new_user_password_url, class: 'padding-x-1' %>
-  </div>
-</div>
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('links.passwords.forgot'), new_user_password_url %>
+<% end %>
