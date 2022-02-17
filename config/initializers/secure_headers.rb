@@ -2,7 +2,10 @@ require 'feature_management'
 
 if FeatureManagement.rails_csp_tooling_enabled?
   Rails.application.configure do
-    config.ssl_options = { hsts: { preload: true, expires: 1.year, subdomains: true } }
+    config.ssl_options = {
+      secure_cookies: true,
+      hsts: { preload: true, expires: 1.year, subdomains: true },
+    }
 
     config.action_dispatch.default_headers.merge!(
       'X-Frame-Options' => 'DENY',
@@ -71,14 +74,6 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   else
     config.csp = default_csp_config
   end
-
-  config.cookies = {
-    secure: true, # mark all cookies as "Secure"
-    httponly: true, # mark all cookies as "HttpOnly"
-    samesite: {
-      lax: true, # SameSite setting.
-    },
-  }
 
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
