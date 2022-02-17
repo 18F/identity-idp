@@ -24,18 +24,3 @@
 @import 'step-indicator';
 @import 'troubleshooting-options';
 @import 'i18n-dropdown';
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/290
-.usa-process-list {
-  padding-top: 0;
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/290
-.usa-process-list__item:last-child {
-  padding-bottom: 0;
-}
-
-// Upstream: https://github.com/18F/identity-style-guide/pull/294
-.usa-hint {
-  @include u-text('no-italic');
-}
