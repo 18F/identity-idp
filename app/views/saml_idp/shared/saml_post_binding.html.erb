@@ -8,22 +8,24 @@
     <%= render_javascript_pack_once_tags 'saml-post' %>
   </head>
   <body>
-    <div class="container tablet:padding-y-6">
-      <div class="card margin-x-auto sm-col-6">
-        <%= render PageHeadingComponent.new.with_content(t('.heading')) %>
+    <div class="grid-container tablet:padding-y-6">
+      <div class="grid-row">
+        <div class="tablet:grid-col-6 tablet:grid-offset-3">
+          <%= render PageHeadingComponent.new.with_content(t('.heading')) %>
 
-        <p>
-          <%= t('.no_js') %>
-        </p>
+          <p>
+            <%= t('.no_js') %>
+          </p>
 
-        <%= form_tag action_url, id: 'saml-post-binding' do %>
-          <%= hidden_field_tag('csp_uris', csp_uris) if Rails.env.test? %>
-          <%= hidden_field_tag(type, message) %>
-          <% if params.key?(:RelayState) %>
-            <%= hidden_field_tag('RelayState', params[:RelayState]) %>
+          <%= form_tag action_url, id: 'saml-post-binding' do %>
+            <%= hidden_field_tag('csp_uris', csp_uris) if Rails.env.test? %>
+            <%= hidden_field_tag(type, message) %>
+            <% if params.key?(:RelayState) %>
+              <%= hidden_field_tag('RelayState', params[:RelayState]) %>
+            <% end %>
+            <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--wide usa-button--big' %>
           <% end %>
-          <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--wide usa-button--big' %>
-        <% end %>
+        </div>
       </div>
     </div>
   </body>
