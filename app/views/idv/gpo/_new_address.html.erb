@@ -20,14 +20,14 @@
     </span>
   </div>
 
-  <div class="clearfix margin-x-neg-1">
-    <div class="sm-col sm-col-8 padding-x-1">
+  <div class="grid-row grid-gap-2">
+    <div class="grid-col-12 tablet:grid-col-8">
       <%= f.input :state, collection: us_states_territories,
                           label: t('idv.form.state'), required: true,
                           prompt: '- Select -' %>
     </div>
 
-    <div class="sm-col sm-col-4 padding-x-1">
+    <div class="grid-col-12 tablet:grid-col-4">
       <%# using :tel for mobile numeric keypad %>
       <%= f.input :zipcode, as: :tel,
                             label: t('idv.form.zipcode'), required: true,
