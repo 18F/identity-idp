@@ -19,10 +19,9 @@
       <div class="center grid-col-12 tablet:grid-col-6">
         <% section.each do |code| %>
           <div class="margin-bottom-2">
-          <code class="bold h2">
-            <%= RandomPhrase.format(code, separator: '-') %>
-          </code>
-
+            <code class="bold h2">
+              <%= RandomPhrase.format(code, separator: '-') %>
+            </code>
           </div>
         <% end %>
       </div>
