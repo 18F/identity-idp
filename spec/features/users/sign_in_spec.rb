@@ -257,10 +257,9 @@ feature 'Sign in' do
     scenario 'user sees warning before session times out' do
       expect(page).to have_css('#session-timeout-msg')
 
-      time1 = page.text[/14:5[0-9]/]
-      expect(page).to have_content(time1)
+      time1 = page.text[/14 minutes and 5[0-9] seconds/]
       sleep(1)
-      time2 = page.text[/14:5[0-9]/]
+      time2 = page.text[/14 minutes and 5[0-9] seconds/]
       expect(time2).to be < time1
     end
 

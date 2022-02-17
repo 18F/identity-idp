@@ -1,11 +1,13 @@
 <% title t('titles.passwords.confirm') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.confirm')) %>
-<p class='mt-tiny margin-bottom-0'>
+
+<p>
   <%# for follow up: translate factor_to_change (LG-5701) %>
   <%= user_session[:no_factor_message] ||
         t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>
+
 <%= validated_form_for(
       current_user,
       url: reauthn_user_password_path,

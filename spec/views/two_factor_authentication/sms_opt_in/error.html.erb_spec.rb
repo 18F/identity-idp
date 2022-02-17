@@ -23,6 +23,16 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
   end
 
   context 'troubleshooting links' do
+    it 'links to the contact form in a new window' do
+      render
+
+      expect(rendered).to have_link(
+        t('links.contact_support', app_name: APP_NAME),
+        href: MarketingSite.contact_url,
+        class: 'usa-link--external',
+      )
+    end
+
     context 'without an other_mfa_options_url' do
       let(:other_mfa_options_url) { nil }
 

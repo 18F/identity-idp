@@ -12,9 +12,11 @@
 <% title t('titles.verify_profile') %>
 
 <%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.title')) %>
-<p class="mt-tiny margin-bottom-0">
+
+<p>
   <%= t('forms.verify_profile.instructions') %>
 </p>
+
 <%= validated_form_for(
       @gpo_verify_form,
       url: idv_gpo_verify_path,
@@ -45,7 +47,7 @@
 <% end %>
 
 <% if FeatureManagement.enable_gpo_verification? && !@mail_spammed %>
-  <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'block margin-bottom-2' %>
+  <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'display-block margin-bottom-2' %>
 <% end %>
 
 <%= button_to(

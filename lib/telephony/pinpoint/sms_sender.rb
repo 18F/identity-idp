@@ -45,7 +45,11 @@ module Telephony
           )
           finish = Time.zone.now
           response = build_response(pinpoint_response, start: start, finish: finish)
-          return response if response.success?
+          if response.success? ||
+             response.error.is_a?(OptOutError) ||
+             response.error.is_a?(PermanentFailureError)
+            return response
+          end
           PinpointHelper.notify_pinpoint_failover(
             error: response.error,
             region: sms_config.region,

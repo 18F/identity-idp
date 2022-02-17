@@ -95,7 +95,6 @@ ignore_missing:
 ## any unused translations would fail erroneously.
 ignore_unused:
   - 'account.login.piv_cac_info.*'
-  - 'datetime.dotiw.two_words_connector'
   - 'devise.failure.*'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
@@ -111,6 +110,8 @@ ignore_unused:
   - 'user_mailer.email_confirmation_instructions.subject'
   - 'valid_email.validations.email.invalid'
   - 'errors.attributes.*'
+  - 'datetime.dotiw.minutes.*'
+  - 'datetime.dotiw.seconds.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

@@ -41,7 +41,6 @@ describe Telephony::Test::SmsSender do
       response = subject.send(message: 'test', to: '+1 (225) 555-300', country_code: 'US')
 
       last_message = Telephony::Test::Message.messages.last
-      pp response
       expect(response.success?).to eq(false)
       expect(response.error).to eq(
         Telephony::InvalidPhoneNumberError.new('Simulated phone number error'),
