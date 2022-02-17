@@ -147,4 +147,35 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       subscriber.enqueue(event)
     end
   end
+
+  describe '#enqueue_at' do
+    subject(:subscriber) { IdentityJobLogSubscriber.new }
+
+    let(:event_uuid) { SecureRandom.uuid }
+    let(:now) { Time.zone.now }
+    let(:job) { HeartbeatJob.new }
+
+    it 'does report the duplicate key error as an exception' do
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: ActiveRecord::RecordNotUnique.new(<<~ERR),
+          PG::UniqueViolation: ERROR: duplicate key value violates unique constraint "index_good_jobs_on_cron_key_and_cron_at"
+          DETAIL: Key (cron_key, cron_at)=(heartbeat_job, 2022-01-28 17:35:00) already exists.
+        ERR
+      )
+
+      expect(subscriber).to receive(:error) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to have_key(:exception_class)
+        expect(payload).to have_key(:exception_message)
+      end
+
+      subscriber.enqueue_at(event)
+    end
+  end
 end
