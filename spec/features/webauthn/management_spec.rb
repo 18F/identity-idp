@@ -220,7 +220,7 @@ describe 'webauthn management' do
       expect(page).to_not have_link t('account.index.webauthn_platform_delete')
     end
 
-    it 'gives an error if the name is taken and stays on the configuration screen' do
+    it 'gives an error if name is taken and stays on the configuration screen' do
       webauthn_config = create(:webauthn_configuration, user: user, platform_authenticator: true)
 
       mock_webauthn_setup_challenge
