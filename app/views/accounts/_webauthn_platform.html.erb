@@ -1,8 +1,6 @@
-<div class="grid-row margin-bottom-1 margin-top-0">
-  <h2 class="grid-col-fill margin-y-0 padding-right-1">
-    <%= t('account.index.webauthn_platform') %>
-  </h2>
-</div>
+<h2 class="margin-top-0 margin-bottom-1">
+  <%= t('account.index.webauthn_platform') %>
+</h2>
 
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).webauthn_platform_configurations.each do |cfg| %>
@@ -24,12 +22,10 @@
   <% end %>
 </div>
 
-<div class="grid-col-auto">
-  <%= render ButtonComponent.new(
-        action: ->(**tag_options, &block) do
-          link_to(webauthn_setup_path(platform: true), **tag_options, &block)
-        end,
-        icon: :add,
-        class: 'usa-button usa-button--outline margin-top-2',
-      ).with_content(t('account.index.webauthn_platform_add')) %>
-</div>
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(webauthn_setup_path(platform: true), **tag_options, &block)
+      end,
+      icon: :add,
+      class: 'usa-button usa-button--outline margin-top-2',
+    ).with_content(t('account.index.webauthn_platform_add')) %>
