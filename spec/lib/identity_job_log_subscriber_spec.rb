@@ -57,21 +57,6 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
     }.to raise_error(ArgumentError)
   end
 
-  it 'logs no errors when exception occurs in job and job is set to warn_only' do
-    allow(RiscDeliveryJob).to receive(:perform).with(any_args).and_raise(Faraday::SSLError)
-
-    expect(Rails.logger).to receive(:error).exactly(0).times
-
-    expect {
-      RiscDeliveryJob.new.perform(
-        issuer: build(:service_provider).issuer,
-        push_notification_url: 'url',
-        jwt: 'jwt',
-        event_type: 'event_type',
-      )
-    }.to_not raise_error(Faraday::SSLError)
-  end
-
   describe '#enqueue_retry' do
     it 'formats retry message' do
       event = double(
@@ -87,12 +72,16 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
     end
 
     it 'includes exception if there is a failure' do
+      job = double(
+        'Job', job_id: '1', queue_name: 'Default', arguments: []
+      )
+
+      allow(job.class).to receive(:warning_error_classes).and_return([])
+
       event = double(
         'RetryEvent',
         payload: {
-          wait: 1, job: double(
-            'Job', job_id: '1', queue_name: 'Default', arguments: []
-          ),
+          wait: 1, job: job,
           error: double('Exception')
         },
         duration: 1,
@@ -146,6 +135,110 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
       subscriber.enqueue(event)
     end
+
+    it 'logs warnings when exception occurs in job with warning error classes' do
+      job = RiscDeliveryJob.new
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: Errno::ECONNREFUSED.new,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:warn) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          exception_class_warn: 'Errno::ECONNREFUSED',
+          exception_message_warn: 'Connection refused',
+          job_class: 'RiscDeliveryJob',
+          job_id: job.job_id,
+          name: 'enqueue.active_job',
+          queue_name: kind_of(String),
+          timestamp: kind_of(String),
+          trace_id: nil,
+        )
+      end
+
+      subscriber.enqueue(event)
+    end
+
+    it 'halts' do
+      job = RiscDeliveryJob.new
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: nil,
+        aborted: true,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:info) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          halted: true,
+          job_class: 'RiscDeliveryJob',
+          job_id: job.job_id,
+          name: 'enqueue.active_job',
+          queue_name: 'NilClass(low)',
+          timestamp: kind_of(String),
+          trace_id: nil,
+        )
+      end
+
+      subscriber.enqueue(event)
+    end
+
+    it 'processes as normal' do
+      job = RiscDeliveryJob.new
+      job.scheduled_at = Time.zone.now
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: nil,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:info) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          timestamp: kind_of(String),
+          name: 'enqueue.active_job',
+          job_class: 'RiscDeliveryJob',
+          trace_id: nil,
+          queue_name: 'NilClass(low)',
+          job_id: job.job_id,
+        )
+      end
+
+      subscriber.enqueue(event)
+    end
   end
 
   describe '#enqueue_at' do
@@ -176,6 +269,154 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       end
 
       subscriber.enqueue_at(event)
+    end
+
+    it 'logs warnings when exception occurs in job with warning error classes' do
+      job = RiscDeliveryJob.new
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: Errno::ECONNREFUSED.new,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:warn) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          exception_class_warn: 'Errno::ECONNREFUSED',
+          exception_message_warn: 'Connection refused',
+          job_class: 'RiscDeliveryJob',
+          job_id: job.job_id,
+          name: 'enqueue.active_job',
+          queue_name: kind_of(String),
+          timestamp: kind_of(String),
+          trace_id: nil,
+        )
+      end
+
+      subscriber.enqueue_at(event)
+    end
+
+    it 'halts' do
+      job = RiscDeliveryJob.new
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: nil,
+        aborted: true,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:info) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          halted: true,
+          job_class: 'RiscDeliveryJob',
+          job_id: job.job_id,
+          name: 'enqueue.active_job',
+          queue_name: 'NilClass(low)',
+          timestamp: kind_of(String),
+          trace_id: nil,
+        )
+      end
+
+      subscriber.enqueue_at(event)
+    end
+
+    it 'processes as normal' do
+      job = RiscDeliveryJob.new
+      job.scheduled_at = Time.zone.now
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        exception_object: nil,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:info) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          timestamp: kind_of(String),
+          name: 'enqueue.active_job',
+          job_class: 'RiscDeliveryJob',
+          trace_id: nil,
+          queue_name: 'NilClass(low)',
+          job_id: job.job_id,
+          scheduled_at: kind_of(String),
+        )
+      end
+
+      subscriber.enqueue_at(event)
+    end
+  end
+
+  describe '#discard' do
+    subject(:subscriber) { IdentityJobLogSubscriber.new }
+
+    let(:event_uuid) { SecureRandom.uuid }
+    let(:now) { Time.zone.now }
+    let(:job) { HeartbeatJob.new }
+
+    it 'logs warnings when exception occurs in job with warning error classes' do
+      job = RiscDeliveryJob.new
+      job.scheduled_at = Time.zone.now
+
+      event = ActiveSupport::Notifications::Event.new(
+        'enqueue.active_job',
+        now,
+        now,
+        event_uuid,
+        job: job,
+        error: Errno::ECONNREFUSED.new,
+      )
+
+      expect(subscriber).to_not receive(:error)
+      expect(subscriber).to receive(:warn) do |str|
+        payload = JSON.parse(str, symbolize_names: true)
+
+        expect(payload).to_not have_key(:exception_class)
+        expect(payload).to_not have_key(:exception_message)
+
+        expect(payload).to match(
+          duration_ms: kind_of(Float),
+          timestamp: kind_of(String),
+          name: 'enqueue.active_job',
+          job_class: 'RiscDeliveryJob',
+          trace_id: nil,
+          queue_name: kind_of(String),
+          job_id: job.job_id,
+          exception_class_warn: {},
+        )
+      end
+
+      subscriber.discard(event)
     end
   end
 end

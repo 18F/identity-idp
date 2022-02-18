@@ -5,7 +5,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def enqueue(event)
     job = event.payload[:job]
     ex = event.payload[:exception_object]
-
     json = default_attributes(event, job)
 
     if ex
@@ -17,10 +16,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
         warn(json.to_json)
       elsif should_error?(job, ex)
-          json[:exception_class] = ex.class.name
-          json[:exception_message] = ex.message
+        json[:exception_class] = ex.class.name
+        json[:exception_message] = ex.message
 
-          error(json.to_json)
+        error(json.to_json)
       else
         json[:exception_class_warn] = ex.class.name
         json[:exception_message_warn] = ex.message
@@ -83,7 +82,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     json = default_attributes(event, job).merge(
       enqueued_at: job.enqueued_at,
     )
-
     if ex
       # NewRelic?
       if should_error?(job, ex)
@@ -222,7 +220,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   def should_error?(job, ex)
     return true if ex.nil?
 
-    RiscDeliveryJob.warning_error_classes.none? { |warning_class|
+    job.class.warning_error_classes.none? { |warning_class|
       ex.is_a? warning_class
     }
   end
