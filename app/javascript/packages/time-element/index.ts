@@ -36,9 +36,12 @@ export class TimeElement extends HTMLElement {
       const parts = formatter.formatToParts(this.date);
       const timeParts = Object.fromEntries(
         parts.filter((part) => part.value !== 'literal').map((part) => [part.type, part.value]),
-      ) as Record<Intl.DateTimeFormatPartTypes, string>;
+      ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
 
-      this.textContent = replaceVariables(this.#format, timeParts);
+      this.textContent = replaceVariables(this.#format, {
+        dayPeriod: '',
+        ...timeParts,
+      }).trim();
     } else {
       // Degrade gracefully for environments where formatToParts is unsupported (Internet Explorer)
       this.textContent = formatter.format(this.date);
