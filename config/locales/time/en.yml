@@ -19,8 +19,8 @@ en:
     am: AM
     formats:
       event_date: '%B %-d, %Y'
-      event_timestamp_js: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}'
       event_timestamp: '%B %-d, %Y at %-l:%M %p'
+      event_timestamp_js: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}'
       event_timestamp_utc: '%B %-d, %Y at %-l:%M %p UTC'
       event_timestamp_with_zone: '%B %-d, %Y at %-l:%M %p %Z'
     pm: PM
