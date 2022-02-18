@@ -4,8 +4,6 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<%= render AlertComponent.new(type: :error, id: 'emails', class: 'margin-bottom-1', message: @presenter.heading) %>
-
 <p class="mt-tiny margin-bottom-4">
   <%= @presenter.info %>
 </p>

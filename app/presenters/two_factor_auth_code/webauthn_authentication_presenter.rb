@@ -23,6 +23,10 @@ module TwoFactorAuthCode
       end
     end
 
+    def title
+      t('titles.present_webauthn')
+    end
+
     def authenticate_button_text
       if platform_authenticator?
         t('two_factor_authentication.webauthn_platform_use_key')
@@ -106,6 +110,10 @@ module TwoFactorAuthCode
       else
         t('two_factor_authentication.webauthn_fallback.question')
       end
+    end
+
+    def multiple_factors_enabled?
+      service_provider_mfa_policy.multiple_factors_enabled?
     end
 
     def platform_authenticator?
