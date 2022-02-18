@@ -12,7 +12,7 @@ export class TimeElement extends HTMLElement {
     this.setTime();
   }
 
-  get date(): Date {
+  get date() {
     return new Date(this.#timestamp);
   }
 
