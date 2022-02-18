@@ -20,4 +20,12 @@ RSpec.describe TimeComponent, type: :component do
       expect(rendered).to have_css('lg-time[data-timestamp][data-format][data-foo="bar"]')
     end
   end
+
+  context 'with non-UTC timezone' do
+    it 'renders in UTC timezone' do
+      rendered = render_inline TimeComponent.new(time: Time.zone.parse('2022-02-19T03:29:43+10:00'))
+
+      expect(rendered).to have_content('February 18, 2022 at 5:29 PM')
+    end
+  end
 end
