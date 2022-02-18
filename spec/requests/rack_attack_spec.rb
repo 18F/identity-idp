@@ -59,6 +59,10 @@ describe 'throttling requests' do
     end
 
     context 'when the number of requests is higher than the limit' do
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       it 'throttles with a custom response' do
         analytics = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics)
@@ -175,6 +179,10 @@ describe 'throttling requests' do
   end
 
   describe 'logins per email and ip' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
     context 'when the number of requests is lower or equal to the limit' do
       it 'does not throttle' do
         (logins_per_email_and_ip_limit - 1).times do
@@ -235,6 +243,10 @@ describe 'throttling requests' do
   end
 
   describe 'otps per ip' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
     let(:otps_per_ip_limit) { IdentityConfig.store.otps_per_ip_limit }
 
     context 'when the number of requests is under the limit' do
@@ -262,6 +274,10 @@ describe 'throttling requests' do
   end
 
   describe 'phone setups per ip' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
     let(:phone_setups_per_ip_limit) { IdentityConfig.store.phone_setups_per_ip_limit }
 
     context 'when the number of requests is under the limit' do
