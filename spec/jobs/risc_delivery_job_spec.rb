@@ -222,10 +222,10 @@ RSpec.describe RiscDeliveryJob do
     end
   end
 
-  describe '#warning_error_classes' do
-    it 'when calling warning_error_classes' do
-      expect(described_class.warning_error_classes).to eq(
-        described_class::NETWORK_ERRORS + [ RedisRateLimiter::LimitError ],
+  describe '.warning_error_classes' do
+    it 'is all the network errors and rate limiting errors' do
+      expect(described_class.warning_error_classes).to match_array(
+        [*described_class::NETWORK_ERRORS, RedisRateLimiter::LimitError],
       )
     end
   end
