@@ -82,7 +82,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         payload: {
           wait: 1,
           job: job,
-          error: double('Exception')
+          error: double('Exception'),
         },
         duration: 1,
         name: 'TestEvent',
