@@ -10,11 +10,10 @@
       </div>
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
         <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
-          <%= render ButtonComponent.new(
-                action: ->(**tag_options, &block) do
-                  link_to(webauthn_setup_delete_path(id: cfg.id), **tag_options, &block)
-                end,
-              ).with_content(t('account.index.webauthn_platform_delete')) %>
+          <%= link_to(
+                t('account.index.webauthn_platform_delete'),
+                webauthn_setup_delete_path(id: cfg.id),
+              ) %>
         </div>
       <% end %>
     </div>
