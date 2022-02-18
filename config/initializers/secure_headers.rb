@@ -73,6 +73,13 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     config.csp = SecureHeaders::OPT_OUT
   else
     config.csp = default_csp_config
+    config.cookies = {
+      secure: true, # mark all cookies as "Secure"
+      httponly: true, # mark all cookies as "HttpOnly"
+      samesite: {
+        lax: true, # SameSitesetting.
+      },
+    }
   end
 
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
