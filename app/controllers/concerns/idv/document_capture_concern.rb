@@ -3,11 +3,7 @@ module Idv
     def override_document_capture_step_csp
       return if params[:step] != 'document_capture'
 
-      if FeatureManagement.rails_csp_tooling_enabled?
-        override_document_capture_step_csp_with_rails_csp_tooling
-      else
-        override_document_capture_step_csp_with_secure_headers
-      end
+      override_document_capture_step_csp_with_rails_csp_tooling
     end
 
     def override_document_capture_step_csp_with_secure_headers

@@ -11,11 +11,7 @@ module SecureHeadersConcern
   end
 
   def override_form_action_csp(uris)
-    if FeatureManagement.rails_csp_tooling_enabled?
-      apply_secure_headers_override_with_rails_csp_tooling(uris)
-    else
-      apply_secure_headers_override_with_secure_headers(uris)
-    end
+    apply_secure_headers_override_with_rails_csp_tooling(uris)
   end
 
   def apply_secure_headers_override_with_secure_headers(uris)
