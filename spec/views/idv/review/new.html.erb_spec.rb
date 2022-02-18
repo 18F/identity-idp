@@ -60,7 +60,7 @@ describe 'idv/review/new.html.erb' do
       let(:dob) { '12/31/1970' }
 
       it 'renders correctly' do
-        expect(rendered).to have_selector('.h4.bold', text: 'December 31, 1970')
+        expect(rendered).to have_selector('.h4.text-bold', text: 'December 31, 1970')
       end
     end
   end

@@ -11,7 +11,7 @@
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
   <div class="grid-col-12 tablet:grid-col-6 margin-bottom-2">
-    <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block bold' %>
+    <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
     <%= render(
           'shared/one_time_code_input',
           name: :code,
