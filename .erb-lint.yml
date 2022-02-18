@@ -57,6 +57,9 @@ linters:
           - overflow-(hidden|scroll|auto)
           - (left|right)
           - border-box
+          - (bold|regular|italic|caps)
+          - '(left|right)-align'
+          - (center|justify|nowrap)
         suggestion: 'Use USWDS classes instead of BassCSS.'
       - deprecated:
           - 'js-consent-form'

@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class='i18n-mobile-dropdown tablet:display-none display-none'>
-      <ul class='list-reset margin-bottom-0 text-white center'>
+      <ul class='usa-list--unstyled margin-bottom-0 text-white text-center'>
         <% I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
             <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block py-12p padding-x-2 text-decoration-none text-primary fs-13p', lang: locale == I18n.locale ? nil : locale %>
@@ -47,14 +47,14 @@
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
         <% if show_language_dropdown %>
-          <ul class='list-reset display-none tablet:display-block margin-bottom-0'>
+          <ul class='usa-list--unstyled display-none tablet:display-block margin-bottom-0'>
             <li class="i18n-desktop-toggle display-flex margin-y-1 margin-x-2">
               <button class='text-white text-decoration-none border border-primary radius-lg padding-x-1 py-tiny language-desktop-button' aria-expanded='false'>
                 <%= image_tag asset_url('globe-white.svg'), width: 12,
                                                             class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
                 <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
               </button>
-              <ul class="i18n-desktop-dropdown list-reset margin-bottom-0 text-white display-none">
+              <ul class="i18n-desktop-dropdown usa-list--unstyled margin-bottom-0 text-white display-none">
                 <% I18n.available_locales.each do |locale| %>
                   <li class='border-bottom border-primary-darker'>
                     <%= link_to t("i18n.locale.#{locale}"),

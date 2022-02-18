@@ -1,0 +1,15 @@
+// To be removed once design system incorporates styles included below.
+
+// basscss-utility-typography
+//------------------------------------------------
+.break-word {
+  word-wrap: break-word;
+}
+
+// could go in _util with .truncate-inline
+.truncate {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

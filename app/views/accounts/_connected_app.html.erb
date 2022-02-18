@@ -1,7 +1,7 @@
 <div class="padding-1 border-top border-left border-right border-primary-light">
   <div class="grid-row grid-gap-2">
     <div class="grid-col-fill">
-      <div class="bold truncate">
+      <div class="text-bold truncate">
         <% if identity.return_to_sp_url.present? %>
           <%= link_to(identity.display_name, identity.return_to_sp_url) %>
         <% else %>

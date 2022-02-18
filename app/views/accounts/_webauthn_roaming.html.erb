@@ -18,7 +18,7 @@
         <%= cfg.name %>
       </div>
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-        <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
+        <div class="grid-col-4 mobile-lg:grid-col-6 text-right">
           <%= link_to(
                 t('account.index.webauthn_delete'),
                 webauthn_setup_delete_path(id: cfg.id),

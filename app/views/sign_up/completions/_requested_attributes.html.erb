@@ -1,8 +1,8 @@
-<ul class="margin-bottom-4 list-reset border-bottom border-primary-light success-bullets requested-attributes">
+<ul class="margin-bottom-4 usa-list--unstyled border-bottom border-primary-light success-bullets requested-attributes">
   <% pii.each do |attribute_key, attribute_value| %>
     <% next if attribute_value.blank? %>
     <li class="success-bullet border-top border-primary-light">
-      <div class="bold margin-left-4">
+      <div class="text-bold margin-left-4">
         <%= t("help_text.requested_attributes.#{attribute_key}") %>
       </div>
       <div class="margin-left-4">
