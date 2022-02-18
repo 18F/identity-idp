@@ -17,6 +17,10 @@ class RiscDeliveryJob < ApplicationJob
            wait: :exponentially_longer,
            attempts: 10
 
+  def self.warning_error_classes
+    NETWORK_ERRORS + [ RedisRateLimiter::LimitError ]
+  end
+
   def perform(
     push_notification_url:,
     jwt:,
@@ -99,9 +103,5 @@ class RiscDeliveryJob < ApplicationJob
 
   def inline?
     queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
-  end
-
-  def self.warning_error_classes
-    NETWORK_ERRORS + [ RedisRateLimiter::LimitError ]
   end
 end
