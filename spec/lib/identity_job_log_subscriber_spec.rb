@@ -412,7 +412,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           trace_id: nil,
           queue_name: kind_of(String),
           job_id: job.job_id,
-          exception_class_warn: {},
+          exception_class_warn: 'Errno::ECONNREFUSED',
         )
       end
 
