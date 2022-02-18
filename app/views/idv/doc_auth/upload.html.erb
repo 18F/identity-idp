@@ -26,19 +26,18 @@
 
 <hr class="margin-y-4" />
 
-<div class='clearfix'>
-  <div class='sm-col sm-col-3'>
+<div class="grid-row">
+  <div class="grid-col-12 tablet:grid-col-3">
     <%= image_tag(
           asset_url('idv/phone.png'),
           alt: t('image_description.camera_mobile_phone'),
           width: 80,
         ) %>
   </div>
-  <div id="recommended-tag"
-       class='usa-tag caps text-ink bg-primary-lighter margin-top-1 display-inline-block <%= 'hidden' if liveness_checking_enabled? %>'>
-    <%= t('doc_auth.info.tag') %>
-  </div>
-  <div class='sm-col sm-col-9'>
+  <div class="grid-col-12 tablet:grid-col-9">
+    <div id="recommended-tag" class="usa-tag caps text-ink bg-primary-lighter margin-top-1 display-inline-block <%= 'hidden' if liveness_checking_enabled? %>">
+      <%= t('doc_auth.info.tag') %>
+    </div>
     <h2 class="margin-y-105">
       <% if liveness_checking_enabled? %>
         <%= t('doc_auth.headings.upload_from_phone_liveness_enabled') %>
@@ -47,7 +46,6 @@
       <% end %>
     </h2>
     <%= t('doc_auth.info.upload_from_phone') %>
-    <br/>
     <%= validated_form_for(
           :doc_auth,
           url: url_for(type: :mobile),
@@ -63,26 +61,22 @@
 
 <hr class="margin-y-4" />
 
-<div class='clearfix'>
-  <div id="upload-comp-liveness-off"
-    class='sm-col sm-col-12 <%= 'hidden' if liveness_checking_enabled? %>'>
-    <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
-    <%= validated_form_for(
-          :doc_auth,
-          url: url_for(type: :desktop),
-          method: 'PUT',
-          html: { autocomplete: 'off', class: 'display-inline' },
-        ) do %>
-      <button type="submit" class="usa-button usa-button--unstyled">
-        <%= t('doc_auth.info.upload_computer_link') %>
-      </button>
-    <% end %>
-  </div>
-  <div id="upload-comp-liveness"
-       class='sm-col sm-col-12 <%= 'hidden' unless liveness_checking_enabled? %>'>
-    <strong><%= t('doc_auth.info.upload_from_computer') %></strong>
-    <%= t('doc_auth.info.upload_from_computer_not_allowed', app_name: APP_NAME) %>
-  </div>
+<div id="upload-comp-liveness-off" class="<%= 'hidden' if liveness_checking_enabled? %>">
+  <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
+  <%= validated_form_for(
+        :doc_auth,
+        url: url_for(type: :desktop),
+        method: 'PUT',
+        html: { autocomplete: 'off', class: 'display-inline' },
+      ) do %>
+    <button type="submit" class="usa-button usa-button--unstyled">
+      <%= t('doc_auth.info.upload_computer_link') %>
+    </button>
+  <% end %>
+</div>
+<div id="upload-comp-liveness" class="<%= 'hidden' unless liveness_checking_enabled? %>">
+  <strong><%= t('doc_auth.info.upload_from_computer') %></strong>
+  <%= t('doc_auth.info.upload_from_computer_not_allowed', app_name: APP_NAME) %>
 </div>
 
 <%= render 'idv/doc_auth/start_over_or_cancel', step: 'upload' %>

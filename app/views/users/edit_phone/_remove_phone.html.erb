@@ -1,8 +1,5 @@
 <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-  <br/>
-  <div class="sm-col-8 margin-bottom-4">
-    <%= button_to t('forms.phone.buttons.delete'), manage_phone_path(id: @phone_configuration.id),
-                  class: 'usa-button usa-button--big usa-button--danger usa-button--wide',
-                  method: :delete %>
-  </div>
+  <%= button_to t('forms.phone.buttons.delete'), manage_phone_path(id: @phone_configuration.id),
+                class: 'usa-button usa-button--big usa-button--danger usa-button--wide margin-top-2',
+                method: :delete %>
 <% end %>
