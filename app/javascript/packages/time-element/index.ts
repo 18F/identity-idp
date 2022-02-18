@@ -16,8 +16,8 @@ export class TimeElement extends HTMLElement {
     return new Date(this.#timestamp);
   }
 
-  get locale(): string {
-    return this.ownerDocument.documentElement.lang;
+  get locale() {
+    return this.ownerDocument.documentElement.lang || undefined;
   }
 
   get formatter() {
