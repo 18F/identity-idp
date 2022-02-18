@@ -31,7 +31,6 @@ linters:
           - '(relative|absolute|fixed)'
           - '(top|right|bottom|left)-0'
           - 'z[1-4]'
-          - 'container'
           - '((sm|md|lg)-)?col(-(right|[0-9][012]?))?'
           - '(md|lg)-col(-(right|[1-9][0-2]?))?'
           - '(sm|md|lg)-flex'
