@@ -1,8 +1,6 @@
-<div class="margin-bottom-1 margin-top-0">
-  <h2 class="margin-y-0">
-    <%= t('headings.account.authentication_apps') %>
-  </h2>
-</div>
+<h2 class="margin-top-0 margin-bottom-1">
+  <%= t('headings.account.authentication_apps') %>
+</h2>
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
