@@ -34,9 +34,9 @@ export class TimeElement extends HTMLElement {
     const { formatter } = this;
     if (typeof formatter.formatToParts === 'function') {
       const parts = formatter.formatToParts(this.date);
-      const timeParts = Object.fromEntries(
-        parts.filter((part) => part.value !== 'literal').map((part) => [part.type, part.value]),
-      ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
+      const timeParts = Object.fromEntries(parts.map((part) => [part.type, part.value])) as Partial<
+        Record<Intl.DateTimeFormatPartTypes, string>
+      >;
 
       this.textContent = replaceVariables(this.#format, {
         dayPeriod: '',
