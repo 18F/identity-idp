@@ -8,7 +8,7 @@ import matchMediaPolyfill from 'mq-polyfill';
  * @return {import('jsdom').JSDOM} DOM instance.
  */
 export function createDOM() {
-  const dom = new JSDOM('', {
+  const dom = new JSDOM('<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>', {
     url: 'http://example.test',
     resources: new (class extends ResourceLoader {
       /**
