@@ -36,7 +36,7 @@ body {
 }
 
 %h1 {
-  line-height: lh('heading', $theme-h1-font-size);
+  line-height: 1.35;
   font-size: $h1;
 
   @include at-media('tablet') {
@@ -45,7 +45,7 @@ body {
 }
 
 %h2 {
-  line-height: lh('heading', $theme-h2-font-size);
+  line-height: 1.35;
   font-size: $h2;
 
   @include at-media('tablet') {
@@ -54,7 +54,7 @@ body {
 }
 
 %h3 {
-  line-height: lh('heading', $theme-h3-font-size);
+  line-height: $line-height;
   font-size: $h3;
 
   @include at-media('tablet') {
@@ -63,7 +63,7 @@ body {
 }
 
 %h4 {
-  line-height: lh('heading', $theme-h4-font-size);
+  line-height: $line-height;
   font-size: $h4;
 
   @include at-media('tablet') {
@@ -72,7 +72,7 @@ body {
 }
 
 %h5 {
-  line-height: lh('heading', $theme-h5-font-size);
+  line-height: $line-height;
   font-size: $h5;
 
   @include at-media('tablet') {
@@ -81,7 +81,7 @@ body {
 }
 
 %h6 {
-  line-height: lh('heading', $theme-h6-font-size);
+  line-height: $line-height;
   font-size: $h6;
 
   @include at-media('tablet') {
