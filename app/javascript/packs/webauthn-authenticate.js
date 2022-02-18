@@ -7,7 +7,7 @@ async function webauthn() {
 
   const webauthnPlatformRequested = webauthnInProgressContainer.getAttribute('data-platform-authenticator-requested') === 'true';
   const multipleFactorsEnabled = webauthnInProgressContainer.getAttribute('data-multiple-factors-enabled') === 'true';
-  let webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
+  let webauthnPlatformEnabled = false;
 
   if (!WebAuthn.isWebAuthnEnabled()) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
@@ -19,8 +19,8 @@ async function webauthn() {
 
   // if platform auth is not supported, we should take user to the error screen if theres no additional methods. 
   if (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled) {
-    document.getElementById('errors').value = error;
-    document.getElementById('platform').value = webauthnPlatformRequested; 
+    document.getElementById('errors').value = 'Webauthn not supported';
+    document.getElementById('platform').value = true; 
     document.getElementById('webauthn_form').submit();
     console.log(error)
   } else {
