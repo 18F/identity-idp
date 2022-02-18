@@ -18,7 +18,7 @@ describe('TimeElement', () => {
 
   it('sets text to formatted date', () => {
     const element = createElement({
-      format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}',
+      format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
       timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
     });
 
@@ -30,7 +30,7 @@ describe('TimeElement', () => {
 
     it('sets text', () => {
       const element = createElement({
-        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}',
+        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
         timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
       });
 
@@ -43,7 +43,7 @@ describe('TimeElement', () => {
 
     it('sets text in 24-hour time, with empty dayPeriod', () => {
       const element = createElement({
-        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}',
+        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
         timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
       });
 
@@ -56,7 +56,7 @@ describe('TimeElement', () => {
 
     it('sets text using Intl.DateTimeFormat#format as fallback', () => {
       const element = createElement({
-        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{dayPeriod}',
+        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
         timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
       });
 

@@ -1,5 +1,11 @@
 import { replaceVariables } from '@18f/identity-i18n';
 
+const snakeCase = (string: string): string =>
+  string.replace(/[a-z][A-Z]/g, (match) => `${match[0]}_${match[1].toLowerCase()}`);
+
+const mapKeys = (object: object, predicate: (key: string) => string) =>
+  Object.fromEntries(Object.entries(object).map(([key, value]) => [predicate(key), value]));
+
 export class TimeElement extends HTMLElement {
   #format: string;
 
@@ -33,15 +39,14 @@ export class TimeElement extends HTMLElement {
   setTime() {
     const { formatter } = this;
     if (typeof formatter.formatToParts === 'function') {
-      const parts = formatter.formatToParts(this.date);
-      const timeParts = Object.fromEntries(parts.map((part) => [part.type, part.value])) as Partial<
-        Record<Intl.DateTimeFormatPartTypes, string>
-      >;
+      const parts = Object.fromEntries(
+        formatter.formatToParts(this.date).map((part) => [part.type, part.value]),
+      ) as Partial<Record<Intl.DateTimeFormatPartTypes, string>>;
 
-      this.textContent = replaceVariables(this.#format, {
-        dayPeriod: '',
-        ...timeParts,
-      }).trim();
+      this.textContent = replaceVariables(
+        this.#format,
+        mapKeys({ dayPeriod: '', ...parts }, snakeCase),
+      ).trim();
     } else {
       // Degrade gracefully for environments where formatToParts is unsupported (Internet Explorer)
       this.textContent = formatter.format(this.date);
