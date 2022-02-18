@@ -7,7 +7,7 @@ async function webauthn() {
 
   const webauthnPlatformRequested = webauthnInProgressContainer.getAttribute('data-platform-authenticator-requested') === 'true';
   const multipleFactorsEnabled = webauthnInProgressContainer.getAttribute('data-multiple-factors-enabled') === 'true';
-  let webauthnPlatformEnabled = false;
+  let webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
 
   if (!WebAuthn.isWebAuthnEnabled()) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
