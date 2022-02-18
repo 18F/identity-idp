@@ -3,7 +3,7 @@
     <%= t('headings.account.authentication_apps') %>
   </h2>
 </div>
-<div class="border-bottom border-primary-light margin-bottom">
+<div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="grid-col-8">
