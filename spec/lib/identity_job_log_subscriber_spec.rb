@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe IdentityJobLogSubscriber, type: :job do
+  subject(:subscriber) { IdentityJobLogSubscriber.new }
+
   it 'logs events' do
     expect(Rails.logger).to receive(:info).at_least(3).times do |log|
       next if log.nil?
@@ -65,37 +67,33 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         duration: 1,
         name: 'TestEvent',
       )
-      subscriber = IdentityJobLogSubscriber.new
+
       hash = subscriber.enqueue_retry(event)
       expect(hash[:wait_ms]).to eq 1000
       expect(hash[:duration_ms]).to eq 1
     end
 
     it 'includes exception if there is a failure' do
-      job = double(
-        'Job', job_id: '1', queue_name: 'Default', arguments: []
-      )
-
+      job = double('Job', job_id: '1', queue_name: 'Default', arguments: [])
       allow(job.class).to receive(:warning_error_classes).and_return([])
 
       event = double(
         'RetryEvent',
         payload: {
-          wait: 1, job: job,
-          error: double('Exception')
+          wait: 1,
+          job: job,
+          error: double('Exception'),
         },
         duration: 1,
         name: 'TestEvent',
       )
-      subscriber = IdentityJobLogSubscriber.new
+
       hash = subscriber.enqueue_retry(event)
       expect(hash[:exception_class]).to_not be_nil
     end
   end
 
   describe '#enqueue' do
-    subject(:subscriber) { IdentityJobLogSubscriber.new }
-
     let(:event_uuid) { SecureRandom.uuid }
     let(:now) { Time.zone.now }
     let(:job) { HeartbeatJob.new }
@@ -242,8 +240,6 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
   end
 
   describe '#enqueue_at' do
-    subject(:subscriber) { IdentityJobLogSubscriber.new }
-
     let(:event_uuid) { SecureRandom.uuid }
     let(:now) { Time.zone.now }
     let(:job) { HeartbeatJob.new }
@@ -378,8 +374,6 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
   end
 
   describe '#discard' do
-    subject(:subscriber) { IdentityJobLogSubscriber.new }
-
     let(:event_uuid) { SecureRandom.uuid }
     let(:now) { Time.zone.now }
     let(:job) { HeartbeatJob.new }
@@ -412,7 +406,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
           trace_id: nil,
           queue_name: kind_of(String),
           job_id: job.job_id,
-          exception_class_warn: {},
+          exception_class_warn: 'Errno::ECONNREFUSED',
         )
       end
 
