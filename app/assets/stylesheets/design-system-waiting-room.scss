@@ -44,3 +44,16 @@ dl, ol, ul {
   margin-top: 0;
   margin-bottom: $space-2;
 }
+
+// basscss-utility-typography
+//------------------------------------------------
+.break-word {
+  word-wrap: break-word;
+}
+
+.truncate {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
