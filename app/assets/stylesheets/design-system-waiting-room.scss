@@ -1,0 +1,46 @@
+// To be removed once design system incorporates styles included below.
+
+// basscss-base-forms
+//------------------------------------------------
+input[type=text],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=email],
+input[type=month],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  vertical-align: middle;
+  -webkit-appearance: none;
+}
+
+//basscss-base-topography
+//------------------------------------------------
+body {
+  font-family: $font-family;
+  line-height: $line-height;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $heading-font-family;
+  line-height: $heading-line-height;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: $space-2;
+}
+
+dl, ol, ul {
+  margin-top: 0;
+  margin-bottom: $space-2;
+}
