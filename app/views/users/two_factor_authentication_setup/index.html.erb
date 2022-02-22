@@ -36,15 +36,17 @@
                 "two_factor_options_form_selection_#{option.type}",
                 class: 'usa-radio__label',
               ) do %>
-                <%= option.label %>
-                <span class="usa-radio__label-description position-relative padding-bottom-4">
-                  <%= option.info %>
-                  <% if option.security_level && @presenter.show_security_level? %>
-                    <span class="usa-tag pin-bottom pin-right <%= option.disabled? ? 'bg-base-light' : 'bg-info-dark' %>">
-                      <%= option.security_level %>
+                <div class="grid-container padding-0">
+                  <div class="grid-row">
+                  <div class="grid-col-auto tablet:grid-col-2 margin-top-1">
+                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", width: 42, class: "margin-left-05 width-3 tablet:width-auto margin-right-1 tablet:margin-right-0") %>
+                  </div>
+                    <span class="grid-col-auto height-8 padding-top-1 tablet:padding-top-0"><%= option.label %></span>
+                    <span class="usa-radio__label-description position-relative grid-col-12 tablet:grid-col-10 tablet:grid-offset-2 margin-top-neg-205 tablet:margin-top-neg-4">
+                      <%= option.info %>
                     </span>
-                  <% end %>
-                </span>
+                  </div>
+                </div>
               <% end %>
         </div>
       <% end %>
