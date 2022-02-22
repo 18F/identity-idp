@@ -47,8 +47,8 @@
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
         <% if show_language_dropdown %>
-          <ul class='usa-list--unstyled display-none tablet:display-block margin-bottom-0'>
-            <li class="i18n-desktop-toggle display-flex margin-y-1 margin-x-2">
+          <ul class='usa-list--unstyled display-none tablet:display-block padding-y-1 padding-x-2'>
+            <li class="i18n-desktop-toggle display-flex">
               <button class='text-white text-decoration-none border border-primary radius-lg padding-x-1 py-tiny language-desktop-button' aria-expanded='false'>
                 <%= image_tag asset_url('globe-white.svg'), width: 12,
                                                             class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
