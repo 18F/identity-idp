@@ -1,7 +1,7 @@
 <% title t('titles.sign_up.confirmation') %>
 
 <% if decorated_session.sp_name %>
-  <div class='center'>
+  <div class='text-center'>
     <%= image_tag(asset_url('user-access.svg'), width: '280', alt: '') %>
 
     <%= render decorated_session.registration_heading %>
@@ -12,13 +12,13 @@
 
 <div class='sm-left-align'>
   <div class='margin-top-4'>
-    <div class='margin-left-1 margin-bottom-1 bold'>
+    <div class='margin-left-1 margin-bottom-1 text-bold'>
       <%= t('user_authorization_confirmation.currently_logged_in') %>
     </div>
     <div class='tablet:margin-left-1 tablet:margin-right-1' >
-      <ul class='margin-bottom-4 list-reset border-bottom border-primary-light success-bullets requested-attributes'>
+      <ul class='margin-bottom-4 usa-list--unstyled border-bottom border-primary-light success-bullets requested-attributes'>
         <li class='success-bullet border-top border-primary-light'>
-          <span class='bold'>
+          <span class='text-bold'>
             <%= t('help_text.requested_attributes.email') %>
           </span>
           <span class='padding-left-2'>
@@ -29,13 +29,13 @@
     </div>
   </div>
 
-  <div class='margin-top-4 center'>
+  <div class='margin-top-4 text-center'>
     <%= button_to(user_authorization_confirmation_path, class: 'usa-button usa-button--big usa-button--wide') { t('user_authorization_confirmation.continue') } %>
   </div>
-  <div class='margin-top-4 center'>
+  <div class='margin-top-4 text-center'>
     <%= t('user_authorization_confirmation.or') %>
   </div>
-  <div class='margin-top-4 center'>
+  <div class='margin-top-4 text-center'>
     <%= button_to(reset_user_authorization_path, class: 'usa-button usa-button--big usa-button--wide', method: :delete) { t('user_authorization_confirmation.sign_in') } %>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <input aria-label="<%= t('forms.personal_key.confirmation_label') %>"
        autocomplete="off"
-       class="width-full margin-bottom-6 border-dashed field font-family-mono personal-key caps"
+       class="width-full margin-bottom-6 border-dashed field font-family-mono personal-key text-uppercase"
        maxlength="<%= PersonalKeyFormatter.code_length %>"
        name="personal_key"
        pattern="^<%= PersonalKeyFormatter.regexp_string %>$"
