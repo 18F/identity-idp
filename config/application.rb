@@ -95,6 +95,8 @@ module Upaya
     config.middleware.insert_before 0, HeadersFilter
     require 'utf8_sanitizer'
     config.middleware.use Utf8Sanitizer
+    require 'secure_cookies'
+    config.middleware.insert_after ActionDispatch::Static, SecureCookies
 
     # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do
