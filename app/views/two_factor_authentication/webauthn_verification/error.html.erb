@@ -7,7 +7,7 @@
           url: MarketingSite.contact_url,
           new_tab: true,
         },
-      ].select(&:present?),
+      ],
     ) do %>
   <p><%= t('two_factor_authentication.webauthn_error.error_page_text') %></p>
 <% end %>
