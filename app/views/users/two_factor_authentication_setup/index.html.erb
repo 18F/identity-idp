@@ -12,9 +12,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p><%= @presenter.intro %></p>
+<p class="maxw-mobile-lg"><%= @presenter.intro %></p>
 
-<%= render(AlertComponent.new) { t('two_factor_authentication.lockout_information') } %>
+<%= render(AlertComponent.new(class: "maxw-mobile-lg")) { t('two_factor_authentication.lockout_information') } %>
 
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
@@ -34,19 +34,13 @@
               ) %>
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
-                class: 'usa-radio__label',
+                class: 'usa-radio__label usa-radio__label--illustrated',
               ) do %>
-                <div class="grid-container padding-0">
-                  <div class="grid-row">
-                  <div class="grid-col-auto tablet:grid-col-2 margin-top-1">
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", width: 42, class: "margin-left-05 width-3 tablet:width-auto margin-right-1 tablet:margin-right-0") %>
-                  </div>
-                    <span class="grid-col-auto height-8 padding-top-1 tablet:padding-top-0"><%= option.label %></span>
-                    <span class="usa-radio__label-description position-relative grid-col-12 tablet:grid-col-10 tablet:grid-offset-2 margin-top-neg-205 tablet:margin-top-neg-4">
+                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: "usa-radio__image") %>
+                    <span class="usa-radio__label--text"><%= option.label %></span>
+                    <span class="usa-radio__label-description">
                       <%= option.info %>
                     </span>
-                  </div>
-                </div>
               <% end %>
         </div>
       <% end %>
