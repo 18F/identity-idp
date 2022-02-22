@@ -1,5 +1,4 @@
 require 'capybara/rspec'
-require 'capybara-screenshot/rspec'
 require 'rack_session_access/capybara'
 require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
@@ -41,7 +40,6 @@ end
 Capybara.server = :puma, { Silent: true }
 
 Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || '0.5').to_f
-Capybara::Screenshot.autosave_on_failure = false
 Capybara.asset_host = ENV['RAILS_ASSET_HOST'] || 'http://localhost:3000'
 Capybara.automatic_label_click = true # USWDS styles native checkbox/radio as offscreen
 Capybara.enable_aria_label = true
