@@ -9,11 +9,14 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "ESNext",
-    "target": "ESNext"
+    "target": "ESNext",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["typings/*"]
+    }
   },
   "include": [
     "app/components",
-    "app/javascript/app/phone-internationalization.js",
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascripts/spec_helper.d.ts"
