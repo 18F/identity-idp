@@ -98,13 +98,13 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       let(:multiple_factors_enabled) { true }
 
       it 'returns true' do
-        expect(presenter.multiple_factors_enabled?).be_truthy
+        expect(presenter.multiple_factors_enabled?).to be_truthy
       end
     end
 
     context 'with multiple factors not enabled for user policy' do
       it 'returns false' do
-        expect(presenter.multiple_factors_enabled?).be_truthy
+        expect(presenter.multiple_factors_enabled?).to be_falsey
       end
     end
   end
