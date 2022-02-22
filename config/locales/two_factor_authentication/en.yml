@@ -161,15 +161,17 @@ en:
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
       to access your information.
+    webauthn_error:
+      additional_methods_link: select another authentication method
+      error_page_text: Please use the the same device and browser profile you used
+        when you first selected face or touch unlock.
+      multiple_methods: We can’t identify this device. Please use the same device and
+        browser profile you used when you first selected face or touch unlock or
+        %{link}.
+      title: We can’t identify your device
     webauthn_fallback:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
-    webauthn_error:
-      additional_methods_link: select another authentication method
-      error_page_text: Please use the the same device and browser profile you used when you first selected face or touch unlock.
-      title: We can't identify your device
-      multiple_methods: We can’t identify this device. Please use the same device and browser profile you used when you first selected face or touch unlock or %{link}.
-      
     webauthn_piv_available: Use your PIV or CAC
     webauthn_platform_fallback:
       question: Don’t have your device available?

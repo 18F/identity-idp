@@ -172,6 +172,14 @@ es:
       seguridad. Para poder acceder a su información, deberá verificar su
       identidad a través de un dispositivo físico como una clave de seguridad o
       identificación de empleado gubernamental (PIV/CAC)
+    webauthn_error:
+      additional_methods_link: seleccione otro método de autenticación
+      error_page_text: Debe utilizar el mismo dispositivo y perfil de navegador que
+        utilizó la primera vez que seleccionó el desbloqueo facial o táctil.
+      multiple_methods: No podemos identificar este dispositivo. Utilice el mismo
+        dispositivo y perfil de navegador que usó al seleccionar por primera vez
+        el desbloqueo facial o táctil o %{link}.
+      title: No podemos reconocer su dispositivo
     webauthn_fallback:
       question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad

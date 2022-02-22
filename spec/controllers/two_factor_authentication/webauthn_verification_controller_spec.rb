@@ -117,6 +117,58 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
 
         patch :confirm, params: params
       end
+
+      context 'webauthn returns an error from frontend API' do
+        before do
+          controller.user_session[:webauthn_challenge] = webauthn_challenge
+        end
+
+        context 'user has no other MFA option' do
+          let(:params) do
+            {
+              authenticator_data: authenticator_data,
+              client_data_json: verification_client_data_json,
+              signature: signature,
+              credential_id: credential_id,
+              platform: true,
+              errors: "cannot sign in properly"
+            }
+          end
+          it 'tracks an invalid submission' do
+            webauthn_configuration = create(
+              :webauthn_configuration,
+              user: controller.current_user,
+              credential_id: credential_id,
+              credential_public_key: credential_public_key,
+            )
+    
+            result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
+                       success: false, webauthn_configuration_id: webauthn_configuration.id }
+            expect(@analytics).to receive(:track_mfa_submit_event).
+              with(result)
+    
+            patch :confirm, params: params
+          end
+        end
+
+        context 'User has MFA option' do
+          it 'tracks an invalid submission' do
+            webauthn_configuration = create(
+              :webauthn_configuration,
+              user: controller.current_user,
+              credential_id: credential_id,
+              credential_public_key: credential_public_key,
+            )
+    
+            result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
+                       success: false, webauthn_configuration_id: webauthn_configuration.id }
+            expect(@analytics).to receive(:track_mfa_submit_event).
+              with(result)
+    
+            patch :confirm, params: params
+          end
+        end
+      end
     end
   end
 end
