@@ -1,4 +1,3 @@
-const { I18n } = window.LoginGov;
 const WebAuthn = require('../app/webauthn');
 
 async function webauthn() {
