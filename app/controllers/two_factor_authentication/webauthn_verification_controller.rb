@@ -51,7 +51,7 @@ module TwoFactorAuthentication
       if is_platform_auth
         if presenter_for_two_factor_authentication_method.multiple_factors_enabled?
           flash[:error] = t(
-            'two_factor_authentication.webauthn_error.multiple_methods', 
+            'two_factor_authentication.webauthn_error.multiple_methods',
             link: view_context.link_to(
               t('two_factor_authentication.webauthn_error.additional_methods_link'),
               login_two_factor_options_path(locale: LinkLocaleResolver.locale),

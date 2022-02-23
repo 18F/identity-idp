@@ -19,7 +19,7 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       ServiceProviderMfaPolicy,
       aal3_required?: aal3_required,
       allow_user_to_switch_method?: allow_user_to_switch_method,
-      multiple_factors_enabled?: multiple_factors_enabled
+      multiple_factors_enabled?: multiple_factors_enabled,
     )
   end
 
