@@ -27,7 +27,7 @@ module Telephony
         )
 
       # STS makes an HTTP call that can fail
-      rescue Seahorse::Client::NetworkingError => e
+      rescue Aws::Errors::MissingCredentialsError, Seahorse::Client::NetworkingError => e
         notify_role_failure(error: e, region: config.region)
         nil
       end
