@@ -14,8 +14,6 @@
 
 <p class="maxw-mobile-lg"><%= @presenter.intro %></p>
 
-<%= render(AlertComponent.new(class: "maxw-mobile-lg")) { t('two_factor_authentication.lockout_information') } %>
-
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
@@ -37,10 +35,11 @@
                 class: 'usa-radio__label usa-radio__label--illustrated',
               ) do %>
                     <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: "usa-radio__image") %>
-                    <span class="usa-radio__label--text"><%= option.label %></span>
+                    <div class="usa-radio__label--text"><%= option.label %>
                     <span class="usa-radio__label-description">
                       <%= option.info %>
                     </span>
+                    </div>
               <% end %>
         </div>
       <% end %>
