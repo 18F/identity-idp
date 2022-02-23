@@ -6,7 +6,7 @@
  * @param property Property key.
  * @param value Temporary property value.
  */
-function usePropertyValue(object: object, property: string, value: any) {
+function usePropertyValue<O extends object>(object: O, property: keyof O, value: any) {
   let originalValue;
   before(() => {
     originalValue = object[property];

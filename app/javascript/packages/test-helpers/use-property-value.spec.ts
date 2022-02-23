@@ -2,7 +2,7 @@ import usePropertyValue from './use-property-value';
 
 describe('usePropertyValue', () => {
   (global as any).foo = 10;
-  usePropertyValue(global, 'foo', 20);
+  usePropertyValue(global as any, 'foo', 20);
 
   after(() => {
     expect((global as any).foo).to.equal(10);
