@@ -12,7 +12,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p class="maxw-mobile-lg"><%= @presenter.intro %></p>
+<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
@@ -20,7 +20,6 @@
                        url: two_factor_options_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2"><%= t('forms.two_factor_choice.legend') %>:</legend>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= radio_button_tag(
@@ -34,8 +33,8 @@
                 "two_factor_options_form_selection_#{option.type}",
                 class: 'usa-radio__label usa-radio__label--illustrated',
               ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: "usa-radio__image") %>
-                    <div class="usa-radio__label--text"><%= option.label %>
+                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
+                    <div class="usa-radio__label--text tablet:padding-left-1"><%= option.label %>
                     <span class="usa-radio__label-description">
                       <%= option.info %>
                     </span>

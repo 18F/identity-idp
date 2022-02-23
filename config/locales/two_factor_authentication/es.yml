@@ -134,8 +134,8 @@ es:
       llave de seguridad o una identificación de empleado del Gobierno (PIV o
       CAC) para acceder a su información.
     two_factor_choice: Configuración del método de autenticación
-    two_factor_choice_intro: Agregue una segunda capa de seguridad para que solo
-      usted pueda iniciar sesión en su cuenta.
+    two_factor_choice_intro: Añada otra capa de seguridad utilizando una de las
+      opciones de autenticación multifactorial que aparecen a continuación.
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
       auth_app_info: Obtenga códigos de una aplicación en su teléfono, computadora o tableta.
