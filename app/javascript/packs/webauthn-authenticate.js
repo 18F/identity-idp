@@ -22,7 +22,7 @@ function webauthn() {
 
   // if platform auth is not supported on device, we should take user to the error screen if theres no additional methods.
   if (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled) {
-    document.getElementById('errors').value = I18n.t('');
+    document.getElementById('errors').value = I18n.t('two_factor_authentication.webauthn_error.title');
     document.getElementById('platform').value = true;
     document.getElementById('webauthn_form').submit();
   } else {
