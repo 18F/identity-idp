@@ -1,7 +1,7 @@
 const { I18n } = window.LoginGov;
 const WebAuthn = require('../app/webauthn');
 
-function webauthn() {
+async function webauthn() {
   // If webauthn is not supported redirect back to the 2fa options list
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress');
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
