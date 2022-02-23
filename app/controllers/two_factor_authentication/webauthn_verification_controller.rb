@@ -63,7 +63,7 @@ module TwoFactorAuthentication
         end
       else
         flash[:error] = t('errors.invalid_authenticity_token')
-        redirect_to login_two_factor_webauthn_url(platform: params[:platform])
+        redirect_to login_two_factor_webauthn_url
       end
     end
 
