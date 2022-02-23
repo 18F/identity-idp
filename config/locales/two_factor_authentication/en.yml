@@ -32,24 +32,24 @@ en:
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
-      auth_app_info_html: Use your authentication application to get a security code.
+      auth_app_info: Use your authentication application to get a security code.
       backup_code: Backup codes
-      backup_code_info_html: Use a backup code from your list of backup codes to sign in.
+      backup_code_info: Use a backup code from your list of backup codes to sign in.
       personal_key: Personal Key
-      personal_key_info_html: Use the 16 character personal key you received at account creation.
+      personal_key_info: Use the 16 character personal key you received at account creation.
       phone_info_html: Get security code via text/SMS or phone call to
         <strong>%{phone}</strong>.
       piv_cac: Government employee ID
-      piv_cac_info_html: Use your PIV/CAC card instead of a security code.
+      piv_cac_info: Use your PIV/CAC card instead of a security code.
       sms: Text message
       sms_info_html: Get security code via text message to <strong>%{phone}</strong>.
       voice: Automated phone call
       voice_info_html: Get security code via phone call to <strong>%{phone}</strong>
         (North America phone numbers only).
       webauthn: Security key
-      webauthn_info_html: Use your security key to access your account.
+      webauthn_info: Use your security key to access your account.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+      webauthn_platform_info: Use your device (phone, tablet or desktop) to add
         another level of security to your %{app_name} account. Recommended
         because it is more phishing resistant.
     login_options_link_text: Choose another authentication method
@@ -127,32 +127,32 @@ en:
     two_factor_choice_intro: Add a second layer of security so only you can sign in to your account.
     two_factor_choice_options:
       auth_app: Authentication application
-      auth_app_info_html: Get codes from an app on your phone, computer, or tablet.
+      auth_app_info: Get codes from an app on your phone, computer, or tablet.
         Recommended because it is harder to intercept than texts or phone calls.
       backup_code: Backup codes
-      backup_code_info_html: We’ll give you 10 codes. You can use backup codes as your
-        only authentication method, but it is the least recommended method since
+      backup_code_info: We’ll give you 10 codes. You can use backup codes as your only
+        authentication method, but it is the least recommended method since
         notes can get lost. Keep them in a safe place.
       least_secure_label: Least secure
       less_secure_label: Less secure
       more_secure_label: More Secure
       phone: Text or Voice Message
-      phone_info_html: Get security codes by text message (SMS) or phone call.
+      phone_info: Get security codes by text message (SMS) or phone call.
       phone_info_no_voip: Please do not use web-based (VOIP) phone services.
       piv_cac: Government employee ID
-      piv_cac_info_html: Insert your government or military PIV or CAC card and enter your PIN.
+      piv_cac_info: Insert your government or military PIV or CAC card and enter your PIN.
       secure_label: Secure
       sms: Text message / SMS
-      sms_info_html: Get your security code via text message / SMS.
+      sms_info: Get your security code via text message / SMS.
       voice: Phone call
-      voice_info_html: Get your security code via phone call.
+      voice_info: Get your security code via phone call.
       webauthn: Security key
-      webauthn_info_html: Use a security key that you have. It’s a physical device
-        that you plug in or that is built in to your computer or phone (it often
-        looks like a USB flash drive). Recommended because it is more phishing
+      webauthn_info: Use a security key that you have. It’s a physical device that you
+        plug in or that is built in to your computer or phone (it often looks
+        like a USB flash drive). Recommended because it is more phishing
         resistant.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info_html: Use your device (phone, tablet or desktop) to add
+      webauthn_platform_info: Use your device (phone, tablet or desktop) to add
         another level of security to your %{app_name} account. Recommended
         because it is more phishing resistant.
     two_factor_hspd12_choice: Additional authentication required

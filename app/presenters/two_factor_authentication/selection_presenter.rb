@@ -89,21 +89,21 @@ module TwoFactorAuthentication
     def login_info(type)
       case type
       when 'auth_app'
-        t('two_factor_authentication.login_options.auth_app_info_html')
+        t('two_factor_authentication.login_options.auth_app_info')
       when 'backup_code'
-        t('two_factor_authentication.login_options.backup_code_info_html')
+        t('two_factor_authentication.login_options.backup_code_info')
       when 'personal_key'
-        t('two_factor_authentication.login_options.personal_key_info_html')
+        t('two_factor_authentication.login_options.personal_key_info')
       when 'piv_cac'
-        t('two_factor_authentication.login_options.piv_cac_info_html')
+        t('two_factor_authentication.login_options.piv_cac_info')
       when 'sms'
         t('two_factor_authentication.login_options.sms_info_html')
       when 'voice'
         t('two_factor_authentication.login_options.voice_info_html')
       when 'webauthn'
-        t('two_factor_authentication.login_options.webauthn_info_html')
+        t('two_factor_authentication.login_options.webauthn_info')
       when 'webauthn_platform'
-        t('two_factor_authentication.login_options.webauthn_platform_info_html', app_name: APP_NAME)
+        t('two_factor_authentication.login_options.webauthn_platform_info', app_name: APP_NAME)
       else
         raise "Unsupported login method: #{type}"
       end
@@ -112,22 +112,22 @@ module TwoFactorAuthentication
     def setup_info(type)
       case type
       when 'auth_app'
-        t('two_factor_authentication.two_factor_choice_options.auth_app_info_html')
+        t('two_factor_authentication.two_factor_choice_options.auth_app_info')
       when 'backup_code'
-        t('two_factor_authentication.two_factor_choice_options.backup_code_info_html')
+        t('two_factor_authentication.two_factor_choice_options.backup_code_info')
       when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone_info_html')
+        t('two_factor_authentication.two_factor_choice_options.phone_info')
       when 'piv_cac'
-        t('two_factor_authentication.two_factor_choice_options.piv_cac_info_html')
+        t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
       when 'sms'
-        t('two_factor_authentication.two_factor_choice_options.sms_info_html')
+        t('two_factor_authentication.two_factor_choice_options.sms_info')
       when 'voice'
-        t('two_factor_authentication.two_factor_choice_options.voice_info_html')
+        t('two_factor_authentication.two_factor_choice_options.voice_info')
       when 'webauthn'
-        t('two_factor_authentication.two_factor_choice_options.webauthn_info_html')
+        t('two_factor_authentication.two_factor_choice_options.webauthn_info')
       when 'webauthn_platform'
         t(
-          'two_factor_authentication.two_factor_choice_options.webauthn_platform_info_html',
+          'two_factor_authentication.two_factor_choice_options.webauthn_platform_info',
           app_name: APP_NAME,
         )
       else

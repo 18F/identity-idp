@@ -59,7 +59,7 @@
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <%= render 'shared/banner' %>
-  <main class="site-wrap bg-light-blue" id="main-content">
+  <main class="site-wrap bg-primary-lighter" id="main-content">
     <div class="container">
       <div class="padding-x-2 padding-y-4 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
         <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>

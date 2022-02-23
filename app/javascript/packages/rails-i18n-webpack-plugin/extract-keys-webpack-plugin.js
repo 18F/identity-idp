@@ -57,9 +57,9 @@ class ExtractKeysWebpackPlugin {
   static DEFAULT_OPTIONS = {};
 
   /**
-   * @param {Options=} options
+   * @param {Partial<Options>=} options
    */
-  constructor(options = /** @type {Partial<Options>} */ ({})) {
+  constructor(options = {}) {
     const { DEFAULT_OPTIONS } = /** @type {typeof ExtractKeysWebpackPlugin} */ (this.constructor);
 
     this.options = /** @type {Options} */ ({ ...DEFAULT_OPTIONS, ...options });

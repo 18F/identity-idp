@@ -34,18 +34,18 @@ fr:
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte.
     login_options:
       auth_app: Application d’authentification
-      auth_app_info_html: Utilisez votre application d’authentification pour obtenir
-        votre code de sécurité
+      auth_app_info: Utilisez votre application d’authentification pour obtenir votre
+        code de sécurité
       backup_code: Codes de sauvegarde
-      backup_code_info_html: Utilisez un code de sauvegarde de votre liste de codes de
+      backup_code_info: Utilisez un code de sauvegarde de votre liste de codes de
         sauvegarde pour vous connecter.
       personal_key: Clé personnelle
-      personal_key_info_html: Utilisez la clé personnelle de 16 caractères que vous
-        avez utilisée lors de la création du compte.
+      personal_key_info: Utilisez la clé personnelle de 16 caractères que vous avez
+        utilisée lors de la création du compte.
       phone_info_html: Obtenez votre code de sécurité par SMS ou Obtenez votre code de
         sécurité par SMS à <strong>%{phone}</strong>.
       piv_cac: Employés du gouvernement
-      piv_cac_info_html: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
+      piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS à <strong>%{phone}</strong>.
       voice: Appel téléphonique
@@ -53,9 +53,9 @@ fr:
         par SMS à  à <strong>%{phone}</strong>. (Seulement les numéros de
         téléphone en Amerique du Nord)
       webauthn: Clé de sécurité
-      webauthn_info_html: Utilisez votre clé de sécurité pour accéder à votre compte.
+      webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
-      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+      webauthn_platform_info: Utilisez votre appareil (téléphone, tablette ou
         ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
         compte %{app_name}. Recommandé, car il est plus résistant aux
         hameçonnages.
@@ -144,33 +144,33 @@ fr:
       puissiez vous connecter à votre compte.
     two_factor_choice_options:
       auth_app: Application d’authentification
-      auth_app_info_html: Obtenir des codes d’une application sur votre téléphone,
-        votre ordinateur ou votre tablette.
+      auth_app_info: Obtenir des codes d’une application sur votre téléphone, votre
+        ordinateur ou votre tablette.
       backup_code: Je n’ai rien de ce qui précède
-      backup_code_info_html: Nous vous donnerons 10 codes à utiliser et à conserver
-        dans un endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme
-        seule méthode d’authentification.
+      backup_code_info: Nous vous donnerons 10 codes à utiliser et à conserver dans un
+        endroit sûr. Vous pouvez utiliser des codes de sauvegarde comme seule
+        méthode d’authentification.
       least_secure_label: Le moins sécurisé
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
       phone: Téléphone
-      phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique.
+      phone_info: Obtenir les codes de sécurité par SMS ou appel téléphonique.
       phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés
         sur le Web (VOIP).
       piv_cac: Numéro d’employé du gouvernement
-      piv_cac_info_html: Insérez votre carte PIV ou CAC du gouvernement ou militaire
-        et entrez votre code PIN.
+      piv_cac_info: Insérez votre carte PIV ou CAC du gouvernement ou militaire et
+        entrez votre code PIN.
       secure_label: Sécurisé
       sms: SMS
-      sms_info_html: Obtenez votre code de sécurité par SMS.
+      sms_info: Obtenez votre code de sécurité par SMS.
       voice: Appel téléphonique
-      voice_info_html: Obtenez votre code de sécurité par appel téléphonique.
+      voice_info: Obtenez votre code de sécurité par appel téléphonique.
       webauthn: Clé de sécurité
-      webauthn_info_html: Utilisez une clé de sécurité que vous avez. C’est un
-        périphérique physique que vous branchez ou qui est intégré à votre
-        ordinateur ou à votre téléphone (il ressemble souvent à une clé USB).
+      webauthn_info: Utilisez une clé de sécurité que vous avez. C’est un périphérique
+        physique que vous branchez ou qui est intégré à votre ordinateur ou à
+        votre téléphone (il ressemble souvent à une clé USB).
       webauthn_platform: Déverrouillage facial ou tactile
-      webauthn_platform_info_html: Utilisez votre appareil (téléphone, tablette ou
+      webauthn_platform_info: Utilisez votre appareil (téléphone, tablette ou
         ordinateur de bureau) pour ajouter un autre niveau de sécurité à votre
         compte %{app_name}. Recommandé, car il est plus résistant aux
         hameçonnages.

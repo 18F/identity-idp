@@ -53,7 +53,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
     context 'when loaded while adding a new phone' do
       let(:user) { create(:user) }
-      let(:phone) { Faker::PhoneNumber.cell_phone }
+      let(:phone) { Faker::PhoneNumber.cell_phone_in_e164 }
       let(:opt_out_uuid) { PhoneNumberOptOut.create_or_find_with_phone(phone).uuid }
 
       before do
@@ -63,7 +63,8 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
-        expect(assigns[:phone_configuration].formatted_phone).to eq(PhoneFormatter.format(phone))
+        expect(PhoneFormatter.format(assigns[:phone_configuration].phone)).
+          to eq(PhoneFormatter.format(phone))
       end
     end
 

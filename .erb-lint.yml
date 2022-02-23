@@ -18,10 +18,10 @@ linters:
     rule_set:
       - deprecated:
           - (black|silver|white|aqua|blue|navy|teal|green|olive|lime|yellow|orange|red|fuchsia|purple|maroon|color-inherit|muted)
+          - '(bold|regular|italic|caps)'
           - 'align-(top|middle|bottom|baseline)'
-          - '(left)-align'
-          - 'justify'
-          - 'nowrap'
+          - '(left|right)-align'
+          - '(center|justify|nowrap)'
           - 'line-height-[3]'
           - 'list-style-none'
           - 'table(-cell)?'

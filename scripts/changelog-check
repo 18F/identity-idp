@@ -3,7 +3,7 @@ require 'open3'
 require 'optparse'
 
 CHANGELOG_REGEX =
-  %r{^changelog: (?<category>[\w -/]{2,}), (?<subcategory>[A-Z][\w -]{2,}), (?<change>.+)$}
+  %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[A-Z][\w -]{2,}), (?<change>.+)$}
 CATEGORIES = [
   'Improvements', 'Accessibility', 'Bug Fixes', 'Internal'
 ]
@@ -18,6 +18,11 @@ def build_changelog(line)
   CHANGELOG_REGEX.match(line)
 end
 
+def build_changelog_from_commit(commit)
+  commit.commit_messages.reverse.map { |message| build_changelog(message) }.compact.first ||
+    build_changelog(commit.title)
+end
+
 # Transforms a formatted git log into structured objects.
 # The git format ends up printing a single commit as:
 #
@@ -30,7 +35,7 @@ end
 def get_git_log(base_branch, source_branch)
   format = '--pretty=title: %s%nbody:%b%nDELIMITER'
   log, status = Open3.capture2(
-    'git', 'log', format, "#{base_branch}...#{source_branch}"
+    'git', 'log', format, "#{base_branch}..#{source_branch}"
   )
 
   raise 'git log failed' unless status.success?
@@ -41,16 +46,17 @@ def get_git_log(base_branch, source_branch)
     end
   }.map do |title_and_commit_messages|
       title = title_and_commit_messages.first.first.delete_prefix('title: ')
+      messages = title_and_commit_messages[1]
       SquashedCommit.new(
-        title: title_and_commit_messages.first.first,
-        commit_messages: title_and_commit_messages[1],
+        title: title,
+        commit_messages: messages,
       )
   end
 end
 
 def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log, status = Open3.capture2(
-    'git', 'log', '--pretty=\'%B\'', "#{base_branch}...#{source_branch}"
+    'git', 'log', '--pretty=\'%B\'', "#{base_branch}..#{source_branch}"
   )
   raise 'git log failed' unless status.success?
 
@@ -79,7 +85,7 @@ def generate_changelog(base_branch, source_branch)
   log.each do |item|
     # Skip this commit if the skip changelog message appears
     next if item.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
-    change = item.commit_messages.reverse.map { |message| build_changelog(message) }.compact.first
+    change = build_changelog_from_commit(item)
     next unless change
 
     pr_number = %r{\(#(?<pr>\d+)\)}.match(item[:title])
