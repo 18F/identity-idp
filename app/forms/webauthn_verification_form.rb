@@ -18,7 +18,7 @@ class WebauthnVerificationForm
     @signature = nil
     @credential_id = nil
     @webauthn_configuration = nil
-    @errors = nil
+    @webauthn_errors = nil
   end
 
   def submit(protocol, params)

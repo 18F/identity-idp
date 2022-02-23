@@ -23,10 +23,6 @@ module TwoFactorAuthCode
       end
     end
 
-    def title
-      t('titles.present_webauthn')
-    end
-
     def authenticate_button_text
       if platform_authenticator?
         t('two_factor_authentication.webauthn_platform_use_key')
