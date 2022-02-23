@@ -38,12 +38,10 @@ describe('TimeElement', () => {
     });
   });
 
-  context('in locale which uses 24-hour time', () => {
-    usePropertyValue(document.documentElement, 'lang', 'en-GB');
-
-    it('sets text in 24-hour time, with empty dayPeriod', () => {
+  context('with 24-hour time format string', () => {
+    it('sets text in 24-hour time', () => {
       const element = createElement({
-        format: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}',
+        format: '%{month} %{day}, %{year} at %{hour}:%{minute}',
         timestamp: new Date(2020, 3, 21, 14, 3, 24).toISOString(),
       });
 

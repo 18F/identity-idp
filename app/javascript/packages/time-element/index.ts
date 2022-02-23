@@ -27,12 +27,15 @@ export class TimeElement extends HTMLElement {
   }
 
   get formatter() {
+    const is12Hour = this.#format.includes('%{day_period}');
+
     return new Intl.DateTimeFormat(this.locale, {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
+      hour12: is12Hour,
     });
   }
 
@@ -46,7 +49,7 @@ export class TimeElement extends HTMLElement {
       this.textContent = replaceVariables(
         this.#format,
         mapKeys({ dayPeriod: '', ...parts }, snakeCase),
-      ).trim();
+      );
     } else {
       // Degrade gracefully for environments where formatToParts is unsupported (Internet Explorer)
       this.textContent = formatter.format(this.date);
