@@ -7,9 +7,9 @@ async function webauthn() {
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
 
   const webauthnPlatformRequested =
-    webauthnInProgressContainer.getAttribute('data-platform-authenticator-requested') === 'true';
+    webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
   const multipleFactorsEnabled =
-    webauthnInProgressContainer.getAttribute('data-multiple-factors-enabled') === 'true';
+    webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
   const webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
 
   if (!WebAuthn.isWebAuthnEnabled()) {
@@ -22,9 +22,8 @@ async function webauthn() {
 
   // if platform auth is not supported on device, we should take user to the error screen if theres no additional methods.
   if (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled) {
-    document.getElementById('errors').value = I18n.t('two_factor_authentication.webauthn_error.title');
-    document.getElementById('platform').value = true;
-    document.getElementById('webauthn_form').submit();
+    const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
+    window.location.href = href;
   } else {
     WebAuthn.verifyWebauthnDevice({
       userChallenge: document.getElementById('user_challenge').value,

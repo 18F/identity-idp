@@ -118,7 +118,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         patch :confirm, params: params
       end
 
-      context 'webauthn returns an error from frontend API' do
+      context 'webauthn_platform returns an error from frontend API' do
         let(:params) do
           {
             authenticator_data: authenticator_data,
@@ -132,37 +132,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
 
         before do
           controller.user_session[:webauthn_challenge] = webauthn_challenge
-        end
-
-        context 'user has no other MFA option' do
-          before do
-            allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-            to receive(:multiple_factors_enabled?).
-            and_return(false)
-          end
-
-          it 'tracks an invalid submission' do
-            webauthn_configuration = create(
-              :webauthn_configuration,
-              user: controller.current_user,
-              credential_id: credential_id,
-              credential_public_key: credential_public_key,
-            )
-
-            result = { context: 'authentication', errors: {},
-                       multi_factor_auth_method: 'webauthn_platform',
-                       success: false, webauthn_configuration_id: nil }
-            expect(@analytics).to receive(:track_mfa_submit_event).
-              with(result)
-
-            patch :confirm, params: params
-          end
-
-          it 'renders error page' do
-            patch :confirm, params: params
-            expect(response).
-            to render_template('two_factor_authentication/webauthn_verification/error')
-          end
         end
 
         context 'User has MFA option' do
