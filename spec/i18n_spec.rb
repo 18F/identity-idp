@@ -3,6 +3,11 @@
 require 'rails_helper'
 require 'i18n/tasks'
 
+# List of keys allowed to contain different interpolation arguments across locales
+ALLOWED_INTERPOLATION_MISMATCH_KEYS = [
+  'time.formats.event_timestamp_js',
+]
+
 module I18n
   module Tasks
     class BaseTask
@@ -91,6 +96,8 @@ RSpec.describe 'I18n' do
 
       missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
     end
+
+    missing_interpolation_argument_keys -= ALLOWED_INTERPOLATION_MISMATCH_KEYS
 
     expect(missing_interpolation_argument_keys).to be_empty
   end
