@@ -28,15 +28,13 @@ class FailurePresenter
     STATE_CONFIG.dig(state, :color)
   end
 
-  def message; end
-
   def title; end
 
   def header; end
 
   def description; end
 
-  def next_steps
+  def troubleshooting_options
     []
   end
 

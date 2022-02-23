@@ -1,9 +1,9 @@
-<div class="padding-left-8 padding-bottom-4">
+<div class="padding-x-4">
   <div class="h6">
     <%= t('idv.review.full_name') %>
   </div>
 
-  <div class="h4 bold ico-absolute ico-absolute-success">
+  <div class="h4 text-bold ico-absolute ico-absolute-success">
     <%= pii[:first_name] %> <%= pii[:last_name] %>
   </div>
 
@@ -11,7 +11,7 @@
     <%= t('idv.review.mailing_address') %>
   </div>
 
-  <div class="h4 bold ico-absolute ico-absolute-success">
+  <div class="h4 text-bold ico-absolute ico-absolute-success">
     <%= render 'shared/address', address: pii %>
   </div>
 
@@ -19,7 +19,7 @@
     <%= t('idv.review.dob') %>
   </div>
 
-  <div class="h4 bold ico-absolute ico-absolute-success">
+  <div class="h4 text-bold ico-absolute ico-absolute-success">
     <%= DateParser.parse_legacy(pii[:dob]).to_formatted_s(:long) %>
   </div>
 
@@ -27,7 +27,7 @@
     <%= t('idv.review.ssn') %>
   </div>
 
-  <div class="h4 bold ico-absolute ico-absolute-success">
+  <div class="h4 text-bold ico-absolute ico-absolute-success">
     <%= pii[:ssn] %>
   </div>
 
@@ -35,7 +35,7 @@
     <div class="h6 margin-top-4">
       <%= t('idv.messages.phone.phone_of_record') %>
     </div>
-    <div class="h4 bold ico-absolute ico-absolute-success">
+    <div class="h4 text-bold ico-absolute ico-absolute-success">
       <%= PhoneFormatter.format(phone) %>
     </div>
   <% end %>

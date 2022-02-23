@@ -19,13 +19,15 @@ describe('components/modal', () => {
     container.id = id;
     container.className = 'modal display-none';
     container.innerHTML = `
-      <div class="usa-modal-overlay is-visible">
-        <div class="padding-x-2 padding-y-6 modal" role="dialog">
-          <div class="modal-center">
-            <div class="modal-content">
-              <p>Do action?</p>
-              <button type="button">Yes</button>
-              <button type="button">No</button>
+      <div class="usa-modal-wrapper is-visible">
+        <div class="usa-modal-overlay">
+          <div class="padding-x-2 padding-y-6 modal" role="dialog">
+            <div class="modal-center">
+              <div class="modal-content">
+                <p>Do action?</p>
+                <button type="button">Yes</button>
+                <button type="button">No</button>
+              </div>
             </div>
           </div>
         </div>

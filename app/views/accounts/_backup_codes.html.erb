@@ -16,7 +16,7 @@
       <%= t 'account.index.backup_codes_exist' %>
       <%= local_time(@presenter.backup_codes_generated_at, t('time.formats.event_timestamp')) %>
     </div>
-    <div class="grid-col-3 right-align">
+    <div class="grid-col-3 text-right">
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
         <%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
       <% end %>

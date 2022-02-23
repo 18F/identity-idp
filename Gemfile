@@ -92,7 +92,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.12.5'
+  gem 'nokogiri', '~> 1.13.2'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'pry-doc'
@@ -108,7 +108,6 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
   gem 'simplecov-cobertura'

@@ -5,7 +5,7 @@
         type: :warning,
         class: 'margin-bottom-4',
       ) do %>
-    <div class="bold">
+    <div class="text-bold">
       <%= t('instructions.account.reactivate.modal.copy') %>
     </div>
   <% end %>
@@ -21,7 +21,7 @@
   <%= t('instructions.account.reactivate.begin') %>
 </h2>
 
-<h3 class="fs-20p font-family-sans margin-top-6">
+<h3 class="fs-20p margin-top-6">
   <%= t('instructions.account.reactivate.with_key') %>
 </h3>
 
@@ -33,16 +33,18 @@
   <%= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX' %>
 </div>
 
-<div class="block-center center col-10">
-  <div class="col-12 margin-bottom-2">
+<div class="grid-row">
+  <div class="tablet:grid-col-10 tablet:grid-offset-1">
     <%= link_to t('links.account.reactivate.with_key'), verify_personal_key_path,
-                class: 'usa-button usa-button--big usa-button--full-width' %>
-  </div>
+                class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
 
-  <%= form_tag reactivate_account_path, method: :put, class: 'col-12' do %>
-    <%= button_tag t('links.account.reactivate.without_key'), type: 'submit',
-                                                              class: 'usa-button usa-button--big usa-button--outline usa-button--full-width', id: 'no-key-reactivate' %>
-  <% end %>
+    <%= form_tag reactivate_account_path, method: :put do %>
+      <%= button_tag t('links.account.reactivate.without_key'),
+                     type: 'submit',
+                     class: 'usa-button usa-button--big usa-button--outline usa-button--full-width',
+                     id: 'no-key-reactivate' %>
+    <% end %>
+  </div>
 </div>
 
 <%= render 'reactivate_account/modal' %>

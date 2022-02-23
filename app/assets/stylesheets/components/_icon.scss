@@ -31,7 +31,7 @@ $icon-min-padding: 2px;
       height: $h4;
       left: -$space-3;
       position: absolute;
-      top: $space-1;
+      top: (lh('body', $theme-body-line-height) - $h4) * 0.5;
       width: $h4;
     }
   }

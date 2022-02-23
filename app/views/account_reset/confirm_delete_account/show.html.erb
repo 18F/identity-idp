@@ -1,10 +1,10 @@
 <% title t('account_reset.confirm_delete_account.title') %>
-<div class="margin-y-2 padding-y-6 padding-x-4 tablet:padding-x-6 border border-error rounded-xl relative">
+<div class="margin-y-2 padding-y-6 padding-x-4 tablet:padding-x-6 border border-error rounded-xl position-relative">
   <%= image_tag(
         asset_url('alert/fail-x.svg'),
         size: '48x48',
         alt: t('errors.alt.error'),
-        class: 'absolute top-n24 left-0 right-0 margin-x-auto',
+        class: 'pin-top pin-x margin-top-neg-3 margin-x-auto',
       ) %>
   <%= render PageHeadingComponent.new.with_content(t('account_reset.confirm_delete_account.title')) %>
   <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>

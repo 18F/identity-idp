@@ -26,7 +26,7 @@
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block bold', for: 'nickname' %>
+  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block text-bold', for: 'nickname' %>
   <%= text_field_tag(
         :name,
         '',
@@ -55,9 +55,8 @@
       id: 'continue-button',
     ) %>
 
-<div class='spinner hidden' id='spinner'>
-  <br>
-  <div class='center'>
+<div class="spinner hidden margin-y-4" id='spinner'>
+  <div class='text-center'>
     <%= image_tag(
           asset_url('spinner.gif'),
           srcset: asset_url('spinner@2x.gif'),
@@ -69,7 +68,6 @@
   <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
   <p class='half-center'><%= @presenter.setup_instructions %></p>
 </div>
-<br>
 
 <%= render 'shared/cancel_or_back_to_options' %>
 

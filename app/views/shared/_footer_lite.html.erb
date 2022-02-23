@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class='i18n-mobile-dropdown tablet:display-none display-none'>
-      <ul class='list-reset margin-bottom-0 text-white center'>
+      <ul class='usa-list--unstyled margin-bottom-0 text-white text-center'>
         <% I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
             <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block py-12p padding-x-2 text-decoration-none text-primary fs-13p', lang: locale == I18n.locale ? nil : locale %>
@@ -27,7 +27,7 @@
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
         <div class="display-flex tablet:display-none">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-1 usa-link--alt tablet:display-none',
+          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-2 usa-link--alt tablet:display-none',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
                           width: 20, alt: '' %>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="display-none tablet:display-flex">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-1 usa-link--alt',
+          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-2 usa-link--alt',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa.svg'),
                           width: 20, class: 'float-left margin-right-1', alt: '' %>
@@ -47,54 +47,52 @@
       </div>
       <div class="display-flex flex-align-center flex-justify-center">
         <% if show_language_dropdown %>
-          <ul class='list-reset display-none tablet:display-block margin-bottom-0'>
-            <li class="i18n-desktop-toggle display-flex margin-y-1 margin-x-2 relative">
-              <button class='text-white text-decoration-none border border-primary radius-lg padding-x-1 py-tiny language-desktop-button' aria-expanded='false'>
-                <%= image_tag asset_url('globe-white.svg'), width: 12,
-                                                            class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
-                <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
-              </button>
-              <ul class="i18n-desktop-dropdown list-reset margin-bottom-0 text-white display-none">
-                <% I18n.available_locales.each do |locale| %>
-                  <li class='border-bottom border-primary-darker'>
-                    <%= link_to t("i18n.locale.#{locale}"),
-                                sanitized_requested_url.merge(locale: locale),
-                                class: 'display-block pl-24p padding-y-2 text-decoration-none text-white',
-                                lang: locale == I18n.locale ? nil : locale %>
-                  </li>
-                <% end %>
-              </ul>
-            </li>
-          </ul>
+          <div class='i18n-desktop-toggle display-none tablet:display-flex margin-x-2 padding-y-1'>
+            <button class='text-white text-decoration-none border border-primary radius-lg padding-x-1 py-tiny language-desktop-button' aria-expanded='false'>
+              <%= image_tag asset_url('globe-white.svg'), width: 12,
+                                                          class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
+              <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
+            </button>
+            <ul class="i18n-desktop-dropdown usa-list--unstyled margin-bottom-0 text-white display-none">
+              <% I18n.available_locales.each do |locale| %>
+                <li class='border-bottom border-primary-darker'>
+                  <%= link_to t("i18n.locale.#{locale}"),
+                              sanitized_requested_url.merge(locale: locale),
+                              class: 'display-block pl-24p padding-y-2 text-decoration-none text-white',
+                              lang: locale == I18n.locale ? nil : locale %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
         <% end %>
 
         <div class="display-flex tablet:display-none">
           <%= new_window_link_to(
                 t('links.help'), MarketingSite.help_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.contact'), MarketingSite.contact_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none'
               ) %>
         </div>
 
         <div class="display-none tablet:display-flex">
           <%= new_window_link_to(
                 t('links.help'), MarketingSite.help_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
               ) %>
           <%= new_window_link_to(
                 t('links.contact'), MarketingSite.contact_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
               ) %>
           <%= new_window_link_to(
                 t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none usa-link--alt'
               ) %>
         </div>
       </div>

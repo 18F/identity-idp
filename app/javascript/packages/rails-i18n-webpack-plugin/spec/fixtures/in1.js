@@ -2,6 +2,7 @@ import './common.js';
 import './resolved';
 
 const text = t('forms.button.submit');
+const message = t('forms.messages', { count: 2 });
 
 // i18n-tasks-use t('item.1')
 /* i18n-tasks-use t('item.2') */

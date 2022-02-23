@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_29_181752) do
+ActiveRecord::Schema.define(version: 2022_02_07_224754) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -390,6 +390,16 @@ ActiveRecord::Schema.define(version: 2022_01_29_181752) do
     t.datetime "updated_at", null: false
     t.datetime "made_default_at"
     t.index ["user_id", "made_default_at", "created_at"], name: "index_phone_configurations_on_made_default_at"
+  end
+
+  create_table "phone_number_opt_outs", force: :cascade do |t|
+    t.string "encrypted_phone"
+    t.string "phone_fingerprint", null: false
+    t.string "uuid"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["phone_fingerprint"], name: "index_phone_number_opt_outs_on_phone_fingerprint", unique: true
+    t.index ["uuid"], name: "index_phone_number_opt_outs_on_uuid", unique: true
   end
 
   create_table "piv_cac_configurations", force: :cascade do |t|

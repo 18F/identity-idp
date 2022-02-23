@@ -1,10 +1,10 @@
 <%= render 'shared/failure', presenter: @presenter %>
 
-<p class='margin-bottom-1 bold'>
+<p class='margin-bottom-1 text-bold'>
   <%= t('sign_up.cancel.warning_header') %>
 </p>
 
-<ul class='list-reset <%= @presenter.state_color %>-dots'>
+<ul class='usa-list--unstyled <%= @presenter.state_color %>-dots'>
   <% @presenter.cancellation_warnings.each do |warning| %>
     <li><%= warning %></li>
   <% end %>

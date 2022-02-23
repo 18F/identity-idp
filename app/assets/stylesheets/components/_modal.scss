@@ -1,3 +1,9 @@
+.usa-modal-wrapper {
+  // Temporary styles to avoid inheriting too much of the USWDS opinionated modal styling until
+  // modal styles are settled in the Login.gov Design System.
+  text-align: left;
+}
+
 .modal {
   bottom: 0;
   display: block;

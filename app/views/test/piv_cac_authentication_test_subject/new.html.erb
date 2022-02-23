@@ -3,49 +3,29 @@
 <%= render PageHeadingComponent.new.with_content('Enter PIV/CAC Test Information') %>
 
 <p>
-  Either enter a subject for a certificate or select an error to simulate a piv/cac response.
+  Either enter a subject for a certificate or select an error to simulate a PIV/CAC response.
 </p>
 
-<div class="sm-col-9">
-  <%= form_tag do %>
-    <%= hidden_field_tag(:redirect_uri, @referrer) %>
-    <div class="clearfix margin-x-neg-1">
-      <div class="col col-12 padding-x-1">
-        <legend class="margin-bottom-1">
-          Certificate Subject
-        </legend>
-        <%= text_field_tag(:subject, '', class: 'display-block col-12 field font-family-mono') %>
-      </div>
-      <div class="margin-bottom-4">
-        <fieldset class="margin-0 padding-0 border-0">
-          <legend class="margin-bottom-1">
-            Error Conditions
-          </legend>
-          <%= radio_button_tag(:error, '', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:error_, 'No error', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.none', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.none', 'No certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.bad', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.bad', 'Bad certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.expired', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.expired', 'Expired certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.revoked', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.revoked', 'Revoked certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.invalid', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.invalid', 'Invalid certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'certificate.unverified', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_certificate.unverified', 'Unverified certificate', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'token.missing', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_token.missing', 'Missing token', class: 'usa-radio__label') %>
-          <%= radio_button_tag(:error, 'token.invalid', false, class: 'usa-radio__input usa-radio__input--bordered') %>
-          <%= label_tag(:'error_token.invalid', 'Invalid token', class: 'usa-radio__label') %>
-        </fieldset>
-      </div>
-      <div class="col col-6 sm-col-5 padding-x-1">
-        <%= button_tag(class: 'usa-button usa-button--big usa-button--full-width') { 'Proceed' } %>
-      </div>
-    </div>
-  <% end %>
-</div>
+<%= simple_form_for('') do |f| %>
+  <%= hidden_field_tag(:redirect_uri, @referrer) %>
+  <%= f.input(:subject, label: 'Certificate Subject') %>
+  <%= f.input(
+        :error,
+        as: :radio_buttons,
+        label: 'Error Conditions',
+        collection: [
+          ['No error', ''],
+          ['No certificate', 'certificate.none'],
+          ['Bad certificate', 'certificate.bad'],
+          ['Expired certificate', 'certificate.expired'],
+          ['Revoked certificate', 'certificate.revoked'],
+          ['Invalid certificate', 'certificate.invalid'],
+          ['Unverified certificate', 'certificate.unverified'],
+          ['Missing token', 'token.missing'],
+          ['Invalid token', 'token.invalid'],
+        ],
+      ) %>
+  <%= f.submit('Proceed', class: 'display-block margin-y-5 usa-button usa-button--big usa-button--wide') %>
+<% end %>
 
 <%= render 'shared/cancel', link: @referrer %>

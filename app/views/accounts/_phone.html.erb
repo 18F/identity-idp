@@ -6,19 +6,19 @@
 <% end %>
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).phone_configurations.each do |phone_configuration| %>
-    <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
-      <div class="grid-col-5">
-        <%= PhoneFormatter.format(phone_configuration.phone) %>
-      </div>
-      <div class="grid-col-4 text-center">
-        <% if current_user.default_phone_configuration == phone_configuration %>
-          <%= I18n.t('account.index.default') %>
-        <% end %>
-      </div>
-      <div class="grid-col-3 right-align">
-        <%= render 'accounts/actions/manage_action_button',
-                   path: manage_phone_path(id: phone_configuration.id),
-                   name: t('account.index.phone') %>
+    <div class="padding-1 border-top border-left border-right border-primary-light">
+      <div class="grid-row grid-gap-2">
+        <div class="grid-col-fill">
+          <%= PhoneFormatter.format(phone_configuration.phone) %>
+          <% if current_user.default_phone_configuration == phone_configuration %>
+            (<%= I18n.t('account.index.default') %>)
+          <% end %>
+        </div>
+        <div class="grid-col-auto">
+          <%= render 'accounts/actions/manage_action_button',
+                     path: manage_phone_path(id: phone_configuration.id),
+                     name: t('account.index.phone') %>
+        </div>
       </div>
     </div>
   <% end %>

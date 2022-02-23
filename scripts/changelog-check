@@ -2,34 +2,144 @@
 require 'open3'
 require 'optparse'
 
-CHANGELOG_REGEX = %r{^\+- (?<category>[\w -]{2,}): (?<change>.+) \((?<pr>(?:#\d+, ?)*(?:#\d+))\)$}
-# A valid diff line is in the form of:
-# +- CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
-def is_valid_changelog_diff_addition?(line)
-  matches = CHANGELOG_REGEX.match(line)
-  !matches.nil?
+CHANGELOG_REGEX =
+  %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[A-Z][\w -]{2,}), (?<change>.+)$}
+CATEGORIES = [
+  'Improvements', 'Accessibility', 'Bug Fixes', 'Internal'
+]
+SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
+
+SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
+ChangelogEntry = Struct.new(:category, :subcategory, :change, :pr_number, keyword_init: true)
+
+# A valid entry has a line in a commit message in the form of:
+# changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
+def build_changelog(line)
+  CHANGELOG_REGEX.match(line)
 end
 
-def get_changelog_diff_lines(base_branch, source_branch)
-  diff, status = Open3.capture2(
-    'git', 'diff', '--merge-base', base_branch, source_branch,
-    'CHANGELOG.md'
-  )
-  raise 'git diff failed' unless status.success?
+def build_changelog_from_commit(commit)
+  commit.commit_messages.reverse.map { |message| build_changelog(message) }.compact.first ||
+    build_changelog(commit.title)
+end
 
-  diff_lines = diff.chomp.split("\n")
-  index = diff_lines.find_index { |line| line.start_with?('@@') }
-  return [] if index.nil?
-  diff_lines[(index+1)..].filter { |line| !line.start_with?('@@') && line != ' ' }
+# Transforms a formatted git log into structured objects.
+# The git format ends up printing a single commit as:
+#
+# title: Remove unused IdV controller view (#5922)
+# body:**Why**: Because it's unused.
+# * Add changelog, change constant name
+# DELIMITER
+# The string is first split on DELIMITER, and then the body is split into
+# individual lines.
+def get_git_log(base_branch, source_branch)
+  format = '--pretty=title: %s%nbody:%b%nDELIMITER'
+  log, status = Open3.capture2(
+    'git', 'log', format, "#{base_branch}..#{source_branch}"
+  )
+
+  raise 'git log failed' unless status.success?
+
+  log.strip.split('DELIMITER').map { |commit|
+    commit.split("\nbody:").map do |commit_message_lines|
+      commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
+    end
+  }.map do |title_and_commit_messages|
+      title = title_and_commit_messages.first.first.delete_prefix('title: ')
+      messages = title_and_commit_messages[1]
+      SquashedCommit.new(
+        title: title,
+        commit_messages: messages,
+      )
+  end
 end
 
 def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log, status = Open3.capture2(
-    'git', 'log', '--pretty=\'%B\'', "#{base_branch}...#{source_branch}"
+    'git', 'log', '--pretty=\'%B\'', "#{base_branch}..#{source_branch}"
   )
   raise 'git log failed' unless status.success?
 
-  log.include?('[skip changelog]')
+  log.include?(SKIP_CHANGELOG_MESSAGE)
+end
+
+# Get the last valid changelog line for every Pull Request and tie it to the commit subject.
+# Each PR should be squashed, which results in every PR being one commit. The commit messages
+# in a squashed PR are concatencated with a leading "*" for each commit. Example:
+#
+# commit b7cc1cdaf697decb9908cb125538e75bddc46489
+# Author: IDP Committer <idp.committer@gsa.gov>
+# Date:   Wed Feb 2 09:14:29 2022 -0500
+#
+#     LG-9998: Update Authentication (#9999)
+#
+#     * Update Authentication commit #1
+#
+#     changelog: Authentication: Updating Authentication (LG-9998)
+#
+#     * Authentication commit #2
+def generate_changelog(base_branch, source_branch)
+  log = get_git_log(base_branch, source_branch)
+
+  changelog_entries = []
+  log.each do |item|
+    # Skip this commit if the skip changelog message appears
+    next if item.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
+    change = build_changelog_from_commit(item)
+    next unless change
+
+    pr_number = %r{\(#(?<pr>\d+)\)}.match(item[:title])
+
+    # Find most similar category
+    category = CATEGORIES.min_by do |category|
+      DidYouMean::Levenshtein.distance(change[:category], category)
+    end
+
+    changelog_entry = ChangelogEntry.new(
+      category: category,
+      subcategory: change[:subcategory],
+      pr_number: pr_number&.named_captures&.fetch('pr'),
+      change: change[:change],
+    )
+
+    changelog_entries << changelog_entry
+  end
+
+  changelog_entries
+end
+
+# Turns a list of ChangeLogEntry objects into a formatted string that is fit to be pasted
+# directly into release notes.
+# Entries with the same category and change are grouped into one changelog line so that we can
+# support multi-PR changes.
+def format_changelog(changelog_entries)
+  changelog_entries = changelog_entries.group_by { |entry| [entry.category, entry.change] }
+
+  changelog = ''
+  CATEGORIES.each do |category|
+    category_changes = changelog_entries.filter { |ce| ce[0] == category }
+    next if category_changes.empty?
+    changelog.concat("## #{category}\n")
+    category_changes.each do |group, entries|
+      change = entries.first.change
+      subcategory = entries.first.subcategory
+      pr_numbers = entries.map(&:pr_number).compact.sort
+      if pr_numbers.count > 0
+        formatted_pr_numbers = pr_numbers.map do |number|
+          "[##{number}](https://github.com/18F/identity-idp/pull/#{number})"
+        end.join(', ')
+        formatted_pr_numbers = " (#{formatted_pr_numbers})"
+      else
+        formatted_pr_numbers = ''
+      end
+
+      changelog.concat("- #{subcategory}: #{change}#{formatted_pr_numbers}\n")
+    end
+
+    changelog.concat("\n")
+  end
+
+  changelog.strip
 end
 
 def main(args)
@@ -59,21 +169,29 @@ def main(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
+  changelog_entries = generate_changelog(options[:base_branch], options[:source_branch])
   skip_check = commit_messages_contain_skip_changelog?(
     options[:base_branch],
     options[:source_branch],
   )
-  return 0 if skip_check
 
-  diff_lines = get_changelog_diff_lines(options[:base_branch], options[:source_branch])
-
-  if diff_lines.any? { |x| is_valid_changelog_diff_addition?(x) }
+  if skip_check || changelog_entries.count > 0
+    formatted_changelog = format_changelog(changelog_entries)
+    puts format_changelog(changelog_entries) if formatted_changelog.length > 0
     exit 0
   else
     warn(
       <<~ERROR,
         A valid changelog line was not found.
-        Changelog entries should be formatted as: - CATEGORY: CHANGE_DESCRIPTION (#PULL_REQUEST_NUMBER)
+        A commit message should contain a line in the form of:
+
+        changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
+
+        example:
+        changelog: Improvements, Authentication, Updating Authentication (LG-9998)
+
+        categories:
+        #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}
 
         Include "[skip changelog]" in a commit message to bypass this check.
       ERROR

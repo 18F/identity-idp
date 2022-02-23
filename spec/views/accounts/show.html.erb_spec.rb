@@ -97,7 +97,7 @@ describe 'accounts/show.html.erb' do
 
         it 'formats phone numbers' do
           render
-          expect(rendered).to have_selector('.grid-col-5', text: '+1 888-867-5309')
+          expect(rendered).to have_selector('.grid-col-fill', text: '+1 888-867-5309')
         end
       end
     end

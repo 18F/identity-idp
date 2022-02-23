@@ -2,34 +2,29 @@
 locals:
 * f: from validated_form_for
 * selection: the current language selection
+* hint: optional hint override
 %>
-<div class="grid-row margin-bottom-2">
-  <div class="grid-col-fill">
-    <ul class="usa-input-list display-inline-block minw-full">
-      <% I18n.available_locales.each do |locale| %>
-        <% item_id = "email-locale-#{locale}" %>
-        <li class="text-no-wrap width-full">
-          <%= f.input_field(
-                :email_language,
-                type: :radio,
-                value: locale,
-                checked: selection ?
-                  selection.to_s == locale.to_s :
-                  (I18n.locale.to_s == locale.to_s),
-                class: 'usa-radio__input usa-radio__input--bordered',
-                id: item_id,
-              ) %>
-          <%= f.label(
-                :email_language,
-                locale == I18n.locale ?
-                  t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
-                  t("i18n.locale.#{locale}"),
-                for: item_id,
-                class: 'usa-radio__label width-full text-no-wrap',
-              ) %>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-  <div class="grid-col-4 tablet:grid-col-6"></div>
-</div>
+<%= f.input(
+      :email_language,
+      as: :radio_buttons,
+      label: t('forms.registration.labels.email_language'),
+      hint: local_assigns.fetch(
+        :hint,
+        t(
+          'account.email_language.languages_list',
+          app_name: APP_NAME,
+          list: I18n.available_locales.
+            map { |locale| t("account.email_language.name.#{locale}") }.
+            to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} "),
+        ),
+      ),
+      collection: I18n.available_locales.map do |locale|
+        [
+          locale == I18n.locale ?
+            t('account.email_language.default', language: t("i18n.locale.#{locale}")) :
+            t("i18n.locale.#{locale}"),
+          locale,
+          checked: selection ? selection.to_s == locale.to_s : I18n.locale.to_s == locale.to_s,
+        ]
+      end,
+    ) %>

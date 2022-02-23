@@ -240,5 +240,26 @@ describe RegisterUserEmailForm do
         expect(submit_form.errors).to eq errors
       end
     end
+
+    context 'when user provides invalid email_language' do
+      it 'returns failure with errors' do
+        errors = { email_language: [t('errors.messages.inclusion')] }
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: false,
+          throttled: false,
+          user_id: 'anonymous-uuid',
+        }
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          terms_accepted: '1',
+          email_language: '01234567890',
+        )
+
+        expect(submit_form.success?).to eq false
+        expect(submit_form.extra).to eq extra
+        expect(submit_form.errors).to eq errors
+      end
+    end
   end
 end

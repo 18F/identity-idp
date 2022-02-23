@@ -29,7 +29,6 @@ es:
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono
-    lock_failure: Esto es lo que puedes hacer
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar

@@ -23,66 +23,90 @@ body {
   font-size: 20px;
 }
 
-.caps {
-  letter-spacing: $caps-letter-spacing;
-  text-transform: uppercase;
-}
-
 .line-height-1 {
   line-height: $line-height-1;
 }
-.line-height-4 {
-  line-height: $line-height-4;
-}
 
-// given how similar & coupled these are, single line preferred
-h1,
-.h1 {
+%h1 {
+  line-height: 1.35;
   font-size: $h1;
-}
-h2,
-.h2 {
-  font-size: $h2;
-}
-h3,
-.h3 {
-  font-size: $h3;
-}
-h4,
-.h4 {
-  font-size: $h4;
-}
-h5,
-.h5 {
-  font-size: $h5;
-}
-h6,
-.h6 {
-  font-size: $h6;
-}
 
-@media #{$breakpoint-sm} {
-  h1,
-  .h1 {
+  @include at-media('tablet') {
     font-size: $sm-h1;
   }
-  h2,
-  .h2 {
+}
+
+%h2 {
+  line-height: 1.35;
+  font-size: $h2;
+
+  @include at-media('tablet') {
     font-size: $sm-h2;
   }
-  h3 {
+}
+
+%h3 {
+  line-height: $line-height;
+  font-size: $h3;
+
+  @include at-media('tablet') {
     font-size: $sm-h3;
   }
-  h4,
-  .h4 {
+}
+
+%h4 {
+  line-height: $line-height;
+  font-size: $h4;
+
+  @include at-media('tablet') {
     font-size: $sm-h4;
   }
-  h5,
-  .h5 {
+}
+
+%h5 {
+  line-height: $line-height;
+  font-size: $h5;
+
+  @include at-media('tablet') {
     font-size: $sm-h5;
   }
-  h6,
-  .h6 {
+}
+
+%h6 {
+  line-height: $line-height;
+  font-size: $h6;
+
+  @include at-media('tablet') {
     font-size: $sm-h6;
   }
+}
+
+h1,
+.h1 {
+  @extend %h1;
+}
+
+h2,
+.h2 {
+  @extend %h2;
+}
+
+h3,
+.h3 {
+  @extend %h3;
+}
+
+h4,
+.h4 {
+  @extend %h4;
+}
+
+h5,
+.h5 {
+  @extend %h5;
+}
+
+h6,
+.h6 {
+  @extend %h6;
 }

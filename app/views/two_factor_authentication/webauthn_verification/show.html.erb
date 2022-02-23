@@ -33,7 +33,7 @@
           multiple_factors_enabled: @presenter.multiple_factors_enabled?,
         },
       ) do %>
-    <div class="hidden spinner center margin-bottom-4" id="spinner">
+    <div class="hidden spinner text-center margin-bottom-4" id="spinner">
       <%= image_tag(
             asset_url('spinner.gif'),
             srcset: asset_url('spinner@2x.gif'),
@@ -52,7 +52,7 @@
   <% end %>
 
   <div id='webauthn-auth-successful' class="hidden">
-    <div class="col-12 center margin-bottom-2">
+    <div class="text-center margin-bottom-2">
       <%= image_tag(
             asset_url('webauthn-verified.svg'),
             height: 144,

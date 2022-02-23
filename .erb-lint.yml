@@ -18,17 +18,18 @@ linters:
     rule_set:
       - deprecated:
           - (black|silver|white|aqua|blue|navy|teal|green|olive|lime|yellow|orange|red|fuchsia|purple|maroon|color-inherit|muted)
+          - '(bold|regular|italic|caps)'
           - 'align-(top|middle|bottom|baseline)'
-          - '(left)-align'
-          - 'justify'
-          - 'nowrap'
+          - '(left|right)-align'
+          - '(center|justify|nowrap)'
           - 'line-height-[3]'
           - 'list-style-none'
           - 'table(-cell)?'
           - 'fit'
           - 'max-width-[1-4]'
           - '((sm|md|lg)-)?[mp][trblxy]?(n?[0-6]|-auto)'
-          - 'fixed'
+          - '(relative|absolute|fixed)'
+          - '(top|right|bottom|left)-0'
           - 'z[1-4]'
           - 'col-(right|[579])'
           - 'sm-col-11?'
