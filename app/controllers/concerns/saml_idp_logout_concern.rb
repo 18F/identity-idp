@@ -22,8 +22,9 @@ module SamlIdpLogoutConcern
   end
 
   def handle_valid_sp_remote_logout_request(user_id)
-    # Remotely invalidate the user's current session, see config/initializers/session_limitable.rb
-    User.find(user_id).update!(unique_session_id: nil)
+    # Remotely delete the user's current session
+    session_id = User.find(user_id).unique_session_id
+    OutOfBandSessionAccessor.new(session_id).destroy
 
     # rubocop:disable Rails/RenderInline
     render inline: logout_response, content_type: 'text/xml'
