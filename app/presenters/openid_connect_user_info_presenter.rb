@@ -101,7 +101,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def street_address
-    [ial2_data.address1, ial2_data.address2].compact.join(' ')
+    [ial2_data.address1, ial2_data.address2].compact.join("\n")
   end
 
   def stringify_attr(attribute)
