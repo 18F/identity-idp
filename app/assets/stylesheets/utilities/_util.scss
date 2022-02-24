@@ -4,12 +4,6 @@
   display: none;
 }
 
-.truncate-inline {
-  max-width: 80%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
 .vertical-align::before {
   content: ' ';
   display: inline-block;

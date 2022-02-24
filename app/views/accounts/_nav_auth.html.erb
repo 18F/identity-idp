@@ -1,36 +1,25 @@
 <div class="bg-white width-full flex-align-self-start">
-  <div class="container tablet:padding-x-2 tablet:padding-y-4">
-    <div class="clearfix">
-      <div class="margin-y-105 margin-left-2 tablet:margin-0 col col-4">
+  <div class="grid-container padding-x-0 tablet:padding-x-4">
+    <div class="grid-row flex-justify tablet:padding-y-4">
+      <div class="grid-col-auto display-flex flex-align-center padding-x-2 tablet:padding-x-0">
         <%= link_to(
               image_tag(
                 asset_url('logo.svg'),
                 alt: APP_NAME,
                 class: 'text-bottom',
-                width: 170,
-                height: 23,
+                width: 155,
+                height: 21,
               ),
               root_path,
             ) %>
       </div>
-      <div class="col col-8 padding-right-1 display-none desktop:display-flex flex-justify-end">
-        <div class="margin-right-1 truncate-inline">
-          <p class="truncate margin-0">
-            <%= t('account.welcome') %>
-            <strong><%= greeting %></strong>
-          </p>
-        </div>
-        <div class="border-base-darker border-left">
-          <p class="margin-0">
-            <%= link_to t('links.sign_out'), destroy_user_session_path,
-                        class: 'padding-left-1' %>
-          </p>
-        </div>
-      </div>
-      <div class="desktop:display-none display-flex flex-row flex-justify-end">
-        <%= link_to t('links.sign_out'), destroy_user_session_path, class: 'margin-top-105 margin-right-2' %>
+      <div class="grid-col-auto display-flex flex-align-center">
+        <span class="display-none tablet:display-inline padding-right-1 margin-right-1 border-right border-base-darker">
+          <%= t('account.welcome') %> <strong><%= greeting %></strong>
+        </span>
+        <%= link_to t('links.sign_out'), destroy_user_session_path %>
         <% if enable_mobile_nav %>
-          <button class="usa-menu-btn"><%= t('account.navigation.menu') %></button>
+          <button class="usa-menu-btn margin-left-2"><%= t('account.navigation.menu') %></button>
         <% end %>
       </div>
     </div>

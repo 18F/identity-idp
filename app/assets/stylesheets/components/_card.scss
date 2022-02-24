@@ -10,6 +10,8 @@
   }
 
   @media #{$breakpoint-sm} {
+    @include u-padding-x(10);
+    @include u-margin-bottom(8);
     border-radius: 5px;
 
     &-wide {
