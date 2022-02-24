@@ -99,7 +99,7 @@ module Users
       controller_info = 'users/sessions#create'
       analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
       sign_out
-      flash[:error] = t('errors.invalid_authenticity_token')
+      flash[:error] = t('errors.general')
       redirect_back fallback_location: new_user_session_url, allow_other_host: false
     end
 

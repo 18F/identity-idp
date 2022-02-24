@@ -47,7 +47,7 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_webauthn
-      flash[:error] = t('errors.invalid_authenticity_token')
+      flash[:error] = t('errors.general')
       redirect_to login_two_factor_webauthn_url
     end
 

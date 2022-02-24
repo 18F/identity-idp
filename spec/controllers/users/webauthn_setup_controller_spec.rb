@@ -118,5 +118,20 @@ describe Users::WebauthnSetupController do
         delete :delete, params: { id: webauthn_configuration.id }
       end
     end
+
+    describe 'show_delete' do
+      let(:webauthn_configuration) { create(:webauthn_configuration, user: user) }
+
+      it 'renders page when configuration exists' do
+        get :show_delete, params: { id: webauthn_configuration.id }
+        expect(response).to render_template :delete
+      end
+
+      it 'redirects when the configuration does not exist' do
+        get :show_delete, params: { id: '_' }
+        expect(response).to redirect_to(new_user_session_url)
+        expect(flash[:error]).to eq t('errors.general')
+      end
+    end
   end
 end

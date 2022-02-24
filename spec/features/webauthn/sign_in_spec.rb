@@ -36,7 +36,7 @@ feature 'webauthn sign in' do
     mock_press_button_on_hardware_key_on_verification
     click_button t('forms.buttons.continue')
 
-    expect(page).to have_content(t('errors.invalid_authenticity_token'))
+    expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 
@@ -46,7 +46,7 @@ feature 'webauthn sign in' do
     sign_in_user(webauthn_configuration.user)
     click_button t('forms.buttons.continue')
 
-    expect(page).to have_content(t('errors.invalid_authenticity_token'))
+    expect(page).to have_content(t('errors.general'))
     expect(page).to have_current_path(login_two_factor_webauthn_path)
   end
 end

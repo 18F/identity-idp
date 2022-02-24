@@ -355,7 +355,7 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
 
       expect(response).to redirect_to new_user_session_url
-      expect(flash[:error]).to eq t('errors.invalid_authenticity_token')
+      expect(flash[:error]).to eq t('errors.general')
     end
 
     it 'returns to sign in page if email is a Hash' do
