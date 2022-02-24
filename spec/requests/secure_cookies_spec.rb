@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'secure cookies' do
-  it 'flags all cookies sent by the application as secure, httponly, and lax' do
+  it 'flags all cookies sent by the application as Secure, HttpOnly, and SameSite=Lax' do
     get root_url
     cookie_count = response.headers['Set-Cookie'].split("\n").count
 
