@@ -1,7 +1,7 @@
 <% title t('titles.account') %>
 
 <% if @presenter.showing_any_partials? %>
-  <div class="margin-bottom-8">
+  <div class="margin-bottom-4">
     <% if @presenter.show_personal_key_partial? %>
       <%= render 'accounts/personal_key', presenter: @presenter %>
     <% end %>

@@ -14,22 +14,20 @@
 </p>
 
 <div class="margin-top-4 margin-bottom-5">
-  <table>
-    <tr>
-      <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
-        <td class="padding-0">
-          <% section.each do |code| %>
+  <div class="grid-row">
+    <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+      <div class="grid-col-12 tablet:grid-col-6">
+        <% section.each do |code| %>
+          <div class="margin-bottom-2">
             <code class="bold h2">
               <%= RandomPhrase.format(code, separator: '-') %>
             </code>
-            <br/>
-            <br/>
-          <% end %>
-        </td>
-      <% end %>
-    </tr>
-  </table>
-  <div class="margin-top-0">
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class="margin-top-1">
     <% if desktop_device? %>
       <%= render ButtonComponent.new(
             action: ->(**tag_options, &block) do

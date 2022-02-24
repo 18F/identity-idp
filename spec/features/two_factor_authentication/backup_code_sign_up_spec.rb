@@ -7,7 +7,7 @@ feature 'sign up with backup code' do
   it 'allows backup code only MFA configurations' do
     user = sign_up_and_set_password
     expect(page).to_not \
-      have_content t('two_factor_authentication.login_options.backup_code_info_html')
+      have_content t('two_factor_authentication.login_options.backup_code_info')
     select_2fa_option('backup_code')
 
     expect(page).to have_link(t('forms.backup_code.download'))
@@ -40,7 +40,7 @@ feature 'sign up with backup code' do
       signin(user.email, user.password)
       visit login_two_factor_options_path
       expect(page).to \
-        have_content t('two_factor_authentication.login_options.backup_code_info_html')
+        have_content t('two_factor_authentication.login_options.backup_code_info')
       visit login_two_factor_backup_code_path
       fill_in :backup_code_verification_form_backup_code, with: codes[index]
       click_on 'Submit'

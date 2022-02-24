@@ -2,16 +2,18 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::SmsOptInController do
   describe '#new' do
-    subject(:action) { get :new }
+    subject(:action) { get :new, params: { opt_out_uuid: opt_out_uuid } }
 
     context 'when loaded while using an existing phone' do
+      let(:opt_out_uuid) do
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).uuid
+      end
+
       let(:user) { create(:user, :with_phone) }
       let(:sp_name) { nil }
       before do
         stub_sign_in_before_2fa(user)
         stub_analytics
-        allow(controller).to receive(:user_session).
-          and_return(phone_id: user.phone_configurations.first.id)
         allow(controller).to receive(:decorated_session).
           and_return(instance_double('SessionDecorator', sp_name: sp_name))
       end
@@ -51,37 +53,24 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
 
     context 'when loaded while adding a new phone' do
       let(:user) { create(:user) }
-      let(:phone) { Faker::PhoneNumber.cell_phone }
-      let(:user_session) { { unconfirmed_phone: phone } }
+      let(:phone) { Faker::PhoneNumber.cell_phone_in_e164 }
+      let(:opt_out_uuid) { PhoneNumberOptOut.create_or_find_with_phone(phone).uuid }
+
       before do
         stub_sign_in_before_2fa(user)
-        allow(controller).to receive(:user_session).
-          and_return(user_session)
       end
 
       it 'assigns an in-memory phone configuration' do
         expect { action }.to_not change { user.reload.phone_configurations.count }
 
-        expect(assigns[:phone_configuration].phone).to eq(phone)
-      end
-
-      context 'when user_session has both an unconfirmed phone and a phone_id' do
-        let(:user_session) do
-          {
-            unconfirmed_phone: phone,
-            phone_id: create(:phone_configuration).id,
-          }
-        end
-
-        it 'prefers the unconfirmed_phone' do
-          action
-
-          expect(assigns[:phone_configuration].phone).to eq(phone)
-        end
+        expect(PhoneFormatter.format(assigns[:phone_configuration].phone)).
+          to eq(PhoneFormatter.format(phone))
       end
     end
 
     context 'when loaded without any phone context' do
+      let(:opt_out_uuid) { '-111111' }
+
       it 'renders a 404' do
         expect(action).to be_not_found
         expect(response).to render_template('pages/page_not_found')
@@ -90,15 +79,17 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
   end
 
   describe '#create' do
-    subject(:action) { post :create }
+    subject(:action) { post :create, params: { opt_out_uuid: opt_out_uuid } }
 
     context 'when loaded while using an existing phone' do
+      let(:opt_out_uuid) do
+        PhoneNumberOptOut.create_or_find_with_phone(user.phone_configurations.first.phone).uuid
+      end
+
       let(:user) { create(:user, :with_phone) }
       before do
         stub_sign_in(user)
         stub_analytics
-        allow(controller).to receive(:user_session).
-          and_return(phone_id: user.phone_configurations.first.id)
 
         Telephony.config.pinpoint.add_sms_config do |sms|
           sms.region = 'sms-region'
@@ -127,6 +118,12 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
             success: true,
           )
         end
+
+        it 'deletes the opt out row' do
+          action
+
+          expect(PhoneNumberOptOut.find_by(uuid: opt_out_uuid)).to be_nil
+        end
       end
 
       context 'when resubscribing is not successful' do
@@ -151,6 +148,12 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
             success: false,
           )
         end
+
+        it 'does not delete the opt out row' do
+          action
+
+          expect(PhoneNumberOptOut.from_param(opt_out_uuid)).to be
+        end
       end
 
       context 'when resubscribing throws an error' do
@@ -173,10 +176,18 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
             success: false,
           )
         end
+
+        it 'does not delete the opt out row' do
+          action
+
+          expect(PhoneNumberOptOut.from_param(opt_out_uuid)).to be
+        end
       end
     end
 
     context 'when loaded without any phone context' do
+      let(:opt_out_uuid) { '-111111' }
+
       it 'renders a 404' do
         expect(action).to be_not_found
         expect(response).to render_template('pages/page_not_found')

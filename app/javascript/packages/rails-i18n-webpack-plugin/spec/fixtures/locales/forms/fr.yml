@@ -1,5 +1,8 @@
 fr:
   forms:
+    messages:
+      one: 'Un message'
+      other: '%{count} messages'
     button:
       cancel: Annuler
       reset: Réinitialiser

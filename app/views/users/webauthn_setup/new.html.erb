@@ -55,8 +55,7 @@
       id: 'continue-button',
     ) %>
 
-<div class='spinner hidden' id='spinner'>
-  <br>
+<div class="spinner hidden margin-y-4" id='spinner'>
   <div class='center'>
     <%= image_tag(
           asset_url('spinner.gif'),
@@ -69,7 +68,6 @@
   <h2 class='h4 half-center'><%= @presenter.setup_heading %></h2>
   <p class='half-center'><%= @presenter.setup_instructions %></p>
 </div>
-<br>
 
 <%= render 'shared/cancel_or_back_to_options' %>
 

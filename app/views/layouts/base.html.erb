@@ -26,9 +26,8 @@
   <%= backwards_compatible_javascript_tag do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   <% end %>
-  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2') %>
-  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2') %>
-  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/merriweather/Latin-Merriweather-Bold.woff2') %>
+  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/public-sans/PublicSans-Bold.woff2') %>
+  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/public-sans/PublicSans-Regular.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <!--[if IE 8]>
   <%= javascript_include_tag_without_preload 'es5-shim.min' %>

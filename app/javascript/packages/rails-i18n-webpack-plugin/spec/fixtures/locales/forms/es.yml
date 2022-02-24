@@ -1,5 +1,8 @@
 es:
   forms:
+    messages:
+      one: 'Un mensaje'
+      other: '%{count} mensajes'
     button:
       submit: Enviar
       cancel: Cancelar

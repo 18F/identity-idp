@@ -9,6 +9,12 @@ module Pii
       OpenSSL::HMAC.hexdigest(digest, key, text)
     end
 
+    def self.previous_fingerprints(text)
+      IdentityConfig.store.hmac_fingerprinter_key_queue.map do |key|
+        fingerprint(text, key)
+      end
+    end
+
     def self.verify(text, fingerprint)
       verify_current(text, fingerprint) || verify_queue(text, fingerprint)
     end

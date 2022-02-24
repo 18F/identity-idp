@@ -27,7 +27,7 @@
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
         <div class="display-flex tablet:display-none">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-1 usa-link--alt tablet:display-none',
+          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-2 usa-link--alt tablet:display-none',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
                           width: 20, alt: '' %>
@@ -35,7 +35,7 @@
         </div>
 
         <div class="display-none tablet:display-flex">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-1 usa-link--alt',
+          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-2 usa-link--alt',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa.svg'),
                           width: 20, class: 'float-left margin-right-1', alt: '' %>
@@ -48,7 +48,7 @@
       <div class="display-flex flex-align-center flex-justify-center">
         <% if show_language_dropdown %>
           <ul class='list-reset display-none tablet:display-block margin-bottom-0'>
-            <li class="i18n-desktop-toggle display-flex margin-y-1 margin-x-2 relative">
+            <li class="i18n-desktop-toggle display-flex margin-y-1 margin-x-2">
               <button class='text-white text-decoration-none border border-primary radius-lg padding-x-1 py-tiny language-desktop-button' aria-expanded='false'>
                 <%= image_tag asset_url('globe-white.svg'), width: 12,
                                                             class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
@@ -71,30 +71,30 @@
         <div class="display-flex tablet:display-none">
           <%= new_window_link_to(
                 t('links.help'), MarketingSite.help_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.contact'), MarketingSite.contact_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'caps h6 text-primary text-decoration-none margin-right-2'
+                class: 'h6 text-primary text-decoration-none'
               ) %>
         </div>
 
         <div class="display-none tablet:display-flex">
           <%= new_window_link_to(
                 t('links.help'), MarketingSite.help_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
               ) %>
           <%= new_window_link_to(
                 t('links.contact'), MarketingSite.contact_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
               ) %>
           <%= new_window_link_to(
                 t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'caps h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-white text-decoration-none usa-link--alt'
               ) %>
         </div>
       </div>

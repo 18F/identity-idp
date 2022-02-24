@@ -1,5 +1,5 @@
-<div class="clearfix border-bottom border-primary-light">
-  <div class="col col-12 margin-bottom-1 margin-top-0">
+<div class="border-bottom border-primary-light">
+  <div class="margin-bottom-1 margin-top-0">
     <h3 class="margin-0">
       <%= t('account.index.email_addresses') %>
     </h3>
@@ -8,23 +8,23 @@
     <% end %>
   </div>
   <% @presenter.decorated_user.visible_email_addresses.each do |email| %>
-    <div class="padding-1 col col-12 border-top border-left border-right border-primary-light">
-      <div class="col col-8 sm-6">
-        <span class="break-word">
-          <%= email.email %>
-          &nbsp;
-        </span>
-        <span>
-          <%= t('email_addresses.unconfirmed') unless email.confirmed_at %>
-        </span>
-      </div>
-      <div class="col col-4 sm-6 right-align">
+    <div class="padding-1 border-top border-left border-right border-primary-light">
+      <div class="grid-row grid-gap-2">
+        <div class="grid-col-fill">
+          <span class="break-word">
+            <%= email.email %>
+          </span>
+          <% unless email.confirmed_at %>
+            &nbsp;<%= t('email_addresses.unconfirmed') %>
+          <% end %>
+        </div>
         <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
-          &nbsp; &nbsp;
-          <%= render(
-                'accounts/actions/delete_action_button',
-                path: manage_email_confirm_delete_url(id: email.id),
-              ) %>
+          <div class="grid-col-auto">
+            <%= render(
+                  'accounts/actions/delete_action_button',
+                  path: manage_email_confirm_delete_url(id: email.id),
+                ) %>
+          </div>
         <% end %>
       </div>
     </div>

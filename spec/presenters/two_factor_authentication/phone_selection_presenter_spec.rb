@@ -17,7 +17,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
 
       it 'includes a note about choosing voice or sms' do
         expect(presenter.info).
-          to include(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
+          to include(t('two_factor_authentication.two_factor_choice_options.phone_info'))
       end
 
       it 'does not include a masked number' do

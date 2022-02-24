@@ -1,6 +1,6 @@
-$serif-font-family: 'Merriweather Web', 'Georgia', 'Cambria', 'Times New Roman', 'Times', serif !default;
-$sans-serif-font-family: 'Source Sans Pro Web', 'Helvetica Neue', 'Helvetica', 'Roboto', 'Arial',
-  sans-serif !default;
+$sans-serif-font-family: Public Sans Web, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+  Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol !default;
+$serif-font-family: $sans-serif-font-family !default;
 
 $base-font-size: 16px !default;
 $small-font-size: 14px !default;
@@ -18,21 +18,20 @@ $caps-letter-spacing: 1px !default;
 
 $line-height-0: 0.75 !default; // For when a tighter-than-normal leading is desired.
 $line-height-1: 1 !default;
-$line-height-4: 2 !default;
 
-$h1: 1.3125rem !default;
-$h2: 1.125rem !default;
-$h3: 1rem !default;
-$h4: 0.875rem !default;
-$h5: 0.8125rem !default;
-$h6: 0.625rem !default;
+$h1: 1.5rem !default;
+$h2: 1.25rem !default;
+$h3: 1.125rem !default;
+$h4: 1rem !default;
+$h5: 0.875rem !default;
+$h6: 0.75rem !default;
 
-$sm-h1: 1.5rem !default;
-$sm-h2: 1.25rem !default;
-$sm-h3: 1rem !default;
-$sm-h4: 0.875rem !default;
+$sm-h1: 1.75rem !default;
+$sm-h2: 1.375rem !default;
+$sm-h3: 1.125rem !default;
+$sm-h4: 1rem !default;
 $sm-h5: 0.875rem !default;
-$sm-h6: 0.8125rem !default;
+$sm-h6: 0.75rem !default;
 
 $space-tiny: 0.25rem !default;
 

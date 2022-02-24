@@ -22,7 +22,7 @@ function webauthn() {
   }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
-    document.getElementById('spinner').className = '';
+    document.getElementById('spinner').classList.remove('hidden');
     document.getElementById('continue-button').className = 'hidden';
 
     const platformAuthenticator =

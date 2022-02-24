@@ -1,11 +1,5 @@
-<div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-  <div class="mobile-lg:grid-col-6 padding-x-1">
-    <div class="bold truncate">
-      <%= event.event_type %>
-    </div>
-    <%= event.last_sign_in_location_and_ip %>
-  </div>
-  <div class="mobile-lg:grid-col-6 padding-x-1 sm-right-align">
-    <%= local_time(event.happened_at, t('time.formats.event_timestamp')) %>
-  </div>
+<div class="padding-1 border-top border-left border-right border-primary-light">
+  <strong><%= event.event_type %></strong><br>
+  <%= local_time(event.happened_at, t('time.formats.event_timestamp')) %><br>
+  <%= event.last_sign_in_location_and_ip %>
 </div>

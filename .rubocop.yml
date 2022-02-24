@@ -24,8 +24,6 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  Include:
-    - 'lib/tasks/convert_application_yml_to_proper_types.rake'
   TargetRubyVersion: 2.7
   TargetRailsVersion: 6.0
   UseCache: true

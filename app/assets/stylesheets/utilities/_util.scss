@@ -17,10 +17,6 @@
   vertical-align: middle;
 }
 
-.block-center {
-  margin: 0 auto;
-}
-
 html.no-js .js {
   display: none;
 }
@@ -38,9 +34,6 @@ html.js .no-js {
 @media #{$breakpoint-sm} {
   .sm-left-align {
     text-align: left;
-  }
-  .sm-right-align {
-    text-align: right;
   }
 }
 

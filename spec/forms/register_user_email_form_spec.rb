@@ -253,7 +253,7 @@ describe RegisterUserEmailForm do
         submit_form = subject.submit(
           email: 'not_taken@gmail.com',
           terms_accepted: '1',
-          email_language: '01234567890'
+          email_language: '01234567890',
         )
 
         expect(submit_form.success?).to eq false

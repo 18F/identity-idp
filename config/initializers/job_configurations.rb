@@ -191,6 +191,12 @@ else
         cron: cron_1h,
         args: -> { [Time.zone.now] },
       },
+      # Sync opted out phone numbers from AWS
+      phone_number_opt_out_sync_job: {
+        class: 'PhoneNumberOptOutSyncJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
       # Queue heartbeat job to GoodJob
       heartbeat_job: {
         class: 'HeartbeatJob',
