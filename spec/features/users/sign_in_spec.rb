@@ -339,7 +339,7 @@ feature 'Sign in' do
         session_store.send(:destroy_session_from_sid, session_cookie.value)
 
         fill_in_credentials_and_submit(user.email, user.password)
-        expect(page).to have_content t('errors.invalid_authenticity_token')
+        expect(page).to have_content t('errors.general')
 
         fill_in_credentials_and_submit(user.email, user.password)
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -528,7 +528,7 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
 
       expect(current_url).to eq new_user_session_url(request_id: '123')
-      expect(page).to have_content t('errors.invalid_authenticity_token')
+      expect(page).to have_content t('errors.general')
     end
   end
 

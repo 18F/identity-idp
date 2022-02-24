@@ -224,7 +224,7 @@ class ApplicationController < ActionController::Base
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
-    flash[:error] = t('errors.invalid_authenticity_token')
+    flash[:error] = t('errors.general')
     redirect_back fallback_location: new_user_session_url, allow_other_host: false
   end
 

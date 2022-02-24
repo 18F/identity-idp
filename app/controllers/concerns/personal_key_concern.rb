@@ -26,7 +26,7 @@ module PersonalKeyConcern
       user_signed_in: user_signed_in?,
     )
     sign_out
-    flash[:error] = t('errors.invalid_authenticity_token')
+    flash[:error] = t('errors.general')
     redirect_to new_user_session_url
   end
 end
