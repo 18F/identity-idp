@@ -11,7 +11,7 @@ async function webauthn() {
     webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
   const webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
 
-  if (!WebAuthn.isWebAuthnEnabled()) {
+  if (!WebAuthn.isWebAuthnEnabled() || (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled)) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
     window.location.href = href;
   }
@@ -20,28 +20,23 @@ async function webauthn() {
   spinner.classList.remove('hidden');
 
   // if platform auth is not supported on device, we should take user to the error screen if theres no additional methods.
-  if (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled) {
-    const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
-    window.location.href = href;
-  } else {
-    WebAuthn.verifyWebauthnDevice({
-      userChallenge: document.getElementById('user_challenge').value,
-      credentialIds: document.getElementById('credential_ids').value,
+  WebAuthn.verifyWebauthnDevice({
+    userChallenge: document.getElementById('user_challenge').value,
+    credentialIds: document.getElementById('credential_ids').value,
+  })
+    .then((result) => {
+      document.getElementById('credential_id').value = result.credentialId;
+      document.getElementById('authenticator_data').value = result.authenticatorData;
+      document.getElementById('client_data_json').value = result.clientDataJSON;
+      document.getElementById('signature').value = result.signature;
+      webauthnInProgressContainer.classList.add('hidden');
+      webauthnSuccessContainer.classList.remove('hidden');
     })
-      .then((result) => {
-        document.getElementById('credential_id').value = result.credentialId;
-        document.getElementById('authenticator_data').value = result.authenticatorData;
-        document.getElementById('client_data_json').value = result.clientDataJSON;
-        document.getElementById('signature').value = result.signature;
-        webauthnInProgressContainer.classList.add('hidden');
-        webauthnSuccessContainer.classList.remove('hidden');
-      })
-      .catch((error) => {
-        document.getElementById('errors').value = error;
-        document.getElementById('platform').value = webauthnPlatformRequested;
-        document.getElementById('webauthn_form').submit();
-      });
-  }
+    .catch((error) => {
+      document.getElementById('errors').value = error;
+      document.getElementById('platform').value = webauthnPlatformRequested;
+      document.getElementById('webauthn_form').submit();
+    });
 }
 
 function webauthnButton() {
