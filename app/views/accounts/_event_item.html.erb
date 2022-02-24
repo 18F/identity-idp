@@ -1,5 +1,5 @@
 <div class="padding-1 border-top border-left border-right border-primary-light">
   <strong><%= event.event_type %></strong><br>
-  <%= local_time(event.happened_at, t('time.formats.event_timestamp')) %><br>
+  <%= render TimeComponent.new(time: event.happened_at) %><br>
   <%= event.last_sign_in_location_and_ip %>
 </div>

@@ -1,0 +1,9 @@
+<%= content_tag(
+      :'lg-time',
+      formatted_time,
+      **tag_options,
+      data: {
+        timestamp: time.iso8601,
+        format: t('time.formats.event_timestamp_js'),
+      }.merge(tag_options[:data].to_h),
+    ) %>

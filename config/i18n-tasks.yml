@@ -63,7 +63,6 @@ search:
     - app/assets/images
     - app/assets/fonts
     - app/views/shared/newrelic/_browser_instrumentation.html.erb
-    - app/javascript/app/local-time.js
     - app/javascript/packages/rails-i18n-webpack-plugin
     - app/javascript/packages/react-i18n
     - app/javascript/packages/i18n
