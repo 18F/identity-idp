@@ -20,7 +20,7 @@ class OutOfBandSessionAccessor
   end
 
   def destroy
-    session_store.send(:destroy_session_from_sid, session_uuid)
+    session_store.send(:destroy_session_from_sid, session_uuid, drop: true)
   end
 
   # @api private

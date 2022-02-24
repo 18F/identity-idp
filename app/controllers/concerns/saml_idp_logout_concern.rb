@@ -23,7 +23,10 @@ module SamlIdpLogoutConcern
 
   def handle_valid_sp_remote_logout_request(user_id)
     # Remotely delete the user's current session
-    session_id = User.find(user_id).unique_session_id
+    session_id = ServiceProviderIdentity.
+      find_by(user_id: user_id, service_provider: saml_request.issuer).
+      rails_session_id
+
     OutOfBandSessionAccessor.new(session_id).destroy
 
     # rubocop:disable Rails/RenderInline
