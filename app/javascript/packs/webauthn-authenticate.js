@@ -11,9 +11,13 @@ async function webauthn() {
     webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
   const webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
 
-  if (!WebAuthn.isWebAuthnEnabled() || (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled)) {
+  if (
+    !WebAuthn.isWebAuthnEnabled() ||
+    (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled)
+  ) {
     const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
     window.location.href = href;
+    return;
   }
 
   const spinner = document.getElementById('spinner');
