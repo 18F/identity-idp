@@ -134,33 +134,41 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           controller.user_session[:webauthn_challenge] = webauthn_challenge
         end
 
-        context 'User has MFA option' do
+        context 'User has multiple MFA options' do
+          let(:view_context) { ActionController::Base.new.view_context }
           before do
             allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
             to receive(:multiple_factors_enabled?).
             and_return(true)
           end
 
-          it 'tracks an invalid submission' do
-            webauthn_configuration = create(
-              :webauthn_configuration,
-              user: controller.current_user,
-              credential_id: credential_id,
-              credential_public_key: credential_public_key,
-            )
-
-            result = { context: 'authentication', errors: {},
-                       multi_factor_auth_method: 'webauthn_platform',
-                       success: false, webauthn_configuration_id: nil }
-            expect(@analytics).to receive(:track_mfa_submit_event).
-              with(result)
-
-            patch :confirm, params: params
-          end
-
-          it 'renders flash error' do
+          it 'redirects to webauthn show page' do
             patch :confirm, params: params
             expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
+          end
+
+          it 'displays flash error message' do
+            patch :confirm, params: params
+            expect(flash[:error]).to eq t(
+              'two_factor_authentication.webauthn_error.multiple_methods',
+              link: view_context.link_to(
+                t('two_factor_authentication.webauthn_error.additional_methods_link'),
+                login_two_factor_options_path,
+              ),
+            )
+          end
+        end
+
+        context 'User only has webauthn as an MFA method' do
+          before do
+            allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
+            to receive(:multiple_factors_enabled?).
+            and_return(false)
+          end
+
+          it 'redirects to webauthn error page ' do
+            patch :confirm, params: params
+            expect(response).to redirect_to login_two_factor_webauthn_error_url
           end
         end
       end
