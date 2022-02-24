@@ -126,9 +126,7 @@ en:
     two_factor_choice_intro: Add another layer of security by using one of the
       multi-factor authentication options below.
     two_factor_choice_options:
-      auth_app: Authentication applicationUse your device to verify your identity. We
-        do not store your fingerprints or images. Recommended since it prevents
-        phishing.
+      auth_app: Authentication application
       auth_app_info: Get codes from an app on your phone, computer, or tablet.
         Recommended because it is harder to intercept than texts or phone calls.
       backup_code: Backup codes
