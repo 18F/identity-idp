@@ -96,6 +96,10 @@ module DocAuth
             data['document']['dob'] = Date.new(m[:year].to_i, m[:month].to_i, m[:day].to_i)
           end
 
+          if data.dig('document', 'zipcode')
+            data['document']['zipcode'] = data.dig('document', 'zipcode').to_s
+          end
+
           JSON.parse(data.to_json) # converts Dates back to strings
         else
           { general: ["YAML data should have been a hash, got #{data.class}"] }

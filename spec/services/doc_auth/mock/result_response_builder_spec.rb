@@ -268,5 +268,47 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         expect(response.pii_from_doc).to eq({})
       end
     end
+
+    context 'with a yaml file containing integer zipcode' do
+      let(:input) do
+        <<~YAML
+          document:
+            first_name: Susan
+            last_name: Smith
+            middle_name: Q
+            address1: 1 Microsoft Way
+            address2: Apt 3
+            city: Bayside
+            state: NY
+            zipcode: 11364
+            dob: 1938-10-06
+            state_id_number: '111111111'
+            state_id_jurisdiction: ND
+            state_id_type: drivers_license
+        YAML
+      end
+
+      it 'returns a result with string zipcode' do
+        response = builder.call
+
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.exception).to eq(nil)
+        expect(response.pii_from_doc).to eq(
+          first_name: 'Susan',
+          middle_name: 'Q',
+          last_name: 'Smith',
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          state_id_number: '111111111',
+          state_id_jurisdiction: 'ND',
+          state_id_type: 'drivers_license',
+        )
+      end
+    end
   end
 end
