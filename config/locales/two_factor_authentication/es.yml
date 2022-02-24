@@ -51,9 +51,7 @@ es:
       webauthn: Llave de seguridad
       webauthn_info: Use su llave de seguridad para acceder a su cuenta.
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Utilice su dispositivo (teléfono, tableta o computadora
-        de escritorio) para añadir otro nivel de seguridad a su cuenta
-        %{app_name}. Es recomendable porque resiste mejor el phishing.
+      webauthn_platform_info: Utiliza tu dispositivo para verificar tu identidad. No almacenamos tus huellas dactilares ni tus fotos. Esto es recomendable porque previene las estafas electrónicas.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está
@@ -158,9 +156,7 @@ es:
         que se conecta o que está integrado en su computadora o teléfono (a
         menudo parece una unidad flash USB).
       webauthn_platform: Desbloqueo facial o táctil
-      webauthn_platform_info: Utilice su dispositivo (teléfono, tableta o computadora
-        de escritorio) para añadir otro nivel de seguridad a su cuenta
-        %{app_name}. Es recomendable porque resiste mejor el phishing.
+      webauthn_platform_info: Utiliza tu dispositivo para verificar tu identidad. No almacenamos tus huellas dactilares ni tus fotos. Esto es recomendable porque previene las estafas electrónicas.
     two_factor_hspd12_choice: Se requiere autenticación adicional
     two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de
       seguridad. Para poder acceder a su información, deberá verificar su
