@@ -41,7 +41,7 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
+      click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
       secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
@@ -55,14 +55,14 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
+      click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
       secret = find('#qr-code').text
       fill_in 'name', with: 'foo'
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 
-      click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
+      click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
       secret = find('#qr-code').text
       fill_in 'name', with: 'foo'
@@ -77,7 +77,7 @@ describe 'totp management' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
 
-      click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
+      click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
       secret = find('#qr-code').text
       fill_in 'name', with: 'foo'
@@ -86,7 +86,7 @@ describe 'totp management' do
 
       # simulate user delay. totp has a 30 second time step
       travel_to(30.seconds.from_now) do
-        click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
+        click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
         secret = find('#qr-code').text
         fill_in 'name', with: 'bar'
@@ -96,7 +96,7 @@ describe 'totp management' do
         expect(page).to have_current_path(account_two_factor_authentication_path)
         expect(user.auth_app_configurations.count).to eq(2)
         expect(page).
-          to_not have_link("+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url)
+          to_not have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
       end
     end
   end

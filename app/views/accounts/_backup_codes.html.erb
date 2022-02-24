@@ -1,15 +1,6 @@
-<div class="grid-row margin-bottom-1 margin-top-0">
-  <h2 class="grid-col-fill margin-y-0 padding-right-2">
-    <%= t('forms.backup_code.title') %>
-  </h2>
-  <div class="grid-col-auto">
-    <% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.decorated_user.user).configured? %>
-      <%= render 'accounts/actions/regenerate_backup_codes' %>
-    <% else %>
-      <%= render 'accounts/actions/generate_backup_codes' %>
-    <% end %>
-  </div>
-</div>
+<h2 class="margin-top-0 margin-bottom-1">
+  <%= t('forms.backup_code.title') %>
+</h2>
 <div class="grid-row padding-1 border border-primary-light">
   <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
     <div class="grid-col-9">
@@ -27,3 +18,8 @@
     </div>
   <% end %>
 </div>
+<% if TwoFactorAuthentication::BackupCodePolicy.new(@presenter.decorated_user.user).configured? %>
+  <%= render 'accounts/actions/regenerate_backup_codes' %>
+<% else %>
+  <%= render 'accounts/actions/generate_backup_codes' %>
+<% end %>
