@@ -28,9 +28,6 @@ fr:
       PIV/CAC pour ce compte. Si c’est le cas, votre PIV/CAC, votre NIP ou un
       problème survenu de notre côté pourrait bien poser problème. Réessayez ou
       choisissez une autre méthode d’authentification.
-    lockout_information: Conservez ces informations en toute sécurité. Vous serez
-      bloqué et devrez créer un nouveau compte si vous perdez votre méthode
-      d’authentification.
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte.
     login_options:
       auth_app: Application d’authentification

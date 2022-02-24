@@ -27,8 +27,6 @@ en:
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or
       something went wrong on our end. Try again or choose another
       authentication method.
-    lockout_information: Keep this information safe. You will be locked out and have
-      to create a new account if you lose your authentication method.
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
