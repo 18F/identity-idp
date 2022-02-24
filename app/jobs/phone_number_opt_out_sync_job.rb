@@ -23,7 +23,7 @@ class PhoneNumberOptOutSyncJob < ApplicationJob
 
     all_phone_numbers = Set.new
 
-    opt_out_manager.each_opted_out_number do |phone_number|
+    opt_out_manager.opted_out_numbers.each do |phone_number|
       PhoneNumberOptOut.mark_opted_out(phone_number)
       all_phone_numbers << phone_number
     end
