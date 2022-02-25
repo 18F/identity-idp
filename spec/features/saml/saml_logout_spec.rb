@@ -151,7 +151,7 @@ feature 'SAML logout' do
 
     it "terminates the user's session remotely" do
       # set up SP identity and agency identity
-      user = sign_up_and_2fa_ial1_user
+      user = sign_in_live_with_2fa
       visit_saml_authn_request_url
       click_continue
       click_agree_and_continue
