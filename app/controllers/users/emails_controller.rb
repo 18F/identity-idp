@@ -26,9 +26,15 @@ module Users
 
     def resend
       email_address = EmailAddress.find_with_email(session_email)
-      SendAddEmailConfirmation.new(current_user).call(email_address)
-      flash[:success] = t('notices.resend_confirmation_email.success')
-      redirect_to add_email_verify_email_url
+
+      if email_address && !email_address.confirmed?
+        SendAddEmailConfirmation.new(current_user).call(email_address)
+        flash[:success] = t('notices.resend_confirmation_email.success')
+        redirect_to add_email_verify_email_url
+      else
+        flash[:error] = t('errors.general')
+        redirect_to add_email_url
+      end
     end
 
     def confirm_delete
