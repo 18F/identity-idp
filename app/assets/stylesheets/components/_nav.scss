@@ -1,11 +1,11 @@
-.main-navigation {
+.page-header--basic {
   @include u-flex('align-center', 'justify-center');
   @include u-display('flex');
-  @include u-minh(7);
+  @include u-height(7);
   @include u-bg('primary-lighter');
 
   @include at-media('tablet') {
-    @include u-minh(9);
+    @include u-height(9);
   }
 }
 

@@ -56,9 +56,9 @@
       </div>
     </div>
   </section>
-  <nav class="main-navigation" aria-label="<%= t('shared.navigation.landmark_label') %>">
-    <% if content_for?(:nav) %>
-      <%= yield(:nav) %>
+  <div class="page-header<%= ' page-header--basic' if !content_for?(:header) %>">
+    <% if content_for?(:header) %>
+      <%= yield(:header) %>
     <% else %>
       <% if decorated_session.sp_name %>
         <%= render 'shared/nav_branded' %>
@@ -66,5 +66,5 @@
         <%= render 'shared/nav_lite' %>
       <% end %>
     <% end %>
-  </nav>
+  </div>
 </header>
