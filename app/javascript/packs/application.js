@@ -1,5 +1,3 @@
-window.LoginGov = window.LoginGov || {};
-
 require('../app/components/index');
 require('../app/utils/index');
 require('../app/pw-toggle');
