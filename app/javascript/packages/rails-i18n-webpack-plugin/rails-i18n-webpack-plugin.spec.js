@@ -30,6 +30,9 @@ describe('RailsI18nWebpackPlugin', () => {
             onMissingString,
           }),
         ],
+        externals: {
+          '@18f/identity-i18n': '_i18n_',
+        },
         resolve: {
           extensions: ['.js', '.foo'],
         },
