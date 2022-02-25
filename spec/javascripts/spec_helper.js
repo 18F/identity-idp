@@ -30,8 +30,6 @@ global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
 global.window.crypto = new Crypto(); // In the future (Node >=15), use native webcrypto: https://nodejs.org/api/webcrypto.html
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
 global.window.URL.revokeObjectURL = () => {};
-global.window.LoginGov = global.window.LoginGov || {};
-global.window.LoginGov.I18n = new I18n();
 Object.defineProperty(global.window.Image.prototype, 'src', {
   set() {
     this.onload();

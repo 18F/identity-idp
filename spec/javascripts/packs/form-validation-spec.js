@@ -1,26 +1,16 @@
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { useSandbox } from '../support/sinon';
 import { initialize } from '../../../app/javascript/packs/form-validation';
 
 describe('form-validation', () => {
-  const sandbox = useSandbox();
-
   const onSubmit = (event) => event.preventDefault();
 
   beforeEach(() => {
     window.addEventListener('submit', onSubmit);
-    window.LoginGov = {
-      I18n: {
-        t: sandbox.stub().returnsArg(0),
-        key: sandbox.stub().returnsArg(0),
-      },
-    };
   });
 
   afterEach(() => {
     window.removeEventListener('submit', onSubmit);
-    delete window.LoginGov;
   });
 
   it('disables submit buttons on submit', () => {

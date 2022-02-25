@@ -1,14 +1,6 @@
+import { getForbiddenPasswords } from '../../../app/javascript/packs/pw-strength';
+
 describe('pw-strength', () => {
-  let getForbiddenPasswords;
-  before(async () => {
-    window.LoginGov = { I18n: { t() {} } };
-    ({ getForbiddenPasswords } = await import('../../../app/javascript/packs/pw-strength'));
-  });
-
-  after(() => {
-    delete window.LoginGov;
-  });
-
   describe('getForbiddenPasswords', () => {
     it('returns empty array if given argument is null', () => {
       const element = null;

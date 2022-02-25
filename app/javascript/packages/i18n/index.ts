@@ -90,6 +90,7 @@ class I18n {
 }
 
 // eslint-disable-next-line no-underscore-dangle
-const { t } = new I18n({ strings: globalThis._locale_data });
+const i18n = new I18n({ strings: globalThis._locale_data });
+const { t } = i18n;
 
-export { I18n, t };
+export { I18n, i18n, t };
