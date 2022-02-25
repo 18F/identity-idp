@@ -30,4 +30,38 @@ RSpec.describe Users::EmailsController do
       end
     end
   end
+
+  describe '#resend' do
+    let(:user) { create(:user) }
+    before do
+      stub_sign_in(user)
+    end
+
+    context 'valid email exists in session' do
+      it 'sends email' do
+        email = Faker::Internet.safe_email
+
+        post :add, params: { user: { email: email } }
+        expect(last_email_sent).to have_subject(
+          t('user_mailer.email_confirmation_instructions.subject'),
+        )
+
+        post :resend
+        expect(response).to redirect_to(add_email_verify_email_url)
+        expect(last_email_sent).to have_subject(
+          t('user_mailer.email_confirmation_instructions.subject'),
+        )
+        expect(ActionMailer::Base.deliveries.count).to eq 2
+      end
+    end
+
+    context 'no valid email exists in session' do
+      it 'shows an error and redirects to add email page' do
+        post :resend
+        expect(flash[:error]).to eq t('errors.general')
+        expect(response).to redirect_to(add_email_url)
+        expect(ActionMailer::Base.deliveries.count).to eq 0
+      end
+    end
+  end
 end
