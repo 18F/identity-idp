@@ -3,7 +3,9 @@ const { readFileSync } = require('fs');
 
 let cache;
 
-function isInstalled(name) {
+function isInstalled(nameOrNames) {
+  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
+
   if (!cache) {
     cache = Object.create(null);
     try {
@@ -14,7 +16,7 @@ function isInstalled(name) {
     } catch {}
   }
 
-  return !!cache[name];
+  return names.every((name) => !!cache[name]);
 }
 
 module.exports = isInstalled;
