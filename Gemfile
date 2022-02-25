@@ -75,7 +75,7 @@ gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn', '0.1.7'
 
 # Lookbook must be listed after ViewComponent, so listed here out of default alphabetical order.
-gem 'lookbook', '~> 0.6.0'
+gem 'lookbook', '~> 0.6.1'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
