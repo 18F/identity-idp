@@ -3,9 +3,15 @@ const { readFileSync } = require('fs');
 
 let cache;
 
-function isInstalled(nameOrNames) {
-  const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
-
+/**
+ * Returns true if all of the given dependencies are installed to the local project, or false
+ * otherwise.
+ *
+ * @param {string[]} names Dependency names.
+ *
+ * @return {boolean} Whether dependencies are installed.
+ */
+function isAllInstalled(names) {
   if (!cache) {
     cache = Object.create(null);
     try {
@@ -19,4 +25,4 @@ function isInstalled(nameOrNames) {
   return names.every((name) => !!cache[name]);
 }
 
-module.exports = isInstalled;
+module.exports = isAllInstalled;
