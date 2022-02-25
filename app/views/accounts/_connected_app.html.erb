@@ -11,7 +11,7 @@
 
       <%= t(
             'account.connected_apps.associated',
-            timestamp: local_time(identity.created_at.in_time_zone('UTC'), t('time.formats.event_timestamp')),
+            timestamp: render(TimeComponent.new(time: identity.created_at)),
           ).html_safe %>
     </div>
     <% if identity.service_provider_id %>

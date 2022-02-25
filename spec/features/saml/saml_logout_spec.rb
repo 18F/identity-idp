@@ -144,4 +144,31 @@ feature 'SAML logout' do
       expect(page).to have_current_path(root_path)
     end
   end
+
+  context 'remote logout' do
+    let(:sp) { ServiceProvider.find_by(issuer: saml_settings.issuer) }
+    let(:agency) { sp.agency }
+
+    it "terminates the user's session remotely" do
+      # set up SP identity and agency identity
+      user = sign_in_live_with_2fa
+      visit_saml_authn_request_url
+      click_continue
+      click_agree_and_continue
+
+      agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
+
+      # simulate a remote request
+      send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
+
+      identity = ServiceProviderIdentity.
+        find_by(user_id: user.id, service_provider: saml_settings.issuer)
+      session_id = identity.rails_session_id
+      expect(OutOfBandSessionAccessor.new(session_id).load).to be_empty
+
+      # should be logged out...
+      visit account_path
+      expect(page).to have_current_path(root_path)
+    end
+  end
 end

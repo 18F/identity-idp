@@ -9,5 +9,5 @@
       <%= t('event_types.authenticated_at', service_provider: event.display_name) %>
     <% end %>
   </strong><br>
-  <%= local_time(event.happened_at, t('time.formats.event_timestamp')) %>
+  <%= render TimeComponent.new(time: event.happened_at) %>
 </div>

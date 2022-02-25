@@ -1,17 +1,16 @@
 import zxcvbn from 'zxcvbn';
-
-const { I18n } = window.LoginGov;
+import { t } from '@18f/identity-i18n';
 
 // zxcvbn returns a strength score from 0 to 4
 // we map those scores to:
 // 1. a CSS class to the pw strength module
 // 2. text describing the score
 const scale = {
-  0: ['pw-very-weak', I18n.t('instructions.password.strength.i')],
-  1: ['pw-weak', I18n.t('instructions.password.strength.ii')],
-  2: ['pw-so-so', I18n.t('instructions.password.strength.iii')],
-  3: ['pw-good', I18n.t('instructions.password.strength.iv')],
-  4: ['pw-great', I18n.t('instructions.password.strength.v')],
+  0: ['pw-very-weak', t('instructions.password.strength.i')],
+  1: ['pw-weak', t('instructions.password.strength.ii')],
+  2: ['pw-so-so', t('instructions.password.strength.iii')],
+  3: ['pw-good', t('instructions.password.strength.iv')],
+  4: ['pw-great', t('instructions.password.strength.v')],
 };
 
 const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
@@ -71,7 +70,7 @@ function getFeedback(z) {
     // i18n-tasks-use t('zxcvbn.feedback.this_is_a_very_common_password')
     // i18n-tasks-use t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
     // i18n-tasks-use t('zxcvbn.feedback.use_a_longer_keyboard_pattern_with_more_turns')
-    return I18n.t(`zxcvbn.feedback.${snakeCase(str)}`);
+    return t(`zxcvbn.feedback.${snakeCase(str)}`);
   }
 
   if (!warning && !suggestions.length) {

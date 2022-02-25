@@ -20,6 +20,7 @@ en:
     formats:
       event_date: '%B %-d, %Y'
       event_timestamp: '%B %-d, %Y at %-l:%M %p'
+      event_timestamp_js: '%{month} %{day}, %{year} at %{hour}:%{minute} %{day_period}'
       event_timestamp_utc: '%B %-d, %Y at %-l:%M %p UTC'
       event_timestamp_with_zone: '%B %-d, %Y at %-l:%M %p %Z'
     pm: PM

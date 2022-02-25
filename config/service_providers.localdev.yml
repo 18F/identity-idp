@@ -363,6 +363,7 @@ development:
     friendly_name: 'Awesome test SP'
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+    agency_id: 1
     friendly_name: 'Test SAML SP'
     acs_url: 'http://localhost:4567/consume'
     sp_initiated_login_url: 'http://localhost:4567/test/saml'

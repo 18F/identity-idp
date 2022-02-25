@@ -1,6 +1,5 @@
 import Cleave from 'cleave.js';
-
-const { I18n } = window.LoginGov;
+import { t } from '@18f/identity-i18n';
 
 /* eslint-disable no-new */
 function formatSSNFieldAndLimitLength() {
@@ -16,7 +15,7 @@ function formatSSNFieldAndLimitLength() {
             class="usa-checkbox__input usa-checkbox__input--bordered"
           >
           <label for="ssn-toggle-${i}" class="usa-checkbox__label">
-            ${I18n.t('forms.ssn.show')}
+            ${t('forms.ssn.show')}
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);

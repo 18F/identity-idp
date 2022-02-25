@@ -1,18 +1,6 @@
-<div class="grid-row margin-bottom-1 margin-top-0">
-  <h2 class="grid-col-fill margin-y-0 padding-right-2">
-    <%= t('headings.account.authentication_apps') %>
-  </h2>
-  <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
-    <div class="grid-col-auto">
-      <%= link_to(
-            prefix_with_plus(t('account.index.auth_app_add')),
-            authenticator_setup_url,
-            class: 'account-action-button',
-          ) %>
-    </div>
-  <% end %>
-</div>
-
+<h2 class="margin-top-0 margin-bottom-1">
+  <%= t('headings.account.authentication_apps') %>
+</h2>
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
@@ -27,3 +15,12 @@
     </div>
   <% end %>
 </div>
+<% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(authenticator_setup_url, **tag_options, &block)
+        end,
+        icon: :add,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ).with_content(t('account.index.auth_app_add')) %>
+<% end %>

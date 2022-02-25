@@ -10,7 +10,7 @@ async function webauthn() {
   const multipleFactorsEnabled =
     webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
   const webauthnPlatformEnabled = await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable();
-
+  console.log(webauthnPlatformEnabled)
   if (
     !WebAuthn.isWebAuthnEnabled() ||
     (webauthnPlatformRequested && !webauthnPlatformEnabled && !multipleFactorsEnabled)
@@ -37,6 +37,7 @@ async function webauthn() {
       webauthnSuccessContainer.classList.remove('hidden');
     })
     .catch((error) => {
+      debugger
       document.getElementById('errors').value = error;
       document.getElementById('platform').value = webauthnPlatformRequested;
       document.getElementById('webauthn_form').submit();

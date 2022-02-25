@@ -110,7 +110,7 @@ describe ApplicationController do
 
       get :index
 
-      expect(flash[:error]).to eq t('errors.invalid_authenticity_token')
+      expect(flash[:error]).to eq t('errors.general')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
     end

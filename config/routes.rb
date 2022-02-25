@@ -139,6 +139,8 @@ Rails.application.routes.draw do
       end
     end
 
+    mount Lookbook::Engine, at: '/components' if IdentityConfig.store.component_previews_enabled
+
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
         as: :openid_connect_configuration
