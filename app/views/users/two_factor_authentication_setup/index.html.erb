@@ -35,6 +35,7 @@
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
                 class: 'usa-radio__label',
+                aria: { label: option.label },
               ) do %>
                 <%= option.label %>
                 <span class="usa-radio__label-description position-relative padding-bottom-4">
