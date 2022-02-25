@@ -1,4 +1,4 @@
-const isAllInstalled = require('../lib/is-all-installed');
+const isInstalled = require('../lib/is-installed');
 
 const config = {
   extends: /** @type {string[]} */ ([]),
@@ -39,13 +39,15 @@ const config = {
   },
 };
 
-if (isAllInstalled(['eslint-plugin-prettier'])) {
+if (isInstalled('eslint-plugin-prettier')) {
   config.plugins.push('prettier');
   config.rules['prettier/prettier'] = 'error';
 }
 
 if (
-  isAllInstalled(['eslint-plugin-react', 'eslint-plugin-jsx-a11y', 'eslint-plugin-react-hooks'])
+  isInstalled('eslint-plugin-react') &&
+  isInstalled('eslint-plugin-jsx-a11y') &&
+  isInstalled('eslint-plugin-react-hooks')
 ) {
   config.extends.push('airbnb');
   Object.assign(config.rules, {
@@ -75,7 +77,7 @@ if (
   config.extends.push('airbnb-base');
 }
 
-if (isAllInstalled(['@typescript-eslint/parser', '@typescript-eslint/eslint-plugin'])) {
+if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/eslint-plugin')) {
   config.parser = '@typescript-eslint/parser';
   config.plugins.push('@typescript-eslint');
   config.extends.push('plugin:import/typescript');
@@ -89,7 +91,7 @@ if (isAllInstalled(['@typescript-eslint/parser', '@typescript-eslint/eslint-plug
   });
 }
 
-if (isAllInstalled(['eslint-plugin-mocha'])) {
+if (isInstalled('eslint-plugin-mocha')) {
   config.plugins.push('mocha');
   config.env.mocha = true;
   config.rules['mocha/no-skipped-tests'] = 'error';
