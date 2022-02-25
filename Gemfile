@@ -64,7 +64,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.49.0'
+gem 'view_component', '~> 2.43.1', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
@@ -72,9 +72,6 @@ gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
 # It should not be updated without verifying that the behavior still matches JS version 4.4.2.
 gem 'zxcvbn', '0.1.7'
-
-# Lookbook must be listed after ViewComponent, so listed here out of default alphabetical order.
-gem 'lookbook', '~> 0.6.1'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
