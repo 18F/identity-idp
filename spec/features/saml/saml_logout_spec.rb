@@ -160,7 +160,6 @@ feature 'SAML logout' do
       # Confirmed that this actually hits the controller action
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
-      # THIS SHOULD PASS
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
       session_id = identity.rails_session_id
