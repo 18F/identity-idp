@@ -3,7 +3,6 @@ import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
 import chaiAsPromised from 'chai-as-promised';
-import { I18n } from '@18f/identity-i18n';
 import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 import { sinonChaiAsPromised } from './support/sinon';
