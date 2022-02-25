@@ -1,34 +1,36 @@
-/**
- * @typedef NewRelicAgent
- *
- * @prop {(name:string,attributes:object)=>void} addPageAction Log page action to New Relic.
- */
+interface NewRelicAgent {
+  /**
+   * Log page action to New Relic.
+   */
+  addPageAction: (name: string, attributes: object) => void;
+}
 
-/**
- * @typedef LoginGov
- *
- * @prop {(any)=>void} Modal
- * @prop {(string)=>void} autoLogout
- * @prop {(el:HTMLElement?,timeLeft:number,endTime:number,interval?:number,screenReader?:boolean)=>void} countdownTimer
- */
+interface LoginGov {
+  Modal: (any) => void;
 
-/**
- * @typedef NewRelicGlobals
- *
- * @prop {NewRelicAgent=} newrelic New Relic agent.
- */
+  countdownTimer: (
+    el: HTMLElement | null,
+    timeLeft: number,
+    endTime: number,
+    interval?: number,
+    screenReader?: boolean,
+  ) => void;
+}
 
-/**
- * @typedef LoginGovGlobals
- *
- * @prop {LoginGov} LoginGov
- */
+interface NewRelicGlobals {
+  /**
+   * New Relic agent
+   */
+  newrelic?: NewRelicAgent;
+}
 
-/**
- * @typedef {typeof window & NewRelicGlobals & LoginGovGlobals} LoginGovGlobal
- */
+interface LoginGovGlobals {
+  LoginGov: LoginGov;
+}
 
-const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
+type LoginGovGlobal = typeof window & NewRelicGlobals & LoginGovGlobals;
+
+const login = (window as LoginGovGlobal).LoginGov;
 
 const warningEl = document.getElementById('session-timeout-cntnr');
 
@@ -45,8 +47,7 @@ const initialTime = new Date();
 
 const modal = new login.Modal({ el: '#session-timeout-msg' });
 const keepaliveEl = document.getElementById('session-keepalive-btn');
-/** @type {HTMLMetaElement?} */
-const csrfEl = document.querySelector('meta[name="csrf-token"]');
+const csrfEl = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
 
 let csrfToken = '';
 if (csrfEl) {
@@ -57,12 +58,18 @@ let countdownInterval;
 let srCountdownInterval;
 
 function notifyNewRelic(request, error, actionName) {
-  /** @type {LoginGovGlobal} */ (window).newrelic?.addPageAction('Session Ping Error', {
+  (window as LoginGovGlobal).newrelic?.addPageAction('Session Ping Error', {
     action_name: actionName,
     request_status: request.status,
     time_elapsed_ms: new Date().valueOf() - initialTime.valueOf(),
     error: error.message,
   });
+}
+
+function forceRedirect(redirectURL: string) {
+  window.onbeforeunload = null;
+  window.onunload = null;
+  window.location.href = redirectURL;
 }
 
 function success(data) {
@@ -71,7 +78,9 @@ function success(data) {
   const showWarning = timeRemaining < warning;
 
   if (!data.live) {
-    login.autoLogout(timeoutUrl);
+    if (timeoutUrl) {
+      forceRedirect(timeoutUrl);
+    }
     return;
   }
 
