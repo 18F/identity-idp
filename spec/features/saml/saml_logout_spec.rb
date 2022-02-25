@@ -157,13 +157,14 @@ feature 'SAML logout' do
       click_agree_and_continue
 
       agency_uuid = AgencyIdentity.find_by(user_id: user.id, agency_id: agency.id).uuid
-      # Confirmed that this actually hits the controller action
+
+      # simulate a remote request
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
       identity = ServiceProviderIdentity.
         find_by(user_id: user.id, service_provider: saml_settings.issuer)
       session_id = identity.rails_session_id
-      expect(OutOfBandSessionAccessor.new(session_id).load).to eq({})
+      expect(OutOfBandSessionAccessor.new(session_id).load).to be_empty
 
       # should be logged out...
       visit account_path

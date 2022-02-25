@@ -33,7 +33,7 @@ RSpec.describe OutOfBandSessionAccessor do
       store.put({ foo: 'bar' }, 5.minutes.to_i)
       store.destroy
 
-      expect(store.load).to eq({})
+      expect(store.load).to be_empty
     end
   end
 end

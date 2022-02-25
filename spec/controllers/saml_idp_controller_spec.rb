@@ -134,13 +134,14 @@ describe SamlIdpController do
     let(:other_sp) { create(:service_provider, active: true, agency_id: agency.id) }
 
     let(:session_id) { 'abc123' }
-    let(:user) { create(:user, :signed_up, unique_session_id: session_id) }
+    let(:user) { create(:user, :signed_up) }
     let(:other_user) { create(:user, :signed_up) }
 
     let!(:identity) do
       ServiceProviderIdentity.create(
         service_provider: service_provider.issuer,
         user: user,
+        rails_session_id: session_id,
       )
     end
     let!(:other_identity) do
@@ -249,7 +250,7 @@ describe SamlIdpController do
       delete :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
 
       expect(response).to be_ok
-      expect(session_accessor.load).to eq({})
+      expect(session_accessor.load).to be_empty
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)

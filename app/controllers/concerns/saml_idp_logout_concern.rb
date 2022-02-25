@@ -28,7 +28,7 @@ module SamlIdpLogoutConcern
       rails_session_id
 
     OutOfBandSessionAccessor.new(session_id).destroy
-    sign_out
+    sign_out if user_signed_in?
 
     # rubocop:disable Rails/RenderInline
     render inline: logout_response, content_type: 'text/xml'
