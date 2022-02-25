@@ -1,8 +1,6 @@
 # Reimplements SecureHeaders secure cookie functionality to make sure all cookies are secure
 class SecureCookies
   COOKIE_SEPARATOR = "\n".freeze
-  SECURE_COOKIE_ATTRIBUTES = ['; Secure', '; HttpOnly', '; SameSite=Lax'].freeze
-  SECURE_COOKIE_REGEXES = SECURE_COOKIE_ATTRIBUTES.map { |attr| /#{attr}/i }
 
   def initialize(app)
     @app = app
