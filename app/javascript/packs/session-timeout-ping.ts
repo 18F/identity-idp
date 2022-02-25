@@ -47,7 +47,7 @@ const initialTime = new Date();
 
 const modal = new login.Modal({ el: '#session-timeout-msg' });
 const keepaliveEl = document.getElementById('session-keepalive-btn');
-const csrfEl = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
+const csrfEl: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
 
 let csrfToken = '';
 if (csrfEl) {
