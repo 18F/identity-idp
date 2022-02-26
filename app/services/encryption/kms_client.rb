@@ -2,7 +2,6 @@ require 'base64'
 
 module Encryption
   class KmsClient
-    include Encodable
     include ::NewRelic::Agent::MethodTracer
 
     KEY_TYPE = {
@@ -43,9 +42,7 @@ module Encryption
 
     def encrypt_kms(plaintext, encryption_context)
       KEY_TYPE[:KMS] + chunk_plaintext(plaintext).map do |chunk|
-        Base64.strict_encode64(
-          encrypt_raw_kms(chunk, encryption_context),
-        )
+        encrypt_raw_kms(chunk, encryption_context)
       end.to_json
     end
 
@@ -59,7 +56,7 @@ module Encryption
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         decrypt_raw_kms(
-          Base64.strict_decode64(chunk),
+          chunk,
           encryption_context,
         )
       end.join('')

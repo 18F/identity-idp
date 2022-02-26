@@ -1,18 +1,16 @@
 module Encryption
   module Encryptors
     class SessionEncryptor
-      include Encodable
       include ::NewRelic::Agent::MethodTracer
 
       def encrypt(plaintext)
         aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)
-        kms_ciphertext = KmsClient.new.encrypt(aes_ciphertext, 'context' => 'session-encryption')
-        encode(kms_ciphertext)
+        KmsClient.new.encrypt(aes_ciphertext, 'context' => 'session-encryption')
       end
 
       def decrypt(ciphertext)
         aes_ciphertext = KmsClient.new.decrypt(
-          decode(ciphertext), 'context' => 'session-encryption'
+          ciphertext, 'context' => 'session-encryption'
         )
         aes_encryptor.decrypt(aes_ciphertext, aes_encryption_key)
       end
