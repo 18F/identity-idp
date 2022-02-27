@@ -13,6 +13,6 @@ class SessionEncryptor
   private
 
   def encryptor
-    Encryption::Encryptors::SessionEncryptor.new
+    Encryption::Encryptors::SmallSessionEncryptor.new
   end
 end
