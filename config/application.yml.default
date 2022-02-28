@@ -243,6 +243,7 @@ voice_otp_speech_rate: 'slow'
 voip_check: true
 voip_block: true
 voip_allowed_phones: '[]'
+write_new_session_format: false
 
 development:
   aamva_private_key: 123abc
