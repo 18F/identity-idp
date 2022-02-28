@@ -82,7 +82,7 @@ function getFeedback(z) {
     return lookup(warning);
   }
 
-  return `${suggestions.map((s) => lookup(s)).join('')}`;
+  return `${suggestions.map((s) => lookup(s)).join('. ')}`;
 }
 
 function disableSubmit(submitEl, length = 0, score = 0) {
