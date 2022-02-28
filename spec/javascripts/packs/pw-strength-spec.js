@@ -1,4 +1,5 @@
-import { getForbiddenPasswords } from '../../../app/javascript/packs/pw-strength';
+import zxcvbn from 'zxcvbn';
+import { getForbiddenPasswords, getFeedback } from '../../../app/javascript/packs/pw-strength';
 
 describe('pw-strength', () => {
   describe('getForbiddenPasswords', () => {
@@ -30,6 +31,28 @@ describe('pw-strength', () => {
       const result = getForbiddenPasswords(element);
 
       expect(result).to.be.deep.equal(['foo', 'bar', 'baz']);
+    });
+  });
+
+  describe('getFeedback', () => {
+    const EMPTY_RESULT = '&nbsp;';
+
+    it('returns an empty result for empty password', () => {
+      const z = zxcvbn('');
+
+      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+    });
+
+    it('returns an empty result for a strong password', () => {
+      const z = zxcvbn('!Juq2Uk2**RBEsA8');
+
+      expect(getFeedback(z)).to.equal(EMPTY_RESULT);
+    });
+
+    it('returns feedback for a weak password', () => {
+      const z = zxcvbn('password');
+
+      expect(getFeedback(z)).to.equal('zxcvbn.feedback.this_is_a_top_10_common_password');
     });
   });
 });

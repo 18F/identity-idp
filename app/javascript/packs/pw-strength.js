@@ -35,7 +35,7 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-function getFeedback(z) {
+export function getFeedback(z) {
   if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
