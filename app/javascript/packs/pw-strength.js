@@ -36,7 +36,7 @@ function getStrength(z) {
 }
 
 function getFeedback(z) {
-  if (!z || z.score > 2) {
+  if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
 
