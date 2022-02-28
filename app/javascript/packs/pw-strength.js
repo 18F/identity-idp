@@ -35,8 +35,8 @@ function getStrength(z) {
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
-function getFeedback(z) {
-  if (!z || z.score > 2) {
+export function getFeedback(z) {
+  if (!z || !z.password || z.score > 2) {
     return '&nbsp;';
   }
 
@@ -56,6 +56,7 @@ function getFeedback(z) {
     // i18n-tasks-use t('zxcvbn.feedback.dates_are_often_easy_to_guess')
     // i18n-tasks-use t('zxcvbn.feedback.for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases')
     // i18n-tasks-use t('zxcvbn.feedback.names_and_surnames_by_themselves_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.no_need_for_symbols_digits_or_uppercase_letters')
     // i18n-tasks-use t('zxcvbn.feedback.predictable_substitutions_like__instead_of_a_dont_help_very_much')
     // i18n-tasks-use t('zxcvbn.feedback.recent_years_are_easy_to_guess')
     // i18n-tasks-use t('zxcvbn.feedback.repeats_like_aaa_are_easy_to_guess')
@@ -69,6 +70,7 @@ function getFeedback(z) {
     // i18n-tasks-use t('zxcvbn.feedback.this_is_a_top_10_common_password')
     // i18n-tasks-use t('zxcvbn.feedback.this_is_a_very_common_password')
     // i18n-tasks-use t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
+    // i18n-tasks-use t('zxcvbn.feedback.use_a_few_words_avoid_common_phrases')
     // i18n-tasks-use t('zxcvbn.feedback.use_a_longer_keyboard_pattern_with_more_turns')
     return t(`zxcvbn.feedback.${snakeCase(str)}`);
   }
@@ -80,7 +82,7 @@ function getFeedback(z) {
     return lookup(warning);
   }
 
-  return `${suggestions.map((s) => lookup(s)).join('')}`;
+  return `${suggestions.map((s) => lookup(s)).join('. ')}`;
 }
 
 function disableSubmit(submitEl, length = 0, score = 0) {
