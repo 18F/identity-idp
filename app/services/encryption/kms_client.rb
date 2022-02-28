@@ -1,8 +1,7 @@
 require 'base64'
 
 module Encryption
-  class KmsClient
-    include Encodable
+  class SmallKmsClient
     include ::NewRelic::Agent::MethodTracer
 
     KEY_TYPE = {
@@ -43,10 +42,8 @@ module Encryption
 
     def encrypt_kms(plaintext, encryption_context)
       KEY_TYPE[:KMS] + chunk_plaintext(plaintext).map do |chunk|
-        Base64.strict_encode64(
-          encrypt_raw_kms(chunk, encryption_context),
-        )
-      end.to_json
+        encrypt_raw_kms(chunk, encryption_context)
+      end.to_msgpack
     end
 
     def encrypt_raw_kms(plaintext, encryption_context)
@@ -55,15 +52,16 @@ module Encryption
     end
 
     def decrypt_kms(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
-      ciphertext_chunks = JSON.parse(clipped_ciphertext)
+      key_type_length = KEY_TYPE[:KMS].length
+      clipped_ciphertext = ciphertext[key_type_length..]
+      ciphertext_chunks = MessagePack.unpack(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         decrypt_raw_kms(
-          Base64.strict_decode64(chunk),
+          chunk,
           encryption_context,
         )
       end.join('')
-    rescue JSON::ParserError, ArgumentError => error
+    rescue MessagePack::MalformedFormatError, ArgumentError => error
       raise EncryptionError, "Failed to parse KMS ciphertext: #{error}"
     end
 
@@ -75,22 +73,21 @@ module Encryption
 
     def encrypt_local(plaintext, encryption_context)
       KEY_TYPE[:LOCAL_KEY] + chunk_plaintext(plaintext).map do |chunk|
-        Base64.strict_encode64(
-          encryptor.encrypt(chunk, local_encryption_key(encryption_context)),
-        )
-      end.to_json
+        encryptor.encrypt(chunk, local_encryption_key(encryption_context))
+      end.to_msgpack
     end
 
     def decrypt_local(ciphertext, encryption_context)
-      clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:LOCAL_KEY]}/, '')
-      ciphertext_chunks = JSON.parse(clipped_ciphertext)
+      key_type_length = KEY_TYPE[:LOCAL_KEY].length
+      clipped_ciphertext = ciphertext[key_type_length..]
+      ciphertext_chunks = MessagePack.unpack(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
         encryptor.decrypt(
-          Base64.strict_decode64(chunk),
+          chunk,
           local_encryption_key(encryption_context),
         )
       end.join('')
-    rescue JSON::ParserError, ArgumentError => error
+    rescue MessagePack::MalformedFormatError, ArgumentError => error
       raise EncryptionError, "Failed to parse local ciphertext: #{error}"
     end
 
@@ -116,11 +113,11 @@ module Encryption
     end
 
     def encryptor
-      @encryptor ||= Encryptors::AesEncryptor.new
+      @encryptor ||= Encryptors::SmallAesEncryptor.new
     end
 
     def multi_aws_client
-      @multi_aws_client ||= MultiRegionKmsClient.new
+      @multi_aws_client ||= SmallMultiRegionKmsClient.new
     end
 
     add_method_tracer :decrypt, "Custom/#{name}/decrypt"

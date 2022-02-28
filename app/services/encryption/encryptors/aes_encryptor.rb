@@ -1,7 +1,6 @@
 module Encryption
   module Encryptors
-    class AesEncryptor
-      include Encodable
+    class SmallAesEncryptor
 
       DELIMITER = '.'.freeze
 
@@ -10,17 +9,16 @@ module Encryption
       #
 
       def initialize
-        self.cipher = AesCipher.new
+        self.cipher = SmallAesCipher.new
       end
 
       def encrypt(plaintext, cek)
         payload = fingerprint_and_concat(plaintext)
-        encode(cipher.encrypt(payload, cek))
+        cipher.encrypt(payload, cek)
       end
 
       def decrypt(ciphertext, cek)
-        raise EncryptionError, 'ciphertext is invalid' unless sane_payload?(ciphertext)
-        decrypt_and_test_payload(decode(ciphertext), cek)
+        decrypt_and_test_payload(ciphertext, cek)
       end
 
       private
@@ -38,23 +36,16 @@ module Encryption
         rescue OpenSSL::Cipher::CipherError => err
           raise EncryptionError, err.inspect
         end
-        raise EncryptionError, 'payload is invalid' unless sane_payload?(payload)
         plaintext, fingerprint = split_into_segments(payload)
         return plaintext if Pii::Fingerprinter.verify(plaintext, fingerprint)
       end
 
-      def sane_payload?(payload)
-        payload.split(DELIMITER).each do |segment|
-          return false unless valid_base64_encoding?(segment)
-        end
-      end
-
       def join_segments(*segments)
-        segments.map { |segment| encode(segment) }.join(DELIMITER)
+        segments.to_msgpack
       end
 
       def split_into_segments(string)
-        string.split(DELIMITER).map { |segment| decode(segment) }
+        MessagePack.unpack(string)
       end
     end
   end

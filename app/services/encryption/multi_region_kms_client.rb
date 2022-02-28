@@ -1,6 +1,6 @@
 require 'json'
 module Encryption
-  class MultiRegionKmsClient
+  class SmallMultiRegionKmsClient
     def initialize
       @aws_clients = {}
       # Instantiate an array of aws clients based on the provided regions in the environment
@@ -41,9 +41,9 @@ module Encryption
           plaintext: plaintext,
           encryption_context: encryption_context,
         )
-        region_ciphers[region] = Base64.strict_encode64(raw_region_ciphertext.ciphertext_blob)
+        region_ciphers[region] = raw_region_ciphertext.ciphertext_blob
       end
-      { regions: region_ciphers }.to_json
+      { regions: region_ciphers }.to_msgpack
     end
 
     def encrypt_legacy(key_id, plaintext, encryption_context)
@@ -67,7 +67,7 @@ module Encryption
     def find_available_region(regions)
       regions.each do |region, cipher|
         region_client = @aws_clients[region]
-        return CipherData.new(region_client, Base64.strict_decode64(cipher)) if region_client
+        return CipherData.new(region_client, cipher) if region_client
       end
       raise EncryptionError, 'No supported region found in ciphertext'
     end
@@ -78,7 +78,7 @@ module Encryption
       curr_region_client = @aws_clients[IdentityConfig.store.aws_region]
       curr_region_cipher = regions[IdentityConfig.store.aws_region]
       if curr_region_cipher && curr_region_client
-        CipherData.new(curr_region_client, Base64.strict_decode64(curr_region_cipher))
+        CipherData.new(curr_region_client, curr_region_cipher)
       else
         find_available_region(regions)
       end
@@ -97,7 +97,7 @@ module Encryption
       # The ciphertext should either be a json HASH keyed by "regions", or a plain string. Start by
       # checking if it looks like the JSON hash we want
       if ciphertext.start_with?('{"regions"')
-        parsed_payload = JSON.parse(ciphertext)
+        parsed_payload = MessagePack.unpack(ciphertext)
         if parsed_payload.is_a?(Hash)
           regions = parsed_payload['regions']
           resolve_region_decryption(regions)
