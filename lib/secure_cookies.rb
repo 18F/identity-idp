@@ -1,8 +1,6 @@
 # Reimplements SecureHeaders secure cookie functionality to make sure all cookies are secure
 class SecureCookies
   COOKIE_SEPARATOR = "\n".freeze
-  SECURE_COOKIE_ATTRIBUTES = ['; Secure', '; HttpOnly', '; SameSite=Lax'].freeze
-  SECURE_COOKIE_REGEXES = SECURE_COOKIE_ATTRIBUTES.map { |attr| /#{attr}/i }
 
   def initialize(app)
     @app = app
@@ -11,18 +9,15 @@ class SecureCookies
   def call(env)
     status, headers, body = @app.call(env)
 
-    if headers['Set-Cookie'].present?
-      cookies = headers['Set-Cookie'].split(COOKIE_SEPARATOR)
+    if (cookie_header = headers['Set-Cookie']).present?
+      cookies = cookie_header.split(COOKIE_SEPARATOR)
 
       cookies.each do |cookie|
         next if cookie.blank?
-        attributes = SECURE_COOKIE_ATTRIBUTES.zip(SECURE_COOKIE_REGEXES).reject do |_attr, regex|
-          cookie.match?(regex)
-        end.map(&:first)
 
-        next if attributes.empty?
-
-        cookie << attributes.join
+        cookie << '; Secure' if env['HTTPS'] == 'on' && !cookie.match?(/; Secure/i)
+        cookie << '; HttpOnly' if !cookie.match?(/; HttpOnly/i)
+        cookie << '; SameSite=Lax' if !cookie.match?(/; SameSite/i)
       end
 
       headers['Set-Cookie'] = cookies.join(COOKIE_SEPARATOR)
