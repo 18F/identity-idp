@@ -135,6 +135,7 @@ class Analytics
   AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'
   BANNED_USER_REDIRECT = 'Banned User redirected'
   BANNED_USER_VISITED = 'Banned User visited'
+  BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'
   DOC_AUTH_WARNING = 'Doc Auth Warning'

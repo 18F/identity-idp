@@ -188,9 +188,32 @@ class ApplicationController < ActionController::Base
     service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
   end
 
+  def fix_broken_personal_key_url
+    if current_user.broken_personal_key?
+      pii_unlocked = user_session[:decrypted_pii].present?
+
+      if pii_unlocked
+        cacher = Pii::Cacher.new(current_user, user_session)
+        user_session[:personal_key] = current_user.active_profile.encrypt_recovery_pii(cacher.fetch)
+
+        flash[:info] = t('account.personal_key.needs_new')
+        analytics.track_event(Analytics::BROKEN_PERSONAL_KEY_REGENERATED)
+
+        manage_personal_key_url
+      else
+        # TODO
+        # user_session[:needs_new_personal_key] = true
+        # capture_password_url
+      end
+    end
+  end
+
   def after_sign_in_path_for(_user)
-    service_provider_mfa_setup_url || add_piv_cac_setup_url ||
-      user_session.delete(:stored_location) || sp_session_request_url_with_updated_params ||
+    service_provider_mfa_setup_url ||
+      add_piv_cac_setup_url ||
+      fix_broken_personal_key_url ||
+      user_session.delete(:stored_location) ||
+      sp_session_request_url_with_updated_params ||
       signed_in_url
   end
 

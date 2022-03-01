@@ -185,28 +185,56 @@ shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
-shared_examples 'signing in as proofed account with broken personal key' do |sp, sp_ial:|
+shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:|
+  let(:window_start) { 3.days.ago }
+  let(:window_end) { 1.day.ago }
+
   before do
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).and_return(3.days.ago)
-    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).and_return(1.day.ago)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
+      and_return(window_start)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
+      and_return(window_end)
   end
 
-  it 'prompts the user to get a new personal key before redirecting' do
-    user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+  def user_with_broken_personal_key(protocol)
+    user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
 
-    user.active_profile.update(activated_at: Identity.store.broken_personal_key_window_start)
+    user.active_profile.update(verified_at: window_start)
+    user.update(encrypted_recovery_code_digest_generated_at: nil)
 
-    case sp_ial
-    when 1
-      visit_idp_from_sp_with_ial2(sp)
-    when 2
-      visit_idp_from_sp_with_ial1(sp)
-    else
-      raise "unknown sp_ial=#{sp_ial}"
+    user
+  end
+
+  context "protocol: #{protocol}, ial: #{sp_ial}" do
+    it 'prompts the user to get a new personal key when signing in with email/password' do
+      user = user_with_broken_personal_key(protocol)
+
+      case sp_ial
+      when 1
+        visit_idp_from_sp_with_ial2(protocol)
+      when 2
+        visit_idp_from_sp_with_ial1(protocol)
+      else
+        raise "unknown sp_ial=#{sp_ial}"
+      end
+
+      fill_in_credentials_and_submit(user.email, user.password)
+      expect(page).to have_content(t('account.personal_key.needs_new'))
+      click_acknowledge_personal_key
     end
 
-    fill_in_credentials_and_submit(user.email, user.password)
-    expect(page).to have_content('broken personal key')
+    it 'prompts for password when signing in via PIV/CAC' do
+      user = user_with_broken_personal_key(protocol)
+
+      create(:piv_cac_configuration, user: user)
+
+      visit_idp_from_sp_with_ial1(protocol)
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user)
+
+      expect(page).to have_content(t('account.personal_key.needs_new'))
+      click_acknowledge_personal_key
+    end
   end
 end
 
