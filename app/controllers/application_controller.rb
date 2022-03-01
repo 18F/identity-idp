@@ -201,9 +201,10 @@ class ApplicationController < ActionController::Base
 
         manage_personal_key_url
       else
-        # TODO
-        # user_session[:needs_new_personal_key] = true
-        # capture_password_url
+        flash[:info] = t('account.personal_key.needs_new_password_prompt')
+        user_session[:needs_new_personal_key] = true
+
+        capture_password_url
       end
     end
   end
