@@ -26,15 +26,17 @@ check_7z() {
   fi
 }
 
+pwned_directory="../pwned_passwords"
 number_of_passwords=3000000
-pwned_url='https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z'
-pwned_file=pwned-passwords.txt
-aws_prod='false'
+pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
+pwned_7z="${pwned_directory}/pwned-passwords.7z"
+pwned_file="${pwned_directory}/pwned-passwords.txt"
+aws_prod="false"
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
-  curl $pwned_url --output pwned-passwords.7z
-  7z x pwned-passwords.7z -so | head -n $number_of_passwords | cut -d: -f 1 | sort > $pwned_file
+  curl $pwned_url --output $pwned_7z
+  7z x $pwned_7z -so | head -n $number_of_passwords | cut -d: -f 1 | sort > $pwned_file
 }
 
 post_to_s3() {
@@ -57,7 +59,7 @@ post_to_s3() {
 
 cleanup() {
   echo "Removing pwned passwords 7z file"
-  rm pwned-passwords.7z
+  rm $pwned_7z
 }
 
 while getopts "hu:f:p" opt; do

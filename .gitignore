@@ -62,7 +62,6 @@ Vagrantfile
 /public/system
 /public/user_flows
 /pwned_passwords/*
-!/pwned_passwords/pwned-passwords.sh
 !/pwned_passwords/pwned_passwords.txt.sample
 /spec/tmp
 /test
