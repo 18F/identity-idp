@@ -224,7 +224,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       code = page.all('[data-personal-key]').map(&:text).join('-')
       click_acknowledge_personal_key
 
-      expect(PersonalKeyGenerator.new(user.reload).verify(code)).to eq(true)
+      expect(user.reload.active_profile.recover_pii(code)).to be_present
     end
 
     it 'prompts for password when signing in via PIV/CAC' do
@@ -246,7 +246,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       code = page.all('[data-personal-key]').map(&:text).join('-')
       click_acknowledge_personal_key
 
-      expect(PersonalKeyGenerator.new(user.reload).verify(code)).to eq(true)
+      expect(user.reload.active_profile.recover_pii(code)).to be_present
     end
   end
 end
