@@ -199,7 +199,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
   def user_with_broken_personal_key(protocol)
     user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
 
-    user.active_profile.update(verified_at: window_start)
+    user.active_profile.update(verified_at: window_start + 1.hour)
     user.update(encrypted_recovery_code_digest_generated_at: nil)
 
     user
