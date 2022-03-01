@@ -89,6 +89,6 @@ input::-webkit-inner-spin-button {
   width: 1.5rem;
   @media #{$breakpoint-sm} {
     width: 2.625rem;
-    padding-top: .25rem;
+    padding-top: 0.25rem;
   }
 }
