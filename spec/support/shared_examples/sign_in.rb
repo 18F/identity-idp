@@ -221,10 +221,11 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       fill_in_credentials_and_submit(user.email, user.password)
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('[data-personal-key]').map(&:text).join('-')
+      code = page.all('[data-personal-key]').map(&:text).join(' ')
       click_acknowledge_personal_key
 
-      expect(user.reload.active_profile.recover_pii(code)).to be_present
+      expect(user.reload.valid_personal_key?(code)).to eq(true)
+      expect(user.active_profile.reload.recover_pii(code)).to be_present
     end
 
     it 'prompts for password when signing in via PIV/CAC' do
@@ -243,10 +244,11 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('[data-personal-key]').map(&:text).join('-')
+      code = page.all('[data-personal-key]').map(&:text).join(' ')
       click_acknowledge_personal_key
 
-      expect(user.reload.active_profile.recover_pii(code)).to be_present
+      expect(user.reload.valid_personal_key?(code)).to eq(true)
+      expect(user.active_profile.reload.recover_pii(code)).to be_present
     end
   end
 end
