@@ -236,7 +236,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user)
 
-      expect(page).to have_content(t('account.personal_key.needs_new_password_prompt'))
+      expect(page).to have_content(t('account.personal_key.needs_new'))
       expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
 
       fill_in t('forms.password'), with: user.password

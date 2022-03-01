@@ -107,11 +107,8 @@ es:
       get_new: Obtenga una nueva clave personal
       get_new_description: Su antigua clave personal dejará de funcionar en cuanto reciba una nueva.
       last_generated: 'Generada por última vez en %{timestamp}'
-      needs_new: Su cuenta requiere una nueva contraseña de acceso. A continuación,
-        imprima, copie o descargue la nueva contraseña de acceso. En caso de que
-        olvide su contraseña, no podrá usar su antigua contraseña de acceso.
-      needs_new_password_prompt: Se requiere una nueva clave personal para su cuenta.
-        Su antigua clave personal no funcionará si se olvida de su contraseña.
+      needs_new: Se requiere una nueva clave personal para su cuenta. Su antigua clave
+        personal no funcionará si se olvida de su contraseña.
       old_key_will_not_work: Por favor, imprima, copie o descargue la nueva clave
         personal que aparece a continuación. Su antigua clave personal no
         funcionará si olvida su contraseña.

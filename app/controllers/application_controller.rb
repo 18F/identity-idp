@@ -190,18 +190,18 @@ class ApplicationController < ActionController::Base
 
   def fix_broken_personal_key_url
     if current_user.broken_personal_key?
+      flash[:info] = t('account.personal_key.needs_new')
+
       pii_unlocked = user_session[:decrypted_pii].present?
 
       if pii_unlocked
         cacher = Pii::Cacher.new(current_user, user_session)
         user_session[:personal_key] = current_user.active_profile.encrypt_recovery_pii(cacher.fetch)
 
-        flash[:info] = t('account.personal_key.needs_new')
         analytics.track_event(Analytics::BROKEN_PERSONAL_KEY_REGENERATED)
 
         manage_personal_key_url
       else
-        flash[:info] = t('account.personal_key.needs_new_password_prompt')
         user_session[:needs_new_personal_key] = true
 
         capture_password_url
