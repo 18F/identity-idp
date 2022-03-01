@@ -107,6 +107,8 @@ es:
       get_new: Obtenga una nueva clave personal
       get_new_description: Su antigua clave personal dejará de funcionar en cuanto reciba una nueva.
       last_generated: 'Generada por última vez en %{timestamp}'
+      needs_new: TODO
+      needs_new_password_prompt: TODO
       old_key_will_not_work: Por favor, imprima, copie o descargue la nueva clave
         personal que aparece a continuación. Su antigua clave personal no
         funcionará si olvida su contraseña.
