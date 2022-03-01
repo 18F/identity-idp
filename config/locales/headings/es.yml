@@ -32,7 +32,7 @@ es:
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
-      confirm_for_personal_key: TODO
+      confirm_for_personal_key: Introduzca la contraseña y obtenga una nueva clave personal
       forgot: '¿Olvidó su contraseña?'
     personal_key: Guarda tu clave personal
     piv_cac:

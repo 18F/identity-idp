@@ -32,7 +32,7 @@ fr:
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer
-      confirm_for_personal_key: TODO
+      confirm_for_personal_key: Entrez le mot de passe et obtenez une nouvelle clé personnelle
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Enregistrez votre clé personnelle
     piv_cac:
