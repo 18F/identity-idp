@@ -106,9 +106,9 @@ class User < ApplicationRecord
     window_finish = IdentityConfig.store.broken_personal_key_window_finish
     last_personal_key_at = self.encrypted_recovery_code_digest_generated_at
 
-    active_profile.present? &&
-      (window_start..window_finish).cover?(active_profile.verified_at) &&
-      (!last_personal_key_at || last_personal_key_at < window_finish)
+    (!last_personal_key_at || last_personal_key_at < window_finish) &&
+      active_profile.present? &&
+      (window_start..window_finish).cover?(active_profile.verified_at)
   end
 
   # To send emails asynchronously via ActiveJob.
