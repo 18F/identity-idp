@@ -3,7 +3,7 @@
 # be run periodically, like metric exporters or syncs.
 
 default:
-  image: mitchh/ruby-node-yarn-chrome-chromedriver:3.0.3
+  image: 034795980528.dkr.ecr.us-west-2.amazonaws.com/idp/ci:latest
 
 variables:
   GITLAB_CI: 'true'
