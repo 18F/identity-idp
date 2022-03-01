@@ -3,6 +3,7 @@ require 'time'
 module Telephony
   module Pinpoint
     class VoiceSender
+      # rubocop:disable Lint/UnusedMethodArgument
       # rubocop:disable Metrics/BlockLength
       def send(message:, to:, country_code:, otp: nil)
         if Telephony.config.pinpoint.voice_configs.empty?
@@ -54,6 +55,7 @@ module Telephony
         last_error || PinpointHelper.handle_config_failure(:voice)
       end
       # rubocop:enable Metrics/BlockLength
+      # rubocop:enable Lint/UnusedMethodArgument
 
       # @api private
       # @param [PinpointVoiceConfiguration] voice_config

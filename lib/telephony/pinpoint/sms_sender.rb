@@ -14,6 +14,7 @@ module Telephony
       }.freeze
 
       # rubocop:disable Metrics/BlockLength
+      # rubocop:disable Lint/UnusedMethodArgument
       # @return [Response]
       def send(message:, to:, country_code:, otp: nil)
         if Telephony.config.pinpoint.sms_configs.empty?
@@ -72,6 +73,7 @@ module Telephony
         end
         response || PinpointHelper.handle_config_failure(:sms)
       end
+      # rubocop:enable Lint/UnusedMethodArgument
       # rubocop:enable Metrics/BlockLength
 
       def phone_info(phone_number)
