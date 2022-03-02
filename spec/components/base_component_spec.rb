@@ -27,8 +27,10 @@ RSpec.describe BaseComponent, type: :component do
       end
 
       def self._sidecar_files(extensions)
-        return ['/path/to/app/components/example_component_with_script.js'] if extensions == ['js']
-        super(extensions)
+        files = []
+        files << '/components/example_component_with_script_js.js' if extensions.include?('js')
+        files << '/components/example_component_with_script_ts.ts' if extensions.include?('ts')
+        files.presence || super(extensions)
       end
     end
 
@@ -40,7 +42,7 @@ RSpec.describe BaseComponent, type: :component do
 
     it 'adds script to class variable when rendered' do
       expect(view_context).to receive(:enqueue_component_scripts).twice.
-        with('example_component_with_script')
+        with('example_component_with_script_js', 'example_component_with_script_ts')
 
       render_inline(ExampleComponentWithScript.new)
     end
