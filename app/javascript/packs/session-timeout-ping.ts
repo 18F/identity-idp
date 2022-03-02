@@ -1,3 +1,5 @@
+import type { CountdownElement } from '@18f/identity-countdown-element';
+
 interface NewRelicAgent {
   /**
    * Log page action to New Relic.
@@ -7,14 +9,6 @@ interface NewRelicAgent {
 
 interface LoginGov {
   Modal: (any) => void;
-
-  countdownTimer: (
-    el: HTMLElement | null,
-    timeLeft: number,
-    endTime: number,
-    interval?: number,
-    screenReader?: boolean,
-  ) => void;
 }
 
 interface NewRelicGlobals {
@@ -28,6 +22,23 @@ interface LoginGovGlobals {
   LoginGov: LoginGov;
 }
 
+interface PingResponse {
+  /**
+   * Whether the session is still active.
+   */
+  live: boolean;
+
+  /**
+   * Time remaining in active session, in seconds.
+   */
+  remaining: number;
+
+  /**
+   * ISO8601-formatted date string for session timeout.
+   */
+  timeout: string;
+}
+
 type LoginGovGlobal = typeof window & NewRelicGlobals & LoginGovGlobals;
 
 const login = (window as LoginGovGlobal).LoginGov;
@@ -35,7 +46,6 @@ const login = (window as LoginGovGlobal).LoginGov;
 const warningEl = document.getElementById('session-timeout-cntnr');
 
 const defaultTime = '60';
-const SR_MESSAGE_UPDATE_INTERVAL_SECONDS = 30;
 
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
@@ -47,15 +57,13 @@ const initialTime = new Date();
 
 const modal = new login.Modal({ el: '#session-timeout-msg' });
 const keepaliveEl = document.getElementById('session-keepalive-btn');
+const countdownEls: NodeListOf<CountdownElement> = modal.el.querySelectorAll('lg-countdown');
 const csrfEl: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
 
 let csrfToken = '';
 if (csrfEl) {
   csrfToken = csrfEl.content;
 }
-
-let countdownInterval;
-let srCountdownInterval;
 
 function notifyNewRelic(request, error, actionName) {
   (window as LoginGovGlobal).newrelic?.addPageAction('Session Ping Error', {
@@ -72,9 +80,8 @@ function forceRedirect(redirectURL: string) {
   window.location.href = redirectURL;
 }
 
-function success(data) {
+function success(data: PingResponse) {
   let timeRemaining = data.remaining * 1000;
-  const timeTimeout = new Date().getTime() + timeRemaining;
   const showWarning = timeRemaining < warning;
 
   if (!data.live) {
@@ -86,28 +93,15 @@ function success(data) {
 
   if (showWarning && !modal.shown) {
     modal.show();
-
-    if (countdownInterval) {
-      clearInterval(countdownInterval);
-    }
-    countdownInterval = login.countdownTimer(
-      document.getElementById('countdown'),
-      timeRemaining,
-      timeTimeout,
-    );
-    if (srCountdownInterval) {
-      clearInterval(srCountdownInterval);
-    }
-    srCountdownInterval = login.countdownTimer(
-      document.getElementById('sr-countdown'),
-      timeRemaining,
-      timeTimeout,
-      SR_MESSAGE_UPDATE_INTERVAL_SECONDS * 1000,
-    );
+    countdownEls.forEach((countdownEl) => {
+      countdownEl.expiration = new Date(data.timeout);
+      countdownEl.start();
+    });
   }
 
   if (!showWarning && modal.shown) {
     modal.hide();
+    countdownEls.forEach((countdownEl) => countdownEl.stop());
   }
 
   if (timeRemaining < frequency) {

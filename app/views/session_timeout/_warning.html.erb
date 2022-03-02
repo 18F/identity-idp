@@ -7,10 +7,10 @@
       <hr class='margin-bottom-4 border-width-05' />
       <div class='margin-bottom-6'>
         <p>
-          <%= modal.message %>
+          <%= modal.message(self) %>
         </p>
         <p class="usa-sr-only" id='<%= description_id %>' role="timer" aria-live="polite" aria-atomic="true">
-          <%= modal.sr_message %>
+          <%= modal.sr_message(self) %>
         </p>
       </div>
       <%= button_tag modal.continue,

@@ -1,19 +1,30 @@
 require 'rails_helper'
 
 describe PartiallySignedInModalPresenter do
-  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::SanitizeHelper
 
-  let(:time_left_in_session) { 10 }
-  subject(:presenter) { PartiallySignedInModalPresenter.new(time_left_in_session) }
+  let(:expiration) { Time.zone.now + 1.minute + 1.second }
+  subject(:presenter) { PartiallySignedInModalPresenter.new(expiration) }
+
+  around do |ex|
+    freeze_time { ex.run }
+  end
 
   describe '#message' do
     it 'returns the partially signed in message' do
-      message = t(
+      expect(strip_tags(presenter.message(ActionController::Base.new))).to eq t(
         'notices.timeout_warning.partially_signed_in.message_html',
-        time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
+        time_left_in_session: "1 minute and 1 second\n",
       )
+    end
+  end
 
-      expect(presenter.message).to eq message
+  describe '#sr_message' do
+    it 'returns the partially signed in message for screen readers' do
+      expect(strip_tags(presenter.sr_message(ActionController::Base.new))).to eq t(
+        'notices.timeout_warning.partially_signed_in.sr_message_html',
+        time_left_in_session: "1 minute and 1 second\n",
+      )
     end
   end
 

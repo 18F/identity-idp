@@ -1,22 +1,29 @@
 class FullySignedInModalPresenter
-  include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(time_left_in_session)
-    @time_left_in_session = time_left_in_session
+  def initialize(expiration)
+    @expiration = expiration
   end
 
-  def message
+  def message(view_context)
     t(
       'notices.timeout_warning.signed_in.message_html',
-      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
+      time_left_in_session: view_context.render_to_string(
+        CountdownComponent.new(expiration: expiration, start_immediately: false),
+      ),
     )
   end
 
-  def sr_message
+  def sr_message(view_context)
     t(
       'notices.timeout_warning.signed_in.sr_message_html',
-      time_left_in_session: content_tag(:span, time_left_in_session, id: 'sr-countdown'),
+      time_left_in_session: view_context.render_to_string(
+        CountdownComponent.new(
+          expiration: expiration,
+          update_interval: 30.seconds,
+          start_immediately: false,
+        ),
+      ),
     )
   end
 
@@ -30,5 +37,5 @@ class FullySignedInModalPresenter
 
   private
 
-  attr_reader :time_left_in_session
+  attr_reader :expiration
 end
