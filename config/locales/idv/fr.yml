@@ -132,7 +132,8 @@ fr:
         rules:
           - être un plan téléphonique associé à votre nom. Il n’est pas
             nécessaire que vous soyez le titulaire principal du compte.
-          - pas un téléphone virtuel (comme Google Voice ou Skype)
+          - ne pas être un téléphone virtuel (tel que Google Voice ou Skype) ou
+            un numéro à tarif majoré (péage).
           - un numéro américain
       return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:

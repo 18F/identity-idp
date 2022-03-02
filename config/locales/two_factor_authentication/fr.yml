@@ -155,8 +155,8 @@ fr:
       more_secure_label: Plus sécurisé
       phone: Téléphone
       phone_info: Obtenir les codes de sécurité par SMS ou appel téléphonique.
-      phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés
-        sur le Web (VOIP).
+      phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
+        Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
       piv_cac: Numéro d’employé du gouvernement
       piv_cac_info: Insérez votre carte PIV ou CAC du gouvernement ou militaire et
         entrez votre code PIN.

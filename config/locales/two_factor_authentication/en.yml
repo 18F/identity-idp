@@ -138,7 +138,8 @@ en:
       more_secure_label: More Secure
       phone: Text or Voice Message
       phone_info: Get security codes by text message (SMS) or phone call.
-      phone_info_no_voip: Please do not use web-based (VOIP) phone services.
+      phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
+        (toll) phone numbers.
       piv_cac: Government employee ID
       piv_cac_info: Insert your government or military PIV or CAC card and enter your PIN.
       secure_label: Secure

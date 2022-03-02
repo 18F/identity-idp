@@ -118,7 +118,8 @@ en:
         rules:
           - be a phone plan associated with your name. You do not need to be the
             primary account holder.
-          - not be a virtual phone (such as Google Voice or Skype)
+          - not be a virtual phone (such as Google Voice or Skype) or a premium
+            rate (toll) number.
           - be a U.S. number
       return_to_profile: '‹ Return to your %{app_name} profile'
       review:

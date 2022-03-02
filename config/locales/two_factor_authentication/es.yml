@@ -148,7 +148,8 @@ es:
       phone: Teléfono
       phone_info: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
         telefónica.
-      phone_info_no_voip: No utilice servicios telefónicos basados en web (VOIP).
+      phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
+        (VOIP) o de números de teléfono de tarificación adicional (de pago).
       piv_cac: Identificación de empleado del gobierno
       piv_cac_info: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese su PIN.
       secure_label: Seguro
