@@ -125,7 +125,13 @@ module Idv
         ),
       )
       redirect_to_next_step and return if async_state.result[:success]
-      handle_proofing_failure
+
+      if form_result.extra.dig(:vendor, :timed_out)
+        flash.now[:error] = I18n.t('idv.failure.timeout')
+        render :new, locals: { gpo_letter_available: gpo_letter_available }
+      else
+        handle_proofing_failure
+      end
     end
 
     def new_phone_added?
