@@ -131,32 +131,37 @@ es:
       llave de seguridad o una identificación de empleado del Gobierno (PIV o
       CAC) para acceder a su información.
     two_factor_choice: Configuración del método de autenticación
-    two_factor_choice_intro: Añada otra capa de seguridad utilizando una de las
-      opciones de autenticación multifactorial que aparecen a continuación.
+    two_factor_choice_intro: Agregue un nivel adicional de seguridad usando una de
+      las siguientes opciones para recibir o generar un código seguro. La
+      próxima vez que inicie sesión, deberá ingresar este código después de su
+      contraseña.
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
-      auth_app_info: Obtenga códigos de una aplicación en su teléfono, computadora o tableta.
-      backup_code: No tengo ninguno de los anteriores
-      backup_code_info: Le daremos 10 códigos para usar y guardar en un lugar seguro.
-        Puede usar códigos de respaldo como su único método de autenticación.
+      auth_app_info: Descargue o use la aplicación de autenticación de su preferencia
+        para generar códigos seguros.
+      backup_code: Códigos de respaldo
+      backup_code_info: Una lista de 10 códigos que puede imprimir o guardar en su
+        dispositivo. Generaremos una nueva lista cuando haya usado el último
+        código. Tenga presente que los códigos de seguridad pueden perderse con
+        facilidad.
       least_secure_label: Lo menos seguro
       less_secure_label: Menos seguro
       more_secure_label: Más seguro
       phone: Teléfono
-      phone_info: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
-        telefónica.
+      phone_info: Reciba un código de seguridad a través de un mensaje de texto (SMS)
+        o una llamada telefónica a su dispositivo.
       phone_info_no_voip: No utilice servicios telefónicos basados en web (VOIP).
-      piv_cac: Identificación de empleado del gobierno
-      piv_cac_info: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese su PIN.
+      piv_cac: Identificación de empleado gubernamental
+      piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
+        ejército. Únicamente versión de escritorio.
       secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
       voice: Llamada telefónica
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
-      webauthn: Llave de seguridad
-      webauthn_info: Use una llave de seguridad que tenga. Es un dispositivo físico
-        que se conecta o que está integrado en su computadora o teléfono (a
-        menudo parece una unidad flash USB).
+      webauthn: Clave de seguridad
+      webauthn_info: Un dispositivo físico que suele tener la forma de una unidad USB
+        y se conecta a su dispositivo.
       webauthn_platform: Desbloqueo facial o táctil
       webauthn_platform_info: Utiliza tu dispositivo para verificar tu identidad. No
         almacenamos tus huellas dactilares ni tus fotos. Esto es recomendable
