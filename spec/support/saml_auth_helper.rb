@@ -2,7 +2,7 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  def saml_settings(overrides: {}, security_overrides: {})
+  def saml_settings(overrides: {})
     settings = OneLogin::RubySaml::Settings.new
 
     # SP settings

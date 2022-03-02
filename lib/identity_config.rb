@@ -50,7 +50,7 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, allow_nil: false, enum: nil, options: {})
+  def add(key, type: :string, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?

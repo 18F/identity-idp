@@ -574,6 +574,10 @@ Lint/UnifiedInteger:
 Lint/UnreachableCode:
   Enabled: true
 
+Lint/UnusedMethodArgument:
+  Enabled: true
+  AllowUnusedKeywordArguments: false
+
 Lint/UriEscapeUnescape:
   Enabled: true
 
