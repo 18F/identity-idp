@@ -91,7 +91,7 @@ if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/
     'no-use-before-define': 'off',
   });
   config.overrides.push({
-    files: ['*.ts'],
+    files: '*.{ts,tsx}',
     rules: {
       'no-undef': 'off',
     },
