@@ -36,8 +36,9 @@ feature 'SP Costing', :email do
       transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID
     )
     expect_sp_cost_type(6, 2, 'lexis_nexis_address')
-    expect_sp_cost_type(7, 2, 'user_added')
-    expect_sp_cost_type(8, 2, 'authentication')
+    expect_sp_cost_type(7, 2, 'phone_otp')
+    expect_sp_cost_type(8, 2, 'user_added')
+    expect_sp_cost_type(9, 2, 'authentication')
   end
 
   it 'logs the cost to the SP for reproofing' do
@@ -54,7 +55,6 @@ feature 'SP Costing', :email do
     fill_in_code_with_last_phone_otp
     click_submit_default
     complete_all_doc_auth_steps
-    click_continue
     fill_in 'Password', with: password
     click_continue
     click_acknowledge_personal_key

@@ -115,11 +115,19 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_ssn_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     fill_out_ssn_form_ok
     click_idv_continue
   end
+
+  def complete_doc_auth_steps_before_phone_otp_step(expect_accessible: false)
+    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+    click_idv_continue
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    click_idv_continue
+  end
+
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
@@ -139,14 +147,17 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_phone_otp_step(expect_accessible: expect_accessible)
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
+
+    click_continue
+    choose_idv_otp_delivery_method_sms
+    fill_in_code_with_last_phone_otp
+    click_submit_default
   end
 
   def complete_proofing_steps
     complete_all_doc_auth_steps
-    click_continue
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     click_acknowledge_personal_key
@@ -203,6 +214,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         pii: idv_result[:pii_from_doc],
       )
     end
+  end
+
+  def verify_phone_otp
+    choose_idv_otp_delivery_method_sms
+    fill_in_code_with_last_phone_otp
+    click_submit_default
   end
 
   def fill_out_address_form_ok

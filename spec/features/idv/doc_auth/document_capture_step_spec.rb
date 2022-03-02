@@ -410,6 +410,7 @@ feature 'doc auth document capture step' do
 
         fill_out_phone_form_mfa_phone(user)
         click_idv_continue
+        verify_phone_otp
 
         fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
         click_idv_continue
@@ -526,6 +527,7 @@ feature 'doc auth document capture step' do
 
         fill_out_phone_form_mfa_phone(user)
         click_idv_continue
+        verify_phone_otp
 
         fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
         click_idv_continue

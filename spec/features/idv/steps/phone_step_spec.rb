@@ -15,18 +15,6 @@ feature 'idv phone step' do
       expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
 
-    it 'redirects to the confirmation step when the phone matches the 2fa phone number', js: true do
-      user = user_with_2fa
-      start_idv_from_sp
-      complete_idv_steps_before_phone_step(user)
-      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-
-      click_idv_continue
-
-      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
-    end
-
     it 'allows a user without a phone number to continue' do
       user = create(:user, :with_authentication_app, :with_backup_code)
       start_idv_from_sp
@@ -98,6 +86,7 @@ feature 'idv phone step' do
 
   it 'does not allow the user to advance without completing' do
     start_idv_from_sp
+
     complete_idv_steps_before_phone_step
 
     # Try to skip ahead to review step
@@ -131,7 +120,7 @@ feature 'idv phone step' do
       expect(page).to have_current_path(idv_phone_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
   end
 
