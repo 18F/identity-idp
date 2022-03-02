@@ -26,7 +26,7 @@
               value: @code,
               required: true,
               autofocus: true,
-              numeric: true,
+              numeric: IdentityConfig.store.numeric_otp_input_enabled ? true : false,
               class: 'width-full',
             ) %>
       </div>
