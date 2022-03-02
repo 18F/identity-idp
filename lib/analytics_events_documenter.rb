@@ -97,7 +97,7 @@ class AnalyticsEventsDocumenter
       {
         event_name: method_object.tag(EVENT_NAME_TAG)&.text,
         description: method_object.docstring.presence,
-        attributes: attributes
+        attributes: attributes,
       }
     end
 
@@ -119,9 +119,11 @@ class AnalyticsEventsDocumenter
 end
 
 # rubocop:disable Rails/Output
+# rubocop:disable Rails/Exit
 if $PROGRAM_NAME == __FILE__
   output, status = AnalyticsEventsDocumenter.run(ARGV)
   puts output
   exit status
 end
+# rubocop:enable Rails/Exit
 # rubocop:enable Rails/Output

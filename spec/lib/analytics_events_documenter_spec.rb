@@ -8,7 +8,7 @@ RSpec.describe AnalyticsEventsDocumenter do
       @database_dir = database_dir
 
       YARD::Registry.clear
-      YARD::Tags::Library.define_tag("Event Name", :'identity.idp.event_name')
+      YARD::Tags::Library.define_tag('Event Name', :'identity.idp.event_name')
       YARD.parse_string(source_code)
       YARD::Registry.save(false, database_dir)
 
