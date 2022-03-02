@@ -160,12 +160,10 @@ en:
       You need to verify your identity using a government employee ID (PIV/CAC)
       to access your information.
     webauthn_error:
-      additional_methods_link: select another authentication method
-      error_page_text: Please use the the same device and browser profile you used
-        when you first selected face or touch unlock.
-      multiple_methods: We can’t identify this device. Please use the same device and
-        browser profile you used when you first selected face or touch unlock or
-        %{link}.
+      additional_methods_link: choose another authentication method
+      error_page_text: You have face or touch unlock enabled for this account. Use the
+        same device and browser profile each time.
+      multiple_methods: Face or touch unlock was unsuccessful. Please try again or %{link}.
       title: We can’t identify your device
     webauthn_fallback:
       question: Don’t have your security key available?

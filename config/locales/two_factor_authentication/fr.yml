@@ -180,14 +180,12 @@ fr:
       physique tel qu’une clé de sécurité ou un identifiant d’employé du
       gouvernement (PIC/CAC) pour accéder à vos informations.
     webauthn_error:
-      additional_methods_link: sélectionnez une autre méthode d’authentification
-      error_page_text: Veuillez utiliser le même appareil et le même profil de
-        navigateur que vous avez utilisé lorsque vous avez choisi le
-        déverrouillage facial ou tactile pour la première fois.
-      multiple_methods: Nous ne pouvons pas identifier cet appareil. Veuillez utiliser
-        le même appareil et le même profil de navigateur que vous avez utilisé
-        lorsque vous avez sélectionné le déverrouillage facial ou tactile pour
-        la première fois ou %{link}.
+      additional_methods_link: choisir une autre méthode d’authentification
+      error_page_text: Vous avez activé le déverrouillage facial ou tactile pour ce
+        compte. Utilisez le même appareil et le même profil de navigateur chaque
+        fois.
+      multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné.
+        Veuillez réessayer ou %{link}.
       title: Nous ne pouvons pas identifier votre appareil
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
