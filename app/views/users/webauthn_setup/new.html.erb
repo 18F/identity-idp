@@ -26,14 +26,14 @@
   <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block bold', for: 'nickname' %>
+  <%= label_tag 'code', @presenter.nickname_label, class: 'display-block text-bold', for: 'nickname' %>
   <%= text_field_tag(
         :name,
         '',
         required: true,
         aria: { invalid: false },
         id: 'nickname',
-        class: 'display-block col-12 field font-family-mono',
+        class: 'display-block width-full field font-family-mono',
         size: 16,
         maxlength: 20,
       ) %>
@@ -56,7 +56,7 @@
     ) %>
 
 <div class="spinner hidden margin-y-4" id='spinner'>
-  <div class='center'>
+  <div class='text-center'>
     <%= image_tag(
           asset_url('spinner.gif'),
           srcset: asset_url('spinner@2x.gif'),

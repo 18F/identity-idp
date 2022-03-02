@@ -15,7 +15,7 @@ class AppArtifacts
 
     # @yieldparam [Store] store
     # @return [Struct] an instance of a struct, the propertes are defined by the block
-    def build(&block)
+    def build
       @artifacts = {}
 
       yield self

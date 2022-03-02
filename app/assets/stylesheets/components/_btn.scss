@@ -1,27 +1,3 @@
-.account-action-button {
-  @include u-radius('lg');
-  background-color: color('primary-lighter');
-  border: 0;
-  color: $blue;
-  display: inline-block;
-  font-size: 0.8125rem;
-  font-weight: normal;
-  line-height: 1.375rem;
-  margin-bottom: -3px;
-  margin-top: -3px;
-  padding: 0.5rem;
-  padding-bottom: 0.125rem;
-  padding-top: 0.125rem;
-  text-decoration: none;
-  vertical-align: middle;
-  white-space: normal;
-
-  &,
-  &:hover {
-    text-decoration: none;
-  }
-}
-
 .usa-button {
   // Temporary: To be backported to design system. Margins should be applied at the button element,
   // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and

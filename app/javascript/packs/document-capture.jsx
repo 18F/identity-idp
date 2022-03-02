@@ -12,6 +12,7 @@ import {
   FailedCaptureAttemptsContextProvider,
   HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
+import { i18n } from '@18f/identity-i18n';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
@@ -30,7 +31,6 @@ import { I18nContext } from '@18f/identity-react-i18n';
 /**
  * @typedef LoginGov
  *
- * @prop {I18n} I18n
  * @prop {Record<string,string>} assets
  */
 
@@ -66,7 +66,7 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @see UploadContext
  */
 
-const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
+const { assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
 
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');

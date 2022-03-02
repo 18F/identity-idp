@@ -11,7 +11,7 @@ describe 'webauthn management' do
   def visit_webauthn_setup
     sign_in_and_2fa_user(user)
     visit account_two_factor_authentication_path
-    click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
+    first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
   end
 
   def expect_webauthn_setup_success
@@ -27,8 +27,11 @@ describe 'webauthn management' do
   def visit_webauthn_platform_setup
     sign_in_and_2fa_user(user)
     visit account_two_factor_authentication_path
-    click_link "+ #{t('account.index.webauthn_platform_add')}",
-               href: webauthn_setup_path(platform: true)
+    first(
+      :link,
+      t('account.index.webauthn_platform_add'),
+      href: webauthn_setup_path(platform: true),
+    ).click
   end
 
   def expect_webauthn_platform_setup_success
@@ -128,7 +131,7 @@ describe 'webauthn management' do
       visit account_two_factor_authentication_path
       expect(current_path).to eq account_two_factor_authentication_path
 
-      click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
+      first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
       expect(current_path).to eq webauthn_setup_path
 
       fill_in_nickname_and_click_continue(nickname: webauthn_config.name)
@@ -226,7 +229,7 @@ describe 'webauthn management' do
       visit account_two_factor_authentication_path
       expect(current_path).to eq account_two_factor_authentication_path
 
-      click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
+      first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
       expect(current_path).to eq webauthn_setup_path
 
       fill_in_nickname_and_click_continue(nickname: webauthn_config.name)

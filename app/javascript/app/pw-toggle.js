@@ -1,4 +1,4 @@
-const { I18n } = window.LoginGov;
+import { t } from '@18f/identity-i18n';
 
 function togglePw() {
   const inputs = document.querySelectorAll('input.password-toggle[type="password"]');
@@ -15,7 +15,7 @@ function togglePw() {
             class="usa-checkbox__input usa-checkbox__input--bordered"
           >
           <label for="pw-toggle-${i}" class="usa-checkbox__label">
-            ${I18n.t('forms.passwords.show')}
+            ${t('forms.passwords.show')}
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);

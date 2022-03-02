@@ -1,21 +1,16 @@
-.bg-gray-lighter {
-  background-color: $gray-lighter;
-}
-.bg-light-blue {
-  background-color: $blue-light;
-}
-.bg-lightest-blue {
-  background-color: $blue-lightest;
-}
+@include at-media('tablet') {
+  /* stylelint-disable-next-line selector-class-pattern */
+  .tablet\:bg-primary-lighter {
+    @include u-bg('primary-lighter');
+  }
 
-@media #{$breakpoint-sm} {
-  .sm-bg-light-blue {
-    background-color: $blue-light;
+  /* stylelint-disable-next-line selector-class-pattern */
+  .tablet\:bg-primary-darker {
+    @include u-bg('primary-darker');
   }
-  .sm-bg-none {
-    background-color: transparent;
-  }
-  .sm-bg-navy {
-    background-color: $navy;
+
+  /* stylelint-disable-next-line selector-class-pattern */
+  .tablet\:bg-transparent {
+    @include u-bg('transparent');
   }
 }

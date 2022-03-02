@@ -19,8 +19,8 @@ describe 'i18n requests' do
       )
       get response.headers['Location']
 
-      expect(response.body).to include(t('errors.invalid_authenticity_token', locale: :en))
-      expect(response.body).to_not include(t('errors.invalid_authenticity_token', locale: :es))
+      expect(response.body).to include(t('errors.general', locale: :en))
+      expect(response.body).to_not include(t('errors.general', locale: :es))
     end
   end
 end

@@ -58,7 +58,13 @@ module Users
       @webauthn = WebauthnConfiguration.where(
         user_id: current_user.id, id: delete_params[:id],
       ).first
-      render 'users/webauthn_setup/delete'
+
+      if @webauthn
+        render 'users/webauthn_setup/delete'
+      else
+        flash[:error] = t('errors.general')
+        redirect_back fallback_location: new_user_session_url, allow_other_host: false
+      end
     end
 
     private

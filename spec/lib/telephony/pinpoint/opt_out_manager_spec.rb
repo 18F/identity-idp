@@ -85,7 +85,7 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
     end
   end
 
-  describe '#each_opted_out_number' do
+  describe '#opted_out_numbers' do
     let(:phone1) { Faker::PhoneNumber.cell_phone }
     let(:phone2) { Faker::PhoneNumber.cell_phone }
     let(:phone3) { Faker::PhoneNumber.cell_phone }
@@ -122,13 +122,9 @@ RSpec.describe Telephony::Pinpoint::OptOutManager do
       )
     end
 
-    it 'yields phone numbers across regions' do
-      numbers = []
-      opt_out_manager.each_opted_out_number do |phone_number|
-        numbers << phone_number
-      end
-
-      expect(numbers).to eq([phone1, phone2, phone3, phone4, phone5, phone6])
+    it 'iterates phone numbers across regions' do
+      expect(opt_out_manager.opted_out_numbers.to_a).
+        to eq([phone1, phone2, phone3, phone4, phone5, phone6])
     end
   end
 end

@@ -19,8 +19,19 @@ describe Db::DeletedUser::Create do
 
   it 'fails gracefully if we try to insert the same user twice and returns the deleted user' do
     user = create(:user)
-    deleted_user1 = subject.call(user.id)
-    deleted_user2 = subject.call(user.id)
-    expect(deleted_user1).to eq(deleted_user2)
+    subject.call(user.id)
+    subject.call(user.id)
+    expect(DeletedUser.find_by!(user_id: user.id)).to_not be_nil
+  end
+
+  it 'fails gracefully if we try to insert the same user while in a transaction' do
+    user = create(:user)
+    ActiveRecord::Base.transaction do
+      subject.call(user.id)
+    end
+    ActiveRecord::Base.transaction do
+      subject.call(user.id)
+    end
+    expect(DeletedUser.find_by!(user_id: user.id)).to_not be_nil
   end
 end

@@ -35,7 +35,7 @@ end
 def get_git_log(base_branch, source_branch)
   format = '--pretty=title: %s%nbody:%b%nDELIMITER'
   log, status = Open3.capture2(
-    'git', 'log', format, "#{base_branch}...#{source_branch}"
+    'git', 'log', format, "#{base_branch}..#{source_branch}"
   )
 
   raise 'git log failed' unless status.success?
@@ -56,7 +56,7 @@ end
 
 def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log, status = Open3.capture2(
-    'git', 'log', '--pretty=\'%B\'', "#{base_branch}...#{source_branch}"
+    'git', 'log', '--pretty=\'%B\'', "#{base_branch}..#{source_branch}"
   )
   raise 'git log failed' unless status.success?
 
@@ -165,7 +165,7 @@ def main(args)
     end
   end
 
-  optparse.parse!
+  optparse.parse!(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 

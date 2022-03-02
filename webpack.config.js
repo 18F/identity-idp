@@ -12,7 +12,7 @@ const mode = isProductionEnv ? 'production' : 'development';
 const hashSuffix = isProductionEnv ? '-[contenthash:8]' : '';
 const devServerPort = process.env.WEBPACK_PORT;
 
-const entries = glob('app/{components,javascript/packs}/*.{js,jsx}');
+const entries = glob('app/{components,javascript/packs}/*.{ts,tsx,js,jsx}');
 
 module.exports = /** @type {import('webpack').Configuration} */ ({
   mode,

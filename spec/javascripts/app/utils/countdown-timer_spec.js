@@ -1,4 +1,6 @@
 import sinon from 'sinon';
+import { i18n } from '@18f/identity-i18n';
+import { usePropertyValue } from '@18f/identity-test-helpers';
 import { countdownTimer } from '../../../../app/javascript/app/utils/countdown-timer';
 
 describe('countdownTimer', () => {
@@ -7,6 +9,12 @@ describe('countdownTimer', () => {
   });
 
   describe('with clock', () => {
+    usePropertyValue(i18n, 'strings', {
+      'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
+      'datetime.dotiw.minutes': { one: 'one minute', other: '%{count} minutes' },
+      'datetime.dotiw.two_words_connector': ' and ',
+    });
+
     let clock;
     let el;
 
@@ -14,16 +22,10 @@ describe('countdownTimer', () => {
       clock = sinon.useFakeTimers();
       el = document.createElement('div');
       el.appendChild(document.createTextNode('test'));
-      window.LoginGov.I18n.strings = {
-        'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
-        'datetime.dotiw.minutes': { one: 'one minute', other: '%{count} minutes' },
-        'datetime.dotiw.two_words_connector': ' and ',
-      };
     });
 
     afterEach(() => {
       clock.restore();
-      window.LoginGov.I18n.strings = {};
     });
 
     it('stays at 0s when time is exhausted', () => {

@@ -66,12 +66,7 @@ describe 'Account connected applications' do
 
     visit account_connected_accounts_path
     within(find('.profile-info-box')) do
-      within(
-        find(
-          '.margin-x-neg-1',
-          text: identity_to_revoke.service_provider_record.friendly_name,
-        ),
-      ) do
+      within(find('.grid-row', text: identity_to_revoke.service_provider_record.friendly_name)) do
         click_link(t('account.revoke_consent.link_title'))
       end
     end
@@ -80,14 +75,7 @@ describe 'Account connected applications' do
     click_on t('forms.buttons.continue')
 
     # Accounts page should no longer list this app in the applications section
-    within(find('.profile-info-box')) do
-      expect(
-        has_selector?(
-          '.margin-x-neg-1',
-          text: identity_to_revoke.service_provider_record.friendly_name,
-        ),
-      ).to eq(false)
-    end
+    expect(page).to_not have_content(identity_to_revoke.service_provider_record.friendly_name)
   end
 
   def build_account_connected_apps

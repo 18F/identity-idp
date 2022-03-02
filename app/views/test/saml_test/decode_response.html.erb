@@ -1,49 +1,45 @@
-<div class="container">
-  <div class="row">
-    <h3>Decoded SAML Response</h3>
+<h3>Decoded SAML Response</h3>
 
-    <p>
-      Visit the account page to demo the SP iniated email change + redirect:
-      <%= link_to 'Account page', account_path, role: 'menuitem' %>
-    </p>
+<p>
+  Visit the account page to demo the SP iniated email change + redirect:
+  <%= link_to 'Account page', account_path, role: 'menuitem' %>
+</p>
 
-    <table border="2" width="80%">
-      <tbody>
-        <tr>
-          <td>IsValid</td>
-          <td>
-            <%= is_valid %>
-          </td>
-        </tr>
-        <tr>
-          <td>Issuer</td>
-          <td>
-            <%= response.settings.idp_entity_id %>
-          </td>
-        </tr>
-        <tr>
-          <td>XML Document</td>
-          <td>
-            <% xml_doc = Base64.encode64(response.document.to_s) %>
-            <%= link_to 'Open in New Window',
-                        "data:text/xml;charset=utf-8;base64,#{xml_doc}",
-                        target: '_blank', rel: 'noopener noreferrer' %>
-          </td>
-        </tr>
-        <tr>
-          <td>Decrypted XML Document</td>
-          <% if response.decrypted_document.present? %>
-            <td>
-              <% xml_doc = Base64.encode64(response.decrypted_document.to_s) %>
-              <%= link_to 'Open in New Window',
-                          "data:text/xml;charset=utf-8;base64,#{xml_doc}",
-                          target: '_blank', rel: 'noopener noreferrer' %>
-            </td>
-          <% else %>
-            <td>Document not encrypted</td>
-          <% end %>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+<table border="2" width="80%">
+  <tbody>
+    <tr>
+      <td>IsValid</td>
+      <td>
+        <%= is_valid %>
+      </td>
+    </tr>
+    <tr>
+      <td>Issuer</td>
+      <td>
+        <%= response.settings.idp_entity_id %>
+      </td>
+    </tr>
+    <tr>
+      <td>XML Document</td>
+      <td>
+        <% xml_doc = Base64.encode64(response.document.to_s) %>
+        <%= link_to 'Open in New Window',
+                    "data:text/xml;charset=utf-8;base64,#{xml_doc}",
+                    target: '_blank', rel: 'noopener noreferrer' %>
+      </td>
+    </tr>
+    <tr>
+      <td>Decrypted XML Document</td>
+      <% if response.decrypted_document.present? %>
+        <td>
+          <% xml_doc = Base64.encode64(response.decrypted_document.to_s) %>
+          <%= link_to 'Open in New Window',
+                      "data:text/xml;charset=utf-8;base64,#{xml_doc}",
+                      target: '_blank', rel: 'noopener noreferrer' %>
+        </td>
+      <% else %>
+        <td>Document not encrypted</td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>

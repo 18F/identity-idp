@@ -116,8 +116,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:phone]).to eq('+17035555555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(
-                formatted: "123 Fake St Apt 456\nWashington, DC 12345",
-                street_address: '123 Fake St Apt 456',
+                formatted: "123 Fake St\nApt 456\nWashington, DC 12345",
+                street_address: "123 Fake St\nApt 456",
                 locality: 'Washington',
                 region: 'DC',
                 postal_code: '12345',

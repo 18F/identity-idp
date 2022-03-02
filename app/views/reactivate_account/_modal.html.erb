@@ -1,23 +1,21 @@
 <div id="reactivate-account-modal" class="display-none" tabindex="-1">
   <%= render layout: 'shared/modal_layout' do |label_id, description_id| %>
     <div class="padding-6 cntnr-xxskinny bg-white rounded-xxl modal-warning">
-      <h2 class="margin-y-2 fs-20p regular center" id="<%= label_id %>">
+      <h2 class="margin-y-2 fs-20p text-normal text-center" id="<%= label_id %>">
         <%= t('instructions.account.reactivate.modal.heading') %>
       </h2>
       <hr class="margin-bottom-4 border-width-05" />
       <div class="margin-bottom-8" id="<%= description_id %>">
         <%= t('instructions.account.reactivate.modal.copy') %>
       </div>
-      <div class="center">
-        <%= form_tag reactivate_account_path, method: :put do %>
-          <%= button_tag t('forms.buttons.continue'), type: 'submit',
-                                                      class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2', name: :personal_key %>
-        <% end %>
+      <%= form_tag reactivate_account_path, method: :put do %>
+        <%= button_tag t('forms.buttons.continue'), type: 'submit',
+                                                    class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2', name: :personal_key %>
+      <% end %>
 
-        <button class="usa-button usa-button--big usa-button--full-width usa-button--outline" type="button" id="no-key-reactivate-dismiss">
-          <%= t('links.cancel') %>
-        </button>
-      </div>
+      <button class="usa-button usa-button--big usa-button--full-width usa-button--outline" type="button" id="no-key-reactivate-dismiss">
+        <%= t('links.cancel') %>
+      </button>
     </div>
 
   <% end %>

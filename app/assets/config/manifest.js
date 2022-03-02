@@ -1,5 +1,4 @@
 //= link_tree ../images
-//= link application.js
 
 //= link es5-shim.min.js
 //= link html5shiv.js

@@ -1,3 +1,7 @@
-<%= link_to prefix_with_plus(t('forms.backup_code.generate')),
-            backup_code_create_path,
-            class: 'account-action-button' %>
+<%= render ButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(backup_code_create_path, **tag_options, &block)
+      end,
+      icon: :add,
+      class: 'usa-button usa-button--outline margin-top-2',
+    ).with_content(t('forms.backup_code.generate')) %>

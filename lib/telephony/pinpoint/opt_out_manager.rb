@@ -35,19 +35,20 @@ module Telephony
         )
       end
 
-      # @yieldparam [String] phone_number
-      def each_opted_out_number
-        Telephony.config.pinpoint.sms_configs.each do |config|
-          client = build_client(config)
-          next if client.nil?
+      # @return [Enumerator<String>]
+      def opted_out_numbers
+        Enumerator.new do |y|
+          Telephony.config.pinpoint.sms_configs.each do |config|
+            client = build_client(config)
+            next if client.nil?
 
-          client.list_phone_numbers_opted_out.each do |response|
-            response.phone_numbers.each do |phone_number|
-              yield phone_number
+            client.list_phone_numbers_opted_out.each do |response|
+              response.phone_numbers.each do |phone_number|
+                y << phone_number
+              end
             end
           end
         end
-        nil
       end
 
       # @api private

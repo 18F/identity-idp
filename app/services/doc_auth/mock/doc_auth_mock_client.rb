@@ -33,6 +33,7 @@ module DocAuth
         Responses::CreateDocumentResponse.new(success: true, errors: {}, instance_id: instance_id)
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def post_front_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -94,6 +95,7 @@ module DocAuth
           liveness_enabled,
         ).call
       end
+      # rubocop:enable Lint/UnusedMethodArgument
 
       private
 

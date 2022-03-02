@@ -22,7 +22,7 @@
   </div>
   <div class="border-bottom border-primary-light">
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 bold">
+      <div class="mobile-lg:grid-col-4 text-bold">
         <%= t('account.index.full_name') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1 truncate">
@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 bold">
+      <div class="mobile-lg:grid-col-4 text-bold">
         <%= t('account.index.address') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1">
@@ -38,7 +38,7 @@
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 bold">
+      <div class="mobile-lg:grid-col-4 text-bold">
         <%= t('account.index.dob') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1">
@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 bold">
+      <div class="mobile-lg:grid-col-4 text-bold">
         <%= t('account.index.ssn') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1">
@@ -54,7 +54,7 @@
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 bold">
+      <div class="mobile-lg:grid-col-4 text-bold">
         <%= t('account.index.phone') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1">
@@ -63,7 +63,7 @@
     </div>
   </div>
   <% unless locked_for_session %>
-    <div class="grid-row bg-gray-lighter padding-x-2 padding-y-1 clearfix fs-12p">
+    <div class="grid-row bg-base-lightest padding-x-2 padding-y-1 clearfix fs-12p">
       <div class="grid-col-12">
         <%= image_tag asset_url('lock.svg'), width: 8, class: 'margin-right-1' %>
         <%= t('account.security.text') %>

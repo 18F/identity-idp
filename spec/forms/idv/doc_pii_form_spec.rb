@@ -12,6 +12,7 @@ describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: valid_dob,
+      zipcode: Faker::Address.zip_code,
       state: Faker::Address.state_abbr,
     }
   end
@@ -73,6 +74,26 @@ describe Idv::DocPiiForm do
         expect(result.success?).to eq(false)
         expect(result.errors[:pii]).to eq [
           t('doc_auth.errors.pii.birth_date_min_age'),
+        ]
+      end
+    end
+
+    context 'when there is a non-string zipcode' do
+      it 'returns a single generic pii error' do
+        invalid_pii = {
+          first_name: Faker::Name.first_name,
+          last_name: Faker::Name.last_name,
+          dob: valid_dob,
+          state: Faker::Address.state_abbr,
+          zipcode: 12345,
+        }
+
+        result = subject.new(invalid_pii).submit
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:pii]).to eq [
+          t('doc_auth.errors.general.no_liveness'),
         ]
       end
     end

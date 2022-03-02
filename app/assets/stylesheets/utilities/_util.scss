@@ -4,21 +4,11 @@
   display: none;
 }
 
-.truncate-inline {
-  max-width: 80%;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
 .vertical-align::before {
   content: ' ';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
-}
-
-.block-center {
-  margin: 0 auto;
 }
 
 html.no-js .js {
@@ -38,9 +28,6 @@ html.js .no-js {
 @media #{$breakpoint-sm} {
   .sm-left-align {
     text-align: left;
-  }
-  .sm-right-align {
-    text-align: right;
   }
 }
 

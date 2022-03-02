@@ -18,47 +18,40 @@
   },
   "homepage": "https://github.com/18f/identity-idp",
   "dependencies": {
-    "@babel/eslint-parser": "^7.16.3",
-    "@babel/eslint-plugin": "^7.14.5",
-    "eslint-config-airbnb": "^19.0.2",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-mocha": "^9.0.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.27.1",
-    "eslint-plugin-react-hooks": "^4.3.0"
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0"
   },
   "peerDependencies": {
-    "@babel/core": "*",
     "@typescript-eslint/parser": "*",
     "@typescript-eslint/eslint-plugin": "*",
     "eslint": ">=8",
-    "mocha": "*",
-    "preact": "*",
-    "prettier": "*",
-    "react": "*"
+    "eslint-plugin-import": "*",
+    "eslint-plugin-jsx-a11y": "*",
+    "eslint-plugin-mocha": "*",
+    "eslint-plugin-prettier": "*",
+    "eslint-plugin-react": "*",
+    "eslint-plugin-react-hooks": "*"
   },
   "peerDependenciesMeta": {
-    "@babel/core": {
-      "optional": true
-    },
     "@typescript-eslint/parser": {
       "optional": true
     },
     "@typescript-eslint/eslint-plugin": {
       "optional": true
     },
-    "mocha": {
+    "eslint-plugin-jsx-a11y": {
       "optional": true
     },
-    "preact": {
+    "eslint-plugin-mocha": {
       "optional": true
     },
-    "prettier": {
+    "eslint-plugin-prettier": {
       "optional": true
     },
-    "react": {
+    "eslint-plugin-react": {
+      "optional": true
+    },
+    "eslint-plugin-react-hooks": {
       "optional": true
     }
   }

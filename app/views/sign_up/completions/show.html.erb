@@ -1,5 +1,5 @@
 <% title @presenter.heading %>
-<div class="center">
+<div class="text-center">
   <%= image_tag asset_url(@presenter.image_name), width: 140, alt: '', class: 'margin-bottom-2' %>
 </div>
 
@@ -25,9 +25,7 @@
       ) %>
 </p>
 <p>
-  <div class="center">
-    <%= validated_form_for(:idv_form, url: sign_up_completed_path) do %>
-      <%= submit_tag t('sign_up.agree_and_continue'), class: 'usa-button usa-button--big usa-button--wide' %>
-    <% end %>
-  </div>
+  <%= validated_form_for(:idv_form, url: sign_up_completed_path) do %>
+    <%= submit_tag t('sign_up.agree_and_continue'), class: 'usa-button usa-button--big usa-button--wide' %>
+  <% end %>
 </p>
