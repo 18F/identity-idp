@@ -15,7 +15,7 @@ module AnalyticsEvents
   # Tracks events related to a user requesting to delete their account during the sign in process
   # (because they have no other means to sign in).
   def account_reset(
-    success:,
+    success: nil,
     event: nil,
     message_id: nil,
     piv_cac: nil,
