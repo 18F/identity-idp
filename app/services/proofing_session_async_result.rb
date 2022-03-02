@@ -6,7 +6,7 @@ ProofingSessionAsyncResult = Struct.new(:id, :result, :status, keyword_init: tru
   self::NONE = 'none'
   self::IN_PROGRESS = 'in_progress'
   self::DONE = 'done'
-  self::TIMED_OUT = 'timed_out'
+  self::MISSING = 'missing'
 
   def self.redis_key_prefix
     'dcs-proofing:result'
@@ -16,16 +16,16 @@ ProofingSessionAsyncResult = Struct.new(:id, :result, :status, keyword_init: tru
     new(status: ProofingSessionAsyncResult::NONE)
   end
 
-  def self.timed_out
-    new(status: ProofingSessionAsyncResult::TIMED_OUT)
+  def self.missing
+    new(status: ProofingSessionAsyncResult::MISSING)
   end
 
   def none?
     status == ProofingSessionAsyncResult::NONE
   end
 
-  def timed_out?
-    status == ProofingSessionAsyncResult::TIMED_OUT || result[:timed_out]
+  def missing?
+    status == ProofingSessionAsyncResult::MISSING
   end
 
   def done?

@@ -238,9 +238,9 @@ class Analytics
   PROFILE_PERSONAL_KEY_VISIT = 'Profile: Visited new personal key'
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'
   PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
-  PROOFING_ADDRESS_TIMEOUT = 'Proofing Address Timeout'
-  PROOFING_DOCUMENT_TIMEOUT = 'Proofing Document Timeout'
-  PROOFING_RESOLUTION_TIMEOUT = 'Proofing Resolution Timeout'
+  PROOFING_ADDRESS_RESULT_MISSING = 'Proofing Address Result Missing' # Previously "Proofing Address Timeout"
+  PROOFING_DOCUMENT_RESULT_MISSING = 'Proofing Document Result Missing' # Previously "Proofing Document Timeout"
+  PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
   REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'

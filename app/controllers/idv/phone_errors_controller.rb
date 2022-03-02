@@ -10,6 +10,10 @@ module Idv
       track_event(type: :warning)
     end
 
+    def timeout
+      @remaining_step_attempts = throttle.remaining_count
+    end
+
     def jobfail
       @remaining_attempts = throttle.remaining_count
       track_event(type: :jobfail)
