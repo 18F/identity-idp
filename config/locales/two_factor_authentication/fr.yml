@@ -152,7 +152,7 @@ fr:
       least_secure_label: Le moins sécurisé
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
-      phone: Téléphone
+      phone: Message texte ou vocal
       phone_info: Recevez un code sécurisé par message texte ou appel téléphonique sur
         votre appareil.
       phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés

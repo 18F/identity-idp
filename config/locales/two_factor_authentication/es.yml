@@ -147,7 +147,7 @@ es:
       least_secure_label: Lo menos seguro
       less_secure_label: Menos seguro
       more_secure_label: Más seguro
-      phone: Teléfono
+      phone: Mensaje de texto o de voz
       phone_info: Reciba un código de seguridad a través de un mensaje de texto (SMS)
         o una llamada telefónica a su dispositivo.
       phone_info_no_voip: No utilice servicios telefónicos basados en web (VOIP).
