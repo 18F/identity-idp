@@ -21,6 +21,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	fast_test \
 	help \
 	lint \
+	lint_analytics_events \
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_optimized_assets \
@@ -58,6 +59,8 @@ lint: ## Runs all lint tests
 	make lint_erb
 	@echo "--- rubocop ---"
 	bundle exec rubocop --parallel
+	@echo "--- analytics_events ---"
+	make lint_analytics_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
@@ -184,9 +187,12 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 
 analytics_events: public/api/analytics_events.json ## Generates a JSON file that documents analytics events for events.log
 
+lint_analytics_events: .yardoc
+	@ruby lib/analytics_events_documenter.rb --check $<
+
 public/api/analytics_events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
-	./scripts/document-analytics-events $< > $@
+	@ruby lib/analytics_events_documenter.rb --json $< > $@
 
 .yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
-	bundle exec yard doc --db $@ -- $<
+	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $@ -- $<
