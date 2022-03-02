@@ -104,6 +104,8 @@ module Idv
       case reason
       when :warning
         idv_phone_errors_warning_url
+      when :timeout
+        idv_phone_errors_timeout_url
       when :jobfail
         idv_phone_errors_jobfail_url
       when :fail

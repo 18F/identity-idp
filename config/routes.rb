@@ -286,6 +286,7 @@ Rails.application.routes.draw do
       get '/review' => 'review#new'
       put '/review' => 'review#create'
       get '/session/errors/warning' => 'session_errors#warning'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
