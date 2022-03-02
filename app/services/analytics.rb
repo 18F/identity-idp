@@ -122,7 +122,6 @@ class Analytics
   end
 
   # rubocop:disable Layout/LineLength
-  ACCOUNT_DELETE_SUBMITTED = 'Account Delete submitted'
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'
   ACCOUNT_DELETION = 'Account Deletion Requested'
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'

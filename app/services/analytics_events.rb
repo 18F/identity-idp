@@ -52,4 +52,11 @@ module AnalyticsEvents
       }.compact,
     )
   end
+
+  # @identity.idp.event_name Account Delete submitted
+  # When a user submits a form to delete their account
+  # @param [Boolean] success
+  def account_delete_submitted(success:)
+    track_event('Account Delete submitted', success: success)
+  end
 end
