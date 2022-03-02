@@ -5,7 +5,7 @@ RSpec.describe OtpVerificationForm do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
         user = build_stubbed(:user)
-        code = '123456'
+        code = '1234567'
         form = OtpVerificationForm.new(user, code)
 
         allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
@@ -32,13 +32,13 @@ RSpec.describe OtpVerificationForm do
       end
     end
 
-    context 'when the format of the code is not exactly 6 characters' do
+    context 'when the format of the code is not exactly 8 characters' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         invalid_codes = [
-          '123abcd',
-          '1234567',
-          'abcde',
+          '123abcd11',
+          '12345678',
+          'abcdefg',
           "aaaaa\n123456\naaaaaaaaa",
         ]
 

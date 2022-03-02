@@ -11,17 +11,6 @@ RSpec.describe OtpCodeGenerator do
         to match(/\A[a-z0-9]{#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}}\Z/io)
     end
 
-    it 'filters out profanity' do
-      expect(SecureRandom).to receive(:random_number).
-        and_return(
-          Base32::Crockford.decode('FART1'),
-          Base32::Crockford.decode('FART2'),
-          Base32::Crockford.decode('ABCDE'),
-        )
-
-      expect(generate_digits).to eq('0ABCDE')
-    end
-
     it 'pads short strings with zeroes' do
       expect(SecureRandom).to receive(:random_number).and_return(0)
 
