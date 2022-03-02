@@ -37,7 +37,6 @@ const config = {
     'operator-linebreak': 'off',
     'require-await': 'error',
   },
-  overrides: /** @type {Array<import('eslint').Linter.ConfigOverride>} */ ([]),
 };
 
 if (isInstalled('eslint-plugin-prettier')) {
@@ -87,14 +86,9 @@ if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-use-before-define': 'error',
     'no-shadow': 'off',
+    'no-undef': 'off',
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
-  });
-  config.overrides.push({
-    files: ['*.ts'],
-    rules: {
-      'no-undef': 'off',
-    },
   });
 }
 
