@@ -41,9 +41,9 @@ download_pwned_passwords() {
 }
 
 check_pwned_7z() {
-  if [ -f "$pwned_7z" ]; then
+  if [[ -f "$pwned_7z" ]]; then
     while true; do
-      read -p "${pwned_7z} was found do you want to redownload (y/n)?" yn
+      read -p "${pwned_7z} was found. Do you want to redownload (y/n)?" yn
       case $yn in
           [Yy]* ) download_pwned_passwords; break ;;
           [Nn]* ) break ;;
@@ -56,34 +56,26 @@ check_pwned_7z() {
 }
 
 unzip_pwned_passwords() {
+  echo "Unzipping ${pwned_7z}."
   7z x $pwned_7z -so | head -n $number_of_passwords | cut -d: -f 1 | sort > $pwned_file
 }
 
 check_s3_env() {
-  case "$aws_prod" in
-    "true" )
-      if [ -z "${prod_bucket}" ]; then
+  echo "Checking s3 environment variabes."
+  case $aws_prod in
+    true )
+      if [[ -z ${prod_bucket:-} ]]; then
         echo "Please assign an environment variable for prod_bucket"
         exit 1
       fi
       ;;
-    "false" )
-      if [ -z "${sandbox_bucket}" ]; then
+    false )
+      if [[ -z ${sandbox_bucket:-} ]]; then
         echo "Please assign an environment variable for sandbox_bucket"
         exit 1
       fi
       ;;
   esac
-
-  if [ -z "${sandbox_bucket}" ]; then
-    echo "Please assign an environment variable for sandbox_bucket"
-    exit 1
-  fi
-
-  if [ -z "${prod_bucket}" ]; then
-    echo "Please assign an environment variable for prod_bucket"
-    exit 1
-  fi
 }
 
 post_to_s3() {
@@ -93,20 +85,26 @@ post_to_s3() {
     exit
   fi
 
-  if [ $aws_prod == "false" ]; then
+  if [[ $aws_prod == "false" ]]; then
     aws-vault exec sandbox-power -- \
       aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned-passwords.txt"
   fi
 
-  if [ $aws_prod == "true" ]; then
+  if [[ $aws_prod == "true" ]]; then
     aws-vault exec prod-power -- \
       aws s3 cp "$pwned_file" "s3://${prod_bucket}/common/pwned-passwords.txt"
   fi
 }
 
 cleanup() {
-  echo "Removing pwned passwords 7z file"
-  rm $pwned_7z
+  read -p "Do you want to remove ${pwned_7z}? (y/n) " -n 1 -r yn
+  if [[ $yn =~ ^[Yy]$ ]]; then
+    echo "Removing pwned passwords 7z file"
+    rm $pwned_7z
+  else
+    echo "  Goodbye."
+    exit 0
+  fi
 }
 
 while getopts "hn:u:f:dp" opt; do
@@ -126,7 +124,7 @@ done
 check_7z
 check_pwned_7z
 unzip_pwned_passwords
-if [ $submit_to_s3 == "true" ]; then
+if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env
   post_to_s3
 fi
