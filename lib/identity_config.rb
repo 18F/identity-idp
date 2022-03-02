@@ -303,6 +303,7 @@ class IdentityConfig
     config.add(:session_timeout_in_minutes, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
+    config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:show_select_account_on_repeat_sp_visits, type: :boolean)
