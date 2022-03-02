@@ -249,7 +249,7 @@ feature 'doc auth verify step' do
     end
   end
 
-  context 'async timed out' do
+  context 'async missing' do
     it 'allows resubmitting form' do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
@@ -262,7 +262,7 @@ feature 'doc auth verify step' do
 
       click_continue
       # FLAKE: this errors due to some race condition, likely due to polling in the browser
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_RESULT_MISSING, {})
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
@@ -326,7 +326,10 @@ feature 'doc auth verify step' do
 
         click_continue
         # FLAKE: this errors due to some race condition, likely due to polling in the browser
-        # expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
+        # expect(fake_analytics).to have_logged_event(
+        #   Analytics::PROOFING_RESOLUTION_RESULT_MISSING,
+        #   {},
+        # )
         expect(page).to have_content(t('idv.failure.timeout'))
         expect(page).to have_current_path(idv_doc_auth_verify_step)
         allow(DocumentCaptureSession).to receive(:find_by).and_call_original

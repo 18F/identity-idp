@@ -20,8 +20,8 @@ module Idv
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
         render :wait
-      elsif async_state.timed_out?
-        analytics.track_event(Analytics::PROOFING_ADDRESS_TIMEOUT)
+      elsif async_state.missing?
+        analytics.track_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING)
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.done?
