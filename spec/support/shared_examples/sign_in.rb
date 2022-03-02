@@ -185,6 +185,74 @@ shared_examples 'signing in with wrong credentials' do |sp|
   end
 end
 
+shared_examples 'signing in as proofed account with broken personal key' do |protocol, sp_ial:|
+  let(:window_start) { 3.days.ago }
+  let(:window_end) { 1.day.ago }
+
+  before do
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_start).
+      and_return(window_start)
+    allow(IdentityConfig.store).to receive(:broken_personal_key_window_finish).
+      and_return(window_end)
+  end
+
+  def user_with_broken_personal_key(protocol)
+    user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
+
+    user.active_profile.update(verified_at: window_start + 1.hour)
+    user.update(encrypted_recovery_code_digest_generated_at: nil)
+
+    user
+  end
+
+  context "protocol: #{protocol}, ial: #{sp_ial}" do
+    it 'prompts the user to get a new personal key when signing in with email/password' do
+      user = user_with_broken_personal_key(protocol)
+
+      case sp_ial
+      when 1
+        visit_idp_from_sp_with_ial2(protocol)
+      when 2
+        visit_idp_from_sp_with_ial1(protocol)
+      else
+        raise "unknown sp_ial=#{sp_ial}"
+      end
+
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(page).to have_content(t('account.personal_key.needs_new'))
+      code = page.all('[data-personal-key]').map(&:text).join(' ')
+      click_acknowledge_personal_key
+
+      expect(user.reload.valid_personal_key?(code)).to eq(true)
+      expect(user.active_profile.reload.recover_pii(code)).to be_present
+    end
+
+    it 'prompts for password when signing in via PIV/CAC' do
+      user = user_with_broken_personal_key(protocol)
+
+      create(:piv_cac_configuration, user: user)
+
+      visit_idp_from_sp_with_ial1(protocol)
+      click_on t('account.login.piv_cac')
+      fill_in_piv_cac_credentials_and_submit(user)
+
+      expect(page).to have_content(t('account.personal_key.needs_new'))
+      expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
+
+      fill_in t('forms.password'), with: user.password
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_content(t('account.personal_key.needs_new'))
+      code = page.all('[data-personal-key]').map(&:text).join(' ')
+      click_acknowledge_personal_key
+
+      expect(user.reload.valid_personal_key?(code)).to eq(true)
+      expect(user.active_profile.reload.recover_pii(code)).to be_present
+    end
+  end
+end
+
 def personal_key_for_ial2_user(user, pii)
   pii_attrs = Pii::Attributes.new_from_hash(pii)
   profile = user.profiles.last

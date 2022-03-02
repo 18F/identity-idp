@@ -6,12 +6,15 @@ class PasswordCaptureController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :apply_secure_headers_override
 
+  helper_method :password_header
+
   def new
     session[:password_attempts] ||= 0
   end
 
   def create
     if current_user.valid_password?(password)
+      user_session.delete(:needs_new_personal_key)
       handle_valid_password
     else
       handle_invalid_password
@@ -19,6 +22,14 @@ class PasswordCaptureController < ApplicationController
   end
 
   private
+
+  def password_header
+    if user_session[:needs_new_personal_key]
+      t('headings.passwords.confirm_for_personal_key')
+    else
+      t('headings.passwords.confirm')
+    end
+  end
 
   def password
     params.require(:user)[:password]
