@@ -187,7 +187,7 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 
 analytics_events: public/api/analytics_events.json ## Generates a JSON file that documents analytics events for events.log
 
-lint_analytics_events: .yardoc
+lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
 	@ruby lib/analytics_events_documenter.rb --check $<
 
 public/api/analytics_events.json: .yardoc .yardoc/objects/root.dat

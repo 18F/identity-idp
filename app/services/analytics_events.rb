@@ -10,9 +10,11 @@ module AnalyticsEvents
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
   # @param [Integer] count number of notifications sent
   # @param [Hash] errors
+  # @param [Hash] error_details
   # @param [String] user_id
   # @param [Integer] account_age_in_days
   # @param [Hash] mfa_method_counts
+  # @param [Integer] email_addresses number of email addresses the user has
   # Tracks events related to a user requesting to delete their account during the sign in process
   # (because they have no other means to sign in).
   def account_reset(

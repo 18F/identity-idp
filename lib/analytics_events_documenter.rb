@@ -46,9 +46,12 @@ class AnalyticsEventsDocumenter
       output.puts parser
     elsif check
       missing_documentation = documenter.missing_documentation
-      output.puts missing_documentation
-
-      exit_status = 1 if missing_documentation.present?
+      if missing_documentation.present?
+        output.puts missing_documentation
+        exit_status = 1
+      else
+        output.puts 'All AnalyticsEvents methods are documented! 🚀'
+      end
     elsif json
       output.puts JSON.pretty_generate(documenter.as_json)
     end
