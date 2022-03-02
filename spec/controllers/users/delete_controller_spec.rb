@@ -8,8 +8,7 @@ describe Users::DeleteController do
       stub_analytics
       stub_signed_in_user
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_DELETE_VISITED)
+      expect(@analytics).to receive(:track_event).with('Account Delete visited')
 
       get :show
 

@@ -4,7 +4,7 @@ module Users
     before_action :confirm_current_password, only: [:delete]
 
     def show
-      analytics.track_event(Analytics::ACCOUNT_DELETE_VISITED)
+      analytics.account_delete_visited
     end
 
     def delete

@@ -1,7 +1,8 @@
 module AnalyticsEvents
   # @identity.idp.event_name Account Reset
   # @param [Boolean] success
-  # @param ["cancel", "delete", "cancel token validation", "granted token validation", :notifications] event
+  # @param ["cancel", "delete", "cancel token validation", "granted token validation",
+  #  :notifications] event
   # @param [String] message_id Request ID from AWS Pinpoint API
   # @param [String] request_id Request ID from AWS Pinpoint API
   # @param [Boolean] sms_phone
@@ -58,5 +59,10 @@ module AnalyticsEvents
   # @param [Boolean] success
   def account_delete_submitted(success:)
     track_event('Account Delete submitted', success: success)
+  end
+
+  # @identity.idp.event_name Account Delete visited
+  def account_delete_visited
+    track_event('Account Delete visited')
   end
 end
