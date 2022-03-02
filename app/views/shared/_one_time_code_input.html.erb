@@ -7,7 +7,7 @@ locals:
 * transport: WebOTP transport method. Defaults to 'sms'.
 * value: Field value. Defaults to `''`.
 * class: CSS classes to add (optional)
-* numeric: if the field should only accept digits. Defualts to true
+* numeric: if the field should only accept digits. Defaults to true
 * maxlength: Sets maxlength for the field. Defaults to TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
 %>
 <% name = local_assigns.delete(:name) { :code }
