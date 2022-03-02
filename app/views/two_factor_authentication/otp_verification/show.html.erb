@@ -19,6 +19,7 @@
           required: true,
           autofocus: true,
           numeric: IdentityConfig.store.numeric_otp_input_enabled ? true : false,
+          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
         ) %>
   </div>
   <%= f.input(

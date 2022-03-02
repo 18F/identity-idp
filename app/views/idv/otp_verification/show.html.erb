@@ -28,6 +28,7 @@
               autofocus: true,
               numeric: IdentityConfig.store.numeric_otp_input_enabled ? true : false,
               class: 'width-full',
+              maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
             ) %>
       </div>
       <%= submit_tag t('forms.buttons.submit.default'),

@@ -8,10 +8,12 @@ locals:
 * value: Field value. Defaults to `''`.
 * class: CSS classes to add (optional)
 * numeric: if the field should only accept digits. Defualts to true
+* maxlength: Sets maxlength for the field. Defaults to TwoFactorAuthenticatable::DIRECT_OTP_LENGTH
 %>
 <% name = local_assigns.delete(:name) { :code }
    numeric =local_assigns.delete(:numeric) { true }
    transport = local_assigns.delete(:transport) { 'sms' }
+   maxlength = local_assigns.delete(:maxlength) { TwoFactorAuthenticatable::DIRECT_OTP_LENGTH }
    classes = ['field font-family-mono usa-input one-time-code-input']
    classes << local_assigns.delete(:class) if local_assigns[:class] %>
 
@@ -22,7 +24,7 @@ locals:
         'aria-invalid': 'false',
         'data-transport': transport,
         pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
-        maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+        maxlength: maxlength,
         autocomplete: 'one-time-code',
         inputmode: numeric ? 'numeric' : 'text',
         type: 'text',
