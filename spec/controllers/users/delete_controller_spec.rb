@@ -40,7 +40,7 @@ describe Users::DeleteController do
         stub_signed_in_user
 
         expect(@analytics).to receive(:track_event).
-          with(Account Delete submitted, success: false)
+          with('Account Delete submitted', success: false)
 
         delete
       end
@@ -64,7 +64,7 @@ describe Users::DeleteController do
       stub_signed_in_user
 
       expect(@analytics).to receive(:track_event).
-        with(Account Delete submitted, success: true)
+        with('Account Delete submitted', success: true)
 
       delete
     end
