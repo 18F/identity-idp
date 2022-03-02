@@ -497,7 +497,7 @@ feature 'doc auth document capture step' do
           response: DocAuth::Response.new(
             success: false,
             pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
-              state_id_expiration: '04/01/2020',
+              state_id_expiration: '2020-04-01',
             ),
             errors: {
               id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
