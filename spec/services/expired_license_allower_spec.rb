@@ -80,7 +80,7 @@ RSpec.describe ExpiredLicenseAllower do
           let(:proofing_expired_license_after) { Date.new(2021, 3, 1) }
 
           context 'when the state_id_expiration is before proofing_expired_license_after' do
-            let(:pii_from_doc) { { state_id_expiration: '01/01/2021' } }
+            let(:pii_from_doc) { { state_id_expiration: '2021-01-01' } }
 
             it 'does not change the success' do
               expect(processed_response.success?).to eq(false)
@@ -88,7 +88,7 @@ RSpec.describe ExpiredLicenseAllower do
           end
 
           context 'when the state_id_expiration is after proofing_expired_license_after' do
-            let(:pii_from_doc) { { state_id_expiration: '04/01/2021' } }
+            let(:pii_from_doc) { { state_id_expiration: '2021-04-01' } }
 
             it 'returns a successful response with document_expired' do
               expect(processed_response).to_not eq(response)
@@ -112,7 +112,7 @@ RSpec.describe ExpiredLicenseAllower do
         end
 
         context 'when the state_id_expiration is before proofing_expired_license_after' do
-          let(:pii_from_doc) { { state_id_expiration: '01/01/2021' } }
+          let(:pii_from_doc) { { state_id_expiration: '2021-01-01' } }
 
           it 'has would_have_passed false' do
             expect(processed_response.extra).to include(
@@ -123,7 +123,7 @@ RSpec.describe ExpiredLicenseAllower do
         end
 
         context 'when the state_id_expiration is after proofing_expired_license_after' do
-          let(:pii_from_doc) { { state_id_expiration: '04/01/2021' } }
+          let(:pii_from_doc) { { state_id_expiration: '2021-04-01' } }
 
           it 'has would_have_passed true' do
             expect(processed_response.extra).to include(
