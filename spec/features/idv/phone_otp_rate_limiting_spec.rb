@@ -72,7 +72,7 @@ feature 'phone otp rate limiting', :idv_job do
       complete_idv_steps_before_phone_otp_verification_step(user)
 
       max_attempts.times do
-        fill_in('code', with: 'bad-code')
+        fill_in('code', with: '1234567890')
         click_button t('forms.buttons.submit.default')
       end
 
