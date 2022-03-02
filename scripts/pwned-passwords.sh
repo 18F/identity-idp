@@ -2,12 +2,20 @@
 
 set -eu
 
+submit_to_s3='true'
+pwned_directory="../pwned_passwords"
+number_of_passwords=3000000
+pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
+pwned_7z="${pwned_directory}/pwned-passwords.7z"
+pwned_file="${pwned_directory}/pwned-passwords.txt"
+aws_prod="false"
+
 usage() {
   cat >&2 << EOM
 Usage: ${0} [-nufdph]
-  -n : -n <number> Number of passwords to store. Default: 3000000
-  -u : -u <URL> URL for pwned passwords. Default: 'https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z'
-  -f : -f <file> File to store pwned passwords. Default: pwned-passwords.txt
+  -n : -n <number> Number of passwords to store. Default: ${number_of_passwords}
+  -u : -u <URL> URL for pwned passwords. Default: ${pwned_url}
+  -f : -f <file> File to store pwned passwords. Default: ${pwned_file}
   -d : Do not post to any AWS environment
   -p : Upload to the AWS prod environment
   -h : Display help
@@ -26,14 +34,6 @@ check_7z() {
     done
   fi
 }
-
-submit_to_s3='true'
-pwned_directory="../pwned_passwords"
-number_of_passwords=3000000
-pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
-pwned_7z="${pwned_directory}/pwned-passwords.7z"
-pwned_file="${pwned_directory}/pwned-passwords.txt"
-aws_prod="false"
 
 download_pwned_passwords() {
   echo "Downloading pwned passwords. This may take awhile ..."
