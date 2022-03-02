@@ -182,7 +182,7 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./config/application.yml' \
 	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
 
-analytics_events: public/api/analytics_events.json
+analytics_events: public/api/analytics_events.json ## Generates a JSON file that documents analytics events for events.log
 
 public/api/analytics_events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
