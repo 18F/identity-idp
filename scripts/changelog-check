@@ -165,7 +165,7 @@ def main(args)
     end
   end
 
-  optparse.parse!
+  optparse.parse!(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
