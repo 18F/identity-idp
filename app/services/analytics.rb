@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Analytics
+  include AnalyticsEvents
+
   def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
@@ -120,7 +122,6 @@ class Analytics
   end
 
   # rubocop:disable Layout/LineLength
-  ACCOUNT_RESET = 'Account Reset'
   ACCOUNT_DELETE_SUBMITTED = 'Account Delete submitted'
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'
   ACCOUNT_DELETION = 'Account Deletion Requested'

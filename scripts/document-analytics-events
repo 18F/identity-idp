@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'yard'
+require 'json'
+
+DATABASE_PATH = '.yardoc'
+
+# figure out how to do this without shelling out
+system('bundle', 'exec', 'yard', 'doc', '--db', DATABASE_PATH, 'app/services/analytics_events.rb', out: :err)
+
+database = YARD::Serializers::YardocSerializer.new(DATABASE_PATH).deserialize('root')
+
+analytics_methods = database.select do |_k, object|
+  object.type == :method && object.namespace&.name == :AnalyticsEvents
+end.values
+
+events_json_summary = analytics_methods.map do |method_object|
+  param_names = method_object.parameters.map { |p| p.first.chomp(':') }
+
+  attributes = method_object.tags('param').map do |tag|
+    {
+      name: tag.name,
+      types: tag.types,
+      description: tag.text,
+    }
+  end.compact
+
+  # could maybe error with these
+  missing_documentation = attributes.map { |a| a[:name] } - param_names
+
+
+  {
+    event_name: method_object.tag('identity.idp.event_name')&.text,
+    description: method_object.docstring,
+    attributes: attributes
+  }
+end
+
+puts JSON.pretty_generate(events: events_json_summary)

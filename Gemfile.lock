@@ -786,6 +786,7 @@ DEPENDENCIES
   webmock
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
+  yard
   zonebie
   zxcvbn (= 0.1.7)
 
