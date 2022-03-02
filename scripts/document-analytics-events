@@ -3,12 +3,9 @@
 require 'yard'
 require 'json'
 
-DATABASE_PATH = '.yardoc'
+database_path = ARGV.first || '.yardoc'
 
-# figure out how to do this without shelling out
-system('bundle', 'exec', 'yard', 'doc', '--db', DATABASE_PATH, 'app/services/analytics_events.rb', out: :err)
-
-database = YARD::Serializers::YardocSerializer.new(DATABASE_PATH).deserialize('root')
+database = YARD::Serializers::YardocSerializer.new(database_path).deserialize('root')
 
 analytics_methods = database.select do |_k, object|
   object.type == :method && object.namespace&.name == :AnalyticsEvents

@@ -10,7 +10,30 @@ PORT ?= 3000
 GZIP_COMMAND ?= gzip
 ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
-.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries build_artifact
+.PHONY: \
+	analytics_events \
+	brakeman \
+	build_artifact \
+	check \
+	check_asset_strings \
+	docker_setup \
+	fast_setup \
+	fast_test \
+	help \
+	lint \
+	lint_country_dialing_codes \
+	lint_erb \
+	lint_optimized_assets \
+	lint_yaml \
+	lintfix \
+	normalize_yaml \
+	optimize_assets \
+	optimize_svg \
+	run \
+	run \
+	setup \
+	test \
+	update_pinpoint_supported_countries
 
 help: ## Show this help
 	@echo "--- Help ---"
@@ -158,3 +181,12 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./vendor/ruby' \
 	  --exclude='./config/application.yml' \
 	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
+
+analytics_events: public/api/analytics_events.json
+
+public/api/analytics_events.json: .yardoc .yardoc/objects/root.dat
+	mkdir -p public/api
+	./scripts/document-analytics-events $< > $@
+
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
+	bundle exec yard doc --db $@ -- $<
