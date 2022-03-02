@@ -11,7 +11,7 @@ module Reports
       key: -> { "#{REPORT_NAME}-#{arguments.first}" },
     )
 
-    def perform(today)
+    def perform(_today)
       @sps_for_iaa = {}
       @today = Time.zone.today
       results = []

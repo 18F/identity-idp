@@ -101,6 +101,16 @@ class User < ApplicationRecord
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
+  def broken_personal_key?
+    window_start = IdentityConfig.store.broken_personal_key_window_start
+    window_finish = IdentityConfig.store.broken_personal_key_window_finish
+    last_personal_key_at = self.encrypted_recovery_code_digest_generated_at
+
+    (!last_personal_key_at || last_personal_key_at < window_finish) &&
+      active_profile.present? &&
+      (window_start..window_finish).cover?(active_profile.verified_at)
+  end
+
   # To send emails asynchronously via ActiveJob.
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_now_or_later

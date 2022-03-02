@@ -8,8 +8,7 @@ module Idv
       document_capture_session,
       should_proof_state_id:,
       trace_id:,
-      document_expired:,
-      flow_path: 'standard'
+      document_expired:
     )
       document_capture_session.create_proofing_session
 

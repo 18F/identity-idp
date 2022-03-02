@@ -91,7 +91,7 @@ class ResolutionProofingJob < ApplicationJob
     state_id_success = nil
     if should_proof_state_id && result[:success] && !document_expired
       timer.time('state_id') do
-        proof_state_id(timer: timer, applicant_pii: applicant_pii, result: result)
+        proof_state_id(applicant_pii: applicant_pii, result: result)
       end
       state_id_success = result[:success]
     end
@@ -164,7 +164,7 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
-  def proof_state_id(timer:, applicant_pii:, result:)
+  def proof_state_id(applicant_pii:, result:)
     proofer_result = state_id_proofer.proof(applicant_pii)
 
     result.merge!(proofer_result.to_h) do |key, orig, current|

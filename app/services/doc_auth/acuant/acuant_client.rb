@@ -53,6 +53,7 @@ module DocAuth
         Requests::GetResultsRequest.new(config: config, instance_id: instance_id).fetch
       end
 
+      # rubocop:disable Lint/UnusedMethodArgument
       def post_images(
         front_image:,
         back_image:,
@@ -82,6 +83,7 @@ module DocAuth
           results_response
         end
       end
+      # rubocop:enable Lint/UnusedMethodArgument
     end
   end
 end

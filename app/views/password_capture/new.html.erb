@@ -1,6 +1,6 @@
 <% title t('titles.visitors.index') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.passwords.confirm')) %>
+<%= render PageHeadingComponent.new.with_content(password_header) %>
 
 <%= validated_form_for(
       current_user,

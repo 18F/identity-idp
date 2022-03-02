@@ -50,7 +50,7 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, allow_nil: false, enum: nil, options: {})
+  def add(key, type: :string, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
@@ -107,6 +107,8 @@ class IdentityConfig
     config.add(:aws_logo_bucket, type: :string)
     config.add(:aws_region, type: :string)
     config.add(:backup_code_cost, type: :string)
+    config.add(:broken_personal_key_window_start, type: :timestamp)
+    config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)

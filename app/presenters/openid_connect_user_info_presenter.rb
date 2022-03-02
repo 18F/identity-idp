@@ -12,7 +12,7 @@ class OpenidConnectUserInfoPresenter
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
-      email: email_from_sp_identity(identity),
+      email: email_from_sp_identity,
       email_verified: true,
       all_emails: all_emails_from_sp_identity(identity),
     }
@@ -34,7 +34,7 @@ class OpenidConnectUserInfoPresenter
     AgencyIdentityLinker.new(identity).link_identity.uuid
   end
 
-  def email_from_sp_identity(identity)
+  def email_from_sp_identity
     email_context.last_sign_in_email_address.email
   end
 
