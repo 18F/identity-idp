@@ -4,8 +4,7 @@ module Proofing
       attr_reader :date
 
       def initialize(date_string)
-        # Can switch to Date.parse after next deploy
-        @date = DateParser.parse_legacy(date_string)
+        @date = Date.parse(date_string)
       end
 
       def formatted_date

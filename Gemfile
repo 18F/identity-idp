@@ -31,7 +31,6 @@ gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 gem 'identity_validations', github: '18F/identity-validations', tag: 'v0.7.2'
 gem 'jsbundling-rails', '~> 1.0.0'
 gem 'jwt'
-gem 'local_time'
 gem 'lograge', '>= 0.11.2'
 gem 'lru_redux'
 gem 'maxminddb'
@@ -65,7 +64,7 @@ gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 2.43.1', require: 'view_component/engine'
+gem 'view_component', '~> 2.49.1', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
@@ -108,7 +107,6 @@ end
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
   gem 'bundler-audit', require: false
-  gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
   gem 'simplecov-cobertura'

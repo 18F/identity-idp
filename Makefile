@@ -56,7 +56,7 @@ lint: ## Runs all lint tests
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
-	yarn run stylelint app/assets/stylesheets/**/*.scss app/javascript/**/*.scss
+	yarn lint:css
 
 lint_erb: ## Lints ERB files
 	bundle exec erblint app/views app/components

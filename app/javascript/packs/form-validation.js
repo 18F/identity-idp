@@ -1,7 +1,5 @@
+import { t } from '@18f/identity-i18n';
 import { loadPolyfills } from '@18f/identity-polyfill';
-
-/** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
-/** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
 /**
  * Given a submit event, disables all submit buttons within the target form.
@@ -52,9 +50,8 @@ function checkInputValidity(event) {
     input.focus();
   }
 
-  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
   if (input.validity.valueMissing) {
-    input.setCustomValidity(I18n.t('simple_form.required.text'));
+    input.setCustomValidity(t('simple_form.required.text'));
     input.setAttribute('data-form-validation-message', '');
   }
 }

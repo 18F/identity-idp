@@ -23,7 +23,7 @@ describe 'layouts/application.html.erb' do
     it 'displays only the logo' do
       render
 
-      expect(rendered).to have_xpath('//nav[contains(@class, "main-navigation")]')
+      expect(rendered).to have_css('.page-header--basic')
       expect(rendered).to_not have_content(t('account.welcome'))
       expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
     end

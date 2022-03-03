@@ -1,5 +1,8 @@
 const sources = require('webpack-sources');
 
+/** @typedef {import('webpack/lib/ChunkGroup')} ChunkGroup */
+/** @typedef {import('webpack/lib/Entrypoint')} Entrypoint */
+
 /**
  * Webpack plugin name.
  *
@@ -14,7 +17,7 @@ const PLUGIN = 'ExtractKeysWebpackPlugin';
  *
  * @type {RegExp}
  */
-const TRANSLATE_CALL = /(?:^|[^\w'-])(?:I18n\.)?t\(\s*['"](.+?)['"]/g;
+const TRANSLATE_CALL = /(?:^|[^\w'-])(?:I18n\.)?t\)?\(\s*['"](.+?)['"][,\s)]/g;
 
 /**
  * Given an original file name and locale, returns a modified file name with the locale injected
@@ -49,6 +52,17 @@ const getTranslationKeys = (source) =>
  * @return {boolean}
  */
 const isJavaScriptFile = (filename) => filename.endsWith('.js');
+
+/**
+ * Adds the given asset file name to the list of files of the group's parent entrypoint.
+ *
+ * @param {string} filename Asset filename.
+ * @param {ChunkGroup|Entrypoint} group Chunk group.
+ */
+const addFileToEntrypoint = (filename, group) =>
+  typeof group.getEntrypointChunk === 'function'
+    ? group.getEntrypointChunk().files.add(filename)
+    : group.parentsIterable.forEach((parent) => addFileToEntrypoint(filename, parent));
 
 /**
  * @template {Record<string,any>} Options
@@ -87,7 +101,9 @@ class ExtractKeysWebpackPlugin {
                 for (const [locale, content] of Object.entries(additionalAssets)) {
                   const assetFilename = getAdditionalAssetFilename(filename, locale);
                   compilation.emitAsset(assetFilename, new sources.RawSource(content));
-                  chunk.files.add(assetFilename);
+                  chunk.groupsIterable.forEach((group) =>
+                    addFileToEntrypoint(assetFilename, group),
+                  );
                 }
               }),
             ),

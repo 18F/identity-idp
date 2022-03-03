@@ -1,17 +1,6 @@
-<div class="grid-row margin-bottom-1 margin-top-0">
-  <h2 class="grid-col-fill margin-y-0 padding-right-2">
-    <%= t('headings.account.federal_employee_id') %>
-  </h2>
-  <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
-    <div class="grid-col-auto">
-      <%= link_to(
-            prefix_with_plus(t('account.index.piv_cac_add')),
-            setup_piv_cac_url,
-            class: 'account-action-button',
-          ) %>
-    </div>
-  <% end %>
-</div>
+<h2 class="margin-top-0 margin-bottom-1">
+  <%= t('headings.account.federal_employee_id') %>
+</h2>
 
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).piv_cac_configurations.each do |piv_cac_configuration| %>
@@ -21,9 +10,19 @@
           <%= piv_cac_configuration.name %>
         </div>
       </div>
-      <div class="grid-col-4 right-align">
+      <div class="grid-col-4 text-right">
         <%= render 'accounts/actions/disable_piv_cac', id: piv_cac_configuration.id %>
       </div>
     </div>
   <% end %>
 </div>
+
+<% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
+  <%= render ButtonComponent.new(
+        action: ->(**tag_options, &block) do
+          link_to(setup_piv_cac_url, **tag_options, &block)
+        end,
+        icon: :add,
+        class: 'usa-button usa-button--outline margin-top-2',
+      ).with_content(t('account.index.piv_cac_add')) %>
+<% end %>

@@ -13,8 +13,8 @@ class SamlIdpController < ApplicationController
   include BillableEventTrackable
   include SecureHeadersConcern
 
-  prepend_before_action :skip_session_load, only: :metadata
-  prepend_before_action :skip_session_expiration, only: :metadata
+  prepend_before_action :skip_session_load, only: [:metadata, :remotelogout]
+  prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
   skip_before_action :verify_authenticity_token
   before_action :handle_banned_user

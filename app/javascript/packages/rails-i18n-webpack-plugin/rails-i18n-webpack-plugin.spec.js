@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const path = require('path');
 const { promises: fs } = require('fs');
 const webpack = require('webpack');
+const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
 const {
@@ -29,7 +30,16 @@ describe('RailsI18nWebpackPlugin', () => {
             configPath: path.resolve(__dirname, 'spec/fixtures/locales'),
             onMissingString,
           }),
+          new WebpackAssetsManifest({
+            entrypoints: true,
+            publicPath: true,
+            writeToDisk: true,
+            output: 'actualmanifest.json',
+          }),
         ],
+        externals: {
+          '@18f/identity-i18n': '_i18n_',
+        },
         resolve: {
           extensions: ['.js', '.foo'],
         },
@@ -49,7 +59,7 @@ describe('RailsI18nWebpackPlugin', () => {
         try {
           expect(webpackError).to.be.null();
 
-          for (const chunkSuffix of ['1', '946']) {
+          for (const chunkSuffix of ['1', '946', '452']) {
             // eslint-disable-next-line no-await-in-loop
             const [script, en, es, fr] = await Promise.all([
               fs.readFile(path.resolve(__dirname, `spec/fixtures/actual${chunkSuffix}.js`)),
@@ -79,6 +89,37 @@ describe('RailsI18nWebpackPlugin', () => {
           expect(onMissingString).to.have.been.calledWithExactly('item.2', 'fr');
           expect(onMissingString).to.have.been.calledWithExactly('item.3', 'fr');
           expect(onMissingString).to.have.been.calledWithExactly('item.3', 'en');
+
+          const manifest = JSON.parse(
+            await fs.readFile(
+              path.resolve(__dirname, 'spec/fixtures/actualmanifest.json'),
+              'utf-8',
+            ),
+          );
+
+          expect(manifest.entrypoints['1'].assets.js).to.include.all.members([
+            'actual1.js',
+            'actual1.en.js',
+            'actual1.es.js',
+            'actual1.fr.js',
+            'actual452.en.js',
+            'actual452.es.js',
+            'actual452.fr.js',
+            'actual946.js',
+            'actual946.en.js',
+            'actual946.es.js',
+            'actual946.fr.js',
+          ]);
+          expect(manifest.entrypoints['2'].assets.js).to.include.all.members([
+            'actual2.js',
+            'actual452.en.js',
+            'actual452.es.js',
+            'actual452.fr.js',
+            'actual946.js',
+            'actual946.en.js',
+            'actual946.es.js',
+            'actual946.fr.js',
+          ]);
 
           done();
         } catch (error) {

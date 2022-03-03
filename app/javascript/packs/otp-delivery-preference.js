@@ -1,12 +1,6 @@
+import { t } from '@18f/identity-i18n';
+
 /** @typedef {import('@18f/identity-phone-input').PhoneInput} PhoneInput */
-
-/**
- * @typedef {typeof window & {
- *   LoginGov: { I18n: import('@18f/identity-i18n').I18n } }
- * } GlobalWithLoginGov
- */
-
-const { t } = /** @type {GlobalWithLoginGov} */ (window).LoginGov.I18n;
 
 /**
  * Returns the OTP delivery preference element.

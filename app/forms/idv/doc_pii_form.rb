@@ -4,13 +4,14 @@ module Idv
 
     validate :validate_pii
 
-    attr_reader :first_name, :last_name, :dob, :state
+    attr_reader :first_name, :last_name, :dob, :state, :zipcode
 
     def initialize(pii)
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
       @state = pii[:state]
+      @zipcode = pii[:zipcode]
     end
 
     def submit
@@ -35,6 +36,8 @@ module Idv
       elsif !dob_meets_min_age?
         errors.add(:pii, dob_min_age_error, type: :dob_min_age_error)
       elsif !state_valid?
+        errors.add(:pii, generic_error, type: :generic_error)
+      elsif !zipcode_valid?
         errors.add(:pii, generic_error, type: :generic_error)
       end
     end
@@ -61,6 +64,10 @@ module Idv
 
     def error_count
       [name_valid?, dob_valid?, state_valid?].count(&:blank?)
+    end
+
+    def zipcode_valid?
+      zipcode.nil? || zipcode.is_a?(String)
     end
 
     def generic_error

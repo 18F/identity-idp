@@ -5,7 +5,7 @@
         type: :warning,
         class: 'margin-bottom-4',
       ) do %>
-    <div class="bold">
+    <div class="text-bold">
       <%= t('instructions.account.reactivate.modal.copy') %>
     </div>
   <% end %>
@@ -39,8 +39,10 @@
                 class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
 
     <%= form_tag reactivate_account_path, method: :put do %>
-      <%= button_tag t('links.account.reactivate.without_key'), type: 'submit',
-                                                                class: 'usa-button usa-button--big usa-button--outline usa-button--full-width', id: 'no-key-reactivate' %>
+      <%= button_tag t('links.account.reactivate.without_key'),
+                     type: 'submit',
+                     class: 'usa-button usa-button--big usa-button--outline usa-button--full-width',
+                     id: 'no-key-reactivate' %>
     <% end %>
   </div>
 </div>

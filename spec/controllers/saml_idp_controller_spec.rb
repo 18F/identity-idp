@@ -133,13 +133,15 @@ describe SamlIdpController do
     end
     let(:other_sp) { create(:service_provider, active: true, agency_id: agency.id) }
 
-    let(:user) { create(:user, :signed_up, unique_session_id: 'abc123') }
+    let(:session_id) { 'abc123' }
+    let(:user) { create(:user, :signed_up) }
     let(:other_user) { create(:user, :signed_up) }
 
     let!(:identity) do
       ServiceProviderIdentity.create(
         service_provider: service_provider.issuer,
         user: user,
+        rails_session_id: session_id,
       )
     end
     let!(:other_identity) do
@@ -216,6 +218,9 @@ describe SamlIdpController do
     end
 
     it 'accepts requests with correct cert and correct session index and renders logout response' do
+      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
+      session_accessor = OutOfBandSessionAccessor.new(session_id)
+      session_accessor.put(foo: 'bar')
       saml_request = OneLogin::RubySaml::Logoutrequest.new
       encoded_saml_request = UriService.params(
         saml_request.create(right_cert_settings),
@@ -245,11 +250,12 @@ describe SamlIdpController do
       delete :remotelogout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
 
       expect(response).to be_ok
-      expect(User.find(user.id).unique_session_id).to be_nil
+      expect(session_accessor.load).to be_empty
 
       logout_response = OneLogin::RubySaml::Logoutresponse.new(response.body)
       expect(logout_response.success?).to eq(true)
       expect(logout_response.in_response_to).to eq(saml_request.uuid)
+      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
     end
 
     it 'rejects requests from a correct cert but no session index' do

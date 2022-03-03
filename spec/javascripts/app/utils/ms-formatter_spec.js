@@ -1,17 +1,14 @@
+import { i18n } from '@18f/identity-i18n';
+import { usePropertyValue } from '@18f/identity-test-helpers';
 import { msFormatter } from '../../../../app/javascript/app/utils/ms-formatter';
 
 describe('#msFormatter', () => {
-  beforeEach(() => {
-    window.LoginGov.I18n.strings = {
-      'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
-      'datetime.dotiw.minutes': { one: 'one minute', other: '%{count} minutes' },
-      'datetime.dotiw.two_words_connector': ' and ',
-    };
+  usePropertyValue(i18n, 'strings', {
+    'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
+    'datetime.dotiw.minutes': { one: 'one minute', other: '%{count} minutes' },
+    'datetime.dotiw.two_words_connector': ' and ',
   });
 
-  afterEach(() => {
-    window.LoginGov.I18n.strings = {};
-  });
   it('formats milliseconds as 0 minutes and 0 seconds)', () => {
     const output = msFormatter(0);
     expect(output).to.equal('0 minutes and 0 seconds');
