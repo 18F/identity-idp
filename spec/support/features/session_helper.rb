@@ -212,6 +212,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_with_totp_2fa
+      create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
+    end
+
     def user_with_aal3_2fa
       create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
     end

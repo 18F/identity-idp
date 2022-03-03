@@ -65,22 +65,18 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   context 'verified user sign in' do
-    let(:user) { user_with_2fa }
+    let(:user) { user_with_totp_2fa }
 
     before do
       sign_in_and_2fa_user(user)
-      complete_all_doc_auth_steps
-      click_continue
-      fill_in 'Password', with: user.password
-      click_continue
-      click_acknowledge_personal_key
+      complete_proofing_steps
       first(:link, t('links.sign_out')).click
     end
 
     it 'does not require verification and hands off successfully' do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
-      fill_in_code_with_last_phone_otp
+      fill_in_code_with_last_totp(user)
       click_submit_default
 
       expect_csp_headers_to_be_present if sp == :oidc
@@ -93,7 +89,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   context 'second time a user signs in to an SP' do
-    let(:user) { user_with_aal3_2fa }
+    let(:user) { user_with_totp_2fa }
 
     before do
       visit_idp_from_sp_with_ial2(sp)
@@ -102,12 +98,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       fill_in_code_with_last_totp(user)
       click_submit_default
-      complete_all_doc_auth_steps
-      click_continue
-      fill_in 'Password', with: user.password
-      click_continue
-      click_acknowledge_personal_key
-      click_agree_and_continue
+      complete_proofing_steps
       visit account_path
       first(:link, t('links.sign_out')).click
     end
@@ -119,7 +110,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect_csp_headers_to_be_present if sp == :oidc
 
-      fill_in_code_with_last_phone_otp
+      fill_in_code_with_last_totp(user)
       click_submit_default
 
       expect_successful_oidc_handoff if sp == :oidc
