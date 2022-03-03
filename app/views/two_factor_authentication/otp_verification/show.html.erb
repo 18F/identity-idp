@@ -18,7 +18,7 @@
           value: @presenter.code_value,
           required: true,
           autofocus: true,
-          numeric: IdentityConfig.store.numeric_otp_input_enabled ? true : false,
+          numeric: IdentityConfig.store.numeric_auth_otp_input_enabled ? true : false,
           maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
         ) %>
   </div>

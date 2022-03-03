@@ -214,7 +214,7 @@ class IdentityConfig
     config.add(:min_password_score, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:nonessential_email_banlist, type: :json)
-    config.add(:numeric_otp_input_enabled, type: :boolean)
+    config.add(:numeric_auth_otp_input_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_valid_for, type: :integer)

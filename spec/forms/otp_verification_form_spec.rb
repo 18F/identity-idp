@@ -5,7 +5,7 @@ RSpec.describe OtpVerificationForm do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
         user = build_stubbed(:user)
-        code = '1234567'
+        code = '123456'
         form = OtpVerificationForm.new(user, code)
 
         allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)

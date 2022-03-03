@@ -26,7 +26,7 @@
               value: @code,
               required: true,
               autofocus: true,
-              numeric: IdentityConfig.store.numeric_otp_input_enabled ? true : false,
+              numeric: false,
               class: 'width-full',
               maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
             ) %>
