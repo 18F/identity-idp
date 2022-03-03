@@ -18,6 +18,52 @@ RSpec.describe AnalyticsEventsDocumenter do
 
   subject(:documenter) { AnalyticsEventsDocumenter.new(@database_dir) }
 
+  describe '.run' do
+    let(:source_code) { <<~RUBY }
+      class AnalyticsEvents
+        # @identity.idp.event_name Some Event
+        # @param [Boolean] success
+        def some_event(success:)
+        end
+      end
+    RUBY
+
+    subject(:run) { AnalyticsEventsDocumenter.run(args) }
+
+    context 'with --help' do
+      let(:args) { ['--help'] }
+
+      it 'prints help' do
+        output, status = run
+
+        expect(output).to include('Usage')
+        expect(status).to eq(0)
+      end
+    end
+
+    context 'with --check' do
+      let(:args) { ['--check', @database_dir] }
+
+      it 'prints a rocket when there are no errors' do
+        output, status = run
+
+        expect(output).to include('🚀')
+        expect(status).to eq(0)
+      end
+    end
+
+    context 'with --json' do
+      let(:args) { ['--json', @database_dir] }
+
+      it 'prints json output' do
+        output, status = run
+
+        expect(JSON.parse(output, symbolize_names: true)).to have_key(:events)
+        expect(status).to eq(0)
+      end
+    end
+  end
+
   describe '#missing_documentation' do
     context 'when all methods have all documentation' do
       let(:source_code) { <<~RUBY }
