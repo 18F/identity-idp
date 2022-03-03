@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'two_factor_authentication/sms_opt_in/error.html.erb' do
   let(:phone_configuration) { build(:phone_configuration, phone: '1 888-867-5309') }
   let(:other_mfa_options_url) { nil }
-  let(:cancel_url) { nil }
+  let(:cancel_url) { '/account' }
 
   before do
     assign(:phone_configuration, phone_configuration)

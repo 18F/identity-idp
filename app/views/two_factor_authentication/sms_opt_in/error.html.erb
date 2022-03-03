@@ -31,4 +31,6 @@
       ].select(&:present?),
     ) %>
 
-<%= render 'shared/cancel', link: sign_out_path %>
+<div class="margin-top-4 padding-top-1 border-top border-primary-light">
+  <%= link_to cancel_link_text, @cancel_url %>
+</div>
