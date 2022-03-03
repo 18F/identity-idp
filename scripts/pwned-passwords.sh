@@ -2,8 +2,8 @@
 
 set -eu
 
-submit_to_s3='true'
-pwned_directory="../pwned_passwords"
+submit_to_s3='false'
+pwned_directory="pwned_passwords"
 number_of_passwords=3000000
 pwned_url="https://downloads.pwnedpasswords.com/passwords/pwned-passwords-sha1-ordered-by-count-v8.7z"
 pwned_7z="${pwned_directory}/pwned-passwords.7z"
@@ -16,7 +16,7 @@ Usage: ${0} [-nufdph]
   -n : -n <number> Number of passwords to store. Default: ${number_of_passwords}
   -u : -u <URL> URL for pwned passwords. Default: ${pwned_url}
   -f : -f <file> File to store pwned passwords. Default: ${pwned_file}
-  -d : Do not post to any AWS environment
+  -s : Upload to the AWS sandbox environment
   -p : Upload to the AWS prod environment
   -h : Display help
 EOM
@@ -61,17 +61,17 @@ unzip_pwned_passwords() {
 }
 
 check_s3_env() {
-  echo "Checking s3 environment variabes."
+  echo "Checking s3 environment variables."
   case $aws_prod in
     true )
       if [[ -z ${prod_bucket:-} ]]; then
-        echo "Please assign an environment variable for prod_bucket"
+        echo "Please assign an environment variable for prod_bucket and run again."
         exit 1
       fi
       ;;
     false )
       if [[ -z ${sandbox_bucket:-} ]]; then
-        echo "Please assign an environment variable for sandbox_bucket"
+        echo "Please assign an environment variable for sandbox_bucket and run again."
         exit 1
       fi
       ;;
@@ -86,11 +86,13 @@ post_to_s3() {
   fi
 
   if [[ $aws_prod == "false" ]]; then
+    echo "Posting to the sandbox environment."
     aws-vault exec sandbox-power -- \
       aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned-passwords.txt"
   fi
 
   if [[ $aws_prod == "true" ]]; then
+    echo "Posting to the prod environment."
     aws-vault exec prod-power -- \
       aws s3 cp "$pwned_file" "s3://${prod_bucket}/common/pwned-passwords.txt"
   fi
@@ -107,13 +109,13 @@ cleanup() {
   fi
 }
 
-while getopts "hn:u:f:dp" opt; do
+while getopts "hn:u:f:sp" opt; do
   case $opt in
     n ) number_of_passwords=$OPTARG;;
     u ) pwned_url=$OPTARG;;
     f ) pwned_file=$OPTARG;;
-    d ) submit_to_s3='false';;
-    p ) aws_prod='true';;
+    s ) submit_to_s3='true';;
+    p ) submit_to_s3='true'; aws_prod='true';;
     h ) usage
     exit 0 ;;
     * ) usage
