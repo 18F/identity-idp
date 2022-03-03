@@ -63,6 +63,21 @@ def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log.include?(SKIP_CHANGELOG_MESSAGE)
 end
 
+def generate_invalid_changes(base_branch, source_branch)
+  log = get_git_log(base_branch, source_branch)
+  log.map do |commit|
+    change = build_changelog_from_commit(commit)
+    next if commit.title.include?(SKIP_CHANGELOG_MESSAGE)
+    next if commit.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
+
+    if change
+      nil
+    else
+      commit.title
+    end
+  end.compact
+end
+
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
 # Each PR should be squashed, which results in every PR being one commit. The commit messages
 # in a squashed PR are concatencated with a leading "*" for each commit. Example:
@@ -84,6 +99,7 @@ def generate_changelog(base_branch, source_branch)
   changelog_entries = []
   log.each do |item|
     # Skip this commit if the skip changelog message appears
+    next if item.title.include?(SKIP_CHANGELOG_MESSAGE)
     next if item.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
     change = build_changelog_from_commit(item)
     next unless change
@@ -170,14 +186,23 @@ def main(args)
   abort(optparse.help) if options[:source_branch].nil?
 
   changelog_entries = generate_changelog(options[:base_branch], options[:source_branch])
+  invalid_changelog_entries = generate_invalid_changes(
+    options[:base_branch],
+    options[:source_branch],
+  )
   skip_check = commit_messages_contain_skip_changelog?(
     options[:base_branch],
     options[:source_branch],
   )
 
+  formatted_changelog = format_changelog(changelog_entries)
+  puts format_changelog(changelog_entries) if formatted_changelog.length > 0
+  if invalid_changelog_entries.count > 0
+    puts "\nInvalid Changelog Entries!!"
+    puts invalid_changelog_entries.join("\n")
+  end
+
   if skip_check || changelog_entries.count > 0
-    formatted_changelog = format_changelog(changelog_entries)
-    puts format_changelog(changelog_entries) if formatted_changelog.length > 0
     exit 0
   else
     warn(
