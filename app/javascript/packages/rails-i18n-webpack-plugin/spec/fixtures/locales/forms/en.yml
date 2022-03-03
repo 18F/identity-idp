@@ -3,6 +3,7 @@ en:
     messages:
       one: 'One message'
       other: '%{count} messages'
+    dynamic: Dynamic
     button:
       submit: Submit
       cancel: Cancel

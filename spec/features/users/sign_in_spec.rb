@@ -664,6 +664,11 @@ feature 'Sign in' do
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
 
+  it_behaves_like 'signing in as proofed account with broken personal key', :saml, sp_ial: 1
+  it_behaves_like 'signing in as proofed account with broken personal key', :oidc, sp_ial: 1
+  it_behaves_like 'signing in as proofed account with broken personal key', :saml, sp_ial: 2
+  it_behaves_like 'signing in as proofed account with broken personal key', :oidc, sp_ial: 2
+
   context 'user signs in and chooses another authentication method' do
     it 'signs out the user if they choose to cancel' do
       user = create(:user, :signed_up)

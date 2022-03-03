@@ -50,6 +50,7 @@ en:
         heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
+        timeout: Our request to verify your information timed out. Please try again.
         warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
