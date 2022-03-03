@@ -55,8 +55,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  errors: {},
                  unauthorized_scope: true,
                  user_fully_authenticated: true,
-                 acr_values: "http://idmanagement.gov/ns/assurance/ial/1",
-                 scope: "openid")
+                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                 scope: 'openid')
           expect(@analytics).to receive(:track_event).
             with(Analytics::SP_REDIRECT_INITIATED,
                  ial: 1)
@@ -107,8 +107,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      errors: {},
                      unauthorized_scope: false,
                      user_fully_authenticated: true,
-                     acr_values: "http://idmanagement.gov/ns/assurance/ial/2",
-                     scope: "openid profile")
+                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
+                     scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
                 with(Analytics::SP_REDIRECT_INITIATED,
                      ial: 2)
@@ -218,8 +218,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  errors: hash_including(:prompt),
                  error_details: hash_including(:prompt),
                  user_fully_authenticated: true,
-                 acr_values: "http://idmanagement.gov/ns/assurance/ial/1",
-                 scope: "openid")
+                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
@@ -246,8 +246,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  errors: hash_including(:client_id),
                  error_details: hash_including(:client_id),
                  user_fully_authenticated: true,
-                 acr_values: "http://idmanagement.gov/ns/assurance/ial/1",
-                 scope: "openid")
+                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+                 scope: 'openid')
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
