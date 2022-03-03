@@ -11,18 +11,18 @@ DocumentCaptureSessionAsyncResult = RedactedStruct.new(
 ) do
   self::IN_PROGRESS = 'in_progress'
   self::DONE = 'done'
-  self::TIMED_OUT = 'timed_out'
+  self::MISSING = 'missing'
 
   def self.redis_key_prefix
     'dcs-async:result'
   end
 
-  def self.timed_out
-    new(status: DocumentCaptureSessionAsyncResult::TIMED_OUT)
+  def self.missing
+    new(status: DocumentCaptureSessionAsyncResult::MISSING)
   end
 
-  def timed_out?
-    status == DocumentCaptureSessionAsyncResult::TIMED_OUT
+  def missing?
+    status == DocumentCaptureSessionAsyncResult::MISSING
   end
 
   def done?

@@ -30,7 +30,7 @@ module Idv
     end
 
     def timeout_error
-      return unless @async_state.timed_out?
+      return unless @async_state.missing?
       errors.add(
         :timeout, t('errors.doc_auth.document_verification_timeout'),
         type: :document_verification_timeout
