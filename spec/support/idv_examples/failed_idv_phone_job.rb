@@ -25,9 +25,10 @@ shared_examples 'failed idv phone job' do
       click_idv_continue
     end
 
-    it 'renders a timeout message on the phone entry screen' do
-      expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('idv.failure.timeout'))
+    it 'renders a timeout failure screen' do
+      expect(page).to have_current_path(phone_timeout_path)
+      expect(page).to have_content t('idv.failure.phone.heading')
+      expect(page).to have_content t('idv.failure.phone.timeout')
     end
   end
 
@@ -53,6 +54,10 @@ shared_examples 'failed idv phone job' do
 
   def session_timeout_path
     idv_session_errors_timeout_path(locale: locale)
+  end
+
+  def phone_timeout_path
+    idv_phone_errors_timeout_path(locale: locale)
   end
 
   def session_jobfail_path

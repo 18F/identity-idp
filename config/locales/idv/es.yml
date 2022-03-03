@@ -54,6 +54,8 @@ es:
           otros registros
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
+        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
+          intentarlo.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
