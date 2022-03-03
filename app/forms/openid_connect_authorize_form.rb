@@ -207,8 +207,8 @@ class OpenidConnectAuthorizeForm
     {
       client_id: client_id,
       redirect_uri: result_uri,
-      scope: scope,
-      acr_values: acr_values,
+      scope: scope&.sort&.join(' '),
+      acr_values: acr_values&.sort&.join(' '),
       unauthorized_scope: @unauthorized_scope,
     }
   end
