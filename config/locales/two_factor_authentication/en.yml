@@ -122,8 +122,7 @@ en:
       key or government employee ID (PIV or CAC) to access your information.
     two_factor_choice: Authentication method setup
     two_factor_choice_intro: Add another layer of security by using one of the
-      options below to receive or generate a secure code. You’ll enter this code
-      after your password the next time you sign in.
+      multi-factor authentication options below.
     two_factor_choice_options:
       auth_app: Authentication Application
       auth_app_info: Download or use an authentication app of your choice to generate
