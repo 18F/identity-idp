@@ -264,6 +264,11 @@ module Features
       fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
     end
 
+    def fill_in_code_with_last_totp(user)
+      accept_rules_of_use_and_continue_if_displayed
+      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
+    end
+
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
       check 'rules_of_use_form[terms_accepted]'

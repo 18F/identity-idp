@@ -93,14 +93,14 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   context 'second time a user signs in to an SP' do
-    let(:user) { user_with_2fa }
+    let(:user) { user_with_aal3_2fa }
 
     before do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       uncheck(t('forms.messages.remember_device'))
 
-      fill_in_code_with_last_phone_otp
+      fill_in_code_with_last_totp(user)
       click_submit_default
       complete_all_doc_auth_steps
       click_continue
