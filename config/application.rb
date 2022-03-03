@@ -141,6 +141,7 @@ module Upaya
 
         origins allowed_origins
         resource '/api/country-support', headers: :any, methods: [:get]
+        resource '/api/analytics-events.json', headers: :any, methods: [:get]
       end
     end
     # rubocop:enable Metrics/BlockLength

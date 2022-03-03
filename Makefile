@@ -185,12 +185,12 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./config/application.yml' \
 	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
 
-analytics_events: public/api/analytics_events.json ## Generates a JSON file that documents analytics events for events.log
+analytics_events: public/api/analytics-events.json ## Generates a JSON file that documents analytics events for events.log
 
 lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --check $<
 
-public/api/analytics_events.json: .yardoc .yardoc/objects/root.dat
+public/api/analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
 
