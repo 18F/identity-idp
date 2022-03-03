@@ -23,10 +23,6 @@
           url: @other_mfa_options_url,
           text: t('two_factor_authentication.login_options_link_text'),
         },
-        decorated_session.sp_name && {
-          url: return_to_sp_cancel_path(location: 'sms_resubscribe_error'),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-        },
         {
           url: MarketingSite.contact_url,
           text: t('links.contact_support', app_name: APP_NAME),
