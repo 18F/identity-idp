@@ -24,7 +24,6 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
 
-
     context 'origin is handbook.login.gov' do
       let(:http_origin) { 'https://handbook.login.gov' }
 
