@@ -68,4 +68,11 @@ module AnalyticsEvents
   def account_delete_visited
     track_event('Account Delete visited')
   end
+
+  # @identity.idp.event_name Account Deletion Requested
+  # @param [String] request_came_from the controller/action the request came from
+  # When a user deletes their account
+  def account_deletion(request_came_from:)
+    track_event('Account Deletion Requested', request_came_from: request_came_from)
+  end
 end
