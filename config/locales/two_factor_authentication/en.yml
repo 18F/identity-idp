@@ -27,8 +27,6 @@ en:
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or
       something went wrong on our end. Try again or choose another
       authentication method.
-    lockout_information: Keep this information safe. You will be locked out and have
-      to create a new account if you lose your authentication method.
     login_intro: You set these up when you created your account.
     login_options:
       auth_app: Authentication app
@@ -49,9 +47,8 @@ en:
       webauthn: Security key
       webauthn_info: Use your security key to access your account.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info: Use your device (phone, tablet or desktop) to add
-        another level of security to your %{app_name} account. Recommended
-        because it is more phishing resistant.
+      webauthn_platform_info: Use your device to verify your identity. We do not store
+        your fingerprints or images. Recommended since it prevents phishing.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
     max_backup_code_login_attempts_reached: For your security, your account is
@@ -124,37 +121,35 @@ en:
       need to verify your identity using a physical device such as a security
       key or government employee ID (PIV or CAC) to access your information.
     two_factor_choice: Authentication method setup
-    two_factor_choice_intro: Add a second layer of security so only you can sign in to your account.
+    two_factor_choice_intro: Add another layer of security by using one of the
+      multi-factor authentication options below.
     two_factor_choice_options:
-      auth_app: Authentication application
-      auth_app_info: Get codes from an app on your phone, computer, or tablet.
-        Recommended because it is harder to intercept than texts or phone calls.
-      backup_code: Backup codes
-      backup_code_info: We’ll give you 10 codes. You can use backup codes as your only
-        authentication method, but it is the least recommended method since
-        notes can get lost. Keep them in a safe place.
+      auth_app: Authentication Application
+      auth_app_info: Download or use an authentication app of your choice to generate
+        secure codes.
+      backup_code: Backup Codes
+      backup_code_info: A list of 10 codes you can print or save to your device. When
+        you use the last code, we will generate a new list. Keep in mind backup
+        codes are easy to lose.
       least_secure_label: Least secure
       less_secure_label: Less secure
       more_secure_label: More Secure
       phone: Text or Voice Message
-      phone_info: Get security codes by text message (SMS) or phone call.
+      phone_info: Receive a secure code by (SMS) text or phone call to your device.
       phone_info_no_voip: Please do not use web-based (VOIP) phone services.
-      piv_cac: Government employee ID
-      piv_cac_info: Insert your government or military PIV or CAC card and enter your PIN.
+      piv_cac: Government Employee ID
+      piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       secure_label: Secure
       sms: Text message / SMS
       sms_info: Get your security code via text message / SMS.
       voice: Phone call
       voice_info: Get your security code via phone call.
       webauthn: Security key
-      webauthn_info: Use a security key that you have. It’s a physical device that you
-        plug in or that is built in to your computer or phone (it often looks
-        like a USB flash drive). Recommended because it is more phishing
-        resistant.
+      webauthn_info: A physical device, often shaped like a USB drive, that you plug
+        in to your device.
       webauthn_platform: Face or Touch Unlock
-      webauthn_platform_info: Use your device (phone, tablet or desktop) to add
-        another level of security to your %{app_name} account. Recommended
-        because it is more phishing resistant.
+      webauthn_platform_info: Use your device to verify your identity. We do not store
+        your fingerprints or images. Recommended since it prevents phishing.
     two_factor_hspd12_choice: Additional authentication required
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
