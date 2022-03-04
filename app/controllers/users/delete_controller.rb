@@ -4,7 +4,7 @@ module Users
     before_action :confirm_current_password, only: [:delete]
 
     def show
-      analytics.track_event(Analytics::ACCOUNT_DELETE_VISITED)
+      analytics.account_delete_visited
     end
 
     def delete
@@ -12,7 +12,7 @@ module Users
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
-      analytics.track_event(Analytics::ACCOUNT_DELETE_SUBMITTED, success: true)
+      analytics.account_delete_submitted(success: true)
       redirect_to root_url
     end
 
@@ -29,7 +29,7 @@ module Users
       return if valid_password?
 
       flash[:error] = t('idv.errors.incorrect_password')
-      analytics.track_event(Analytics::ACCOUNT_DELETE_SUBMITTED, success: false)
+      analytics.account_delete_submitted(success: false)
       render :show
     end
 

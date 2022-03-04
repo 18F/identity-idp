@@ -140,6 +140,7 @@ module Upaya
         end
 
         origins allowed_origins
+        resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
       end
     end

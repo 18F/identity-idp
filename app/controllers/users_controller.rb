@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 
   def track_account_deletion_event
     properties = ParseControllerFromReferer.new(request.referer).call
-    analytics.track_event(Analytics::ACCOUNT_DELETION, properties)
+    analytics.account_deletion(**properties)
   end
 
   def destroy_user

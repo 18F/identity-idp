@@ -48,8 +48,7 @@ describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
 
       post :create
     end
@@ -70,8 +69,7 @@ describe AccountReset::RequestController do
         message_id: 'fake-message-id',
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
 
       post :create
     end
@@ -90,8 +88,7 @@ describe AccountReset::RequestController do
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
 
       post :create
     end
