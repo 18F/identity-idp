@@ -2,9 +2,9 @@ module AnalyticsEvents
   # @identity.idp.event_name Account Reset
   # @param [Boolean] success
   # @param ["cancel", "delete", "cancel token validation", "granted token validation",
-  #  :notifications] event
-  # @param [String] message_id Request ID from AWS Pinpoint API
-  # @param [String] request_id Request ID from AWS Pinpoint API
+  #  "notifications"] event
+  # @param [String] message_id from AWS Pinpoint API
+  # @param [String] request_id from AWS Pinpoint API
   # @param [Boolean] sms_phone
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
