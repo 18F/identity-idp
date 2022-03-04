@@ -23,20 +23,20 @@
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-          <%= radio_button_tag(
+          <%= check_box_tag(
                 'two_factor_options_form[selection]',
                 option.type,
                 false,
                 disabled: option.disabled?,
-                class: 'usa-radio__input usa-radio__input--tile',
+                class: 'usa-checkbox__input usa-checkbox__input--tile',
               ) %>
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
-                class: 'usa-radio__label usa-radio__label--illustrated',
+                class: 'usa-checkbox__label usa-checkbox__label--illustrated',
               ) do %>
-                  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
-                  <div class="usa-radio__label--text tablet:padding-left-1"><%= option.label %>
-                    <span class="usa-radio__label-description">
+                  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
+                  <div class="usa-checkbox__label--text tablet:padding-left-1"><%= option.label %>
+                    <span class="usa-checkbox__label-description">
                       <%= option.info %>
                     </span>
                   </div>

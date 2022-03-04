@@ -85,7 +85,8 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.usa-radio__input--tile + .usa-radio__label--illustrated .usa-radio__image {
+.usa-radio__input--tile + .usa-radio__label--illustrated .usa-radio__image,
+.usa-checkbox__input--tile + .usa-checkbox__label--ilustrated .usa-checkbox__image {
   width: 1.5rem;
   @media #{$breakpoint-sm} {
     width: 2.625rem;
