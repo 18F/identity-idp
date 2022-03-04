@@ -114,6 +114,8 @@ class ServiceProviderSessionDecorator
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
   def sp_aal
+    return 2 if sp_ial == 2
+
     sp.default_aal || 1
   end
 
