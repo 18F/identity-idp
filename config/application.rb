@@ -131,6 +131,7 @@ module Upaya
         allowed_origins = [
           'https://www.login.gov',
           'https://login.gov',
+          'https://handbook.login.gov',
           %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
         ]
 
