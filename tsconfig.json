@@ -55,6 +55,12 @@
       "app/javascript/packages/time-element/index.ts",
       "app/javascript/packages/url/index.ts",
       "app/javascript/packages/validated-field/index.js",
+    ],
+    "exclude": [
+      "**/*+(.spec).js",
+      "**/*+(.spec).jsx",
+      "**/*+(.spec).ts",
+      "**/*+(.spec).tsx"
     ]
   },
   "exclude": [
