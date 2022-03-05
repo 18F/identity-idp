@@ -8,7 +8,7 @@ if FeatureManagement.rails_csp_tooling_enabled?
     }
 
     config.action_dispatch.default_headers.merge!(
-      'X-Frame-Options' => 'DENY',
+      'X-Frame-Options' => 'SAMEORIGIN',
       'X-XSS-Protection' => '1; mode=block',
       'X-Download-Options' => 'noopen',
     )
@@ -17,7 +17,7 @@ end
 
 SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/BlockLength
   config.hsts = "max-age=#{365.days.to_i}; includeSubDomains; preload"
-  config.x_frame_options = 'DENY'
+  config.x_frame_options = 'SAMEORIGIN'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'

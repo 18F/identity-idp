@@ -1,3 +1,7 @@
+require 'json'
+require 'time'
+require 'redacted_struct'
+
 class IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
   GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
@@ -158,6 +162,7 @@ class IdentityConfig
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
     config.add(:event_disavowal_expiration_hours, type: :integer)
+    config.add(:generate_html_documentation, type: :boolean)
     config.add(:geo_data_file_path, type: :string)
     config.add(:good_job_max_threads, type: :integer)
     config.add(:good_job_queues, type: :string)
@@ -342,5 +347,51 @@ class IdentityConfig
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
+  end
+end
+
+if $PROGRAM_NAME == __FILE__
+  require 'optparse'
+  require 'yaml'
+
+  source_file = nil
+  action = nil
+  key = nil
+
+  parser = OptionParser.new do |opts|
+    opts.on('--source SOURCE', 'path to YAML file with config values (required)') do |s|
+      source_file = s
+    end
+
+    opts.on('--key KEY', 'config key to read (required)') do |k|
+      key = k
+    end
+
+    opts.on('--boolean', 'exits 0 if KEY is true, exits 1 if false') do
+      action = :boolean
+    end
+  end
+
+  parser.parse(ARGV)
+
+  if !source_file || !key
+    puts parser
+    exit 1
+  end
+
+  config = YAML.load_file(source_file)
+
+  config.
+    merge!(config[ENV.fetch('RAILS_ENV', 'development')]).
+    transform_keys!(&:to_sym).
+    transform_values! { |v| v.kind_of?(Hash) ? v.transform_keys!(&:to_sym) : v }
+
+  IdentityConfig.build_store(config)
+
+  value = IdentityConfig.store[key]
+  puts value
+
+  if action == :boolean
+    value ? exit(0) : exit(1)
   end
 end

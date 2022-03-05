@@ -185,14 +185,35 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./config/application.yml' \
 	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
 
-analytics_events: public/api/_analytics-events.json ## Generates a JSON file that documents analytics events for events.log
+ANALYTICS_EVENTS_JSON=public/api/_analytics-events.json
+ANALYTICS_YARDOC=.analytics_yardoc
+ANALYTICS_YARDOC_ROOT="$(ANALYTICS_YARDOC)/objects/root.dat"
 
-lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --check $<
+analytics_events: $(ANALYTICS_EVENTS_JSON) ## Generates a JSON file that documents analytics events for events.log
 
-public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
+clean_analytics_events: ## Removes intermediate files for analytics events
+	rm -rf $(ANALYTICS_YARDOC) $(ANALYTICS_EVENTS_JSON)
+
+lint_analytics_events: $(ANALYTICS_YARDOC) ## Checks that all methods on AnalyticsEvents are documented
+	bundle exec ruby lib/analytics_events_documenter.rb --check $(ANALYTICS_YARDOC)
+
+$(ANALYTICS_EVENTS_JSON): $(ANALYTICS_YARDOC) $(ANALYTICS_YARDOC_ROOT)
 	mkdir -p public/api
-	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
+	bundle exec ruby lib/analytics_events_documenter.rb --json $(ANALYTICS_YARDOC) > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
-	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $@ -- $<
+$(ANALYTICS_YARDOC) $(ANALYTICS_YARDOC_ROOT): app/services/analytics_events.rb
+	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $(ANALYTICS_YARDOC) -- $<
+
+ALL_RUBY_SOURCE=$(shell find app lib -type f -name '*.rb')
+YARD_HTML="public/yard"
+
+yard: $(ALL_RUBY_SOURCE) ## Generate HTML documentation for Ruby classes
+	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --no-save --output-dir $(YARD_HTML)
+
+typedoc: ## Generate HTML documentation for JavaScript/TypeScript classes
+	yarn run typedoc
+
+docs: yard typedoc ## Generate HTML documentation
+
+clean_docs: ## Remove generated HTML documentation
+	rm -rf $(YARD_HTML) public/typedoc

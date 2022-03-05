@@ -24,6 +24,15 @@ bundle exec bin/copy_robots_file
 
 make analytics_events
 
+function check_config() {
+  bundle exec ruby lib/identity_config.rb --source tmp/application.yml --boolean --key "$1"
+}
+
+if check_config "generate_html_documentation"; then
+  make docs
+fi
+
+
 set +x
 
 echo "deploy/build-post-config finished"

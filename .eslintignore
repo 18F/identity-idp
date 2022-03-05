@@ -3,4 +3,5 @@ node_modules
 public
 vendor
 coverage
-doc
+public/yard
+public/typedoc

@@ -70,7 +70,9 @@ Vagrantfile
 /.tmp/
 /.vscode/
 /vendor/bundle
-.yardoc
+/.yardoc/
+/public/yard/
+/public/typedoc/
 
 package-lock.json
 
