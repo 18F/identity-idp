@@ -29,7 +29,8 @@ function check_config() {
 }
 
 if check_config "generate_html_documentation"; then
-  make docs
+  make yard
+  # yard run typedoc -- fails b/c missing devDependencies
 fi
 
 

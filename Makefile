@@ -210,10 +210,5 @@ YARD_HTML="public/yard"
 yard: $(ALL_RUBY_SOURCE) ## Generate HTML documentation for Ruby classes
 	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --no-save --output-dir $(YARD_HTML)
 
-typedoc: ## Generate HTML documentation for JavaScript/TypeScript classes
-	yarn run typedoc
-
-docs: yard typedoc ## Generate HTML documentation
-
 clean_docs: ## Remove generated HTML documentation
 	rm -rf $(YARD_HTML) public/typedoc
