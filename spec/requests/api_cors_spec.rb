@@ -24,6 +24,17 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
 
+    context 'origin is handbook.login.gov' do
+      let(:http_origin) { 'https://handbook.login.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
     context 'origin is federalist preview' do
       let(:http_origin) { 'https://federalist-abcdef.app.cloud.gov' }
 
