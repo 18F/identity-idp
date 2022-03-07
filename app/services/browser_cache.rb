@@ -1,7 +1,7 @@
 class BrowserCache
   @cache = LruRedux::Cache.new(1_000)
 
-  # Detects browser attributes from User-Agent, truncated to 2047 characters due
+  # Detects browser attributes from User-Agent, truncated to 2047 bytes due
   # to: https://github.com/fnando/browser/blob/fa4f685482c315b8/lib/browser/browser.rb#L64-L65
   # @param [String] user_agent
   # @return [Browser]
