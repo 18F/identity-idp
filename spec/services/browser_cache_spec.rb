@@ -21,5 +21,9 @@ RSpec.describe BrowserCache do
 
       3.times { BrowserCache.parse(chrome_user_agent) }
     end
+
+    it 'does not error on long user agents containing multi-byte characters' do
+      BrowserCache.parse('🇺🇸' * 3000)
+    end
   end
 end
