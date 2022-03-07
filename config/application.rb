@@ -19,7 +19,14 @@ APP_NAME = 'Login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
+    if (log_level = ENV['LOGIN_TASK_LOG_LEVEL'])
+      Identity::Hostdata.logger.level = log_level
+    end
+
+    configuration = Identity::Hostdata::ConfigReader.new(
+      app_root: Rails.root,
+      logger: Identity::Hostdata.logger
+    ).read_configuration(
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
     IdentityConfig.build_store(configuration)
