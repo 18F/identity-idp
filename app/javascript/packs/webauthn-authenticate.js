@@ -3,13 +3,12 @@ const WebAuthn = require('../app/webauthn');
 function webauthn() {
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress');
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
-  
+
   const webauthnPlatformRequested =
     webauthnInProgressContainer.dataset.platformAuthenticatorRequested === 'true';
   const multipleFactorsEnabled =
     webauthnInProgressContainer.dataset.multipleFactorsEnabled === 'true';
   const isPlatformAvailable = document.getElementById('webauthn_device').value === 'true';
-
 
   const spinner = document.getElementById('spinner');
   spinner.classList.remove('hidden');
@@ -36,12 +35,11 @@ function webauthn() {
         webauthnSuccessContainer.classList.remove('hidden');
       })
       .catch((error) => {
-        debugger;
         document.getElementById('errors').value = error;
         document.getElementById('platform').value = webauthnPlatformRequested;
         document.getElementById('webauthn_form').submit();
       });
-  } 
+  }
 }
 
 function webauthnButton() {
@@ -50,10 +48,11 @@ function webauthnButton() {
 }
 
 function isPlatformAuthenticatorAvailable() {
-  debugger
-  return window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable().then((result) => { 
-    document.getElementById('webauthn_device').value = result
-  });
+  return window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable().then(
+    (result) => {
+      document.getElementById('webauthn_device').value = result;
+    },
+  );
 }
 
 document.addEventListener('DOMContentLoaded', webauthnButton);
