@@ -125,7 +125,8 @@ es:
         rules:
           - ser un plan telefónico que esté asociado a su nombre. En este caso,
             no es necesario que usted sea el titular principal de la cuenta.
-          - no es un teléfono virtual (como Google Voice o Skype)
+          - no ser un teléfono virtual (como Google Voice o Skype), como tampoco
+            un número de teléfono de tarificación adicional (pago).
           - un número de EE. UU.
       return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
