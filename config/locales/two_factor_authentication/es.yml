@@ -150,6 +150,7 @@ es:
         o una llamada telefónica a su dispositivo.
       phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
         (VOIP) o de números de teléfono de tarificación adicional (de pago).
+      piv_cac: Identificación de empleado gubernamental
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
       secure_label: Seguro
