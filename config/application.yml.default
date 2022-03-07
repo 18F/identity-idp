@@ -164,9 +164,6 @@ piv_cac_verify_token_url: https://localhost:8443/
 platform_authentication_enabled: true
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
-proofing_allow_expired_license: false
-proofing_expired_license_after: '2020-03-01'
-proofing_expired_license_reproof_at: '2023-03-01'
 proofing_send_partial_dob: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360

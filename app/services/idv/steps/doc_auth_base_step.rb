@@ -65,13 +65,6 @@ module Idv
           phone: effective_user.phone_configurations.take&.phone,
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
-        if response.respond_to?(:extra)
-          # Sync flow: DocAuth::Response
-          flow_session[:document_expired] = response.extra&.dig(:document_expired)
-        elsif response.respond_to?(:result)
-          # Async flow: DocumentCaptureSessionAsyncResult
-          flow_session[:document_expired] = response.result&.dig(:document_expired)
-        end
         track_document_state
       end
 
