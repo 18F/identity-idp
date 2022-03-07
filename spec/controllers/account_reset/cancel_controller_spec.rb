@@ -20,8 +20,7 @@ describe AccountReset::CancelController do
         request_id: 'fake-message-request-id',
       }
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
 
       post :create
     end
@@ -38,8 +37,7 @@ describe AccountReset::CancelController do
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
       session[:cancel_token] = 'FOO'
 
       post :create
@@ -55,8 +53,7 @@ describe AccountReset::CancelController do
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
 
       post :create
     end
@@ -101,8 +98,7 @@ describe AccountReset::CancelController do
           token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
         },
       }
-      expect(@analytics).
-        to receive(:track_event).with(Analytics::ACCOUNT_RESET, properties)
+      expect(@analytics).to receive(:track_event).with('Account Reset', properties)
 
       get :show, params: { token: 'FOO' }
 

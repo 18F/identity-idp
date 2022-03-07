@@ -1,6 +1,8 @@
 class FakeAnalytics
   PiiDetected = Class.new(StandardError)
 
+  include AnalyticsEvents
+
   module PiiAlerter
     def track_event(event, original_attributes = {})
       attributes = original_attributes.dup

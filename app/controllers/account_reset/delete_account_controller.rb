@@ -4,7 +4,7 @@ module AccountReset
       render :show and return unless token
 
       result = AccountReset::ValidateGrantedToken.new(token).call
-      analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h)
+      analytics.account_reset(**result.to_h)
 
       if result.success?
         handle_valid_token
@@ -16,7 +16,7 @@ module AccountReset
     def delete
       granted_token = session.delete(:granted_token)
       result = AccountReset::DeleteAccount.new(granted_token).call
-      analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h.except(:email))
+      analytics.account_reset(**result.to_h.except(:email))
 
       if result.success?
         handle_successful_deletion(result)

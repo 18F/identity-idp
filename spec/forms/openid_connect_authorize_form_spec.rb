@@ -45,6 +45,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
           client_id: client_id,
           redirect_uri: nil,
           unauthorized_scope: true,
+          acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+          scope: 'openid',
         )
       end
     end
@@ -62,6 +64,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            scope: 'openid',
           )
         end
       end
