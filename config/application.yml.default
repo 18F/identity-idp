@@ -423,7 +423,7 @@ test:
   newrelic_license_key: ''
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: 1
-  otp_delivery_blocklist_maxretry: 2
+  otp_delivery_blocklist_maxretry: 3
   otps_per_ip_limit: 3
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false

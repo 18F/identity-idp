@@ -13,8 +13,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      complete_all_doc_auth_steps
-      click_continue
+      complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
       click_acknowledge_personal_key
@@ -44,8 +43,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
-      complete_all_doc_auth_steps
-      click_continue
+      complete_all_doc_auth_steps_before_password_step
       fill_in 'Password', with: user.password
       click_continue
       click_acknowledge_personal_key
@@ -69,7 +67,10 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     before do
       sign_in_and_2fa_user(user)
-      complete_proofing_steps
+      complete_all_doc_auth_steps_before_password_step
+      fill_in 'Password', with: user.password
+      click_continue
+      click_acknowledge_personal_key
       first(:link, t('links.sign_out')).click
     end
 
@@ -89,16 +90,19 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   context 'second time a user signs in to an SP' do
-    let(:user) { user_with_totp_2fa }
+    let(:user) { user_with_2fa }
 
     before do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       uncheck(t('forms.messages.remember_device'))
 
-      fill_in_code_with_last_totp(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
-      complete_proofing_steps
+      complete_all_doc_auth_steps_before_password_step
+      fill_in 'Password', with: user.password
+      click_continue
+      click_acknowledge_personal_key
       visit account_path
       first(:link, t('links.sign_out')).click
     end
@@ -110,7 +114,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect_csp_headers_to_be_present if sp == :oidc
 
-      fill_in_code_with_last_totp(user)
+      fill_in_code_with_last_phone_otp
       click_submit_default
 
       expect_successful_oidc_handoff if sp == :oidc

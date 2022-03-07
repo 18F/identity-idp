@@ -151,7 +151,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
-  def complete_proofing_steps
+  def complete_all_doc_auth_steps_before_password_step
     complete_all_doc_auth_steps
     fill_in 'idv_phone_form_phone', with: '+1 202-555-1212'
     click_idv_continue
@@ -159,6 +159,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     fill_in_code_with_last_phone_otp
     click_submit_default
     click_continue
+  end
+
+  def complete_proofing_steps
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     click_acknowledge_personal_key
