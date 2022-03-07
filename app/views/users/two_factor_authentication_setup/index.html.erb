@@ -24,7 +24,7 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= check_box_tag(
-                'two_factor_options_form[selection]',
+                "two_factor_options_form_selection_#{option.type}",
                 option.type,
                 false,
                 disabled: option.disabled?,
