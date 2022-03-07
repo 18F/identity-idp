@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
+  get '/api/analytics-events' => 'analytics_events#index'
   get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
@@ -286,6 +287,7 @@ Rails.application.routes.draw do
       get '/review' => 'review#new'
       put '/review' => 'review#create'
       get '/session/errors/warning' => 'session_errors#warning'
+      get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'

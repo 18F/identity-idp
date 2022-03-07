@@ -23,8 +23,7 @@ module AccountReset
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end
 
-      analytics.track_event(
-        Analytics::ACCOUNT_RESET,
+      analytics.account_reset(
         event: :notifications,
         count: notifications_sent,
       )

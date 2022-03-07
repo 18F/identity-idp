@@ -65,12 +65,12 @@ describe Idv::GpoController do
     it 'logs an event when there is a timeout' do
       allow(controller).to receive(:async_state).and_return(
         ProofingSessionAsyncResult.new(
-          status: ProofingSessionAsyncResult::TIMED_OUT,
+          status: ProofingSessionAsyncResult::MISSING,
         ),
       )
 
       get :index
-      expect(@analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_TIMEOUT, {})
+      expect(@analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING, {})
     end
 
     context 'with letter already sent' do

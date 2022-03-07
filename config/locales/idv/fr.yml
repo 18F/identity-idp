@@ -57,6 +57,8 @@ fr:
           d’autres enregistrements
         jobfail: Un problème s’est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer.
+        timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
+          réessayer.
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
       sessions:
         exception: Une erreur interne s’est produite lors du traitement de votre demande.

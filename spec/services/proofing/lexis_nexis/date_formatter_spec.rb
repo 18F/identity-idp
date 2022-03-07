@@ -6,12 +6,6 @@ describe Proofing::LexisNexis::DateFormatter do
   describe '#date' do
     subject(:date) { date_formatter.date }
 
-    context 'with a MM/DD/YYYY formatted date' do
-      let(:date_string) { '01/02/1993' }
-
-      it { is_expected.to eq(Date.new(1993, 1, 2)) }
-    end
-
     context 'with a YYYYMMDD formatted date' do
       let(:date_string) { '19930102' }
 
@@ -26,7 +20,7 @@ describe Proofing::LexisNexis::DateFormatter do
   end
 
   describe '#formatted_date' do
-    let(:date_string) { '04/15/2020' }
+    let(:date_string) { '2020-04-15' }
 
     it 'is a hash' do
       expect(date_formatter.formatted_date).to eq(

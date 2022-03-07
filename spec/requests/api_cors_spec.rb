@@ -1,11 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'CORS headers for OpenID Connect endpoints' do
-  describe '/api/country-support' do
-    before do
-      get api_country_support_path, headers: { 'HTTP_ORIGIN' => http_origin }
-    end
-
+  shared_examples_for 'static API with correct CORS headers' do
     context 'origin is www.login.gov' do
       let(:http_origin) { 'https://www.login.gov' }
 
@@ -19,6 +15,17 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
     context 'origin is login.gov' do
       let(:http_origin) { 'https://login.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
+    context 'origin is handbook.login.gov' do
+      let(:http_origin) { 'https://handbook.login.gov' }
 
       it 'allows origin' do
         aggregate_failures do
@@ -71,5 +78,29 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
         end
       end
     end
+  end
+
+  describe '/api/country-support' do
+    before do
+      get api_country_support_path, headers: { 'HTTP_ORIGIN' => http_origin }
+    end
+
+    it_behaves_like 'static API with correct CORS headers'
+  end
+
+  describe '/api/analytics-events' do
+    before do
+      Tempfile.create do |json_file|
+        json_file.rewind
+        json_file << '{}'
+        json_file.close
+
+        stub_const('AnalyticsEventsController::JSON_FILE', json_file.path)
+
+        get api_analytics_events_path, headers: { 'HTTP_ORIGIN' => http_origin }
+      end
+    end
+
+    it_behaves_like 'static API with correct CORS headers'
   end
 end

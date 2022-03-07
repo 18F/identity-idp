@@ -131,6 +131,7 @@ module Upaya
         allowed_origins = [
           'https://www.login.gov',
           'https://login.gov',
+          'https://handbook.login.gov',
           %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
         ]
 
@@ -140,6 +141,7 @@ module Upaya
         end
 
         origins allowed_origins
+        resource '/api/analytics-events', headers: :any, methods: [:get]
         resource '/api/country-support', headers: :any, methods: [:get]
       end
     end

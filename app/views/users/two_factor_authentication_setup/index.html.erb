@@ -12,9 +12,7 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<p><%= @presenter.intro %></p>
-
-<%= render(AlertComponent.new) { t('two_factor_authentication.lockout_information') } %>
+<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
@@ -22,7 +20,7 @@
                        url: two_factor_options_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2"><%= t('forms.two_factor_choice.legend') %>:</legend>
+      <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= radio_button_tag(
@@ -34,18 +32,15 @@
               ) %>
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
-                class: 'usa-radio__label',
+                class: 'usa-radio__label usa-radio__label--illustrated',
               ) do %>
-                <%= option.label %>
-                <span class="usa-radio__label-description position-relative padding-bottom-4">
-                  <%= option.info %>
-                  <% if option.security_level && @presenter.show_security_level? %>
-                    <span class="usa-tag pin-bottom pin-right <%= option.disabled? ? 'bg-base-light' : 'bg-info-dark' %>">
-                      <%= option.security_level %>
+                  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
+                  <div class="usa-radio__label--text tablet:padding-left-1"><%= option.label %>
+                    <span class="usa-radio__label-description">
+                      <%= option.info %>
                     </span>
-                  <% end %>
-                </span>
-              <% end %>
+                  </div>
+                <% end %>
         </div>
       <% end %>
     </fieldset>
