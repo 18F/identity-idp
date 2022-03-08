@@ -313,6 +313,10 @@ Rails.application.routes.draw do
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
 
+      get '/in_person' => 'in_person#index'
+      get '/in_person/:step' => 'in_person#show', as: :in_person_step
+      put '/in_person/:step' => 'in_person#update'
+
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'

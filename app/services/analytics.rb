@@ -195,6 +195,7 @@ class Analytics
   IDV_GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted' # Previously: "Account verification submitted"
   IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited' # Previously: "Account verification visited"
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
+  IN_PERSON_PROOFING = 'In Person Proofing'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'

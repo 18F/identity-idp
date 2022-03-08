@@ -98,6 +98,7 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+in_person_proofing_enabled: true
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -342,6 +343,7 @@ production:
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
+  in_person_proofing_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
