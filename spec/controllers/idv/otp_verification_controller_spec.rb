@@ -95,7 +95,7 @@ describe Idv::OtpVerificationController do
       }
 
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::IDV_PHONE_CONFIRMATION_OTP_SUBMITTED,
+        'IdV: phone confirmation otp submitted',
         expected_result,
       )
     end

@@ -17,7 +17,7 @@ module Idv
 
     def update
       result = phone_confirmation_otp_verification_form.submit(code: params[:code])
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SUBMITTED, result.to_h)
+      analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
       if result.success?
         idv_session.user_phone_confirmation = true
         redirect_to idv_review_url

@@ -178,7 +178,6 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'
   IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'
-  IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'
   IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'
   IDV_PHONE_ERROR_VISITED = 'IdV: phone error visited'
   IDV_PHONE_ERROR_SUBMITTED = 'IdV: phone error submitted'

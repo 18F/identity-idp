@@ -75,4 +75,32 @@ module AnalyticsEvents
   def account_deletion(request_came_from:)
     track_event('Account Deletion Requested', request_came_from: request_came_from)
   end
+
+  # @identity.idp.event_name IdV: phone confirmation otp submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] code_expired if the confirmation code expired
+  # @param [Boolean] code_matches
+  # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
+  # @param [String, nil] second_factor_locked_at ISO8601-formatted timestamp when the phone was
+  # locked out at
+  # When a user attempts to confirm posession of a new phone number during the IDV process
+  def idv_phone_confirmation_otp_submitted(
+    success:,
+    errors:,
+    code_expired:,
+    code_matches:,
+    second_factor_attempts_count:,
+    second_factor_locked_at:
+  )
+    track_event(
+      'IdV: phone confirmation otp submitted',
+      success: success,
+      errors: errors,
+      code_expired: code_expired,
+      code_matches: code_matches,
+      second_factor_attempts_count: second_factor_attempts_count,
+      second_factor_locked_at: second_factor_locked_at,
+    )
+  end
 end
