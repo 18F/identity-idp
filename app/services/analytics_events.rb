@@ -103,4 +103,10 @@ module AnalyticsEvents
       second_factor_locked_at: second_factor_locked_at,
     )
   end
+
+  # @identity.idp.event_name IdV: phone confirmation otp visited
+  # When a user visits the page to confirm posession of a new phone number during the IDV process
+  def idv_phone_confirmation_otp_visit
+    track_event('IdV: phone confirmation otp visited')
+  end
 end

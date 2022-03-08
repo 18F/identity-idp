@@ -12,7 +12,7 @@ module Idv
     def show
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_VISIT)
+      analytics.idv_phone_confirmation_otp_visit
     end
 
     def update
