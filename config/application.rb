@@ -25,7 +25,7 @@ module Upaya
 
     configuration = Identity::Hostdata::ConfigReader.new(
       app_root: Rails.root,
-      logger: Identity::Hostdata.logger
+      logger: Identity::Hostdata.logger,
     ).read_configuration(
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
