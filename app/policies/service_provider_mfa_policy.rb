@@ -58,6 +58,10 @@ class ServiceProviderMfaPolicy
     piv_cac_enabled? && webauthn_enabled?
   end
 
+  def multiple_factors_enabled?
+    mfa_context.enabled_mfa_methods_count > 1
+  end
+
   private
 
   def aal3_enabled?
