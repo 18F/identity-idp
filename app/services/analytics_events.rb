@@ -82,7 +82,7 @@ module AnalyticsEvents
   # @param [Boolean] code_expired if the confirmation code expired
   # @param [Boolean] code_matches
   # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
-  # @param [String, nil] second_factor_locked_at ISO8601-formatted timestamp when the phone was
+  # @param [Time, nil] second_factor_locked_at timestamp when the phone was
   # locked out at
   # When a user attempts to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
@@ -108,5 +108,21 @@ module AnalyticsEvents
   # When a user visits the page to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_visit
     track_event('IdV: phone confirmation otp visited')
+  end
+
+  # @identity.idp.event_name IdV: phone error visited
+  # @param ['warning','jobfail','failure'] type
+  # @param [Time] throttle_expires_at when the throttle expires
+  # @param [Integer] remaining_attempts number of attempts remaining
+  # When a user gets an error during the phone finder flow of IDV
+  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil)
+    track_event(
+      'IdV: phone error visited',
+      {
+        type: type,
+        throttle_expires_at: throttle_expires_at,
+        remaining_attempts: remaining_attempts,
+      }.compact,
+    )
   end
 end
