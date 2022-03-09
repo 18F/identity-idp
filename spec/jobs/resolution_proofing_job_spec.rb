@@ -39,7 +39,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:document_expired) { false }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -49,7 +48,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        document_expired: document_expired,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -67,7 +65,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        document_expired: document_expired,
       )
     end
 
@@ -334,19 +331,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           expect(result.dig(:transaction_id)).to eq(lexisnexis_transaction_id)
           expect(result.dig(:reference)).to eq(lexisnexis_reference)
-        end
-      end
-
-      context 'with an expired document in an AAMVA state' do
-        let(:document_expired) { true }
-        let(:should_proof_state_id) { true }
-
-        it 'does not send the data to AAMVA' do
-          expect(resolution_proofer).to receive(:proof).
-            and_return(Proofing::Result.new)
-
-          expect(state_id_proofer).not_to receive(:proof)
-          perform
         end
       end
     end

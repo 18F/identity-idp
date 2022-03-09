@@ -17,7 +17,6 @@ describe Idv::PersonalKeyController do
       applicant: applicant,
       user: user,
       user_password: password,
-      document_expired: nil,
     )
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes

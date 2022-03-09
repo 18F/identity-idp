@@ -113,10 +113,6 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
-    def document_expired
-      user_session.dig('idv/doc_auth', :document_expired) # via flow_session[:document_expired]
-    end
-
     private
 
     attr_accessor :user_session
@@ -144,7 +140,6 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
-        document_expired: document_expired,
       )
     end
   end
