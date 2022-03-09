@@ -51,14 +51,16 @@ es:
         message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su acceso.
         sign_out: Cancelar el inicio de sesión
         sr_message_html: Tu sesión se cerrará en %{time_left_in_session}. Selecciona
-          “seguir conectado” para mantener tu sesión activa. Seleccione "desconécteme" para cerrar la sesión.
+          “seguir conectado” para mantener tu sesión activa. Seleccione
+          “desconécteme” para cerrar la sesión.
       signed_in:
         continue: Manténgame conectado
         message_html: Para su seguridad, terminaremos su sesión en
           %{time_left_in_session} a menos que nos indique lo contrario.
         sign_out: Desconécteme
         sr_message_html: Tu sesión se cerrará en %{time_left_in_session}. Selecciona
-          “seguir conectado” para mantener tu sesión activa. Seleccione "desconécteme" para cerrar la sesión.
+          “seguir conectado” para mantener tu sesión activa. Seleccione
+          “desconécteme” para cerrar la sesión.
     totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
     totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:
