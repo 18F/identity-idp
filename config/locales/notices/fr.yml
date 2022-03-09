@@ -52,14 +52,14 @@ fr:
           %{time_left_in_session}.
         sign_out: Annuler la connexion
         sr_message_html: Vous serez déconnecté dans %{time_left_in_session}.
-          Sélectionnez « garder ma connexion » pour rester connecté.
+          Sélectionnez « garder ma connexion » pour rester connecté. Sélectionnez « déconnectez-moi » pour vous déconnecter.
       signed_in:
         continue: Gardez ma connexion active
         message_html: Pour votre sécurité, nous vous déconnecterons dans
           %{time_left_in_session}, sauf en cas d’avis contraire de votre part.
         sign_out: Déconnectez-moi
         sr_message_html: Vous serez déconnecté dans %{time_left_in_session}.
-          Sélectionnez « garder ma connexion » pour rester connecté.
+          Sélectionnez « garder ma connexion » pour rester connecté. Sélectionnez « déconnectez-moi » pour vous déconnecter.
     totp_configured: Une application d’authentification a été ajoutée à votre compte.
     totp_disabled: Votre application d’authentification a été supprimée de votre compte.
     use_diff_email:
