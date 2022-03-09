@@ -75,4 +75,76 @@ module AnalyticsEvents
   def account_deletion(request_came_from:)
     track_event('Account Deletion Requested', request_came_from: request_came_from)
   end
+
+  # @identity.idp.event_name IdV: phone confirmation otp submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] code_expired if the confirmation code expired
+  # @param [Boolean] code_matches
+  # @param [Integer] second_factor_attempts_count number of attempts to confirm this phone
+  # @param [Time, nil] second_factor_locked_at timestamp when the phone was
+  # locked out at
+  # When a user attempts to confirm posession of a new phone number during the IDV process
+  def idv_phone_confirmation_otp_submitted(
+    success:,
+    errors:,
+    code_expired:,
+    code_matches:,
+    second_factor_attempts_count:,
+    second_factor_locked_at:
+  )
+    track_event(
+      'IdV: phone confirmation otp submitted',
+      success: success,
+      errors: errors,
+      code_expired: code_expired,
+      code_matches: code_matches,
+      second_factor_attempts_count: second_factor_attempts_count,
+      second_factor_locked_at: second_factor_locked_at,
+    )
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation otp visited
+  # When a user visits the page to confirm posession of a new phone number during the IDV process
+  def idv_phone_confirmation_otp_visit
+    track_event('IdV: phone confirmation otp visited')
+  end
+
+  # @identity.idp.event_name IdV: phone error visited
+  # @param ['warning','jobfail','failure'] type
+  # @param [Time] throttle_expires_at when the throttle expires
+  # @param [Integer] remaining_attempts number of attempts remaining
+  # When a user gets an error during the phone finder flow of IDV
+  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil)
+    track_event(
+      'IdV: phone error visited',
+      {
+        type: type,
+        throttle_expires_at: throttle_expires_at,
+        remaining_attempts: remaining_attempts,
+      }.compact,
+    )
+  end
+
+  # @identity.idp.event_name IdV: Phone OTP Delivery Selection Submitted
+  # @param ["sms", "voice"] otp_delivery_preference
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def idv_phone_otp_delivery_selection_submitted(
+    success:,
+    otp_delivery_preference:,
+    errors: nil,
+    error_details: nil
+  )
+    track_event(
+      'IdV: Phone OTP Delivery Selection Submitted',
+      {
+        success: success,
+        errors: errors,
+        error_details: error_details,
+        otp_delivery_preference: otp_delivery_preference,
+      }.compact,
+    )
+  end
 end

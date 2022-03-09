@@ -43,7 +43,7 @@ module Idv
         attributes[:remaining_attempts] = @remaining_attempts
       end
 
-      analytics.track_event(Analytics::IDV_PHONE_ERROR_VISITED, attributes)
+      analytics.idv_phone_error_visited(**attributes)
     end
   end
 end
