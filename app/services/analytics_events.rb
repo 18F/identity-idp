@@ -125,4 +125,26 @@ module AnalyticsEvents
       }.compact,
     )
   end
+
+  # @identity.idp.event_name IdV: Phone OTP Delivery Selection Submitted
+  # @param ["sms", "voice"] otp_delivery_preference
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def idv_phone_otp_delivery_selection_submitted(
+    success:,
+    otp_delivery_preference:,
+    errors: nil,
+    error_details: nil
+  )
+    track_event(
+      'IdV: Phone OTP Delivery Selection Submitted',
+      {
+        success: success,
+        errors: errors,
+        error_details: error_details,
+        otp_delivery_preference: otp_delivery_preference,
+      }.compact,
+    )
+  end
 end
