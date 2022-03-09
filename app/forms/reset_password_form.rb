@@ -30,9 +30,7 @@ class ResetPasswordForm
       # If the user is not saved in the database, that means looking them up by
       # their token failed
       errors.add(:reset_password_token, 'invalid_token', type: :invalid_token)
-    elsif invalid_account?
-      errors.add(:reset_password_token, 'token_expired', type: :token_expired)
-    elsif !user.reset_password_period_valid?
+    elsif !user.reset_password_period_valid? || invalid_account?
       errors.add(:reset_password_token, 'token_expired', type: :token_expired)
     end
   end
