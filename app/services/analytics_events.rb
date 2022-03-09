@@ -102,6 +102,13 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # @identity.idp.event_name Banned User redirected
+  # A user that has been banned from an SP has authenticated, they are redirected
+  # to a page showing them that they have been banned
+  def banned_user_redirect
+    track_event('Banned User redirected')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
