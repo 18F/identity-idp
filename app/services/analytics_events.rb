@@ -76,6 +76,12 @@ module AnalyticsEvents
     track_event('Account Deletion Requested', request_came_from: request_came_from)
   end
 
+  # @identity.idp.event_name Account deletion and reset visited
+  # When a user views the account page
+  def account_visit
+    track_event('Account Page Visited')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors

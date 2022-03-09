@@ -123,7 +123,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  ACCOUNT_VISIT = 'Account Page Visited'
   ADD_EMAIL = 'Add Email: Email Submitted'
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'
