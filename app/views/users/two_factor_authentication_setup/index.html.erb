@@ -24,11 +24,12 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= check_box_tag(
-                "two_factor_options_form_selection_#{option.type}",
+                "two_factor_options_form[selection][]",
                 option.type,
                 false,
                 disabled: option.disabled?,
                 class: 'usa-checkbox__input usa-checkbox__input--tile',
+                id: "two_factor_options_form_selection_#{option.type}",
               ) %>
           <%= label_tag(
                 "two_factor_options_form_selection_#{option.type}",
