@@ -158,14 +158,6 @@ module Idv
         :idv_verify_step_document_capture_session_uuid
       end
 
-      def cac_verify_document_capture_session_uuid_key
-        :cac_verify_step_document_capture_session_uuid
-      end
-
-      def recover_verify_document_capture_session_uuid_key
-        :idv_recover_verify_step_document_capture_session_uuid
-      end
-
       def verify_document_capture_session_uuid_key
         :verify_document_action_document_capture_session_uuid
       end
