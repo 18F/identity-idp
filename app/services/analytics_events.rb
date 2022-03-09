@@ -82,6 +82,26 @@ module AnalyticsEvents
     track_event('Account Page Visited')
   end
 
+  # @identity.idp.event_name Authentication Confirmation
+  # When a user views the "you are already signed in with the following email" screen
+  def authentication_confirmation
+    track_event('Authentication Confirmation')
+  end
+
+  # @identity.idp.event_name Authentication Confirmation: Continue selected
+  # When a user views the "you are already signed in with the following email" screen and
+  # continues with their existing logged-in email
+  def authentication_confirmation_continue
+    track_event('Authentication Confirmation: Continue selected')
+  end
+
+  # @identity.idp.event_name Authentication Confirmation: Reset selected
+  # When a user views the "you are already signed in with the following email" screen and
+  # signs out of their current logged in email to choose a different email
+  def authentication_confirmation_reset
+    track_event('Authentication Confirmation: Reset selected')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
