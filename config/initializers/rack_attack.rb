@@ -1,5 +1,11 @@
+require 'ipaddr'
+
 module Rack
   class Attack
+    ALLOWED_CIDR_BLOCKS = IdentityConfig.store.requests_per_ip_cidr_allowlist.map do |x|
+      IPAddr.new(x)
+    end
+
     # If the app is behind a load balancer, `ip` will return the IP of the
     # load balancer instead of the actual IP the request came from, and since
     # all requests will seem to come from the same IP, throttling will be
@@ -61,6 +67,9 @@ module Rack
         next if IdentityConfig.store.requests_per_ip_path_prefixes_allowlist.any? do |x|
           req.path.starts_with?(x)
         end
+        next if ALLOWED_CIDR_BLOCKS.any? do |cidr_block|
+          cidr_block === req.remote_ip
+        end
 
         req.remote_ip
       end
@@ -73,6 +82,9 @@ module Rack
         next if req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
         next if IdentityConfig.store.requests_per_ip_path_prefixes_allowlist.any? do |x|
           req.path.starts_with?(x)
+        end
+        next if ALLOWED_CIDR_BLOCKS.any? do |cidr_block|
+          cidr_block === req.remote_ip
         end
 
         req.remote_ip
