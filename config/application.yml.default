@@ -186,7 +186,9 @@ reg_unconfirmed_email_window_in_minutes: 60
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
 report_timeout: 0
+requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
+requests_per_ip_path_prefixes_allowlist: ''
 requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
@@ -434,6 +436,7 @@ test:
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
+  requests_per_ip_cidr_allowlist: '172.16.0.0/12'
   requests_per_ip_limit: 4
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
