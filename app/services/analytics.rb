@@ -123,15 +123,10 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  ACCOUNT_VISIT = 'Account Page Visited'
   ADD_EMAIL = 'Add Email: Email Submitted'
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'
-  AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'
-  AUTHENTICATION_CONFIRMATION_CONTINUE = 'Authentication Confirmation: Continue selected'
-  AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'
-  BANNED_USER_REDIRECT = 'Banned User redirected'
   BANNED_USER_VISITED = 'Banned User visited'
   BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
