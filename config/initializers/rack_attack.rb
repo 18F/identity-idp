@@ -68,7 +68,7 @@ module Rack
           req.path.starts_with?(x)
         end
         next if ALLOWED_CIDR_BLOCKS.any? do |cidr_block|
-          cidr_block === req.remote_ip
+          cidr_block.include?(req.remote_ip)
         end
 
         req.remote_ip
