@@ -57,7 +57,12 @@ module Rack
         limit: IdentityConfig.store.requests_per_ip_limit,
         period: IdentityConfig.store.requests_per_ip_period,
       ) do |req|
-        req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
+        next if req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
+        next if IdentityConfig.store.requests_per_ip_path_prefixes_allowlist.any? do |x|
+          req.path.starts_with?(x)
+        end
+
+        req.remote_ip
       end
     else
       throttle(
@@ -65,7 +70,12 @@ module Rack
         limit: IdentityConfig.store.requests_per_ip_limit,
         period: IdentityConfig.store.requests_per_ip_period,
       ) do |req|
-        req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
+        next if req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
+        next if IdentityConfig.store.requests_per_ip_path_prefixes_allowlist.any? do |x|
+          req.path.starts_with?(x)
+        end
+
+        req.remote_ip
       end
     end
 

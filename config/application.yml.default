@@ -187,6 +187,7 @@ remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
 report_timeout: 0
 requests_per_ip_limit: 300
+requests_per_ip_path_prefixes_allowlist: ''
 requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
