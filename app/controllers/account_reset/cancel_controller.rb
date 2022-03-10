@@ -26,7 +26,7 @@ module AccountReset
     private
 
     def track_event(result)
-      analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h)
+      analytics.account_reset(**result.to_h)
     end
 
     def handle_valid_token

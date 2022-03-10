@@ -52,7 +52,7 @@ describe UsersController do
       stub_analytics
       properties = { request_came_from: 'no referer' }
 
-      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_DELETION, properties)
+      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
 
       delete :destroy
     end
@@ -62,16 +62,13 @@ describe UsersController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new' }
 
-      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_DELETION, properties)
+      expect(@analytics).to receive(:track_event).with('Account Deletion Requested', properties)
 
       delete :destroy
     end
 
     it 'calls ParseControllerFromReferer' do
-      parser = instance_double(ParseControllerFromReferer)
-
-      expect(ParseControllerFromReferer).to receive(:new).and_return(parser)
-      expect(parser).to receive(:call).and_return({})
+      expect_any_instance_of(ParseControllerFromReferer).to receive(:call).and_call_original
 
       delete :destroy
     end

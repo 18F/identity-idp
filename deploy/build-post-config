@@ -22,6 +22,8 @@ bundle exec rake assets:precompile
 
 bundle exec bin/copy_robots_file
 
+make analytics_events
+
 set +x
 
 echo "deploy/build-post-config finished"

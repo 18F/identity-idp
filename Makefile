@@ -10,7 +10,31 @@ PORT ?= 3000
 GZIP_COMMAND ?= gzip
 ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 
-.PHONY: brakeman check check_asset_strings docker_setup fast_setup fast_test help lint lint_country_dialing_codes lint_erb lint_optimized_assets lint_yaml lintfix normalize_yaml optimize_assets optimize_svg run run setup test update_pinpoint_supported_countries build_artifact
+.PHONY: \
+	analytics_events \
+	brakeman \
+	build_artifact \
+	check \
+	check_asset_strings \
+	docker_setup \
+	fast_setup \
+	fast_test \
+	help \
+	lint \
+	lint_analytics_events \
+	lint_country_dialing_codes \
+	lint_erb \
+	lint_optimized_assets \
+	lint_yaml \
+	lintfix \
+	normalize_yaml \
+	optimize_assets \
+	optimize_svg \
+	run \
+	run \
+	setup \
+	test \
+	update_pinpoint_supported_countries
 
 help: ## Show this help
 	@echo "--- Help ---"
@@ -35,6 +59,8 @@ lint: ## Runs all lint tests
 	make lint_erb
 	@echo "--- rubocop ---"
 	bundle exec rubocop --parallel
+	@echo "--- analytics_events ---"
+	make lint_analytics_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
@@ -158,3 +184,15 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./vendor/ruby' \
 	  --exclude='./config/application.yml' \
 	  -cf - "." | "$(GZIP_COMMAND)" > $(ARTIFACT_DESTINATION_FILE)
+
+analytics_events: public/api/_analytics-events.json ## Generates a JSON file that documents analytics events for events.log
+
+lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
+	bundle exec ruby lib/analytics_events_documenter.rb --check $<
+
+public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
+	mkdir -p public/api
+	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
+
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
+	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $@ -- $<

@@ -59,6 +59,7 @@ Vagrantfile
 /kitchen/cookbooks
 /log/*
 /postgres-data
+/public/api
 /public/system
 /public/user_flows
 /pwned_passwords/*
@@ -69,6 +70,7 @@ Vagrantfile
 /.tmp/
 /.vscode/
 /vendor/bundle
+.yardoc
 
 package-lock.json
 
