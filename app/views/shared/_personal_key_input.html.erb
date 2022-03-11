@@ -10,10 +10,11 @@
        spellcheck="false"
        type="text" />
 <% if validation_needed %>
-       <%= render 'shared/validation_message', {
-                     id: 'personal-key-validation-message',
-                     class: 'margin-bottom-2',
-                     message: t('simple_form.required.text'),
-              } %>
+  <%= render 'shared/validation_message',
+             {
+               id: 'personal-key-validation-message',
+               class: 'margin-bottom-2',
+               message: t('simple_form.required.text'),
+             } %>
 <% end %>
 <%= javascript_packs_tag_once('formatted-fields') %>
