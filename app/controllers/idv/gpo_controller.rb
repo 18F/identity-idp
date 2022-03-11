@@ -74,7 +74,9 @@ module Idv
     end
 
     def pii_to_h
-      JSON.parse(user_session[:decrypted_pii])
+      JSON.parse(
+        Pii::Cacher.new(current_user, user_session).fetch_string,
+      )
     end
 
     def resolution_success(hash)

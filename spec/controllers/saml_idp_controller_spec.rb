@@ -452,6 +452,7 @@ describe SamlIdpController do
           zipcode: '12345',
         )
       end
+      let(:pii_json) { pii.present? ? pii.to_json : nil }
       let(:this_authn_request) do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
@@ -481,7 +482,7 @@ describe SamlIdpController do
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii
+        controller.user_session[:decrypted_pii] = pii_json
       end
 
       it 'calls AttributeAsserter#build' do

@@ -15,7 +15,8 @@ module Pii
 
     def load
       session = session_accessor.load
-      Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+
+      Pii::Cacher.new(nil, session.dig('warden.user.user.session')).fetch
     end
 
     # @api private
