@@ -68,6 +68,8 @@ lint: ## Runs all lint tests
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript
+	@echo "--- yarn audit ---"
+	yarn audit
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
