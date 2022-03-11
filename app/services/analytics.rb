@@ -122,6 +122,7 @@ class Analytics
   end
 
   # rubocop:disable Layout/LineLength
+  ACCOUNT_RESET = 'Account Reset'
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   ACCOUNT_VISIT = 'Account Page Visited'
   ADD_EMAIL = 'Add Email: Email Submitted'
