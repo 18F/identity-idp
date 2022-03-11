@@ -16,6 +16,11 @@
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
           new_tab: true,
         },
+        IdentityConfig.store.in_person_proofing_enabled && {
+          url: idv_in_person_url,
+          text: t('in_person_proofing.headings.welcome'),
+          new_tab: true,
+        },
       ].compact,
     ) do %>
       <p><%= t('idv.failure.sessions.warning') %></p>
