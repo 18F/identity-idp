@@ -5,9 +5,10 @@ RSpec.describe ScriptHelper do
 
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
-      javascript_include_tag_without_preload 'application'
+      output = javascript_include_tag_without_preload 'application'
 
       expect(response.header['Link']).to be_nil
+      expect(output).to have_css('script', visible: :all)
     end
   end
 
