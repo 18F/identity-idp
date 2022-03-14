@@ -8,7 +8,8 @@ require 'active_support/core_ext/object/blank'
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
   DEFAULT_DATABASE_PATH = '.yardoc'
-  EVENT_NAME_TAG = 'identity.idp.event_name'
+  EVENT_NAME_TAG = :'identity.idp.event_name'
+  PREVIOUS_EVENT_NAME_TAG = :'identity.idp.previous_event_name'
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
@@ -104,6 +105,7 @@ class AnalyticsEventsDocumenter
 
       {
         event_name: method_object.tag(EVENT_NAME_TAG)&.text,
+        previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
         attributes: attributes,
       }

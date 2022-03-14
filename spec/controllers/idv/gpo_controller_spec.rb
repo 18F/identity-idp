@@ -70,7 +70,7 @@ describe Idv::GpoController do
       )
 
       get :index
-      expect(@analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING, {})
+      expect(@analytics).to have_logged_event('Proofing Address Result Missing', {})
     end
 
     context 'with letter already sent' do

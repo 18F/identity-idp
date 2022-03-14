@@ -187,4 +187,20 @@ module AnalyticsEvents
       }.compact,
     )
   end
+
+  # @identity.idp.event_name Proofing Address Result Missing
+  # @identity.idp.previous_event_name Proofing Address Timeout
+  # The job for address verification (PhoneFinder) did not record a result in the expected
+  # place during the expected time frane
+  def proofing_address_result_missing
+    track_event('Proofing Address Result Missing')
+  end
+
+  # @identity.idp.event_name Proofing Document Result Missing
+  # @identity.idp.previous_event_name Proofing Document Timeout
+  # The job for document authentication did not record a result in the expected
+  # place during the expected time frane
+  def proofing_document_result_missing
+    track_event('Proofing Document Result Missing')
+  end
 end
