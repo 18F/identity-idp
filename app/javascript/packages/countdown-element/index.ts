@@ -3,9 +3,7 @@ import { t } from '@18f/identity-i18n';
 export class CountdownElement extends HTMLElement {
   #pollIntervalId?: number;
 
-  static get observedAttributes() {
-    return ['data-expiration'];
-  }
+  static observedAttributes = ['data-expiration'];
 
   connectedCallback() {
     if (this.startImmediately) {
