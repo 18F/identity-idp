@@ -476,7 +476,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1_issuer).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -892,7 +892,8 @@ describe SamlIdpController do
         end
 
         it 'does not redirect after verifying attributes' do
-          IdentityLinker.new(@user, saml_settings.issuer).link_identity(
+          service_provider = build(:service_provider, issuer: saml_settings.issuer)
+          IdentityLinker.new(@user, service_provider).link_identity(
             verified_attributes: ['email'],
           )
           saml_get_auth(saml_settings)
@@ -968,7 +969,8 @@ describe SamlIdpController do
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ] },
         )
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1002,7 +1004,8 @@ describe SamlIdpController do
 
       it 'defaults to persistent' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1035,7 +1038,7 @@ describe SamlIdpController do
         ServiceProvider.
           find_by(issuer: auth_settings.issuer).
           update!(email_nameid_format_allowed: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        IdentityLinker.new(user, sp1).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1103,7 +1106,8 @@ describe SamlIdpController do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1126,14 +1130,14 @@ describe SamlIdpController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
       end
+
       it 'sends the appropriate identifier for email NameID SPs' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        ServiceProvider.
-          find_by(issuer: auth_settings.issuer).
-          update!(email_nameid_format_allowed: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(email_nameid_format_allowed: true)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1156,14 +1160,14 @@ describe SamlIdpController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
       end
+
       it 'sends the old user ID for legacy SPS' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        ServiceProvider.
-          find_by(issuer: auth_settings.issuer).
-          update!(use_legacy_name_id_behavior: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(use_legacy_name_id_behavior: true)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 

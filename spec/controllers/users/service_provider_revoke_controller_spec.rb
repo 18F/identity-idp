@@ -18,7 +18,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
   before do
     stub_sign_in(user)
 
-    @identity = IdentityLinker.new(user, service_provider.issuer).link_identity
+    @identity = IdentityLinker.new(user, service_provider).link_identity
   end
 
   describe '#show' do

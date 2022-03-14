@@ -615,10 +615,10 @@ module Features
       nonce
     end
 
-    def link_identity(user, client_id, ial = nil)
+    def link_identity(user, service_provider, ial = nil)
       IdentityLinker.new(
         user,
-        client_id,
+        service_provider,
       ).link_identity(
         ial: ial,
       )
