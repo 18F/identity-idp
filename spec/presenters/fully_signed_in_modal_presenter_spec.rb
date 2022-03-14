@@ -4,7 +4,10 @@ describe FullySignedInModalPresenter do
   include ActionView::Helpers::SanitizeHelper
 
   let(:expiration) { Time.zone.now + 1.minute + 1.second }
-  subject(:presenter) { FullySignedInModalPresenter.new(expiration) }
+  let(:view_context) { ActionController::Base.new }
+  subject(:presenter) do
+    FullySignedInModalPresenter.new(view_context: view_context, expiration: expiration)
+  end
 
   around do |ex|
     freeze_time { ex.run }
@@ -12,7 +15,7 @@ describe FullySignedInModalPresenter do
 
   describe '#message' do
     it 'returns the fully signed in message' do
-      expect(strip_tags(presenter.message(ActionController::Base.new))).to eq t(
+      expect(strip_tags(presenter.message)).to eq t(
         'notices.timeout_warning.signed_in.message_html',
         time_left_in_session: "1 minute and 1 second\n",
       )
@@ -21,7 +24,7 @@ describe FullySignedInModalPresenter do
 
   describe '#sr_message' do
     it 'returns the fully signed in message for screen readers' do
-      expect(strip_tags(presenter.sr_message(ActionController::Base.new))).to eq t(
+      expect(strip_tags(presenter.sr_message)).to eq t(
         'notices.timeout_warning.signed_in.sr_message_html',
         time_left_in_session: "1 minute and 1 second\n",
       )

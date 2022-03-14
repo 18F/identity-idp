@@ -1,11 +1,12 @@
 class PartiallySignedInModalPresenter
   include ActionView::Helpers::TranslationHelper
 
-  def initialize(expiration)
+  def initialize(view_context:, expiration:)
+    @view_context = view_context
     @expiration = expiration
   end
 
-  def message(view_context)
+  def message
     t(
       'notices.timeout_warning.partially_signed_in.message_html',
       time_left_in_session: view_context.render_to_string(
@@ -14,7 +15,7 @@ class PartiallySignedInModalPresenter
     )
   end
 
-  def sr_message(view_context)
+  def sr_message
     t(
       'notices.timeout_warning.partially_signed_in.sr_message_html',
       time_left_in_session: view_context.render_to_string(
@@ -37,5 +38,5 @@ class PartiallySignedInModalPresenter
 
   private
 
-  attr_reader :expiration
+  attr_reader :expiration, :view_context
 end

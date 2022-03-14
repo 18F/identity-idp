@@ -24,9 +24,9 @@ module SessionTimeoutWarningHelper
 
   def session_modal
     if user_fully_authenticated?
-      FullySignedInModalPresenter.new(expires_at)
+      FullySignedInModalPresenter.new(view_context: self, expiration: expires_at)
     else
-      PartiallySignedInModalPresenter.new(expires_at)
+      PartiallySignedInModalPresenter.new(view_context: self, expiration: expires_at)
     end
   end
 end
