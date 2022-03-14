@@ -201,7 +201,6 @@ module AnalyticsEvents
     track_event('Profile: Created new personal key')
   end
 
-  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
   # @identity.idp.event_name Profile: Created new personal key notifications
   # @param [true] success this event always succeeds
   # @param [Integer] emails number of email addresses the notification was sent to
