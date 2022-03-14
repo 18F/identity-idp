@@ -39,7 +39,9 @@ module.exports = function (api) {
           useBuiltIns: 'usage',
           corejs: 3,
           modules: false,
-          exclude: ['transform-typeof-symbol', 'web.url', 'es.promise'],
+          // Exclude polyfills for features known to be provided by @18f/identity-polyfill package.
+          // See: https://github.com/babel/babel-polyfills/blob/main/packages/babel-plugin-polyfill-corejs3/src/built-in-definitions.js
+          exclude: ['web.url', 'web.url-search-params', 'es.promise'],
         },
       ],
     ].filter(Boolean),
