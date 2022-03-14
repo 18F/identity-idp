@@ -6,9 +6,9 @@
        pattern="^<%= PersonalKeyFormatter.regexp_string %>$"
        required=""
        aria-invalid="false"
-       aria-describedby="personal-key-validation-message"
        spellcheck="false"
-       type="text" />
+       type="text"
+       aria-describedby="<%= 'personal-key-validation-message' if validation_needed %>" />
 <% if validation_needed %>
   <%= render 'shared/validation_message',
              {
