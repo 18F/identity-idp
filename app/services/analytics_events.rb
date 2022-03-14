@@ -188,6 +188,18 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Profile: Visited new personal key
+  # User has visited the page that lets them confirm if they want a new personal key
+  def profile_personal_key_visit
+    track_event('Profile: Visited new personal key')
+  end
+
+  # @identity.idp.event_name Profile: Created new personal key
+  # User has chosen to receive a new personal key
+  def profile_personal_key_create
+    track_event('Profile: Created new personal key')
+  end
+
   # @identity.idp.event_name Proofing Address Result Missing
   # @identity.idp.previous_event_name Proofing Address Timeout
   # The job for address verification (PhoneFinder) did not record a result in the expected

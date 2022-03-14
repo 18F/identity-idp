@@ -6,12 +6,12 @@ module Accounts
     before_action :confirm_two_factor_authenticated
 
     def new
-      analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_VISIT)
+      analytics.profile_personal_key_visit
     end
 
     def create
       user_session[:personal_key] = create_new_code
-      analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
+      analytics.profile_personal_key_create
       create_user_event(:new_personal_key)
       result = send_new_personal_key_notifications
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS, result.to_h)
