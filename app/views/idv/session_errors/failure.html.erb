@@ -19,7 +19,7 @@
         IdentityConfig.store.in_person_proofing_enabled && {
           url: idv_in_person_url,
           text: t('in_person_proofing.link'),
-          new_tab: true,
+          new_tab: false,
         },
       ].select(&:present?),
     ) do %>
