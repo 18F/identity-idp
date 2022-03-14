@@ -7,7 +7,10 @@ class BrowserCache
   # @return [Browser]
   def self.parse(user_agent)
     return Browser.new(nil) if user_agent.nil?
-    @cache.getset(user_agent) { Browser.new(user_agent.mb_chars.limit(2047).to_s) }
+
+    @cache.getset(user_agent) do
+      Browser.new(user_agent.mb_chars.limit(Browser.user_agent_size_limit - 1).to_s)
+    end
   end
 
   # Should probably only be used in tests
