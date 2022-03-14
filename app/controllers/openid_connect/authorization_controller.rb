@@ -137,7 +137,7 @@ module OpenidConnect
     def pii_requested_but_locked?
       sp_session && sp_session_ial > 1 &&
         UserDecorator.new(current_user).identity_verified? &&
-        Pii::Cacher.new(current_user, user_session).fetch.blank?
+        !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
 
     def track_events

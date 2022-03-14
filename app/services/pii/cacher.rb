@@ -29,6 +29,10 @@ module Pii
       user_session[:decrypted_pii]
     end
 
+    def exists_in_session?
+      fetch_string.present?
+    end
+
     def delete
       user_session.delete(:decrypted_pii)
     end
