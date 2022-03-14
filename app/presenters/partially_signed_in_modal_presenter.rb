@@ -9,7 +9,7 @@ class PartiallySignedInModalPresenter
   def message
     t(
       'notices.timeout_warning.partially_signed_in.message_html',
-      time_left_in_session: view_context.render_to_string(
+      time_left_in_session: view_context.render(
         CountdownComponent.new(expiration: expiration, start_immediately: false),
       ),
     )
@@ -18,7 +18,7 @@ class PartiallySignedInModalPresenter
   def sr_message
     t(
       'notices.timeout_warning.partially_signed_in.sr_message_html',
-      time_left_in_session: view_context.render_to_string(
+      time_left_in_session: view_context.render(
         CountdownComponent.new(
           expiration: expiration,
           update_interval: 30.seconds,

@@ -4,7 +4,8 @@ describe FullySignedInModalPresenter do
   include ActionView::Helpers::SanitizeHelper
 
   let(:expiration) { Time.zone.now + 1.minute + 1.second }
-  let(:view_context) { ActionController::Base.new }
+  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
+  let(:view_context) { ActionView::Base.new(lookup_context, {}, nil) }
   subject(:presenter) do
     FullySignedInModalPresenter.new(view_context: view_context, expiration: expiration)
   end
