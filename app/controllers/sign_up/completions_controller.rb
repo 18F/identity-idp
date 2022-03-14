@@ -82,7 +82,7 @@ module SignUp
 
     def pii
       pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
-      JSON.parse(pii_string || '{}').symbolize_keys
+      JSON.parse(pii_string || '{}', symbolize_names: true)
     end
   end
 end
