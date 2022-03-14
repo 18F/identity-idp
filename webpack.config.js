@@ -61,7 +61,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: 'all' },
+    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({

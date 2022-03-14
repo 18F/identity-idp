@@ -22,7 +22,14 @@ module ScriptHelper
 
   def render_javascript_pack_once_tags(*names)
     javascript_packs_tag_once(*names) if names.present?
-    javascript_include_tag(*AssetSources.get_sources(*@scripts)) if @scripts
+    if @scripts.present?
+      safe_join(
+        [
+          javascript_include_tag(*AssetSources.get_sources('polyfill'), nomodule: ''),
+          javascript_include_tag(*AssetSources.get_sources(*@scripts)),
+        ],
+      )
+    end
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

@@ -39,7 +39,7 @@ module.exports = function (api) {
           useBuiltIns: 'usage',
           corejs: 3,
           modules: false,
-          exclude: ['transform-typeof-symbol'],
+          exclude: ['transform-typeof-symbol', 'web.url', 'es.promise'],
         },
       ],
     ].filter(Boolean),

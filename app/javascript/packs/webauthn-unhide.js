@@ -1,7 +1,6 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isWebAuthnEnabled } from '../app/webauthn';
 
-export async function unhideWebauthn() {
+(async () => {
   Object.entries({
     select_webauthn: isWebAuthnEnabled(),
     select_webauthn_platform: await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable(),
@@ -20,8 +19,4 @@ export async function unhideWebauthn() {
 
     checkboxes[i + 1].checked = true;
   }
-}
-
-if (process.env.NODE_ENV !== 'test') {
-  loadPolyfills(['classlist']).then(unhideWebauthn);
-}
+})();

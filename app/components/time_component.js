@@ -1,5 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
+import { TimeElement } from '@18f/identity-time-element';
 
-loadPolyfills(['custom-elements'])
-  .then(() => import('@18f/identity-time-element'))
-  .then(({ TimeElement }) => customElements.define('lg-time', TimeElement));
+customElements.define('lg-time', TimeElement);

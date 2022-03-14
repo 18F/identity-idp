@@ -1,14 +1,11 @@
+import 'clipboard-polyfill/overwrite-globals'; // See: https://github.com/jsdom/jsdom/issues/1568
 import sinon from 'sinon';
 import { getByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { ClipboardButton } from './index.js';
 
 describe('ClipboardButton', () => {
-  before(async () => {
-    // Necessary until: https://github.com/jsdom/jsdom/issues/1568
-    await loadPolyfills(['clipboard']);
-
+  before(() => {
     if (!customElements.get('lg-clipboard-button')) {
       customElements.define('lg-clipboard-button', ClipboardButton);
     }
