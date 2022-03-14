@@ -19,13 +19,12 @@ module Idv
       resolution_successful
     ].freeze
 
-    attr_reader :current_user, :gpo_otp, :service_provider, :issuer
+    attr_reader :current_user, :gpo_otp, :service_provider
 
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
       @service_provider = service_provider
-      @issuer = service_provider&.issuer
       set_idv_session
     end
 
