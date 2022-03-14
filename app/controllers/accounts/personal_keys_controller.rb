@@ -14,7 +14,7 @@ module Accounts
       analytics.profile_personal_key_create
       create_user_event(:new_personal_key)
       result = send_new_personal_key_notifications
-      analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS, result.to_h)
+      analytics.profile_personal_key_create_notifications(**result.to_h)
 
       flash[:info] = t('account.personal_key.old_key_will_not_work')
       redirect_to manage_personal_key_url

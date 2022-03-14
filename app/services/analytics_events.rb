@@ -195,9 +195,28 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name Profile: Created new personal key
+  # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
     track_event('Profile: Created new personal key')
+  end
+
+  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
+  # @identity.idp.event_name Profile: Created new personal key notifications
+  # @param [true] success this event always succeeds
+  # @param [Integer] emails number of email addresses the notification was sent to
+  # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
+  # was notified
+  # User has chosen to receive a new personal key, contains stats about notifications that
+  # were sent to phone numbers and email addresses for the user
+  def profile_personal_key_create_notifications(success:, emails:, sms_message_ids:, **extra)
+    track_event(
+      'Profile: Created new personal key notifications',
+      success: success,
+      emails: emails,
+      sms_message_ids: sms_message_ids,
+      **extra,
+    )
   end
 
   # @identity.idp.event_name Proofing Address Result Missing
