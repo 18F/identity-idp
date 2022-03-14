@@ -81,7 +81,8 @@ module SignUp
     end
 
     def pii
-      JSON.parse(user_session.fetch('decrypted_pii', '{}')).symbolize_keys
+      pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
+      JSON.parse(pii_string || '{}', symbolize_names: true)
     end
   end
 end

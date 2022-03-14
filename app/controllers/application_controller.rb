@@ -193,7 +193,7 @@ class ApplicationController < ActionController::Base
 
     flash[:info] = t('account.personal_key.needs_new')
 
-    pii_unlocked = user_session[:decrypted_pii].present?
+    pii_unlocked = Pii::Cacher.new(current_user, user_session).exists_in_session?
 
     if pii_unlocked
       cacher = Pii::Cacher.new(current_user, user_session)
