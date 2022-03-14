@@ -1,9 +1,9 @@
 import sinon from 'sinon';
 import { i18n } from '@18f/identity-i18n';
 import { usePropertyValue } from '@18f/identity-test-helpers';
-import { CountdownElement, CountdownElementDataset } from './index';
+import { CountdownElement } from './index';
 
-const DEFAULT_DATASET: CountdownElementDataset = {
+const DEFAULT_DATASET = {
   updateInterval: '1000',
   startImmediately: 'true',
   expiration: new Date().toISOString(),
@@ -30,7 +30,7 @@ describe('CountdownElement', () => {
     clock.restore();
   });
 
-  function createElement(dataset: Partial<CountdownElementDataset> = {}) {
+  function createElement(dataset = {}) {
     const element = document.createElement('lg-countdown') as CountdownElement;
     Object.assign(element.dataset, DEFAULT_DATASET, dataset);
     document.body.appendChild(element);
