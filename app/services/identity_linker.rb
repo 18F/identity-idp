@@ -1,14 +1,14 @@
 class IdentityLinker
-  attr_reader :user, :provider
+  attr_reader :user, :issuer
 
-  def initialize(user, provider)
+  def initialize(user, issuer)
     @user = user
-    @provider = provider
+    @issuer = issuer
     @ial = nil
   end
 
   def link_identity(**extra_attrs)
-    return unless user && provider.present?
+    return unless user && issuer.present?
     process_ial(extra_attrs)
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
@@ -46,11 +46,11 @@ class IdentityLinker
     identity_record = identity_relation.first
     return identity_record if identity_record
     Db::SpCost::AddSpCost.call(service_provider, @ial, :user_added)
-    user.identities.create(service_provider: provider)
+    user.identities.create(service_provider: issuer)
   end
 
   def identity_relation
-    user.identities.where(service_provider: provider)
+    user.identities.where(service_provider: issuer)
   end
 
   def merged_attributes(extra_attrs)
@@ -94,7 +94,7 @@ class IdentityLinker
   end
 
   def service_provider
-    return if provider.blank?
-    @service_provider ||= ServiceProvider.find_by(issuer: provider)
+    return if issuer.blank?
+    @service_provider ||= ServiceProvider.find_by(issuer: issuer)
   end
 end
