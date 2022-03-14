@@ -17,7 +17,7 @@ describe PartiallySignedInModalPresenter do
     it 'returns the partially signed in message' do
       expect(strip_tags(presenter.message)).to eq t(
         'notices.timeout_warning.partially_signed_in.message_html',
-        time_left_in_session: "1 minute and 1 second\n",
+        time_left_in_session: '1 minute and 1 second',
       )
     end
   end
@@ -26,7 +26,7 @@ describe PartiallySignedInModalPresenter do
     it 'returns the partially signed in message for screen readers' do
       expect(strip_tags(presenter.sr_message)).to eq t(
         'notices.timeout_warning.partially_signed_in.sr_message_html',
-        time_left_in_session: "1 minute and 1 second\n",
+        time_left_in_session: '1 minute and 1 second',
       )
     end
   end

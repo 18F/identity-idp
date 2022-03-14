@@ -15,6 +15,19 @@ class CountdownComponent < BaseComponent
     @tag_options = tag_options
   end
 
+  def call
+    content_tag(
+      :'lg-countdown',
+      time_remaining,
+      **tag_options,
+      data: {
+        expiration: expiration.iso8601,
+        update_interval: update_interval_in_ms,
+        start_immediately: start_immediately,
+      }.merge(tag_options[:data].to_h),
+    )
+  end
+
   def update_interval_in_ms
     update_interval.in_seconds * MILLISECONDS_PER_SECOND
   end
