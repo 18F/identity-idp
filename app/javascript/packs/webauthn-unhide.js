@@ -1,6 +1,6 @@
 import { isWebAuthnEnabled } from '../app/webauthn';
 
-(async () => {
+export async function unhideWebauthn() {
   Object.entries({
     select_webauthn: isWebAuthnEnabled(),
     select_webauthn_platform: await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable(),
@@ -19,4 +19,8 @@ import { isWebAuthnEnabled } from '../app/webauthn';
 
     checkboxes[i + 1].checked = true;
   }
-})();
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  unhideWebauthn();
+}
