@@ -132,11 +132,12 @@ describe Idv::GpoController do
     allow(pii_cacher).to receive(:fetch).and_return(pii)
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
-    session[:sp] = { issuer: '123abc' }
+    service_provider = create(:service_provider, issuer: '123abc')
+    session[:sp] = { issuer: service_provider.issuer }
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
     allow(GpoConfirmationMaker).to receive(:new).
-      with(pii: pii, issuer: '123abc', profile: pending_profile).
+      with(pii: pii, service_provider: service_provider, profile: pending_profile).
       and_return(gpo_confirmation_maker)
 
     expect(gpo_confirmation_maker).to receive(:perform)

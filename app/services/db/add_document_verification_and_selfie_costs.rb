@@ -1,7 +1,7 @@
 module Db
   class AddDocumentVerificationAndSelfieCosts
-    def initialize(user_id:, issuer:, liveness_checking_enabled:)
-      @issuer = issuer
+    def initialize(user_id:, service_provider:, liveness_checking_enabled:)
+      @service_provider = service_provider
       @liveness_checking_enabled = liveness_checking_enabled
       @user_id = user_id
     end
@@ -15,10 +15,10 @@ module Db
 
     private
 
-    attr_reader :issuer, :liveness_checking_enabled, :user_id
+    attr_reader :service_provider, :liveness_checking_enabled, :user_id
 
     def add_cost(token)
-      Db::SpCost::AddSpCost.call(issuer, 2, token)
+      Db::SpCost::AddSpCost.call(service_provider, 2, token)
       Db::ProofingCost::AddUserProofingCost.call(user_id, token)
     end
   end

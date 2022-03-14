@@ -20,22 +20,20 @@ module Db
         voice
       ].freeze
 
-      def self.call(issuer, ial, token, transaction_id: nil, user_id: nil)
+      def self.call(service_provider, ial, token, transaction_id: nil, user: nil)
         return if token.blank?
         unless TOKEN_ALLOWLIST.include?(token.to_sym)
           NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
-        service_provider = issuer.present? ? ServiceProvider.find_by(issuer: issuer) : nil
         agency_id = service_provider&.agency_id || 0
-        current_user = User.find_by(id: user_id)
         ial_context = IalContext.new(
           ial: ial,
           service_provider: service_provider,
-          user: current_user,
+          user: user,
         )
         ::SpCost.create(
-          issuer: issuer.to_s,
+          issuer: service_provider&.issuer.to_s,
           ial: ial_context.bill_for_ial_1_or_2,
           agency_id: agency_id,
           cost_type: token,

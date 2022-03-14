@@ -120,7 +120,7 @@ module Idv
     def confirmation_maker_perform
       confirmation_maker = GpoConfirmationMaker.new(
         pii: Pii::Cacher.new(current_user, user_session).fetch,
-        issuer: sp_session[:issuer],
+        service_provider: current_sp,
         profile: current_user.pending_profile,
       )
       confirmation_maker.perform
@@ -243,7 +243,7 @@ module Idv
 
     def async_state_done_analytics(result)
       analytics.track_event(Analytics::IDV_GPO_ADDRESS_SUBMITTED, result.to_h)
-      Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, 2, :lexis_nexis_resolution)
+      Db::SpCost::AddSpCost.call(current_sp, 2, :lexis_nexis_resolution)
       Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
     end
 

@@ -110,15 +110,14 @@ module Idv
       end
 
       def add_cost(token, transaction_id: nil)
-        issuer = sp_session[:issuer].to_s
-        Db::SpCost::AddSpCost.call(issuer, 2, token, transaction_id: transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def add_costs(result)
         Db::AddDocumentVerificationAndSelfieCosts.
           new(user_id: user_id,
-              issuer: sp_session[:issuer].to_s,
+              service_provider: current_sp,
               liveness_checking_enabled: liveness_checking_enabled?).
           call(result)
       end

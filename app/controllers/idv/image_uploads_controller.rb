@@ -21,7 +21,7 @@ module Idv
       @image_upload_form ||= Idv::ApiImageUploadForm.new(
         params,
         liveness_checking_enabled: liveness_checking_enabled?,
-        issuer: sp_session[:issuer].to_s,
+        service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
       )

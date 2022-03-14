@@ -28,7 +28,7 @@ describe Idv::ReviewController do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
-      issuer: nil,
+      service_provider: nil,
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true

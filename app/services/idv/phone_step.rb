@@ -74,7 +74,7 @@ module Idv
     end
 
     def uuid_prefix
-      ServiceProvider.find_by(issuer: idv_session.issuer)&.app_id
+      idv_session.service_provider&.app_id
     end
 
     def normalized_phone
@@ -143,7 +143,7 @@ module Idv
       Idv::Agent.new(applicant).proof_address(
         document_capture_session,
         trace_id: trace_id,
-        issuer: idv_session.issuer,
+        issuer: idv_session.service_provider&.issuer,
         user_id: idv_session.current_user.id,
       )
     end

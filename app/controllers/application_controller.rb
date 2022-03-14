@@ -106,6 +106,10 @@ class ApplicationController < ActionController::Base
     user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
   end
 
+  def current_sp
+    @current_sp ||= sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
+  end
+
   private
 
   # These attributes show up in New Relic traces for all requests.
@@ -153,10 +157,6 @@ class ApplicationController < ActionController::Base
 
   def permitted_timeout_params
     params.permit(:request_id)
-  end
-
-  def current_sp
-    @current_sp ||= sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
   end
 
   def sp_from_sp_session
@@ -422,11 +422,11 @@ class ApplicationController < ActionController::Base
 
   def add_sp_cost(token)
     Db::SpCost::AddSpCost.call(
-      sp_session[:issuer].to_s,
+      current_sp,
       sp_session_ial,
       token,
       transaction_id: nil,
-      user_id: current_user.id,
+      user: current_user,
     )
   end
 
