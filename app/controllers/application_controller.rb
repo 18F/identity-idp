@@ -441,7 +441,7 @@ class ApplicationController < ActionController::Base
 
   def handle_banned_user
     return unless user_is_banned?
-    analytics.track_event(Analytics::BANNED_USER_REDIRECT)
+    analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
   end

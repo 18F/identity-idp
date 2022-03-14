@@ -28,7 +28,7 @@ describe Users::AuthorizationConfirmationController do
       get :new
 
       expect(response).to render_template(:new)
-      expect(@analytics).to have_received(:track_event).with(Analytics::AUTHENTICATION_CONFIRMATION)
+      expect(@analytics).to have_received(:track_event).with('Authentication Confirmation')
     end
   end
 
@@ -38,7 +38,7 @@ describe Users::AuthorizationConfirmationController do
 
       expect(response).to redirect_to(sp_request_url)
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE,
+        'Authentication Confirmation: Continue selected',
       )
     end
   end
@@ -51,7 +51,7 @@ describe Users::AuthorizationConfirmationController do
 
       expect(response).to redirect_to(new_user_session_url(request_id: sp_request_id))
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::AUTHENTICATION_CONFIRMATION_RESET,
+        'Authentication Confirmation: Reset selected',
       )
     end
   end

@@ -9,18 +9,18 @@ module Users
     before_action :apply_secure_headers_override, only: [:new]
 
     def new
-      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
+      analytics.authentication_confirmation
       @sp = ServiceProvider.find_by(issuer: sp_session[:issuer])
       @email = EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
     def create
-      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_CONTINUE)
+      analytics.authentication_confirmation_continue
       redirect_to sp_session_request_url_with_updated_params
     end
 
     def destroy
-      analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION_RESET)
+      analytics.authentication_confirmation_reset
       sign_out :user
       redirect_to new_user_session_url(request_id: sp_session[:request_id])
     end

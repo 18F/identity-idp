@@ -210,7 +210,6 @@ module Idv
         document_capture_session,
         should_proof_state_id: false,
         trace_id: amzn_trace_id,
-        document_expired: idv_session.document_expired,
       )
     end
 

@@ -1,15 +1,15 @@
 <div id='session-timeout-msg' class='display-none' tabindex='-1'>
-  <%= render layout: 'shared/modal_layout' do |label_id, description_id| %>
+  <%= render layout: 'shared/modal_layout', locals: { role: 'alertdialog' } do |label_id, description_id| %>
     <div class='padding-4 tablet:padding-6 cntnr-xxskinny bg-white rounded-xxl modal-timeout'>
       <h2 class='margin-y-2 fs-20p text-normal text-center' id='<%= label_id %>'>
         <%= t('headings.session_timeout_warning') %>
       </h2>
       <hr class='margin-bottom-4 border-width-05' />
       <div class='margin-bottom-6'>
-        <p id='<%= description_id %>'>
+        <p>
           <%= modal.message %>
         </p>
-        <p class="usa-sr-only" role="timer" aria-live="polite" aria-atomic="true">
+        <p class="usa-sr-only" id='<%= description_id %>' role="timer" aria-live="polite" aria-atomic="true">
           <%= modal.sr_message %>
         </p>
       </div>

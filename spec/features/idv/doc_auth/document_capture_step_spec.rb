@@ -350,78 +350,6 @@ feature 'doc auth document capture step' do
     end
   end
 
-  context 'when the only error is an expired drivers license' do
-    before do
-      allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).
-        and_return(proofing_allow_expired_license)
-      allow(IdentityConfig.store).to receive(:proofing_expired_license_after).
-        and_return(Date.new(2020, 3, 1))
-
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_images,
-        response: DocAuth::Response.new(
-          pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
-            state_id_expiration: '2020-04-01',
-          ),
-          success: false,
-          errors: {
-            id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
-          },
-        ),
-      )
-    end
-
-    context 'when expired licenses are not allowed' do
-      let(:proofing_allow_expired_license) { false }
-
-      it 'shows an error and does not go to the next page' do
-        attach_and_submit_images
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-
-        expect(fake_analytics).to have_logged_event(
-          'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
-          document_expired: true,
-          would_have_passed: true,
-        )
-      end
-    end
-
-    context 'when expired licenses are allowed' do
-      let(:proofing_allow_expired_license) { true }
-
-      it 'proceeds to the next page and saves reproof_at to the profile' do
-        attach_and_submit_images
-        expect(page).to have_current_path(next_step)
-
-        expect(fake_analytics).to have_logged_event(
-          'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
-          document_expired: true,
-        )
-
-        # finish the rest of the flow so we can make sure the data is plumbed through
-        fill_out_ssn_form_ok
-        click_idv_continue
-
-        expect(page).to have_content(t('doc_auth.headings.verify'))
-        click_idv_continue
-
-        fill_out_phone_form_mfa_phone(user)
-        click_idv_continue
-
-        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
-        click_idv_continue
-
-        acknowledge_and_confirm_personal_key(js: false)
-
-        profile = user.active_profile
-        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
-      end
-    end
-  end
-
   context 'when using async uploads', :js do
     before do
       allow(DocumentProofingJob).to receive(:perform_later).
@@ -485,55 +413,6 @@ feature 'doc auth document capture step' do
           data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key,
         )
         expect(back_plain.b).to eq(original.b)
-      end
-    end
-
-    context 'when expired licenses are allowed' do
-      before do
-        allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
-
-        DocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_images,
-          response: DocAuth::Response.new(
-            success: false,
-            pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
-              state_id_expiration: '2020-04-01',
-            ),
-            errors: {
-              id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
-            },
-          ),
-        )
-      end
-
-      it 'proceeds to the next page and saves reproof_at to the profile' do
-        attach_file 'Front of your ID', 'app/assets/images/logo.png'
-        attach_file 'Back of your ID', 'app/assets/images/logo.png'
-
-        form = page.find('#document-capture-form')
-        front_url = form['data-front-image-upload-url']
-        back_url = form['data-back-image-upload-url']
-        click_on 'Submit'
-
-        expect(page).to have_current_path(next_step, wait: 20)
-
-        # finish the rest of the flow so we can make sure the data is plumbed through
-        fill_out_ssn_form_ok
-        click_idv_continue
-
-        expect(page).to have_content(t('doc_auth.headings.verify'))
-        click_idv_continue
-
-        fill_out_phone_form_mfa_phone(user)
-        click_idv_continue
-
-        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
-        click_idv_continue
-
-        acknowledge_and_confirm_personal_key(js: true)
-
-        profile = user.active_profile
-        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end

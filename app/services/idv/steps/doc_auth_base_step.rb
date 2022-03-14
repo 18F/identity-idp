@@ -65,13 +65,6 @@ module Idv
           phone: effective_user.phone_configurations.take&.phone,
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
-        if response.respond_to?(:extra)
-          # Sync flow: DocAuth::Response
-          flow_session[:document_expired] = response.extra&.dig(:document_expired)
-        elsif response.respond_to?(:result)
-          # Async flow: DocumentCaptureSessionAsyncResult
-          flow_session[:document_expired] = response.result&.dig(:document_expired)
-        end
         track_document_state
       end
 
@@ -163,14 +156,6 @@ module Idv
 
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
-      end
-
-      def cac_verify_document_capture_session_uuid_key
-        :cac_verify_step_document_capture_session_uuid
-      end
-
-      def recover_verify_document_capture_session_uuid_key
-        :idv_recover_verify_step_document_capture_session_uuid
       end
 
       def verify_document_capture_session_uuid_key

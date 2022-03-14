@@ -5,7 +5,7 @@ class AccountsController < ApplicationController
   layout 'account_side_nav'
 
   def show
-    analytics.track_event(Analytics::ACCOUNT_VISIT)
+    analytics.account_visit
     session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @presenter = AccountShowPresenter.new(

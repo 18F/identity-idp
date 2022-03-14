@@ -16,7 +16,7 @@ module Idv
 
     def create
       result = otp_delivery_selection_form.submit(otp_delivery_selection_params)
-      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result.to_h)
+      analytics.idv_phone_otp_delivery_selection_submitted(**result.to_h)
       return render_new_with_error_message unless result.success?
       send_phone_confirmation_otp_and_handle_result
     end

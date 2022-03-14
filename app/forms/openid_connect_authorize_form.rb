@@ -199,10 +199,6 @@ class OpenidConnectAuthorizeForm
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
   end
 
-  def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max]
-  end
-
   def extra_analytics_attributes
     {
       client_id: client_id,

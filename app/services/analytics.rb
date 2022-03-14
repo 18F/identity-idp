@@ -122,16 +122,12 @@ class Analytics
   end
 
   # rubocop:disable Layout/LineLength
+  ACCOUNT_RESET = 'Account Reset'
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  ACCOUNT_VISIT = 'Account Page Visited'
   ADD_EMAIL = 'Add Email: Email Submitted'
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'
-  AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'
-  AUTHENTICATION_CONFIRMATION_CONTINUE = 'Authentication Confirmation: Continue selected'
-  AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'
-  BANNED_USER_REDIRECT = 'Banned User redirected'
   BANNED_USER_VISITED = 'Banned User visited'
   BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
@@ -178,11 +174,6 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'
   IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'
-  IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'
-  IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'
-  IDV_PHONE_ERROR_VISITED = 'IdV: phone error visited'
-  IDV_PHONE_ERROR_SUBMITTED = 'IdV: phone error submitted'
-  IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'
   IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'
