@@ -1,26 +1,7 @@
 import { t } from '@18f/identity-i18n';
 
-export interface CountdownElementDataset {
-  /**
-   * ISO8601-formatted date string for countdown expiration time.
-   */
-  expiration: string;
-
-  /**
-   * Interval at which text is updated, in milliseconds.
-   */
-  updateInterval: string;
-
-  /**
-   * Whether to start the countdown as soon as the element is connected.
-   */
-  startImmediately: 'true' | 'false';
-}
-
 export class CountdownElement extends HTMLElement {
   #pollIntervalId?: number;
-
-  dataset: CountdownElementDataset & DOMStringMap;
 
   static get observedAttributes() {
     return ['data-expiration'];
@@ -43,7 +24,7 @@ export class CountdownElement extends HTMLElement {
   }
 
   get expiration(): Date {
-    return new Date(this.dataset.expiration);
+    return new Date(this.getAttribute('data-expiration')!);
   }
 
   set expiration(expiration: Date) {
@@ -55,11 +36,11 @@ export class CountdownElement extends HTMLElement {
   }
 
   get updateInterval(): number {
-    return Number(this.dataset.updateInterval);
+    return Number(this.getAttribute('data-update-interval'));
   }
 
   get startImmediately(): boolean {
-    return this.dataset.startImmediately === 'true';
+    return this.getAttribute('data-start-immediately') === 'true';
   }
 
   start(): void {
