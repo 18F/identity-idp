@@ -4,13 +4,14 @@ describe 'user_mailer/email_confirmation_instructions.html.erb' do
   it 'mentions how long the user has to confirm' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
     assign(:resource, user)
-    assign(:confirmation_period, user.decorate.confirmation_period)
+    presenter = ConfirmationEmailPresenter.new(user, self)
+    assign(:confirmation_period, presenter.confirmation_period)
     render
 
     expect(rendered).to have_content(
       t(
         'user_mailer.email_confirmation_instructions.footer',
-        confirmation_period: user.decorate.confirmation_period,
+        confirmation_period: presenter.confirmation_period,
       ),
     )
   end

@@ -38,12 +38,6 @@ module Idv
       @user.phone_configurations.many?
     end
 
-    def phone_belongs_to_user?
-      @user.phone_configurations.any? do |configuration|
-        configuration.phone == phone
-      end
-    end
-
     private
 
     attr_writer :phone
