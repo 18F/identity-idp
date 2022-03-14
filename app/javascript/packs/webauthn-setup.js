@@ -15,42 +15,49 @@ export function reloadWithError(error, { force = false } = {}) {
   }
 }
 
-if (!isWebAuthnEnabled()) {
-  reloadWithError('NotSupportedError');
-}
-const continueButton = document.getElementById('continue-button');
-continueButton.addEventListener('click', () => {
-  document.getElementById('spinner').classList.remove('hidden');
-  document.getElementById('continue-button').className = 'hidden';
+function webauthn() {
+  if (!isWebAuthnEnabled()) {
+    reloadWithError('NotSupportedError');
+  }
+  const continueButton = document.getElementById('continue-button');
+  continueButton.addEventListener('click', () => {
+    document.getElementById('spinner').classList.remove('hidden');
+    document.getElementById('continue-button').className = 'hidden';
 
-  const platformAuthenticator = document.getElementById('platform_authenticator').value === 'true';
+    const platformAuthenticator =
+      document.getElementById('platform_authenticator').value === 'true';
 
-  enrollWebauthnDevice({
-    userId: document.getElementById('user_id').value,
-    userEmail: document.getElementById('user_email').value,
-    userChallenge: document.getElementById('user_challenge').value,
-    excludeCredentials: document.getElementById('exclude_credentials').value,
-    platformAuthenticator,
-  })
-    .then((result) => {
-      document.getElementById('webauthn_id').value = result.webauthnId;
-      document.getElementById('webauthn_public_key').value = result.webauthnPublicKey;
-      document.getElementById('attestation_object').value = result.attestationObject;
-      document.getElementById('client_data_json').value = result.clientDataJSON;
-      document.getElementById('webauthn_form').submit();
+    enrollWebauthnDevice({
+      userId: document.getElementById('user_id').value,
+      userEmail: document.getElementById('user_email').value,
+      userChallenge: document.getElementById('user_challenge').value,
+      excludeCredentials: document.getElementById('exclude_credentials').value,
+      platformAuthenticator,
     })
-    .catch((err) => reloadWithError(err.name, { force: true }));
-});
-const input = document.getElementById('nickname');
-input.addEventListener('keypress', function (event) {
-  if (event.keyCode === 13) {
-    // prevent form submit
+      .then((result) => {
+        document.getElementById('webauthn_id').value = result.webauthnId;
+        document.getElementById('webauthn_public_key').value = result.webauthnPublicKey;
+        document.getElementById('attestation_object').value = result.attestationObject;
+        document.getElementById('client_data_json').value = result.clientDataJSON;
+        document.getElementById('webauthn_form').submit();
+      })
+      .catch((err) => reloadWithError(err.name, { force: true }));
+  });
+  const input = document.getElementById('nickname');
+  input.addEventListener('keypress', function (event) {
+    if (event.keyCode === 13) {
+      // prevent form submit
+      event.preventDefault();
+    }
+  });
+  input.addEventListener('keyup', function (event) {
     event.preventDefault();
-  }
-});
-input.addEventListener('keyup', function (event) {
-  event.preventDefault();
-  if (event.keyCode === 13 && input.value) {
-    continueButton.click();
-  }
-});
+    if (event.keyCode === 13 && input.value) {
+      continueButton.click();
+    }
+  });
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  webauthn();
+}
