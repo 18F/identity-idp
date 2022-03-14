@@ -22,11 +22,11 @@ module ScriptHelper
 
   def render_javascript_pack_once_tags(*names)
     javascript_packs_tag_once(*names) if names.present?
-    if @scripts.present?
+    if @scripts && (sources = AssetSources.get_sources(*@scripts)).present?
       safe_join(
         [
           javascript_include_tag(*AssetSources.get_sources('polyfill'), nomodule: ''),
-          javascript_include_tag(*AssetSources.get_sources(*@scripts)),
+          javascript_include_tag(*sources),
         ],
       )
     end
