@@ -21,8 +21,9 @@ class AddressProofingJob < ApplicationJob
       address_proofer.proof(applicant_pii)
     end
 
+    service_provider = ServiceProvider.find_by(issuer: issuer)
     Db::SpCost::AddSpCost.call(
-      issuer, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
+      service_provider, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
     )
     Db::ProofingCost::AddUserProofingCost.call(user_id, :lexis_nexis_address)
 

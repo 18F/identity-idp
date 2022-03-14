@@ -9,7 +9,7 @@ describe Idv::PersonalKeyController do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
-      issuer: nil,
+      service_provider: nil,
     )
     idv_session.applicant = applicant
     idv_session.resolution_successful = true

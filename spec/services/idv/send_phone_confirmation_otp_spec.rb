@@ -12,7 +12,9 @@ describe Idv::SendPhoneConfirmationOtp do
       delivery_method: delivery_preference,
     )
   end
-  let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: '') }
+  let(:idv_session) {
+    Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
+  }
 
   let(:user) { create(:user, :signed_up) }
 

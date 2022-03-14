@@ -36,7 +36,7 @@ module IdvSession
     @idv_session ||= Idv::Session.new(
       user_session: user_session,
       current_user: effective_user,
-      issuer: sp_session[:issuer],
+      service_provider: current_sp,
     )
   end
 

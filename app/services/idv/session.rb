@@ -19,12 +19,13 @@ module Idv
       resolution_successful
     ].freeze
 
-    attr_reader :current_user, :gpo_otp, :issuer
+    attr_reader :current_user, :gpo_otp, :service_provider, :issuer
 
-    def initialize(user_session:, current_user:, issuer:)
+    def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
-      @issuer = issuer
+      @service_provider = service_provider
+      @issuer = service_provider&.issuer
       set_idv_session
     end
 
@@ -89,7 +90,10 @@ module Idv
     def create_gpo_entry
       move_pii_to_user_session
       self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
-      confirmation_maker = GpoConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
+      confirmation_maker = GpoConfirmationMaker.new(
+        pii: pii, service_provider: service_provider,
+        profile: profile
+      )
       confirmation_maker.perform
 
       @gpo_otp = confirmation_maker.otp

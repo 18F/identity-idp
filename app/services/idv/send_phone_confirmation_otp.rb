@@ -73,7 +73,7 @@ module Idv
 
     def add_cost
       Db::ProofingCost::AddUserProofingCost.call(user.id, :phone_otp)
-      Db::SpCost::AddSpCost.call(idv_session.issuer, 2, :phone_otp)
+      Db::SpCost::AddSpCost.call(idv_session.service_provider, 2, :phone_otp)
     end
 
     def extra_analytics_attributes

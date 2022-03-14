@@ -15,7 +15,7 @@ describe Idv::PhoneStep do
     idvs = Idv::Session.new(
       user_session: {},
       current_user: user,
-      issuer: service_provider.issuer,
+      service_provider: service_provider,
     )
     idvs.applicant = { first_name: 'Some' }
     idvs

@@ -45,7 +45,7 @@ class IdentityLinker
   def find_or_create_identity_with_costing
     identity_record = identity_relation.first
     return identity_record if identity_record
-    Db::SpCost::AddSpCost.call(provider, @ial, :user_added)
+    Db::SpCost::AddSpCost.call(service_provider, @ial, :user_added)
     user.identities.create(service_provider: provider)
   end
 
@@ -91,5 +91,10 @@ class IdentityLinker
   def merge_attributes(verified_attributes)
     verified_attributes = verified_attributes.to_a.map(&:to_s)
     (identity.verified_attributes.to_a + verified_attributes).uniq.sort
+  end
+
+  def service_provider
+    return if provider.blank?
+    @service_provider ||= ServiceProvider.find_by(issuer: provider)
   end
 end
