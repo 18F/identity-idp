@@ -77,7 +77,12 @@ class AnalyticsEventsDocumenter
       errors << "#{error_prefix} missing @#{EVENT_NAME_TAG}" if !method_object.tag(EVENT_NAME_TAG)
 
       missing_attributes.each do |attribute|
+        next if attribute.start_with?('**')
         errors << "#{error_prefix} #{attribute} (undocumented)"
+      end
+
+      if param_names.size > 0 && !param_names.last.start_with?('**')
+        errors << "#{error_prefix} missing **extra"
       end
 
       errors

@@ -197,4 +197,4 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
 
 .yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
-	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $@ -- $<
+	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --no-output --db $@ -- $<

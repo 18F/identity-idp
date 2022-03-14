@@ -32,7 +32,8 @@ module AnalyticsEvents
     mfa_method_counts: nil,
     pii_like_keypaths: nil,
     error_details: nil,
-    email_addresses: nil
+    email_addresses: nil,
+    **extra
   )
     track_event(
       'Account Reset',
@@ -52,6 +53,7 @@ module AnalyticsEvents
         pii_like_keypaths: pii_like_keypaths,
         error_details: error_details,
         email_addresses: email_addresses,
+        **extra,
       }.compact,
     )
   end
@@ -59,8 +61,8 @@ module AnalyticsEvents
   # @identity.idp.event_name Account Delete submitted
   # @param [Boolean] success
   # When a user submits a form to delete their account
-  def account_delete_submitted(success:)
-    track_event('Account Delete submitted', success: success)
+  def account_delete_submitted(success:, **extra)
+    track_event('Account Delete submitted', success: success, **extra)
   end
 
   # @identity.idp.event_name Account Delete visited
@@ -72,8 +74,8 @@ module AnalyticsEvents
   # @identity.idp.event_name Account Deletion Requested
   # @param [String] request_came_from the controller/action the request came from
   # When a user deletes their account
-  def account_deletion(request_came_from:)
-    track_event('Account Deletion Requested', request_came_from: request_came_from)
+  def account_deletion(request_came_from:, **extra)
+    track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
   # @identity.idp.event_name Account deletion and reset visited
@@ -124,7 +126,8 @@ module AnalyticsEvents
     code_expired:,
     code_matches:,
     second_factor_attempts_count:,
-    second_factor_locked_at:
+    second_factor_locked_at:,
+    **extra
   )
     track_event(
       'IdV: phone confirmation otp submitted',
@@ -134,6 +137,7 @@ module AnalyticsEvents
       code_matches: code_matches,
       second_factor_attempts_count: second_factor_attempts_count,
       second_factor_locked_at: second_factor_locked_at,
+      **extra,
     )
   end
 
@@ -148,13 +152,14 @@ module AnalyticsEvents
   # @param [Time] throttle_expires_at when the throttle expires
   # @param [Integer] remaining_attempts number of attempts remaining
   # When a user gets an error during the phone finder flow of IDV
-  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil)
+  def idv_phone_error_visited(type:, throttle_expires_at: nil, remaining_attempts: nil, **extra)
     track_event(
       'IdV: phone error visited',
       {
         type: type,
         throttle_expires_at: throttle_expires_at,
         remaining_attempts: remaining_attempts,
+        **extra,
       }.compact,
     )
   end
@@ -168,7 +173,8 @@ module AnalyticsEvents
     success:,
     otp_delivery_preference:,
     errors: nil,
-    error_details: nil
+    error_details: nil,
+    **extra
   )
     track_event(
       'IdV: Phone OTP Delivery Selection Submitted',
@@ -177,6 +183,7 @@ module AnalyticsEvents
         errors: errors,
         error_details: error_details,
         otp_delivery_preference: otp_delivery_preference,
+        **extra,
       }.compact,
     )
   end
