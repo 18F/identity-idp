@@ -4,7 +4,7 @@ RSpec.describe Risc::SecurityEventsController do
   include Rails.application.routes.url_helpers
 
   let(:user) { create(:user) }
-  let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
+  let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
   let(:service_provider) { create(:service_provider) }
 
   let(:rp_private_key) do

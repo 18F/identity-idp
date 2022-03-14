@@ -51,7 +51,7 @@ RSpec.describe OpenidConnectTokenForm do
   let(:user) { create(:user) }
 
   let!(:identity) do
-    IdentityLinker.new(user, client_id).
+    IdentityLinker.new(user, service_provider).
       link_identity(
         nonce: nonce,
         rails_session_id: SecureRandom.hex,

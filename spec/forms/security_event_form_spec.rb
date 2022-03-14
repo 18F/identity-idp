@@ -13,7 +13,7 @@ RSpec.describe SecurityEventForm do
       File.read(Rails.root.join('keys', 'saml_test_sp.key')),
     )
   end
-  let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
+  let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
   let(:jti) { SecureRandom.urlsafe_base64 }
 
   let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }

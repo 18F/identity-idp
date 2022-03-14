@@ -87,9 +87,10 @@ describe 'OpenID Connect' do
 
     it 'auto-allows with a second authorization and includes redirect_uris in CSP headers' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      service_provider = build(:service_provider, issuer: client_id)
       user = user_with_2fa
 
-      IdentityLinker.new(user, client_id).link_identity
+      IdentityLinker.new(user, service_provider).link_identity
       user.identities.last.update!(verified_attributes: ['email'])
 
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
@@ -107,9 +108,10 @@ describe 'OpenID Connect' do
 
     it 'auto-allows and includes redirect_uris in CSP headers after an incorrect OTP' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      service_provider = build(:service_provider, issuer: client_id)
       user = user_with_2fa
 
-      IdentityLinker.new(user, client_id).link_identity
+      IdentityLinker.new(user, service_provider).link_identity
       user.identities.last.update!(verified_attributes: ['email'])
 
       visit_idp_from_ial1_oidc_sp(client_id: client_id, prompt: 'select_account')
@@ -292,7 +294,7 @@ describe 'OpenID Connect' do
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
-    link_identity(user, client_id)
+    link_identity(user, build(:service_provider, issuer: client_id))
 
     user.identities.last.update(
       last_consented_at: 2.years.ago,
@@ -314,7 +316,7 @@ describe 'OpenID Connect' do
   it 'prompts for consent if consent was revoked/soft deleted', driver: :mobile_rack_test do
     client_id = 'urn:gov:gsa:openidconnect:test'
     user = user_with_2fa
-    link_identity(user, client_id)
+    link_identity(user, build(:service_provider, issuer: client_id))
 
     user.identities.last.update!(
       last_consented_at: 2.years.ago,
@@ -343,7 +345,7 @@ describe 'OpenID Connect' do
       code_challenge = Digest::SHA256.base64digest(code_verifier)
       user = user_with_2fa
 
-      link_identity(user, client_id)
+      link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
 
       visit openid_connect_authorize_path(
@@ -386,7 +388,7 @@ describe 'OpenID Connect' do
     it 'returns the most recent nonce when there are multiple authorize calls' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       user = user_with_2fa
-      link_identity(user, client_id)
+      link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
 
       state1 = SecureRandom.hex
@@ -650,7 +652,7 @@ describe 'OpenID Connect' do
     code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.base64digest(code_verifier)
 
-    link_identity(user, client_id)
+    link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
 
     visit openid_connect_authorize_path(
