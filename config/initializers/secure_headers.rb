@@ -115,7 +115,7 @@ Rails.application.configure do |config|
   config.middleware.insert_before(
     SecureHeaders::Middleware,
     SecureHeaders::RemoveContentSecurityPolicy,
-    ) do |request|
+  ) do |request|
     request.path.start_with?('/acuant/')
   end
 end
