@@ -7,7 +7,7 @@ Rails.application.configure do
     'X-Frame-Options' => 'DENY',
     'X-XSS-Protection' => '1; mode=block',
     'X-Download-Options' => 'noopen',
-    )
+  )
 end
 
 SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/BlockLength
