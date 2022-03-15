@@ -21,7 +21,7 @@
           text: t('in_person_proofing.link'),
           new_tab: false,
         },
-      ].compact,
+      ].select(&:present?),
     ) do %>
       <p><%= t('idv.failure.sessions.warning') %></p>
       <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
