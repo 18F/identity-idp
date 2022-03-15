@@ -2,8 +2,10 @@ $theme-body-font-size: 'sm';
 $theme-font-path: 'identity-style-guide/dist/assets/fonts';
 $theme-image-path: 'identity-style-guide/dist/assets/img';
 $theme-global-border-box-sizing: true;
+$theme-global-link-styles: true;
 $theme-grid-container-max-width: 'tablet-lg';
 $theme-header-min-width: 'tablet';
+$theme-link-visited-color: 'primary';
 $theme-utility-breakpoints: (
   'card': false,
   'card-lg': false,
