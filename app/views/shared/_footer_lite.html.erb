@@ -17,7 +17,7 @@
       <ul class='usa-list--unstyled margin-bottom-0 text-white text-center'>
         <% I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
-            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-decoration-none text-primary fs-13p', lang: locale == I18n.locale ? nil : locale %>
+            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-decoration-none fs-13p', lang: locale == I18n.locale ? nil : locale %>
           </li>
         <% end %>
       </ul>
@@ -27,15 +27,15 @@
     <div class="display-flex flex-align-center flex-justify-center">
       <div class="display-flex flex-auto">
         <div class="display-flex tablet:display-none">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none h6 margin-right-2 usa-link--alt tablet:display-none',
+          <%= new_window_link_to 'https://gsa.gov', { class: 'text-decoration-none h6 margin-right-2 tablet:display-none',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
                           width: 20, alt: '' %>
           <% end %>
         </div>
 
-        <div class="display-none tablet:display-flex">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'display-flex flex-align-center flex-justify-center text-decoration-none text-white h6 margin-right-2 usa-link--alt',
+        <div class="display-none tablet:display-flex usa-dark-background bg-primary-darker">
+          <%= new_window_link_to 'https://gsa.gov', { class: 'text-decoration-none h6 margin-right-2',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa.svg'),
                           width: 20, class: 'float-left margin-right-1', alt: '' %>
@@ -81,18 +81,18 @@
               ) %>
         </div>
 
-        <div class="display-none tablet:display-flex">
+        <div class="display-none tablet:display-flex usa-dark-background bg-primary-darker">
           <%= new_window_link_to(
                 t('links.help'), MarketingSite.help_url,
-                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.contact'), MarketingSite.contact_url,
-                class: 'h6 text-white text-decoration-none margin-right-2 usa-link--alt'
+                class: 'h6 text-decoration-none margin-right-2'
               ) %>
           <%= new_window_link_to(
                 t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                class: 'h6 text-white text-decoration-none usa-link--alt'
+                class: 'h6 text-decoration-none'
               ) %>
         </div>
       </div>
