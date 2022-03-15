@@ -1,4 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isWebAuthnEnabled } from '../app/webauthn';
 
 export async function unhideWebauthn() {
@@ -23,5 +22,5 @@ export async function unhideWebauthn() {
 }
 
 if (process.env.NODE_ENV !== 'test') {
-  loadPolyfills(['classlist']).then(unhideWebauthn);
+  unhideWebauthn();
 }

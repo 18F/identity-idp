@@ -1,5 +1,4 @@
 import { t } from '@18f/identity-i18n';
-import { loadPolyfills } from '@18f/identity-polyfill';
 
 /**
  * Given a submit event, disables all submit buttons within the target form.
@@ -78,9 +77,6 @@ export function initialize(form) {
   form.addEventListener('submit', disableFormSubmit);
 }
 
-loadPolyfills(['classlist']).then(() => {
-  /** @type {HTMLFormElement[]} */
-  const forms = Array.from(document.querySelectorAll('form[data-validate]'));
-
-  forms.forEach(initialize);
-});
+/** @type {HTMLFormElement[]} */
+const forms = Array.from(document.querySelectorAll('form[data-validate]'));
+forms.forEach(initialize);

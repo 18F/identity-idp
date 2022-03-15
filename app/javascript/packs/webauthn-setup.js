@@ -1,4 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
 
 /**
@@ -59,4 +58,6 @@ function webauthn() {
   });
 }
 
-loadPolyfills(['url']).then(webauthn);
+if (process.env.NODE_ENV !== 'test') {
+  webauthn();
+}

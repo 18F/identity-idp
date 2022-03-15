@@ -1,6 +1,5 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
-import { loadPolyfills } from '@18f/identity-polyfill';
 
 /**
  * @typedef FormStepsWaitElements
@@ -188,7 +187,5 @@ export class FormStepsWait {
   }
 }
 
-loadPolyfills(['fetch', 'custom-event']).then(() => {
-  const forms = Array.from(document.querySelectorAll('[data-form-steps-wait]'));
-  forms.forEach((form) => new FormStepsWait(form).bind());
-});
+const forms = Array.from(document.querySelectorAll('[data-form-steps-wait]'));
+forms.forEach((form) => new FormStepsWait(form).bind());
