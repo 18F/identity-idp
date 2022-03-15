@@ -41,6 +41,14 @@ export class CountdownElement extends HTMLElement {
     return this.getAttribute('data-start-immediately') === 'true';
   }
 
+  get #textNode(): Text {
+    if (!this.firstChild) {
+      this.appendChild(this.ownerDocument.createTextNode(''));
+    }
+
+    return this.firstChild as Text;
+  }
+
   start(): void {
     this.stop();
     this.setTimeRemaining();
@@ -54,7 +62,7 @@ export class CountdownElement extends HTMLElement {
   setTimeRemaining(): void {
     const { timeRemaining } = this;
 
-    this.textContent = [
+    this.#textNode.nodeValue = [
       t('datetime.dotiw.minutes', { count: Math.floor(timeRemaining / 60000) }),
       t('datetime.dotiw.seconds', { count: Math.floor(timeRemaining / 1000) % 60 }),
     ].join(t('datetime.dotiw.two_words_connector'));
