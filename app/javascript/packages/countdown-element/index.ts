@@ -42,6 +42,7 @@ export class CountdownElement extends HTMLElement {
   }
 
   start(): void {
+    this.stop();
     this.setTimeRemaining();
     this.#pollIntervalId = window.setInterval(() => this.setTimeRemaining(), this.updateInterval);
   }

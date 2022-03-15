@@ -102,4 +102,17 @@ describe('CountdownElement', () => {
 
     expect(element.textContent).to.equal('0 minutes and 2 seconds');
   });
+
+  describe('#start', () => {
+    it('is idempotent', () => {
+      const element = createElement({ startImmediately: 'false' });
+
+      sinon.spy(element, 'setTimeRemaining');
+
+      element.start();
+      element.start();
+
+      expect(clock.countTimers()).to.equal(1);
+    });
+  });
 });
