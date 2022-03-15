@@ -21,7 +21,7 @@ module Idv
       elsif async_state.in_progress?
         render :wait
       elsif async_state.missing?
-        analytics.track_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING)
+        analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.done?

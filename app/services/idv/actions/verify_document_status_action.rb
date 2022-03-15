@@ -108,7 +108,7 @@ module Idv
 
       def missing
         delete_async
-        @flow.analytics.track_event(Analytics::PROOFING_DOCUMENT_RESULT_MISSING)
+        @flow.analytics.proofing_document_result_missing
         DocumentCaptureSessionAsyncResult.missing
       end
 

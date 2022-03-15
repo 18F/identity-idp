@@ -223,11 +223,6 @@ class Analytics
   PHONE_DELETION = 'Phone Number Deletion: Submitted'
   PIV_CAC_LOGIN = 'PIV/CAC Login'
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
-  PROFILE_PERSONAL_KEY_VISIT = 'Profile: Visited new personal key'
-  PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'
-  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
-  PROOFING_ADDRESS_RESULT_MISSING = 'Proofing Address Result Missing' # Previously "Proofing Address Timeout"
-  PROOFING_DOCUMENT_RESULT_MISSING = 'Proofing Document Result Missing' # Previously "Proofing Document Timeout"
   PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'

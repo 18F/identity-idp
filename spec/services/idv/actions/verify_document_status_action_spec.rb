@@ -48,7 +48,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     it 'calls analytics if missing from no document capture session' do
       response = subject.call
 
-      expect(analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_RESULT_MISSING, {})
+      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load verify_document_capture_session',
@@ -67,7 +67,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         and_return(verify_document_capture_session).at_least(:once)
       response = subject.call
 
-      expect(analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_RESULT_MISSING, {})
+      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load async result',
