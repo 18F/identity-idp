@@ -11,14 +11,6 @@ module SecureHeadersConcern
   end
 
   def override_form_action_csp(uris)
-    apply_secure_headers_override_with_rails_csp_tooling(uris)
-  end
-
-  def apply_secure_headers_override_with_secure_headers(uris)
-    override_content_security_policy_directives(form_action: uris)
-  end
-
-  def apply_secure_headers_override_with_rails_csp_tooling(uris)
     policy = current_content_security_policy
     policy.form_action(*uris)
     request.content_security_policy = policy
