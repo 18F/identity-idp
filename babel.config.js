@@ -20,6 +20,13 @@ module.exports = (api) => {
           targets: isTestEnv ? 'current node' : '> 1% and supports es6-module',
         },
       ],
+      [
+        'polyfill-regenerator',
+        {
+          method: 'usage-global',
+          targets: isTestEnv ? 'current node' : '> 1% or IE 11',
+        },
+      ],
     ],
     sourceType: 'unambiguous',
   };
