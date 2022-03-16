@@ -257,7 +257,6 @@ class IdentityConfig
     config.add(:pwned_passwords_file_path, type: :string)
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
-    config.add(:rails_csp_tooling_enabled, type: :boolean)
     config.add(:rails_mailer_previews_enabled, type: :boolean)
     config.add(:reauthn_window, type: :integer)
     config.add(:recovery_code_length, type: :integer)
