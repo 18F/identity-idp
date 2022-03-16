@@ -11,7 +11,7 @@ function webauthn() {
   const isPlatformAvailable = document.getElementById('webauthn_device').value === 'true';
 
   const spinner = document.getElementById('spinner');
-  spinner.classList.remove('hidden');
+  spinner.classList.remove('display-none');
 
   if (
     !WebAuthn.isWebAuthnEnabled() ||
@@ -31,8 +31,8 @@ function webauthn() {
         document.getElementById('authenticator_data').value = result.authenticatorData;
         document.getElementById('client_data_json').value = result.clientDataJSON;
         document.getElementById('signature').value = result.signature;
-        webauthnInProgressContainer.classList.add('hidden');
-        webauthnSuccessContainer.classList.remove('hidden');
+        webauthnInProgressContainer.classList.add('display-none');
+        webauthnSuccessContainer.classList.remove('display-none');
       })
       .catch((error) => {
         document.getElementById('errors').value = error;

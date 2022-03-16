@@ -47,7 +47,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden' %>
+  <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'display-none' %>
 <% end %>
 <%= button_tag(
       @presenter.button_text,
@@ -55,7 +55,7 @@
       id: 'continue-button',
     ) %>
 
-<div class="spinner hidden margin-y-4" id='spinner'>
+<div class="spinner display-none margin-y-4" id='spinner'>
   <div class='text-center'>
     <%= image_tag(
           asset_url('spinner.gif'),
