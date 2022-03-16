@@ -17,47 +17,6 @@ linters:
     enabled: true
     rule_set:
       - deprecated:
-          - (black|silver|white|aqua|blue|navy|teal|green|olive|lime|yellow|orange|red|fuchsia|purple|maroon|color-inherit|muted)
-          - '(bold|regular|italic|caps)'
-          - 'align-(top|middle|bottom|baseline)'
-          - '(left|right)-align'
-          - '(center|justify|nowrap)'
-          - 'line-height-[3]'
-          - 'list-style-none'
-          - 'table(-cell)?'
-          - 'fit'
-          - 'max-width-[1-4]'
-          - '((sm|md|lg)-)?[mp][trblxy]?(n?[0-6]|-auto)'
-          - '(relative|absolute|fixed)'
-          - '(top|right|bottom|left)-0'
-          - 'z[1-4]'
-          - '((sm|md|lg)-)?col(-(right|[0-9][012]?))?'
-          - '(md|lg)-col(-(right|[1-9][0-2]?))?'
-          - '(sm|md|lg)-flex'
-          - 'hljs'
-          - 'range-light'
-          - 'field-dark'
-          - 'progress'
-          - 'flex(-(center|baseline|stretch|start|end|grow|none|first|last))?'
-          - '((sm|md|lg)-)?table(-(cell|fixed))?'
-          - '[xy]-group-item'
-          - '(items|self|justify|content)-(start|end|center|baseline|stretch)'
-          - 'order-([0-3]|last)'
-          - 'circle'
-          - '(not-)?rounded(-(top|right|bottom|left|lg))?'
-          - '((sm|md|lg)-)?hide'
-          - '(sm|md|lg)-show'
-          - 'btn(-(small|big|narrow|wide|link|primary|secondary|danger|disabled|big|narrow|transparent|border))?'
-          - '(border|bg)-(none|black|gray|silver|aqua|blue|navy|teal|green|olive|lime|orange|red|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
-          - 'bg-(cover|contain|center|top|right|bottom|left)'
-          - inline(-block)?
-          - block
-          - table(-cell)?
-          - overflow-(hidden|scroll|auto)
-          - (left|right)
-          - border-box
-        suggestion: 'Use USWDS classes instead of BassCSS.'
-      - deprecated:
           - 'js-consent-form'
         suggestion: 'Rename classes that are known to be hidden by the Hush plugin'
   SpaceAroundErbTag:
