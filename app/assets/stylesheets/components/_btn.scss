@@ -23,11 +23,3 @@
     background-color: transparent;
   }
 }
-
-.usa-button--disabled {
-  // There exist some disabled buttons which we expect to only take the visual appearance of a
-  // disabled button, but still allow interactions (e.g. IAL2 Agreement and Document Capture steps).
-  //
-  // See: https://github.com/uswds/uswds/issues/4122
-  pointer-events: all;
-}
