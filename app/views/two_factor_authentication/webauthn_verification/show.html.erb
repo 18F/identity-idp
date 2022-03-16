@@ -34,7 +34,7 @@
           multiple_factors_enabled: @presenter.multiple_factors_enabled?,
         },
       ) do %>
-    <div class="hidden spinner text-center margin-bottom-4" id="spinner">
+    <div class="display-none spinner text-center margin-bottom-4" id="spinner">
       <%= image_tag(
             asset_url('spinner.gif'),
             srcset: asset_url('spinner@2x.gif'),
@@ -52,7 +52,7 @@
     <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
 
-  <div id='webauthn-auth-successful' class="hidden">
+  <div id='webauthn-auth-successful' class="display-none">
     <div class="text-center margin-bottom-2">
       <%= image_tag(
             asset_url('webauthn-verified.svg'),

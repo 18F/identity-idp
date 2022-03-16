@@ -1,9 +1,5 @@
 // supplemental utility classes
 
-.hidden {
-  display: none;
-}
-
 .vertical-align::before {
   content: ' ';
   display: inline-block;
