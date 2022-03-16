@@ -1,12 +1,5 @@
 // supplemental utility classes
 
-.vertical-align::before {
-  content: ' ';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-
 html.no-js .js {
   display: none;
 }
