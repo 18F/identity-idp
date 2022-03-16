@@ -68,10 +68,16 @@ $lighten-3: rgba(255, 255, 255, 0.25) !default;
 $lighten-4: rgba(255, 255, 255, 0.5) !default;
 
 $border-width: 1px !default;
+$border-radius: 3px !default;
 $border-radius-md: 6px !default;
 $border-radius-xl: 16px !default;
 $border-radius-xxl: 24px !default;
 $border-color: #cedced !default;
+
+$field-focus-color: $blue !default;
+$field-success-color: $green !default;
+$field-warning-color: $yellow !default;
+$field-error-color: $red !default;
 
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;

@@ -23,6 +23,10 @@ textarea {
 
 .field {
   background-color: #f2f9ff;
+  border-style: solid;
+  border-width: $border-width;
+  border-color: $border-color;
+  border-radius: $border-radius;
   color: $gray;
   font-weight: $bold-font-weight;
 
@@ -35,16 +39,6 @@ textarea {
     border-color: $field-focus-color;
     box-shadow: 0 0 0 2px rgba($field-focus-color, 0.5);
     outline: none;
-  }
-
-  &:invalid,
-  &.is-error {
-    border-color: $border-color;
-  }
-
-  // Temporary: Remove after LG-3877 (with BassCSS "color-forms")
-  &.usa-input--error:invalid {
-    border-color: color('error');
   }
 }
 

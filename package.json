@@ -27,7 +27,6 @@
     "@babel/preset-typescript": "^7.16.7",
     "@babel/register": "^7.15.3",
     "babel-loader": "^8.2.3",
-    "basscss-sass": "^3.0.0",
     "classlist-polyfill": "^1.2.0",
     "cleave.js": "^1.6.0",
     "core-js": "^3.20.2",
