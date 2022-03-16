@@ -6,8 +6,9 @@
     "@webcomponents/custom-elements": "^1.5.0",
     "classlist-polyfill": "^1.2.0",
     "clipboard-polyfill": "^3.0.3",
-    "core-js": "^3.21.1",
     "custom-event-polyfill": "^1.0.7",
+    "js-polyfills": "^0.1.43",
+    "promise-polyfill": "^8.2.3",
     "webcrypto-shim": "^0.1.7",
     "whatwg-fetch": "^3.4.0"
   }
