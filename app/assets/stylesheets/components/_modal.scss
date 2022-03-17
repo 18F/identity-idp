@@ -62,7 +62,7 @@
   }
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .modal-content {
     vertical-align: middle;
   }
