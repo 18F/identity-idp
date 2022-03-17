@@ -9,14 +9,14 @@ namespace :db do
     end
 
     readonly_user_present = ActiveRecord::Base.connection.execute(
-      "SELECT 1 FROM pg_roles WHERE rolname='#{username}'"
+      "SELECT 1 FROM pg_roles WHERE rolname='#{username}'",
     )
 
     sql_statements = [
       format(
         'GRANT SELECT ON ALL TABLES IN SCHEMA public TO %s',
         username,
-      )
+      ),
     ]
 
     password = IdentityConfig.store.database_readonly_password
@@ -27,7 +27,7 @@ namespace :db do
           "CREATE USER %s WITH ENCRYPTED PASSWORD '%s'",
           username,
           password,
-        )
+        ),
       )
     end
 
