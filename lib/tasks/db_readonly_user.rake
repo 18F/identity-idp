@@ -9,7 +9,7 @@ namespace :db do
     end
 
     readonly_user_present = ActiveRecord::Base.connection.execute(
-      "GRANT SELECT ON ALL TABLES IN SCHEMA public TO #{username}"
+      "SELECT 1 FROM pg_roles WHERE rolname='#{username}'"
     )
 
     sql_statements = [
