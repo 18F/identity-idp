@@ -21,6 +21,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
         data: presenter_data,
         view: view,
+        service_provider: nil,
       )
       allow(@presenter).to receive(:reauthn).and_return(false)
     end
@@ -115,6 +116,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
           view: view,
+          service_provider: nil,
         )
 
         render
@@ -132,6 +134,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: totp_data,
           view: view,
+          service_provider: nil,
         )
 
         render
@@ -189,6 +192,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: voice_data,
           view: view,
+          service_provider: nil,
         )
       end
 
@@ -225,6 +229,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
           view: view,
+          service_provider: nil,
         )
 
         render
@@ -240,6 +245,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
           data: data,
           view: view,
+          service_provider: nil,
         )
 
         render

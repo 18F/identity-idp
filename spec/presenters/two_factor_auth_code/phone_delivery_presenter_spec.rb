@@ -20,6 +20,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     TwoFactorAuthCode::PhoneDeliveryPresenter.new(
       data: data,
       view: view,
+      service_provider: nil,
     )
   end
 

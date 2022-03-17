@@ -5,9 +5,15 @@ module TwoFactorAuthCode
 
     attr_reader :credential_ids, :user_opted_remember_device_cookie
 
-    def initialize(data:, view:, remember_device_default: true, platform_authenticator: false)
+    def initialize(data:, view:, service_provider:, remember_device_default: true,
+                   platform_authenticator: false)
       @platform_authenticator = platform_authenticator
-      super(data: data, view: view, remember_device_default: remember_device_default)
+      super(
+        data: data,
+        view: view,
+        service_provider: service_provider,
+        remember_device_default: remember_device_default,
+      )
     end
 
     def webauthn_help

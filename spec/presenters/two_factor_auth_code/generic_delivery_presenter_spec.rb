@@ -12,6 +12,10 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
   end
 
   def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
-    TwoFactorAuthCode::GenericDeliveryPresenter.new(data: arguments, view: view)
+    TwoFactorAuthCode::GenericDeliveryPresenter.new(
+      data: arguments,
+      view: view,
+      service_provider: nil,
+    )
   end
 end
