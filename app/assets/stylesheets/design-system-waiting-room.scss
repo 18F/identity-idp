@@ -23,19 +23,12 @@ input[type='week'] {
 
 //basscss-base-typography
 //------------------------------------------------
-body {
-  font-family: $font-family;
-  line-height: $line-height;
-}
-
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  font-family: $heading-font-family;
-  line-height: $heading-line-height;
   margin-top: 1em;
   margin-bottom: 0.5em;
 }
