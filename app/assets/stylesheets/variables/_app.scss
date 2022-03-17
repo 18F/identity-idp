@@ -1,20 +1,9 @@
-$sans-serif-font-family: Public Sans Web, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-  Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol !default;
-$serif-font-family: $sans-serif-font-family !default;
-
-$base-font-size: 16px !default;
-$small-font-size: 14px !default;
-
 $body-color: $gray !default;
 $body-background-color: $white !default;
 
-$font-family: $sans-serif-font-family !default;
 $line-height: 1.5 !default;
 $bold-font-weight: bold !default;
-$heading-font-family: $serif-font-family !default;
 $heading-font-weight: bold !default;
-$heading-line-height: 1.5 !default;
-$caps-letter-spacing: 1px !default;
 
 $line-height-0: 0.75 !default; // For when a tighter-than-normal leading is desired.
 $line-height-1: 1 !default;
