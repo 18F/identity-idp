@@ -176,7 +176,6 @@ describe CompletionsPresenter do
           expect(presenter.pii).to eq(
             {
               all_emails: [current_user.email],
-              verified_at: I18n.t('help_text.requested_attributes.verified_at_blank'),
               x509_issuer: nil,
               x509_subject: nil,
             },
@@ -214,7 +213,6 @@ describe CompletionsPresenter do
               social_security_number: '900-12-3456',
               x509_subject: nil,
               x509_issuer: nil,
-              verified_at: I18n.t('help_text.requested_attributes.verified_at_blank'),
             },
           )
         end

@@ -16,6 +16,5 @@ en:
       phone: Phone number
       social_security_number: Social Security Number
       verified_at: Updated on
-      verified_at_blank: Not yet verified
       x509_issuer: PIV/CAC Issuer
       x509_subject: PIV/CAC Identity

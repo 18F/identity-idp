@@ -196,7 +196,6 @@ describe 'OpenID Connect' do
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
 
         click_agree_and_continue
       end,

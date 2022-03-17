@@ -18,6 +18,5 @@ fr:
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       verified_at: Mis à jour le
-      verified_at_blank: Pas encore vérifié
       x509_issuer: Émetteur PIV/CAC
       x509_subject: Identité associée à la carte PIV/CAC

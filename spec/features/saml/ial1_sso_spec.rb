@@ -211,8 +211,6 @@ feature 'IAL1 Single Sign On' do
       click_submit_default
 
       expect(current_url).to match new_user_session_path
-      expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-      expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
 
       click_agree_and_continue
 
