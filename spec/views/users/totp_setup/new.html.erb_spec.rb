@@ -64,6 +64,7 @@ describe 'users/totp_setup/new.html.erb' do
       @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
         view: view,
         data: { current_user: user },
+        service_provider: nil,
       )
 
       render

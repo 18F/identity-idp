@@ -6,7 +6,7 @@ describe TwoFactorAuthCode::BackupCodePresenter do
   let(:presenter) do
     arguments = {}
     view = ActionController::Base.new.view_context
-    TwoFactorAuthCode::BackupCodePresenter.new(data: arguments, view: view)
+    TwoFactorAuthCode::BackupCodePresenter.new(data: arguments, view: view, service_provider: nil)
   end
 
   describe '#fallback_question' do

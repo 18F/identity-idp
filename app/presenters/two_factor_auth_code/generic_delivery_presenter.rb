@@ -6,11 +6,12 @@ module TwoFactorAuthCode
 
     attr_reader :code_value, :reauthn
 
-    def initialize(data:, view:, remember_device_default: true)
+    def initialize(data:, view:, service_provider:, remember_device_default: true)
       data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
       @view = view
+      @service_provider = service_provider
       @remember_device_default = remember_device_default
     end
 
@@ -52,7 +53,7 @@ module TwoFactorAuthCode
     def service_provider_mfa_policy
       @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
         user: @view.current_user,
-        service_provider: ServiceProvider.find_by(issuer: @view.sp_session[:issuer]),
+        service_provider: @service_provider,
         auth_method: @view.user_session[:auth_method],
         aal_level_requested: @view.sp_session[:aal_level_requested],
         piv_cac_requested: @view.sp_session[:piv_cac_requested],
