@@ -112,7 +112,7 @@ describe Users::PasswordsController do
       end
 
       it 'renders form if PII is decrypted' do
-        controller.user_session[:decrypted_pii] = pii
+        controller.user_session[:decrypted_pii] = pii.to_json
 
         get :edit
 

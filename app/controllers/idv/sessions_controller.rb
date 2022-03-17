@@ -9,7 +9,7 @@ module Idv
       analytics.track_event(Analytics::IDV_START_OVER, **location_params)
       user_session['idv/doc_auth'] = {}
       idv_session.clear
-      user_session.delete(:decrypted_pii)
+      Pii::Cacher.new(current_user, user_session).delete
       redirect_to idv_url
     end
 

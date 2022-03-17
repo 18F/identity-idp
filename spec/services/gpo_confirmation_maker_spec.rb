@@ -3,6 +3,7 @@ require 'rails_helper'
 describe GpoConfirmationMaker do
   let(:otp) { '123ABC' }
   let(:issuer) { 'this-is-an-issuer' }
+  let(:service_provider) { build(:service_provider, issuer: issuer) }
   let(:decrypted_attributes) do
     {
       address1: '123 main st', address2: '',
@@ -21,7 +22,7 @@ describe GpoConfirmationMaker do
   end
   let(:profile) { create(:profile) }
 
-  subject { described_class.new(pii: pii, issuer: issuer, profile: profile) }
+  subject { described_class.new(pii: pii, service_provider: service_provider, profile: profile) }
 
   describe '#perform' do
     before do

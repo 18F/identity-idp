@@ -19,9 +19,22 @@ module Pii
     end
 
     def fetch
-      decrypted_pii = user_session[:decrypted_pii]
-      return unless decrypted_pii
-      Pii::Attributes.new_from_json(decrypted_pii)
+      pii_string = fetch_string
+      return nil unless pii_string
+
+      Pii::Attributes.new_from_json(pii_string)
+    end
+
+    def fetch_string
+      user_session[:decrypted_pii]
+    end
+
+    def exists_in_session?
+      fetch_string.present?
+    end
+
+    def delete
+      user_session.delete(:decrypted_pii)
     end
 
     private

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Db::AddDocumentVerificationAndSelfieCosts do
   let(:user_id) { 1 }
-  let(:issuer) { 'foo' }
+  let(:service_provider) { build(:service_provider, issuer: 'foo') }
   let(:liveness_checking_enabled) { false }
   let(:billed_response) do
     DocAuth::Response.new(
@@ -30,7 +30,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   subject do
     described_class.new(
       user_id: user_id,
-      issuer: issuer,
+      service_provider: service_provider,
       liveness_checking_enabled: liveness_checking_enabled,
     )
   end
@@ -88,6 +88,9 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   end
 
   def costing_for(cost_type)
-    SpCost.where(ial: 2, issuer: issuer, agency_id: 0, cost_type: cost_type.to_s).first
+    SpCost.where(
+      ial: 2, issuer: service_provider.issuer, agency_id: service_provider.agency_id,
+      cost_type: cost_type.to_s
+    ).first
   end
 end

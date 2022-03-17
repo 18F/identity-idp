@@ -3,15 +3,16 @@ require 'rails_helper'
 describe IdentityLinker do
   describe '#link_identity' do
     let(:user) { create(:user) }
+    let(:service_provider) { build(:service_provider, issuer: 'test.host') }
 
     it "updates user's last authenticated identity" do
-      IdentityLinker.new(user, 'test.host').link_identity
+      IdentityLinker.new(user, service_provider).link_identity
       user.reload
 
       last_identity = user.last_identity
 
       new_attributes = {
-        service_provider: 'test.host',
+        service_provider: service_provider.issuer,
         user_id: user.id,
         uuid: last_identity.uuid,
       }
@@ -32,7 +33,7 @@ describe IdentityLinker do
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
 
-      IdentityLinker.new(user, 'test.host').link_identity(
+      IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
         nonce: nonce,
         ial: ial,
@@ -54,18 +55,18 @@ describe IdentityLinker do
       let(:six_months_ago) { 6.months.ago }
 
       it 'does override a previous last_consented_at by default' do
-        IdentityLinker.new(user, 'test.host').
+        IdentityLinker.new(user, service_provider).
           link_identity(last_consented_at: six_months_ago)
         last_identity = user.reload.last_identity
         expect(last_identity.last_consented_at.to_i).to eq(six_months_ago.to_i)
 
-        IdentityLinker.new(user, 'test.host').link_identity
+        IdentityLinker.new(user, service_provider).link_identity
         last_identity = user.reload.last_identity
         expect(last_identity.last_consented_at.to_i).to eq(six_months_ago.to_i)
       end
 
       it 'updates last_consented_at when present' do
-        IdentityLinker.new(user, 'test.host').
+        IdentityLinker.new(user, service_provider).
           link_identity(last_consented_at: now)
 
         last_identity = user.reload.last_identity
@@ -77,13 +78,13 @@ describe IdentityLinker do
       let(:yesterday) { 1.day.ago }
 
       before do
-        IdentityLinker.new(user, 'test.host').link_identity
+        IdentityLinker.new(user, service_provider).link_identity
         last_identity = user.reload.last_identity
         last_identity.update!(deleted_at: yesterday)
       end
 
       subject(:link_identity) do
-        IdentityLinker.new(user, 'test.host').
+        IdentityLinker.new(user, service_provider).
           link_identity(clear_deleted_at: clear_deleted_at)
       end
 
@@ -109,7 +110,7 @@ describe IdentityLinker do
     end
 
     it 'rejects bad attributes names' do
-      expect { IdentityLinker.new(user, 'test.host').link_identity(foobar: true) }.
+      expect { IdentityLinker.new(user, service_provider).link_identity(foobar: true) }.
         to raise_error(ArgumentError)
     end
 
@@ -120,9 +121,11 @@ describe IdentityLinker do
 
     it 'can link two different clients to the same rails_session_id' do
       rails_session_id = SecureRandom.uuid
+      service_provider1 = build(:service_provider, issuer: 'client1')
+      service_provider2 = build(:service_provider, issuer: 'client2')
 
-      IdentityLinker.new(user, 'client1').link_identity(rails_session_id: rails_session_id)
-      IdentityLinker.new(user, 'client2').link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, service_provider1).link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
     end
   end
 end

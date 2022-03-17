@@ -9,10 +9,10 @@ RSpec.describe PushNotification::HttpPush do
   let(:sp_no_push_url) { create(:service_provider, push_notification_url: nil) }
 
   let!(:sp_with_push_url_identity) do
-    IdentityLinker.new(user, sp_with_push_url.issuer).link_identity
+    IdentityLinker.new(user, sp_with_push_url).link_identity
   end
   let!(:sp_no_push_url_identity) do
-    IdentityLinker.new(user, sp_no_push_url.issuer).link_identity
+    IdentityLinker.new(user, sp_no_push_url).link_identity
   end
 
   let(:event) do
@@ -109,7 +109,7 @@ RSpec.describe PushNotification::HttpPush do
       let(:third_sp) { create(:service_provider, push_notification_url: 'http://sp.url/push') }
 
       before do
-        IdentityLinker.new(user, third_sp.issuer).link_identity
+        IdentityLinker.new(user, third_sp).link_identity
 
         stub_request(:post, sp_with_push_url.push_notification_url).to_timeout
         stub_request(:post, third_sp.push_notification_url).to_return(status: 200)

@@ -22,11 +22,6 @@ module Idv
         mark_steps_complete
       end
 
-      def handle_document_verification_failure(get_results_response)
-        mark_step_incomplete(:send_link)
-        failure(get_results_response.first_error_message, get_results_response.to_h)
-      end
-
       def render_document_capture_cancelled
         mark_steps_incomplete
         redirect_to idv_url

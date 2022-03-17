@@ -266,32 +266,6 @@ RSpec.describe DocAuthRouter do
       )
     end
 
-    context 'when the errors include DOCUMENT_EXPIRED' do
-      context 'when there are multiple errors' do
-        before do
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
-            method: :post_images,
-            response: DocAuth::Response.new(
-              success: false,
-              errors: {
-                id: [
-                  DocAuth::Errors::EXPIRATION_CHECKS,
-                  DocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
-                ],
-                general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
-              },
-            ),
-          )
-        end
-
-        it 'sets extra[:document_expired]' do
-          response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
-
-          expect(response.extra[:document_expired]).to eq(true)
-        end
-      end
-    end
-
     it 'translates http response errors and maintains exceptions' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,

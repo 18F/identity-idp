@@ -200,7 +200,7 @@ module Users
 
     def next_url_after_valid_authentication
       if user_is_banned?
-        analytics.track_event(Analytics::BANNED_USER_REDIRECT)
+        analytics.banned_user_redirect
         sign_out
         banned_user_url
       elsif pending_account_reset_request.present?

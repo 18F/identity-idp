@@ -81,7 +81,7 @@ module Flow
       request.headers['X-Amzn-Trace-Id']
     end
 
-    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request,
+    delegate :flash, :session, :flow_session, :current_user, :current_sp, :params, :steps, :request,
              :poll_with_meta_refresh, to: :@flow
   end
 end

@@ -79,7 +79,7 @@ describe Idv::PhoneErrorsController do
         get action
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
+          with('IdV: phone error visited', logged_attributes)
       end
     end
   end
@@ -130,7 +130,7 @@ describe Idv::PhoneErrorsController do
         get action
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
+          with('IdV: phone error visited', logged_attributes)
       end
     end
   end
@@ -171,7 +171,7 @@ describe Idv::PhoneErrorsController do
         get action
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_ERROR_VISITED, logged_attributes)
+          with('IdV: phone error visited', logged_attributes)
       end
     end
   end

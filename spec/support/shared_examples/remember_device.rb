@@ -51,7 +51,7 @@ shared_examples 'remember device' do
     user = remember_device_and_sign_out_user
 
     IdentityLinker.new(
-      user, 'urn:gov:gsa:openidconnect:sp:server'
+      user, build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:server')
     ).link_identity(verified_attributes: %w[email])
 
     visit oidc_url

@@ -49,21 +49,6 @@ class UserDecorator
     (lockout_period - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
-  def confirmation_period_expired_error
-    I18n.t('errors.messages.confirmation_period_expired', period: confirmation_period)
-  end
-
-  def confirmation_period
-    current_time = Time.zone.now
-
-    distance_of_time_in_words(
-      current_time,
-      current_time + Devise.confirm_within,
-      true,
-      accumulate_on: :hours,
-    )
-  end
-
   def active_identity_for(service_provider)
     user.active_identities.find_by(service_provider: service_provider.issuer)
   end

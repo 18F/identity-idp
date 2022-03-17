@@ -18,6 +18,7 @@ class WebauthnVerificationForm
     @signature = nil
     @credential_id = nil
     @webauthn_configuration = nil
+    @webauthn_errors = nil
   end
 
   def submit(protocol, params)
@@ -49,9 +50,11 @@ class WebauthnVerificationForm
     @client_data_json = params[:client_data_json]
     @signature = params[:signature]
     @credential_id = params[:credential_id]
+    @webauthn_errors = params[:errors]
   end
 
   def valid_assertion_response?(protocol)
+    return false if @webauthn_errors.present?
     assertion_response = ::WebAuthn::AuthenticatorAssertionResponse.new(
       authenticator_data: Base64.decode64(@authenticator_data),
       client_data_json: Base64.decode64(@client_data_json),

@@ -65,13 +65,6 @@ module Idv
           phone: effective_user.phone_configurations.take&.phone,
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
-        if response.respond_to?(:extra)
-          # Sync flow: DocAuth::Response
-          flow_session[:document_expired] = response.extra&.dig(:document_expired)
-        elsif response.respond_to?(:result)
-          # Async flow: DocumentCaptureSessionAsyncResult
-          flow_session[:document_expired] = response.result&.dig(:document_expired)
-        end
         track_document_state
       end
 
@@ -117,15 +110,14 @@ module Idv
       end
 
       def add_cost(token, transaction_id: nil)
-        issuer = sp_session[:issuer].to_s
-        Db::SpCost::AddSpCost.call(issuer, 2, token, transaction_id: transaction_id)
+        Db::SpCost::AddSpCost.call(current_sp, 2, token, transaction_id: transaction_id)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 
       def add_costs(result)
         Db::AddDocumentVerificationAndSelfieCosts.
           new(user_id: user_id,
-              issuer: sp_session[:issuer].to_s,
+              service_provider: current_sp,
               liveness_checking_enabled: liveness_checking_enabled?).
           call(result)
       end
@@ -163,14 +155,6 @@ module Idv
 
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
-      end
-
-      def cac_verify_document_capture_session_uuid_key
-        :cac_verify_step_document_capture_session_uuid
-      end
-
-      def recover_verify_document_capture_session_uuid_key
-        :idv_recover_verify_step_document_capture_session_uuid
       end
 
       def verify_document_capture_session_uuid_key

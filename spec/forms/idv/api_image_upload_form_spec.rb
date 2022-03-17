@@ -12,7 +12,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         document_capture_session_uuid: document_capture_session_uuid,
       ),
       liveness_checking_enabled: liveness_checking_enabled?,
-      issuer: 'test_issuer',
+      service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
     )
   end

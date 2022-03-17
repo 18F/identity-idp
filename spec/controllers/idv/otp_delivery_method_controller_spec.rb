@@ -129,7 +129,7 @@ describe Idv::OtpDeliveryMethodController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
+          with('IdV: Phone OTP Delivery Selection Submitted', result)
       end
     end
 
@@ -155,7 +155,7 @@ describe Idv::OtpDeliveryMethodController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
+          with('IdV: Phone OTP Delivery Selection Submitted', result)
       end
     end
 
@@ -181,7 +181,7 @@ describe Idv::OtpDeliveryMethodController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, result)
+          with('IdV: Phone OTP Delivery Selection Submitted', result)
       end
     end
 
@@ -212,7 +212,7 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'tracks an analytics events' do
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED, hash_including(success: true)
+          'IdV: Phone OTP Delivery Selection Submitted', hash_including(success: true)
         )
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT,

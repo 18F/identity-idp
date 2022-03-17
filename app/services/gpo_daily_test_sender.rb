@@ -4,7 +4,7 @@ class GpoDailyTestSender
     if valid_designated_receiver_pii?
       GpoConfirmationMaker.new(
         pii: IdentityConfig.store.gpo_designated_receiver_pii,
-        issuer: nil,
+        service_provider: nil,
         profile_id: -1, # profile_id can't be null on GpoConfirmationCode
         otp: otp_from_date,
       ).perform

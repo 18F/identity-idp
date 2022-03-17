@@ -106,6 +106,10 @@ class ApplicationController < ActionController::Base
     user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
   end
 
+  def current_sp
+    @current_sp ||= sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
+  end
+
   private
 
   # These attributes show up in New Relic traces for all requests.
@@ -155,10 +159,6 @@ class ApplicationController < ActionController::Base
     params.permit(:request_id)
   end
 
-  def current_sp
-    @current_sp ||= sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
-  end
-
   def sp_from_sp_session
     ServiceProvider.find_by(issuer: sp_session[:issuer]) if sp_session[:issuer].present?
   end
@@ -193,7 +193,7 @@ class ApplicationController < ActionController::Base
 
     flash[:info] = t('account.personal_key.needs_new')
 
-    pii_unlocked = user_session[:decrypted_pii].present?
+    pii_unlocked = Pii::Cacher.new(current_user, user_session).exists_in_session?
 
     if pii_unlocked
       cacher = Pii::Cacher.new(current_user, user_session)
@@ -422,11 +422,11 @@ class ApplicationController < ActionController::Base
 
   def add_sp_cost(token)
     Db::SpCost::AddSpCost.call(
-      sp_session[:issuer].to_s,
+      current_sp,
       sp_session_ial,
       token,
       transaction_id: nil,
-      user_id: current_user.id,
+      user: current_user,
     )
   end
 
@@ -441,7 +441,7 @@ class ApplicationController < ActionController::Base
 
   def handle_banned_user
     return unless user_is_banned?
-    analytics.track_event(Analytics::BANNED_USER_REDIRECT)
+    analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
   end

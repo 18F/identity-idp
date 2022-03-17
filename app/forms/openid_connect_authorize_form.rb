@@ -70,7 +70,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def link_identity_to_service_provider(current_user, rails_session_id)
-    identity_linker = IdentityLinker.new(current_user, client_id)
+    identity_linker = IdentityLinker.new(current_user, service_provider)
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
@@ -197,10 +197,6 @@ class OpenidConnectAuthorizeForm
 
   def ial
     Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
-  end
-
-  def aal
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[aal_values.sort.max]
   end
 
   def extra_analytics_attributes
