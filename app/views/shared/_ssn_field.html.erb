@@ -4,11 +4,13 @@ locals:
 %>
 
 <%# maxlength set and includes '-' delimiters to work around cleave bug %>
-<%= render ValidatedFieldComponent.new(
+<%= render PasswordToggleComponent.new(
       name: :ssn,
       form: f,
       as: :password,
       label: t('idv.form.ssn_label_html'),
+      toggle_label: t('forms.ssn.show'),
+      toggle_position: :bottom,
       hint: t('forms.example') + ' 123-45-6789',
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
