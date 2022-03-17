@@ -1,4 +1,4 @@
-@mixin color-list($color: $yellow) {
+@mixin color-list($color: color('warning')) {
   list-style: none;
   padding: 0;
 
@@ -37,13 +37,13 @@
 }
 
 .red-dots {
-  @include color-list($red);
+  @include color-list(color('secondary'));
 }
 
 .teal-dots {
-  @include color-list($teal);
+  @include color-list(color('info'));
 }
 
 .yellow-dots {
-  @include color-list($yellow);
+  @include color-list(color('warning'));
 }
