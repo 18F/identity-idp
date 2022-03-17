@@ -40,6 +40,10 @@ textarea {
     box-shadow: 0 0 0 2px rgba($field-focus-color, 0.5);
     outline: none;
   }
+
+  &.usa-input--error {
+    @include u-border($theme-input-state-border-width, 'error');
+  }
 }
 
 input::-webkit-outer-spin-button,
