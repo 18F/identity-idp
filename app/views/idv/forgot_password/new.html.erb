@@ -1,21 +1,22 @@
-<% title t('titles.idv.reset_password') %>
-
-<%= image_tag(asset_url('alert/forgot.svg'), width: 54, class: 'margin-bottom-2') %>
-
-<%= render PageHeadingComponent.new.with_content(t('idv.forgot_password.modal_header')) %>
-
-<hr>
-
-<ul class="usa-list--unstyled teal-dots">
-  <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
-  <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
-</ul>
-
-<div class='margin-top-4'>
-  <%= link_to t('idv.forgot_password.try_again'), idv_review_path,
-              class: 'usa-button usa-button--big usa-button--wide' %>
-</div>
-<div class='margin-top-2'>
-  <%= button_to t('idv.forgot_password.reset_password'), idv_forgot_password_path,
-                method: :post, class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
-</div>
+<%= render(
+      layout: 'idv/shared/error',
+      locals: {
+        type: :question,
+        title: t('titles.idv.reset_password'),
+        heading: t('idv.forgot_password.modal_header'),
+        action: {
+          text: t('idv.forgot_password.try_again'),
+          url: idv_review_path,
+        },
+        action_secondary: {
+          text: t('idv.forgot_password.reset_password'),
+          url: idv_forgot_password_path,
+          method: :post,
+        },
+      },
+    ) do %>
+      <ul class="usa-list">
+        <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
+        <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
+      </ul>
+    <% end %>

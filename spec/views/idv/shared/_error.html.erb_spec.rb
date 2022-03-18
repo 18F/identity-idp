@@ -14,7 +14,7 @@ describe 'idv/shared/_error.html.erb' do
       action: action,
       action_secondary: action_secondary,
       options: options,
-    }
+    }.compact
   end
 
   before do
@@ -160,6 +160,21 @@ describe 'idv/shared/_error.html.erb' do
 
       it 'shows an appropriate troubleshooting heading' do
         expect(rendered).to have_css('h2', text: t('idv.troubleshooting.headings.need_assistance'))
+      end
+    end
+
+    context 'question' do
+      let(:type) { :question }
+
+      it 'includes informative image' do
+        expect(rendered).to have_css("[src*='question'][alt=#{t('errors.alt.question')}]")
+      end
+
+      it 'shows an appropriate troubleshooting heading' do
+        expect(rendered).to have_css(
+          'h2',
+          text: t('components.troubleshooting_options.default_heading'),
+        )
       end
     end
   end
