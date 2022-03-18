@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'query_tracker'
 
 describe 'OpenID Connect' do
   include IdvHelper
@@ -614,6 +615,14 @@ describe 'OpenID Connect' do
           to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end
     end
+  end
+
+  it 'does not make too many queries' do
+    queries = QueryTracker.track do
+      visit_idp_from_ial1_oidc_sp
+    end
+
+    expect(queries[:service_providers].count).to be <= 6
   end
 
   def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)
