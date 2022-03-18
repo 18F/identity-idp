@@ -15,9 +15,10 @@ class QueryTracker
 
         action = sql.split(' ').first.downcase.to_sym
         tables = PgQuery.parse(sql).tables.map(&:to_sym)
+        location = caller.find { |line| line.include?(Rails.root.to_s) }
 
         tables.each do |table|
-          queries[table] << [action, sql]
+          queries[table] << [action, location]
         end
       end
 

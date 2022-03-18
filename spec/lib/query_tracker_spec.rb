@@ -10,7 +10,14 @@ RSpec.describe QueryTracker do
       end
 
       expect(queries[:users].length).to eq(2)
-      expect(queries[:users].map(&:first)).to eq([:select, :insert])
+
+      first_action, first_location = queries[:users].first
+      expect(first_action).to eq(:select)
+      expect(first_location).to match(/query_tracker_spec.rb:8/)
+
+      second_action, second_location = queries[:users].last
+      expect(second_action).to eq(:insert)
+      expect(second_location).to match(/query_tracker_spec.rb:9/)
     end
 
     it 'tracks queries with complex joins' do
