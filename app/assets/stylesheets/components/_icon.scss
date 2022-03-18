@@ -29,7 +29,7 @@ $icon-min-padding: 2px;
       content: '';
       display: block;
       height: $h4;
-      left: -$space-3;
+      left: units(neg-4);
       position: absolute;
       top: (lh('body', $theme-body-line-height) - $h4) * 0.5;
       width: $h4;
