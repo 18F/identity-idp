@@ -22,12 +22,11 @@
     <%= t('users.delete.instructions') %>
   </p>
 
-  <%= render ValidatedFieldComponent.new(
+  <%= render PasswordToggleComponent.new(
         form: f,
         name: :password,
         label: t('idv.form.password'),
         required: true,
-        input_html: { class: 'password-toggle' },
       ) %>
 
   <%= f.button(
