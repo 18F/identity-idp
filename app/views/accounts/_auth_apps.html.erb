@@ -5,7 +5,7 @@
   <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
       <div class="grid-col-8">
-        <div class="grid-col-12 mobile-lg:grid-col-6">
+        <div class="grid-col-12 tablet:grid-col-6">
           <%= auth_app_configuration.name %>
         </div>
       </div>
