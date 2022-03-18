@@ -15,19 +15,19 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in 'doc_auth_ssn', with: '123-45-6666'
+    fill_in t('idv.form.ssn_label_html'), with: '123-45-6666'
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
-    fill_in 'doc_auth_ssn', with: '000-00-0000'
+    fill_in t('idv.form.ssn_label_html'), with: '000-00-0000'
   end
 
   def fill_out_ssn_form_ok
-    fill_in 'doc_auth_ssn', with: GOOD_SSN
+    fill_in t('idv.form.ssn_label_html'), with: GOOD_SSN
   end
 
   def fill_out_ssn_form_fail
-    fill_in 'doc_auth_ssn', with: ''
+    fill_in t('idv.form.ssn_label_html'), with: ''
   end
 
   def click_doc_auth_back_link

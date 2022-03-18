@@ -54,7 +54,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_path
       complete_all_doc_auth_steps
       click_idv_continue
-      fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+      fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
@@ -68,7 +68,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_path
       complete_all_doc_auth_steps(expect_accessible: true)
       click_idv_continue
-      fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+      fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
@@ -82,7 +82,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_path
       complete_all_doc_auth_steps(expect_accessible: true)
       click_idv_continue
-      fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+      fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
       expect(current_path).to eq idv_personal_key_path
