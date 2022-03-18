@@ -21,6 +21,7 @@ test:
       - 'http://example.com/'
       - 'http://example.com/auth/result'
       - 'http://example.com/logout'
+      - 'http://sub.example.com/'
 
   'http://localhost:3000':
     acs_url: 'http://localhost:3000/test/saml/decode_assertion'
