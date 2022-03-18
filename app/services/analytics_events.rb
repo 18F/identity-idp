@@ -84,6 +84,14 @@ module AnalyticsEvents
     track_event('Account Page Visited')
   end
 
+  # @identity.idp.event_name Add Email: Email Confirmation
+  # @param [Boolean] success
+  # @param [String] user_id account the email is linked to
+  # A user has clicked the confirmation link in an email
+  def add_email_confirmation(user_id:, **extra)
+    track_event('Add Email: Email Confirmation', user_id: user_id, **extra)
+  end
+
   # @identity.idp.event_name Authentication Confirmation
   # When a user views the "you are already signed in with the following email" screen
   def authentication_confirmation
@@ -109,6 +117,13 @@ module AnalyticsEvents
   # to a page showing them that they have been banned
   def banned_user_redirect
     track_event('Banned User redirected')
+  end
+
+  # @identity.idp.event_name Banned User visited
+  # A user that has been banned from an SP has authenticated, they have visited
+  # a page showing them that they have been banned
+  def banned_user_visited
+    track_event('Banned User visited')
   end
 
   # @identity.idp.event_name IdV: phone confirmation otp submitted

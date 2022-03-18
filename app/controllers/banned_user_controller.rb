@@ -1,5 +1,5 @@
 class BannedUserController < ApplicationController
   def show
-    analytics.track_event(Analytics::BANNED_USER_VISITED)
+    analytics.banned_user_visited
   end
 end

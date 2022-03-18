@@ -2,7 +2,7 @@ module Users
   class EmailConfirmationsController < ApplicationController
     def create
       result = email_confirmation_token_validator.submit
-      analytics.track_event(Analytics::ADD_EMAIL_CONFIRMATION, result.to_h)
+      analytics.add_email_confirmation(**result.to_h)
       if result.success?
         process_successful_confirmation(email_address)
       else
