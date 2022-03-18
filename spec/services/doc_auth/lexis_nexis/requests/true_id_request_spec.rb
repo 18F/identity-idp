@@ -19,6 +19,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       trueid_noliveness_nocropping_workflow: 'test_workflow',
     )
   end
+  let(:response_body) do
+    passing_response_body
+  end
   let(:subject) do
     described_class.new(
       config: config,
@@ -80,9 +83,29 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       it_behaves_like 'a successful request'
     end
   end
+
+  context 'with the passthrough API' do
+    let(:config) do
+      DocAuth::LexisNexis::Config.new(
+        trueid_account_id: account_id,
+        base_url: base_url,
+        trueid_liveness_cropping_workflow: 'test_workflow_cropping_liveness.Passthrough',
+        trueid_liveness_nocropping_workflow: 'test_workflow_liveness.Passthrough',
+        trueid_noliveness_cropping_workflow: 'test_workflow_cropping.Passthrough',
+        trueid_noliveness_nocropping_workflow: 'test_workflow.Passthrough',
+      )
+    end
+    let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+    let(:workflow) { "test_workflow.Passthrough" }
+    let(:response_body) do
+      LexisNexisFixtures.true_id_passthrough_response
+    end
+
+    it_behaves_like 'a successful request'
+  end
 end
 
-def response_body
+def passing_response_body
   {
     Status: {
       TransactionStatus: 'passed',

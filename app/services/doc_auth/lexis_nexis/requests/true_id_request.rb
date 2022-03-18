@@ -39,7 +39,17 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
+          return handle_passthrough_response(http_response) if /Passthrough/.match?(workflow)
+
           LexisNexis::Responses::TrueIdResponse.new(
+            http_response,
+            liveness_checking_enabled,
+            config,
+          )
+        end
+
+        def handle_passthrough_response(http_response)
+          LexisNexis::Responses::TrueIdPassthroughResponse.new(
             http_response,
             liveness_checking_enabled,
             config,
@@ -63,15 +73,18 @@ module DocAuth
         end
 
         def workflow
-          if liveness_checking_enabled && acuant_sdk_source?
-            config.trueid_liveness_nocropping_workflow
-          elsif liveness_checking_enabled && !acuant_sdk_source?
-            config.trueid_liveness_cropping_workflow
-          elsif !liveness_checking_enabled && acuant_sdk_source?
-            config.trueid_noliveness_nocropping_workflow
-          else
-            config.trueid_noliveness_cropping_workflow
-          end
+          return liveness_workflow if liveness_checking_enabled
+          noliveness_workflow
+        end
+
+        def liveness_workflow
+          return config.trueid_liveness_nocropping_workflow if acuant_sdk_source?
+          config.trueid_liveness_cropping_workflow
+        end
+
+        def noliveness_workflow
+          return config.trueid_noliveness_nocropping_workflow if acuant_sdk_source?
+          config.trueid_noliveness_cropping_workflow
         end
 
         def acuant_sdk_source?
