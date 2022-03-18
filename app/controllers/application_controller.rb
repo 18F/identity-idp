@@ -86,7 +86,7 @@ class ApplicationController < ActionController::Base
 
   def decorated_session
     @decorated_session ||= DecoratedSession.new(
-      sp: current_sp || sp_from_request_issuer_logout,
+      sp: current_sp,
       view_context: view_context,
       sp_session: sp_session,
       service_provider_request: service_provider_request,
