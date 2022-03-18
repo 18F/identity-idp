@@ -85,9 +85,9 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name Add Email: Email Confirmation
-  # @param [Integer] user_id of the email confirmation
-  # A user has been sent an email confirmation
-  def add_email_confirmation(user_id, **extra)
+  # @param [String] user_id account the email is linked to
+  # A user has clicked the confirmation link in an email
+  def add_email_confirmation(user_id:, **extra)
     track_event('Add Email: Email Confirmation', user_id: user_id, **extra)
   end
 
