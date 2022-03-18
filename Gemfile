@@ -94,6 +94,7 @@ group :development, :test do
   gem 'knapsack'
   gem 'nokogiri', '~> 1.13.2'
   gem 'parallel_tests'
+  gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-doc'
   gem 'pry-rails'
