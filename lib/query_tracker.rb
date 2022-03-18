@@ -5,7 +5,7 @@ require 'pg_query'
 class QueryTracker
   # @yield block to track queries during
   # @return [Hash<Symbol, Array<Array(:Symbol, String)>>] a hash of
-  #   {table_name: [[:select, "query"]]}
+  #   {table_name: [[:select, "source_location.rb:123"]]}
   def self.track
     queries = Hash.new { |h, k| h[k] = [] }
 
