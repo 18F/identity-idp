@@ -16,10 +16,12 @@ const flags = args.filter((arg) => arg.startsWith('-'));
 /** @type {import('./index').NormalizeOptions} */
 const options = {
   prettierConfig,
-  exclude: /** @type {import('./index').Formatter[]} */ ([
-    flags.includes('--disable-sort-keys') && 'sortKeys',
-    flags.includes('--disable-smart-punctuation') && 'smartPunctuation',
-  ].filter(Boolean)),
+  exclude: /** @type {import('./index').Formatter[]} */ (
+    [
+      flags.includes('--disable-sort-keys') && 'sortKeys',
+      flags.includes('--disable-smart-punctuation') && 'smartPunctuation',
+    ].filter(Boolean)
+  ),
 };
 
 Promise.all(

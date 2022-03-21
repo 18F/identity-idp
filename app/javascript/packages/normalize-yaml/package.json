@@ -7,7 +7,7 @@
     "normalize-yaml": "./cli.js"
   },
   "dependencies": {
-    "prettier": "^2.2.1",
+    "prettier": "^2.6.0",
     "smartquotes": "^2.3.2",
     "yaml": "^2.0.0-5"
   }

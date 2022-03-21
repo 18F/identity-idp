@@ -53,11 +53,8 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState(
     /** @type {CaptureAttemptMetadata} */ (DEFAULT_LAST_ATTEMPT_METADATA),
   );
-  const [
-    failedCaptureAttempts,
-    incrementFailedCaptureAttempts,
-    onResetFailedCaptureAttempts,
-  ] = useCounter();
+  const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
+    useCounter();
 
   /**
    * @param {CaptureAttemptMetadata} metadata
