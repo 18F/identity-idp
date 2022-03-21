@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
   skip_before_action :verify_authenticity_token
+  before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
   before_action :bump_auth_count, only: [:auth]
@@ -107,6 +108,17 @@ class SamlIdpController < ApplicationController
       requested_ial: saml_request&.requested_ial_authn_context || 'none',
     )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+  end
+
+  def log_external_saml_auth_request
+    return unless URI(request.referer).host == request.host
+    analytics_payload = {
+      idv: identity_needs_verification?,
+      finish_profile: profile_needs_verification?,
+      requested_ial: saml_request&.requested_ial_authn_context || 'none',
+      service_provider: saml_request&.issuer,
+    }
+    analytics.saml_auth_request(**analytics_payload)
   end
 
   def handle_successful_handoff

@@ -248,4 +248,29 @@ module AnalyticsEvents
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
   end
+
+  # @identity.idp.event_name SAML Auth Request
+  # @param [Boolean] idv indicating whether identity verification is needed
+  # @param [Boolean] finish_profile indicating if proofing is needed for a pending/reset profile
+  # @param [Integer] requested_ial
+  # @param [String] service_provider
+  # An external request for SAML Authentication was received
+  def saml_auth_request(
+    idv:,
+    finish_profile:,
+    requested_ial:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth Request',
+      {
+        idv: idv,
+        finish_profile: finish_profile,
+        requested_ial: requested_ial,
+        service_provider: service_provider,
+        **extra,
+      }.compact,
+    )
+  end
 end
