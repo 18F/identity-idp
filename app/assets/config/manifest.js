@@ -1,4 +1,5 @@
 //= link_tree ../images
+//= link_tree ../fonts
 
 //= link es5-shim.min.js
 //= link html5shiv.js
