@@ -268,7 +268,7 @@ describe 'OpenID Connect' do
         fill_out_phone_form_mfa_phone(user)
         click_idv_continue
 
-        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
         click_continue
 
         acknowledge_and_confirm_personal_key(js: false)

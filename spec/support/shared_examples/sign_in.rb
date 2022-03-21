@@ -364,12 +364,12 @@ def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
 
   max_allowed_attempts = IdentityConfig.store.password_max_attempts
   (max_allowed_attempts - 1).times do
-    fill_in 'user_password', with: 'badpassword'
+    fill_in t('account.index.password'), with: 'badpassword'
     click_button t('forms.buttons.submit.default')
     expect(page).to have_content(t('errors.confirm_password_incorrect'))
   end
 
-  fill_in 'user_password', with: 'badpassword'
+  fill_in t('account.index.password'), with: 'badpassword'
   click_button t('forms.buttons.submit.default')
   expect(page).to have_content(t('errors.max_password_attempts_reached'))
 end
