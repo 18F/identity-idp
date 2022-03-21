@@ -9,16 +9,18 @@ module DocAuth
 
         attr_reader :config
 
-        def initialize(http_response, liveness_checking_enabled, config)
+        def initialize(http_response, liveness_checking_enabled, config, workflow)
           @liveness_checking_enabled = liveness_checking_enabled
           @config = config
+          @workflow = workflow
 
           super acuant_response(http_response), config
         end
 
         def acuant_response(http_response)
           parsed_response = parsed_trueid_response_body(http_response)
-          Ahoy::Tracker.new.track('Acuant Passthrough API Response', just_keys(parsed_response))
+          Ahoy::Tracker.new.track('Acuant Passthrough API Response',
+                                  just_keys(parsed_response).merge({ workflow: @workflow }))
           acuant_body = parsed_response["PassThroughs"][0]["Data"]
           OpenStruct.new(body: acuant_body)
         end
@@ -32,7 +34,11 @@ module DocAuth
             if value.is_a?(Hash)
               [key, just_keys(value)]
             else
-              [key, 'redacted']
+              if %w[Information Status ConversationId TransactionReasonCode Code TransactionStatus].include?(key)
+                [key, value]
+              else
+                [key, 'redacted']
+              end
             end
           end
         end

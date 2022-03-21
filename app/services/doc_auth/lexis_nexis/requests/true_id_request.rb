@@ -39,7 +39,7 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          return handle_passthrough_response(http_response) if /Passthrough/.match?(workflow)
+          return handle_passthrough_response(http_response, workflow) if /Passthrough/.match?(workflow)
 
           LexisNexis::Responses::TrueIdResponse.new(
             http_response,
@@ -48,11 +48,12 @@ module DocAuth
           )
         end
 
-        def handle_passthrough_response(http_response)
+        def handle_passthrough_response(http_response, workflow)
           LexisNexis::Responses::TrueIdPassthroughResponse.new(
             http_response,
             liveness_checking_enabled,
             config,
+            workflow,
           )
         end
 
