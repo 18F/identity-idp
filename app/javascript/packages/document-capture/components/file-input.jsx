@@ -132,9 +132,10 @@ function FileInput(props, ref) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previousValue = usePrevious(value);
   const previousIsValuePending = usePrevious(isValuePending);
-  const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [
-    value,
-  ]);
+  const isUpdated = useMemo(
+    () => Boolean(previousValue && value && previousValue !== value),
+    [value],
+  );
   const isPendingValueReceived = useMemo(
     () => previousIsValuePending && !isValuePending && !!value,
     [value, isValuePending, previousIsValuePending],

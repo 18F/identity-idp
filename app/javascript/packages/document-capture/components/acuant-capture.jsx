@@ -142,10 +142,8 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
     return 'User or system denied camera access';
   }
 
-  const {
-    REPEAT_FAIL_CODE,
-    SEQUENCE_BREAK_CODE,
-  } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
+    .AcuantJavascriptWebSdk;
 
   switch (code) {
     case REPEAT_FAIL_CODE:
@@ -284,9 +282,8 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] = useCookie(
-    'AcuantCameraHasFailed',
-  );
+  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
+    useCookie('AcuantCameraHasFailed');
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -368,16 +365,17 @@ function AcuantCapture(
    * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
    */
   function withLoggedClick(source, metadata = { isDrop: false }) {
-    return (fn) => (...args) => {
-      if (!isSuppressingClickLogging.current) {
-        addPageAction({
-          label: `IdV: ${name} image clicked`,
-          payload: { source, ...metadata },
-        });
-      }
+    return (fn) =>
+      (...args) => {
+        if (!isSuppressingClickLogging.current) {
+          addPageAction({
+            label: `IdV: ${name} image clicked`,
+            payload: { source, ...metadata },
+          });
+        }
 
-      return fn(...args);
-    };
+        return fn(...args);
+      };
   }
 
   /**
@@ -515,9 +513,8 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={(error, code) => {
-            const {
-              SEQUENCE_BREAK_CODE,
-            } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+            const { SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
+              .AcuantJavascriptWebSdk;
             if (isAcuantCameraAccessFailure(error)) {
               if (fullScreenRef.current?.focusTrap) {
                 suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);

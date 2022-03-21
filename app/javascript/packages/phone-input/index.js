@@ -21,9 +21,8 @@ import { replaceVariables } from '@18f/identity-i18n';
  * @prop {Record<string, string>} numberType
  */
 
-const {
-  intlTelInputUtils,
-} = /** @type {window & { intlTelInputUtils: IntlTelInputUtilsGlobal }} */ (window);
+const { intlTelInputUtils } =
+  /** @type {window & { intlTelInputUtils: IntlTelInputUtilsGlobal }} */ (window);
 
 const isPhoneValid = (phone, countryCode) => {
   let phoneValid = isValidNumber(phone, countryCode);

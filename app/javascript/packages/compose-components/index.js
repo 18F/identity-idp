@@ -39,9 +39,9 @@ export function composeComponents(...components) {
     /** @type {JSX.Element?} */
     let element = null;
     for (let i = components.length - 1; i >= 0; i--) {
-      const componentPair = /** @type {NormalizedComponentPair<*>} */ (Array.isArray(components[i])
-        ? components[i]
-        : [components[i]]);
+      const componentPair = /** @type {NormalizedComponentPair<*>} */ (
+        Array.isArray(components[i]) ? components[i] : [components[i]]
+      );
       const [ComponentType, props] = componentPair;
       element = createElement(ComponentType, props, element);
     }

@@ -5,8 +5,8 @@ new DocumentCapturePolling({
   statusEndpoint: /** @type {string} */ (getPageData('docCaptureStatusEndpoint')),
   elements: {
     backLink: /** @type {HTMLAnchorElement} */ (document.querySelector('.link-sent-back-link')),
-    form: /** @type {HTMLFormElement} */ (document.querySelector(
-      '.link-sent-continue-button-form',
-    )),
+    form: /** @type {HTMLFormElement} */ (
+      document.querySelector('.link-sent-continue-button-form')
+    ),
   },
 }).bind();
