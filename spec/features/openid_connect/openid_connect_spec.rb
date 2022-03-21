@@ -195,7 +195,7 @@ describe 'OpenID Connect' do
     token_response = sign_in_get_token_response(
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
-        expect(page).to not_to have_content(t('help_text.requested_attributes.verified_at'))
+        expect(page).not_to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
       end,
