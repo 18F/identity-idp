@@ -11,7 +11,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
   subject(:rendered) { render_inline PasswordToggleComponent.new(form: form, **options) }
 
   it 'renders default markup' do
-    expect(rendered).to have_css('lg-password-toggle.password-toggle--label-top')
+    expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-top')
     expect(rendered).to have_field(t('components.password_toggle.label'), type: :password)
     expect(rendered).to have_field(t('components.password_toggle.toggle_label'), type: :checkbox)
   end
@@ -50,7 +50,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
       let(:options) { { toggle_position: :top } }
 
       it 'renders modifier class' do
-        expect(rendered).to have_css('lg-password-toggle.password-toggle--label-top')
+        expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-top')
       end
 
       it 'renders toggle before input' do
@@ -62,7 +62,7 @@ RSpec.describe PasswordToggleComponent, type: :component do
       let(:options) { { toggle_position: :bottom } }
 
       it 'renders modifier class' do
-        expect(rendered).to have_css('lg-password-toggle.password-toggle--label-bottom')
+        expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-bottom')
       end
 
       it 'renders toggle after input' do

@@ -15,6 +15,13 @@ class PasswordToggleComponent < BaseComponent
     @field_options = field_options
   end
 
+  def css_class
+    classes = []
+    classes << 'password-toggle--toggle-top' if toggle_position == :top
+    classes << 'password-toggle--toggle-bottom' if toggle_position == :bottom
+    classes
+  end
+
   def toggle_id
     "password-toggle-#{unique_id}"
   end
