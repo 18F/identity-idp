@@ -32,15 +32,26 @@ module Pii
     end
 
     def fetch_string
-      user_session[:decrypted_pii]
+      return unless user_session[:decrypted_pii] || user_session[:encrypted_pii]
+      if user_session[:decrypted_pii]
+        user_session[:decrypted_pii]
+      elsif user_session[:encrypted_pii]
+        decrypted = SessionEncryptor.new.kms_decrypt(
+          user_session[:encrypted_pii],
+        )
+        user_session[:decrypted_pii] = decrypted
+
+        decrypted
+      end
     end
 
     def exists_in_session?
-      fetch_string.present?
+      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
     end
 
     def delete
       user_session.delete(:decrypted_pii)
+      user_session.delete(:encrypted_pii)
     end
 
     private
