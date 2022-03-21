@@ -53,7 +53,7 @@
                                                           class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
               <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
             </button>
-            <ul class="i18n-desktop-dropdown usa-list--unstyled margin-bottom-0 display-none">
+            <ul class="i18n-desktop-dropdown usa-dark-background bg-primary usa-list--unstyled margin-bottom-0 display-none">
               <% I18n.available_locales.each do |locale| %>
                 <li class='border-bottom border-primary-darker'>
                   <%= link_to t("i18n.locale.#{locale}"),
