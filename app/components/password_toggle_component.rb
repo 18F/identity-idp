@@ -1,5 +1,5 @@
 class PasswordToggleComponent < BaseComponent
-  attr_reader :form, :label, :toggle_label, :toggle_position, :required, :field_options
+  attr_reader :form, :label, :toggle_label, :toggle_position, :field_options
 
   def initialize(
     form:,
@@ -12,7 +12,6 @@ class PasswordToggleComponent < BaseComponent
     @label = label
     @toggle_label = toggle_label
     @toggle_position = toggle_position
-    @required = required
     @field_options = field_options
   end
 
