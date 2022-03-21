@@ -40,18 +40,6 @@
   left: -1px;
   position: absolute;
   width: 194px;
-
-  a {
-    color: color($theme-link-reverse-color);
-
-    &:hover {
-      color: color($theme-link-reverse-hover-color);
-    }
-
-    &:active {
-      color: color($theme-link-reverse-active-color);
-    }
-  }
 }
 
 .language-desktop-button {
