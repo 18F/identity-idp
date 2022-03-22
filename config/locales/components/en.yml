@@ -4,8 +4,6 @@ en:
     password_toggle:
       label: Password
       toggle_label: Show password
-      visible_state_hidden: Your password is hidden
-      visible_state_visible: Your password is visible
     phone_input:
       country_code_label: Country code
     status_page:

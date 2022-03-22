@@ -28,14 +28,7 @@ describe('PasswordToggleElement', () => {
         >
           <%= toggle_label %>
         </label>
-      </div>
-      <script type="application/json" class="password-toggle__strings">
-        {
-          "visible": "Password is visible",
-          "hidden": "Password is hidden"
-        }
-      </script>
-      <div class="password-toggle__visible-state usa-sr-only" role="status"></div>`;
+      </div>`;
     document.body.appendChild(element);
     return element;
   }
@@ -52,19 +45,5 @@ describe('PasswordToggleElement', () => {
     userEvent.click(toggle);
 
     expect(input.type).to.equal('text');
-  });
-
-  it('announces visible state on toggle', () => {
-    const { toggle, visibleState } = createElement().elements;
-
-    expect(visibleState.textContent).to.be.empty();
-
-    userEvent.click(toggle);
-
-    expect(visibleState.textContent).to.equal('Password is visible');
-
-    userEvent.click(toggle);
-
-    expect(visibleState.textContent).to.equal('Password is hidden');
   });
 });
