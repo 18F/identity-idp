@@ -33,6 +33,8 @@ module DocAuth
           hash.to_h do |key, value|
             if value.is_a?(Hash)
               [key, just_keys(value)]
+            elsif value.is_a?(Array)
+              [key, value.map {|element| just_keys(element)}]
             elsif non_pii?(key)
               [key, value]
             else
