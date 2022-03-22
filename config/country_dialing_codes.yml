@@ -8,65 +8,37 @@ AD:
   name: Andorra
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Andorra
-    es: Andorra
-    fr: Andorre
 AE:
   country_code: '971'
   name: United Arab Emirates (UAE)
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: United Arab Emirates (UAE)
-    es: Emiratos Árabes Unidos
-    fr: Émirats Arabes Unis
 AF:
   country_code: '93'
   name: Afghanistan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Afghanistan
-    es: Afganistán
-    fr: Afghanistan
 AG:
   country_code: '1268'
   name: Antigua and Barbuda
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Antigua and Barbuda
-    es: Antigua y Barbuda
-    fr: Antigua et Barbuda
 AI:
   country_code: '1264'
   name: Anguilla
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Anguilla
-    es: Anguila
-    fr: Anguille
 AL:
   country_code: '355'
   name: Albania
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Albania
-    es: Albania
-    fr: Albanie
 AM:
   country_code: '374'
   name: Armenia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Armenia
-    es: Armenia
-    fr: Arménie
 AO:
   country_code: '244'
   name: Angola
@@ -77,28 +49,16 @@ AR:
   name: Argentina
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Argentina
-    es: Argentina
-    fr: Argentine
 AT:
   country_code: '43'
   name: Austria
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Austria
-    es: Austria
-    fr: Autriche
 AU:
   country_code: '61'
   name: Australia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Australia
-    es: Australia
-    fr: Australie
 AW:
   country_code: '297'
   name: Aruba
@@ -109,28 +69,16 @@ AZ:
   name: Azerbaijan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Azerbaijan
-    es: Azerbaiján
-    fr: Azerbaïdjan
 BA:
   country_code: '387'
   name: Bosnia and Herzegovina
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Bosnia and Herzegovina
-    es: Bosnia y Herzegovina
-    fr: Bosnie-Herzégovine
 BB:
   country_code: '1246'
   name: Barbados
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Barbados
-    es: Barbados
-    fr: La Barbade
 BD:
   country_code: '880'
   name: Bangladesh
@@ -141,10 +89,6 @@ BE:
   name: Belgium
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Belgium
-    es: Bélgica
-    fr: Belgique
 BF:
   country_code: '226'
   name: Burkina Faso
@@ -155,10 +99,6 @@ BG:
   name: Bulgaria
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Bulgaria
-    es: Bulgaria
-    fr: Bulgarie
 BH:
   country_code: '973'
   name: Bahrain
@@ -194,28 +134,16 @@ BO:
   name: Bolivia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Bolivia
-    es: Bolivia
-    fr: Bolivie
 BQ:
   country_code: '599'
   name: Netherlands Antilles
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Netherlands Antilles
-    es: Antillas Holandesas
-    fr: Antilles néerlandaises
 BR:
   country_code: '55'
   name: Brazil
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Brazil
-    es: Brasil
-    fr: Brésil
 BS:
   country_code: '1242'
   name: Bahamas
@@ -226,10 +154,6 @@ BT:
   name: Bhutan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Bhutan
-    es: Bután
-    fr: Bhoutan
 BW:
   country_code: '267'
   name: Botswana
@@ -241,10 +165,6 @@ BY:
   supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Belarus
-    es: Bielorrusia
-    fr: Biélorussie
 BZ:
   country_code: '501'
   name: Belize
@@ -260,55 +180,31 @@ CD:
   name: Democratic Republic of the Congo
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Democratic Republic of the Congo
-    es: null
-    fr: null
 CF:
   country_code: '236'
   name: Central African Republic
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Central African Republic
-    es: República Democrática del Congo
-    fr: République Démocratique du Congo
 CG:
   country_code: '242'
   name: Republic of the Congo
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Republic of the Congo
-    es: República del Congo
-    fr: République du Congo
 CH:
   country_code: '41'
   name: Switzerland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Switzerland
-    es: Suiza
-    fr: La Suisse
 CI:
   country_code: '225'
   name: Ivory Coast
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Ivory Coast
-    es: Costa de Marfil
-    fr: Côte d’Ivoire
 CK:
   country_code: '682'
   name: Cook Islands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cook Islands
-    es: Islas Cook
-    fr: Les Îles Cook
 CL:
   country_code: '56'
   name: Chile
@@ -319,19 +215,11 @@ CM:
   name: Cameroon
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cameroon
-    es: Camerún
-    fr: Cameroun
 CN:
   country_code: '86'
   name: China
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: China
-    es: China
-    fr: Chine
 CO:
   country_code: '57'
   name: Colombia
@@ -347,181 +235,101 @@ CV:
   name: Cape Verde
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cape Verde
-    es: Cabo Verde
-    fr: Cap-Vert
 CY:
   country_code: '357'
   name: Cyprus
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cyprus
-    es: Chipre
-    fr: Chypre
 CZ:
   country_code: '420'
   name: Czechia (Czech Republic)
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Czechia (Czech Republic)
-    es: Chequia (República Checa)
-    fr: Tchéquie (République tchèque)
 DE:
   country_code: '49'
   name: Germany
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Germany
-    es: Alemania
-    fr: Allemagne
 DJ:
   country_code: '253'
   name: Djibouti
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Djibouti
-    es: Yibuti
-    fr: Djibouti
 DK:
   country_code: '45'
   name: Denmark
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Denmark
-    es: Dinamarca
-    fr: Danemark
 DM:
   country_code: '1767'
   name: Dominica
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Dominica
-    es: Dominica
-    fr: Dominique
 DO:
   country_code: '1'
   name: Dominican Republic
   supports_sms: true
-  supports_voice: true
-  translated_names:
-    en: Dominican Republic
-    es: República Dominicana
-    fr: République dominicaine
+  supports_voice: false
 DZ:
   country_code: '213'
   name: Algeria
   supports_sms: false
   supports_voice: false
-  translated_names:
-    en: Algeria
-    es: Argelia
-    fr: Algérie
 EC:
   country_code: '593'
   name: Ecuador
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Ecuador
-    es: Ecuador
-    fr: Equateur
 EE:
   country_code: '372'
   name: Estonia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Estonia
-    es: Estonia
-    fr: Estonie
 EG:
   country_code: '20'
   name: Egypt
   supports_sms: true
   supports_voice: true
-  translated_names:
-    en: Egypt
-    es: Egipto
-    fr: Egypte
 ER:
   country_code: '291'
   name: Eritrea
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Eritrea
-    es: Eritrea
-    fr: Érythrée
 ES:
   country_code: '34'
   name: Spain
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Spain
-    es: España
-    fr: Espagne
 ET:
   country_code: '251'
   name: Ethiopia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Ethiopia
-    es: Etiopía
-    fr: Ethiopie
 FI:
   country_code: '358'
   name: Finland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Finland
-    es: Finlandia
-    fr: Finlande
 FJ:
   country_code: '679'
   name: Fiji
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Fiji
-    es: Fiyi
-    fr: Fidji
 FM:
   country_code: '691'
   name: Micronesia (Federated States of)
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Micronesia (Federated States of)
-    es: Micronesia (Estados Federados de)
-    fr: Micronésie (États fédérés de)
 FO:
   country_code: '298'
   name: Faroe Islands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Faroe Islands
-    es: Islas Faroe
-    fr: Îles Féroé
 FR:
   country_code: '33'
   name: France
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: France
-    es: Francia
-    fr: France
 GA:
   country_code: '241'
   name: Gabon
@@ -532,10 +340,6 @@ GB:
   name: United Kingdom
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: United Kingdom
-    es: Reino Unido
-    fr: Royaume-Uni
 GD:
   country_code: '1473'
   name: Grenada
@@ -546,28 +350,16 @@ GE:
   name: Georgia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Georgia
-    es: Georgia
-    fr: Géorgie
 GF:
   country_code: '594'
   name: French Guiana
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: French Guiana
-    es: Guayana Francesa
-    fr: Guyane Française
 GG:
   country_code: '44'
   name: Guernsey
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Guernsey
-    es: Guernesey
-    fr: Guernesey
 GH:
   country_code: '233'
   name: Ghana
@@ -583,28 +375,16 @@ GL:
   name: Greenland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Greenland
-    es: Groenlandia
-    fr: Groenland
 GM:
   country_code: '220'
   name: Gambia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Gambia
-    es: Gambia
-    fr: Gambie
 GN:
   country_code: '224'
   name: Guinea
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Guinea
-    es: Guinea
-    fr: Guinée
 GP:
   country_code: '590'
   name: Guadeloupe
@@ -612,22 +392,14 @@ GP:
   supports_voice: false
 GQ:
   country_code: '240'
-  name: Equitorial Guinea
+  name: Equatorial Guinea
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Equitorial Guinea
-    es: Guinea Ecuatorial
-    fr: Guinée Équatoriale
 GR:
   country_code: '30'
   name: Greece
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Greece
-    es: Grecia
-    fr: Grèce
 GT:
   country_code: '502'
   name: Guatemala
@@ -643,19 +415,11 @@ GW:
   name: Guinea-Bissau
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Guinea-Bissau
-    es: Guinea-Bisáu
-    fr: Guinée-Bissau
 GY:
   country_code: '592'
   name: Guyana
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Guyana
-    es: Guayana
-    fr: Guyane
 HK:
   country_code: '852'
   name: Hong Kong
@@ -671,10 +435,6 @@ HR:
   name: Croatia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Croatia
-    es: Croacia
-    fr: Croatie
 HT:
   country_code: '509'
   name: Haiti
@@ -685,83 +445,47 @@ HU:
   name: Hungary
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Hungary
-    es: Hungría
-    fr: Hongrie
 ID:
   country_code: '62'
   name: Indonesia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Indonesia
-    es: Indonesia
-    fr: Indonésie
 IE:
   country_code: '353'
   name: Ireland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Ireland
-    es: Irlanda
-    fr: Irlande
 IL:
   country_code: '972'
   name: Israel
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Israel
-    es: Israel
-    fr: Israël
 IM:
   country_code: '44'
   name: Isle of Man
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Isle of Man
-    es: Isla del hombre
-    fr: île de Man
 IN:
   country_code: '91'
   name: India
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: India
-    es: India
-    fr: Inde
 IQ:
   country_code: '964'
   name: Iraq
   supports_sms: true
   supports_sms_unconfirmed: false
   supports_voice: false
-  translated_names:
-    en: Iraq
-    es: Irak
-    fr: Irak
 IS:
   country_code: '354'
   name: Iceland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Iceland
-    es: Islandia
-    fr: Islande
 IT:
   country_code: '39'
   name: Italy
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Italy
-    es: Italia
-    fr: Italie
 JE:
   country_code: '44'
   name: Jersey
@@ -783,37 +507,21 @@ JP:
   name: Japan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Japan
-    es: Japón
-    fr: Japon
 KE:
   country_code: '254'
   name: Kenya
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Kenya
-    es: Kenia
-    fr: Kenya
 KG:
   country_code: '996'
   name: Kyrgyzstan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Kyrgyzstan
-    es: Kirguistán
-    fr: Kirghizistan
 KH:
   country_code: '855'
   name: Cambodia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cambodia
-    es: Camboya
-    fr: Cambodge
 KI:
   country_code: '686'
   name: Kiribati
@@ -824,56 +532,32 @@ KM:
   name: Comoros
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Comoros
-    es: Comoras
-    fr: Comores
 KN:
   country_code: '1869'
   name: Saint Kitts and Nevis
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Saint Kitts and Nevis
-    es: San Cristóbal y Nieves
-    fr: Saint-Christophe-et-Niévès
 KR:
   country_code: '82'
   name: South Korea
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: South Korea
-    es: Corea del Sur
-    fr: Corée du Sud
 KW:
   country_code: '965'
   name: Kuwait
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Kuwait
-    es: Kuwait
-    fr: Koweit
 KY:
   country_code: '1345'
   name: Cayman Islands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Cayman Islands
-    es: Islas Caimán
-    fr: Îles Caïmans
 KZ:
   country_code: '7'
   name: Kazakhstan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Kazakhstan
-    es: Kazajstán
-    fr: Kazakhstan
 LA:
   country_code: '856'
   name: Laos
@@ -884,19 +568,11 @@ LB:
   name: Lebanon
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Lebanon
-    es: Líbano
-    fr: Liban
 LC:
   country_code: '1758'
   name: Saint Lucia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Saint Lucia
-    es: Santa Lucía
-    fr: Saint Lucia
 LI:
   country_code: '423'
   name: Liechtenstein
@@ -912,91 +588,51 @@ LR:
   name: Liberia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Liberia
-    es: Liberia
-    fr: Libéria
 LS:
   country_code: '266'
   name: Lesotho
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Lesotho
-    es: Lesoto
-    fr: Lesotho
 LT:
   country_code: '370'
   name: Lithuania
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Lithuania
-    es: Lituania
-    fr: Lituanie
 LU:
   country_code: '352'
   name: Luxembourg
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Luxembourg
-    es: Luxemburgo
-    fr: Luxembourg
 LV:
   country_code: '371'
   name: Latvia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Latvia
-    es: Letonia
-    fr: Lettonie
 LY:
   country_code: '218'
   name: Libya
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Libya
-    es: Libia
-    fr: Libye
 MA:
   country_code: '212'
   name: Morocco
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Morocco
-    es: Marruecos
-    fr: Maroc
 MC:
   country_code: '377'
   name: Monaco
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Monaco
-    es: Mónaco
-    fr: Monaco
 MD:
   country_code: '373'
   name: Moldova
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Moldova
-    es: Moldavia
-    fr: Moldavie
 ME:
   country_code: '382'
   name: Montenegro
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Montenegro
-    es: Montenegro
-    fr: Monténégro
 MG:
   country_code: '261'
   name: Madagascar
@@ -1007,82 +643,46 @@ MH:
   name: Marshall Islands, The
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: The Marshall Islands
-    es: Las Islas Marshall
-    fr: Les Îles Marshall
 MK:
   country_code: '389'
   name: Macedonia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Macedonia
-    es: Macedonia
-    fr: Macédoine
 ML:
   country_code: '223'
   name: Mali
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Mali
-    es: Malí
-    fr: Mali
 MM:
   country_code: '95'
   name: Myanmar
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Myanmar
-    es: Birmania
-    fr: Birmanie
 MN:
   country_code: '976'
   name: Mongolia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Mongolia
-    es: Mongolia
-    fr: Mongolie
 MO:
   country_code: '853'
   name: Macau
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Macau
-    es: Macao
-    fr: Macao
 MP:
   country_code: '1'
   name: Northern Mariana Islands
   supports_sms: true
   supports_voice: true
-  translated_names:
-    en: Northern Mariana Islands
-    es: Islas Marianas del Norte
-    fr: Îles Mariannes du Nord
 MQ:
   country_code: '596'
   name: Martinique
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Martinique
-    es: Martinica
-    fr: Martinique
 MR:
   country_code: '222'
   name: Mauritania
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Mauritania
-    es: Mauritania
-    fr: Mauritanie
 MS:
   country_code: '1664'
   name: Montserrat
@@ -1093,55 +693,31 @@ MT:
   name: Malta
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Malta
-    es: Malta
-    fr: Malte
 MU:
   country_code: '230'
   name: Mauritius
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Mauritius
-    es: Mauricio
-    fr: Maurice
 MV:
   country_code: '960'
   name: Maldives
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Maldives
-    es: Maldivas
-    fr: Maldives
 MW:
   country_code: '265'
   name: Malawi
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Malawi
-    es: Malaui
-    fr: Malawi
 MX:
   country_code: '52'
   name: Mexico
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Mexico
-    es: México
-    fr: Mexique
 MY:
   country_code: '60'
   name: Malaysia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Malaysia
-    es: Malasia
-    fr: Malaisie
 MZ:
   country_code: '258'
   name: Mozambique
@@ -1152,28 +728,16 @@ NA:
   name: Namibia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Namibia
-    es: Namibia
-    fr: Namibie
 NC:
   country_code: '687'
   name: New Caledonia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: New Caledonia
-    es: Nueva Caledonia
-    fr: Nouvelle Calédonie
 NE:
   country_code: '227'
   name: Niger
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Niger
-    es: Níger
-    fr: Niger
 NG:
   country_code: '234'
   name: Nigeria
@@ -1189,155 +753,87 @@ NL:
   name: Netherlands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Netherlands
-    es: Países Bajos
-    fr: Pays-Bas
 'NO':
   country_code: '47'
   name: Norway
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Norway
-    es: Noruega
-    fr: Norvège
 NP:
   country_code: '977'
   name: Nepal
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Nepal
-    es: Nepal
-    fr: Népal
 NU:
   country_code: '683'
   name: Niue
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Niue
-    es: Niue
-    fr: Niué
 NZ:
   country_code: '64'
   name: New Zealand
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: New Zealand
-    es: Nueva Zelanda
-    fr: Nouvelle-Zélande
 OM:
   country_code: '968'
   name: Oman
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Oman
-    es: Omán
-    fr: Oman
 PA:
   country_code: '507'
   name: Panama
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Panama
-    es: Panamá
-    fr: Panama
 PE:
   country_code: '51'
   name: Peru
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Peru
-    es: Perú
-    fr: Pérou
 PF:
   country_code: '689'
   name: French Polynesia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: French Polynesia
-    es: Polinesia Francesa
-    fr: Polynésie française
 PG:
   country_code: '675'
   name: Papua New Guinea
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Papua New Guinea
-    es: Papúa Nueva Guinea
-    fr: Papouasie-Nouvelle-Guinée
 PH:
   country_code: '63'
   name: Philippines
   supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Philippines
-    es: Filipinas
-    fr: Philippines
 PK:
   country_code: '92'
   name: Pakistan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Pakistan
-    es: Pakistán
-    fr: Pakistan
 PL:
   country_code: '48'
   name: Poland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Poland
-    es: Polonia
-    fr: Pologne
 PR:
   country_code: '1'
   name: Puerto Rico
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Puerto Rico
-    es: Puerto Rico
-    fr: Porto Rico
 PS:
   country_code: '970'
   name: Palestine
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Palestine
-    es: Palestino
-    fr: Palestine
 PT:
   country_code: '351'
   name: Portugal
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Portugal
-    es: Portugal
-    fr: Portugal
 PW:
   country_code: '680'
   name: Palau
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Palau
-    es: Palaos
-    fr: Palaos
 PY:
   country_code: '595'
   name: Paraguay
@@ -1349,75 +845,43 @@ QA:
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Qatar
-    es: Katar
-    fr: Qatar
 RE:
   country_code: '262'
   name: Réunion (France)
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Réunion (France)
-    es: La Reunión
-    fr: La Rénion
 RO:
   country_code: '40'
   name: Romania
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Romania
-    es: Rumania
-    fr: Roumanie
 RS:
   country_code: '381'
   name: Serbia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Serbia
-    es: Serbia
-    fr: Serbie
 RU:
   country_code: '7'
   name: Russia
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Russia
-    es: Russia
-    fr: Russie
 RW:
   country_code: '250'
   name: Rwanda
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Rwanda
-    es: Ruanda
-    fr: Rwanda
 SA:
   country_code: '966'
   name: Saudi Arabia
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Saudi Arabia
-    es: Arabia Saudita
-    fr: Arabie Saoudite
 SB:
   country_code: '677'
   name: Solomon Islands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Solomon Islands
-    es: Islas Salomón
-    fr: Les îles Salomon
 SC:
   country_code: '248'
   name: Seychelles
@@ -1428,37 +892,21 @@ SE:
   name: Sweden
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Sweden
-    es: Suecia
-    fr: La Suède
 SG:
   country_code: '65'
   name: Singapore
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Singapore
-    es: Singapur
-    fr: Singapour
 SI:
   country_code: '386'
   name: Slovenia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Slovenia
-    es: Eslovenia
-    fr: Slovénie
 SK:
   country_code: '421'
   name: Slovakia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Slovakia
-    es: Eslovaquia
-    fr: Slovaquie
 SL:
   country_code: '232'
   name: Sierra Leone
@@ -1469,28 +917,16 @@ SM:
   name: San Marino
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: San Marino
-    es: San Marino
-    fr: Saint Marin
 SN:
   country_code: '221'
   name: Senegal
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Senegal
-    es: Senegal
-    fr: Sénégal
 SO:
   country_code: '252'
   name: Somalia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Somalia
-    es: Somalia
-    fr: Somalie
 SR:
   country_code: '597'
   name: Suriname
@@ -1501,55 +937,31 @@ SS:
   name: South Sudan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: South Sudan
-    es: Sudán del Sur
-    fr: Soudan du sud
 ST:
   country_code: '239'
   name: São Tomé and Príncipe
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: São Tomé and Príncipe
-    es: Santo Tomé y Príncipe
-    fr: Sao Tomé et Principe
 SV:
   country_code: '503'
   name: El Salvador
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: El Salvador
-    es: El Salvador
-    fr: Le Salvador
 SZ:
   country_code: '268'
   name: Swaziland
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Eswatini (Formerly Swaziland)
-    es: Eswatini
-    fr: L’Eswatini
 TC:
   country_code: '1649'
   name: Turks and Caicos Islands
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Turks and Caicos Islands
-    es: Islas Turcas y Caicos
-    fr: îles Turques et Caïques
 TD:
   country_code: '235'
   name: Chad
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Chad
-    es: Chad
-    fr: Tchad
 TG:
   country_code: '228'
   name: Togo
@@ -1561,28 +973,16 @@ TH:
   supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
-  translated_names:
-    en: Thailand
-    es: Tailandia
-    fr: Thaïlande
 TJ:
   country_code: '992'
   name: Tajikistan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Tajikistan
-    es: Tayikistán
-    fr: Tadjikistan
 TL:
   country_code: '670'
   name: Timor-Leste
   supports_sms: false
   supports_voice: false
-  translated_names:
-    en: Timor-Leste
-    es: Timor Oriental
-    fr: Timor oriental
 TM:
   country_code: '993'
   name: Turkmenistan
@@ -1593,10 +993,6 @@ TN:
   name: Tunisia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Tunisia
-    es: Túnez
-    fr: Tunisie
 TO:
   country_code: '676'
   name: Tonga
@@ -1607,19 +1003,11 @@ TR:
   name: Turkey
   supports_sms: false
   supports_voice: false
-  translated_names:
-    en: Turkey
-    es: Turquía
-    fr: Turquie
 TT:
   country_code: '1868'
   name: Trinidad and Tobago
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Trinidad and Tobago
-    es: Trinidad y Tobago
-    fr: Trinité-et-Tobago
 TV:
   country_code: '688'
   name: Tuvalu
@@ -1630,46 +1018,26 @@ TW:
   name: Taiwan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Taiwan
-    es: Taiwán
-    fr: Taïwan
 TZ:
   country_code: '255'
   name: Tanzania
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Tanzania
-    es: Tanzania
-    fr: Tanzanie
 UA:
   country_code: '380'
   name: Ukraine
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Ukraine
-    es: Ucrania
-    fr: L’Ukraine
 UG:
   country_code: '256'
   name: Uganda
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Uganda
-    es: Uganda
-    fr: L’Ouganda
 US:
   country_code: '1'
   name: United States
   supports_sms: true
   supports_voice: true
-  translated_names:
-    en: United States
-    es: Estados Unidos
-    fr: États-Unis
 UY:
   country_code: '598'
   name: Uruguay
@@ -1680,19 +1048,11 @@ UZ:
   name: Uzbekistan
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Uzbekistan
-    es: Uzbekistán
-    fr: L’Ouzbékistan
 VC:
   country_code: '1784'
   name: Saint Vincent and the Grenadines
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Saint Vincent and the Grenadines
-    es: San Vicente y las Granadinas
-    fr: Saint-Vincent-et-les-Grenadines
 VE:
   country_code: '58'
   name: Venezuela
@@ -1703,19 +1063,11 @@ VG:
   name: Virgin Islands, British
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: British Virgin Islands
-    es: Islas Vírgenes Británicas
-    fr: îles Vierges britanniques
 VI:
   country_code: '1340'
   name: Virgin Islands, US
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: US Virgin Islands
-    es: Islas Vírgenes de los Estados Unidos
-    fr: îles Vierges des États-Unis
 VN:
   country_code: '84'
   name: Vietnam
@@ -1752,25 +1104,13 @@ ZA:
   name: South Africa
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: South Africa
-    es: Sudáfrica
-    fr: L’Afrique du Sud
 ZM:
   country_code: '260'
   name: Zambia
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Zambia
-    es: Zambia
-    fr: Zambie
 ZW:
   country_code: '263'
   name: Zimbabwe
   supports_sms: true
   supports_voice: false
-  translated_names:
-    en: Zimbabwe
-    es: Zimbabue
-    fr: Zimbabwe

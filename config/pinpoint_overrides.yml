@@ -1,92 +1,22 @@
-AD:
-  translated_names:
-    en: Andorra
-    fr: Andorre
-    es: Andorra
 AE:
-  translated_names:
-    en: United Arab Emirates (UAE)
-    fr: Émirats Arabes Unis
-    es: Emiratos Árabes Unidos
   supports_voice: true
   supports_voice_unconfirmed: false
-AF:
-  translated_names:
-    en: Afghanistan
-    fr: Afghanistan
-    es: Afganistán
-AG:
-  translated_names:
-    en: Antigua and Barbuda
-    fr: Antigua et Barbuda
-    es: Antigua y Barbuda
-AI:
-  translated_names:
-    en: Anguilla
-    fr: Anguille
-    es: Anguila
-AL:
-  translated_names:
-    en: Albania
-    fr: Albanie
-    es: Albania
-AM:
-  translated_names:
-    en: Armenia
-    fr: Arménie
-    es: Armenia
 AO:
   country_code: '244'
   name: Angola
   supports_sms: true
   supports_voice: false
-
 AR:
-  translated_names:
-    en: Argentina
-    fr: Argentine
-    es: Argentina
   supports_voice: false
 AT:
-  translated_names:
-    en: Austria
-    fr: Autriche
-    es: Austria
   supports_voice: false
 AU:
-  translated_names:
-    en: Australia
-    fr: Australie
-    es: Australia
   supports_voice: false
-AZ:
-  translated_names:
-    en: Azerbaijan
-    fr: Azerbaïdjan
-    es: Azerbaiján
-BA:
-  translated_names:
-    en: Bosnia and Herzegovina
-    fr: Bosnie-Herzégovine
-    es: Bosnia y Herzegovina 
 BB:
-  translated_names:
-    en: Barbados
-    fr: La Barbade
-    es: Barbados
   supports_voice: false
-BE:
-  translated_names:
-    en: Belgium
-    fr: Belgique
-    es: Bélgica
 BF:
   supports_voice: false
 BG:
-  translated_names:
-    en: Bulgaria
-    fr: Bulgarie
-    es: Bulgaria
   supports_voice: false
 BH:
   supports_voice: false
@@ -100,314 +30,61 @@ BJ:
   name: Benin
   supports_sms: true
   supports_voice: false
-BO:
-  translated_names:
-    en: Bolivia
-    fr: Bolivie
-    es: Bolivia
-BQ:
-  translated_names:
-    en: Netherlands Antilles
-    fr: Antilles néerlandaises
-    es: Antillas Holandesas
 BR:
-  translated_names:
-    en: Brazil
-    fr: Brésil
-    es: Brasil
   supports_voice: false
-BT:
-  translated_names:
-    en: Bhutan
-    fr: Bhoutan
-    es: Bután
 BY:
-  translated_names:
-    en: Belarus
-    fr: Biélorussie
-    es: Bielorrusia
   supports_voice: true
   supports_voice_unconfirmed: false
 CA:
   supports_voice: false
-CD:
-  translated_names:
-    en: Democratic Republic of the Congo
-    fr: 
-    es: 
-CF:
-  translated_names:
-    en: Central African Republic
-    fr: République Démocratique du Congo
-    es: República Democrática del Congo
-CG:
-  translated_names:
-    en: Republic of the Congo
-    fr: République du Congo
-    es: República del Congo
 CH:
-  translated_names:
-    en: Switzerland
-    fr: La Suisse
-    es: Suiza
   supports_voice: false
-CI:
-  translated_names:
-    en: Ivory Coast
-    fr: Côte d'Ivoire
-    es: Costa de Marfil
-CK:
-  translated_names:
-    en: Cook Islands
-    fr: Les Îles Cook
-    es: Islas Cook
 CL:
   supports_voice: false
-CM:
-  translated_names:
-    en: Cameroon
-    fr: Cameroun
-    es: Camerún
-CN:
-  translated_names:
-    en: China
-    fr: Chine
-    es: China
 CO:
   supports_voice: false
-CV:
-  translated_names:
-    en: Cape Verde
-    fr: Cap-Vert
-    es: Cabo Verde
 CY:
-  translated_names:
-    en: Cyprus
-    fr: Chypre
-    es: Chipre
   supports_voice: false
-CZ:
-  translated_names:
-    en: Czechia (Czech Republic)
-    fr: Tchéquie (République tchèque)
-    es: Chequia (República Checa) 
 DE:
-  translated_names:
-    en: Germany
-    fr: Allemagne
-    es: Alemania
   supports_voice: false
-DJ:
-  translated_names:
-    en: Djibouti
-    fr: Djibouti
-    es: Yibuti
-DK:
-  translated_names:
-    en: Denmark
-    fr: Danemark
-    es: Dinamarca
-DM:
-  translated_names:
-    en: Dominica
-    fr: Dominique
-    es: Dominica
 DO:
-  translated_names:
-    en: Dominican Republic
-    fr: République dominicaine
-    es: República Dominicana
+  supports_voice: false
 DZ:
-  translated_names:
-    en: Algeria
-    fr: Algérie
-    es: Argelia
   country_code: '213'
   name: Algeria
   supports_sms: false # Temporarily disabled due to SMS fraud attack 2021-04-16
   supports_voice: false
 EC:
-  translated_names:
-    en: Ecuador
-    fr: Equateur
-    es: Ecuador
   supports_voice: false
-EE:
-  translated_names:
-    en: Estonia
-    fr: Estonie
-    es: Estonia
 EG:
-  translated_names:
-    en: Egypt
-    fr: Egypte
-    es: Egipto
   supports_voice: true
-ER:
-  translated_names:
-    en: Eritrea
-    fr: Érythrée
-    es: Eritrea
-ES:
-  translated_names:
-    en: Spain
-    fr: Espagne
-    es: España
-ET:
-  translated_names:
-    en: Ethiopia
-    fr: Ethiopie
-    es: Etiopía
 FI:
-  translated_names:
-    en: Finland
-    fr: Finlande
-    es: Finlandia
   supports_voice: false
-FJ:
-  translated_names:
-    en: Fiji
-    fr: Fidji
-    es: Fiyi
-FM:
-  translated_names:
-    en: Micronesia (Federated States of)
-    fr: Micronésie (États fédérés de)
-    es: Micronesia (Estados Federados de)
-FO:
-  translated_names:
-    en: Faroe Islands
-    fr: Îles Féroé
-    es: Islas Faroe
-FR:
-  translated_names:
-    en: France
-    fr: France
-    es: Francia
 GB:
-  translated_names:
-    en: United Kingdom
-    fr: Royaume-Uni
-    es: Reino Unido
   supports_voice: false
 GD:
   supports_voice: false
-GE:
-  translated_names:
-    en: Georgia
-    fr: Géorgie
-    es: Georgia
-GF:
-  translated_names:
-    en: French Guiana
-    fr: Guyane Française
-    es: Guayana Francesa
-GG:
-  translated_names:
-    en: Guernsey
-    fr: Guernesey
-    es: Guernesey
-GL:
-  translated_names:
-    en: Greenland
-    fr: Groenland
-    es: Groenlandia
-GM:
-  translated_names:
-    en: Gambia
-    fr: Gambie
-    es: Gambia
-GN:
-  translated_names:
-    en: Guinea
-    fr: Guinée
-    es: Guinea
 GQ:
-  translated_names:
-    en: Equitorial Guinea
-    fr: Guinée Équatoriale
-    es: Guinea Ecuatorial
+  name: Equatorial Guinea
 GR:
-  translated_names:
-    en: Greece
-    fr: Grèce
-    es: Grecia
   supports_voice: false
 GT:
   supports_voice: false
-GW:
-  translated_names:
-    en: Guinea-Bissau
-    fr: Guinée-Bissau
-    es: Guinea-Bisáu
-GY:
-  translated_names:
-    en: Guyana
-    fr: Guyane
-    es: Guayana
-HK:
-  supports_voice: false
-HN:
-  supports_voice: false
 HR:
-  translated_names:
-    en: Croatia
-    fr: Croatie
-    es: Croacia
-  supports_voice: false
-HT:
   supports_voice: false
 HU:
-  translated_names:
-    en: Hungary
-    fr: Hongrie
-    es: Hungría
   supports_voice: false
 ID:
-  translated_names:
-    en: Indonesia
-    fr: Indonésie
-    es: Indonesia
   supports_voice: false
 IE:
-  translated_names:
-    en: Ireland
-    fr: Irlande
-    es: Irlanda
   supports_voice: false
 IL:
-  translated_names:
-    en: Israel
-    fr: Israël
-    es: Israel
   supports_voice: false
-IM:
-  translated_names:
-    en: Isle of Man
-    fr: île de Man
-    es: Isla del hombre
-IN:
-  translated_names:
-    en: India
-    fr: Inde
-    es: India
 IQ:
-  translated_names:
-    en: Iraq
-    fr: Irak
-    es: Irak
   supports_sms_unconfirmed: false
 IS:
-  translated_names:
-    en: Iceland
-    fr: Islande
-    es: Islandia
   supports_voice: false
 IT:
-  translated_names:
-    en: Italy
-    fr: Italie
-    es: Italia
   supports_voice: false
 JM:
   supports_voice: false
@@ -415,546 +92,108 @@ JO:
   supports_voice: true
   supports_voice_unconfirmed: false
 JP:
-  translated_names:
-    en: Japan
-    fr: Japon
-    es: Japón
   supports_voice: false
 KE:
-  translated_names:
-    en: Kenya
-    fr: Kenya
-    es: Kenia
   supports_voice: false
-KG:
-  translated_names:
-    en: Kyrgyzstan
-    fr: Kirghizistan
-    es: Kirguistán
 KH:
-  translated_names:
-    en: Cambodia
-    fr: Cambodge
-    es: Camboya
   supports_voice: false
-KI: 
+KI:
   country_code: '686'
   name: Kiribati
   supports_sms: true
   supports_voice: false
-KM:
-  translated_names:
-    en: Comoros
-    fr: Comores
-    es: Comoras
-KN:
-  translated_names:
-    en: Saint Kitts and Nevis
-    fr: Saint-Christophe-et-Niévès
-    es: San Cristóbal y Nieves
-KR:
-  translated_names:
-    en: South Korea
-    fr: Corée du Sud
-    es: Corea del Sur
 KW:
-  translated_names:
-    en: Kuwait
-    fr: Koweit
-    es: Kuwait
   supports_voice: true
   supports_voice_unconfirmed: false
 KY:
-  translated_names:
-    en: Cayman Islands
-    fr: Îles Caïmans
-    es: Islas Caimán
   supports_voice: false
 KZ:
-  translated_names:
-    en: Kazakhstan
-    fr: Kazakhstan
-    es: Kazajstán
   supports_voice: false
-LB:
-  translated_names:
-    en: Lebanon
-    fr: Liban
-    es: Líbano
-LC:
-  translated_names:
-    en: Saint Lucia
-    fr: Saint Lucia
-    es: Santa Lucía
-LR:
-  translated_names:
-    en: Liberia
-    fr: Libéria
-    es: Liberia
-LS:
-  translated_names:
-    en: Lesotho
-    fr: Lesotho
-    es: Lesoto
 LT:
-  translated_names:
-    en: Lithuania
-    fr: Lituanie
-    es: Lituania
   supports_voice: false
 LU:
-  translated_names:
-    en: Luxembourg
-    fr: Luxembourg
-    es: Luxemburgo
   supports_voice: false
 LV:
-  translated_names:
-    en: Latvia
-    fr: Lettonie
-    es: Letonia
   supports_sms: true
   supports_voice: false
-LY:
-  translated_names:
-    en: Libya
-    fr: Libye
-    es: Libia
-MA:
-  translated_names:
-    en: Morocco
-    fr: Maroc
-    es: Marruecos
-MC:
-  translated_names:
-    en: Monaco
-    fr: Monaco
-    es: Mónaco
 MD:
-  translated_names:
-    en: Moldova
-    fr: Moldavie
-    es: Moldavia
   supports_voice: false
-ME:
-  translated_names:
-    en: Montenegro
-    fr: Monténégro
-    es: Montenegro
-MH:
-  translated_names:
-    en: The Marshall Islands
-    fr: Les Îles Marshall
-    es: Las Islas Marshall
-MK: 
-  translated_names:
-    en: Macedonia
-    fr: Macédoine
-    es: Macedonia
 ML:
-  translated_names:
-    en: Mali
-    fr: Mali
-    es: Malí
   supports_voice: false
-MM:
-  translated_names:
-    en: Myanmar
-    fr: Birmanie
-    es: Birmania
-MN:
-  translated_names:
-    en: Mongolia
-    fr: Mongolie
-    es: Mongolia
-MO:
-  translated_names:
-    en: Macau
-    fr: Macao
-    es: Macao
 MP:
-  translated_names:
-    en: Northern Mariana Islands
-    fr: Îles Mariannes du Nord
-    es: Islas Marianas del Norte
   country_code: '1'
   name: Northern Mariana Islands
   supports_sms: true
   supports_voice: true
-MQ:
-  translated_names:
-    en: Martinique
-    fr: Martinique
-    es: Martinica
-MR:
-  translated_names:
-    en: Mauritania
-    fr: Mauritanie
-    es: Mauritania
-MT:
-  translated_names:
-    en: Malta
-    fr: Malte
-    es: Malta
-MU:
-  translated_names:
-    en: Mauritius
-    fr: Maurice
-    es: Mauricio
-MV:
-  translated_names:
-    en: Maldives
-    fr: Maldives
-    es: Maldivas
-MW:
-  translated_names:
-    en: Malawi
-    fr: Malawi
-    es: Malaui
 MX:
-  translated_names:
-    en: Mexico
-    fr: Mexique
-    es: México
   supports_voice: false
 MY:
-  translated_names:
-    en: Malaysia
-    fr: Malaisie
-    es: Malasia
   supports_voice: false
-NA:
-  translated_names:
-    en: Namibia
-    fr: Namibie
-    es: Namibia
-NC:
-  translated_names:
-    en: New Caledonia
-    fr: Nouvelle Calédonie
-    es: Nueva Caledonia
-NE:
-  translated_names:
-    en: Niger
-    fr: Niger
-    es: Níger
 NI:
   supports_voice: false
-NL:
-  translated_names:
-    en: Netherlands
-    fr: Pays-Bas
-    es: Países Bajos
 'NO':
-  translated_names:
-    en: Norway
-    fr: Norvège
-    es: Noruega
-  supports_voice: false 
-NP:
-  translated_names:
-    en: Nepal
-    fr: Népal
-    es: Nepal
-NU:
-  translated_names:
-    en: Niue
-    fr: Niué
-    es: Niue
-NZ:
-  translated_names:
-    en: New Zealand
-    fr: Nouvelle-Zélande
-    es: Nueva Zelanda
   supports_voice: false
-OM:
-  translated_names:
-    en: Oman
-    fr: Oman
-    es: Omán
+NZ:
+  supports_voice: false
 PA:
-  translated_names:
-    en: Panama
-    fr: Panama
-    es: Panamá
   supports_voice: false
 PE:
-  translated_names:
-    en: Peru
-    fr: Pérou
-    es: Perú
   supports_voice: false
-PF:
-  translated_names:
-    en: French Polynesia
-    fr: Polynésie française
-    es: Polinesia Francesa
-PG:
-  translated_names:
-    en: Papua New Guinea
-    fr: Papouasie-Nouvelle-Guinée
-    es: Papúa Nueva Guinea
 PH:
-  translated_names:
-    en: Philippines
-    fr: Philippines
-    es: Filipinas
   supports_voice_unconfirmed: false
 PK:
-  translated_names:
-    en: Pakistan
-    fr: Pakistan
-    es: Pakistán
   supports_voice: false
 PL:
-  translated_names:
-    en: Poland
-    fr: Pologne
-    es: Polonia
   supports_voice: false
 PR:
-  translated_names:
-    en: Puerto Rico
-    fr: Porto Rico
-    es: Puerto Rico
   supports_voice: false
-PS:
-  translated_names:
-    en: Palestine
-    fr: Palestine
-    es: Palestino
-PT:
-  translated_names:
-    en: Portugal
-    fr: Portugal
-    es: Portugal
 PW:
-  translated_names:
-    en: Palau
-    fr: Palaos
-    es: Palaos
   country_code: '680'
   name: Palau
   supports_sms: true
   supports_voice: false
 QA:
-  translated_names:
-    en: Qatar
-    fr: Qatar
-    es: Katar
   supports_voice: true
   supports_voice_unconfirmed: false
-RE:
-  translated_names:
-    en: Réunion (France)
-    fr: La Rénion
-    es: La Reunión
 RO:
-  translated_names:
-    en: Romania
-    fr: Roumanie
-    es: Rumania
   supports_voice: false
-RS:
-  translated_names:
-    en: Serbia
-    fr: Serbie
-    es: Serbia
 RU:
-  translated_names:
-    en: Russia
-    fr: Russie
-    es: Russia
   supports_voice: true
   supports_voice_unconfirmed: false
-RW:
-  translated_names:
-    en: Rwanda
-    fr: Rwanda
-    es: Ruanda
 SA:
-  translated_names:
-    en: Saudi Arabia
-    fr: Arabie Saoudite
-    es: Arabia Saudita
   supports_voice: true
   supports_voice_unconfirmed: false
-SB:
-  translated_names:
-    en: Solomon Islands
-    fr: Les îles Salomon
-    es: Islas Salomón
-SE:
-  translated_names:
-    en: Sweden
-    fr: La Suède
-    es: Suecia
-SG:
-  translated_names:
-    en: Singapore
-    fr: Singapour
-    es: Singapur
 SI:
-  translated_names:
-    en: Slovenia
-    fr: Slovénie
-    es: Eslovenia
   supports_voice: false
 SK:
-  translated_names:
-    en: Slovakia
-    fr: Slovaquie
-    es: Eslovaquia
   supports_voice: false
-SM:
-  translated_names:
-    en: San Marino
-    fr: Saint Marin
-    es: San Marino
-SN:
-  translated_names:
-    en: Senegal
-    fr: Sénégal
-    es: Senegal
-SO:
-  translated_names:
-    en: Somalia
-    fr: Somalie
-    es: Somalia
-SS:
-  translated_names:
-    en: South Sudan
-    fr: Soudan du sud
-    es: Sudán del Sur
-ST:
-  translated_names:
-    en: São Tomé and Príncipe
-    fr: Sao Tomé et Principe
-    es: Santo Tomé y Príncipe
 SV:
-  translated_names:
-    en: El Salvador
-    fr: Le Salvador
-    es: El Salvador
   supports_voice: false
-SZ:
-  translated_names:
-    en: Eswatini (Formerly Swaziland)
-    fr: L’Eswatini
-    es: Eswatini
-TC:
-  translated_names:
-    en: Turks and Caicos Islands
-    fr: îles Turques et Caïques
-    es: Islas Turcas y Caicos
 TD:
-  translated_names:
-    en: Chad
-    fr: Tchad
-    es: Chad
+  country_code: '235'
+  name: Chad
+  supports_sms: true
+  supports_voice: false
 TH:
-  translated_names:
-    en: Thailand
-    fr: Thaïlande
-    es: Tailandia
   supports_voice_unconfirmed: false
 TJ:
-  translated_names:
-    en: Tajikistan
-    fr: Tadjikistan
-    es: Tayikistán
   supports_voice: false
 TL:
-  translated_names:
-    en: Timor-Leste
-    fr: Timor oriental
-    es: Timor Oriental
   supports_sms: false
-TN:
-  translated_names:
-    en: Tunisia
-    fr: Tunisie
-    es: Túnez
-TR:
-  translated_names:
-    en: Turkey
-    fr: Turquie
-    es: Turquía
 TT:
-  translated_names:
-    en: Trinidad and Tobago
-    fr: Trinité-et-Tobago
-    es: Trinidad y Tobago
   supports_voice: false
 TW:
-  translated_names:
-    en: Taiwan
-    fr: Taïwan
-    es: Taiwán
   supports_voice: false
-TZ:
-  translated_names:
-    en: Tanzania
-    fr: Tanzanie
-    es: Tanzania
-UA:
-  translated_names:
-    en: Ukraine
-    fr: L'Ukraine
-    es: Ucrania
-UG:
-  translated_names:
-    en: Uganda
-    fr: L'Ouganda
-    es: Uganda
-US:
-  translated_names:
-    en: United States
-    fr: États-Unis
-    es: Estados Unidos
 UY:
   supports_voice: false
-UZ:
-  translated_names:
-    en: Uzbekistan
-    fr: L'Ouzbékistan
-    es: Uzbekistán
 VC:
-  translated_names:
-    en: Saint Vincent and the Grenadines
-    fr: Saint-Vincent-et-les-Grenadines
-    es: San Vicente y las Granadinas
   country_code: '1784'
   name: Saint Vincent and the Grenadines
   supports_sms: true
   supports_voice: false
 VE:
   supports_voice: false
-VG:
-  translated_names:
-    en: British Virgin Islands
-    fr: îles Vierges britanniques
-    es: Islas Vírgenes Británicas
-VI:
-  translated_names:
-    en: US Virgin Islands
-    fr: îles Vierges des États-Unis
-    es: Islas Vírgenes de los Estados Unidos
 VN:
   supports_voice_unconfirmed: false
 ZA:
-  translated_names:
-    en: South Africa
-    fr: L'Afrique du Sud
-    es: Sudáfrica
   supports_voice: false
-ZM:
-  translated_names:
-    en: Zambia
-    fr: Zambie
-    es: Zambia
-ZW:
-  translated_names:
-    en: Zimbabwe
-    fr: Zimbabwe
-    es: Zimbabue
