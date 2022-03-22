@@ -47,7 +47,12 @@ module SamlIdp
         log 'Validate the fingerprint'
         base64_cert = find_base64_cert(options)
         cert_text   = Base64.decode64(base64_cert)
-        cert        = OpenSSL::X509::Certificate.new(cert_text)
+        cert        =
+          begin
+            OpenSSL::X509::Certificate.new(cert_text)
+          rescue OpenSSL::X509::CertificateError => e
+            return soft ? false : (raise ValidationError.new("Invalid certificate"))
+          end
 
         # check cert matches registered idp cert
         fingerprint = fingerprint_cert(cert, options)

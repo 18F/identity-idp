@@ -32,6 +32,10 @@ module SecurityHelpers
     @response_document6 ||= File.read(File.join(File.dirname(__FILE__), 'responses', 'r1_response6.xml.base64'))
   end
 
+  def response_document_7
+    @response_document7 ||= File.read(File.join(File.dirname(__FILE__), 'responses', 'response7.xml.base64'))
+  end
+
   def ampersands_response
     @ampersands_resposne ||= File.read(File.join(File.dirname(__FILE__), 'responses', 'response_with_ampersands.xml.base64'))
   end

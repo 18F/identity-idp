@@ -4,6 +4,11 @@ require 'xml_security'
 module SamlIdp
   describe XMLSecurity, security: true do
     let(:document) { XMLSecurity::SignedDocument.new(Base64.decode64(response_document)) }
+
+    let(:document_with_invalid_certificate) do
+      XMLSecurity::SignedDocument.new(Base64.decode64(response_document_7))
+    end
+
     let(:base64cert) { document.elements["//ds:X509Certificate"].text }
 
     it "it run validate without throwing NS related exceptions" do
@@ -21,6 +26,12 @@ module SamlIdp
     it "it raise Fingerprint mismatch" do
       expect { document.validate("no:fi:ng:er:pr:in:t", false) }.to(
         raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError, "Fingerprint mismatch")
+      )
+    end
+
+    it "it raises invalid certificates when the document ceritficate is invalid" do
+      expect { document_with_invalid_certificate.validate("no:fi:ng:er:pr:in:t", false) }.to(
+        raise_error(SamlIdp::XMLSecurity::SignedDocument::ValidationError, "Invalid certificate")
       )
     end
 
