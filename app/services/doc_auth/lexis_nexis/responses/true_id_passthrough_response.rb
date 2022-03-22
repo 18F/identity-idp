@@ -52,20 +52,28 @@ module DocAuth
         end
 
         def non_pii?(key)
-          %w[
-            Information
-            Status
-            ConversationId
-            TransactionReasonCode
-            Code
-            Description
-            TransactionStatus
-            PassThroughs
-            Products
-            Reference
-            RequestId
-          ].include?(key)
+          pii_fields = %w[
+            Day
+            Month
+            Year
+            Age
+            CountryCode
+            Address
+            AddressLine1
+            AddressLine2
+            City
+            PostalCode
+            DocumentNumber
+            FirstName
+            MiddleName
+            Surname
+            GivenName
+            FullName
+            Height
+            Sex
+          ]
 
+          !pii_fields.include?(key)
         end
 
         def error_messages
