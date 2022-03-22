@@ -33,14 +33,29 @@ module DocAuth
           hash.to_h do |key, value|
             if value.is_a?(Hash)
               [key, just_keys(value)]
+            elsif non_pii?(key)
+              [key, value]
             else
-              if %w[Information Status ConversationId TransactionReasonCode Code TransactionStatus].include?(key)
-                [key, value]
-              else
-                [key, 'redacted']
-              end
+              [key, 'redacted']
             end
           end
+        end
+
+        def non_pii?(key)
+          %w[
+            Information
+            Status
+            ConversationId
+            TransactionReasonCode
+            Code
+            Description
+            TransactionStatus
+            PassThroughs
+            Products
+            Reference
+            RequestId
+          ].include?(key)
+
         end
 
         def error_messages
