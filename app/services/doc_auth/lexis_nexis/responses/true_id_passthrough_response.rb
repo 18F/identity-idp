@@ -35,6 +35,8 @@ module DocAuth
               [key, just_keys(value)]
             elsif value.is_a?(Array)
               [key, value.map {|element| just_keys(element)}]
+            elsif key == 'Data' && value.is_a?(String)
+              [key, just_keys(JSON.parse(value))]
             elsif non_pii?(key)
               [key, value]
             else
