@@ -111,7 +111,8 @@ class SamlIdpController < ApplicationController
   end
 
   def log_external_saml_auth_request
-    return unless URI(request.referer).host == request.host
+    return unless external_saml_request?
+
     analytics_payload = {
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
@@ -119,6 +120,11 @@ class SamlIdpController < ApplicationController
       service_provider: saml_request&.issuer,
     }
     analytics.saml_auth_request(**analytics_payload)
+  end
+
+  def external_saml_request?
+    URI(request.referer).host != request.host ||
+      /authpost\d{4}/.match?(request.env['PATH_INFO'])
   end
 
   def handle_successful_handoff
