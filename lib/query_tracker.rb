@@ -17,9 +17,8 @@ class QueryTracker
         tables = PgQuery.parse(sql).tables.map(&:to_sym)
 
         root = Rails.root.to_s
-        vendor = ENV['GEM_PATH'].split(':')
         location = caller.find do |line|
-          line.include?(root) && !vendor.any? { |v| line.include?(v) }
+          line.include?(root) && Gem.path.none? { |v| line.include?(v) }
         end
 
         tables.each do |table|
