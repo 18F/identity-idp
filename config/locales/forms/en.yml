@@ -59,7 +59,6 @@ en:
           submit: Change password
         labels:
           password: New password
-      show: Show password
     personal_key:
       alternative: Don’t have your personal key?
       confirmation_label: Personal key

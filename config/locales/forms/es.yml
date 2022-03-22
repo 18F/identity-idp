@@ -64,7 +64,6 @@ es:
           submit: Cambiar la contraseña
         labels:
           password: Nueva contraseña
-      show: Mostrar contraseña
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
