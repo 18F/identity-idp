@@ -123,8 +123,8 @@ class SamlIdpController < ApplicationController
   end
 
   def external_saml_request?
-    URI(request.referer).host != request.host ||
-      /authpost\d{4}/.match?(request.env['PATH_INFO'])
+    (!request.referer.nil? && URI(request.referer).host != request.host) ||
+      request.path.start_with?('/api/saml/authpost')
   end
 
   def handle_successful_handoff
