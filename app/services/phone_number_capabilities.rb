@@ -9,6 +9,13 @@ class PhoneNumberCapabilities
 
   attr_reader :phone, :phone_confirmed
 
+  def self.translated_international_codes
+    INTERNATIONAL_CODES.map do |k,value|
+      value['name'] = I18n.t("countries.#{k}")
+      { k => value }
+    end
+  end
+
   def initialize(phone, phone_confirmed:)
     @phone = phone
     @phone_confirmed = phone_confirmed
@@ -62,6 +69,8 @@ class PhoneNumberCapabilities
       supports_voice && phone_confirmed
     )
   end
+
+  
 
   def unsupported_location
     country_code_data['name'] if country_code_data
