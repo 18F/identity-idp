@@ -69,7 +69,7 @@ lint: ## Runs all lint tests
 	bundle exec bundler-audit check --update
 	# JavaScript
 	@echo "--- yarn audit ---"
-	yarn audit --groups dependencies; test $$? -le 8
+	yarn audit --groups dependencies; test $$? -le 7
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
