@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   # Non i18n routes. Alphabetically sorted.
   get '/api/analytics-events' => 'analytics_events#index'
+  get '/api/country-support' => 'country_support#index'
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
   get '/api/health/jobs' => 'health/health#index'
@@ -162,8 +163,6 @@ Rails.application.routes.draw do
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
     get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
-
-    get '/api/country-support' => 'country_support#index'
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
         as: :sp_inactive_error
