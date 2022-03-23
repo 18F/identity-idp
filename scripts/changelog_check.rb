@@ -112,7 +112,7 @@ def generate_changelog(git_log)
       category: category,
       subcategory: change[:subcategory].capitalize,
       pr_number: pr_number&.named_captures&.fetch('pr'),
-      change: change[:change],
+      change: change[:change].sub(/./, &:upcase),
     )
 
     changelog_entries << changelog_entry
