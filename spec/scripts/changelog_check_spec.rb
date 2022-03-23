@@ -85,4 +85,22 @@ RSpec.describe 'scripts/changelog_check' do
       CHANGELOG
     end
   end
+
+  describe '#generate_changelog' do
+    it 'capitalizes subcategory and capitalizes first letter of change description' do
+      git_log = <<~COMMIT
+        title: Add LOGIN_TASK_LOG_LEVEL env var (#6037)
+        body:- Lets us set log level to minimize STDOUT output
+          from Identity::Hostdata (downloading files from S3, etc)
+
+        * changelog: Improvements, authentication, provide better authentication (LG-4515)
+        DELIMITER
+      COMMIT
+
+      changelogs = generate_changelog(git_log)
+
+      expect(changelogs.first.subcategory).to eq('Authentication')
+      expect(changelogs.first.change).to start_with('P')
+    end
+  end
 end
