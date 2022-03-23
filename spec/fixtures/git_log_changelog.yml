@@ -1,0 +1,69 @@
+squashed_commit_with_one_commit:
+  commit_log: |
+    title: Upgrade Rails to 6.1.4.7 (#6041)
+    body:changelog: Internal, Security, Upgrade Rails to patch vulnerability
+    DELIMITER
+  title: 'Upgrade Rails to 6.1.4.7 (#6041)'
+  commit_messages:
+    - 'changelog: Internal, Security, Upgrade Rails to patch vulnerability'
+  category: 'Internal'
+  subcategory: 'Security'
+  change: 'Upgrade Rails to patch vulnerability'
+  pr_number: '6041'
+squashed_commit_with_duplicate_pr:
+  commit_log: |
+    title: Upgrade Rails to 6.1.4.8 (#6042)
+    body:changelog: Internal, Security, Upgrade Rails to patch vulnerability
+    DELIMITER
+  title: 'Upgrade Rails to 6.1.4.8 (#6042)'
+  commit_messages:
+    - 'changelog: Internal, Security, Upgrade Rails to patch vulnerability'
+  category: 'Internal'
+  subcategory: 'Security'
+  change: 'Upgrade Rails to patch vulnerability'
+  pr_number: '6042'
+squashed_commit_with_multiple_commits:
+  commit_log: |
+    title: LG-5515: update platform auth (#5976)
+    body:* add check to see if platform is available
+
+    * add alert
+
+    * changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)
+
+    * fix linting, debug
+    Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>
+    Co-authored-by: Zach Margolis <zachary.margolis@gsa.gov>
+    DELIMITER
+  title: 'LG-5515: update platform auth (#5976)'
+  commit_messages:
+    - '* add check to see if platform is available'
+    - '* add alert'
+    - '* changelog: Improvements, Webauthn, Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
+    - '* fix linting, debug'
+    - 'Co-authored-by: Jessica Dembe <jessica.dembe@gsa.gov>'
+    - 'Co-authored-by: Zach Margolis <zachary.margolis@gsa.gov>'
+  category: 'Improvements'
+  subcategory: 'Webauthn'
+  change: 'Provide better error flow for users who may not be able to leverage webauthn (LG-5515)'
+  pr_number: '5976'
+squashed_commit_with_skip:
+  commit_log: |
+    title: Add LOGIN_TASK_LOG_LEVEL env var (#6037)
+    body:- Lets us set log level to minimize STDOUT output
+      from Identity::Hostdata (downloading files from S3, etc)
+
+    [skip changelog]
+    DELIMITER
+  title: 'Add LOGIN_TASK_LOG_LEVEL env var (#6037)'
+  commit_messages:
+    - '- Lets us set log level to minimize STDOUT output'
+    - '  from Identity::Hostdata (downloading files from S3, etc)'
+    - '[skip changelog]'
+squashed_commit_invalid:
+  commit_log: |
+    title: LG-5629 account buttons part 2 (#5945)
+    body:
+    DELIMITER
+  title: 'LG-5629 account buttons part 2 (#5945)'
+  commit_messages: []

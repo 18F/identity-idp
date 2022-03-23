@@ -23,6 +23,16 @@ def build_changelog_from_commit(commit)
     build_changelog(commit.title)
 end
 
+def get_git_log(base_branch, source_branch)
+  format = '--pretty=title: %s%nbody:%b%nDELIMITER'
+  log, status = Open3.capture2(
+    'git', 'log', format, "#{base_branch}..#{source_branch}"
+  )
+
+  raise 'git log failed' unless status.success?
+  log
+end
+
 # Transforms a formatted git log into structured objects.
 # The git format ends up printing a single commit as:
 #
@@ -32,15 +42,8 @@ end
 # DELIMITER
 # The string is first split on DELIMITER, and then the body is split into
 # individual lines.
-def get_git_log(base_branch, source_branch)
-  format = '--pretty=title: %s%nbody:%b%nDELIMITER'
-  log, status = Open3.capture2(
-    'git', 'log', format, "#{base_branch}..#{source_branch}"
-  )
-
-  raise 'git log failed' unless status.success?
-
-  log.strip.split('DELIMITER').map { |commit|
+def build_structured_git_log(git_log)
+  git_log.strip.split('DELIMITER').map { |commit|
     commit.split("\nbody:").map do |commit_message_lines|
       commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
     end
@@ -63,6 +66,15 @@ def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log.include?(SKIP_CHANGELOG_MESSAGE)
 end
 
+def generate_invalid_changes(git_log)
+  log = build_structured_git_log(git_log)
+  log.reject do |commit|
+    commit.title.include?(SKIP_CHANGELOG_MESSAGE) ||
+      commit.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) } ||
+      build_changelog_from_commit(commit)
+  end.map(&:title)
+end
+
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
 # Each PR should be squashed, which results in every PR being one commit. The commit messages
 # in a squashed PR are concatencated with a leading "*" for each commit. Example:
@@ -78,12 +90,13 @@ end
 #     changelog: Authentication: Updating Authentication (LG-9998)
 #
 #     * Authentication commit #2
-def generate_changelog(base_branch, source_branch)
-  log = get_git_log(base_branch, source_branch)
+def generate_changelog(git_log)
+  log = build_structured_git_log(git_log)
 
   changelog_entries = []
   log.each do |item|
     # Skip this commit if the skip changelog message appears
+    next if item.title.include?(SKIP_CHANGELOG_MESSAGE)
     next if item.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
     change = build_changelog_from_commit(item)
     next unless change
@@ -99,7 +112,7 @@ def generate_changelog(base_branch, source_branch)
       category: category,
       subcategory: change[:subcategory].capitalize,
       pr_number: pr_number&.named_captures&.fetch('pr'),
-      change: change[:change].capitalize,
+      change: change[:change].sub(/./, &:upcase),
     )
 
     changelog_entries << changelog_entry
@@ -169,7 +182,10 @@ def main(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
-  changelog_entries = generate_changelog(options[:base_branch], options[:source_branch])
+  git_log = get_git_log(options[:base_branch], options[:source_branch])
+  changelog_entries = generate_changelog(git_log)
+  invalid_changelog_entries = generate_invalid_changes(git_log)
+
   skip_check = commit_messages_contain_skip_changelog?(
     options[:base_branch],
     options[:source_branch],
@@ -178,6 +194,11 @@ def main(args)
   if skip_check || changelog_entries.count > 0
     formatted_changelog = format_changelog(changelog_entries)
     puts format_changelog(changelog_entries) if formatted_changelog.length > 0
+    if invalid_changelog_entries.count > 0
+      puts "\n!!! Invalid Changelog Entries !!!"
+      puts invalid_changelog_entries.join("\n")
+    end
+
     exit 0
   else
     warn(

@@ -75,7 +75,7 @@ check_changelog:
         exit 0
       else
         git fetch origin --quiet
-        ./scripts/changelog-check -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+        ./scripts/changelog_check.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
       fi
 install:
   extends: .on_push
