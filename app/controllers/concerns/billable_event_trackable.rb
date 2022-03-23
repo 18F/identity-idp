@@ -13,10 +13,9 @@ module BillableEventTrackable
   private
 
   def increment_sp_monthly_auths
-    issuer = sp_session[:issuer]
     MonthlySpAuthCount.increment(
       user_id: current_user.id,
-      issuer: issuer,
+      service_provider: current_sp,
       ial: sp_session_ial,
     )
   end

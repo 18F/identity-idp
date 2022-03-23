@@ -44,7 +44,7 @@ feature 'View personal key' do
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
 
         # reauthn
-        fill_in :user_password, with: user.password
+        fill_in t('account.index.password'), with: user.password
         click_continue
         fill_in_code_with_last_phone_otp
         click_submit_default

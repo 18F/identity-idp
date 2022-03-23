@@ -24,11 +24,13 @@ function useIfStillMounted() {
    * @param {T} fn
    */
   const ifStillMounted = (fn) =>
-    /** @type {T} */ ((...args) => {
-      if (isMounted.current) {
-        fn(...args);
+    /** @type {T} */ (
+      (...args) => {
+        if (isMounted.current) {
+          fn(...args);
+        }
       }
-    });
+    );
 
   return ifStillMounted;
 }

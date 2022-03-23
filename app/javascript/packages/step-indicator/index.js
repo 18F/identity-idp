@@ -8,9 +8,9 @@ class StepIndicator {
     this.elements = {
       wrapper,
       scroller: /** @type {HTMLElement} */ (wrapper.querySelector('.step-indicator__scroller')),
-      currentStep: /** @type {HTMLElement?} */ (wrapper.querySelector(
-        '.step-indicator__step--current',
-      )),
+      currentStep: /** @type {HTMLElement?} */ (
+        wrapper.querySelector('.step-indicator__step--current')
+      ),
     };
   }
 

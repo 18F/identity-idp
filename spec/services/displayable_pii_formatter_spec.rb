@@ -111,16 +111,6 @@ describe DisplayablePiiFormatter do
           expect(formatter.format.verified_at).to eq(formatted_date)
         end
       end
-
-      context 'for an unverified user' do
-        let(:verified_at) { nil }
-
-        it 'returns a message about the user not being verified' do
-          expect(formatter.format.verified_at).to eq(
-            I18n.t('help_text.requested_attributes.verified_at_blank'),
-          )
-        end
-      end
     end
 
     describe 'PIV/CAC attributes' do

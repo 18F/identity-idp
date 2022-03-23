@@ -3,12 +3,12 @@
   border-radius: 0;
   margin-bottom: 0;
   overflow: hidden;
-  padding: $space-3;
+  padding: units(4);
 }
 
 @include at-media('mobile') {
   .profile-info-box {
     border-radius: $border-radius-md;
-    margin-bottom: $space-3;
+    margin-bottom: units(4);
   }
 }

@@ -6,7 +6,7 @@
   <% MfaContext.new(current_user).piv_cac_configurations.each do |piv_cac_configuration| %>
     <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
       <div class="grid-col-8">
-        <div class="grid-col-12 mobile-lg:grid-col-6">
+        <div class="grid-col-12 tablet:grid-col-6">
           <%= piv_cac_configuration.name %>
         </div>
       </div>
