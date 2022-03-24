@@ -1,7 +1,10 @@
 require 'feature_management'
 
 Rails.application.configure do
-  config.ssl_options = { hsts: { preload: true, expires: 1.year, subdomains: true } }
+  config.ssl_options = {
+    secure_cookies: true,
+    hsts: { preload: true, expires: 1.year, subdomains: true },
+  }
 
   config.action_dispatch.default_headers.merge!(
     'X-Frame-Options' => 'DENY',
