@@ -1,214 +1,222 @@
 fr:
   countries:
-    AD: Andorre
-    AE: Émirats Arabes Unis
-    AF: Afghanistan
-    AG: Antigua et Barbuda
-    AI: Anguille
-    AL: Albanie
-    AM: Arménie
-    AO: Angola
-    AR: Argentine
-    AT: Autriche
-    AU: Australie
-    AW: Aruba
-    AZ: Azerbaïdjan
-    BA: Bosnie-Herzégovine
-    BB: La Barbade
-    BD: Bangladesh
-    BE: Belgique
-    BF: Burkina Faso
-    BG: Bulgarie
-    BH: Bahrain
-    BI: Burundi
-    BJ: Benin
-    BO: Bolivie
-    BQ: Antilles néerlandaises
-    BR: Brésil
-    BS: Bahamas
-    BT: Bhoutan
-    BW: Botswana
-    BY: Biélorussie
-    BZ: Belize
-    CA: Canada
-    CD: République Démocratique du Congo
-    CF: République centrafricaine
-    CG: République du Congo
-    CH: La Suisse
-    CI: Côte d’Ivoire
-    CK: Les Îles Cook
-    CL: Chile
-    CM: Cameroun
-    CN: Chine
-    CO: Colombia
-    CR: Costa Rica
-    CV: Cap-Vert
-    CY: Chypre
-    CZ: Tchéquie (République tchèque)
-    DE: Allemagne
-    DJ: Djibouti
-    DK: Danemark
-    DM: Dominique
-    DO: République Dominicaine
-    DZ: Algérie
-    EC: Equateur
-    EE: Estonie
-    EG: Egypte
-    ER: Érythrée
-    ES: Espagne
-    ET: Ethiopie
-    FI: Finlande
-    FJ: Fidji
-    FM: Micronésie (États fédérés de)
-    FO: Îles Féroé
-    FR: France
-    GA: Gabon
-    GB: Royaume-Uni
-    GD: Grenada
-    GE: Géorgie
-    GF: Guyane Française
-    GG: Guernesey
-    GH: Ghana
-    GI: Gibraltar
-    GL: Groenland
-    GM: Gambie
-    GN: Guinée
-    GP: Guadeloupe
-    GQ: Guinée Équatoriale
-    GR: Grèce
-    GT: Guatemala
-    GU: Guam
-    GW: Guinée-Bissau
-    GY: Guyane
-    HK: Hong Kong
-    HN: Honduras
-    HR: Croatie
-    HT: Haiti
-    HU: Hongrie
-    ID: Indonésie
-    IE: Irlande
-    IL: Israël
-    IM: île de Man
-    IN: Inde
-    IQ: Irak
-    IS: Islande
-    IT: Italie
-    JE: Jersey
-    JM: Jamaica
-    JO: Jordan
-    JP: Japon
-    KE: Kenya
-    KG: Kirghizistan
-    KH: Cambodge
-    KI: Kiribati
-    KM: Comores
-    KN: Saint-Christophe-et-Niévès
-    KR: Corée du Sud
-    KW: Koweit
-    KY: Îles Caïmans
-    KZ: Kazakhstan
-    LA: Laos
-    LB: Liban
-    LC: Saint Lucia
-    LI: Liechtenstein
-    LK: Sri Lanka
-    LR: Libéria
-    LS: Lesotho
-    LT: Lituanie
-    LU: Luxembourg
-    LV: Lettonie
-    LY: Libye
-    MA: Maroc
-    MC: Monaco
-    MD: Moldavie
-    ME: Monténégro
-    MG: Madagascar
-    MH: Les Îles Marshall
-    MK: Macédoine
-    ML: Mali
-    MM: Birmanie
-    MN: Mongolie
-    MO: Macao
-    MP: Îles Mariannes du Nord
-    MQ: Martinique
-    MR: Mauritanie
-    MS: Montserrat
-    MT: Malte
-    MU: Maurice
-    MV: Maldives
-    MW: Malawi
-    MX: Mexique
-    MY: Malaisie
-    NA: Namibie
-    NC: Nouvelle Calédonie
-    NE: Niger
-    NG: Nigeria
-    NI: Nicaragua
-    NL: Pays-Bas
-    'NO': Norvège
-    NP: Népal
-    NU: Niué
-    NZ: Nouvelle-Zélande
-    OM: Oman
-    PA: Panama
-    PE: Pérou
-    PF: Polynésie Française
-    PG: Papouasie-Nouvelle-Guinée
-    PH: Philippines
-    PK: Pakistan
-    PL: Pologne
-    PR: Porto Rico
-    PS: Palestine
-    PT: Portugal
-    PW: Palaos
-    PY: Paraguay
-    QA: Qatar
-    RE: La Rénion
-    RO: Roumanie
-    RS: Serbie
-    RU: Russie
-    RW: Rwanda
-    SA: Arabie Saoudite
-    SB: Les îles Salomon
-    SC: Seychelles
-    SE: La Suède
-    SG: Singapour
-    SI: Slovénie
-    SK: Slovaquie
-    SL: Sierra Leone
-    SM: Saint Marin
-    SN: Sénégal
-    SO: Somalie
-    SR: Suriname
-    SS: Soudan du sud
-    ST: Sao Tomé et Principe
-    SV: Le Salvador
-    SZ: L’Eswatini
-    TC: îles Turques et Caïques
-    TD: Tchad
-    TG: Togo
-    TH: Thaïlande
-    TJ: Tadjikistan
-    TL: Timor oriental
-    TM: Turkmenistan
-    TN: Tunisie
-    TO: Tonga
-    TR: Turquie
-    TT: Trinité-et-Tobago
-    TV: Tuvalu
-    TW: Taïwan
-    TZ: Tanzanie
-    UA: L’Ukraine
-    UG: Uganda
-    US: États-Unis
-    UY: Uruguay
-    UZ: L’Ouzbékistan
-    VC: Saint-Vincent-et-les-Grenadines
-    VE: Venezuela
-    VG: îles Vierges britanniques
-    VI: îles Vierges des États-Unis
-    VN: Vietnam
-    VU: Vanuatu
-    ZA: L’Afrique du Sud
-    ZM: Zambie
-    ZW: Zimbabwe
+    ad: Andorre
+    ae: Émirats Arabes Unis
+    af: Afghanistan
+    ag: Antigua et Barbuda
+    ai: Anguille
+    al: Albanie
+    am: Arménie
+    ao: Angola
+    ar: Argentine
+    at: Autriche
+    au: Australie
+    aw: Aruba
+    az: Azerbaïdjan
+    ba: Bosnie-Herzégovine
+    bb: La Barbade
+    bd: Bangladesh
+    be: Belgique
+    bf: Burkina Faso
+    bg: Bulgarie
+    bh: Bahrain
+    bi: Burundi
+    bj: Benin
+    bl: Berundi
+    bm: Bermuda
+    bn: Brunei
+    bo: Bolivie
+    bq: Antilles néerlandaises
+    br: Brésil
+    bs: Bahamas
+    bt: Bhoutan
+    bw: Botswana
+    by: Biélorussie
+    bz: Belize
+    ca: Canada
+    cd: République Démocratique du Congo
+    cf: République centrafricaine
+    cg: République du Congo
+    ch: La Suisse
+    ci: Côte d’Ivoire
+    ck: Les Îles Cook
+    cl: Chile
+    cm: Cameroun
+    cn: Chine
+    co: Colombia
+    cr: Costa Rica
+    cv: Cap-Vert
+    cy: Chypre
+    cz: Tchéquie (République tchèque)
+    de: Allemagne
+    dj: Djibouti
+    dk: Danemark
+    dm: Dominique
+    do: République Dominicaine
+    dz: Algérie
+    ec: Equateur
+    ee: Estonie
+    eg: Egypte
+    er: Érythrée
+    es: Espagne
+    et: Ethiopie
+    fi: Finlande
+    fj: Fidji
+    fm: Micronésie (États fédérés de)
+    fo: Îles Féroé
+    fr: France
+    ga: Gabon
+    gb: Royaume-Uni
+    gd: Grenada
+    ge: Géorgie
+    gf: Guyane Française
+    gg: Guernesey
+    gh: Ghana
+    gi: Gibraltar
+    gl: Groenland
+    gm: Gambie
+    gn: Guinée
+    gp: Guadeloupe
+    gq: Guinée Équatoriale
+    gr: Grèce
+    gt: Guatemala
+    gu: Guam
+    gw: Guinée-Bissau
+    gy: Guyane
+    hk: Hong Kong
+    hn: Honduras
+    hr: Croatie
+    ht: Haiti
+    hu: Hongrie
+    id: Indonésie
+    ie: Irlande
+    il: Israël
+    im: île de Man
+    in: Inde
+    iq: Irak
+    is: Islande
+    it: Italie
+    je: Jersey
+    jm: Jamaica
+    jo: Jordan
+    jp: Japon
+    ke: Kenya
+    kg: Kirghizistan
+    kh: Cambodge
+    ki: Kiribati
+    km: Comores
+    kn: Saint-Christophe-et-Niévès
+    kr: Corée du Sud
+    kw: Koweit
+    ky: Îles Caïmans
+    kz: Kazakhstan
+    la: Laos
+    lb: Liban
+    lc: Saint Lucia
+    li: Liechtenstein
+    lk: Sri Lanka
+    lr: Libéria
+    ls: Lesotho
+    lt: Lituanie
+    lu: Luxembourg
+    lv: Lettonie
+    ly: Libye
+    ma: Maroc
+    mc: Monaco
+    md: Moldavie
+    me: Monténégro
+    mg: Madagascar
+    mh: Les Îles Marshall
+    mk: Macédoine
+    ml: Mali
+    mm: Birmanie
+    mn: Mongolie
+    mo: Macao
+    mp: Îles Mariannes du Nord
+    mq: Martinique
+    mr: Mauritanie
+    ms: Montserrat
+    mt: Malte
+    mu: Maurice
+    mv: Maldives
+    mw: Malawi
+    mx: Mexique
+    my: Malaisie
+    mz: Mozambique
+    na: Namibie
+    nc: Nouvelle Calédonie
+    ne: Niger
+    ng: Nigeria
+    ni: Nicaragua
+    nl: Pays-Bas
+    'no': Norvège
+    np: Népal
+    nu: Niué
+    nz: Nouvelle-Zélande
+    om: Oman
+    pa: Panama
+    pe: Pérou
+    pf: Polynésie Française
+    pg: Papouasie-Nouvelle-Guinée
+    ph: Philippines
+    pk: Pakistan
+    pl: Pologne
+    pr: Porto Rico
+    ps: Palestine
+    pt: Portugal
+    pw: Palaos
+    py: Paraguay
+    qa: Qatar
+    re: La Rénion
+    ro: Roumanie
+    rs: Serbie
+    ru: Russie
+    rw: Rwanda
+    sa: Arabie Saoudite
+    sb: Les îles Salomon
+    sc: Seychelles
+    se: La Suède
+    sg: Singapour
+    si: Slovénie
+    sk: Slovaquie
+    sl: Sierra Leone
+    sm: Saint Marin
+    sn: Sénégal
+    so: Somalie
+    sr: Suriname
+    ss: Soudan du sud
+    st: Sao Tomé et Principe
+    sv: Le Salvador
+    sz: L’Eswatini
+    tc: îles Turques et Caïques
+    td: Tchad
+    tg: Togo
+    th: Thaïlande
+    tj: Tadjikistan
+    tl: Timor oriental
+    tm: Turkmenistan
+    tn: Tunisie
+    to: Tonga
+    tr: Turquie
+    tt: Trinité-et-Tobago
+    tv: Tuvalu
+    tw: Taïwan
+    tz: Tanzanie
+    ua: L’Ukraine
+    ug: Uganda
+    us: États-Unis
+    uy: Uruguay
+    uz: L’Ouzbékistan
+    vc: Saint-Vincent-et-les-Grenadines
+    ve: Venezuela
+    vg: îles Vierges britanniques
+    vi: îles Vierges des États-Unis
+    vn: Vietnam
+    vu: Vanuatu
+    ws: Samoa
+    xk: Kosovo
+    ye: Yemen
+    yt: Mayotte
+    za: L’Afrique du Sud
+    zm: Zambie
+    zw: Zimbabwe
