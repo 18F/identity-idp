@@ -140,6 +140,10 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.select_multiple_mfa_options
+      get '/auth_method_confirmation' => 'mfa_confirmation#show'
+    end
+
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
         as: :openid_connect_configuration
