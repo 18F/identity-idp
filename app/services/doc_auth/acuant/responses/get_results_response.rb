@@ -7,6 +7,8 @@ module DocAuth
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
 
         def initialize(http_response, config)
+          Ahoy::Tracker.new.track('Acuant Raw API Response',
+                                  just_keys(parsed_response_body))
           @http_response = http_response
           @config = config
           super(
@@ -33,6 +35,57 @@ module DocAuth
         private
 
         attr_reader :http_response
+
+        def just_keys(hash)
+          if hash.is_a?(Hash)
+            hash.to_h do |key, value|
+              if value.is_a?(Hash)
+                [key, just_keys(value)]
+              elsif value.is_a?(Array)
+                [key, value.map {|element| just_keys(element)}]
+              elsif key == 'Data' && value.is_a?(String)
+                [key, just_keys(JSON.parse(value))]
+              elsif non_pii?(key)
+                [key, value]
+              else
+                [key, 'redacted']
+              end
+            end
+          elsif hash.is_a?(Array)
+            hash.map {|element| just_keys(element)}
+          else
+            hash
+          end
+        end
+
+        def non_pii?(key)
+          pii_fields = %w[
+            Day
+            Month
+            Year
+            Age
+            BirthDate
+            ExpirationDate
+            CountryCode
+            Address
+            AddressLine1
+            AddressLine2
+            City
+            PostalCode
+            DocumentNumber
+            FirstName
+            MiddleName
+            Surname
+            GivenName
+            FullName
+            Height
+            Gender
+            Sex
+            Value
+          ]
+
+          !pii_fields.include?(key)
+        end
 
         def response_info
           @response_info ||= create_response_info
