@@ -5,9 +5,10 @@ RSpec.describe ScriptHelper do
 
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
-      javascript_include_tag_without_preload 'application'
+      output = javascript_include_tag_without_preload 'application'
 
       expect(response.header['Link']).to be_nil
+      expect(output).to have_css('script', visible: :all)
     end
   end
 
@@ -30,6 +31,7 @@ RSpec.describe ScriptHelper do
       before do
         javascript_packs_tag_once('document-capture', 'document-capture')
         javascript_packs_tag_once('application', prepend: true)
+        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
       end
@@ -38,7 +40,9 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags
 
         expect(output).to have_css(
-          "script[src^='/application.js'] ~ script[src^='/document-capture.js']",
+          "script[src^='/polyfill.js'][nomodule] ~ \
+          script[src^='/application.js'] ~ \
+          script[src^='/document-capture.js']",
           count: 1,
           visible: :all,
         )
@@ -47,6 +51,7 @@ RSpec.describe ScriptHelper do
 
     context 'with named scripts argument' do
       before do
+        allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application').
           and_return(['/application.js'])
       end
@@ -54,7 +59,10 @@ RSpec.describe ScriptHelper do
       it 'enqueues those scripts before printing them' do
         output = render_javascript_pack_once_tags('application')
 
-        expect(output).to have_css('script[src="/application.js"]', visible: :all)
+        expect(output).to have_css(
+          "script[src^='/polyfill.js'][nomodule] ~ script[src='/application.js']",
+          visible: :all,
+        )
       end
     end
 
@@ -64,7 +72,7 @@ RSpec.describe ScriptHelper do
       end
 
       it 'gracefully outputs nothing' do
-        expect(render_javascript_pack_once_tags).to be_empty
+        expect(render_javascript_pack_once_tags).to be_nil
       end
     end
   end

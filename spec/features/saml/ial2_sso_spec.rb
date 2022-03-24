@@ -27,7 +27,7 @@ feature 'IAL2 Single Sign On' do
     complete_all_doc_auth_steps
     click_on t('idv.troubleshooting.options.verify_by_mail')
     click_on t('idv.buttons.mail.send')
-    fill_in :user_password, with: user.password
+    fill_in t('idv.form.password'), with: user.password
     click_continue
     click_acknowledge_personal_key
     click_link t('idv.buttons.continue_plain')
@@ -46,7 +46,7 @@ feature 'IAL2 Single Sign On' do
 
   def update_mailing_address
     click_on t('idv.buttons.mail.resend')
-    fill_in :user_password, with: user.password
+    fill_in t('idv.form.password'), with: user.password
     click_continue
     click_acknowledge_personal_key
     click_link t('idv.buttons.continue_plain')

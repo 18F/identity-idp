@@ -1,16 +1,5 @@
 // supplemental utility classes
 
-.hidden {
-  display: none;
-}
-
-.vertical-align::before {
-  content: ' ';
-  display: inline-block;
-  height: 100%;
-  vertical-align: middle;
-}
-
 html.no-js .js {
   display: none;
 }
@@ -25,7 +14,7 @@ html.js .no-js {
   transform: scale(0.7);
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .sm-left-align {
     text-align: left;
   }

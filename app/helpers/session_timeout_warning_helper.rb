@@ -11,6 +11,10 @@ module SessionTimeoutWarningHelper
     IdentityConfig.store.session_timeout_warning_seconds
   end
 
+  def expires_at
+    session[:session_expires_at]&.to_datetime || Time.zone.now - 1
+  end
+
   def timeout_refresh_path
     UriService.add_params(
       request.original_fullpath,
@@ -18,15 +22,11 @@ module SessionTimeoutWarningHelper
     )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 
-  def time_left_in_session
-    distance_of_time_in_words(session_timeout_warning, 0)
-  end
-
   def session_modal
     if user_fully_authenticated?
-      FullySignedInModalPresenter.new(time_left_in_session)
+      FullySignedInModalPresenter.new(view_context: self, expiration: expires_at)
     else
-      PartiallySignedInModalPresenter.new(time_left_in_session)
+      PartiallySignedInModalPresenter.new(view_context: self, expiration: expires_at)
     end
   end
 end

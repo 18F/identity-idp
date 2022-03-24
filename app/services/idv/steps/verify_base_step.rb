@@ -24,15 +24,20 @@ module Idv
         )
       end
 
-      def check_ssn(pii_from_doc)
+      def check_ssn
+        pii_from_doc = flow_session[:pii_from_doc]
         result = Idv::SsnForm.new(current_user).submit(ssn: pii_from_doc[:ssn])
-        save_legacy_state(pii_from_doc) if result.success?
+
+        if result.success?
+          save_legacy_state(pii_from_doc)
+          flow_session.delete(:pii_from_doc)
+        end
+
         result
       end
 
       def save_legacy_state(pii_from_doc)
         skip_legacy_steps
-        idv_session['params'] = pii_from_doc
         idv_session['applicant'] = pii_from_doc
         idv_session['applicant']['uuid'] = current_user.uuid
       end

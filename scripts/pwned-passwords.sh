@@ -60,6 +60,17 @@ unzip_pwned_passwords() {
   7z x $pwned_7z -so | head -n $number_of_passwords | cut -d: -f 1 | sort > $pwned_file
 }
 
+check_passwords() {
+  echo "Checking if 'password' is in ${pwned_file}..."
+  check="grep -i $(echo -n "password" | sha1sum | awk '{print $1}') -- $pwned_file"
+  if [ -z $(eval $check) ]; then
+    echo "SHA-1 check for 'password' came up empty. Please redownload the pwned passwords zip"
+    exit 1
+  else
+    echo "Check succeeded!"
+  fi
+}
+
 check_s3_env() {
   echo "Checking s3 environment variables."
   case $aws_prod in
@@ -126,6 +137,7 @@ done
 check_7z
 check_pwned_7z
 unzip_pwned_passwords
+check_passwords
 if [[ $submit_to_s3 == "true" ]]; then
   check_s3_env
   post_to_s3

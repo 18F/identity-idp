@@ -165,6 +165,8 @@ js_build:
   cache:
     - <<: *ruby_cache
     - <<: *yarn_production_cache
+  variables:
+    NODE_ENV: 'production'
   script:
     - *bundle_install
     - *yarn_production_install
@@ -187,14 +189,14 @@ coverage:
     - bundle exec spec/simplecov_merger.rb
     - mv coverage/coverage/* coverage/
   artifacts:
-      reports:
-        cobertura: coverage/coverage.xml
-      name: coverage
-      expire_in: 31d
-      paths:
-        - coverage/index.html
-        - coverage/assets/
-        - coverage/coverage.xml
+    reports:
+      cobertura: coverage/coverage.xml
+    name: coverage
+    expire_in: 31d
+    paths:
+      - coverage/index.html
+      - coverage/assets/
+      - coverage/coverage.xml
 
 artifact:
   extends: .on_push

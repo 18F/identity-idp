@@ -214,6 +214,8 @@ jobs:
   javascript_build:
     working_directory: ~/identity-idp
     executor: ruby_browsers
+    environment:
+      NODE_ENV: production
     steps:
       - checkout
       - node-install

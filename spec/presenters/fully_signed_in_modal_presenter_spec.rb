@@ -1,19 +1,34 @@
 require 'rails_helper'
 
 describe FullySignedInModalPresenter do
-  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::SanitizeHelper
 
-  let(:time_left_in_session) { 10 }
-  subject(:presenter) { FullySignedInModalPresenter.new(time_left_in_session) }
+  let(:expiration) { Time.zone.now + 1.minute + 1.second }
+  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
+  let(:view_context) { ActionView::Base.new(lookup_context, {}, nil) }
+  subject(:presenter) do
+    FullySignedInModalPresenter.new(view_context: view_context, expiration: expiration)
+  end
+
+  around do |ex|
+    freeze_time { ex.run }
+  end
 
   describe '#message' do
     it 'returns the fully signed in message' do
-      message = t(
+      expect(strip_tags(presenter.message)).to eq t(
         'notices.timeout_warning.signed_in.message_html',
-        time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
+        time_left_in_session: '1 minute and 1 second',
       )
+    end
+  end
 
-      expect(presenter.message).to eq message
+  describe '#sr_message' do
+    it 'returns the fully signed in message for screen readers' do
+      expect(strip_tags(presenter.sr_message)).to eq t(
+        'notices.timeout_warning.signed_in.sr_message_html',
+        time_left_in_session: '1 minute and 1 second',
+      )
     end
   end
 

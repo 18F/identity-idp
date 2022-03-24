@@ -22,42 +22,42 @@
   </div>
   <div class="border-bottom border-primary-light">
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 text-bold">
+      <div class="tablet:grid-col-4 text-bold">
         <%= t('account.index.full_name') %>
       </div>
-      <div class="mobile-lg:grid-col-8 padding-x-1 truncate">
+      <div class="tablet:grid-col-8 padding-x-1 truncate">
         <%= pii.full_name %>
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 text-bold">
+      <div class="tablet:grid-col-4 text-bold">
         <%= t('account.index.address') %>
       </div>
-      <div class="mobile-lg:grid-col-8 padding-x-1">
+      <div class="tablet:grid-col-8 padding-x-1">
         <%= render 'shared/address', address: pii %>
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 text-bold">
+      <div class="tablet:grid-col-4 text-bold">
         <%= t('account.index.dob') %>
       </div>
-      <div class="mobile-lg:grid-col-8 padding-x-1">
+      <div class="tablet:grid-col-8 padding-x-1">
         <%= pii.dob %>
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 text-bold">
+      <div class="tablet:grid-col-4 text-bold">
         <%= t('account.index.ssn') %>
       </div>
-      <div class="mobile-lg:grid-col-8 padding-x-1">
+      <div class="tablet:grid-col-8 padding-x-1">
         ***-**-****
       </div>
     </div>
     <div class="padding-1 grid-row border-top border-left border-right border-primary-light">
-      <div class="mobile-lg:grid-col-4 text-bold">
+      <div class="tablet:grid-col-4 text-bold">
         <%= t('account.index.phone') %>
       </div>
-      <div class="mobile-lg:grid-col-8 padding-x-1">
+      <div class="tablet:grid-col-8 padding-x-1">
         <%= PhoneFormatter.format(pii.phone) %>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isWebAuthnEnabled, enrollWebauthnDevice } from '../app/webauthn';
 
 /**
@@ -22,8 +21,8 @@ function webauthn() {
   }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
-    document.getElementById('spinner').classList.remove('hidden');
-    document.getElementById('continue-button').className = 'hidden';
+    document.getElementById('spinner').classList.remove('display-none');
+    document.getElementById('continue-button').className = 'display-none';
 
     const platformAuthenticator =
       document.getElementById('platform_authenticator').value === 'true';
@@ -59,4 +58,6 @@ function webauthn() {
   });
 }
 
-loadPolyfills(['url']).then(webauthn);
+if (process.env.NODE_ENV !== 'test') {
+  webauthn();
+}

@@ -21,7 +21,7 @@ module Idv
       elsif current_async_state.in_progress?
         render :wait
       elsif current_async_state.missing?
-        analytics.track_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING)
+        analytics.proofing_address_result_missing
         render :index
       elsif current_async_state.done?
         async_state_done(current_async_state)

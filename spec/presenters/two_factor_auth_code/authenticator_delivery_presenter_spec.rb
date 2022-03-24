@@ -4,7 +4,7 @@ describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:presenter) do
     TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
-      new(data: {}, view: view)
+      new(data: {}, view: view, service_provider: nil)
   end
 
   describe '#header' do

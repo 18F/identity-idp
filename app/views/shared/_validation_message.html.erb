@@ -15,6 +15,7 @@ locals:
 
 <%= tag.span(
       role: 'alert',
+      id: local_assigns[:id],
       class: classes,
     ) do %>
     <%= content_tag(text_tag, message, class: 'usa-alert__text') %>

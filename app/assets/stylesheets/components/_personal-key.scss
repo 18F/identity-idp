@@ -28,7 +28,7 @@
   }
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .separator-text > div {
     &::after {
       color: #000;
@@ -56,7 +56,7 @@
   width: 110%;
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .full-width-box {
     margin-left: -5rem;
     width: 135%;

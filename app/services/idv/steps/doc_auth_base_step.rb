@@ -59,13 +59,15 @@ module Idv
       # @param [DocAuth::Response,
       #   DocumentCaptureSessionAsyncResult,
       #   DocumentCaptureSessionResult] response
-      def extract_pii_from_doc(response)
-        flow_session[:pii_from_doc] = response.pii_from_doc.merge(
+      def extract_pii_from_doc(response, store_in_session: false)
+        pii_from_doc = response.pii_from_doc.merge(
           uuid: effective_user.uuid,
           phone: effective_user.phone_configurations.take&.phone,
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
-        track_document_state
+
+        flow_session[:pii_from_doc] = pii_from_doc if store_in_session
+        track_document_state(pii_from_doc[:state])
       end
 
       def user_id_from_token
@@ -161,10 +163,8 @@ module Idv
         :verify_document_action_document_capture_session_uuid
       end
 
-      def track_document_state
-        return unless IdentityConfig.store.state_tracking_enabled
-        state = flow_session[:pii_from_doc][:state]
-        return unless state
+      def track_document_state(state)
+        return unless IdentityConfig.store.state_tracking_enabled && state
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)
         return unless doc_auth_log
         doc_auth_log.state = state

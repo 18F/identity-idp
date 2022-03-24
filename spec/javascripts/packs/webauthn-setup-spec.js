@@ -1,17 +1,13 @@
 import { useSandbox } from '../support/sinon';
 import useDefineProperty from '../support/define-property';
+import { reloadWithError } from '../../../app/javascript/packs/webauthn-setup';
 
 describe('webauthn-setup', () => {
   const defineProperty = useDefineProperty();
   const sandbox = useSandbox();
-  let reloadWithError;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     defineProperty(window, 'location', { value: { search: null } });
-
-    // Because webauthn-setup has side effects which trigger a call to `window.location.search`,
-    // ensure that basic stubbing is in place before importing from the file.
-    ({ reloadWithError } = await import('../../../app/javascript/packs/webauthn-setup'));
   });
 
   describe('reloadWithError', () => {

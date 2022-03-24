@@ -52,7 +52,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       {
         test: /\.[jt]sx?$/,
-        exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+        exclude:
+          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
         use: {
           loader: 'babel-loader',
         },
@@ -61,7 +62,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: 'all' },
+    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({

@@ -53,7 +53,7 @@ module Idv
 
         delete_async
         if doc_pii_form_result.success?
-          extract_pii_from_doc(async_result)
+          extract_pii_from_doc(async_result, store_in_session: !hybrid_flow_mobile?)
 
           mark_step_complete(:document_capture)
           save_proofing_components
@@ -108,7 +108,7 @@ module Idv
 
       def missing
         delete_async
-        @flow.analytics.track_event(Analytics::PROOFING_DOCUMENT_RESULT_MISSING)
+        @flow.analytics.proofing_document_result_missing
         DocumentCaptureSessionAsyncResult.missing
       end
 

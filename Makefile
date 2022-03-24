@@ -69,7 +69,7 @@ lint: ## Runs all lint tests
 	bundle exec bundler-audit check --update
 	# JavaScript
 	@echo "--- yarn audit ---"
-	yarn audit
+	yarn audit --groups dependencies; test $$? -le 8
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -197,4 +197,9 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
 
 .yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
-	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --no-output --db $@ -- $<
+	bundle exec yard doc \
+		--type-tag identity.idp.event_name:"Event Name" \
+		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
+		--no-output \
+		--db $@ \
+		-- $<

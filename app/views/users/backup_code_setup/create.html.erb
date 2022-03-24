@@ -42,12 +42,12 @@
           outline: true,
           type: :button,
           data: { print: '' },
-          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+          class: 'margin-top-2 tablet:margin-top-0 tablet:margin-left-2',
         ).with_content(t('forms.backup_code.print')) %>
     <%= render ClipboardButtonComponent.new(
           clipboard_text: @codes.join(' '),
           outline: true,
-          class: 'margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2',
+          class: 'margin-top-2 tablet:margin-top-0 tablet:margin-left-2',
         ) %>
   </div>
 </div>

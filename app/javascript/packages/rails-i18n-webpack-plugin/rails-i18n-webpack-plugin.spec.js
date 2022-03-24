@@ -5,15 +5,8 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
-const {
-  dig,
-  fromPairs,
-  uniq,
-  compact,
-  getKeyPath,
-  getKeyDomain,
-  getKeyDomains,
-} = RailsI18nWebpackPlugin;
+const { dig, fromPairs, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } =
+  RailsI18nWebpackPlugin;
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {

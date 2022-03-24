@@ -20,7 +20,7 @@ module SpAuthHelper
     complete_all_doc_auth_steps
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.detect(&:mfa_enabled?).phone)
     click_idv_continue
-    fill_in :user_password, with: user.password
+    fill_in t('idv.form.password'), with: user.password
     click_continue
     click_acknowledge_personal_key
     expect(page).to have_current_path(sign_up_completed_path)

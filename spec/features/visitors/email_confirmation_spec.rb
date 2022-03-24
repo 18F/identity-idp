@@ -14,7 +14,7 @@ feature 'Email confirmation during sign up' do
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
-    fill_in 'password_form_password', with: Features::SessionHelper::VALID_PASSWORD
+    fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
     expect(current_url).to eq two_factor_options_url

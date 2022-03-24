@@ -35,9 +35,9 @@ describe('DocumentCapturePolling', () => {
       statusEndpoint: '/status',
       elements: {
         backLink: /** @type {HTMLAnchorElement} */ (document.querySelector('.link-sent-back-link')),
-        form: /** @type {HTMLFormElement} */ (document.querySelector(
-          '.link-sent-continue-button-form',
-        )),
+        form: /** @type {HTMLFormElement} */ (
+          document.querySelector('.link-sent-continue-button-form')
+        ),
       },
       trackEvent,
     });

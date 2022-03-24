@@ -43,11 +43,7 @@ class DisplayablePiiFormatter
 
   def verified_at
     timestamp = current_user.active_profile&.verified_at
-    if timestamp
-      I18n.l(timestamp, format: :event_timestamp)
-    else
-      I18n.t('help_text.requested_attributes.verified_at_blank')
-    end
+    I18n.l(timestamp, format: :event_timestamp) if timestamp
   end
 
   def x509_subject

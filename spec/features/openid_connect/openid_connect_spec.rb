@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'query_tracker'
 
 describe 'OpenID Connect' do
   include IdvHelper
@@ -195,8 +196,7 @@ describe 'OpenID Connect' do
     token_response = sign_in_get_token_response(
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
-        expect(page).to have_content(t('help_text.requested_attributes.verified_at_blank'))
+        expect(page).not_to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
       end,
@@ -267,7 +267,7 @@ describe 'OpenID Connect' do
         fill_out_phone_form_mfa_phone(user)
         click_idv_continue
 
-        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
         click_continue
 
         acknowledge_and_confirm_personal_key(js: false)
@@ -614,6 +614,14 @@ describe 'OpenID Connect' do
           to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end
     end
+  end
+
+  it 'does not make too many queries' do
+    queries = QueryTracker.track do
+      visit_idp_from_ial1_oidc_sp
+    end
+
+    expect(queries[:service_providers].count).to be <= 6
   end
 
   def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)

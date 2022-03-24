@@ -15,7 +15,7 @@ RSpec.describe Accounts::PersonalKeysController do
       stub_sign_in(create(:user, :with_phone))
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_VISIT)
+      expect(@analytics).to receive(:track_event).with('Profile: Visited new personal key')
 
       get :new
     end
@@ -31,9 +31,9 @@ RSpec.describe Accounts::PersonalKeysController do
         with(subject.current_user).and_return(generator)
 
       expect(generator).to receive(:create)
-      expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
+      expect(@analytics).to receive(:track_event).with('Profile: Created new personal key')
       expect(@analytics).to receive(:track_event).with(
-        Analytics::PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS,
+        'Profile: Created new personal key notifications',
         hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
       )
 

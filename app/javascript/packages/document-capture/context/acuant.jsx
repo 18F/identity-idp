@@ -201,9 +201,9 @@ function AcuantContextProvider({
         {
           onSuccess: () => {
             /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.startWorkers(() => {
-              const {
-                isCameraSupported: nextIsCameraSupported,
-              } = /** @type {AcuantGlobal} */ (window).AcuantCamera;
+              const { isCameraSupported: nextIsCameraSupported } = /** @type {AcuantGlobal} */ (
+                window
+              ).AcuantCamera;
 
               addPageAction({
                 label: 'IdV: Acuant SDK loaded',

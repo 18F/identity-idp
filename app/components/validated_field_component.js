@@ -1,5 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
+import { ValidatedField } from '@18f/identity-validated-field';
 
-loadPolyfills(['custom-elements', 'classlist'])
-  .then(() => import('@18f/identity-validated-field'))
-  .then(({ ValidatedField }) => customElements.define('lg-validated-field', ValidatedField));
+customElements.define('lg-validated-field', ValidatedField);

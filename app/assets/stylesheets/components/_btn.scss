@@ -3,23 +3,6 @@
   // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and
   // (b) the default margin would not be large enough on its own.
   margin-right: 0;
-
-  &.usa-button--unstyled:visited {
-    // Temporary: Links in the IdP do not currently conform to the design system and instead retain
-    // their color even if visited. Part of the work of LG-3877 will be to remove these styles, and
-    // instead allow unstyled buttons and links inherit the default design system visited color.
-    // Alternatively, consider removing unstyled button classes from links, since the intention of
-    // unstyled buttons is to take the visual appearance of a link.
-    color: $link-color;
-  }
-}
-
-.usa-button.usa-button--unstyled:hover,
-.usa-button.usa-button--hover.usa-button--unstyled {
-  // Temporary: Links in the IdP do not currently conform to the design system and instead retain
-  // their color while hovered. Part of the work of LG-3877 should be to remove these styles, and
-  // instead allow both unstyled buttons and links inherit the default design system hover color.
-  color: $link-color;
 }
 
 .usa-button--unstyled {
@@ -39,12 +22,4 @@
   &.usa-button:disabled.usa-focus {
     background-color: transparent;
   }
-}
-
-.usa-button--disabled {
-  // There exist some disabled buttons which we expect to only take the visual appearance of a
-  // disabled button, but still allow interactions (e.g. IAL2 Agreement and Document Capture steps).
-  //
-  // See: https://github.com/uswds/uswds/issues/4122
-  pointer-events: all;
 }

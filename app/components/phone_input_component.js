@@ -1,5 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
+import { PhoneInput } from '@18f/identity-phone-input';
 
-loadPolyfills(['custom-elements', 'classlist', 'custom-event'])
-  .then(() => import('@18f/identity-phone-input'))
-  .then(({ PhoneInput }) => customElements.define('lg-phone-input', PhoneInput));
+customElements.define('lg-phone-input', PhoneInput);

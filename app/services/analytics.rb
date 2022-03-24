@@ -124,11 +124,6 @@ class Analytics
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET = 'Account Reset'
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  ADD_EMAIL = 'Add Email: Email Submitted'
-  ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'
-  ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'
-  ADD_EMAIL_VISIT = 'Add Email: enter email visited'
-  BANNED_USER_VISITED = 'Banned User visited'
   BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'
@@ -224,11 +219,6 @@ class Analytics
   PHONE_DELETION = 'Phone Number Deletion: Submitted'
   PIV_CAC_LOGIN = 'PIV/CAC Login'
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
-  PROFILE_PERSONAL_KEY_VISIT = 'Profile: Visited new personal key'
-  PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'
-  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
-  PROOFING_ADDRESS_RESULT_MISSING = 'Proofing Address Result Missing' # Previously "Proofing Address Timeout"
-  PROOFING_DOCUMENT_RESULT_MISSING = 'Proofing Document Result Missing' # Previously "Proofing Document Timeout"
   PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'

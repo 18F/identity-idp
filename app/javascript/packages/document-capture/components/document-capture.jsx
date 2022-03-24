@@ -111,18 +111,20 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           validator: reviewIssuesStepValidator,
         },
       ]
-    : /** @type {FormStep[]} */ ([
-        {
-          name: 'documents',
-          form: DocumentsStep,
-          validator: documentsStepValidator,
-        },
-        serviceProvider.isLivenessRequired && {
-          name: 'selfie',
-          form: SelfieStep,
-          validator: selfieStepValidator,
-        },
-      ].filter(Boolean));
+    : /** @type {FormStep[]} */ (
+        [
+          {
+            name: 'documents',
+            form: DocumentsStep,
+            validator: documentsStepValidator,
+          },
+          serviceProvider.isLivenessRequired && {
+            name: 'selfie',
+            form: SelfieStep,
+            validator: selfieStepValidator,
+          },
+        ].filter(Boolean)
+      );
 
   return submissionFormValues &&
     (!submissionError || submissionError instanceof RetrySubmissionError) ? (

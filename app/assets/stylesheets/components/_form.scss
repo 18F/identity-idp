@@ -1,6 +1,6 @@
 $radio-checkbox-space: 1.5rem;
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   input,
   select,
   textarea {
@@ -23,6 +23,10 @@ textarea {
 
 .field {
   background-color: #f2f9ff;
+  border-style: solid;
+  border-width: $border-width;
+  border-color: $border-color;
+  border-radius: $border-radius;
   color: $gray;
   font-weight: $bold-font-weight;
 
@@ -37,14 +41,8 @@ textarea {
     outline: none;
   }
 
-  &:invalid,
-  &.is-error {
-    border-color: $border-color;
-  }
-
-  // Temporary: Remove after LG-3877 (with BassCSS "color-forms")
-  &.usa-input--error:invalid {
-    border-color: color('error');
+  &.usa-input--error {
+    @include u-border($theme-input-state-border-width, 'error');
   }
 }
 
@@ -87,7 +85,7 @@ input::-webkit-inner-spin-button {
 
 .usa-radio__input--tile + .usa-radio__label--illustrated .usa-radio__image {
   width: 1.5rem;
-  @media #{$breakpoint-sm} {
+  @include at-media('tablet') {
     width: 2.625rem;
     padding-top: 0.25rem;
   }

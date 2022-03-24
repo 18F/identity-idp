@@ -5,9 +5,9 @@ class MaskedTextToggle {
   constructor(toggle) {
     this.elements = {
       toggle,
-      texts: /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll(
-        `#${toggle.getAttribute('aria-controls')} .masked-text__text`,
-      )),
+      texts: /** @type {NodeListOf<HTMLElement>} */ (
+        document.querySelectorAll(`#${toggle.getAttribute('aria-controls')} .masked-text__text`)
+      ),
     };
   }
 

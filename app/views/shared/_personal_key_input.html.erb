@@ -7,5 +7,14 @@
        required=""
        aria-invalid="false"
        spellcheck="false"
-       type="text" />
+       type="text"
+       aria-describedby="<%= 'personal-key-validation-message' if validation_needed %>" />
+<% if validation_needed %>
+  <%= render 'shared/validation_message',
+             {
+               id: 'personal-key-validation-message',
+               class: 'margin-bottom-2',
+               message: t('simple_form.required.text'),
+             } %>
+<% end %>
 <%= javascript_packs_tag_once('formatted-fields') %>
