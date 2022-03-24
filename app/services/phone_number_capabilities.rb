@@ -14,6 +14,7 @@ class PhoneNumberCapabilities
     INTERNATIONAL_CODES.each do |k, value|
       translated_international_codes_data[k] = value.merge('name' => I18n.t("countries.#{k.downcase}"))
     end
+    translated_international_codes_data
   end
 
   def initialize(phone, phone_confirmed:)
