@@ -7,7 +7,7 @@ variables:
   ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
 
 default:
-  image: $ECR_REGISTRY/ruby-node-yarn-chrome-chromedriver:3.0.3
+  image: "${ECR_REGISTRY}/ruby-node-yarn-chrome-chromedriver:3.0.3"
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
