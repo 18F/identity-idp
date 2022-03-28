@@ -51,16 +51,10 @@ stages:
   - test
   - after_test
 
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "schedule"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
-
 check_changelog:
   stage: build
   script:
+    - echo "$CI_PIPELINE_SOURCE"
     - |
       if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
       then
