@@ -51,6 +51,11 @@ stages:
   - test
   - after_test
 
+workflow:
+  rules:
+      - if: $CI_COMMIT_REF_NAME
+        when: always
+
 check_changelog:
   stage: build
   script:
