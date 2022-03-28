@@ -13,7 +13,7 @@ class TwoFactorOptionsForm
   end
 
   def submit(params)
-    self.selection = params[:selection]
+    self.selection = Array(params[:selection])
 
     success = valid?
     update_otp_delivery_preference_for_user if success && user_needs_updating?
