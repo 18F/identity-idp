@@ -6,6 +6,6 @@ class CountrySupportController < ApplicationController
   def index
     expires_in 15.minutes, public: true
 
-    render json: { countries: PhoneNumberCapabilities::INTERNATIONAL_CODES }
+    render json: { countries: PhoneNumberCapabilities.translated_international_codes }
   end
 end
