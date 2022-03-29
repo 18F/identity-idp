@@ -11,6 +11,7 @@ module Idv
 
       def enqueue_job
         return if flow_session[verify_step_document_capture_session_uuid_key]
+        return mark_step_incomplete(:ssn) if pii_from_doc.nil?
 
         pii_from_doc[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
