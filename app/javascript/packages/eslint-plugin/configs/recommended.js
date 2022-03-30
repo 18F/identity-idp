@@ -6,7 +6,6 @@ const config = {
   env: {
     es6: true,
   },
-  parserOptions: {},
   rules: {
     'array-bracket-spacing': 'off',
     'arrow-parens': 'off',
