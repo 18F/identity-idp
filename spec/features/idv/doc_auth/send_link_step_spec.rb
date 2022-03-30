@@ -81,7 +81,7 @@ feature 'doc auth send link step' do
 
   it 'throttles sending the link' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    user = sign_in_and_2fa_user
+    sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
     timeout = distance_of_time_in_words(Throttle.attempt_window_in_minutes(:idv_send_link).minutes)
     freeze_time do

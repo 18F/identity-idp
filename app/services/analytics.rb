@@ -80,7 +80,7 @@ class Analytics
 
   def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
-    mfa_event_type = (attributes[:success] ? 'success' : 'fail')
+    attributes[:success] ? 'success' : 'fail'
   end
 
   attr_reader :user, :request, :sp, :ahoy

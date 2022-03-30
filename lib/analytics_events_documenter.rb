@@ -93,8 +93,6 @@ class AnalyticsEventsDocumenter
   # @return [{ events: Array<Hash>}]
   def as_json
     events_json_summary = analytics_methods.map do |method_object|
-      param_names = method_object.parameters.map { |p| p.first.chomp(':') }
-
       attributes = method_object.tags('param').map do |tag|
         {
           name: tag.name,

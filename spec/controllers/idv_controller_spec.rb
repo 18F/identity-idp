@@ -71,7 +71,7 @@ describe IdvController do
     end
 
     context 'no SP context' do
-      let(:user) { user = build(:user, password: ControllerHelper::VALID_PASSWORD) }
+      let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
 
       before do
         stub_sign_in(user)
