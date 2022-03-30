@@ -31,7 +31,7 @@ module ScriptHelper
   private
 
   def local_crossorigin_sources?
-    Rails.env.development? && ENV.key?('WEBPACK_PORT')
+    Rails.env.development? && ENV['WEBPACK_PORT'].present?
   end
 
   def javascript_polyfill_pack_tag

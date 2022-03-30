@@ -49,9 +49,11 @@ RSpec.describe ScriptHelper do
       end
 
       context 'local development crossorigin sources' do
+        let(:webpack_port) { '3035' }
+
         before do
           allow(Rails.env).to receive(:development?).and_return(true)
-          stub_const('ENV', 'WEBPACK_PORT' => '3000')
+          stub_const('ENV', 'WEBPACK_PORT' => webpack_port)
         end
 
         it 'prints script sources with crossorigin attribute' do
@@ -64,6 +66,16 @@ RSpec.describe ScriptHelper do
             count: 1,
             visible: :all,
           )
+        end
+
+        context 'empty webpack port' do
+          let(:webpack_port) { '' }
+
+          it 'renders as if webpack port was unassigned' do
+            output = render_javascript_pack_once_tags
+
+            expect(output).to_not have_css('[crossorigin]', visible: :all)
+          end
         end
       end
     end
