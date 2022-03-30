@@ -137,7 +137,6 @@ if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/
     '@typescript-eslint/no-use-before-define': 'error',
     '@typescript-eslint/no-useless-constructor': ['error'],
     'default-param-last': 'off',
-    'dot-notation': 'off',
     'lines-between-class-members': 'off',
     'no-array-constructor': 'off',
     'no-dupe-class-members': 'off',
@@ -149,7 +148,6 @@ if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
     'no-useless-constructor': 'off',
-    'require-await': 'off',
   });
   config.overrides.push({
     files: '*.{ts,tsx}',
