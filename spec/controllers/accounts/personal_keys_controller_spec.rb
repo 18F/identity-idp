@@ -6,6 +6,7 @@ RSpec.describe Accounts::PersonalKeysController do
       expect(subject).to have_actions(
         :before,
         :confirm_recently_authenticated,
+        :prompt_for_password_if_pii_locked,
       )
     end
   end
@@ -59,6 +60,23 @@ RSpec.describe Accounts::PersonalKeysController do
 
       expect(response).to redirect_to new_user_session_url
       expect(flash[:error]).to eq t('errors.general')
+    end
+
+    it 'prompts for password if PII is not present' do
+      user = create(:user, :signed_up, :with_piv_or_cac)
+      create(:profile, :active, :verified, user: user)
+      stub_sign_in(user)
+
+      post :create
+
+      expect(response).to redirect_to capture_password_url
+
+      subject.user_session[:decrypted_pii] = { verified_at: Time.zone.now }.to_json
+
+      post :create
+
+      expect(response).to redirect_to manage_personal_key_path
+      expect(flash[:info]).to eq(t('account.personal_key.old_key_will_not_work'))
     end
   end
 end
