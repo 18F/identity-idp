@@ -1,20 +1,20 @@
 module TwoFactorAuthenticationHelper
-  def route_user_to_right_path
-    case user_session[:selected_mfa_options].first
+  def user_next_authentication_setup_path(final_path)
+    case user_session[:selected_mfa_options].shift
     when 'voice', 'sms', 'phone'
-      redirect_to phone_setup_url
+      phone_setup_url
     when 'auth_app'
-      redirect_to authenticator_setup_url
+      authenticator_setup_url
     when 'piv_cac'
-      redirect_to setup_piv_cac_url
+      setup_piv_cac_url
     when 'webauthn'
-      redirect_to webauthn_setup_url
+      webauthn_setup_url
     when 'webauthn_platform'
-      redirect_to webauthn_setup_url(platform: true)
+      webauthn_setup_url(platform: true)
     when 'backup_code'
-      redirect_to backup_code_setup_url
+      backup_code_setup_url
     else
-      
+      final_path
     end
   end
 end
