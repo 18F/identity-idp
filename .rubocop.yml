@@ -234,6 +234,7 @@ Layout/MultilineOperationIndentation:
     - aligned
     - indented
   IndentationWidth: null
+
 Layout/ParameterAlignment:
   Description: Align the parameters of a method call if they span more than one line.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-double-indent
@@ -242,6 +243,7 @@ Layout/ParameterAlignment:
     - with_first_parameter
     - with_fixed_indentation
   IndentationWidth: null
+
 Layout/RescueEnsureAlignment:
   Enabled: true
 
@@ -325,6 +327,10 @@ Lint/AmbiguousRegexpLiteral:
 Lint/AssignmentInCondition:
   Enabled: true
   AllowSafeAssignment: true
+
+Layout/AssignmentIndentation:
+  Enabled: true
+  IndentationWidth: 2
 
 Lint/BigDecimalNew:
   Enabled: true
