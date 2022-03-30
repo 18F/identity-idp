@@ -1,3 +1,18 @@
+## Unreleased
+
+### Backwards-compatible changes
+
+- TypeScript: More default ESLint rules have been substituted with TypeScript-enhanced versions:
+  - `default-param-last`
+  - `lines-between-class-members`
+  - `no-array-constructor`
+  - `no-dupe-class-members`
+  - `no-empty-function`
+  - `no-loop-func`
+  - `no-loss-of-precision`
+  - `no-redeclare`
+  - `no-useless-constructor`
+
 ## v2.0.0 (2022-03-14)
 
 ### Breaking changes

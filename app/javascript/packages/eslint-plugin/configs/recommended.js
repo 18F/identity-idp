@@ -83,12 +83,43 @@ if (isInstalled('@typescript-eslint/parser') && isInstalled('@typescript-eslint/
   config.plugins.push('@typescript-eslint');
   config.extends.push('plugin:import/typescript');
   Object.assign(config.rules, {
+    '@typescript-eslint/default-param-last': ['error'],
+    '@typescript-eslint/lines-between-class-members': [
+      'error',
+      'always',
+      {
+        exceptAfterSingleLine: false,
+      },
+    ],
+    '@typescript-eslint/no-array-constructor': ['error'],
+    '@typescript-eslint/no-dupe-class-members': ['error'],
+    '@typescript-eslint/no-empty-function': [
+      'error',
+      {
+        allow: ['arrowFunctions', 'functions', 'methods'],
+      },
+    ],
+    '@typescript-eslint/no-loop-func': ['error'],
+    '@typescript-eslint/no-loss-of-precision': ['error'],
+    '@typescript-eslint/no-redeclare': 'error',
     '@typescript-eslint/no-shadow': 'error',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-use-before-define': 'error',
+    '@typescript-eslint/no-useless-constructor': ['error'],
+    'default-param-last': 'off',
+    'dot-notation': 'off',
+    'lines-between-class-members': 'off',
+    'no-array-constructor': 'off',
+    'no-dupe-class-members': 'off',
+    'no-empty-function': 'off',
+    'no-loop-func': 'off',
+    'no-loss-of-precision': 'off',
+    'no-redeclare': 'off',
     'no-shadow': 'off',
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
+    'no-useless-constructor': 'off',
+    'require-await': 'off',
   });
   config.overrides.push({
     files: '*.{ts,tsx}',
