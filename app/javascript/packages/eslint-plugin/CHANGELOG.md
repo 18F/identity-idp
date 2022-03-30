@@ -2,6 +2,37 @@
 
 ### Backwards-compatible changes
 
+- Disabled many stylistic rules which would be redundant with Prettier formatting. For stylistic enforcement, it's recommended to opt-in to the optional Prettier rule extension.
+  - `array-bracket-spacing`
+  - `arrow-parens`
+  - `arrow-spacing`
+  - `block-spacing`
+  - `brace-style`
+  - `comma-spacing`
+  - `comma-style`
+  - `computed-property-spacing`
+  - `dot-location`
+  - `func-call-spacing`
+  - `function-call-argument-newline`
+  - `generator-star-spacing`
+  - `jsx-quotes`
+  - `key-spacing`
+  - `keyword-spacing`
+  - `no-extra-semi`
+  - `no-tabs`
+  - `no-trailing-spaces`
+  - `object-curly-spacing`
+  - `padded-blocks`
+  - `quote-props`
+  - `rest-spread-spacing`
+  - `semi`
+  - `semi-spacing`
+  - `semi-style`
+  - `space-in-parens`
+  - `switch-colon-spacing`
+  - `template-curly-spacing`
+  - `template-tag-spacing`
+  - `yield-star-spacing`
 - TypeScript: More default ESLint rules have been substituted with TypeScript-enhanced versions:
   - `default-param-last`
   - `lines-between-class-members`
