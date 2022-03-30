@@ -1,8 +1,13 @@
-default:
-  image: mitchh/ruby-node-yarn-chrome-chromedriver:3.0.3
+# When adding a new job, you'll want to add `extends: .on_push` to ignore
+# scheduled executions, unless you're specifically adding something that should
+# be run periodically, like metric exporters or syncs.
 
 variables:
   GITLAB_CI: 'true'
+  ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+default:
+  image: "${ECR_REGISTRY}/idp/ci:latest"
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
