@@ -51,13 +51,7 @@ RSpec.describe ScriptHelper do
       context 'local development crossorigin sources' do
         before do
           allow(Rails.env).to receive(:development?).and_return(true)
-        end
-
-        around do |example|
-          original_webpack_port = ENV['WEBPACK_PORT']
-          ENV['WEBPACK_PORT'] = '3000'
-          example.run
-          ENV['WEBPACK_PORT'] = original_webpack_port
+          stub_const('ENV', 'WEBPACK_PORT' => '3000')
         end
 
         it 'prints script sources with crossorigin attribute' do
