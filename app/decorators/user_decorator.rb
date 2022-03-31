@@ -139,6 +139,6 @@ class UserDecorator
   end
 
   def lockout_period_expired?
-    (Time.zone.now - user.second_factor_locked_at) > lockout_period
+    lockout_time_expiration < Time.zone.now
   end
 end
