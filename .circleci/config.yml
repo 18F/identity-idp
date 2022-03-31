@@ -265,7 +265,7 @@ jobs:
               echo "Skipping changelock check because this is not a PR or is a release branch"
               exit 0
             else
-              ./scripts/changelog-check -b main -s "${CIRCLE_BRANCH}"
+              ./scripts/changelog_check.rb -b main -s "${CIRCLE_BRANCH}"
             fi
 
 workflows:

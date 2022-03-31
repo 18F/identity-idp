@@ -24,6 +24,7 @@ module Flow
     def mark_step_incomplete(step = nil)
       klass = step.nil? ? self.class : steps[step]
       flow_session.delete(klass.to_s)
+      nil
     end
 
     def self.acceptable_response_object?(obj)

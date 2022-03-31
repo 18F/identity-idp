@@ -20,5 +20,20 @@ RSpec.describe CountrySupportController do
 
       expect(response['Cache-Control']).to eq("max-age=#{15.minutes.to_i}, public")
     end
+
+    context 'renders when passing in different locale' do
+      it 'renders country support with localization support' do
+        get :index, params: { locale: 'es' }
+
+        json = JSON.parse(response.body, symbolize_names: true)
+
+        expect(json[:countries][:US]).to eq(
+          name: 'Estados Unidos',
+          country_code: '1',
+          supports_sms: true,
+          supports_voice: true,
+        )
+      end
+    end
   end
 end
