@@ -11,7 +11,7 @@ RSpec.describe RemoveOldThrottlesJob do
     subject(:perform) { job.perform(now, limit: limit, total_limit: total_limit) }
 
     it 'deletes throttles that are older than WINDOW' do
-      old_throttle = create(:throttle, target: SecureRandom.hex, updated_at: now - 45.days)
+      _old_throttle = create(:throttle, target: SecureRandom.hex, updated_at: now - 45.days)
       new_throttle = create(:throttle, target: SecureRandom.hex, updated_at: now)
 
       perform
