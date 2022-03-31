@@ -37,6 +37,4 @@ class FailurePresenter
   def troubleshooting_options
     []
   end
-
-  def js; end
 end
