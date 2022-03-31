@@ -113,7 +113,7 @@ en:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
-    please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Please try again in %{countdown}.
     read_about_two_factor_authentication: Read about two-factor authentication
     totp_fallback:
       question: Don’t have your authenticator app?

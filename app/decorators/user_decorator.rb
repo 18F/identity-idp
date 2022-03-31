@@ -34,19 +34,8 @@ class UserDecorator
     end
   end
 
-  def lockout_time_remaining_in_words
-    current_time = Time.zone.now
-
-    distance_of_time_in_words(
-      current_time,
-      current_time + lockout_time_remaining,
-      true,
-      highest_measures: 2,
-    )
-  end
-
-  def lockout_time_remaining
-    (lockout_period - (Time.zone.now - user.second_factor_locked_at)).to_i
+  def lockout_time_expiration
+    user.second_factor_locked_at + lockout_period
   end
 
   def active_identity_for(service_provider)

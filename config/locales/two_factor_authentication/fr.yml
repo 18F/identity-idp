@@ -127,8 +127,7 @@ fr:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
-    please_try_again_html: Veuillez essayer de nouveau dans <strong
-      id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Veuillez essayer de nouveau dans %{countdown}.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?

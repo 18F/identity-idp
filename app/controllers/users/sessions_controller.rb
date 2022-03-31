@@ -117,8 +117,9 @@ module Users
 
     def process_locked_out_user
       presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
-        'generic_login_attempts',
-        current_user.decorate,
+        type: 'generic_login_attempts',
+        decorated_user: current_user.decorate,
+        view_context: view_renderer,
       )
       sign_out
       render_full_width('shared/_failure', locals: { presenter: presenter })
