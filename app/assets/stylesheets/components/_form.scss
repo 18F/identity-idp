@@ -82,11 +82,3 @@ input::-webkit-inner-spin-button {
     margin-left: 0;
   }
 }
-
-.usa-radio__input--tile + .usa-radio__label--illustrated .usa-radio__image {
-  width: 1.5rem;
-  @include at-media('tablet') {
-    width: 2.625rem;
-    padding-top: 0.25rem;
-  }
-}
