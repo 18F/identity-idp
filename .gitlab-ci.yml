@@ -1,7 +1,3 @@
-# When adding a new job, you'll want to add `extends: .on_push` to ignore
-# scheduled executions, unless you're specifically adding something that should
-# be run periodically, like metric exporters or syncs.
-
 variables:
   GITLAB_CI: 'true'
   ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
