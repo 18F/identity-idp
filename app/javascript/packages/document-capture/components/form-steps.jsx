@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { Alert } from '@18f/identity-components';
 import Button from './button';
-import { RequiredValueMissingError } from './form-error-message';
+import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
@@ -251,6 +252,11 @@ function FormSteps({
   return (
     <form ref={formRef} className="read-after-submit" onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
+      {stepErrors.map((error) => (
+        <Alert key={error.message} type="error" className="margin-bottom-4">
+          <FormErrorMessage error={error} isDetail />
+        </Alert>
+      ))}
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
         <Form
           key={name}

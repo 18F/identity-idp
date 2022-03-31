@@ -107,7 +107,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders warning page with error and displays one attempt remaining then continues on', () => {
-    const { getByRole, getByLabelText, getByText } = render(
+    const { getByRole, getByLabelText, getByText, queryByRole } = render(
       <ReviewIssuesStep
         remainingAttempts={1}
         unknownFieldErrors={[
@@ -127,6 +127,7 @@ describe('document-capture/components/review-issues-step', () => {
     userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByText('An unknown error occurred')).to.be.ok();
+    expect(queryByRole('alert')).to.not.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
   });
 

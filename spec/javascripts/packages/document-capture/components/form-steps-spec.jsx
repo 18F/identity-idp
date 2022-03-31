@@ -56,6 +56,9 @@ describe('document-capture/components/form-steps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
+          <button type="button" onClick={() => onError(new Error())}>
+            Create Step Error
+          </button>
           <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
@@ -386,6 +389,16 @@ describe('document-capture/components/form-steps', () => {
     userEvent.type(inputOne, 'one');
 
     expect(inputOne.hasAttribute('data-is-error')).to.be.true();
+  });
+
+  it('renders and moves focus to step errors', () => {
+    const steps = [STEPS[1]];
+
+    const { getByRole } = render(<FormSteps steps={steps} />);
+    const button = getByRole('button', { name: 'Create Step Error' });
+    userEvent.click(button);
+
+    expect(getByRole('alert')).to.equal(document.activeElement);
   });
 
   it('provides context', () => {
