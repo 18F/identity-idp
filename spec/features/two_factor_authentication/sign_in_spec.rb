@@ -488,4 +488,18 @@ feature 'Two Factor Authentication' do
       expect(current_url).to eq MarketingSite.security_and_privacy_practices_url
     end
   end
+
+  describe 'second factor locked' do
+    before do
+      allow_any_instance_of(UserDecorator).to receive(:locked_out?).and_return(true)
+      allow_any_instance_of(UserDecorator).to receive(:lockout_time_expiration).
+        and_return(Time.zone.now + 10.minutes)
+    end
+
+    scenario 'presents the failure screen', :js do
+      sign_in_user(user_with_2fa)
+
+      expect(page).to have_content t('titles.account_locked')
+    end
+  end
 end
