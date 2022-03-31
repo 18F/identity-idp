@@ -6,7 +6,7 @@
   <%= render PageHeadingComponent.new.with_content(presenter.header) %>
 <% end %>
 
-<% Array(presenter.description).each do |description_p| %>
+<% Array(presenter.description(self)).each do |description_p| %>
   <p><%= description_p %></p>
 <% end %>
 

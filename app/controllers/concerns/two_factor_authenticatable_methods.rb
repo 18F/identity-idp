@@ -30,9 +30,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def handle_max_attempts(type)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
-      type: type,
-      decorated_user: decorated_user,
-      view_context: view_renderer,
+      type,
+      decorated_user,
     )
     sign_out
     render_full_width('shared/_failure', locals: { presenter: presenter })

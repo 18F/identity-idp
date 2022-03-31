@@ -5,11 +5,10 @@ module TwoFactorAuthCode
 
     attr_reader :type, :decorated_user
 
-    def initialize(type:, decorated_user:, view_context:)
+    def initialize(type, decorated_user)
       super(:locked)
       @type = type
       @decorated_user = decorated_user
-      @view_context = view_context
     end
 
     def title
@@ -20,8 +19,8 @@ module TwoFactorAuthCode
       t('titles.account_locked')
     end
 
-    def description
-      [locked_reason, please_try_again]
+    def description(view_context)
+      [locked_reason, please_try_again(view_context)]
     end
 
     def troubleshooting_options
@@ -47,7 +46,7 @@ module TwoFactorAuthCode
       end
     end
 
-    def please_try_again
+    def please_try_again(view_context)
       t(
         'two_factor_authentication.please_try_again_html',
         countdown: view_context.render(
@@ -71,9 +70,5 @@ module TwoFactorAuthCode
         new_tab: true,
       }
     end
-
-    private
-
-    attr_reader :view_context
   end
 end

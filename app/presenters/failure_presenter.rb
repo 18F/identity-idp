@@ -32,7 +32,7 @@ class FailurePresenter
 
   def header; end
 
-  def description; end
+  def description(_view_context); end
 
   def troubleshooting_options
     []
