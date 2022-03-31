@@ -40,12 +40,43 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags
 
         expect(output).to have_css(
-          "script[src^='/polyfill.js'][nomodule] ~ \
-          script[src^='/application.js'] ~ \
-          script[src^='/document-capture.js']",
+          "script:not([crossorigin])[src^='/polyfill.js'][nomodule] ~ \
+          script:not([crossorigin])[src^='/application.js'] ~ \
+          script:not([crossorigin])[src^='/document-capture.js']",
           count: 1,
           visible: :all,
         )
+      end
+
+      context 'local development crossorigin sources' do
+        let(:webpack_port) { '3035' }
+
+        before do
+          allow(Rails.env).to receive(:development?).and_return(true)
+          stub_const('ENV', 'WEBPACK_PORT' => webpack_port)
+        end
+
+        it 'prints script sources with crossorigin attribute' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[crossorigin][src^='/polyfill.js'][nomodule] ~ \
+            script[crossorigin][src^='/application.js'] ~ \
+            script[crossorigin][src^='/document-capture.js']",
+            count: 1,
+            visible: :all,
+          )
+        end
+
+        context 'empty webpack port' do
+          let(:webpack_port) { '' }
+
+          it 'renders as if webpack port was unassigned' do
+            output = render_javascript_pack_once_tags
+
+            expect(output).to_not have_css('[crossorigin]', visible: :all)
+          end
+        end
       end
     end
 

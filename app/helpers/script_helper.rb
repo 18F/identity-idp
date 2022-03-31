@@ -19,14 +19,27 @@ module ScriptHelper
   def render_javascript_pack_once_tags(*names)
     javascript_packs_tag_once(*names) if names.present?
     if @scripts && (sources = AssetSources.get_sources(*@scripts)).present?
-      safe_join([javascript_polyfill_pack_tag, javascript_include_tag(*sources)])
+      safe_join(
+        [
+          javascript_polyfill_pack_tag,
+          javascript_include_tag(*sources, crossorigin: local_crossorigin_sources? ? true : nil),
+        ],
+      )
     end
   end
 
   private
 
+  def local_crossorigin_sources?
+    Rails.env.development? && ENV['WEBPACK_PORT'].present?
+  end
+
   def javascript_polyfill_pack_tag
-    javascript_include_tag_without_preload(*AssetSources.get_sources('polyfill'), nomodule: '')
+    javascript_include_tag_without_preload(
+      *AssetSources.get_sources('polyfill'),
+      nomodule: '',
+      crossorigin: local_crossorigin_sources? ? true : nil,
+    )
   end
 
   def without_preload_links_header
