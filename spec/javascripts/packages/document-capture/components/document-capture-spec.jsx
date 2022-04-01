@@ -64,6 +64,26 @@ describe('document-capture/components/document-capture', () => {
     expect(step).to.be.ok();
   });
 
+  it('shows top-level step errors', async () => {
+    const { getByLabelText, findByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+          <DocumentCapture />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+    // `onError` called with an Error instance is indication of camera access declined, which is
+    // expected to show both field-level and step error.
+    // See: https://github.com/18F/identity-idp/blob/164231d/app/javascript/packages/document-capture/components/acuant-capture.jsx#L114
+    window.AcuantCameraUI.start.callsFake((_callbacks, onError) => onError(new Error()));
+
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+
+    await findByText('doc_auth.errors.camera.blocked_detail');
+  });
+
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
