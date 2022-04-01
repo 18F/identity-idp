@@ -75,7 +75,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
           before { params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
           context 'account is already verified' do
-            let(:user) { create(:profile, :active, :verified).user }
+            let(:user) do
+              create(
+                :profile, :active, :verified, proofing_components: { liveness_check: true }
+              ).user
+            end
 
             it 'redirects to the redirect_uri immediately when pii is unlocked' do
               IdentityLinker.new(user, service_provider).link_identity(ial: 3)
@@ -129,6 +133,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               before do
                 params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
                 allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+                stub_sign_in user
               end
 
               it 'creates an IAL2 SpReturnLog record' do
