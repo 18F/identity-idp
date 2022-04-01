@@ -70,11 +70,6 @@ else
         args: -> { [Time.zone.today] },
       },
       # Send Sp Success Rate Report to S3
-      sp_success_rate: {
-        class: 'Reports::SpSuccessRateReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.today] },
-      },
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
