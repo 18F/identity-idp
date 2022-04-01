@@ -186,8 +186,6 @@ describe SignUp::CompletionsController do
           ial2: true,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
-          sp_request_requested_attributes: nil,
-          sp_session_requested_attributes: ['email'],
         }
 
         patch :update
