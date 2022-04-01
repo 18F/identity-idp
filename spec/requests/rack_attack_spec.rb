@@ -116,6 +116,10 @@ describe 'throttling requests' do
     end
 
     context 'when the user is signed in' do
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       it 'logs the user UUID' do
         analytics = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics)
