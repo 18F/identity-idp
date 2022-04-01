@@ -26,6 +26,8 @@ describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
+            sp_request_requested_attributes: nil,
+            sp_session_requested_attributes: [:email],
           )
         end
       end
@@ -54,6 +56,8 @@ describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
             needs_completion_screen_reason: :new_sp,
+            sp_request_requested_attributes: nil,
+            sp_session_requested_attributes: [:email],
           )
         end
       end
@@ -134,6 +138,8 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sp_request_requested_attributes: nil,
+          sp_session_requested_attributes: nil,
         )
       end
 
@@ -191,6 +197,8 @@ describe SignUp::CompletionsController do
           service_provider_name: subject.decorated_session.sp_name,
           page_occurence: 'agency-page',
           needs_completion_screen_reason: :new_sp,
+          sp_request_requested_attributes: nil,
+          sp_session_requested_attributes: ['email'],
         )
       end
 
