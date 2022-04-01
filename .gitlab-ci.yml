@@ -198,6 +198,8 @@ coverage:
       - coverage/coverage.xml
 
 artifact:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
   stage: after_test
   tags:
     - build-pool
