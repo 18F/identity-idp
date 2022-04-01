@@ -10,9 +10,6 @@ en:
         Please try clicking the link in your email again.
       granted_token_missing: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
-    alt:
-      error: Error
-      warning: Warning
     attributes:
       password:
         too_short:

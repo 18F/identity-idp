@@ -1,0 +1,35 @@
+class StatusPageComponent < BaseComponent
+  ICONS = {
+    warning: [],
+    error: [:lock],
+  }.freeze
+
+  renders_one :header, ::PageHeadingComponent
+  renders_many :action_buttons, ->(**button_options) do
+    ButtonComponent.new(**button_options, big: true, wide: true)
+  end
+  renders_one :troubleshooting_options
+
+  attr_reader :status, :icon
+
+  def initialize(status: :error, icon: nil)
+    if !ICONS.key?(status)
+      raise ArgumentError, "`status` #{status} is invalid, expected one of #{ICONS.keys}"
+    end
+
+    if icon && !ICONS[status].include?(icon)
+      raise ArgumentError, "`icon` #{icon} is invalid, expected one of #{ICONS[status]}"
+    end
+
+    @icon = icon
+    @status = status
+  end
+
+  def icon_src
+    image_path("status/#{[status, icon].compact.join('-')}")
+  end
+
+  def icon_alt
+    t(icon || status, scope: [:components, :status_page, :icons])
+  end
+end

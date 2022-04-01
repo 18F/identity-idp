@@ -44,7 +44,7 @@ function Warning({
     <>
       <img
         alt={t('errors.alt.warning')}
-        src={getAssetPath('alert/warning-lg.svg')}
+        src={getAssetPath('status/warning.svg')}
         width={54}
         height={54}
         className="display-block margin-bottom-4"
