@@ -10,7 +10,9 @@ feature 'SP return logs' do
     user = register_user(email)
     click_agree_and_continue
 
+    sp_return_log = SpReturnLog.first
     expect(SpReturnLog.count).to eq(1)
-    expect(SpReturnLog.first.user_id).to eq(user.id)
+    expect(sp_return_log.user_id).to eq(user.id)
+    expect(sp_return_log.requested_at).to_not be_nil
   end
 end

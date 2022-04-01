@@ -30,6 +30,7 @@ module BillableEventTrackable
       billable: billable,
       ial: ial_context.bill_for_ial_1_or_2,
       issuer: current_sp.issuer,
+      requested_at: session[:session_started_at],
     )
   end
 
