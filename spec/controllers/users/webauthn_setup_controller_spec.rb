@@ -153,7 +153,7 @@ describe Users::WebauthnSetupController do
     end
 
     context 'with multiple MFA methods chosen on account creation' do
-      before do 
+      before do
         controller.user_session[:selected_mfa_options] = ['voice']
       end
 
@@ -164,7 +164,7 @@ describe Users::WebauthnSetupController do
       end
     end
 
-    context 'with a single MFA method chosen on account creation' do 
+    context 'with a single MFA method chosen on account creation' do
       it 'should direct user to account page' do
         patch :confirm, params: params
 

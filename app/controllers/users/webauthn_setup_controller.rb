@@ -138,7 +138,7 @@ module Users
         flash[:success] = t('notices.webauthn_configured')
       end
       user_session[:auth_method] = 'webauthn'
-      
+
       redirect_to user_next_authentication_setup_path(after_mfa_setup_path)
     end
 
