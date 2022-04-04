@@ -150,6 +150,35 @@ module AnalyticsEvents
     track_event('Doc Auth Warning', message: message, **extra)
   end
 
+  # @identity.idp.event_name Email and Password Authentication
+  # @param [Boolean] success
+  # @param [String] user_id
+  # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [String] stored_location the URL to return to after signing in
+  # @param [Boolean] sp_request_url_present if was an SP request URL in the session
+  # @param [Boolean] remember_device if the remember device cookie was present
+  # Tracks authentication attempts at the email/password screen
+  def email_and_password_auth(
+    success:,
+    user_id:,
+    user_locked_out:,
+    stored_location:,
+    sp_request_url_present:,
+    remember_device:,
+    **extra
+  )
+    track_event(
+      'Email and Password Authentication',
+      success: success,
+      user_id: user_id,
+      user_locked_out: user_locked_out,
+      stored_location: stored_location,
+      sp_request_url_present: sp_request_url_present,
+      remember_device: remember_device,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors

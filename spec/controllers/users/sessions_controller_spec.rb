@@ -182,7 +182,7 @@ describe Users::SessionsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+        with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
@@ -201,7 +201,7 @@ describe Users::SessionsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+        with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
     end
@@ -218,7 +218,7 @@ describe Users::SessionsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+        with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
@@ -241,7 +241,7 @@ describe Users::SessionsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+        with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
@@ -259,7 +259,7 @@ describe Users::SessionsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+        with('Email and Password Authentication', analytics_hash)
 
       post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
@@ -328,7 +328,7 @@ describe Users::SessionsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+          with('Email and Password Authentication', analytics_hash)
 
         profile_encryption_error = {
           error: 'Unable to parse encrypted payload',
@@ -384,7 +384,7 @@ describe Users::SessionsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+          with('Email and Password Authentication', analytics_hash)
 
         post :create, params: { user: { email: user.email, password: user.password } }
       end
@@ -409,7 +409,7 @@ describe Users::SessionsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+          with('Email and Password Authentication', analytics_hash)
 
         post :create, params: { user: { email: user.email, password: user.password } }
       end
