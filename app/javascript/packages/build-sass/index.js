@@ -16,13 +16,13 @@ import cssnano from 'cssnano';
  */
 
 /**
- * Returns the given array with falsey values omitted.
+ * Returns the given array with false values omitted.
  *
  * @template A
  *
  * @param {A[]} array
  */
-const compact = (array) => /** @type {Array<Exclude<A, boolean>>} */ (array.filter(Boolean));
+const compact = (array) => /** @type {Array<Exclude<A, false>>} */ (array.filter(Boolean));
 
 /**
  * Compiles a given Sass file.
