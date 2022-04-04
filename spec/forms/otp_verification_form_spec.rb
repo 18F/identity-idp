@@ -44,7 +44,6 @@ RSpec.describe OtpVerificationForm do
 
         invalid_codes.each do |code|
           form = OtpVerificationForm.new(user, code)
-          result = instance_double(FormResponse)
           allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
 
           result = FormResponse.new(

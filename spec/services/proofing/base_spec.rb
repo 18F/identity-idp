@@ -274,7 +274,7 @@ describe Proofing::Base do
 
       it 'does not affect the other proofer' do
         # This is an explicit check for class-level side effects
-        impl2 = Class.new(Proofing::Base) do
+        _impl2 = Class.new(Proofing::Base) do
           required_attributes :foobarbaz
         end
         expect(subject.exception?).to eq(false)

@@ -46,7 +46,7 @@ module DocumentCaptureStepHelper
     connection = Faraday.new(url: document_capture_endpoint_host) do |conn|
       conn.request(:multipart)
     end
-    response = connection.post document_capture_endpoint_path, image_upload_api_payload
+    connection.post document_capture_endpoint_path, image_upload_api_payload
     page.execute_script('document.querySelector(".js-document-capture-form").submit();')
   end
 
@@ -59,7 +59,7 @@ module DocumentCaptureStepHelper
   end
 
   def document_capture_endpoint_uri
-    URI.parse(endpoint = document_capture_form['data-endpoint'])
+    URI.parse(document_capture_form['data-endpoint'])
   end
 
   def document_capture_endpoint_host

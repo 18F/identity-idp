@@ -154,7 +154,7 @@ describe NewPhoneForm do
       it 'is invalid' do
         phone = PhoneFormatter.format('+1 (954) 525-1262', country_code: 'US')
         params[:phone] = phone
-        phone_configuration = create(:phone_configuration, user: user, phone: phone)
+        create(:phone_configuration, user: user, phone: phone)
 
         result = subject.submit(params)
 
@@ -167,7 +167,7 @@ describe NewPhoneForm do
         raw_phone = '+1 954 5251262'
         phone = PhoneFormatter.format(raw_phone, country_code: 'US')
         params[:phone] = phone
-        phone_configuration = create(:phone_configuration, user: user, phone: raw_phone)
+        create(:phone_configuration, user: user, phone: raw_phone)
 
         result = subject.submit(params)
 

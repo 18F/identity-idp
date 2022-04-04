@@ -121,7 +121,7 @@ module Users
         current_user.decorate,
       )
       sign_out
-      render_full_width('shared/_failure', locals: { presenter: presenter })
+      render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
     def handle_valid_authentication
@@ -129,7 +129,6 @@ module Users
       cache_active_profile(auth_params[:password])
       add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
-      update_sp_return_logs_with_user(current_user.id)
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,
         email: auth_params[:email],
@@ -139,16 +138,6 @@ module Users
 
     def now
       @now ||= Time.zone.now
-    end
-
-    def update_sp_return_logs_with_user(user_id)
-      sp_session = session[:sp]
-      if sp_session
-        Db::SpReturnLog.update_user(
-          request_id: sp_session[:request_id],
-          user_id: user_id,
-        )
-      end
     end
 
     def expires_at

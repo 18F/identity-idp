@@ -7,7 +7,7 @@ describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        profile = create(:profile, user: user, deactivation_reason: :password_reset, pii: pii)
+        create(:profile, user: user, deactivation_reason: :password_reset, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: password,
@@ -25,7 +25,7 @@ describe VerifyPasswordForm, type: :model do
         password = 'cab123DZN456'
         user = create(:user, password: password)
         pii = { ssn: '111111111' }
-        profile = create(:profile, user: user, deactivation_reason: :password_reset, pii: pii)
+        create(:profile, user: user, deactivation_reason: :password_reset, pii: pii)
 
         form = VerifyPasswordForm.new(
           user: user, password: "#{password}a",

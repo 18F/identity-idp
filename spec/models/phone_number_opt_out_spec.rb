@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PhoneNumberOptOut do
-  let(:phone) { phone = Faker::PhoneNumber.cell_phone }
+  let(:phone) { Faker::PhoneNumber.cell_phone }
 
   describe '.create_or_find_by_phone' do
     it 'creates a record for the phone' do

@@ -13,6 +13,8 @@ linters:
         Enabled: false
       Rails/OutputSafety:
         Enabled: false
+      Lint/UselessAssignment:
+        Enabled: false
   DeprecatedClasses:
     enabled: true
     rule_set:

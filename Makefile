@@ -180,6 +180,8 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./certs/sp' \
 	  --exclude='./identity-idp-config' \
 	  --exclude='./tmp' \
+	  --exclude='./log' \
+	  --exclude='./app/javascript/packages/**/node_modules' \
 	  --exclude='./node_modules' \
 	  --exclude='./geo_data/GeoLite2-City.mmdb' \
 	  --exclude='./pwned_passwords/pwned_passwords.txt' \

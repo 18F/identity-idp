@@ -14,6 +14,8 @@ describe('RailsI18nWebpackPlugin', () => {
 
     webpack(
       {
+        mode: 'development',
+        devtool: false,
         entry: {
           1: path.resolve(__dirname, 'spec/fixtures/in1.js'),
           2: path.resolve(__dirname, 'spec/fixtures/in2.js'),

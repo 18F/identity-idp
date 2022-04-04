@@ -84,7 +84,7 @@ module Db
           year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
         }.transform_values { |value| quote(value) }
 
-        full_month_subquery = format(<<~SQL, params)
+        format(<<~SQL, params)
           SELECT
             monthly_sp_auth_counts.user_id
           , monthly_sp_auth_counts.year_month

@@ -62,7 +62,6 @@ end
 shared_examples 'signing in as IAL2 with personal key' do |sp|
   it 'does not present personal key as an MFA option', :email do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
-    pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
     Capybara.reset_sessions!
 

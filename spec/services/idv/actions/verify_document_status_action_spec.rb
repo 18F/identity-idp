@@ -46,7 +46,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     end
 
     it 'calls analytics if missing from no document capture session' do
-      response = subject.call
+      subject.call
 
       expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(
@@ -65,7 +65,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
       expect(subject).to receive(:verify_document_capture_session).
         and_return(verify_document_capture_session).at_least(:once)
-      response = subject.call
+      subject.call
 
       expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(

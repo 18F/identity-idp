@@ -174,7 +174,6 @@ push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
-rails_csp_tooling_enabled: true
 rails_mailer_previews_enabled: false
 reauthn_window: 120
 recovery_code_length: 4
