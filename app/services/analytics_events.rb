@@ -133,6 +133,15 @@ module AnalyticsEvents
     track_event('Broken Personal Key: Regenerated')
   end
 
+  # @identity.idp.event_name Doc Auth Async
+  # @param [String] error error message
+  # @param [String] uuid document capture session uuid
+  # @param [String] result_id document capture session result id
+  # When there is an error loading async results during the document authentication flow
+  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
+    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
