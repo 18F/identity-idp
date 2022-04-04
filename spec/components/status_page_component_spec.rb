@@ -47,12 +47,16 @@ RSpec.describe StatusPageComponent, type: :component do
     )
   end
 
-  it 'renders action buttons' do
+  it 'renders troubleshooting options' do
     rendered = render_inline(StatusPageComponent.new) do |c|
-      c.troubleshooting_options { 'Troubleshooting' }
+      c.troubleshooting_options do |tc|
+        tc.header { 'Troubleshooting' }
+        tc.option(url: '/', new_tab: true) { 'Option' }
+      end
     end
 
     expect(rendered).to have_content('Troubleshooting')
+    expect(rendered).to have_link('Option', href: '/')
   end
 
   it 'raises error for unknown status' do

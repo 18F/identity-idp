@@ -14,22 +14,15 @@
         ) %>
   </p>
 
-  <% c.troubleshooting_options do %>
-    <%= render(
-          'shared/troubleshooting_options',
-          heading: t('components.troubleshooting_options.default_heading'),
-          options: [
-            {
-              text: t('two_factor_authentication.read_about_two_factor_authentication'),
-              url: MarketingSite.help_url,
-              new_tab: true,
-            },
-            {
-              url: MarketingSite.contact_url,
-              text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-              new_tab: true,
-            },
-          ],
-        ) %>
+  <% c.troubleshooting_options do |tc| %>
+    <% tc.header { t('components.troubleshooting_options.default_heading') } %>
+    <% tc.option(
+         url: MarketingSite.help_url,
+         new_tab: true,
+       ).with_content(t('two_factor_authentication.read_about_two_factor_authentication')) %>
+    <% tc.option(
+         url: MarketingSite.contact_url,
+         new_tab: true,
+       ).with_content(t('idv.troubleshooting.options.contact_support', app_name: APP_NAME)) %>
   <% end %>
 <% end %>
