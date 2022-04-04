@@ -68,6 +68,23 @@ describe WebauthnVerificationForm do
         expect(result.success?).to eq(false)
         expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
       end
+
+      it 'returns FormResponses with success: false when verification raises OpenSSL exception' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        allow_any_instance_of(WebAuthn::AuthenticatorAssertionResponse).to receive(:verify).
+          and_raise(OpenSSL::PKey::PKeyError)
+
+        result = subject.submit(
+          protocol,
+          authenticator_data: authenticator_data,
+          client_data_json: verification_client_data_json,
+          signature: signature,
+          credential_id: credential_id,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result.to_h[:multi_factor_auth_method]).to eq('webauthn')
+      end
     end
   end
 end
