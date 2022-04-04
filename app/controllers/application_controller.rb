@@ -202,7 +202,7 @@ class ApplicationController < ActionController::Base
       user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch)
       profile.save!
 
-      analytics.track_event(Analytics::BROKEN_PERSONAL_KEY_REGENERATED)
+      analytics.broken_personal_key_regenerated
 
       manage_personal_key_url
     else

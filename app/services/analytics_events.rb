@@ -126,6 +126,13 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # @identity.idp.event_name Broken Personal Key: Regenerated
+  # A user that had a broken personal key was routed to a page to regenerate their personal key,
+  # so that they no longer have a broken one
+  def broken_personal_key_regenerated
+    track_event('Broken Personal Key: Regenerated')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
