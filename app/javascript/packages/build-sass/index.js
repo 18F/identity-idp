@@ -1,6 +1,9 @@
 import { basename, join } from 'path';
 import { writeFile } from 'fs/promises';
 import sass from 'sass';
+import postcss from 'postcss';
+import autoprefixer from 'autoprefixer';
+import cssnano from 'cssnano';
 
 /** @typedef {import('sass').CompileResult} CompileResult */
 /** @typedef {import('sass').Options<'sync'>} SyncSassOptions */
@@ -9,7 +12,17 @@ import sass from 'sass';
  * @typedef BuildOptions
  *
  * @prop {string=} outDir Output directory.
+ * @prop {boolean} optimize Whether to optimize output for production.
  */
+
+/**
+ * Returns the given array with falsey values omitted.
+ *
+ * @template A
+ *
+ * @param {A[]} array
+ */
+const compact = (array) => /** @type {Array<Exclude<A, boolean>>} */ (array.filter(Boolean));
 
 /**
  * Compiles a given Sass file.
@@ -20,19 +33,23 @@ import sass from 'sass';
  * @return {Promise<CompileResult>}
  */
 export async function buildFile(file, options) {
-  const { outDir, ...sassOptions } = options;
-  const compileResult = sass.compile(file, {
+  const { outDir, optimize, ...sassOptions } = options;
+  const sassResult = sass.compile(file, {
+    style: optimize ? 'compressed' : 'expanded',
     ...sassOptions,
     loadPaths: ['node_modules'],
     quietDeps: true,
   });
+
+  const postcssPlugins = compact([autoprefixer, optimize && cssnano]);
+  const postcssResult = await postcss(postcssPlugins).process(sassResult.css, { from: file });
 
   let outFile = basename(file, '.scss');
   if (outDir) {
     outFile = join(outDir, outFile);
   }
 
-  await writeFile(outFile, compileResult.css);
+  await writeFile(outFile, postcssResult.css);
 
-  return compileResult;
+  return sassResult;
 }
