@@ -4,8 +4,9 @@
   <% c.header { t('idv.forgot_password.modal_header') } %>
 
   <ul class="usa-list">
-    <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
-    <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
+    <% t('idv.forgot_password.warnings').each do |warning| %>
+      <li><%= warning %></li>
+    <% end %>
   </ul>
 
   <% c.action_button(
