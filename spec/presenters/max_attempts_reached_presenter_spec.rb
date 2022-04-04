@@ -3,7 +3,12 @@ require 'rails_helper'
 describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   let(:type) { 'otp_requests' }
   let(:decorated_user) { mock_decorated_user }
+  let(:view_context) { ActionController::Base.new.view_context }
   let(:presenter) { described_class.new(type, decorated_user) }
+
+  around do |ex|
+    freeze_time { ex.run }
+  end
 
   describe 'it uses the :locked failure state' do
     subject { presenter.state }
@@ -24,23 +29,29 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   end
 
   context 'methods are overriden' do
-    %i[title header description js].each do |method|
+    %i[title header].each do |method|
       describe "##{method}" do
         subject { presenter.send(method) }
 
         it { is_expected.to_not be_nil }
       end
     end
+
+    describe '#description' do
+      subject { presenter.description(view_context) }
+
+      it { is_expected.to_not be_nil }
+    end
   end
 
   describe '#description' do
-    subject(:description) { presenter.description }
+    subject(:description) { presenter.description(view_context) }
 
     it 'includes failure type and time remaining' do
       expect(subject).to eq(
         [
           presenter.locked_reason,
-          presenter.please_try_again,
+          presenter.please_try_again(view_context),
         ],
       )
     end
@@ -76,10 +87,10 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   end
 
   describe '#please_try_again' do
-    subject { presenter.send(:please_try_again) }
+    subject { presenter.please_try_again(view_context) }
 
     it 'includes time remaining' do
-      expect(subject).to include('1000 years')
+      expect(subject).to include('1 minute')
     end
   end
 
@@ -109,8 +120,7 @@ describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
 
   def mock_decorated_user
     decorated_user = instance_double(UserDecorator)
-    allow(decorated_user).to receive(:lockout_time_remaining_in_words).and_return('1000 years')
-    allow(decorated_user).to receive(:lockout_time_remaining).and_return(10_000)
+    allow(decorated_user).to receive(:lockout_time_expiration).and_return(Time.zone.now + 1.minute)
     decorated_user
   end
 end

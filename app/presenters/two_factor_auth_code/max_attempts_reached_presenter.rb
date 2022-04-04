@@ -5,8 +5,6 @@ module TwoFactorAuthCode
 
     attr_reader :type, :decorated_user
 
-    COUNTDOWN_ID = 'countdown'.freeze
-
     def initialize(type, decorated_user)
       super(:locked)
       @type = type
@@ -21,21 +19,12 @@ module TwoFactorAuthCode
       t('titles.account_locked')
     end
 
-    def description
-      [locked_reason, please_try_again]
+    def description(view_context)
+      [locked_reason, please_try_again(view_context)]
     end
 
     def troubleshooting_options
       [read_about_two_factor_authentication, contact_support]
-    end
-
-    def js
-      <<~JS
-        document.addEventListener('DOMContentLoaded', function() {
-          var test = #{decorated_user.lockout_time_remaining} * 1000;
-          window.LoginGov.countdownTimer(document.getElementById('#{COUNTDOWN_ID}'), test);
-        });
-      JS
     end
 
     def locked_reason
@@ -57,11 +46,12 @@ module TwoFactorAuthCode
       end
     end
 
-    def please_try_again
+    def please_try_again(view_context)
       t(
         'two_factor_authentication.please_try_again_html',
-        id: COUNTDOWN_ID,
-        time_remaining: decorated_user.lockout_time_remaining_in_words,
+        countdown: view_context.render(
+          CountdownComponent.new(expiration: decorated_user.lockout_time_expiration),
+        ),
       )
     end
 

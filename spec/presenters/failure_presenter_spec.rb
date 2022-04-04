@@ -11,12 +11,18 @@ describe FailurePresenter do
   end
 
   context 'methods with default values of `nil`' do
-    %i[title header description].each do |method|
+    %i[title header].each do |method|
       describe "##{method}" do
         subject { presenter.send(method) }
 
         it { is_expected.to be_nil }
       end
+    end
+
+    describe '#description' do
+      subject { presenter.description(ActionController::Base.new.view_context) }
+
+      it { is_expected.to be_nil }
     end
   end
 

@@ -16,13 +16,11 @@ describe 'shared/_failure.html.erb' do
     let(:header) { 'header' }
     let(:description) { 'description' }
     let(:troubleshooting_options) { [{ text: 'option', url: 'https://example.com' }] }
-    let(:js) { '/* */' }
 
     before do
       allow(presenter).to receive(:header).and_return(header)
       allow(presenter).to receive(:description).and_return(description)
       allow(presenter).to receive(:troubleshooting_options).and_return(troubleshooting_options)
-      allow(presenter).to receive(:js).and_return(js)
     end
 
     it 'renders content' do
@@ -34,7 +32,6 @@ describe 'shared/_failure.html.erb' do
         troubleshooting_options[0][:text],
         href: troubleshooting_options[0][:url],
       )
-      expect(rendered).to have_css('script', visible: :all)
     end
 
     context 'with array description' do

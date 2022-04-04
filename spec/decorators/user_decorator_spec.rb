@@ -66,27 +66,14 @@ describe UserDecorator do
     end
   end
 
-  describe '#lockout_time_remaining' do
-    it 'returns the difference in seconds between otp drift and second_factor_locked_at' do
+  describe '#lockout_time_expiration' do
+    it 'returns the time at which lockout will expire' do
       freeze_time do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
         allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
 
-        expect(user_decorator.lockout_time_remaining).to eq 300
-      end
-    end
-  end
-
-  describe '#lockout_time_remaining_in_words' do
-    it 'converts lockout_time_remaining to words representing minutes and seconds left' do
-      freeze_time do
-        user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 181)
-        user_decorator = UserDecorator.new(user)
-        allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
-
-        expect(user_decorator.lockout_time_remaining_in_words).
-          to eq '4 minutes and 59 seconds'
+        expect(user_decorator.lockout_time_expiration).to eq Time.zone.now + 300
       end
     end
   end
@@ -203,6 +190,60 @@ describe UserDecorator do
         and_return(Profile.new(created_at: Time.zone.now))
 
       expect(user_decorator.active_profile_newer_than_pending_profile?).to eq false
+    end
+  end
+
+  describe '#locked_out?' do
+    let(:locked_at) { nil }
+    let(:user) { User.new }
+
+    before { allow(user).to receive(:second_factor_locked_at).and_return(locked_at) }
+
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
+    subject(:locked_out?) { UserDecorator.new(user).locked_out? }
+
+    it { expect(locked_out?).to eq(false) }
+
+    context 'second factor locked out recently' do
+      let(:locked_at) { Time.zone.now }
+
+      it { expect(locked_out?).to eq(true) }
+    end
+
+    context 'second factor locked out a while ago' do
+      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+
+      it { expect(locked_out?).to eq(false) }
+    end
+  end
+
+  describe '#no_longer_locked_out?' do
+    let(:locked_at) { nil }
+    let(:user) { User.new }
+
+    before { allow(user).to receive(:second_factor_locked_at).and_return(locked_at) }
+
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
+    subject(:no_longer_locked_out?) { UserDecorator.new(user).no_longer_locked_out? }
+
+    it { expect(no_longer_locked_out?).to eq(false) }
+
+    context 'second factor locked out recently' do
+      let(:locked_at) { Time.zone.now }
+
+      it { expect(no_longer_locked_out?).to eq(false) }
+    end
+
+    context 'second factor locked out a while ago' do
+      let(:locked_at) { Time.zone.now - UserDecorator::DEFAULT_LOCKOUT_PERIOD - 1.second }
+
+      it { expect(no_longer_locked_out?).to eq(true) }
     end
   end
 
