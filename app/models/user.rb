@@ -1,6 +1,12 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp sign_in_count current_sign_in_at last_sign_in_at
-                            current_sign_in_ip last_sign_in_ip]
+  self.ignored_columns = %w[
+    totp_timestamp
+    sign_in_count
+    current_sign_in_at
+    last_sign_in_at
+    current_sign_in_ip
+    last_sign_in_ip
+  ]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
