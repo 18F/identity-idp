@@ -74,8 +74,9 @@ describe Idv::Steps::VerifyStep do
 
       it 'marks step as incomplete' do
         expect(flow.flow_session['Idv::Steps::SsnStep']).to eq true
-        expect(step.call).to eq nil
+        result = step.call
         expect(flow.flow_session['Idv::Steps::SsnStep']).to eq nil
+        expect(result.success?).to eq false
       end
     end
 
