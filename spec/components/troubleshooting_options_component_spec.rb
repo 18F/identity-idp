@@ -37,17 +37,17 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
           c.option(url: '/')
         end
 
-        expect(rendered).to have_css('h3.troubleshooting-options__heading', text: 'Heading')
+        expect(rendered).to have_css('h2.troubleshooting-options__heading', text: 'Heading')
       end
 
       context 'with custom heading level' do
         it 'renders header' do
           rendered = render_inline(TroubleshootingOptionsComponent.new) do |c|
-            c.header(heading_level: :h2) { 'Heading' }
+            c.header(heading_level: :h3) { 'Heading' }
             c.option(url: '/')
           end
 
-          expect(rendered).to have_css('h2.troubleshooting-options__heading', text: 'Heading')
+          expect(rendered).to have_css('h3.troubleshooting-options__heading', text: 'Heading')
         end
       end
     end

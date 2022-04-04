@@ -19,7 +19,7 @@ class TroubleshootingOptionsComponent < BaseComponent
   class TroubleshootingOptionsHeadingComponent < BaseComponent
     attr_reader :heading_level
 
-    def initialize(heading_level: :h3)
+    def initialize(heading_level: :h2)
       @heading_level = heading_level
     end
 
