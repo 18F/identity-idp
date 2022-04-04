@@ -121,7 +121,7 @@ module Users
         current_user.decorate,
       )
       sign_out
-      render_full_width('shared/_failure', locals: { presenter: presenter })
+      render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
     def handle_valid_authentication

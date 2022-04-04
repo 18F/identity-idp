@@ -1,21 +1,29 @@
-<%= render 'shared/failure', presenter: @presenter %>
+<% title t('headings.cancellations.prompt') %>
 
-<p class='margin-bottom-1 text-bold'>
-  <%= t('sign_up.cancel.warning_header') %>
-</p>
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.header { t('headings.cancellations.prompt') } %>
 
-<ul class='usa-list--unstyled <%= @presenter.state_color %>-dots'>
-  <% @presenter.cancellation_warnings.each do |warning| %>
-    <li><%= warning %></li>
-  <% end %>
-</ul>
+  <p>
+    <strong><%= t('sign_up.cancel.warning_header') %></strong>
+  </p>
 
-<div class='margin-top-4'>
-  <%= button_to t('forms.buttons.cancel'), destroy_user_path,
-                method: :delete, class: 'usa-button usa-button--big usa-button--wide' %>
-</div>
+  <ul class="usa-list">
+    <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
+    <li><%= t('users.delete.bullet_2_loa1') %></li>
+    <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
+    <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
+  </ul>
 
-<div class='margin-top-2'>
-  <%= link_to t('links.go_back'), @presenter.go_back_path,
-              class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
-</div>
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         button_to(destroy_user_path, method: :delete, **tag_options, &block)
+       end,
+     ) { t('forms.buttons.cancel') } %>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         link_to(@presenter.go_back_path, **tag_options, &block)
+       end,
+       outline: true,
+     ) { t('links.go_back') } %>
+<% end %>
