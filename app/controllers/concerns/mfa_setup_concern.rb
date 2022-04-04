@@ -1,7 +1,7 @@
 module MfaSetupConcern
   extend ActiveSupport::Concern
 
-  def user_next_authentication_setup_path(final_path = nil)
+  def user_next_authentication_setup_path!(final_path = nil)
     case user_session[:selected_mfa_options]&.shift
     when 'voice', 'sms', 'phone'
       phone_setup_url
