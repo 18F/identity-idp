@@ -17,8 +17,8 @@ module I18n
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
         { key: 'components.status_page.icons.error', locales: %i[es] }, # "Error" is "Error" in Spanish
+        { key: 'components.status_page.icons.question', locales: %i[fr] }, # "Question" is "Question" in French
         { key: 'errors.alt.error', locales: %i[es] }, # "Error" is "Error" in Spanish
-        { key: 'errors.alt.question', locales: %i[fr] }, # "Question" is "Question" in French
         { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: /^countries/ }, # Some countries have the same name across languages
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French

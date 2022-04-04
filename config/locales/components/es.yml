@@ -7,6 +7,7 @@ es:
       icons:
         error: Error
         lock: Candado
+        question: Pregunta
         warning: Advertencia
     troubleshooting_options:
       default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'

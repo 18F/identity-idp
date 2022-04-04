@@ -1,7 +1,8 @@
 class StatusPageComponent < BaseComponent
   ICONS = {
-    warning: [],
-    error: [:lock],
+    info: [:question],
+    warning: [nil],
+    error: [nil, :lock],
   }.freeze
 
   renders_one :header, ::PageHeadingComponent
@@ -17,7 +18,7 @@ class StatusPageComponent < BaseComponent
       raise ArgumentError, "`status` #{status} is invalid, expected one of #{ICONS.keys}"
     end
 
-    if icon && !ICONS[status].include?(icon)
+    if !ICONS[status].include?(icon)
       raise ArgumentError, "`icon` #{icon} is invalid, expected one of #{ICONS[status]}"
     end
 
@@ -31,6 +32,7 @@ class StatusPageComponent < BaseComponent
 
   def icon_alt
     # i18n-tasks-use t('components.status_page.icons.error')
+    # i18n-tasks-use t('components.status_page.icons.question')
     # i18n-tasks-use t('components.status_page.icons.warning')
     # i18n-tasks-use t('components.status_page.icons.lock')
     t(icon || status, scope: [:components, :status_page, :icons])

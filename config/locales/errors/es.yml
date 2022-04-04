@@ -12,7 +12,6 @@ es:
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
     alt:
       error: Error
-      question: Pregunta
       warning: Advertencia
     attributes:
       password:

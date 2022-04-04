@@ -7,6 +7,7 @@ en:
       icons:
         error: Error
         lock: Lock
+        question: Question
         warning: Warning
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'

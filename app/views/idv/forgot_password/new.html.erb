@@ -1,22 +1,23 @@
-<%= render(
-      layout: 'idv/shared/error',
-      locals: {
-        type: :question,
-        title: t('titles.idv.reset_password'),
-        heading: t('idv.forgot_password.modal_header'),
-        action: {
-          text: t('idv.forgot_password.try_again'),
-          url: idv_review_path,
-        },
-        action_secondary: {
-          text: t('idv.forgot_password.reset_password'),
-          url: idv_forgot_password_path,
-          method: :post,
-        },
-      },
-    ) do %>
-      <ul class="usa-list">
-        <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
-        <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
-      </ul>
-    <% end %>
+<% title t('titles.idv.reset_password') %>
+
+<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
+  <% c.header { t('idv.forgot_password.modal_header') } %>
+
+  <ul class="usa-list">
+    <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
+    <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
+  </ul>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         link_to(idv_review_path, **tag_options, &block)
+       end,
+     ) { t('idv.forgot_password.try_again') } %>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         button_to(idv_forgot_password_path, method: :post, **tag_options, &block)
+       end,
+       outline: true,
+     ) { t('idv.forgot_password.reset_password') } %>
+<% end %>

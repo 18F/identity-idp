@@ -12,7 +12,6 @@ en:
         Please try clicking the link in your email again.
     alt:
       error: Error
-      question: Question
       warning: Warning
     attributes:
       password:
