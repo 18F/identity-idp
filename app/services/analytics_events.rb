@@ -142,6 +142,14 @@ module AnalyticsEvents
     track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
   end
 
+  # @identity.idp.event_name Doc Auth Warning
+  # @param [String] message the warining
+  # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
+  # field from a vendor
+  def doc_auth_warning(message: nil, **extra)
+    track_event('Doc Auth Warning', message: message, **extra)
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors

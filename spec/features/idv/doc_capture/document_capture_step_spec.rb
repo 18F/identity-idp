@@ -255,7 +255,7 @@ feature 'doc capture document capture step' do
         click_idv_continue
       end
 
-      expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+      expect(fake_analytics).to have_logged_event('Doc Auth Async', {})
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
