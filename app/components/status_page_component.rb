@@ -8,7 +8,7 @@ class StatusPageComponent < BaseComponent
   renders_many :action_buttons, ->(**button_options) do
     ButtonComponent.new(**button_options, big: true, wide: true)
   end
-  renders_one :troubleshooting_options
+  renders_one :troubleshooting_options, TroubleshootingOptionsComponent
 
   attr_reader :status, :icon
 
