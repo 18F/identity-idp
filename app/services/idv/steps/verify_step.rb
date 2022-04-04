@@ -11,7 +11,7 @@ module Idv
 
       def enqueue_job
         return if flow_session[verify_step_document_capture_session_uuid_key]
-        return mark_step_incomplete(:ssn) if pii_from_doc.nil?
+        return invalid_state_response if invalid_state?
 
         pii_from_doc[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
@@ -51,6 +51,15 @@ module Idv
 
       def idv_agent
         @idv_agent ||= Idv::Agent.new(pii_from_doc)
+      end
+
+      def invalid_state?
+        flow_session[:pii_from_doc].nil?
+      end
+
+      def invalid_state_response
+        mark_step_incomplete(:ssn)
+        FormResponse.new(success: false)
       end
     end
   end
