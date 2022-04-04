@@ -32,17 +32,13 @@ class TwoFactorOptionsForm
     }
   end
 
-  def selection_is_voice_or_sms
-    %w[voice sms] & selection
-  end
-
   def user_needs_updating?
-    selection_is_voice_or_sms.present? &&
-      selection_is_voice_or_sms.first != user.otp_delivery_preference
+    (%w[voice sms] & selection).present? &&
+      !selection.include?(user.otp_delivery_preference)
   end
 
   def update_otp_delivery_preference_for_user
-    user_attributes = { otp_delivery_preference: selection_is_voice_or_sms.first }
+    user_attributes = { otp_delivery_preference: selection.find { |element| %w[voice sms].include?(element) } }
     UpdateUser.new(user: user, attributes: user_attributes).call
   end
 end
