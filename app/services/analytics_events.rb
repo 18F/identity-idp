@@ -268,41 +268,45 @@ module AnalyticsEvents
 
   # @identity.idp.event_name Rules of Use Submitted
   # Tracks when rules of use is submitted with a success or failure
-  # @param [Hash] result_hash
-  def rules_of_use_submitted(result_hash)
+  # @param [Hash] result_hash hash containing the result of accepting the rules of use
+  def rules_of_use_submitted(result_hash, **extra)
     track_event(
       'Rules of Use Submitted',
       result_hash,
+      **extra,
     )
   end
 
   # @identity.idp.event_name RISC: Security event received
   # Tracks when security event is received
-  # @param [Hash] result_hash
-  def security_event_received(result_hash)
+  # @param [Hash] result_hash containing the result of accepting security event
+  def security_event_received(result_hash, **extra)
     track_event(
       'RISC: Security event received',
       result_hash,
+      **extra,
     )
   end
 
   # @identity.idp.event_name SP Revoke Consent: Revoked
   # Tracks when service provider consent is revoked
-  # @param [String] issuer
-  def sp_revoke_consent_revoked(issuer:)
+  # @param [String] issuer issuer of the service provider consent to be revoked
+  def sp_revoke_consent_revoked(issuer:, **extra)
     track_event(
       'SP Revoke Consent: Revoked',
       issuer: issuer,
+      **extra,
     )
   end
 
   # @identity.idp.event_name SP Revoke Consent: Visited
   # Tracks when service provider consent is visited
-  # @param [String] issuer
-  def sp_revoke_consent_visited(issuer:)
+  # @param [String] issuer issuer of the service provider consent to be revoked was visited
+  def sp_revoke_consent_visited(issuer:, **extra)
     track_event(
       'SP Revoke Consent: Visited',
       issuer: issuer,
+      **extra,
     )
   end
 end
