@@ -124,7 +124,6 @@ class Analytics
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  DOC_AUTH_WARNING = 'Doc Auth Warning'
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'
   EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'
   EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'
