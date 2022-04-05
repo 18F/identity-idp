@@ -228,7 +228,6 @@ class Analytics
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'
   REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'
-  SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
   SP_INACTIVE_VISIT = 'SP inactive visited'
