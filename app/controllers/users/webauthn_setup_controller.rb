@@ -139,7 +139,7 @@ module Users
       end
       user_session[:auth_method] = 'webauthn'
 
-      redirect_to user_next_authentication_setup_path(after_mfa_setup_path)
+      redirect_to user_next_authentication_setup_path!(after_mfa_setup_path)
     end
 
     def handle_remember_device
