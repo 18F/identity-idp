@@ -213,6 +213,7 @@ GEM
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
+    data_uri (0.1.0)
     debug_inspector (1.1.0)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
@@ -705,6 +706,7 @@ DEPENDENCIES
   capybara-selenium (>= 0.0.6)
   connection_pool
   cssbundling-rails
+  data_uri
   derailed_benchmarks (~> 1.8)
   devise (~> 4.8)
   dotiw (>= 4.0.1)
