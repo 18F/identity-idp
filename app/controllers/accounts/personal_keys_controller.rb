@@ -8,6 +8,7 @@ module Accounts
 
     def new
       analytics.profile_personal_key_visit
+      @download_key_path = user_personal_key_download_path
     end
 
     def create

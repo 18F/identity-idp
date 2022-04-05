@@ -10,6 +10,7 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
+      @download_key_path = idv_download_personal_key_path
       analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
       add_proofing_component
 

@@ -17,11 +17,25 @@ module Users
       return redirect_to account_url if personal_key.blank?
 
       @code = personal_key
+      @download_key_path = download_personal_key_path
     end
 
     def update
       user_session.delete(:personal_key)
       redirect_to next_step
+    end
+
+    def download
+      personal_key = user_session[:personal_key]
+
+      analytics.track_event(Analytics::PERSONAL_KEY_DOWNLOADED, success: personal_key.present?)
+
+      if personal_key.present?
+        data = personal_key + "\r\n"
+        send_data data, filename: 'personal_key.txt'
+      else
+        head :bad_request
+      end
     end
 
     private
