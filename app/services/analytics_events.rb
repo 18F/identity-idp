@@ -285,4 +285,14 @@ module AnalyticsEvents
       result_hash,
     )
   end
+
+  # @identity.idp.event_name SP Revoke Consent: Revoked
+  # Tracks when service provider consent is revoked
+  # @param [String] issuer
+  def sp_revoke_consent_revoked(issuer:)
+    track_event(
+      'SP Revoke Consent: Revoked',
+      issuer: issuer,
+    )
+  end
 end
