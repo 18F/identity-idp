@@ -821,8 +821,6 @@ describe SamlIdpController do
 
     context 'POST to auth correctly stores SP in session' do
       before do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
         @user = create(:user, :signed_up)
         @saml_request = saml_request(saml_settings)
         @post_request = saml_post_auth(@saml_request)
@@ -852,15 +850,6 @@ describe SamlIdpController do
         session_request_url = session[:sp][:request_url]
 
         expect(session_request_url).to match(%r{/api/saml/auth\d{4}})
-      end
-
-      it 'logs SAML Auth Request event' do
-        expect(@analytics).to have_received(:track_event).
-          with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-               service_provider: 'http://localhost:3000',
-               identity_needs_verification: false,
-               profile_needs_verification: false)
       end
     end
 
