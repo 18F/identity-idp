@@ -3,7 +3,7 @@ module.exports = (api) => {
 
   return {
     presets: [
-      ['@babel/preset-env', { targets: isTestEnv ? 'current node' : '> 1% or IE 11' }],
+      ['@babel/preset-env', { targets: isTestEnv ? 'current node' : undefined }],
       '@babel/typescript',
       [
         '@babel/preset-react',
@@ -24,7 +24,7 @@ module.exports = (api) => {
         'polyfill-regenerator',
         {
           method: 'usage-global',
-          targets: isTestEnv ? 'current node' : '> 1% or IE 11',
+          targets: isTestEnv ? 'current node' : undefined,
         },
       ],
     ],
