@@ -43,4 +43,28 @@ namespace :partners do
       exit(-1)
     end
   end
+
+  desc 'Retrieve daily usage information for an SP given an issuer and dates'
+  task integration_usage_report: :environment do
+    options = {
+      issuer: ENV['ISSUER'],
+      start_date: ENV['START_DATE'],
+      end_date: ENV['END_DATE'],
+      output: ENV['OUTPUT'],
+    }
+
+    if options.values.any?(&:nil?)
+      puts 'You must define the environment variables ISSUER, START_DATE, END_DATE, and OUTPUT'
+      exit(-1)
+    end
+
+    begin
+      count = UuidReporter.run(**options)
+      puts "#{count} users reported"
+      puts 'Complete!'
+    rescue ArgumentError, StandardError => e
+      puts "ERROR: #{e.message}"
+      exit(-1)
+    end
+  end
 end
