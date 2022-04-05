@@ -114,8 +114,8 @@ class SamlIdpController < ApplicationController
     return unless external_saml_request?
 
     analytics_payload = {
-      idv: identity_needs_verification?,
-      finish_profile: profile_needs_verification?,
+      identity_needs_verification: identity_needs_verification?,
+      profile_needs_verification: profile_needs_verification?,
       requested_ial: saml_request&.requested_ial_authn_context || 'none',
       service_provider: saml_request&.issuer,
     }

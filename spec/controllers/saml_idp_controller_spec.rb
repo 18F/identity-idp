@@ -523,8 +523,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                service_provider: sp1_issuer,
-               idv: false,
-               finish_profile: false)
+               identity_needs_verification: false,
+               profile_needs_verification: false)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH,
                success: true,
@@ -859,8 +859,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000',
-               idv: false,
-               finish_profile: false)
+               identity_needs_verification: false,
+               profile_needs_verification: false)
       end
     end
 
@@ -1246,8 +1246,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000',
-               idv: false,
-               finish_profile: false)
+               identity_needs_verification: false,
+               profile_needs_verification: false)
 
         saml_get_auth(saml_settings)
       end
@@ -1696,8 +1696,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000',
-               idv: true,
-               finish_profile: false)
+               identity_needs_verification: true,
+               profile_needs_verification: false)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
 
@@ -1740,8 +1740,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000',
-               idv: false,
-               finish_profile: false)
+               identity_needs_verification: false,
+               profile_needs_verification: false)
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,
@@ -1778,8 +1778,8 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000',
-               idv: false,
-               finish_profile: true)
+               identity_needs_verification: false,
+               profile_needs_verification: true)
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,
