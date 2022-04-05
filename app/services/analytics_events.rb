@@ -126,6 +126,59 @@ module AnalyticsEvents
     track_event('Banned User visited')
   end
 
+  # @identity.idp.event_name Broken Personal Key: Regenerated
+  # A user that had a broken personal key was routed to a page to regenerate their personal key,
+  # so that they no longer have a broken one
+  def broken_personal_key_regenerated
+    track_event('Broken Personal Key: Regenerated')
+  end
+
+  # @identity.idp.event_name Doc Auth Async
+  # @param [String, nil] error error message
+  # @param [String, nil] uuid document capture session uuid
+  # @param [String. nil] result_id document capture session result id
+  # When there is an error loading async results during the document authentication flow
+  def doc_auth_async(error: nil, uuid: nil, result_id: nil, **extra)
+    track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
+  end
+
+  # @identity.idp.event_name Doc Auth Warning
+  # @param [String] message the warining
+  # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
+  # field from a vendor
+  def doc_auth_warning(message: nil, **extra)
+    track_event('Doc Auth Warning', message: message, **extra)
+  end
+
+  # @identity.idp.event_name Email and Password Authentication
+  # @param [Boolean] success
+  # @param [String] user_id
+  # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
+  # @param [String] stored_location the URL to return to after signing in
+  # @param [Boolean] sp_request_url_present if was an SP request URL in the session
+  # @param [Boolean] remember_device if the remember device cookie was present
+  # Tracks authentication attempts at the email/password screen
+  def email_and_password_auth(
+    success:,
+    user_id:,
+    user_locked_out:,
+    stored_location:,
+    sp_request_url_present:,
+    remember_device:,
+    **extra
+  )
+    track_event(
+      'Email and Password Authentication',
+      success: success,
+      user_id: user_id,
+      user_locked_out: user_locked_out,
+      stored_location: stored_location,
+      sp_request_url_present: sp_request_url_present,
+      remember_device: remember_device,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors

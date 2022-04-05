@@ -157,16 +157,14 @@ module Users
     def track_authentication_attempt(email)
       user = User.find_with_email(email) || AnonymousUser.new
 
-      properties = {
+      analytics.email_and_password_auth(
         success: user_signed_in_and_not_locked_out?(user),
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
-      }
-
-      analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)
+      )
     end
 
     def user_signed_in_and_not_locked_out?(user)
