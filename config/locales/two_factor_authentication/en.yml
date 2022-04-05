@@ -66,8 +66,6 @@ en:
     max_piv_cac_login_attempts_reached: For your security, your account is
       temporarily locked because you have presented your piv/cac credential
       incorrectly too many times.
-    mfa_instructions: We recommend you select at least (2) two different methods so
-      you have a backup if you lose one of your chosen authentication devices.
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:

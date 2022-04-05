@@ -25,8 +25,7 @@ class SamlIdpController < ApplicationController
     capture_analytics
     return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
     return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
-    if auth_count == 1 &&
-       (first_visit_for_sp? || IdentityConfig.store.show_select_account_on_repeat_sp_visits)
+    if auth_count == 1 && first_visit_for_sp?
       return redirect_to(user_authorization_confirmation_url)
     end
     link_identity_from_session_data

@@ -20,7 +20,7 @@ const isWatching = flags.includes('--watch');
 const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
 
 /** @type {BuildOptions & SyncSassOptions} */
-const options = { outDir, style: isProduction ? 'compressed' : 'expanded' };
+const options = { outDir, optimize: isProduction };
 
 Promise.all(
   files.map(async (file) => {
