@@ -1,4 +1,4 @@
-import { render as baseRender, cleanup } from '@testing-library/react';
+import { render as baseRender, cleanup, act } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
@@ -96,7 +96,7 @@ export function useAcuant() {
       window.AcuantPassiveLiveness = { startSelfieCapture };
       window.loadAcuantSdk = () => {};
       const sdkScript = document.querySelector('[data-acuant-sdk]');
-      sdkScript.onload();
+      act(() => sdkScript.onload());
       sdkScript.onload = null;
     },
   };

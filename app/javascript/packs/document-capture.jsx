@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
   AppContext,
@@ -209,5 +209,6 @@ const noticeError = (error) =>
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 
-  render(<App />, appRoot);
+  const root = createRoot(appRoot);
+  root.render(<App />);
 })();
