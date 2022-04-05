@@ -228,7 +228,6 @@ class Analytics
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'
   REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'
-  RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'
   RULES_OF_USE_VISIT = 'Rules Of Use Visited'
   RULES_OF_USE_SUBMITTED = 'Rules Of Use Submitted'
   SECURITY_EVENT_RECEIVED = 'RISC: Security event received'

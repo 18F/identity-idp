@@ -248,4 +248,15 @@ module AnalyticsEvents
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
   end
+
+  # @identity.idp.event_name Return to SP: Failed to proof
+  # Tracks when a service provide fails to proof.
+  # @param [String] redirect_url the url of the service provider
+  def return_to_sp_failure_to_proof(url, **location_params)
+    track_event(
+      'Return to SP: Failed to proof',
+      redirect_url: url,
+      **location_params,
+    )
+  end
 end
