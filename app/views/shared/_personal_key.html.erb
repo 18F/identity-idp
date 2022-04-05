@@ -10,7 +10,12 @@
 </div>
 <%= render ButtonComponent.new(
       action: ->(**tag_options, &block) do
-        link_to(idv_download_personal_key_path, **tag_options, &block)
+        link_to(
+          "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
+          download: 'personal_key.txt',
+          **tag_options,
+          &block
+        )
       end,
       icon: :file_download,
       outline: true,
