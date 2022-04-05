@@ -259,4 +259,10 @@ module AnalyticsEvents
       **location_params,
     )
   end
+
+  # @identity.idp.event_name Rules of Use Visited
+  # Tracks when rules of use is visited
+  def rules_of_use_visit
+    track_event('Rules of Use Visited')
+  end
 end

@@ -33,7 +33,7 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(Analytics::RULES_OF_USE_VISIT)
+        expect(@analytics).to receive(:track_event).with('Rules of Use Visited')
 
         action
       end
@@ -64,7 +64,7 @@ RSpec.describe Users::RulesOfUseController do
 
       it 'logs an analytics event for visiting' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(Analytics::RULES_OF_USE_VISIT)
+        expect(@analytics).to receive(:track_event).with('Rules of Use Visited')
 
         action
       end
