@@ -14,9 +14,11 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<%# If it is decided that there will be an info banner on this page for MFA setup, the text will need Gengo translations %>
+
 <% if IdentityConfig.store.select_multiple_mfa_options %>
   <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('two_factor_authentication.mfa_instructions') %>
+    <%= t('multi_factor_authentication.info') %>
   <% end %>
 <% end %>
 

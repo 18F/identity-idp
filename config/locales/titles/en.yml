@@ -40,6 +40,8 @@ en:
       phone: Verify your phone number
       reset_password: Reset Password
       review: Re-enter your password
+    mfa_setup:
+      first_authentication_method: You’ve added your first authentication method!
     no_auth_option: No sign-in method found
     openid_connect:
       authorization: OpenID Connect Authorization

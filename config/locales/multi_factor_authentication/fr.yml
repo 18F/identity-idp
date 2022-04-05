@@ -1,0 +1,12 @@
+---
+fr:
+  multi_factor_authentication:
+    add: Agregar otro método
+    cta: L’ajout d’une autre méthode d’authentification vous empêche d’être bloqué
+      sur votre compte si vous perdez l’une de vos méthodes.
+    info: Nous vous recommandons de sélectionner au moins (2) deux méthodes
+      différentes afin d’avoir une sauvegarde si vous perdez l’un de vos
+      dispositifs d’authentification choisis.
+    method_confirmation:
+      face_id: Face ID a été ajouté à votre compte
+    skip: Ignorer pour l’instant
