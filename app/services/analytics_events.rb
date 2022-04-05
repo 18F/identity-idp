@@ -268,9 +268,20 @@ module AnalyticsEvents
 
   # @identity.idp.event_name Rules of Use Submitted
   # Tracks when rules of use is submitted with a success or failure
+  # @param [Hash] result_hash
   def rules_of_use_submitted(result_hash)
     track_event(
       'Rules of Use Submitted',
+      result_hash,
+    )
+  end
+
+  # @identity.idp.event_name RISC: Security event received
+  # Tracks when security event is received
+  # @param [Hash] result_hash
+  def security_event_received(result_hash)
+    track_event(
+      'RISC: Security event received',
       result_hash,
     )
   end
