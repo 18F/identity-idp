@@ -276,6 +276,7 @@ Rails.application.routes.draw do
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
+      # Remove this after the next deploy
       get '/download_personal_key' => 'personal_key#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'

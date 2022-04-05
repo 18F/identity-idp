@@ -22,6 +22,7 @@ module Idv
       redirect_to next_step
     end
 
+    # Remove this after the next deploy
     def download
       personal_key = user_session[:personal_key]
 
