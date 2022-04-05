@@ -974,7 +974,7 @@ describe('document-capture/components/acuant-capture', () => {
     expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png');
   });
 
-  it.only('logs metrics for manual upload', async () => {
+  it('logs metrics for manual upload', async () => {
     const addPageAction = sinon.stub();
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
@@ -987,17 +987,17 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    // await expect(addPageAction).to.eventually.be.calledWith({
-    //   label: 'IdV: test image added',
-    //   payload: {
-    //     height: sinon.match.number,
-    //     mimeType: 'image/jpeg',
-    //     source: 'upload',
-    //     width: sinon.match.number,
-    //     attempt: sinon.match.number,
-    //     size: sinon.match.number,
-    //   },
-    // });
+    await expect(addPageAction).to.eventually.be.calledWith({
+      label: 'IdV: test image added',
+      payload: {
+        height: sinon.match.number,
+        mimeType: 'image/jpeg',
+        source: 'upload',
+        width: sinon.match.number,
+        attempt: sinon.match.number,
+        size: sinon.match.number,
+      },
+    });
   });
 
   it('logs clicks', () => {
