@@ -231,19 +231,14 @@ feature 'saml api' do
     end
   end
 
-  context 'when sending POST request to /api/saml/authpost/' do
+  context 'when sending POST request to /api/saml/auth/' do
     it 'logs one SAML Auth Requested event and multiple SAML Auth events for' do
       fake_analytics = FakeAnalytics.new
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
-      saml_post_url = saml_authn_request_url(
-        overrides: {
-          idp_sso_target_url: "http://#{IdentityConfig.store.domain_name}/api/saml/authpost2022",
-        },
-      )
-      page.driver.post saml_post_url
-      visit page.driver.response.location
+      page.driver.post saml_authn_request_url
 
+      click_submit_default
       sign_in_via_branded_page(user)
       click_agree_and_continue
       click_submit_default
