@@ -265,4 +265,13 @@ module AnalyticsEvents
   def rules_of_use_visit
     track_event('Rules of Use Visited')
   end
+
+  # @identity.idp.event_name Rules of Use Submitted
+  # Tracks when rules of use is submitted with a success or failure
+  def rules_of_use_submitted(result_hash)
+    track_event(
+      'Rules of Use Submitted',
+      result_hash,
+    )
+  end
 end
