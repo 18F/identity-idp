@@ -55,8 +55,9 @@ describe Idv::Steps::SsnStep do
 
       it 'marks previous step as incomplete' do
         expect(flow.flow_session['Idv::Steps::DocumentCaptureStep']).to eq true
-        expect(step.call).to eq nil
+        result = step.call
         expect(flow.flow_session['Idv::Steps::DocumentCaptureStep']).to eq nil
+        expect(result.success?).to eq false
       end
     end
   end

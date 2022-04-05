@@ -58,4 +58,16 @@ describe Users::BackupCodeSetupController do
       expect(response).to redirect_to(account_url)
     end
   end
+  
+  describe '#refreshed' do
+    render_views
+
+    it 'does not 500 when codes have not been generated' do
+      user = create(:user, :signed_up)
+      stub_sign_in(user)
+      get :refreshed
+
+      expect(response).to redirect_to(backup_code_setup_url)
+    end
+  end
 end
