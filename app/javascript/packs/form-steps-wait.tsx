@@ -1,4 +1,4 @@
-import { render, unmountComponentAtNode } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Alert } from '@18f/identity-components';
 import { forceRedirect } from '@18f/identity-url';
 import type { Navigate } from '@18f/identity-url';
@@ -96,6 +96,9 @@ export class FormStepsWait {
   constructor(form: HTMLFormElement, options?: Partial<FormStepsWaitOptions>) {
     this.elements = { form };
 
+    /** @type {HTMLElement | null} */
+    this.errorRoot = null;
+
     this.options = {
       ...DEFAULT_OPTIONS,
       ...this.elements.form.dataset,
@@ -190,21 +193,20 @@ export class FormStepsWait {
       return;
     }
 
-    const errorRoot = document.querySelector(alertTarget);
-    if (!errorRoot) {
-      return;
+    if (!this.errorRoot) {
+      this.errorRoot = createRoot(document.querySelector(alertTarget));
     }
 
     if (message) {
       this.removeSuccessBanner();
-      render(
+      this.errorRoot.render(
         <Alert type="error" className="margin-bottom-4">
           {message}
         </Alert>,
-        errorRoot,
+        errorContainer,
       );
     } else {
-      unmountComponentAtNode(errorRoot);
+      this.errorRoot.unmount();
     }
   }
 

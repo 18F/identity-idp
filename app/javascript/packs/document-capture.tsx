@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { composeComponents } from '@18f/identity-compose-components';
 import {
   DocumentCapture,
@@ -141,4 +141,5 @@ const App = composeComponents(
   [DocumentCapture, { onStepChange: extendSession }],
 );
 
-render(<App />, appRoot);
+const root = createRoot(appRoot);
+root.render(<App />);

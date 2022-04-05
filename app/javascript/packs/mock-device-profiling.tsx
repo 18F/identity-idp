@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import { ChangeEvent, useState, useEffect } from 'react';
 
@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const div = document.createElement('div');
     passwordToggle?.parentElement?.appendChild(div);
 
-    render(<MockDeviceProfilingOptions />, div);
+    const root = createRoot(div);
+    root.render(<MockDeviceProfilingOptions />);
   }
 });

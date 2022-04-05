@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, createEvent } from '@testing-library/dom';
 import AcuantCapture, {
@@ -53,18 +53,22 @@ describe('document-capture/components/acuant-capture', () => {
    * @param {File} value
    */
   function uploadFile(input, value) {
-    fireEvent(
-      input,
-      createEvent('input', input, {
-        target: { files: [value] },
-        bubbles: true,
-        cancelable: false,
-        composed: true,
-      }),
-    );
+    act(() => {
+      fireEvent(
+        input,
+        createEvent('input', input, {
+          target: { files: [value] },
+          bubbles: true,
+          cancelable: false,
+          composed: true,
+        }),
+      );
+    });
 
-    fireEvent.change(input, {
-      target: { files: [value] },
+    act(() => {
+      fireEvent.change(input, {
+        target: { files: [value] },
+      });
     });
   }
 
@@ -216,7 +220,7 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           onCropped = () => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
         }),
         end: sinon.stub(),
@@ -231,7 +235,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       expect(window.AcuantCameraUI.start).to.have.been.calledOnce();
 
-      onCropped();
+      act(() => onCropped());
       await waitFor(() => firstInput.getAttribute('aria-busy') === 'false');
       await expect(window.window.AcuantCameraUI.end).to.eventually.be.called();
 
@@ -271,7 +275,9 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.', 'start-fail-code'),
+        start: sinon.stub().callsFake((_callbacks, onImageCaptureFailure) => {
+          onImageCaptureFailure('Camera not supported.', 'start-fail-code');
+        }),
       });
 
       const button = getByLabelText('Image');
@@ -346,7 +352,9 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start: sinon.stub().callsFake((_callbacks, onImageCaptureFailure) => {
+          onImageCaptureFailure(new Error());
+        }),
       });
 
       const button = getByLabelText('Image');
@@ -384,7 +392,9 @@ describe('document-capture/components/acuant-capture', () => {
       outsideInput = getByTestId('outside-input');
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start: sinon.stub().callsFake((_callbacks, onImageCaptureFailure) => {
+          onImageCaptureFailure(new Error());
+        }),
       });
 
       const button = getByLabelText('Image');
@@ -409,10 +419,10 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           onCropped = async () => {
             await Promise.resolve();
-            callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+            act(() => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT));
           };
         }),
       });
@@ -442,9 +452,9 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           await Promise.resolve();
-          callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+          act(() => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT));
         }),
       });
 
@@ -534,9 +544,8 @@ describe('document-capture/components/acuant-capture', () => {
       await userEvent.click(getByText('doc_auth.buttons.upload_picture'));
       expect(onClick).to.have.been.calledOnce();
 
-      uploadFile(input, validUpload);
-      await new Promise((resolve) => onChange.callsFake(resolve));
-      expect(onChange).to.have.been.calledWith(
+      await userEvent.upload(input, validUpload);
+      await expect(onChange).to.eventually.be.calledWith(
         validUpload,
         sinon.match({
           height: sinon.match.number,
@@ -562,12 +571,14 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           await Promise.resolve();
-          callbacks.onCropped({
-            ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            glare: 49,
-          });
+          act(() =>
+            callbacks.onCropped({
+              ...ACUANT_CAPTURE_SUCCESS_RESULT,
+              glare: 49,
+            }),
+          );
         }),
       });
 
@@ -616,12 +627,14 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           await Promise.resolve();
-          callbacks.onCropped({
-            ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            sharpness: 49,
-          });
+          act(() =>
+            callbacks.onCropped({
+              ...ACUANT_CAPTURE_SUCCESS_RESULT,
+              sharpness: 49,
+            }),
+          );
         }),
       });
 
@@ -668,12 +681,14 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({
         start: sinon.stub().callsFake(async (callbacks) => {
           await Promise.resolve();
-          callbacks.onCaptured();
+          act(() => callbacks.onCaptured());
           await Promise.resolve();
-          callbacks.onCropped({
-            ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            sharpness: 49,
-          });
+          act(() =>
+            callbacks.onCropped({
+              ...ACUANT_CAPTURE_SUCCESS_RESULT,
+              sharpness: 49,
+            }),
+          );
         }),
       });
 
@@ -713,19 +728,21 @@ describe('document-capture/components/acuant-capture', () => {
           .onFirstCall()
           .callsFake(async (callbacks) => {
             await Promise.resolve();
-            callbacks.onCaptured();
+            act(() => callbacks.onCaptured());
             await Promise.resolve();
-            callbacks.onCropped({
-              ...ACUANT_CAPTURE_SUCCESS_RESULT,
-              sharpness: 49,
-            });
+            act(() =>
+              callbacks.onCropped({
+                ...ACUANT_CAPTURE_SUCCESS_RESULT,
+                sharpness: 49,
+              }),
+            );
           })
           .onSecondCall()
           .callsFake(async (callbacks) => {
             await Promise.resolve();
-            callbacks.onCaptured();
+            act(() => callbacks.onCaptured());
             await Promise.resolve();
-            callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
+            act(() => callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT));
           }),
       });
 
@@ -952,7 +969,7 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    uploadFile(input, validUpload);
+    await userEvent.upload(input, validUpload);
 
     await expect(trackEvent).to.eventually.be.calledWith('IdV: test image added', {
       height: sinon.match.number,
@@ -1040,14 +1057,15 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const input = getByLabelText('Image');
-    uploadFile(input, validUpload);
+    await userEvent.upload(input, validUpload);
 
     await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',
       sinon.match({ attempt: 1 }),
     );
 
-    uploadFile(input, validUpload);
+    await userEvent.upload(input, []);
+    await userEvent.upload(input, validUpload);
 
     await expect(trackEvent).to.eventually.be.calledWith(
       'IdV: test image added',

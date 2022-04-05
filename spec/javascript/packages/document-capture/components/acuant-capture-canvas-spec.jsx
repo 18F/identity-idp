@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import { act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import AcuantCaptureCanvas, {
@@ -38,7 +39,7 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     );
 
     initialize();
-    window.AcuantCameraUI.start();
+    act(() => window.AcuantCameraUI.start());
 
     const button = getByRole('button', { name: 'doc_auth.buttons.take_picture' });
 
@@ -47,7 +48,9 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
     // canvas, which happens in combination with assigning the callback property to the canvas.
     const canvas = container.querySelector('canvas');
-    canvas.callback = () => {};
+    act(() => {
+      canvas.callback = () => {};
+    });
 
     expect(button.disabled).to.be.false();
 
