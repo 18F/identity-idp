@@ -10,7 +10,7 @@ module Redirect
     def failure_to_proof
       redirect_url = sp_return_url_resolver.failure_to_proof_url
 
-      analytics.return_to_sp_failure_to_proof(redirect_url, **location_params)
+      analytics.return_to_sp_failure_to_proof(redirect_url: redirect_url, **location_params)
       redirect_to(redirect_url)
     end
 

@@ -252,11 +252,17 @@ module AnalyticsEvents
   # @identity.idp.event_name Return to SP: Failed to proof
   # Tracks when a service provide fails to proof.
   # @param [String] redirect_url the url of the service provider
-  def return_to_sp_failure_to_proof(url, **location_params)
+  # @param [String] flow
+  # @param [String] step
+  # @param [String] location
+  def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
     track_event(
       'Return to SP: Failed to proof',
-      redirect_url: url,
-      **location_params,
+      redirect_url: redirect_url,
+      flow: flow,
+      step: step,
+      location: location,
+      **extra,
     )
   end
 

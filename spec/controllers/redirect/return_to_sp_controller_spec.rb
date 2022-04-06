@@ -100,7 +100,7 @@ describe Redirect::ReturnToSpController do
         expect(response).to redirect_to('https://sp.gov/failure_to_proof')
         expect(@analytics).to have_received(:track_event).with(
           'Return to SP: Failed to proof',
-          redirect_url: 'https://sp.gov/failure_to_proof',
+          hash_including(redirect_url: 'https://sp.gov/failure_to_proof'),
         )
       end
     end
@@ -111,9 +111,11 @@ describe Redirect::ReturnToSpController do
 
         expect(@analytics).to have_received(:track_event).with(
           'Return to SP: Failed to proof',
-          redirect_url: a_kind_of(String),
-          step: 'first',
-          location: 'bottom',
+          hash_including(
+            redirect_url: a_kind_of(String),
+            step: 'first',
+            location: 'bottom',
+          ),
         )
       end
     end
