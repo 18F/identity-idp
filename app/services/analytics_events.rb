@@ -240,6 +240,18 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Forget All Browsers Submitted
+  # The user chose to "forget all browsers"
+  def forget_all_browsers_submitted
+    track_event('Forget All Browsers Submitted')
+  end
+
+  # @identity.idp.event_name Forget All Browsers Visited
+  # The user visited the "forget all browsers" page
+  def forget_all_browsers_visited
+    track_event('Forget All Browsers Visited')
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded

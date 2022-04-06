@@ -30,7 +30,7 @@ RSpec.describe Users::ForgetAllBrowsersController do
 
     it 'logs an analytics event for visiting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(Analytics::FORGET_ALL_BROWSERS_VISITED)
+      expect(@analytics).to receive(:track_event).with('Forget All Browsers Visited')
 
       subject
     end
@@ -58,7 +58,7 @@ RSpec.describe Users::ForgetAllBrowsersController do
 
     it 'logs an analytics event for forgetting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(Analytics::FORGET_ALL_BROWSERS_SUBMITTED)
+      expect(@analytics).to receive(:track_event).with('Forget All Browsers Submitted')
 
       subject
     end
