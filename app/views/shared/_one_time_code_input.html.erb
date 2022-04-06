@@ -23,7 +23,6 @@ locals:
         'data-transport': transport,
         pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
         maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-        autocomplete: 'one-time-code',
         inputmode: numeric ? 'numeric' : 'text',
         type: 'text',
         **local_assigns,
