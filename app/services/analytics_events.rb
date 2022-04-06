@@ -387,8 +387,8 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name SP Revoke Consent: Visited
-  # Tracks when service provider consent is visited
-  # @param [String] issuer issuer of the service provider consent to be revoked was visited
+  # Tracks when the page to revoke consent (unlink from) a service provider visited
+  # @param [String] issuer which issuer
   def sp_revoke_consent_visited(issuer:, **extra)
     track_event(
       'SP Revoke Consent: Visited',
