@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.event_name Account Reset
   # @param [Boolean] success
@@ -423,3 +424,4 @@ module AnalyticsEvents
     )
   end
 end
+# rubocop:enable Metrics/ModuleLength
