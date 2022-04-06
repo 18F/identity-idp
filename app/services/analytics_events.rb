@@ -217,6 +217,12 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name 'Events Page Visited'
+  # User visited the events page
+  def events_visit
+    track_event('Events Page Visited')
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
