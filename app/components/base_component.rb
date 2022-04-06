@@ -1,6 +1,6 @@
 class BaseComponent < ViewComponent::Base
   def before_render
-    render_assets unless @has_rendered_assets
+    render_assets unless rendered_assets?
   end
 
   def self.scripts
@@ -31,5 +31,9 @@ class BaseComponent < ViewComponent::Base
     end
 
     @has_rendered_assets = true
+  end
+
+  def rendered_assets?
+    @has_rendered_assets
   end
 end
