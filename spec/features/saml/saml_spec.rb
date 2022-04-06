@@ -244,8 +244,7 @@ feature 'saml api' do
       click_submit_default
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
-        [{ identity_needs_verification: false, profile_needs_verification: false,
-           requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
+        [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
            service_provider: 'http://localhost:3000' }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
