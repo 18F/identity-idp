@@ -1,7 +1,6 @@
 @import 'variables/app';
-@import 'required';
+@import '@18f/identity-idp-required-scss';
 @import 'design-system-waiting-room';
-@import 'identity-style-guide/dist/assets/scss/packages/required';
 @import 'identity-style-guide/dist/assets/scss/packages/global';
 @import 'identity-style-guide/dist/assets/scss/packages/components';
 @import 'components/all';

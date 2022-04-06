@@ -4,6 +4,10 @@ class TroubleshootingOptionsComponent < BaseComponent
 
   attr_reader :tag_options
 
+  def self.stylesheets
+    ['troubleshooting-options']
+  end
+
   def initialize(**tag_options)
     @tag_options = tag_options
   end

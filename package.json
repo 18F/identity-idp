@@ -18,7 +18,7 @@
     "clean": "rm -rf public/packs/*",
     "prebuild": "yarn run clean",
     "build": "webpack",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss --out-dir=app/assets/builds"
+    "build:css": "build-sass 'app/assets/stylesheets/*.css.scss' 'app/javascript/packages/*/*.scss' '!**/_*' --out-dir=app/assets/builds"
   },
   "dependencies": {
     "@babel/core": "^7.15.5",

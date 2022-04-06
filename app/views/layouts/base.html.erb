@@ -29,6 +29,7 @@
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Regular.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
+  <%= render_stylesheet_once_tags %>
   <!--[if IE 8]>
   <%= javascript_include_tag_without_preload 'es5-shim.min' %>
   <![endif]-->

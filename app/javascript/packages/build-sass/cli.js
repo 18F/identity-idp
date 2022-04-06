@@ -3,6 +3,7 @@
 /* eslint-disable no-console */
 
 import { watch } from 'chokidar';
+import glob from 'fast-glob';
 import { fileURLToPath } from 'url';
 import { buildFile } from './index.js';
 
@@ -13,11 +14,13 @@ const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const isProduction = env === 'production';
 
 const args = process.argv.slice(2);
-const files = args.filter((arg) => !arg.startsWith('-'));
+const patterns = args.filter((arg) => !arg.startsWith('-'));
 const flags = args.filter((arg) => arg.startsWith('-'));
 
 const isWatching = flags.includes('--watch');
 const outDir = flags.find((flag) => flag.startsWith('--out-dir='))?.slice(10);
+
+const files = glob.sync(patterns);
 
 /** @type {BuildOptions & SyncSassOptions} */
 const options = { outDir, optimize: isProduction };

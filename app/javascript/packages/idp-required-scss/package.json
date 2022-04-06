@@ -1,0 +1,8 @@
+{
+  "name": "@18f/identity-idp-required-scss",
+  "private": true,
+  "version": "1.0.0",
+  "peerDependencies": {
+    "identity-style-guide": "*"
+  }
+}
