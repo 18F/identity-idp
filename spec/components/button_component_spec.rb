@@ -4,11 +4,11 @@ RSpec.describe ButtonComponent, type: :component do
   include ActionView::Context
   include ActionView::Helpers::TagHelper
 
-  let(:outline) { false }
+  let(:options) { {} }
   let(:content) { 'Button' }
 
   subject(:rendered) do
-    render_inline ButtonComponent.new(outline: outline).with_content(content)
+    render_inline ButtonComponent.new(**options).with_content(content)
   end
 
   it 'renders button content' do
@@ -20,10 +20,26 @@ RSpec.describe ButtonComponent, type: :component do
   end
 
   context 'with outline' do
-    let(:outline) { true }
+    let(:options) { { outline: true } }
 
     it 'renders with design system classes' do
       expect(rendered).to have_css('button.usa-button.usa-button--outline')
+    end
+  end
+
+  context 'as big' do
+    let(:options) { { big: true } }
+
+    it 'renders with design system classes' do
+      expect(rendered).to have_css('button.usa-button.usa-button--big')
+    end
+  end
+
+  context 'as wide' do
+    let(:options) { { wide: true } }
+
+    it 'renders with design system classes' do
+      expect(rendered).to have_css('button.usa-button.usa-button--wide')
     end
   end
 

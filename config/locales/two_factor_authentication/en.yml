@@ -66,8 +66,6 @@ en:
     max_piv_cac_login_attempts_reached: For your security, your account is
       temporarily locked because you have presented your piv/cac credential
       incorrectly too many times.
-    mfa_instructions: We recommend you select at least (2) two different methods so
-      you have a backup if you lose one of your chosen authentication devices.
     mobile_terms_of_service: Mobile terms of service
     no_auth_option: No authentication option could be found for you to sign in.
     opt_in:
@@ -113,7 +111,7 @@ en:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
-    please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication
     totp_fallback:
       question: Don’t have your authenticator app?

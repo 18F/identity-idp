@@ -230,4 +230,51 @@ feature 'saml api' do
       end
     end
   end
+
+  context 'when sending POST request to /api/saml/auth/' do
+    it 'logs one SAML Auth Requested event and multiple SAML Auth events for' do
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
+      page.driver.post saml_authn_request_url
+
+      click_submit_default
+      sign_in_via_branded_page(user)
+      click_agree_and_continue
+      click_submit_default
+
+      expect(fake_analytics.events['SAML Auth Request']).to eq(
+        [{ identity_needs_verification: false, profile_needs_verification: false,
+           requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
+           service_provider: 'http://localhost:3000' }],
+      )
+      expect(fake_analytics.events['SAML Auth'].count).to eq 2
+
+      expect(current_url).to eq sp.acs_url
+    end
+  end
+
+  context 'when referer is external and sending a GET request' do
+    # SAML auth receives one external request and an internal redirect
+    # This test helps ensure we can disambiguate the different events
+    it 'logs one SAML Auth Requested event and multiple SAML Auth events' do
+      fake_analytics = FakeAnalytics.new
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+      Capybara.current_session.driver.header 'Referer', 'http://example.com'
+
+      visit_saml_authn_request_url
+      sign_in_via_branded_page(user)
+      click_agree_and_continue
+      click_submit_default
+
+      expect(fake_analytics.events['SAML Auth Request']).to eq(
+        [{ identity_needs_verification: false, profile_needs_verification: false,
+           requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
+           service_provider: 'http://localhost:3000' }],
+      )
+      expect(fake_analytics.events['SAML Auth'].count).to eq 2
+
+      expect(current_url).to eq sp.acs_url
+    end
+  end
 end

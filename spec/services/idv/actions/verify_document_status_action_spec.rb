@@ -46,11 +46,11 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     end
 
     it 'calls analytics if missing from no document capture session' do
-      response = subject.call
+      subject.call
 
       expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(
-        Analytics::DOC_AUTH_ASYNC,
+        'Doc Auth Async',
         error: 'failed to load verify_document_capture_session',
         uuid: nil,
       )
@@ -65,11 +65,11 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
       expect(subject).to receive(:verify_document_capture_session).
         and_return(verify_document_capture_session).at_least(:once)
-      response = subject.call
+      subject.call
 
       expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
       expect(analytics).to have_logged_event(
-        Analytics::DOC_AUTH_ASYNC,
+        'Doc Auth Async',
         error: 'failed to load async result',
         uuid: verify_document_capture_session.uuid,
         result_id: verify_document_capture_session.result_id,

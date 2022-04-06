@@ -66,7 +66,7 @@ class ServiceProviderSessionDecorator
   end
 
   def requested_attributes
-    sp_session[:requested_attributes].sort
+    (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end
 
   def sp_create_link

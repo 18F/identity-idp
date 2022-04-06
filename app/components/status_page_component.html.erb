@@ -1,0 +1,21 @@
+<%= image_tag(icon_src, width: 54, height: 54, alt: icon_alt, class: 'display-block margin-bottom-4') %>
+
+<%= header %>
+
+<%= content %>
+
+<% if action_buttons? %>
+  <div class="margin-top-4">
+    <% action_buttons.each do |action| %>
+      <div class="margin-top-2">
+        <%= action %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<% if troubleshooting_options? %>
+  <div class="margin-top-5">
+    <%= troubleshooting_options %>
+  </div>
+<% end %>

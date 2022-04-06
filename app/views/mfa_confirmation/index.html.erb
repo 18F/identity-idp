@@ -1,0 +1,21 @@
+<%# All content on this page is currently set up for MFA user testing.
+ Once ready to ship to prod, translate all text content in Gengo %>
+
+<% title t('titles.mfa_setup.first_authentication_method') %>
+
+<%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+  <%= t('multi_factor_authentication.method_confirmation.face_id') %>
+<% end %>
+
+<%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
+
+<%= render PageHeadingComponent.new.with_content(t('headings.mfa_setup.first_authentication_method')) %>
+
+<p class='margin-top-1 margin-bottom-4'><%= t('multi_factor_authentication.cta') %></p>
+
+<%= button_to(
+      account_reset_pending_cancel_path,
+      class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+    ) { t('multi_factor_authentication.add') } %>
+
+<%= link_to t('multi_factor_authentication.skip'), root_url %>

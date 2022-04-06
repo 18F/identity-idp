@@ -133,7 +133,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'logs a doc auth warning' do
         form.submit
 
-        expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+        expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
       end
     end
 

@@ -82,7 +82,6 @@ describe Analytics do
     end
 
     it 'tracks the user passed in to the track_event method' do
-      current_user = build_stubbed(:user, uuid: '123')
       tracked_user = build_stubbed(:user, uuid: '456')
 
       analytics_hash = {

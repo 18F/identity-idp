@@ -72,9 +72,6 @@ es:
     max_piv_cac_login_attempts_reached: Por tu seguridad, tu cuenta está bloqueada
       temporalmente dado que has presentado las credenciales de tu piv/cac de
       forma incorrecta demasiadas veces.
-    mfa_instructions: Le recomendamos que seleccione al menos (2) dos métodos
-      diferentes para tener una copia de seguridad si pierde uno de los
-      dispositivos de autenticación elegidos.
     mobile_terms_of_service: Condiciones de servicio móvil
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     opt_in:
@@ -123,7 +120,7 @@ es:
       question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
-    please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Inténtelo de nuevo en <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Conozca la autenticación de dos factores
     totp_fallback:
       question: '¿No tiene su aplicación de autenticación?'

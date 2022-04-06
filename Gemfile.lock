@@ -107,8 +107,6 @@ GEM
       safely_block (>= 0.2.1)
     android_key_attestation (0.3.0)
     ast (2.4.2)
-    autoprefixer-rails (10.3.3.0)
-      execjs (~> 2)
     awrence (1.2.1)
     aws-eventstream (1.2.0)
     aws-partitions (1.540.0)
@@ -686,7 +684,6 @@ PLATFORMS
 
 DEPENDENCIES
   ahoy_matey (~> 3.0)
-  autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
   aws-sdk-pinpoint

@@ -13,7 +13,7 @@ class PhoneNumberCapabilities
     translated_international_codes_data = {}
     INTERNATIONAL_CODES.each do |k, value|
       translated_international_codes_data[k] =
-value.merge('name' => I18n.t("countries.#{k.downcase}"))
+        value.merge('name' => I18n.t("countries.#{k.downcase}"))
     end
     translated_international_codes_data
   end

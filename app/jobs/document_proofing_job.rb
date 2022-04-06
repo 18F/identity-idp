@@ -109,7 +109,7 @@ class DocumentProofingJob < ApplicationJob
   def build_doc_auth_client(analytics, document_capture_session)
     DocAuthRouter.client(
       vendor_discriminator: document_capture_session.uuid,
-      warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+      warn_notifier: proc { |attrs| analytics.doc_auth_warning(**attrs) },
     )
   end
 

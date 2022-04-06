@@ -12,13 +12,7 @@ class ServiceProviderRequestHandler
     delete_sp_request_if_session_has_matching_request_id
     ServiceProviderRequestProxy.create!(attributes)
 
-    metadata = StoreSpMetadataInSession.new(session: session, request_id: request_id).call
-
-    return unless metadata.present?
-
-    Db::SpReturnLog.create_request(
-      request_id: request_id, ial: ial, issuer: metadata[:issuer],
-    )
+    StoreSpMetadataInSession.new(session: session, request_id: request_id).call
   end
 
   private

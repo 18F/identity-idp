@@ -1,30 +1,11 @@
-class CancellationPresenter < FailurePresenter
-  include ActionView::Helpers::TranslationHelper
+class CancellationPresenter
   include Rails.application.routes.url_helpers
 
   attr_reader :referer
 
   def initialize(referer:, url_options:)
-    super(:warning)
     @referer = referer
     @url_options = url_options
-  end
-
-  def title
-    t('headings.cancellations.prompt')
-  end
-
-  def header
-    t('headings.cancellations.prompt')
-  end
-
-  def cancellation_warnings
-    [
-      t('users.delete.bullet_1', app_name: APP_NAME),
-      t('users.delete.bullet_2_loa1'),
-      t('users.delete.bullet_3', app_name: APP_NAME),
-      t('users.delete.bullet_4', app_name: APP_NAME),
-    ]
   end
 
   def go_back_path
