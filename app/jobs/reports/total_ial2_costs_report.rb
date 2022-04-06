@@ -2,7 +2,7 @@ require 'csv'
 
 module Reports
   class TotalIal2CostsReport < BaseReport
-    REPORT_NAME = 'sp-cost-report-v2'.freeze
+    REPORT_NAME = 'total-ial2-costs'.freeze
     NUM_LOOKBACK_DAYS = 45
 
     include GoodJob::ActiveJobExtensions::Concurrency
