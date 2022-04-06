@@ -1,5 +1,7 @@
+require 'csv'
+
 module Reports
-  class SpCostReportV2 < BaseReport
+  class TotalIal2CostsReport < BaseReport
     REPORT_NAME = 'sp-cost-report-v2'.freeze
     NUM_LOOKBACK_DAYS = 45
 
@@ -22,15 +24,13 @@ module Reports
       CSV.generate do |csv|
         csv << %w[
           date
-          issuer
           ial
           cost_type
-          app_id
           count
         ]
 
         results.each do |row|
-          csv << row.values_at('date', 'issuer', 'ial', 'cost_type', 'app_id', 'count')
+          csv << row.values_at('date', 'ial', 'cost_type', 'count')
         end
       end
     end
@@ -48,23 +48,19 @@ module Reports
       sql = format(<<~SQL, params)
         SELECT
             DATE(sp_costs.created_at) AS date
-          , sp_costs.issuer
           , sp_costs.ial
           , sp_costs.cost_type
-          , MAX(app_id) AS app_id
           , COUNT(*) AS count
         FROM sp_costs
-        JOIN service_providers ON sp_costs.issuer = service_providers.issuer
         WHERE
           %{start} <= sp_costs.created_at AND sp_costs.created_at <= %{finish}
+          AND sp_costs.ial > 1
         GROUP BY
-            sp_costs.issuer
-          , sp_costs.ial
+            sp_costs.ial
           , sp_costs.cost_type
           , DATE(sp_costs.created_at)
         ORDER BY
-            sp_costs.issuer
-          , sp_costs.ial
+            sp_costs.ial
           , sp_costs.cost_type
           , DATE(sp_costs.created_at)
       SQL
