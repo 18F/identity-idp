@@ -303,15 +303,10 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name SAML Auth Request
-  # @param [Boolean] identity_needs_verification indicates whether identity verification is needed
-  # @param [Boolean] profile_needs_verification indicates if proofing is needed for a pending/reset
-  # profile
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
   def saml_auth_request(
-    identity_needs_verification:,
-    profile_needs_verification:,
     requested_ial:,
     service_provider:,
     **extra
@@ -319,8 +314,6 @@ module AnalyticsEvents
     track_event(
       'SAML Auth Request',
       {
-        identity_needs_verification: identity_needs_verification,
-        profile_needs_verification: profile_needs_verification,
         requested_ial: requested_ial,
         service_provider: service_provider,
         **extra,
