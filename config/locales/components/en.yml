@@ -1,6 +1,9 @@
 ---
 en:
   components:
+    password_toggle:
+      label: Password
+      toggle_label: Show password
     phone_input:
       country_code_label: Country code
     status_page:
