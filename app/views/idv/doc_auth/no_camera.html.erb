@@ -1,9 +1,8 @@
-<%= render(
-      'idv/shared/error',
-      type: :warning,
-      title: t('doc_auth.errors.no_camera.title'),
-      heading: t('doc_auth.errors.no_camera.heading'),
-    ) do %>
+<% title t('doc_auth.errors.no_camera.title') %>
+
+<%= render StatusPageComponent.new(type: :warning) do |c| %>
+  <% c.header { t('doc_auth.errors.no_camera.heading') } %>
+
   <p>
     <% if liveness_checking_enabled? %>
       <%= t('doc_auth.info.upload_liveness_enabled') %>

@@ -1,33 +1,42 @@
-<%= render(
-      layout: 'idv/shared/error',
-      locals: {
-        type: :warning,
-        title: t('titles.idv.cancellation_prompt'),
-        heading: @hybrid_session ?
-          t('idv.cancel.headings.prompt.hybrid') :
-          t('headings.cancellations.prompt'),
-        action: {
-          text: t('forms.buttons.cancel'),
-          url: idv_cancel_path(step: params[:step], location: 'cancel'),
-          method: :delete,
-        },
-        action_secondary: {
-          text: t('links.go_back'),
-          url: idv_cancel_path(step: params[:step], cancel: true),
-          method: :put,
-        },
-      },
-    ) do %>
-      <% if @hybrid_session %>
-        <p><%= t('idv.cancel.warnings.hybrid') %></p>
-      <% else %>
-        <p class="margin-bottom-1 text-bold"><%= t('sign_up.cancel.warning_header') %></p>
-        <ul class="usa-list">
-          <li><%= t('idv.cancel.warnings.warning_1') %></li>
-          <li><%= t('idv.cancel.warnings.warning_2') %></li>
-          <li><%= t('idv.cancel.warnings.warning_3', app_name: APP_NAME) %></li>
-          <li><%= t('idv.cancel.warnings.warning_4', app_name: APP_NAME) %></li>
-          <li><%= t('idv.cancel.warnings.warning_5') %></li>
-        </ul>
-      <% end %>
-    <% end %>
+<% title t('titles.idv.cancellation_prompt') %>
+
+<%= render StatusPageComponent.new(type: :warning) do |c| %>
+  <% if @hybrid_session %>
+    <% c.header { t('idv.cancel.headings.prompt.hybrid') } %>
+
+    <p><%= t('idv.cancel.warnings.hybrid') %></p>
+  <% else %>
+    <% c.header { t('headings.cancellations.prompt') } %>
+
+    <p class="margin-bottom-1 text-bold"><%= t('sign_up.cancel.warning_header') %></p>
+    <ul class="usa-list">
+      <li><%= t('idv.cancel.warnings.warning_1') %></li>
+      <li><%= t('idv.cancel.warnings.warning_2') %></li>
+      <li><%= t('idv.cancel.warnings.warning_3', app_name: APP_NAME) %></li>
+      <li><%= t('idv.cancel.warnings.warning_4', app_name: APP_NAME) %></li>
+      <li><%= t('idv.cancel.warnings.warning_5') %></li>
+    </ul>
+  <% end %>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         button_to(
+           idv_cancel_path(step: params[:step], location: 'cancel'),
+           method: :delete,
+           **tag_options,
+           &block,
+         )
+       end,
+     ) { t('forms.buttons.cancel') } %>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         button_to(
+           idv_cancel_path(step: params[:step], cancel: true),
+           method: :put,
+           **tag_options,
+           &block,
+         )
+       end,
+     ) { t('links.go_back') } %>
+<% end %>
