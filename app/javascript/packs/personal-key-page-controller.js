@@ -9,6 +9,7 @@ const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
+const downloadLink = document.querySelector('a[download]');
 
 let isInvalidForm = false;
 
@@ -114,6 +115,20 @@ function hide() {
   modal.hide();
 }
 
+function downloadForIE(event) {
+  event.preventDefault();
+
+  const filename = downloadLink.getAttribute('download');
+  const data = scrapePersonalKey();
+  const blob = new Blob([data], { type: 'text/plain' });
+
+  window.navigator.msSaveBlob(blob, filename);
+}
+
 modalTrigger.addEventListener('click', show);
 modalDismiss.addEventListener('click', hide);
 formEl.addEventListener('submit', handleSubmit);
+
+if (window.navigator.msSaveBlob) {
+  downloadLink.addEventListener('click', downloadForIE);
+}

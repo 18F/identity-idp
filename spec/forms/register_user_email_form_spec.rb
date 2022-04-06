@@ -33,7 +33,7 @@ describe RegisterUserEmailForm do
       end
 
       it 'creates throttle events after reaching throttle limit' do
-        existing_user = create(:user, :signed_up, email: 'taken@example.com')
+        create(:user, :signed_up, email: 'taken@example.com')
 
         (IdentityConfig.store.reg_confirmed_email_max_attempts + 1).times do
           subject.submit(email: 'TAKEN@example.com', terms_accepted: '1')
@@ -72,7 +72,7 @@ describe RegisterUserEmailForm do
       end
 
       it 'creates throttle events after reaching throttle limit' do
-        user = create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
+        create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
         (IdentityConfig.store.reg_unconfirmed_email_max_attempts + 1).times do
           subject.submit(email: 'test@example.com', terms_accepted: '1')
         end

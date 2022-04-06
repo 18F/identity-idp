@@ -29,6 +29,8 @@ es:
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono
+    mfa_setup:
+      first_authentication_method: ¡Has agregado tu primer método de autenticación!
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar

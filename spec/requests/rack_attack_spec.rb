@@ -64,7 +64,7 @@ describe 'throttling requests' do
       end
 
       it 'throttles with a custom response' do
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
@@ -83,7 +83,7 @@ describe 'throttling requests' do
       it 'does not throttle if the path is in the allowlist' do
         allow(IdentityConfig.store).to receive(:requests_per_ip_path_prefixes_allowlist).
           and_return(['/account'])
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
@@ -99,7 +99,7 @@ describe 'throttling requests' do
       end
 
       it 'does not throttle if the ip is in the CIDR block allowlist' do
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
@@ -116,8 +116,12 @@ describe 'throttling requests' do
     end
 
     context 'when the user is signed in' do
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       it 'logs the user UUID' do
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
@@ -187,7 +191,7 @@ describe 'throttling requests' do
       end
 
       it 'throttles with a custom response' do
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
@@ -250,7 +254,7 @@ describe 'throttling requests' do
 
     context 'when number of logins per email + ip is higher than limit per period' do
       it 'throttles with a custom response' do
-        analytics = instance_double(Analytics)
+        analytics = FakeAnalytics.new
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 

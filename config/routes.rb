@@ -140,6 +140,10 @@ Rails.application.routes.draw do
       end
     end
 
+    if IdentityConfig.store.select_multiple_mfa_options
+      get '/auth_method_confirmation' => 'mfa_confirmation#show'
+    end
+
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
         as: :openid_connect_configuration
@@ -272,7 +276,6 @@ Rails.application.routes.draw do
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
-      get '/download_personal_key' => 'personal_key#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'

@@ -43,7 +43,6 @@ describe Telephony::Pinpoint::AwsCredentialBuilder do
     end
 
     it 'returns nil if STS raises a Seahorse::Client::NetworkingError' do
-      expected_credential = instance_double(Aws::AssumeRoleCredentials)
       expect(Aws::STS::Client).to receive(:new).and_raise(
         Seahorse::Client::NetworkingError.new(Net::ReadTimeout.new),
       )

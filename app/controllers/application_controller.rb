@@ -41,6 +41,7 @@ class ApplicationController < ActionController::Base
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
     now = Time.zone.now
+    session[:session_started_at] = now if session[:session_started_at].nil?
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
     redirect_on_timeout
@@ -201,7 +202,7 @@ class ApplicationController < ActionController::Base
       user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch)
       profile.save!
 
-      analytics.track_event(Analytics::BROKEN_PERSONAL_KEY_REGENERATED)
+      analytics.broken_personal_key_regenerated
 
       manage_personal_key_url
     else

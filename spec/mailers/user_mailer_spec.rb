@@ -300,7 +300,6 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
           t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),

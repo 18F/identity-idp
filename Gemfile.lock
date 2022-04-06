@@ -107,8 +107,6 @@ GEM
       safely_block (>= 0.2.1)
     android_key_attestation (0.3.0)
     ast (2.4.2)
-    autoprefixer-rails (10.3.3.0)
-      execjs (~> 2)
     awrence (1.2.1)
     aws-eventstream (1.2.0)
     aws-partitions (1.540.0)
@@ -213,6 +211,7 @@ GEM
       addressable
     cssbundling-rails (1.0.0)
       railties (>= 6.0.0)
+    data_uri (0.1.0)
     debug_inspector (1.1.0)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
@@ -431,7 +430,7 @@ GEM
       pry (>= 0.10.4)
     psych (4.0.2)
     public_suffix (4.0.6)
-    puma (5.6.2)
+    puma (5.6.4)
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.0)
@@ -685,7 +684,6 @@ PLATFORMS
 
 DEPENDENCIES
   ahoy_matey (~> 3.0)
-  autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
   aws-sdk-pinpoint
@@ -705,6 +703,7 @@ DEPENDENCIES
   capybara-selenium (>= 0.0.6)
   connection_pool
   cssbundling-rails
+  data_uri
   derailed_benchmarks (~> 1.8)
   devise (~> 4.8)
   dotiw (>= 4.0.1)

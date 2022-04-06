@@ -64,7 +64,7 @@ module Idv
         result = DocAuthRouter.client(
           vendor_discriminator: flow_session[:document_capture_session_uuid],
           warn_notifier: proc do |attrs|
-            @flow.analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs)
+            @flow.analytics.doc_auth_warning(**attrs)
           end,
         ).post_images(
           front_image: front_image.read,

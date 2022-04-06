@@ -7,6 +7,10 @@ class FakeSamlRequest
     'http://localhost:3000'
   end
 
+  def issuer
+    'http://localhost:3000'
+  end
+
   def requested_authn_context
     Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end

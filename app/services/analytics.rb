@@ -80,7 +80,7 @@ class Analytics
 
   def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
-    mfa_event_type = (attributes[:success] ? 'success' : 'fail')
+    attributes[:success] ? 'success' : 'fail'
   end
 
   attr_reader :user, :request, :sp, :ahoy
@@ -123,11 +123,7 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  DOC_AUTH_ASYNC = 'Doc Auth Async'
-  DOC_AUTH_WARNING = 'Doc Auth Warning'
-  EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'
   EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'
   EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'
@@ -158,7 +154,6 @@ class Analytics
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PERSONAL_KEY_DOWNLOADED = 'IdV: personal key downloaded' # previously "IdV: download personal key"
   IDV_PERSONAL_KEY_VISITED = 'IdV: personal key visited'
   IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'

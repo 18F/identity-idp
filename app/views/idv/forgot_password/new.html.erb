@@ -1,21 +1,24 @@
 <% title t('titles.idv.reset_password') %>
 
-<%= image_tag(asset_url('alert/forgot.svg'), width: 54, class: 'margin-bottom-2') %>
+<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
+  <% c.header { t('idv.forgot_password.modal_header') } %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.forgot_password.modal_header')) %>
+  <ul class="usa-list">
+    <% t('idv.forgot_password.warnings').each do |warning| %>
+      <li><%= warning %></li>
+    <% end %>
+  </ul>
 
-<hr>
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         link_to(idv_review_path, **tag_options, &block)
+       end,
+     ) { t('idv.forgot_password.try_again') } %>
 
-<ul class="usa-list--unstyled teal-dots">
-  <li><%= t('idv.forgot_password.warnings.warning_1') %></li>
-  <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
-</ul>
-
-<div class='margin-top-4'>
-  <%= link_to t('idv.forgot_password.try_again'), idv_review_path,
-              class: 'usa-button usa-button--big usa-button--wide' %>
-</div>
-<div class='margin-top-2'>
-  <%= button_to t('idv.forgot_password.reset_password'), idv_forgot_password_path,
-                method: :post, class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>
-</div>
+  <% c.action_button(
+       action: ->(**tag_options, &block) do
+         button_to(idv_forgot_password_path, method: :post, **tag_options, &block)
+       end,
+       outline: true,
+     ) { t('idv.forgot_password.reset_password') } %>
+<% end %>

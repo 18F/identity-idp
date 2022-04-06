@@ -31,7 +31,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
-	run \
+	urn \
 	setup \
 	test \
 	update_pinpoint_supported_countries
@@ -124,6 +124,10 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 
 run: ## Runs the development server
 	foreman start -p $(PORT)
+
+urn:
+	@echo "⚱️"
+	make run
 
 run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
 	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt" foreman start -p $(PORT)

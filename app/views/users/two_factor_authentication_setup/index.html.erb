@@ -14,9 +14,11 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<%# If it is decided that there will be an info banner on this page for MFA setup, the text will need Gengo translations %>
+
 <% if IdentityConfig.store.select_multiple_mfa_options %>
   <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('two_factor_authentication.mfa_instructions') %>
+    <%= t('multi_factor_authentication.info') %>
   <% end %>
 <% end %>
 
@@ -43,7 +45,7 @@
                   class: 'usa-checkbox__label usa-checkbox__label--illustrated',
                 ) do %>
                     <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-                    <div class="usa-checkbox__label--text tablet:padding-left-1"><%= option.label %>
+                    <div class="usa-checkbox__label--text"><%= option.label %>
                       <span class="usa-checkbox__label-description">
                         <%= option.info %>
                       </span>
@@ -62,7 +64,7 @@
                   class: 'usa-radio__label usa-radio__label--illustrated',
                 ) do %>
                     <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
-                    <div class="usa-radio__label--text tablet:padding-left-1"><%= option.label %>
+                    <div class="usa-radio__label--text"><%= option.label %>
                       <span class="usa-radio__label-description">
                         <%= option.info %>
                       </span>

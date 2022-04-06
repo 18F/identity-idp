@@ -17,6 +17,7 @@ class SamlIdpController < ApplicationController
   prepend_before_action :skip_session_expiration, only: [:metadata, :remotelogout]
 
   skip_before_action :verify_authenticity_token
+  before_action :log_external_saml_auth_request, only: [:auth]
   before_action :handle_banned_user
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
   before_action :bump_auth_count, only: [:auth]
@@ -25,8 +26,7 @@ class SamlIdpController < ApplicationController
     capture_analytics
     return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
     return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
-    if auth_count == 1 &&
-       (first_visit_for_sp? || IdentityConfig.store.show_select_account_on_repeat_sp_visits)
+    if auth_count == 1 && first_visit_for_sp?
       return redirect_to(user_authorization_confirmation_url)
     end
     link_identity_from_session_data
@@ -107,6 +107,22 @@ class SamlIdpController < ApplicationController
       requested_ial: saml_request&.requested_ial_authn_context || 'none',
     )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+  end
+
+  def log_external_saml_auth_request
+    return unless external_saml_request?
+
+    analytics.saml_auth_request(
+      identity_needs_verification: identity_needs_verification?,
+      profile_needs_verification: profile_needs_verification?,
+      requested_ial: saml_request&.requested_ial_authn_context || 'none',
+      service_provider: saml_request&.issuer,
+    )
+  end
+
+  def external_saml_request?
+    (!request.referer.nil? && URI(request.referer).host != request.host) ||
+      request.path.start_with?('/api/saml/authpost')
   end
 
   def handle_successful_handoff

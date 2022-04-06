@@ -1,8 +1,14 @@
-default:
-  image: mitchh/ruby-node-yarn-chrome-chromedriver:3.0.3
+# Jobs defined here use the idp/ci docker image from ECR by default. To find
+# other available images:
+#   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
+# Images are built via the identity-devops GitLab pipeline.
 
 variables:
   GITLAB_CI: 'true'
+  ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+default:
+  image: "${ECR_REGISTRY}/idp/ci:latest"
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby

@@ -6,7 +6,6 @@ ruby "~> #{File.read('.ruby-version').strip}"
 gem 'rails', '~> 6.1.4'
 
 gem 'ahoy_matey', '~> 3.0'
-gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
@@ -89,6 +88,7 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
+  gem 'data_uri', require: false
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'

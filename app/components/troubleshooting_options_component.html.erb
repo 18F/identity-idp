@@ -1,0 +1,8 @@
+<%= tag.section(**tag_options, class: css_class) do %>
+  <%= header %>
+  <ul class="troubleshooting-options__options">
+    <% options.each do |option| %>
+      <li><%= option %></li>
+    <% end %>
+  </ul>
+<% end %>

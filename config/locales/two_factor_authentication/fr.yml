@@ -72,9 +72,6 @@ fr:
     max_piv_cac_login_attempts_reached: Pour votre sécurité, votre compte a été
       temporairement bloqué en raison de la saisie de mauvais identifiants
       PIV/CAC à de trop nombreuses reprises.
-    mfa_instructions: Nous vous recommandons de sélectionner au moins (2) deux
-      méthodes différentes afin d’avoir une sauvegarde si vous perdez l’un de
-      vos dispositifs d’authentification choisis.
     mobile_terms_of_service: Conditions de service mobile
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     opt_in:
@@ -127,8 +124,7 @@ fr:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
-    please_try_again_html: Veuillez essayer de nouveau dans <strong
-      id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?

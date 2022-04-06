@@ -11,7 +11,7 @@ class ActionView::Helpers::TagHelper::TagBuilder
   def modified_tag_option(key, value, *rest)
     original_result = original_tag_option(key, value, *rest)
     return original_result unless key.to_s == 'class'
-    attribute, classes = original_result.split('=')
+    _attribute, classes = original_result.split('=')
     classes = classes.tr('"', '').split(/ +/)
     regex = self.class.deprecated_classes.find { |r| classes.any? { |c| r =~ c } }
     raise "CSS class '#{value}' matched regex for deprecated classes #{regex}" if regex
