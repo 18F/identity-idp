@@ -17,8 +17,10 @@ class BaseComponent < ViewComponent::Base
 
   private
 
-  def self.sidecar_files_basenames(extensions)
-    _sidecar_files(extensions).map { |file| File.basename(file, '.*') }
+  class << self
+    def sidecar_files_basenames(extensions)
+      _sidecar_files(extensions).map { |file| File.basename(file, '.*') }
+    end
   end
 
   def render_assets
