@@ -44,7 +44,7 @@ export async function buildFile(file, options) {
   const postcssPlugins = compact([autoprefixer, optimize && cssnano]);
   const postcssResult = await postcss(postcssPlugins).process(sassResult.css, { from: file });
 
-  let outFile = basename(file, '.scss');
+  let outFile = `${basename(basename(file, '.scss'), '.css')}.css`;
   if (outDir) {
     outFile = join(outDir, outFile);
   }
