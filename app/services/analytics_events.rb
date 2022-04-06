@@ -311,7 +311,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name Return to SP: Failed to proof
-  # Tracks when a service provide fails to proof.
+  # Tracks when a user is redirected back to the service provider after failing to proof.
   # @param [String] redirect_url the url of the service provider
   # @param [String] flow
   # @param [String] step
