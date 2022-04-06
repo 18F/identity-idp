@@ -179,6 +179,14 @@ module AnalyticsEvents
     )
   end
 
+  # @deprecated
+  # A user has downloaded their personal key. This event is no longer emitted.
+  # @identity.idp.event_name IdV: personal key downloaded
+  # @identity.idp.previous_event_name IdV: download personal key
+  def idv_personal_key_downloaded
+    track_event('IdV: personal key downloaded')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors

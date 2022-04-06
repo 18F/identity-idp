@@ -154,7 +154,6 @@ class Analytics
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PERSONAL_KEY_DOWNLOADED = 'IdV: personal key downloaded' # previously "IdV: download personal key"
   IDV_PERSONAL_KEY_VISITED = 'IdV: personal key visited'
   IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'
