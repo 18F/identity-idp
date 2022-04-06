@@ -274,11 +274,13 @@ module AnalyticsEvents
 
   # @identity.idp.event_name Rules of Use Submitted
   # Tracks when rules of use is submitted with a success or failure
+  # @param [Bookean] success
   # @param [Hash] result_hash hash containing the result of accepting the rules of use
-  def rules_of_use_submitted(result_hash, **extra)
+  def rules_of_use_submitted(success: nil, errors: nil, **extra)
     track_event(
       'Rules of Use Submitted',
-      result_hash,
+      success: success,
+      errors: errors,
       **extra,
     )
   end

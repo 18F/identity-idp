@@ -14,7 +14,7 @@ module Users
 
       result = @rules_of_use_form.submit(permitted_params)
 
-      analytics.rules_of_use_submitted(result.to_h)
+      analytics.rules_of_use_submitted(**result.to_h)
 
       if result.success?
         process_successful_agreement_to_rules_of_use
