@@ -179,6 +179,44 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Event disavowal token invalid
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Time] event_created_at timestamp for the event
+  # @param [Time] disavowed_device_last_used_at
+  # @param [String] disavowed_device_user_agent
+  # @param [String] disavowed_device_last_ip
+  # @param [Integer] event_id events table id
+  # @param [String] event_type (see Event#event_type)
+  # @param [String] event_ip ip address for the event
+  # An invalid disavowal token was clicked
+  def event_disavowal_token_invalid(
+    success:,
+    errors:,
+    event_created_at:,
+    disavowed_device_last_used_at:,
+    disavowed_device_user_agent:,
+    disavowed_device_last_ip:,
+    event_id:,
+    event_type:,
+    event_ip:,
+    **extra
+  )
+    track_event(
+      'Event disavowal token invalid',
+      success: success,
+      errors: errors,
+      event_created_at: event_created_at,
+      disavowed_device_last_used_at: disavowed_device_last_used_at,
+      disavowed_device_user_agent: disavowed_device_user_agent,
+      disavowed_device_last_ip: disavowed_device_last_ip,
+      event_id: event_id,
+      event_type: event_type,
+      event_ip: event_ip,
+      **extra,
+    )
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
