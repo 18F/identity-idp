@@ -27,7 +27,7 @@ textarea {
   border-width: $border-width;
   border-color: $border-color;
   border-radius: $border-radius;
-  color: $gray;
+  color: color('ink');
   font-weight: $bold-font-weight;
 
   &[type='number'],
@@ -36,8 +36,8 @@ textarea {
   }
 
   &:focus {
-    border-color: $field-focus-color;
-    box-shadow: 0 0 0 2px rgba($field-focus-color, 0.5);
+    border-color: color('primary');
+    box-shadow: 0 0 0 2px rgba(color('primary'), 0.5);
     outline: none;
   }
 

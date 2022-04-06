@@ -79,9 +79,9 @@ fr:
       reset_password: Réinitialiser le mot de passe
       try_again: Réessayer
       warnings:
-        warning_1: Si vous avez oublié votre mot de passe, vous devrez le réinitialiser
+        - Si vous avez oublié votre mot de passe, vous devrez le réinitialiser
           et remplir à nouveau le formulaire.
-        warning_2: Vous devrez ressaisir vos informations personnelles, comme votre nom,
+        - Vous devrez ressaisir vos informations personnelles, comme votre nom,
           pièce d’identité officielle, etc.
     form:
       address1: Adresse
