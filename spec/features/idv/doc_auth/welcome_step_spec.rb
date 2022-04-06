@@ -38,7 +38,7 @@ feature 'doc auth welcome step' do
     click_on t('idv.troubleshooting.options.supported_documents')
 
     expect(fake_analytics).to have_logged_event(
-      Analytics::EXTERNAL_REDIRECT,
+      'External Redirect',
       step: 'welcome',
       location: 'missing_items',
       flow: 'idv',
@@ -53,7 +53,7 @@ feature 'doc auth welcome step' do
     click_on t('idv.troubleshooting.options.learn_more_address_verification_options')
 
     expect(fake_analytics).to have_logged_event(
-      Analytics::EXTERNAL_REDIRECT,
+      'External Redirect',
       step: 'welcome',
       location: 'missing_items',
       flow: 'idv',

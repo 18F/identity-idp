@@ -129,7 +129,6 @@ class Analytics
   EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'
   EVENT_DISAVOWAL = 'Event disavowal visited'
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'
-  EXTERNAL_REDIRECT = 'External Redirect'
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'
   IDV_ADDRESS_VISIT = 'IdV: address visited'

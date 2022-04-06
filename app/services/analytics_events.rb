@@ -217,10 +217,27 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name 'Events Page Visited'
+  # @identity.idp.event_name Events Page Visited
   # User visited the events page
   def events_visit
     track_event('Events Page Visited')
+  end
+
+  # @identity.idp.event_name External Redirect
+  # @param [String] redirect_url URL user was directed to
+  # @param [String, nil] step which step
+  # @param [String, nil] location which part of a step, if applicable
+  # @param ["idv", String, nil] flow which flow
+  # User was redirected to a page outside the IDP
+  def external_redirect(redirect_url:, step: nil, location: nil, flow: nil, **extra)
+    track_event(
+      'External Redirect',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
   end
 
   # @deprecated
