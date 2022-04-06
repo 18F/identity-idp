@@ -25,6 +25,12 @@ RSpec.describe ValidatedFieldComponent, type: :component do
     render_inline(described_class.new(**options))
   end
 
+  it 'renders aria-describedby to establish connection between input and error message' do
+    field = rendered.at_css('input')
+
+    expect(field.attr('aria-describedby')).to start_with('validated-field-error-')
+  end
+
   describe 'error message strings' do
     subject(:strings) do
       script = rendered.at_css('script[type="application/json"]')
@@ -56,6 +62,18 @@ RSpec.describe ValidatedFieldComponent, type: :component do
 
       it 'renders with error message texts' do
         expect(strings).to include(valueMissing: 'missing', tooLong: 'too long')
+      end
+    end
+  end
+
+  context 'with tag options' do
+    context 'with aria tag option' do
+      let(:tag_options) { { input_html: { aria: { describedby: 'foo' } } } }
+
+      it 'merges aria-describedby with the one applied by the field' do
+        field = rendered.at_css('input')
+
+        expect(field.attr('aria-describedby')).to start_with('foo validated-field-error-')
       end
     end
   end
