@@ -16,14 +16,32 @@ RSpec.describe Reports::TotalIal2CostsReport do
     let(:too_old) { Date.new(2021, 12, 31) }
 
     before do
-      SpCost.create(agency_id: 1, issuer: issuer1, cost_type: 'authentication', created_at: yesterday_utc, ial: 2)
-      SpCost.create(agency_id: 2, issuer: issuer2, cost_type: 'authentication', created_at: yesterday_utc, ial: 2)
+      SpCost.create(
+        agency_id: 1,
+        issuer: issuer1,
+        cost_type: 'authentication',
+        created_at: yesterday_utc,
+        ial: 2,
+      )
+      SpCost.create(
+        agency_id: 2,
+        issuer: issuer2,
+        cost_type: 'authentication',
+        created_at: yesterday_utc,
+        ial: 2,
+      )
 
-      SpCost.create(agency_id: 1, issuer: issuer1, cost_type: 'sms', created_at: yesterday_utc, ial: 2)
+      SpCost.create(
+        agency_id: 1, issuer: issuer1, cost_type: 'sms', created_at: yesterday_utc, ial: 2,
+      )
 
       # rows that get ignored
-      SpCost.create(agency_id: 2, issuer: issuer2, cost_type: 'user_added', created_at: too_old, ial: 2)
-      SpCost.create(agency_id: 2, issuer: issuer2, cost_type: 'user_added', created_at: yesterday_utc, ial: 1)
+      SpCost.create(
+        agency_id: 2, issuer: issuer2, cost_type: 'user_added', created_at: too_old, ial: 2,
+      )
+      SpCost.create(
+        agency_id: 2, issuer: issuer2, cost_type: 'user_added', created_at: yesterday_utc, ial: 1,
+      )
     end
 
     it 'writes a CSV report to S3' do
