@@ -274,8 +274,8 @@ module AnalyticsEvents
 
   # @identity.idp.event_name Rules of Use Submitted
   # Tracks when rules of use is submitted with a success or failure
-  # @param [Bookean] success
-  # @param [Hash] result_hash hash containing the result of accepting the rules of use
+  # @param [Boolean] success
+  # @param [Hash] errors
   def rules_of_use_submitted(success: nil, errors: nil, **extra)
     track_event(
       'Rules of Use Submitted',
@@ -287,11 +287,29 @@ module AnalyticsEvents
 
   # @identity.idp.event_name RISC: Security event received
   # Tracks when security event is received
-  # @param [Hash] result_hash containing the result of accepting security event
-  def security_event_received(result_hash, **extra)
+  # @param [Boolean] success
+  # @param [String] error_code
+  # @param [Hash] errors
+  # @param [String] jti
+  # @param [String] user_id
+  # @param [String] client_id
+  def security_event_received(
+    success:,
+    error_code: nil,
+    errors: nil,
+    jti: nil,
+    user_id: nil,
+    client_id: nil,
+    **extra
+  )
     track_event(
       'RISC: Security event received',
-      result_hash,
+      success: success,
+      error_code: error_code,
+      errors: errors,
+      jti: jti,
+      user_id: user_id,
+      client_id: client_id,
       **extra,
     )
   end
