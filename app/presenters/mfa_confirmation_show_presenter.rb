@@ -24,35 +24,7 @@ class MfaConfirmationShowPresenter
     end
   
     def nickname_label
-      if @platform_authenticator
-        t('forms.webauthn_platform_setup.nickname')
-      else
-        t('forms.webauthn_setup.nickname')
-      end
-    end
-  
-    def button_text
-      if @platform_authenticator
-        t('forms.webauthn_platform_setup.continue')
-      else
-        t('forms.webauthn_setup.continue')
-      end
-    end
-  
-    def setup_heading
-      if @platform_authenticator
-        t('forms.webauthn_platform_setup.instructions_title')
-      else
-        t('forms.webauthn_setup.instructions_title')
-      end
-    end
-  
-    def setup_instructions
-      if @platform_authenticator
-        t('forms.webauthn_platform_setup.instructions_text', app_name: APP_NAME)
-      else
-        t('forms.webauthn_setup.instructions_text', app_name: APP_NAME)
-      end
+      t('multi_factor_authentication.cta')
     end
 
     private

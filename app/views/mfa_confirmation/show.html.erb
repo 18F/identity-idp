@@ -1,18 +1,18 @@
 <%# All content on this page is currently set up for MFA user testing.
  Once ready to ship to prod, translate all text content in Gengo %>
 
-<% title t('titles.mfa_setup.first_authentication_method') %>
+<% title @presenter.title %>
 
 <%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.mfa_setup.first_authentication_method')) %>
+<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p class='margin-top-1 margin-bottom-4'><%= t('multi_factor_authentication.cta') %></p>
 
 <div class="col-12">
   <%= link_to(
-        @next_path,
+        @presenter.next_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { t('multi_factor_authentication.add') } %>
 </div>
-<%= link_to t('multi_factor_authentication.skip'), @final_path %>
+<%= link_to t('multi_factor_authentication.skip'), @presenter.final_path %>

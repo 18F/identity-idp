@@ -3,7 +3,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated, except: [:show]
   
   def show
-    MfaConfirmationShowPresenter.new(current_user: current_user, final_path: final_path)
+    @presenter = MfaConfirmationShowPresenter.new(current_user: current_user, final_path: final_path)
   end
 
   def new

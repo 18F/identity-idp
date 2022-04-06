@@ -8,9 +8,11 @@ module MfaSetupConcern
       final_path
     end
   end
+  
 
   def confirmation_path(final_path = nil)
-    case user_session[:selected_mfa_options]&.shift
+    user_session[:current_mfa_created] = user_session[:current_mfa_created].nil? ? 0 : user_session[:current_mfa_created] + 1
+    case user_session[:selected_mfa_options][user_session[:current_mfa_created]]
     when 'voice', 'sms', 'phone'
       phone_setup_url
     when 'auth_app'
