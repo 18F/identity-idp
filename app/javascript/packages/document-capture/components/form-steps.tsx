@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
+import type { RefCallback, FormEventHandler, FC } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
@@ -8,111 +9,176 @@ import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 
-/**
- * @typedef FormStepError
- *
- * @prop {keyof V} field Name of field for which error occurred.
- * @prop {Error} error Error object.
- *
- * @template V
- */
+export interface FormStepError<V> {
+  /**
+   * Name of field for which error occurred.
+   */
+  field: keyof V;
 
-/**
- * @typedef FormStepRegisterFieldOptions
- *
- * @prop {boolean} isRequired Whether field is required.
- */
+  /**
+   * Error object.
+   */
+  error: Error;
+}
 
-/**
- * @typedef {(
- *   field:string,
- *   options?:Partial<FormStepRegisterFieldOptions>
- * )=>undefined|import('react').RefCallback<HTMLElement>} RegisterFieldCallback
- */
+interface FormStepRegisterFieldOptions {
+  /**
+   * Whether field is required.
+   */
+  isRequired: boolean;
+}
 
-/**
- * @typedef {(error:Error, options?: {field?: string?})=>void} OnErrorCallback
- */
+export type RegisterFieldCallback = (
+  field: string,
+  options?: Partial<FormStepRegisterFieldOptions>,
+) => undefined | RefCallback<HTMLElement>;
 
-/**
- * @typedef FormStepComponentProps
- *
- * @prop {(nextValues:Partial<V>)=>void} onChange Update values, merging with existing values.
- * @prop {OnErrorCallback} onError Trigger a field error.
- * @prop {Partial<V>} value Current values.
- * @prop {FormStepError<V>[]} errors Current active errors.
- * @prop {FormStepError<V>[]} unknownFieldErrors Current top-level errors.
- * @prop {RegisterFieldCallback} registerField Registers field by given name, returning ref
- * assignment function.
- *
- * @template V
- */
+export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
-/**
- * @typedef FormStep
- *
- * @prop {string} name Step name, used in history parameter.
- * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
- * @prop {(object)=>boolean=} validator Optional function to validate values for the step
- */
+export interface FormStepComponentProps<V> {
+  /**
+   * Update values, merging with existing values.
+   */
+  onChange: (nextValues: Partial<V>) => void;
 
-/**
- * @typedef FieldsRefEntry
- *
- * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
- * @prop {boolean} isRequired Whether field is required.
- * @prop {HTMLElement?} element Element assigned by ref callback.
- */
+  /**
+   * Trigger a field error.
+   */
+  onError: OnErrorCallback;
 
-/**
- * @typedef FormStepsProps
- *
- * @prop {FormStep[]=} steps Form steps.
- * @prop {Record<string,any>=} initialValues Form values to populate initial state.
- * @prop {FormStepError<Record<string,Error>>[]=} initialActiveErrors Errors to initialize state.
- * @prop {boolean=} autoFocus Whether to automatically focus heading on mount.
- * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
- * @prop {()=>void=} onStepChange Callback triggered on step change.
- */
+  /**
+   * Current values.
+   */
+  value: Partial<V>;
 
-/**
- * @typedef FormStepsContext
- *
- * @prop {boolean} isLastStep Whether the current step is the last step in the flow.
- * @prop {boolean} canContinueToNextStep Whether the user can proceed to the next step.
- * @prop {() => void} onPageTransition Callback invoked when content is reset in a page transition.
- */
+  /**
+   * Current active errors.
+   */
+  errors: FormStepError<V>[];
 
-export const FormStepsContext = createContext(
-  /** @type {FormStepsContext} */ ({
-    isLastStep: true,
-    canContinueToNextStep: true,
-    onPageTransition: () => {},
-  }),
-);
+  /**
+   * Current top-level errors.
+   */
+  unknownFieldErrors: FormStepError<V>[];
+
+  /**
+   * Registers field by given name, returning ref assignment function.
+   */
+  registerField: RegisterFieldCallback;
+}
+
+export interface FormStep {
+  /**
+   * Step name, used in history parameter.
+   */
+  name: string;
+
+  /**
+   * Step form component.
+   */
+  form: FC<FormStepComponentProps<Record<string, any>>>;
+
+  /**
+   * Optional function to validate values for the step
+   */
+  validator?: (object) => boolean;
+}
+
+interface FieldsRefEntry {
+  /**
+   * Ref callback.
+   */
+  refCallback: RefCallback<HTMLElement>;
+
+  /**
+   * Whether field is required.
+   */
+  isRequired: boolean;
+
+  /**
+   * Element assigned by ref callback.
+   */
+  element: HTMLElement | null;
+}
+
+interface FormStepsProps {
+  /**
+   * Form steps.
+   */
+  steps?: FormStep[];
+
+  /**
+   * Form values to populate initial state.
+   */
+  initialValues?: Record<string, any>;
+
+  /**
+   * Errors to initialize state.
+   */
+  initialActiveErrors?: FormStepError<Record<string, Error>>[];
+
+  /**
+   * Whether to automatically focus heading on mount.
+   */
+  autoFocus?: boolean;
+
+  /**
+   * Form completion callback.
+   */
+  onComplete?: (values: Record<string, any>) => void;
+
+  /**
+   * Callback triggered on step change.
+   */
+  onStepChange?: () => void;
+}
+
+interface FormStepsContextValue {
+  /**
+   * Whether the current step is the last step in the flow.
+   */
+  isLastStep: boolean;
+
+  /**
+   * Whether the user can proceed to the next step.
+   */
+  canContinueToNextStep: boolean;
+
+  /**
+   * Callback invoked when content is reset in a page transition.
+   */
+  onPageTransition: () => void;
+}
+
+export const FormStepsContext = createContext({
+  isLastStep: true,
+  canContinueToNextStep: true,
+  onPageTransition: () => {},
+} as FormStepsContextValue);
 
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
  * no step found by that name.
  *
- * @param {FormStep[]} steps Form steps.
- * @param {string}     name  Step to search.
+ * @param steps Form steps.
+ * @param name Step to search.
  *
- * @return {number} Step index.
+ * @return Step index.
  */
-export function getStepIndexByName(steps, name) {
+export function getStepIndexByName(steps: FormStep[], name: string) {
   return steps.findIndex((step) => step.name === name);
 }
 
 /**
  * Returns the first element matched to a field from a set of errors, if exists.
  *
- * @param {FormStepError<Record<string,Error>>[]} errors Active form step errors.
- * @param {Record<string,FieldsRefEntry>} fields Current fields.
- *
- * @return {HTMLElement=}
+ * @param errors Active form step errors.
+ * @param fields Current fields.
  */
-function getFieldActiveErrorFieldElement(errors, fields) {
+function getFieldActiveErrorFieldElement(
+  errors: FormStepError<Record<string, Error>>[],
+  fields: Record<string, FieldsRefEntry>,
+) {
   const error = errors.find(({ field }) => fields[field]?.element);
 
   if (error) {
@@ -120,9 +186,6 @@ function getFieldActiveErrorFieldElement(errors, fields) {
   }
 }
 
-/**
- * @param {FormStepsProps} props Props object.
- */
 function FormSteps({
   steps = [],
   onComplete = () => {},
@@ -130,13 +193,13 @@ function FormSteps({
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
-}) {
+}: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
-  const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
+  const formRef = useRef(null as HTMLFormElement | null);
   const [stepName, setStepName] = useHistoryParam('step', null);
-  const [stepErrors, setStepErrors] = useState(/** @type {Error[]} */ ([]));
-  const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
+  const [stepErrors, setStepErrors] = useState([] as Error[]);
+  const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
@@ -183,10 +246,8 @@ function FormSteps({
 
   /**
    * Returns array of form errors for the current set of values.
-   *
-   * @return {FormStepError<Record<string,Error>>[]}
    */
-  function getValidationErrors() {
+  function getValidationErrors(): FormStepError<Record<string, Error>>[] {
     return Object.keys(fields.current).reduce((result, key) => {
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
@@ -196,7 +257,7 @@ function FormSteps({
       }
 
       return result;
-    }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
+    }, [] as FormStepError<Record<string, Error>>[]);
   }
 
   // An empty steps array is allowed, in which case there is nothing to render.
@@ -213,10 +274,8 @@ function FormSteps({
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
-   *
-   * @type {import('react').FormEventHandler}
    */
-  function toNextStep(event) {
+  const toNextStep: FormEventHandler = (event) => {
     event.preventDefault();
 
     // Don't proceed if field errors have yet to be resolved.
@@ -243,7 +302,7 @@ function FormSteps({
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
-  }
+  };
 
   const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
