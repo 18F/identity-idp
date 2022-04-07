@@ -1,0 +1,8 @@
+{
+  "name": "@18f/identity-react-hooks",
+  "private": true,
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  }
+}

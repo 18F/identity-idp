@@ -1,11 +1,11 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useIfStillMounted } from '@18f/identity-react-hooks';
 import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 import useFocusTrap from '../hooks/use-focus-trap';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
