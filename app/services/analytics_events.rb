@@ -384,6 +384,93 @@ module AnalyticsEvents
     track_event('Proofing Document Result Missing')
   end
 
+  # @identity.idp.event_name Return to SP: Failed to proof
+  # Tracks when a user is redirected back to the service provider after failing to proof.
+  # @param [String] redirect_url the url of the service provider
+  # @param [String] flow
+  # @param [String] step
+  # @param [String] location
+  def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
+    track_event(
+      'Return to SP: Failed to proof',
+      redirect_url: redirect_url,
+      flow: flow,
+      step: step,
+      location: location,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Rules of Use Visited
+  # Tracks when rules of use is visited
+  def rules_of_use_visit
+    track_event('Rules of Use Visited')
+  end
+
+  # @identity.idp.event_name Rules of Use Submitted
+  # Tracks when rules of use is submitted with a success or failure
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def rules_of_use_submitted(success: nil, errors: nil, **extra)
+    track_event(
+      'Rules of Use Submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name RISC: Security event received
+  # Tracks when security event is received
+  # @param [Boolean] success
+  # @param [String] error_code
+  # @param [Hash] errors
+  # @param [String] jti
+  # @param [String] user_id
+  # @param [String] client_id
+  def security_event_received(
+    success:,
+    error_code: nil,
+    errors: nil,
+    jti: nil,
+    user_id: nil,
+    client_id: nil,
+    **extra
+  )
+    track_event(
+      'RISC: Security event received',
+      success: success,
+      error_code: error_code,
+      errors: errors,
+      jti: jti,
+      user_id: user_id,
+      client_id: client_id,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name SP Revoke Consent: Revoked
+  # Tracks when service provider consent is revoked
+  # @param [String] issuer issuer of the service provider consent to be revoked
+  def sp_revoke_consent_revoked(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Revoked',
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name SP Revoke Consent: Visited
+  # Tracks when the page to revoke consent (unlink from) a service provider visited
+  # @param [String] issuer which issuer
+  def sp_revoke_consent_visited(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Visited',
+      issuer: issuer,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name SAML Auth Request
   # @param [Integer] requested_ial
   # @param [String] service_provider
