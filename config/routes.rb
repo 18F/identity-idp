@@ -271,10 +271,6 @@ Rails.application.routes.draw do
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
-
-      if IdentityConfig.store.idv_api_enabled
-        get '/:step' => 'idv#show', constraints: { step: /password/ }
-      end
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'
@@ -327,6 +323,12 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
+    end
+
+    if IdentityConfig.store.idv_api_enabled
+      scope '/verify' do
+        get '/password' => 'verify#show'
+      end
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
