@@ -95,16 +95,15 @@ en:
         access your %{app_name} account.
       confirm: Are you sure you want to remove your authentication app?
     totp_setup:
-      totp_intro_html: Set up an authentication app to sign in using temporary
-        secure codes. %{link}
+      totp_intro_html: Set up an authentication app to sign in using temporary codes. %{link}
       totp_step_1: Give it a nickname
       totp_step_1a: If you add more than one app, you’ll know which one is which.
       totp_step_2: Open your authentication app
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
     two_factor:
-      backup_code: Secure code
-      code: One-time secure code
+      backup_code: Security code
+      code: One-time code
       personal_key: Personal key
       try_again: Use another phone number
     two_factor_choice:
