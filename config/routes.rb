@@ -325,10 +325,8 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    if IdentityConfig.store.idv_api_enabled
-      scope '/verify' do
-        get '/password' => 'verify#show'
-      end
+    scope '/verify' do
+      get '/password' => 'verify#show'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
