@@ -16,6 +16,15 @@ import { FormError } from '../components/form-steps';
 const NBSP_UNICODE = '\u00A0';
 
 /**
+ * Returns a new string from the given string, replacing spaces with non-breaking spaces.
+ *
+ * @param {string} string Original string.
+ *
+ * @return String with non-breaking spaces.
+ */
+const nonBreaking = (string) => string.split(' ').join(NBSP_UNICODE);
+
+/**
  * An error representing a failure to complete encrypted upload of image.
  */
 export class BackgroundEncryptedUploadError extends FormError {
@@ -24,9 +33,7 @@ export class BackgroundEncryptedUploadError extends FormError {
   /** @type {string[]} */
   fields = [];
 
-  message = `${t('doc_auth.errors.upload_error')} ${t('errors.messages.try_again')
-    .split(' ')
-    .join(NBSP_UNICODE)}`;
+  message = `${t('doc_auth.errors.upload_error')} ${nonBreaking(t('errors.messages.try_again'))}`;
 }
 
 /**
