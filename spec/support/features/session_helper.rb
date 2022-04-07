@@ -507,6 +507,18 @@ module Features
       click_submit_default
     end
 
+    def set_up_mfa_with_valid_phone
+      fill_in 'new_phone_form[phone]', with: '202-555-1212'
+      click_send_security_code
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+    end
+
+    def set_up_mfa_with_backup_codes
+      click_on t('forms.buttons.continue')
+      click_on t('forms.buttons.continue')
+    end
+
     def register_user(email = 'test@test.com')
       confirm_email_and_password(email)
       set_up_2fa_with_valid_phone

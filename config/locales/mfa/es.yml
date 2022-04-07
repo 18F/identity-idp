@@ -1,6 +1,6 @@
 ---
 es:
-  multi_factor_authentication:
+  mfa:
     add: Agregar otro método
     cta: Agregar otro método de autenticación evita que se le bloquee el acceso a su
       cuenta si pierde uno de sus métodos.
@@ -9,4 +9,8 @@ es:
       autenticación elegidos.
     method_confirmation:
       face_id: Se ha agregado Face ID a su cuenta
+    second_method_warning:
+      link: Agregue un segundo método de autenticación.
+      text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
+        autenticación.
     skip: Saltar por ahora
