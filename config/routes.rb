@@ -271,6 +271,10 @@ Rails.application.routes.draw do
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
+
+      if IdentityConfig.store.idv_api_enabled
+        get '/:step' => 'idv#show', constraints: { step: /password/ }
+      end
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'

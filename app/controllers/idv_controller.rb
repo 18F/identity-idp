@@ -1,9 +1,11 @@
 class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
+  include FeatureFlaggedConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
+  feature_flagged :idv_api_enabled, only: [:show]
 
   def index
     if decorated_session.requested_more_recent_verification?
@@ -23,6 +25,8 @@ class IdvController < ApplicationController
       verify_identity
     end
   end
+
+  def show; end
 
   def activated
     redirect_to idv_url unless active_profile?
