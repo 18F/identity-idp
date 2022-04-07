@@ -2,7 +2,7 @@ module MfaSetupConcern
   extend ActiveSupport::Concern
 
   def user_next_authentication_setup_path!(final_path = nil)
-    if user_session.dig(:selected_mfa_options, user_session[:current_mfa_created]).present?
+    if user_session.dig(:selected_mfa_options, user_session[:current_mfa_created] + 1).present?
       auth_method_confirmation_url(final_path: final_path)
     else
       final_path
