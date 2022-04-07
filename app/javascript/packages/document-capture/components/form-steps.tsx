@@ -1,12 +1,28 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
 import type { RefCallback, FormEventHandler, FC } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import { Alert, Button } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
-import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
+
+export class FormError extends Error {
+  isDetail: boolean;
+
+  constructor(options?: { isDetail: boolean }) {
+    super();
+
+    this.isDetail = Boolean(options?.isDetail);
+  }
+}
+
+/**
+ * An error representing a state where a required form value is missing.
+ */
+export class RequiredValueMissingError extends FormError {
+  message = t('simple_form.required.text');
+}
 
 export interface FormStepError<V> {
   /**
@@ -311,7 +327,7 @@ function FormSteps({
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
-          <FormErrorMessage error={error} isDetail />
+          {error.message}
         </Alert>
       ))}
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
@@ -358,7 +374,6 @@ function FormSteps({
 
 export function FormStepsContinueButton() {
   const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
-  const { t } = useI18n();
 
   return (
     <Button

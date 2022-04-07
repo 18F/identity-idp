@@ -1,6 +1,6 @@
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import AcuantCapture from './acuant-capture';
-import FormErrorMessage, { CameraAccessDeclinedError } from './form-error-message';
+import { FormError } from './form-steps';
 
 /** @typedef {import('./form-steps').FormStepError<*>} FormStepError */
 /** @typedef {import('./form-steps').RegisterFieldCallback} RegisterFieldCallback */
@@ -20,6 +20,17 @@ import FormErrorMessage, { CameraAccessDeclinedError } from './form-error-messag
  */
 
 /**
+ * An error representing user declined access to camera.
+ */
+export class CameraAccessDeclinedError extends FormError {
+  get message() {
+    return this.isDetail
+      ? t('doc_auth.errors.camera.blocked_detail')
+      : t('doc_auth.errors.camera.blocked');
+  }
+}
+
+/**
  * @param {DocumentSideAcuantCaptureProps} props Props object.
  */
 function DocumentSideAcuantCapture({
@@ -31,7 +42,6 @@ function DocumentSideAcuantCapture({
   onError,
   className,
 }) {
-  const { t } = useI18n();
   const error = errors.find(({ field }) => field === side)?.error;
 
   return (
@@ -52,9 +62,9 @@ function DocumentSideAcuantCapture({
       }
       onCameraAccessDeclined={() => {
         onError(new CameraAccessDeclinedError(), { field: side });
-        onError(new CameraAccessDeclinedError());
+        onError(new CameraAccessDeclinedError({ isDetail: true }));
       }}
-      errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+      errorMessage={error ? error.message : undefined}
       name={side}
       className={className}
       capture="environment"
