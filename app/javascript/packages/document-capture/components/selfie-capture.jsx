@@ -10,8 +10,8 @@ import {
 } from 'react';
 import { Icon } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useIfStillMounted } from '@18f/identity-react-hooks';
 import FileImage from './file-image';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 import AppContext from '../context/app';
