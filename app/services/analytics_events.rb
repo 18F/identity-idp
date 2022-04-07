@@ -193,6 +193,12 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Email Language: Visited
+  # Tracks if Email Language is visited
+  def email_language_visited
+    track_event('Email Language: Visited')
+  end
+
   # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors

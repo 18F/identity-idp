@@ -27,7 +27,7 @@ RSpec.describe Users::EmailLanguageController do
 
     it 'logs an analytics event for visiting' do
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(Analytics::EMAIL_LANGUAGE_VISITED)
+      expect(@analytics).to receive(:track_event).with('Email Language: Visited')
 
       action
     end

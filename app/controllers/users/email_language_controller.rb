@@ -3,7 +3,7 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     def show
-      analytics.track_event(Analytics::EMAIL_LANGUAGE_VISITED)
+      analytics.email_language_visited
     end
 
     def update
