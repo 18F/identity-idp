@@ -18,7 +18,7 @@ module TwoFactorAuthentication
       post_analytics(result)
       if result.success?
         next_url = nil
-        user_next_authentication_setup_path! if UserSessionContext.confirmation_context?(context)
+        next_url = user_next_authentication_setup_path! if UserSessionContext.confirmation_context?(context)
         handle_valid_otp(next_url)
       else
         handle_invalid_otp
