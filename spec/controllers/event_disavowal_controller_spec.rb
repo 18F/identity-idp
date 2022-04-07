@@ -41,7 +41,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -55,7 +55,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -127,7 +127,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -150,7 +150,7 @@ describe EventDisavowalController do
 
       it 'errors' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: {
