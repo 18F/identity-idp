@@ -250,7 +250,7 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} className="read-after-submit" onSubmit={toNextStep}>
+    <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
