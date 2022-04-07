@@ -17,16 +17,16 @@ locals:
 
 <div>
   <%= text_field_tag(
-        'test-name',
+        name,
         nil,
         'aria-invalid': 'false',
         'data-transport': transport,
         pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
         maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+        autocomplete: 'one-time-code',
         inputmode: numeric ? 'numeric' : 'text',
         type: 'text',
         **local_assigns,
-        id: 'test',
         class: classes,
       ) %>
   <span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
