@@ -199,6 +199,19 @@ module AnalyticsEvents
     track_event('Email Language: Visited')
   end
 
+  # @identity.idp.event_name Email Language: Updated
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks if Email Language is updated
+  def email_language_updated(success:, errors:, **extra)
+    track_event(
+      'Email Language: Updated',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors
