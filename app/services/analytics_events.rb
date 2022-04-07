@@ -180,6 +180,19 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Email Deletion Requested
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks request for deletion of email address
+  def email_deletion_request(success:, errors:, **extra)
+    track_event(
+      'Email Deletion Requested',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors
