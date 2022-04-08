@@ -2,9 +2,7 @@ module MfaSetupConcern
   extend ActiveSupport::Concern
 
   def user_next_authentication_setup_path!(final_path = nil)
-    user_session[:current_mfa_created] = user_session[:current_mfa_created].nil? ?
-      0 : user_session[:current_mfa_created] + 1
-    case user_session.dig(:selected_mfa_options, user_session[:current_mfa_created])
+    case user_session[:selected_mfa_options]&.shift
     when 'voice', 'sms', 'phone'
       phone_setup_url
     when 'auth_app'
