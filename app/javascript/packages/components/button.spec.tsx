@@ -1,13 +1,13 @@
+import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import Button from '@18f/identity-document-capture/components/button';
-import { render } from '../../../support/document-capture';
+import Button from './button';
 
 describe('document-capture/components/button', () => {
   it('renders with default props', () => {
     const { getByText } = render(<Button>Click me</Button>);
 
-    const button = getByText('Click me');
+    const button = getByText('Click me') as HTMLButtonElement;
     userEvent.click(button);
 
     expect(button.nodeName).to.equal('BUTTON');
@@ -88,7 +88,7 @@ describe('document-capture/components/button', () => {
       </Button>,
     );
 
-    const button = getByText('Click me');
+    const button = getByText('Click me') as HTMLButtonElement;
     userEvent.click(button);
 
     expect(onClick.calledOnce).to.be.false();
@@ -103,7 +103,7 @@ describe('document-capture/components/button', () => {
       </Button>,
     );
 
-    const button = getByText('Click me');
+    const button = getByText('Click me') as HTMLButtonElement;
 
     expect(button.classList.contains('usa-button--disabled'));
     expect(button.disabled).to.be.false();
@@ -115,7 +115,7 @@ describe('document-capture/components/button', () => {
   it('renders with custom type', () => {
     const { getByText } = render(<Button type="submit">Click me</Button>);
 
-    const button = getByText('Click me');
+    const button = getByText('Click me') as HTMLButtonElement;
 
     expect(button.type).to.equal('submit');
   });

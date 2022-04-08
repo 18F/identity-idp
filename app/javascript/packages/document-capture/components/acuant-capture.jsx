@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { Button } from '@18f/identity-components';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -16,7 +17,6 @@ import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
-import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';

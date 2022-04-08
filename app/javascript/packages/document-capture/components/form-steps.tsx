@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState, createContext, useContext } from 'react';
 import type { RefCallback, FormEventHandler, FC } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { Alert } from '@18f/identity-components';
+import { Alert, Button } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
-import Button from './button';
 import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
