@@ -1,12 +1,11 @@
 ---
 es:
   multi_factor_authentication:
+    account_secure: ¡Felicitaciones! Está haciendo muy bien en mantener su cuenta segura. Añada nuevos dispositivos para mantenerse al día.
     add: Agregar otro método
     cta: Agregar otro método de autenticación evita que se le bloquee el acceso a su
       cuenta si pierde uno de sus métodos.
     info: Le recomendamos que seleccione al menos (2) dos métodos diferentes para
       tener una copia de seguridad si pierde uno de los dispositivos de
       autenticación elegidos.
-    method_confirmation:
-      face_id: Se ha agregado Face ID a su cuenta
     skip: Saltar por ahora
