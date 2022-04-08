@@ -7,7 +7,6 @@ import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
-import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
@@ -133,7 +132,7 @@ function ReviewIssuesStep({
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
               allowUpload={false}
               className="document-capture-review-issues-step__input"
-              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              errorMessage={selfieError?.message}
               name="selfie"
             />
           ) : (
@@ -141,7 +140,7 @@ function ReviewIssuesStep({
               ref={registerField('selfie', { isRequired: true })}
               value={value.selfie}
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              errorMessage={selfieError?.message}
               className={[
                 'document-capture-review-issues-step__input',
                 !value.selfie && 'document-capture-review-issues-step__input--unconstrained-width',
