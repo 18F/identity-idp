@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 function useForceRender() {
-  const [, setState] = useState(/** @type {number=} */ (undefined));
+  const [, setState] = useState(undefined as number | undefined);
 
   return () => setState((prevState = 0) => 1 - prevState);
 }

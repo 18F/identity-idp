@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
-import PromptOnNavigate from '@18f/identity-document-capture/components/prompt-on-navigate';
+import PromptOnNavigate from './prompt-on-navigate';
 
-describe('document-capture/components/prompt-on-navigate', () => {
+describe('PromptOnNavigate', () => {
   it('prompts on navigate', () => {
     render(<PromptOnNavigate />);
 

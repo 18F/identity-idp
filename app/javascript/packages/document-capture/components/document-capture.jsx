@@ -1,7 +1,7 @@
 import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
-import FormSteps from './form-steps';
+import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep, { documentsStepValidator } from './documents-step';
 import SelfieStep, { selfieStepValidator } from './selfie-step';
@@ -14,12 +14,10 @@ import { RetrySubmissionError } from './submission-complete';
 import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
-import PromptOnNavigate from './prompt-on-navigate';
 import withProps from '../higher-order/with-props';
 
 /** @typedef {import('react').ReactNode} ReactNode */
-/** @typedef {import('./form-steps').FormStep} FormStep */
-/** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
+/** @typedef {import('@18f/identity-form-steps').FormStep} FormStep */
 
 /**
  * Returns a new object with specified keys removed.

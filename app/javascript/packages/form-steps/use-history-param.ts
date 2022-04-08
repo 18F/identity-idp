@@ -13,12 +13,12 @@ import { useState, useEffect } from 'react';
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/get
  *
- * @param {string} queryString Query string to search within.
- * @param {string} name        Parameter name to search for.
+ * @param queryString Query string to search within.
+ * @param name        Parameter name to search for.
  *
- * @return {?string} Decoded parameter value if found, or null otherwise.
+ * @return Decoded parameter value if found, or null otherwise.
  */
-export function getQueryParam(queryString, name) {
+export function getQueryParam(queryString: string, name: string): string | null {
   const pairs = queryString.split('&');
   for (let i = 0; i < pairs.length; i += 1) {
     const [key, value = ''] = pairs[i].split('=').map(decodeURIComponent);
@@ -40,12 +40,15 @@ export function getQueryParam(queryString, name) {
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param {string} name Parameter name to sync.
- * @param {string?=} initialValue Value to use as initial in absence of another value.
+ * @param name Parameter name to sync.
+ * @param initialValue Value to use as initial in absence of another value.
  *
- * @return {[any,(nextParamValue:any)=>void]} Tuple of current state, state setter.
+ * @return Tuple of current state, state setter.
  */
-function useHistoryParam(name, initialValue) {
+function useHistoryParam(
+  name: string,
+  initialValue?: string | null,
+): [any, (nextParamValue: any) => void] {
   const getCurrentQueryParam = () =>
     getQueryParam(window.location.hash.slice(1), name) ?? undefined;
 

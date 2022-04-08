@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
@@ -23,7 +23,7 @@ function selfieStepValidator(value = {}) {
 }
 
 /**
- * @param {import('./form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
 function SelfieStep({
   value = {},
