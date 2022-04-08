@@ -13,7 +13,7 @@
       url: reauthn_user_password_path,
       html: { autocomplete: 'off', method: 'post', class: 'margin-top-6' },
     ) do |f| %>
-  <%= f.input :password, required: true, input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(form: f, required: true) %>
   <%= f.button :submit, t('forms.buttons.continue'), class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
 <% end %>
 <%= render 'shared/cancel', link: account_path %>

@@ -1,9 +1,9 @@
 import { useContext, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { Button } from '@18f/identity-components';
 import UploadContext from '../context/upload';
-import Button from './button';
 
-/** @typedef {import('./button').ButtonProps} ButtonProps */
+/** @typedef {import('@18f/identity-components/button').ButtonProps} ButtonProps */
 
 /**
  * @typedef NativeButtonToProps

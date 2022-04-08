@@ -218,7 +218,7 @@ feature 'Sign in' do
   scenario 'user can see and use password visibility toggle', js: true do
     visit new_user_session_path
 
-    check t('forms.passwords.show')
+    check t('components.password_toggle.toggle_label')
 
     expect(page).to have_css('input.password[type="text"]')
   end

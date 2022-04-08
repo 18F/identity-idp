@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useDidUpdateEffect from '@18f/identity-document-capture/hooks/use-did-update-effect';
+import useDidUpdateEffect from './use-did-update-effect';
 
 describe('document-capture/hooks/use-did-update-effect', () => {
   context('no dependencies', () => {

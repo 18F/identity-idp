@@ -65,7 +65,6 @@ fr:
           submit: Changer le mot de passe
         labels:
           password: Nouveau mot de passe
-      show: Afficher le mot de passe
     personal_key:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle

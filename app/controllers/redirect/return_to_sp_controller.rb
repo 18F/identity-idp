@@ -9,7 +9,9 @@ module Redirect
 
     def failure_to_proof
       redirect_url = sp_return_url_resolver.failure_to_proof_url
-      redirect_to_and_log redirect_url, event: Analytics::RETURN_TO_SP_FAILURE_TO_PROOF
+
+      analytics.return_to_sp_failure_to_proof(redirect_url: redirect_url, **location_params)
+      redirect_to(redirect_url)
     end
 
     private

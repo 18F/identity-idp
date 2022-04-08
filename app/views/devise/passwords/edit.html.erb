@@ -10,8 +10,11 @@
     ) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
-  <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
-                         input_html: { class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        label: t('forms.passwords.edit.labels.password'),
+        required: true,
+      ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'usa-button--big margin-bottom-4' %>
 <% end %>

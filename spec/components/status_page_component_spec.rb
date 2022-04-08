@@ -70,4 +70,10 @@ RSpec.describe StatusPageComponent, type: :component do
       render_inline StatusPageComponent.new(status: :warning, icon: :foo)
     end.to raise_error(ArgumentError)
   end
+
+  it 'raises error if no default icon associated with status' do
+    expect do
+      render_inline StatusPageComponent.new(status: :info)
+    end.to raise_error(ArgumentError)
+  end
 end
