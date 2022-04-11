@@ -14,7 +14,7 @@ class EventDisavowalController < ApplicationController
 
   def create
     result = password_reset_from_disavowal_form.submit(password_reset_params)
-    analytics.track_event(Analytics::EVENT_DISAVOWAL_PASSWORD_RESET, result.to_h)
+    analytics.event_disavowal_password_reset(**result.to_h)
     if result.success?
       handle_successful_password_reset
     else
