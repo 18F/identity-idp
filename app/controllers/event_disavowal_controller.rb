@@ -4,13 +4,11 @@ class EventDisavowalController < ApplicationController
   def new
     # Memoize the form for use in the views
     password_reset_from_disavowal_form
-    analytics.track_event(
-      Analytics::EVENT_DISAVOWAL,
-      FormResponse.new(
-        success: true,
-        extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
-      ).to_h,
+    result = FormResponse.new(
+      success: true,
+      extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
     )
+    analytics.event_disavowal(**result.to_h)
     @forbidden_passwords = forbidden_passwords
   end
 

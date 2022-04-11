@@ -17,7 +17,7 @@ describe EventDisavowalController do
     context 'with a valid disavowal_token' do
       it 'tracks an analytics event' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL,
+          'Event disavowal visited',
           build_analytics_hash,
         )
 
@@ -26,7 +26,7 @@ describe EventDisavowalController do
 
       it 'assigns forbidden passwords' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL,
+          'Event disavowal visited',
           build_analytics_hash,
         )
 

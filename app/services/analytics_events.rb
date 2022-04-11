@@ -212,6 +212,44 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Event disavowal visited
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Time, nil] event_created_at timestamp for the event
+  # @param [Time, nil] disavowed_device_last_used_at
+  # @param [String, nil] disavowed_device_user_agent
+  # @param [String, nil] disavowed_device_last_ip
+  # @param [Integer, nil] event_id events table id
+  # @param [String, nil] event_type (see Event#event_type)
+  # @param [String, nil] event_ip ip address for the event
+  # Tracks disavowed event
+  def event_disavowal(
+    success:,
+    errors:,
+    event_created_at: nil,
+    disavowed_device_last_used_at: nil,
+    disavowed_device_user_agent: nil,
+    disavowed_device_last_ip: nil,
+    event_id: nil,
+    event_type: nil,
+    event_ip: nil,
+    **extra
+  )
+    track_event(
+      'Event disavowal visited',
+      success: success,
+      errors: errors,
+      event_created_at: event_created_at,
+      disavowed_device_last_used_at: disavowed_device_last_used_at,
+      disavowed_device_user_agent: disavowed_device_user_agent,
+      disavowed_device_last_ip: disavowed_device_last_ip,
+      event_id: event_id,
+      event_type: event_type,
+      event_ip: event_ip,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors

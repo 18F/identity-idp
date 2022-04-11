@@ -124,7 +124,6 @@ class Analytics
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  EVENT_DISAVOWAL = 'Event disavowal visited'
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'
   IDV_ADDRESS_VISIT = 'IdV: address visited'
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'
