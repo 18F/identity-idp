@@ -260,7 +260,7 @@ module AnalyticsEvents
   # @param [Integer, nil] event_id events table id
   # @param [String, nil] event_type (see Event#event_type)
   # @param [String, nil] event_ip ip address for the event
-  # Event disavowal passowrd reset was performed
+  # Event disavowal password reset was performed
   def event_disavowal_password_reset(
     success:,
     errors:,
