@@ -35,6 +35,16 @@ describe('StepIndicator', () => {
     return document.querySelector('lg-step-indicator') as StepIndicator;
   }
 
+  it('cleans up event listeners', () => {
+    window.resizeTo(1024, 768);
+    initialize();
+    sandbox.spy(HTMLElement.prototype, 'setAttribute');
+    document.body.innerHTML = '';
+    window.resizeTo(340, 600);
+
+    expect(HTMLElement.prototype.setAttribute).not.to.have.been.called();
+  });
+
   context('small viewport', () => {
     beforeEach(() => {
       window.resizeTo(340, 600);

@@ -22,16 +22,20 @@ class StepIndicator extends HTMLElement {
     };
 
     this.mediaQueryList = window.matchMedia(SMALL_VIEWPORT_MEDIA_QUERY);
-    this.mediaQueryList.addListener(() => this.onBreakpointMatchChange());
+    this.mediaQueryList.addListener(this.onBreakpointMatchChange);
     this.onBreakpointMatchChange();
     if (this.isSmallViewport) {
       this.setScrollOffset();
     }
   }
 
-  onBreakpointMatchChange() {
-    this.toggleWrapperFocusable();
+  disconnectedCallback() {
+    this.mediaQueryList?.removeListener(this.onBreakpointMatchChange);
   }
+
+  onBreakpointMatchChange = () => {
+    this.toggleWrapperFocusable();
+  };
 
   setScrollOffset() {
     const { currentStep, scroller } = this.elements;
