@@ -268,6 +268,12 @@ Rails.application.routes.draw do
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
+    if IdentityConfig.store.idv_api_enabled
+      scope '/verify' do
+        get '/personal_key' => 'verify#show'
+      end
+    end
+
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
@@ -323,10 +329,6 @@ Rails.application.routes.draw do
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
-    end
-
-    scope '/verify' do
-      get '/password' => 'verify#show'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
