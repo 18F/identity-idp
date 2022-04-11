@@ -1,7 +1,7 @@
 class VerifyController < ApplicationController
-  include FeatureFlaggedConcern
+  include RenderConditionConcern
 
-  feature_flagged :idv_api_enabled, only: [:show]
+  render_if -> { IdentityConfig.store.idv_api_enabled }, only: [:show]
 
   def show; end
 end
