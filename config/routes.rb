@@ -12,6 +12,10 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
+  namespace :api do
+    get '/verify/complete' => 'verify#complete'
+  end
+
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
