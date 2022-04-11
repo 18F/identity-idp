@@ -1,15 +1,21 @@
-import StepIndicator from '@18f/identity-step-indicator';
+import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { useSandbox } from '../../support/sinon';
-import useDefineProperty from '../../support/define-property';
+import { useDefineProperty } from '@18f/identity-test-helpers';
+import StepIndicator from './index';
 
 describe('StepIndicator', () => {
-  const sandbox = useSandbox();
+  const sandbox = sinon.createSandbox();
   const defineProperty = useDefineProperty();
+
+  before(() => {
+    if (!customElements.get('lg-step-indicator')) {
+      customElements.define('lg-step-indicator', StepIndicator);
+    }
+  });
 
   function initialize({ currentStepIndex = 0 } = {}) {
     document.body.innerHTML = `
-      <div role="region" aria-label="Step progress" class="step-indicator">
+      <lg-step-indicator role="region" aria-label="Step progress">
         <ol class="step-indicator__scroller">
           ${Array.from(Array(5))
             .map(
@@ -25,10 +31,8 @@ describe('StepIndicator', () => {
             )
             .join('')}
         </ol>
-      </div>`;
-    const stepIndicator = new StepIndicator(document.body.firstElementChild);
-    stepIndicator.bind();
-    return stepIndicator;
+      </lg-step-indicator>`;
+    return document.querySelector('lg-step-indicator') as StepIndicator;
   }
 
   context('small viewport', () => {
@@ -43,9 +47,12 @@ describe('StepIndicator', () => {
     });
 
     it('scrolls to current item', () => {
-      sandbox.stub(window, 'getComputedStyle').callsFake((element) => ({
-        paddingLeft: element.classList.contains('step-indicator__scroller') ? '24px' : '0',
-      }));
+      sandbox.stub(window, 'getComputedStyle').callsFake(
+        (element) =>
+          ({
+            paddingLeft: element.classList.contains('step-indicator__scroller') ? '24px' : '0',
+          } as CSSStyleDeclaration),
+      );
       defineProperty(window.Element.prototype, 'scrollWidth', {
         get() {
           return this.classList.contains('step-indicator__scroller') ? 593 : 0;
