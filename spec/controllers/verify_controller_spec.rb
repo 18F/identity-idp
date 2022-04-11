@@ -4,6 +4,12 @@ describe VerifyController do
   describe '#show' do
     subject(:response) { get :show }
 
+    before do
+      routes.draw { get 'show' => 'verify#show' }
+    end
+
+    after { Rails.application.reload_routes! }
+
     context 'with idv_api_enabled feature disabled' do
       before do
         allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(false)
