@@ -74,7 +74,7 @@
   }
 
   hr {
-    border-color: $teal;
+    border-color: color('info');
   }
 }
 
@@ -84,7 +84,7 @@
   }
 
   hr {
-    border-color: $yellow;
+    border-color: color('warning');
   }
 }
 

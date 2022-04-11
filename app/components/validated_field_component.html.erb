@@ -18,7 +18,10 @@
             class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
             aria: {
               invalid: false,
-              describedby: "validated-field-error-#{unique_id}",
+              describedby: [
+                *tag_options.dig(:input_html, :aria, :describedby),
+                "validated-field-error-#{unique_id}",
+              ],
             },
           },
           error_html: { id: "validated-field-error-#{unique_id}" },

@@ -1,12 +1,16 @@
 ---
 fr:
   components:
+    password_toggle:
+      label: Mot de passe
+      toggle_label: Afficher le mot de passe
     phone_input:
       country_code_label: Code pays
     status_page:
       icons:
         error: Erreur
         lock: Serrure
+        question: Question
         warning: Avertissement
     troubleshooting_options:
       default_heading: 'Des difficultés? Voici ce que vous pouvez faire:'

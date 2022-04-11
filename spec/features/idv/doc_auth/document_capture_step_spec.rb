@@ -41,7 +41,7 @@ feature 'doc auth document capture step' do
 
       within_window new_window do
         expect(fake_analytics).to have_logged_event(
-          Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+          'Return to SP: Failed to proof',
           step: 'document_capture',
           location: 'document_capture_troubleshooting_options',
         )

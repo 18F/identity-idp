@@ -3,13 +3,6 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  before do
-    # All the tests here were written prior to the interstitial
-    # authorization confirmation page so let's force the system
-    # to skip past that page
-    allow(controller).to receive(:auth_count).and_return(2)
-  end
-
   render_views
 
   describe '/api/saml/logout' do
@@ -431,6 +424,13 @@ describe SamlIdpController do
   end
 
   describe 'GET /api/saml/auth' do
+    before do
+      # All the tests here were written prior to the interstitial
+      # authorization confirmation page so let's force the system
+      # to skip past that page
+      allow(controller).to receive(:auth_count).and_return(2)
+    end
+
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
     let(:aal_level) { 2 }
     let(:ial2_settings) do
@@ -519,6 +519,10 @@ describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               service_provider: sp1_issuer)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH,
                success: true,
@@ -1217,13 +1221,20 @@ describe SamlIdpController do
     end
 
     context 'when user is not logged in' do
-      before do
-        saml_get_auth(saml_settings)
-      end
-
       it 'redirects the user to the SP landing page with the request_id in the params' do
+        saml_get_auth(saml_settings)
         sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+      end
+
+      it 'logs SAML Auth Request but does not log SAML Auth' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
+
+        saml_get_auth(saml_settings)
       end
     end
 
@@ -1667,6 +1678,10 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
+        expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
 
         get :auth
@@ -1704,6 +1719,10 @@ describe SamlIdpController do
           finish_profile: false,
         }
 
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,
@@ -1736,6 +1755,10 @@ describe SamlIdpController do
           finish_profile: true,
         }
 
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,

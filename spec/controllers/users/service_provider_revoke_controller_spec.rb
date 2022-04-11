@@ -32,7 +32,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
     it 'logs an analytics event for visiting' do
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::SP_REVOKE_CONSENT_VISITED, issuer: service_provider.issuer)
+        with('SP Revoke Consent: Visited', issuer: service_provider.issuer)
 
       subject
     end
@@ -75,7 +75,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
     it 'logs an analytics event for revoking' do
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::SP_REVOKE_CONSENT_REVOKED, issuer: service_provider.issuer)
+        with('SP Revoke Consent: Revoked', issuer: service_provider.issuer)
 
       subject
     end

@@ -5,7 +5,6 @@ import { FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
-import FormErrorMessage from './form-error-message';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
@@ -55,7 +54,7 @@ function SelfieStep({
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
-          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+          errorMessage={error?.message}
           name="selfie"
         />
       ) : (
@@ -63,7 +62,7 @@ function SelfieStep({
           ref={registerField('selfie', { isRequired: true })}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+          errorMessage={error?.message}
         />
       )}
       <FormStepsContinueButton />

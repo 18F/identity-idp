@@ -26,10 +26,7 @@
               input_html: { class: 'margin-bottom-6',
                             autocorrect: 'off',
                             aria: { invalid: false } } %>
-  <%= f.input :password,
-              label: t('account.index.password'),
-              required: true,
-              input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(form: f, required: true) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
     <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary usa-button--full-width margin-bottom-2' %>

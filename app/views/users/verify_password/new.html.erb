@@ -10,8 +10,12 @@
       current_user, url: update_verify_password_path,
                     html: { autocomplete: 'off', method: :put }
     ) do |f| %>
-  <%= f.input :password, label: t('idv.form.password'), required: true,
-                         input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        name: :password,
+        label: t('idv.form.password'),
+        required: true,
+      ) %>
   <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
 <% end %>
 

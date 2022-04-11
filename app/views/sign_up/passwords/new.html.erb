@@ -11,10 +11,12 @@
       method: :post,
       html: { autocomplete: 'off' },
     ) do |f| %>
-  <%= f.input :password, required: true,
-                         label: t('forms.password'),
-                         input_html: { aria: { invalid: false, describedby: 'password-description' },
-                                       class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        label: t('forms.password'),
+        required: true,
+        input_html: { aria: { describedby: 'password-description' } },
+      ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
   <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>

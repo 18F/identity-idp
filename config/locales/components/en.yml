@@ -1,12 +1,16 @@
 ---
 en:
   components:
+    password_toggle:
+      label: Password
+      toggle_label: Show password
     phone_input:
       country_code_label: Country code
     status_page:
       icons:
         error: Error
         lock: Lock
+        question: Question
         warning: Warning
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'

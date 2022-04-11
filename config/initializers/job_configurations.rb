@@ -117,6 +117,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Total IAL2 Costs Report to S3
+      total_ial2_costs: {
+        class: 'Reports::TotalIal2CostsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # SP Active Users Report to S3
       sp_active_users_report: {
         class: 'Reports::SpActiveUsersReport',
