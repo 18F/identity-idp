@@ -1,4 +1,12 @@
 <%= tag.section(**tag_options, class: css_class) do %>
+  <% if new_features? %>
+    <div class="margin-top-3">
+      <span class="usa-tag bg-accent-cool-darker text-uppercase">
+        <%= t('components.troubleshooting_options.new_feature') %>
+      </span>
+    </div>
+  <% end %>
+
   <%= header %>
   <ul class="troubleshooting-options__options">
     <% options.each do |option| %>

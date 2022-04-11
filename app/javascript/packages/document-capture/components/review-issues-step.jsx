@@ -163,7 +163,10 @@ function ReviewIssuesStep({
       location="doc_auth_review_issues"
       remainingAttempts={remainingAttempts}
       troubleshootingOptions={
-        <DocumentCaptureTroubleshootingOptions location="post_submission_warning" />
+        <DocumentCaptureTroubleshootingOptions
+          location="post_submission_warning"
+          hasErrors={!!errors?.length}
+        />
       }
     >
       {!!unknownFieldErrors &&

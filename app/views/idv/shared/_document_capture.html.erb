@@ -38,6 +38,7 @@
       back_image_upload_url: back_image_upload_url,
       selfie_image_upload_url: selfie_image_upload_url,
       keep_alive_endpoint: sessions_keepalive_url,
+      idv_in_person_url: IdentityConfig.store.in_person_proofing_enabled ? idv_in_person_url : nil,
     } %>
 <div class="no-js">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>

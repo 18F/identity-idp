@@ -72,7 +72,7 @@ function DocumentsStep({
         />
       ))}
       <FormStepsContinueButton />
-      <DocumentCaptureTroubleshootingOptions />
+      <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
       <StartOverOrCancel />
     </CaptureTroubleshooting>
   );

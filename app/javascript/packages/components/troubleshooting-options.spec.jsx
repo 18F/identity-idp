@@ -49,4 +49,22 @@ describe('TroubleshootingOptions', () => {
     expect(links[1].href).to.equal('https://example.com/2');
     expect(links[1].target).to.be.empty();
   });
+
+  it('renders a new features tag with isNewFeatures', () => {
+    const { getByTestId } = render(
+      <TroubleshootingOptions
+        heading=""
+        isNewFeatures
+        options={[
+          { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
+          { text: 'Option 2', url: 'https://example.com/2' },
+        ]}
+      />,
+    );
+
+    const tag = getByTestId('new-features-tag');
+    expect(tag).to.exist();
+    expect(tag.textContent).to.eq('components.troubleshooting_options.new_feature');
+    expect(tag.classList.contains('text-uppercase')).to.eq(true);
+  });
 });

@@ -7,18 +7,19 @@ import DocumentCaptureTroubleshootingOptions from '@18f/identity-document-captur
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
+  const idvInPersonURL = 'https://example.com/some/idv/ipp/url';
   const serviceProviderContext = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
   };
   const wrappers = {
     helpCenterContext: ({ children }) => (
-      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL, idvInPersonURL }}>
         {children}
       </HelpCenterContextProvider>
     ),
     helpCenterAndServiceProviderContext: ({ children }) => (
-      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL, idvInPersonURL }}>
         <ServiceProviderContextProvider value={serviceProviderContext}>
           {children}
         </ServiceProviderContextProvider>
@@ -113,6 +114,41 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       );
 
       expect(getByRole('heading', { name: 'custom heading' })).to.exist();
+    });
+  });
+
+  context('in person proofing links', () => {
+    context('no errors and no idvInPersonURL', () => {
+      it('has no IPP information', () => {
+        const { queryByTestId } = render(<DocumentCaptureTroubleshootingOptions />);
+
+        expect(queryByTestId('new-features-tag')).to.not.exist();
+      });
+    });
+
+    context('hasErrors but no idvInPersonURL', () => {
+      it('has no IPP information', () => {
+        const { queryByTestId } = render(<DocumentCaptureTroubleshootingOptions hasErrors />);
+
+        expect(queryByTestId('new-features-tag')).to.not.exist();
+      });
+    });
+
+    context('hasErrors and idvInPersonURL', () => {
+      it('has links to IPP information', () => {
+        const { getByTestId, getAllByRole } = render(
+          <DocumentCaptureTroubleshootingOptions hasErrors />,
+          {
+            wrapper: wrappers.helpCenterContext,
+          },
+        );
+
+        expect(getByTestId('new-features-tag')).to.exist();
+
+        const links = getAllByRole('link');
+        const ippLink = links.find(({ href }) => href === idvInPersonURL);
+        expect(ippLink).to.exist();
+      });
     });
   });
 });
