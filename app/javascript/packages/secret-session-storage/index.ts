@@ -30,21 +30,15 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
   }
 
   async #readStorage() {
-    let data: Uint8Array;
-
     try {
       const rawData = sessionStorage.getItem(this.storageKey)!;
 
-      data = await crypto.subtle.decrypt(
+      const data = await crypto.subtle.decrypt(
         { name: 'AES-GCM', iv: this.iv },
         this.key,
         encode(rawData),
       );
-    } catch {
-      return;
-    }
 
-    try {
       return JSON.parse(ab2s(data));
     } catch {}
   }
