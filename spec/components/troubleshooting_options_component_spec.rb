@@ -44,10 +44,6 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
           '.troubleshooting-options .usa-tag.text-uppercase',
           text: t('components.troubleshooting_options.new_feature'),
         )
-
-        expect(rendered).to_not have_css(
-          '.troubleshooting-options[new_features=true]',
-        ), 'it does not add a new_feature HTML attribute'
       end
     end
 

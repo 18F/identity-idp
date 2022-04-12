@@ -4,9 +4,9 @@ class TroubleshootingOptionsComponent < BaseComponent
 
   attr_reader :tag_options
 
-  def initialize(**tag_options)
+  def initialize(new_features: false, **tag_options)
+    @new_features = new_features
     @tag_options = tag_options.dup
-    @new_features = @tag_options.delete(:new_features)
   end
 
   def render?
