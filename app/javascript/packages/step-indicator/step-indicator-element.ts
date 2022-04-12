@@ -86,4 +86,8 @@ declare global {
   }
 }
 
+if (!customElements.get('lg-step-indicator')) {
+  customElements.define('lg-step-indicator', StepIndicatorElement);
+}
+
 export default StepIndicatorElement;
