@@ -2,7 +2,6 @@ import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { useDefineProperty } from '@18f/identity-test-helpers';
 import './step-indicator-element';
-import type StepIndicatorElement from './step-indicator-element';
 
 describe('StepIndicatorElement', () => {
   const sandbox = sinon.createSandbox();
@@ -27,7 +26,7 @@ describe('StepIndicatorElement', () => {
             .join('')}
         </ol>
       </lg-step-indicator>`;
-    return document.querySelector('lg-step-indicator') as StepIndicatorElement;
+    return document.querySelector('lg-step-indicator')!;
   }
 
   it('cleans up event listeners', () => {
