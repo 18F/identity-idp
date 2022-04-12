@@ -29,18 +29,4 @@ class PasswordToggleComponent < BaseComponent
   def input_id
     "password-toggle-input-#{unique_id}"
   end
-
-  def field
-    ValidatedFieldComponent.new(
-      form: form,
-      name: :password,
-      type: :password,
-      label: label,
-      **field_options,
-      input_html: field_options[:input_html].to_h.merge(
-        id: input_id,
-        class: ['password-toggle__input', *field_options.dig(:input_html, :class)],
-      ),
-    )
-  end
 end

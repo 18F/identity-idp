@@ -52,10 +52,6 @@ RSpec.describe PasswordToggleComponent, type: :component do
       it 'renders modifier class' do
         expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-top')
       end
-
-      it 'renders toggle before input' do
-        expect(rendered).to have_css('.password-toggle__toggle-wrapper + lg-validated-field')
-      end
     end
 
     context 'with bottom toggle position' do
@@ -63,10 +59,6 @@ RSpec.describe PasswordToggleComponent, type: :component do
 
       it 'renders modifier class' do
         expect(rendered).to have_css('lg-password-toggle.password-toggle--toggle-bottom')
-      end
-
-      it 'renders toggle after input' do
-        expect(rendered).to have_css('lg-validated-field + .password-toggle__toggle-wrapper')
       end
     end
   end
