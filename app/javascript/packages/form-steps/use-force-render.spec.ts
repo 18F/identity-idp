@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import useForceRender from '@18f/identity-document-capture/hooks/use-force-render';
+import useForceRender from './use-force-render';
 
-describe('document-capture/hooks/use-force-render', () => {
+describe('useForceRender', () => {
   it('returns a function', () => {
     const { result } = renderHook(() => useForceRender());
 

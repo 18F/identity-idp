@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
@@ -37,7 +37,7 @@ function documentsStepValidator(value = {}) {
 }
 
 /**
- * @param {import('./form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
   value = {},

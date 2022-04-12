@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { t } from '@18f/identity-i18n';
+import { FormError } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
-import { FormError } from '../components/form-steps';
 
 /**
- * @typedef {import('../components/form-steps').FormStepComponentProps<V>} FormStepComponentProps
+ * @typedef {import('@18f/identity-form-steps').FormStepComponentProps<V>} FormStepComponentProps
  * @template V
  */
 

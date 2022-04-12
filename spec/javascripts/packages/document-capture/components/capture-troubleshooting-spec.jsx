@@ -7,7 +7,7 @@ import {
   FailedCaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
 import CaptureTroubleshooting from '@18f/identity-document-capture/components/capture-troubleshooting';
-import { FormStepsContext } from '@18f/identity-document-capture/components/form-steps';
+import { FormStepsContext } from '@18f/identity-form-steps';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/context/capture-troubleshooting', () => {

@@ -1,19 +1,24 @@
 import { useContext } from 'react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import PageHeading from '@18f/identity-document-capture/components/page-heading';
-import FormSteps, {
-  FormStepsContext,
-  getStepIndexByName,
-  FormStepsContinueButton,
-} from '@18f/identity-document-capture/components/form-steps';
-import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
+import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
+import FormError from './form-error';
+import FormStepsContext from './form-steps-context';
+import FormStepsContinueButton from './form-steps-continue-button';
 
-describe('document-capture/components/form-steps', () => {
-  const { spy } = useSandbox();
+interface StepValues {
+  secondInputOne?: string;
+
+  secondInputTwo?: string;
+
+  changed?: boolean;
+}
+
+describe('FormSteps', () => {
+  const { spy } = sinon.createSandbox();
 
   const STEPS = [
     {
@@ -29,7 +34,13 @@ describe('document-capture/components/form-steps', () => {
     },
     {
       name: 'second',
-      form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
+      form: ({
+        value = {},
+        errors = [],
+        onChange,
+        onError,
+        registerField,
+      }: FormStepComponentProps<StepValues>) => (
         <>
           <PageHeading>Second Title</PageHeading>
           <input
@@ -232,8 +243,8 @@ describe('document-capture/components/form-steps', () => {
     window.history.forward();
 
     expect(await findByText('Second Title')).to.be.ok();
-    expect(getByLabelText('Second Input One').value).to.equal('one');
-    expect(getByLabelText('Second Input Two').value).to.equal('two');
+    expect((getByLabelText('Second Input One') as HTMLInputElement).value).to.equal('one');
+    expect((getByLabelText('Second Input Two') as HTMLInputElement).value).to.equal('two');
     expect(window.location.hash).to.equal('#step=second');
   });
 
@@ -286,7 +297,7 @@ describe('document-capture/components/form-steps', () => {
     );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    const input = getByLabelText('Second Input One');
+    const input = getByLabelText('Second Input One') as HTMLInputElement;
 
     expect(input.value).to.equal('prefilled');
   });
@@ -301,14 +312,14 @@ describe('document-capture/components/form-steps', () => {
     expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(2);
 
-    await userEvent.type(document.activeElement, 'one');
+    await userEvent.type(document.activeElement as HTMLInputElement, 'one');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
 
     userEvent.click(getByText('forms.buttons.continue'));
     expect(document.activeElement).to.equal(getByLabelText('Second Input Two'));
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
 
-    await userEvent.type(document.activeElement, 'two');
+    await userEvent.type(document.activeElement as HTMLInputElement, 'two');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
     userEvent.click(getByText('forms.buttons.continue'));
 
@@ -335,11 +346,11 @@ describe('document-capture/components/form-steps', () => {
         initialActiveErrors={[
           {
             field: 'unknown',
-            error: toFormEntryError({ field: 'unknown', message: 'An unknown error occurred' }),
+            error: new FormError(),
           },
           {
             field: 'secondInputOne',
-            error: toFormEntryError({ field: 'secondInputOne', message: 'Bad input' }),
+            error: new FormError(),
           },
         ]}
         onComplete={onComplete}
@@ -384,7 +395,7 @@ describe('document-capture/components/form-steps', () => {
     const steps = [STEPS[1]];
 
     const { getByLabelText } = render(<FormSteps steps={steps} />);
-    const inputOne = getByLabelText('Second Input One');
+    const inputOne = getByLabelText('Second Input One') as HTMLInputElement;
     inputOne.setCustomValidity('uh oh');
     userEvent.type(inputOne, 'one');
 
@@ -404,7 +415,7 @@ describe('document-capture/components/form-steps', () => {
   it('provides context', () => {
     const { getByTestId, getByRole, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
-    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+    expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
       canContinueToNextStep: true,
     });
@@ -415,7 +426,7 @@ describe('document-capture/components/form-steps', () => {
     // Trigger validation errors on second step.
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     expect(window.location.hash).to.equal('#step=second');
-    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+    expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
       canContinueToNextStep: false,
     });
@@ -425,7 +436,7 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     expect(window.location.hash).to.equal('#step=last');
-    expect(JSON.parse(getByTestId('context-value').textContent)).to.deep.equal({
+    expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
       canContinueToNextStep: true,
     });

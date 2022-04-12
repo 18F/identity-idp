@@ -1,28 +1,12 @@
-import { useEffect, useRef, useState, createContext, useContext } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { RefCallback, FormEventHandler, FC } from 'react';
-import { t } from '@18f/identity-i18n';
-import { Alert, Button } from '@18f/identity-components';
+import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
+import RequiredValueMissingError from './required-value-missing-error';
+import FormStepsContext from './form-steps-context';
 import PromptOnNavigate from './prompt-on-navigate';
-import useHistoryParam from '../hooks/use-history-param';
-import useForceRender from '../hooks/use-force-render';
-
-export class FormError extends Error {
-  isDetail: boolean;
-
-  constructor(options?: { isDetail: boolean }) {
-    super();
-
-    this.isDetail = Boolean(options?.isDetail);
-  }
-}
-
-/**
- * An error representing a state where a required form value is missing.
- */
-export class RequiredValueMissingError extends FormError {
-  message = t('simple_form.required.text');
-}
+import useHistoryParam from './use-history-param';
+import useForceRender from './use-force-render';
 
 export interface FormStepError<V> {
   /**
@@ -147,29 +131,6 @@ interface FormStepsProps {
    */
   onStepChange?: () => void;
 }
-
-interface FormStepsContextValue {
-  /**
-   * Whether the current step is the last step in the flow.
-   */
-  isLastStep: boolean;
-
-  /**
-   * Whether the user can proceed to the next step.
-   */
-  canContinueToNextStep: boolean;
-
-  /**
-   * Callback invoked when content is reset in a page transition.
-   */
-  onPageTransition: () => void;
-}
-
-export const FormStepsContext = createContext({
-  isLastStep: true,
-  canContinueToNextStep: true,
-  onPageTransition: () => {},
-} as FormStepsContextValue);
 
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
@@ -369,22 +330,6 @@ function FormSteps({
         />
       </FormStepsContext.Provider>
     </form>
-  );
-}
-
-export function FormStepsContinueButton() {
-  const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
-
-  return (
-    <Button
-      type="submit"
-      isBig
-      isWide
-      className="display-block margin-y-5"
-      isVisuallyDisabled={!canContinueToNextStep}
-    >
-      {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
-    </Button>
   );
 }
 
