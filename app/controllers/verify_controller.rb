@@ -15,8 +15,10 @@ class VerifyController < ApplicationController
   private
 
   def app_data
-    session[:idv_api_store_key] ||= Base64.strict_encode64(OpenSSL::Random.random_bytes(32))
-    session[:idv_api_store_iv] ||= Base64.strict_encode64(OpenSSL::Random.random_bytes(12))
+    Encryption::AesCipher.encryption_cipher.then do |cipher|
+      session[:idv_api_store_key] ||= Base64.strict_encode64(cipher.random_key)
+      session[:idv_api_store_iv] ||= Base64.strict_encode64(cipher.random_iv)
+    end
 
     {
       base_path: idv_app_root_path,
