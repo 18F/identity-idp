@@ -11,7 +11,7 @@ module Idv
 
     def update
       form_result = idv_form.submit(profile_params)
-      analytics.idv_address_submitted(form_result.to_h)
+      analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)
       if form_result.success?
         success
