@@ -5,13 +5,17 @@
     margin-bottom: 0;
   }
 
-  &:not(.troubleshooting-options--no-bar)::before {
+  &::before {
     @include u-margin-bottom(4);
     background-color: color('secondary');
     content: '';
     display: block;
     height: 4px;
     width: 5rem;
+  }
+
+  &.troubleshooting-options--no-bar::before {
+    content: none;
   }
 }
 
