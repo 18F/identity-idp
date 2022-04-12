@@ -8,17 +8,23 @@ config = YAML.safe_load(File.read('./.gitlab-ci-deploy.yml'))
 puts ENV['CI_COMMIT_BRANCH']
 
 bucket = ENV['ARTIFACT_BUCKET']
+region = ENV['AWS_REGION']
+
 branch_environments = config.dig(
   'deploy_branch_to_environment_map',
   ENV['CI_COMMIT_BRANCH'],
 )
 
-if bucket && branch_environments
+if region && bucket && branch_environments
+  sha = `git rev-parse HEAD`.chomp
   s3_client = Aws::S3::Client.new(region: region)
+
   branch_environments.map do |upload_environment|
+    key = "#{upload_environment}/#{sha}.idp.tar.gz"
+    puts "Uploading #{key}!"
     s3_client.put_object(
       bucket: bucket,
-      key: "#{upload_environment}/#{`git rev-parse HEAD`.chomp}.idp.tar.gz",
+      key: key,
       body: File.read(ARGV[0]),
     )
   end
