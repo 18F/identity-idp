@@ -124,11 +124,6 @@ class Analytics
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_ADDRESS_VISIT = 'IdV: address visited'
-  IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'
-  IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'
-  IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'
-  IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'
   IDV_CANCELLATION = 'IdV: cancellation visited'
   IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'
