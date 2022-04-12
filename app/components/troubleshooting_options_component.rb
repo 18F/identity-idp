@@ -20,7 +20,7 @@ class TroubleshootingOptionsComponent < BaseComponent
   def css_class
     [
       'troubleshooting-options',
-      new_features? && 'troubleshooting-options__no-bar',
+      new_features? && 'troubleshooting-options--no-bar',
       *tag_options[:class],
     ].select(&:present?)
   end

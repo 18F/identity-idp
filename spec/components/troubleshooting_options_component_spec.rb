@@ -37,7 +37,7 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
         ) { |c| c.option(url: '/').with_content('Link Text') }
 
         expect(rendered).to have_css(
-          '.troubleshooting-options.troubleshooting-options__no-bar',
+          '.troubleshooting-options.troubleshooting-options--no-bar',
         ), 'it hides the visual bar'
 
         expect(rendered).to have_css(

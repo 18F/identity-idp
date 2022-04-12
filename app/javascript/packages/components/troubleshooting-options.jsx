@@ -28,7 +28,7 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
 
   return (
     <section
-      className={['troubleshooting-options', isNewFeatures && 'troubleshooting-options__no-bar']
+      className={['troubleshooting-options', isNewFeatures && 'troubleshooting-options--no-bar']
         .filter(Boolean)
         .join(' ')}
     >

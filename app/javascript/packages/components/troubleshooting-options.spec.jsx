@@ -63,7 +63,7 @@ describe('TroubleshootingOptions', () => {
     );
 
     expect(
-      container.firstElementChild?.classList.contains('troubleshooting-options__no-bar'),
+      container.firstElementChild?.classList.contains('troubleshooting-options--no-bar'),
     ).to.eq(true, 'it hides the visual bar');
 
     const tag = getByText('components.troubleshooting_options.new_feature');
