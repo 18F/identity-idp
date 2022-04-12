@@ -149,6 +149,7 @@ describe Idv::PhoneController do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
         expect(flash[:warning]).to be_nil
+        expect(flash[:error]).not_to be_nil
         expect(response).to render_template(:new)
       end
 
