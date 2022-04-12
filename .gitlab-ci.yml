@@ -200,8 +200,18 @@ coverage:
       - coverage/coverage.xml
 
 artifact:
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
+  # Used by ./scripts/artifact-upload
+  # Keys like "main" represent branches to build artifacts for, and the value list beneath are the
+  # environments to upload artifacts to
+  deploy_branch_to_environment_map:
+    mitchellhenke/hopefully-final-gitlab-ci:
+      - mhenke
+    main:
+      - mhenke
+      - int
+      - dev
+    stages/mhenke:
+      - mhenke
   stage: after_test
   tags:
     - build-pool
@@ -213,3 +223,4 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
