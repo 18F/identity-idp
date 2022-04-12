@@ -234,6 +234,8 @@ class IdentityConfig
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
+    config.add(:phone_setups_per_user_limit, type: :integer)
+    config.add(:phone_setups_per_user_period, type: :integer)
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
