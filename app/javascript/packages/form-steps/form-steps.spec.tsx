@@ -346,11 +346,11 @@ describe('FormSteps', () => {
         initialActiveErrors={[
           {
             field: 'unknown',
-            error: new FormError('An unknown error occurred'),
+            error: new FormError(),
           },
           {
             field: 'secondInputOne',
-            error: new FormError('Bad input'),
+            error: new FormError(),
           },
         ]}
         onComplete={onComplete}

@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import type { RefCallback, FormEventHandler, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
-import FormError from './form-error';
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
 import PromptOnNavigate from './prompt-on-navigate';
@@ -18,7 +17,7 @@ export interface FormStepError<V> {
   /**
    * Error object.
    */
-  error: FormError;
+  error: Error;
 }
 
 interface FormStepRegisterFieldOptions {

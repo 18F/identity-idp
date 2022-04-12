@@ -7,22 +7,10 @@ export interface FormErrorOptions {
 }
 
 class FormError extends Error {
-  isDetail?: boolean;
+  isDetail: boolean;
 
-  constructor(messageOrOptions?: FormErrorOptions | string, options?: FormErrorOptions) {
+  constructor(options?: { isDetail: boolean }) {
     super();
-
-    switch (typeof messageOrOptions) {
-      case 'string':
-        this.message = messageOrOptions;
-        break;
-
-      case 'object':
-        options = messageOrOptions;
-        break;
-
-      default:
-    }
 
     this.isDetail = Boolean(options?.isDetail);
   }
