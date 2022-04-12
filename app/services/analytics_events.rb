@@ -253,6 +253,18 @@ module AnalyticsEvents
     track_event('Forget All Browsers Visited')
   end
 
+  # @identity.idp.event_name Idv address submitted
+  # User submitted an idv address
+  def idv_address_submitted(**extra)
+    track_event('IdV: address submitted', **extra)
+  end
+
+  # @identity.idp.event_name Idv Address Visit
+  # User visited idv address page
+  def idv_address_visit
+    track_event('IdV: address visited')
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
