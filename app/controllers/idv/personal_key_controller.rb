@@ -9,7 +9,6 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      binding.pry
       @step_indicator_steps = step_indicator_steps
       analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
       add_proofing_component
@@ -18,7 +17,6 @@ module Idv
     end
 
     def update
-      binding.pry
       user_session[:need_personal_key_confirmation] = false
       analytics.track_event(Analytics::IDV_PERSONAL_KEY_SUBMITTED)
       redirect_to next_step

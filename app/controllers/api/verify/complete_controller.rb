@@ -6,6 +6,7 @@ class Api::Verify::CompleteController < ActionController::Base
     # Create profile Maker with Pii using the password
     # Cash temporarly to session
     # Generate Personal Key
+    add_proofing_component
     render json: {personal_key: {}, profile_pending: {}}
   end
 
@@ -15,9 +16,9 @@ class Api::Verify::CompleteController < ActionController::Base
     idv_session.personal_key || generate_personal_key
   end
 
-  def generate_personal_key
-    cacher = Pii::Cacher.new(current_user, user_session)
-    idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+
+  def add_proofing_component
+    ProofingComponent.create_or_find_by(user: current_user).update(verified_at: Time.zone.now)
   end
 
 end
