@@ -123,7 +123,13 @@ class Analytics
   end
 
   def session_duration
-    @session[:session_started_at] ? Time.zone.now - @session[:session_started_at] : nil
+    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+  end
+
+  def session_started_at
+    value = @session[:session_started_at]
+    return value unless value.is_a?(String)
+    Time.zone.parse(value)
   end
 
   # rubocop:disable Layout/LineLength
