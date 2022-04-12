@@ -19,7 +19,7 @@ interface StepIndicatorProps {
   /**
    * Step indicator children, expected to be provided as StepIndicatorStep elements.
    */
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 function StepIndicator({ className, children }: StepIndicatorProps) {
