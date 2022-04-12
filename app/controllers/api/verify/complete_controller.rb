@@ -1,9 +1,9 @@
-class Api::PersonalKeyController < ActionController::Base
+class Api::CompleteController < ActionController::Base
 
   def get_personal_key
-    verify_params = params.require(:verify).permit(:password,:details)
+    #verify_params = params.require(:verify).permit(:password,:details)
 
-    init_profile(verify_params[:password])
+    #init_profile(verify_params[:password])
     # analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
     # ProofingComponent.create_or_find_by(user: current_user).update(verified_at: Time.zone.now)
     # code = personal_key
@@ -11,7 +11,7 @@ class Api::PersonalKeyController < ActionController::Base
     # # profile_pending =
     # profile_pending = ''
     #
-    # render json: {personal_key: personal_key, profile_pending: profile_pending}, status: status
+    render json: {personal_key: personal_key, profile_pending: profile_pending}, status: status
   end
 
   private

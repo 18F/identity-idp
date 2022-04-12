@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   namespace :api do
-    get '/verify/complete' => 'verify#complete'
+    get '/verify/complete/personal_key' => 'verify/complete#personal_key'
   end
 
   # SAML secret rotation paths
