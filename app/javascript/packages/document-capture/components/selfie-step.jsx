@@ -16,13 +16,6 @@ import StartOverOrCancel from './start-over-or-cancel';
  */
 
 /**
- * @return {Boolean} whether or not the value is valid for the selfie step
- */
-function selfieStepValidator(value = {}) {
-  return !!value.selfie;
-}
-
-/**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
 function SelfieStep({
@@ -72,5 +65,3 @@ function SelfieStep({
 }
 
 export default withBackgroundEncryptedUpload(SelfieStep);
-
-export { selfieStepValidator };

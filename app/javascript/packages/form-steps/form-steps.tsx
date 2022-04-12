@@ -76,11 +76,6 @@ export interface FormStep {
    * Step form component.
    */
   form: FC<FormStepComponentProps<Record<string, any>>>;
-
-  /**
-   * Optional function to validate values for the step
-   */
-  validator?: (object) => boolean;
 }
 
 interface FieldsRefEntry {
@@ -242,10 +237,8 @@ function FormSteps({
   }
 
   const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
-  const isValidStep = step.validator?.(values) ?? true;
   const hasUnresolvedFieldErrors =
     activeErrors.length && activeErrors.length > unknownFieldErrors.length;
-  const canContinueToNextStep = isValidStep && !hasUnresolvedFieldErrors;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -291,7 +284,7 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep, onPageTransition }}>
+      <FormStepsContext.Provider value={{ isLastStep, onPageTransition }}>
         <Form
           key={name}
           value={values}
