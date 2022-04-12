@@ -1,0 +1,9 @@
+deploy_branch_to_environment_map:
+  mitchellhenke/hopefully-final-gitlab-ci:
+    - mhenke
+  main:
+    - mhenke
+    - int
+    - dev
+  stages/mhenke:
+    - mhenke

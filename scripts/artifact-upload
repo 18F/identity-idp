@@ -3,13 +3,12 @@
 require 'aws-sdk-s3'
 require 'yaml'
 
-config = YAML.safe_load(File.read('./.gitlab-ci.yml'), aliases: true)
+config = YAML.safe_load(File.read('./.gitlab-ci-deploy.yml'))
 
 puts ENV['CI_COMMIT_BRANCH']
 
 bucket = ENV['ARTIFACT_BUCKET']
 branch_environments = config.dig(
-  'artifact',
   'deploy_branch_to_environment_map',
   ENV['CI_COMMIT_BRANCH'],
 )

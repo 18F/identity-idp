@@ -203,15 +203,6 @@ artifact:
   # Used by ./scripts/artifact-upload
   # Keys like "main" represent branches to build artifacts for, and the value list beneath are the
   # environments to upload artifacts to
-  deploy_branch_to_environment_map:
-    mitchellhenke/hopefully-final-gitlab-ci:
-      - mhenke
-    main:
-      - mhenke
-      - int
-      - dev
-    stages/mhenke:
-      - mhenke
   stage: after_test
   tags:
     - build-pool
