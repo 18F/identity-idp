@@ -1,3 +1,3 @@
-import StepIndicator from '@18f/identity-step-indicator';
+import { StepIndicatorElement } from '@18f/identity-step-indicator';
 
-customElements.define('lg-step-indicator', StepIndicator);
+customElements.define('lg-step-indicator', StepIndicatorElement);

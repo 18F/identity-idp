@@ -1,15 +1,15 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { useDefineProperty } from '@18f/identity-test-helpers';
-import StepIndicator from './index';
+import StepIndicatorElement from './step-indicator-element';
 
-describe('StepIndicator', () => {
+describe('StepIndicatorElement', () => {
   const sandbox = sinon.createSandbox();
   const defineProperty = useDefineProperty();
 
   before(() => {
     if (!customElements.get('lg-step-indicator')) {
-      customElements.define('lg-step-indicator', StepIndicator);
+      customElements.define('lg-step-indicator', StepIndicatorElement);
     }
   });
 
@@ -32,7 +32,7 @@ describe('StepIndicator', () => {
             .join('')}
         </ol>
       </lg-step-indicator>`;
-    return document.querySelector('lg-step-indicator') as StepIndicator;
+    return document.querySelector('lg-step-indicator') as StepIndicatorElement;
   }
 
   it('cleans up event listeners', () => {
