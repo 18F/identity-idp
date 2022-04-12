@@ -51,7 +51,7 @@ describe('TroubleshootingOptions', () => {
   });
 
   it('renders a new features tag with isNewFeatures', () => {
-    const { getByText } = render(
+    const { container, getByText } = render(
       <TroubleshootingOptions
         heading=""
         isNewFeatures
@@ -61,6 +61,10 @@ describe('TroubleshootingOptions', () => {
         ]}
       />,
     );
+
+    expect(
+      container.firstElementChild?.classList.contains('troubleshooting-options__no-bar'),
+    ).to.eq(true, 'it hides the visual bar');
 
     const tag = getByText('components.troubleshooting_options.new_feature');
     expect(tag.classList.contains('text-uppercase')).to.eq(true);
