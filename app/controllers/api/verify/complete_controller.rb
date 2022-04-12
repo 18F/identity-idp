@@ -1,11 +1,14 @@
-class Api::Verify::CompleteController < ActionController::Base
+class Api::Verify::CompleteController < ApplicationController
 
   def get_personal_key
     #verify_params = params.require(:verify).permit(:password,:details)
 
     # Create profile Maker with Pii using the password
     # Cash temporarly to session
+    #
+
     # Generate Personal Key
+    analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
     add_proofing_component
     render json: {personal_key: {}, profile_pending: {}}
   end
