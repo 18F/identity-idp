@@ -1,5 +1,3 @@
-import type { DetailedHTMLProps, HTMLAttributes } from 'react';
-
 const SMALL_VIEWPORT_MEDIA_QUERY = '(max-width: 639px)';
 
 interface StepIndicatorElements {
@@ -65,17 +63,6 @@ class StepIndicatorElement extends HTMLElement {
       scroller.setAttribute('tabindex', '0');
     } else {
       scroller.removeAttribute('tabindex');
-    }
-  }
-}
-
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'lg-step-indicator': DetailedHTMLProps<
-        HTMLAttributes<StepIndicatorElement>,
-        StepIndicatorElement
-      >;
     }
   }
 }
