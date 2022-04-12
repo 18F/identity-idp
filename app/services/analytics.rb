@@ -21,6 +21,7 @@ class Analytics
       new_session_success_state: first_success_state_this_session?,
       success_state: success_state_token(event),
       path: request&.path,
+      session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
@@ -119,6 +120,10 @@ class Analytics
       browser_mobile: browser.device.mobile?,
       browser_bot: browser.bot?,
     }
+  end
+
+  def session_duration
+    @session[:session_started_at] ? Time.zone.now - @session[:session_started_at] : nil
   end
 
   # rubocop:disable Layout/LineLength
