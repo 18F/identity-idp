@@ -33,11 +33,9 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
         .join(' ')}
     >
       {isNewFeatures && (
-        <div className="margin-top-3">
-          <span className="usa-tag bg-accent-cool-darker text-uppercase">
-            {t('components.troubleshooting_options.new_feature')}
-          </span>
-        </div>
+        <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block margin-top-3">
+          {t('components.troubleshooting_options.new_feature')}
+        </span>
       )}
       <HeadingTag className="troubleshooting-options__heading">
         {heading ?? t('components.troubleshooting_options.default_heading')}
