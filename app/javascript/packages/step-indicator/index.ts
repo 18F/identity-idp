@@ -1,35 +1,41 @@
 const SMALL_VIEWPORT_MEDIA_QUERY = '(max-width: 639px)';
 
-class StepIndicator {
-  /**
-   * @param {HTMLElement} wrapper
-   */
-  constructor(wrapper) {
-    this.elements = {
-      wrapper,
-      scroller: /** @type {HTMLElement} */ (wrapper.querySelector('.step-indicator__scroller')),
-      currentStep: /** @type {HTMLElement?} */ (
-        wrapper.querySelector('.step-indicator__step--current')
-      ),
-    };
-  }
+interface StepIndicatorElements {
+  scroller: HTMLElement;
+
+  currentStep: HTMLElement | null;
+}
+
+class StepIndicator extends HTMLElement {
+  elements: StepIndicatorElements;
+
+  mediaQueryList: MediaQueryList | null;
 
   get isSmallViewport() {
     return this.mediaQueryList ? this.mediaQueryList.matches : false;
   }
 
-  bind() {
+  connectedCallback() {
+    this.elements = {
+      scroller: this.querySelector('.step-indicator__scroller')!,
+      currentStep: this.querySelector('.step-indicator__step--current'),
+    };
+
     this.mediaQueryList = window.matchMedia(SMALL_VIEWPORT_MEDIA_QUERY);
-    this.mediaQueryList.addListener(() => this.onBreakpointMatchChange());
+    this.mediaQueryList.addListener(this.onBreakpointMatchChange);
     this.onBreakpointMatchChange();
     if (this.isSmallViewport) {
       this.setScrollOffset();
     }
   }
 
-  onBreakpointMatchChange() {
-    this.toggleWrapperFocusable();
+  disconnectedCallback() {
+    this.mediaQueryList?.removeListener(this.onBreakpointMatchChange);
   }
+
+  onBreakpointMatchChange = () => {
+    this.toggleWrapperFocusable();
+  };
 
   setScrollOffset() {
     const { currentStep, scroller } = this.elements;

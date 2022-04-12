@@ -1,11 +1,11 @@
+type RedefinedProperty = [any, PropertyKey, PropertyDescriptor | undefined];
+
 /**
  * A proxy to Object.defineProperty to use in redefining an existing object and reverting that
  * definition to its original value after the test has completed.
- *
- * @return {ObjectConstructor['defineProperty']}
  */
-export default function useDefineProperty() {
-  let redefined = [];
+function useDefineProperty(): ObjectConstructor['defineProperty'] {
+  let redefined: Array<RedefinedProperty> = [];
 
   afterEach(() => {
     redefined.forEach(([object, property, originalDescriptor]) => {
@@ -18,9 +18,15 @@ export default function useDefineProperty() {
     redefined = [];
   });
 
-  return function defineProperty(object, property, descriptor) {
+  return function defineProperty<O>(
+    object: O,
+    property: PropertyKey,
+    descriptor: PropertyDescriptor,
+  ) {
     const originalDescriptor = Object.getOwnPropertyDescriptor(object, property);
     redefined.push([object, property, originalDescriptor]);
-    Object.defineProperty(object, property, descriptor);
+    return Object.defineProperty(object, property, descriptor);
   };
 }
+
+export default useDefineProperty;
