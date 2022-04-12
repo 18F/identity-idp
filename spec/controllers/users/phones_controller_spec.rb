@@ -69,4 +69,27 @@ describe Users::PhonesController do
       expect(response).to redirect_to vendor_outage_path(from: :users_phones)
     end
   end
+
+  context 'user exceeds limit of phones added' do
+    before do
+      15.times do |index|
+        user.phone_configurations.create(encrypted_phone: '4105555551' + index)
+        user.phone_configurations.destroy!
+      end
+    end
+  end
+      it 'displays error if sms exceeds limit' do
+      controller.request.headers.merge({ HTTP_REFERER: account_url })
+
+      get :add
+      expect(response).to redirect_to(account_url(anchor: 'phones'))
+      expect(response.request.flash[:phone_error]).to_not be_nil
+    end
+
+    it 'renders the #phone anchor when it exceeds limit' do
+      controller.request.headers.merge({ HTTP_REFERER: account_url })
+
+      get :add
+      expect(response.location).to include('#phone')
+    end
 end
