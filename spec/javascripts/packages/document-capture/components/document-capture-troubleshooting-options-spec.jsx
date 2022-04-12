@@ -120,30 +120,30 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
   context('in person proofing links', () => {
     context('no errors and no idvInPersonURL', () => {
       it('has no IPP information', () => {
-        const { queryByTestId } = render(<DocumentCaptureTroubleshootingOptions />);
+        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions />);
 
-        expect(queryByTestId('new-features-tag')).to.not.exist();
+        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
       });
     });
 
     context('hasErrors but no idvInPersonURL', () => {
       it('has no IPP information', () => {
-        const { queryByTestId } = render(<DocumentCaptureTroubleshootingOptions hasErrors />);
+        const { queryByText } = render(<DocumentCaptureTroubleshootingOptions hasErrors />);
 
-        expect(queryByTestId('new-features-tag')).to.not.exist();
+        expect(queryByText('components.troubleshooting_options.new_feature')).to.not.exist();
       });
     });
 
     context('hasErrors and idvInPersonURL', () => {
       it('has links to IPP information', () => {
-        const { getByTestId, getAllByRole } = render(
+        const { getByText, getAllByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           {
             wrapper: wrappers.helpCenterContext,
           },
         );
 
-        expect(getByTestId('new-features-tag')).to.exist();
+        expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
 
         const links = getAllByRole('link');
         const ippLink = links.find(({ href }) => href === idvInPersonURL);

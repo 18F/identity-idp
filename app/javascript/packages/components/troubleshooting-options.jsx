@@ -37,7 +37,6 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
           <div className="margin-top-3">
             <span
               className="usa-tag bg-accent-cool-darker text-uppercase"
-              data-testid="new-features-tag"
             >
               {t('components.troubleshooting_options.new_feature')}
             </span>

@@ -51,7 +51,7 @@ describe('TroubleshootingOptions', () => {
   });
 
   it('renders a new features tag with isNewFeatures', () => {
-    const { getByTestId } = render(
+    const { getByText } = render(
       <TroubleshootingOptions
         heading=""
         isNewFeatures
@@ -62,9 +62,7 @@ describe('TroubleshootingOptions', () => {
       />,
     );
 
-    const tag = getByTestId('new-features-tag');
-    expect(tag).to.exist();
-    expect(tag.textContent).to.eq('components.troubleshooting_options.new_feature');
+    const tag = getByText('components.troubleshooting_options.new_feature');
     expect(tag.classList.contains('text-uppercase')).to.eq(true);
   });
 });
