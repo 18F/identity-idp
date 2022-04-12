@@ -4,6 +4,7 @@ export enum StepStatus {
   CURRENT,
   COMPLETE,
   PENDING,
+  INCOMPLETE,
 }
 
 export interface StepIndicatorStepProps {
