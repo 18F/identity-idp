@@ -1,15 +1,13 @@
 import { forwardRef } from 'react';
+import type { ReactNode } from 'react';
 
-/**
- * @typedef PageHeadingProps
- *
- * @prop {import('react').ReactNode} children Child elements.
- */
+interface PageHeadingProps extends Record<string, any> {
+  className?: string;
 
-/**
- * @param {PageHeadingProps & Record<string,any>} props Props object.
- */
-function PageHeading({ children, className, ...props }, ref) {
+  children?: ReactNode;
+}
+
+function PageHeading({ children, className, ...props }: PageHeadingProps, ref) {
   const classes = ['page-heading', className].filter(Boolean).join(' ');
 
   return (

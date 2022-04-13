@@ -1,6 +1,6 @@
 import { createRef } from 'react';
-import PageHeading from '@18f/identity-document-capture/components/page-heading';
-import { render } from '../../../support/document-capture';
+import { render } from '@testing-library/react';
+import PageHeading from './page-heading';
 
 describe('document-capture/components/page-heading', () => {
   it('renders as h1', () => {
@@ -20,10 +20,10 @@ describe('document-capture/components/page-heading', () => {
   });
 
   it('forwards ref', () => {
-    const ref = createRef();
+    const ref = createRef<HTMLHeadingElement>();
     render(<PageHeading ref={ref} />);
 
-    expect(ref.current.nodeName).to.equal('H1');
+    expect(ref.current!.nodeName).to.equal('H1');
   });
 
   it('forwards additional props', () => {
