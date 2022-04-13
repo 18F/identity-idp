@@ -3,7 +3,10 @@ import { I18n } from '@18f/identity-i18n';
 
 /** @typedef {import('react').FC|import('react').ComponentClass} Component */
 
-export const I18nContext = createContext({});
+export const I18nContext = createContext(
+  // eslint-disable-next-line no-underscore-dangle
+  /** @type {Record<String, string>=} */ (globalThis._locale_data),
+);
 
 I18nContext.displayName = 'I18nContext';
 

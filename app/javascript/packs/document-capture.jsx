@@ -12,10 +12,8 @@ import {
   FailedCaptureAttemptsContextProvider,
   HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
-import { i18n } from '@18f/identity-i18n';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
-import { I18nContext } from '@18f/identity-react-i18n';
 
 /** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
@@ -199,7 +197,6 @@ const noticeError = (error) =>
         cancelURL,
       },
     ],
-    [I18nContext.Provider, { value: i18n.strings }],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],
     [AssetContext.Provider, { value: assets }],
     [
