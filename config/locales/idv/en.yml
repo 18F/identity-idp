@@ -154,6 +154,7 @@ en:
         review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
+        are_you_near: 'Are you near Washington, D.C.?'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
@@ -167,3 +168,4 @@ en:
         learn_more_verify_by_phone: Learn more about verifying your phone number
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
+        verify_in_person: Verify your ID in person at a Post Office

@@ -58,6 +58,7 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @prop {FlowPath} flowPath
  * @prop {string} startOverUrl
  * @prop {string} cancelUrl
+ * @prop {string=} idvInPersonUrl
  *
  * @see AppContext
  * @see HelpCenterContextProvider
@@ -163,11 +164,12 @@ const noticeError = (error) =>
     flowPath,
     startOverUrl: startOverURL,
     cancelUrl: cancelURL,
+    idvInPersonUrl: idvInPersonURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL, idvInPersonURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [

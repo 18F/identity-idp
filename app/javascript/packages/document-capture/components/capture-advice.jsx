@@ -30,6 +30,7 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
         <DocumentCaptureTroubleshootingOptions
           heading={t('idv.troubleshooting.headings.still_having_trouble')}
           location="capture_tips"
+          hasErrors
         />
       }
     >

@@ -161,6 +161,7 @@ es:
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
+        are_you_near: '¿Se encuentra cerca de Washington D. C.?'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
@@ -176,3 +177,5 @@ es:
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
+        verify_in_person: Verifique su identificación de manera presencial en una
+          oficina de correos
