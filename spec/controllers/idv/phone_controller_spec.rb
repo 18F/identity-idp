@@ -141,7 +141,7 @@ describe Idv::PhoneController do
       it 'renders #new' do
         put :create, params: { idv_phone_form: { phone: '703' } }
 
-        expect(flash[:error]).to eq t('errors.messages.improbable_phone')
+        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
         expect(response).to render_template(:new)
       end
 
