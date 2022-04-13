@@ -33,7 +33,7 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
         .join(' ')}
     >
       {isNewFeatures && (
-        <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block margin-top-3">
+        <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
           {t('components.troubleshooting_options.new_feature')}
         </span>
       )}
