@@ -116,7 +116,6 @@ fr:
         iv: Bonne
         v: Excellente!
     personal_key:
-      accent: Notez-la ou imprimez-la.
       email_body: Ne perdez pas votre clé personnelle et ne la partagez pas avec
         d’autres. Nous vous le demanderons si vous réinitialisez votre mot de
         passe.

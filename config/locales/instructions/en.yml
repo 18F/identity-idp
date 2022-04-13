@@ -100,7 +100,6 @@ en:
         iv: Good
         v: Great!
     personal_key:
-      accent: Write it down or print it out.
       email_body: Don’t lose your personal key or share it with others.  We’ll ask for
         it if you reset your password.
       email_title: Save it.  Keep it safe.

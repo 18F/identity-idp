@@ -106,7 +106,6 @@ es:
         iv: Buena
         v: '¡Muy buena!'
     personal_key:
-      accent: Anótala o imprímela.
       email_body: No pierdas tu clave personal ni la compartas con otros. La pediremos
         si restableces tu contraseña.
       email_title: Guárdala. Manténla segura.
