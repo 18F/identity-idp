@@ -9,14 +9,14 @@ puts ENV['CI_COMMIT_BRANCH']
 
 bucket = ENV['ARTIFACT_BUCKET']
 region = ENV['AWS_REGION']
+sha = ENV['CI_COMMIT_SHA']
 
 branch_environments = config.dig(
   'deploy_branch_to_environment_map',
   ENV['CI_COMMIT_BRANCH'],
 )
 
-if region && bucket && branch_environments
-  sha = `git rev-parse HEAD`.chomp
+if region && bucket && branch_environments && sha
   s3_client = Aws::S3::Client.new(region: region)
 
   branch_environments.map do |upload_environment|
