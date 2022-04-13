@@ -6,11 +6,7 @@ function PersonalKeyStep() {
   return (
     <>
       <PageHeading>{t('headings.personal_key')}</PageHeading>
-      <p>
-        {t('instructions.personal_key.info_html', {
-          accent: `<strong>t('instructions.personal_key.accent')}</strong>`,
-        })}
-      </p>
+      <p>{t('instructions.personal_key.info_html')}</p>
       <div className="full-width-box margin-y-5" />
       <Button className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0" isOutline>
         {t('forms.backup_code.download')}
