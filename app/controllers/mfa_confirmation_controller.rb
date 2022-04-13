@@ -1,12 +1,13 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
   before_action :confirm_two_factor_authenticated, except: [:show]
-  
+
   def show
     @presenter = MfaConfirmationShowPresenter.new(
-      current_user: current_user, 
-      next_path: confirmation_path(params[:final_path]), 
-      final_path: params[:final_path])
+      current_user: current_user,
+      next_path: confirmation_path(params[:final_path]),
+      final_path: params[:final_path],
+    )
   end
 
   def new
