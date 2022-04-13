@@ -49,11 +49,6 @@ export interface ButtonProps {
   isUnstyled?: boolean;
 
   /**
-   * Whether button should appear disabled (but remain clickable).
-   */
-  isVisuallyDisabled?: boolean;
-
-  /**
    * Optional additional class names.
    */
   className?: string;
@@ -69,7 +64,6 @@ function Button({
   isOutline,
   isDisabled,
   isUnstyled,
-  isVisuallyDisabled,
   className,
 }: ButtonProps) {
   const classes = [
@@ -79,7 +73,6 @@ function Button({
     isWide && 'usa-button--wide',
     isOutline && 'usa-button--outline',
     isUnstyled && 'usa-button--unstyled',
-    isVisuallyDisabled && 'usa-button--disabled',
     className,
   ]
     .filter(Boolean)

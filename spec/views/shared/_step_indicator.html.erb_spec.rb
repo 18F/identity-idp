@@ -44,8 +44,8 @@ describe 'shared/_step_indicator.html.erb' do
     context 'without custom classes given' do
       let(:classes) { nil }
 
-      it 'renders with default classes' do
-        expect(rendered).to have_selector('.step-indicator')
+      it 'renders with default tag' do
+        expect(rendered).to have_selector('lg-step-indicator')
       end
     end
 
@@ -53,7 +53,7 @@ describe 'shared/_step_indicator.html.erb' do
       let(:classes) { 'my-custom-class' }
 
       it 'renders with additional custom classes' do
-        expect(rendered).to have_selector('.step-indicator.my-custom-class')
+        expect(rendered).to have_selector('lg-step-indicator.my-custom-class')
       end
     end
   end

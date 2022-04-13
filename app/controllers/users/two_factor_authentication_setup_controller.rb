@@ -44,7 +44,6 @@ module Users
 
     def process_valid_form
       user_session[:selected_mfa_options] = @two_factor_options_form.selection
-
       redirect_to confirmation_path
     end
 

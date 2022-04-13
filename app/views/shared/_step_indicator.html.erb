@@ -5,9 +5,7 @@ locals:
 * locale_scope: Scope under which to find title translations for steps given as names.
 * current_step: Current step.
 %>
-<% classes = ['step-indicator']
-   classes << local_assigns[:class] if local_assigns[:class]
-   normalized_steps = steps.map do |step|
+<% normalized_steps = steps.map do |step|
      if local_assigns[:locale_scope]
        { title: t(step[:name], scope: [:step_indicator, :flows, locale_scope]) }.merge(step)
      else
@@ -16,10 +14,11 @@ locals:
    end
    current_step_index = normalized_steps.index { |step| step[:name] == local_assigns[:current_step] } %>
 
-<%= tag.div(
+<%= content_tag(
+      :'lg-step-indicator',
       role: 'region',
       aria: { label: t('step_indicator.accessible_label') },
-      class: classes,
+      class: local_assigns[:class],
     ) do %>
   <ol class="step-indicator__scroller">
     <% normalized_steps.each_with_index do |step, index| %>

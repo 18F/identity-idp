@@ -1,5 +1,3 @@
-import 'classlist-polyfill';
-
 document.addEventListener('DOMContentLoaded', () => {
   const mobileLink = document.querySelector('.i18n-mobile-toggle > button');
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');

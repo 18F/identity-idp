@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
@@ -30,14 +30,7 @@ import StartOverOrCancel from './start-over-or-cancel';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
- * @return {Boolean} whether or not the value is valid for the document step
- */
-function documentsStepValidator(value = {}) {
-  return DOCUMENT_SIDES.every((side) => !!value[side]);
-}
-
-/**
- * @param {import('./form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
   value = {},
@@ -79,5 +72,3 @@ function DocumentsStep({
 }
 
 export default withBackgroundEncryptedUpload(DocumentsStep);
-
-export { documentsStepValidator };

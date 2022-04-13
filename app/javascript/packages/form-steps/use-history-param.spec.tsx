@@ -1,8 +1,6 @@
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import useHistoryParam, {
-  getQueryParam,
-} from '@18f/identity-document-capture/hooks/use-history-param';
-import { render } from '../../../support/document-capture';
+import useHistoryParam, { getQueryParam } from './use-history-param';
 
 describe('getQueryParam', () => {
   const queryString = 'a&b=Hello%20world&c';
@@ -27,7 +25,7 @@ describe('getQueryParam', () => {
 });
 
 describe('useHistoryParam', () => {
-  function TestComponent({ initialValue }) {
+  function TestComponent({ initialValue }: { initialValue?: string | null }) {
     const [count = 0, setCount] = useHistoryParam('the count', initialValue);
 
     return (

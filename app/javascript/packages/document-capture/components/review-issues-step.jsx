@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { FormStepsContext, FormStepsContinueButton } from './form-steps';
+import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
@@ -38,23 +38,7 @@ const DOCUMENT_SIDES = ['front', 'back'];
 const DISPLAY_ATTEMPTS = 3;
 
 /**
- * @param {Partial<ReviewIssuesStepValue>=} value
- *
- * @return {boolean} Whether the value is valid for the review issues step.
- */
-function reviewIssuesStepValidator(value = {}) {
-  const hasDocuments = DOCUMENT_SIDES.every((side) => !!value[side]);
-
-  // Absent availability of service provider context here, this relies on the fact that:
-  // 1) The review step is only shown with an existing, complete set of values.
-  // 2) Clearing an existing value sets it as null, but doesn't remove the key from the object.
-  const hasSelfieIfApplicable = !('selfie' in value) || !!value.selfie;
-
-  return hasDocuments && hasSelfieIfApplicable;
-}
-
-/**
- * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
  *  remainingAttempts: number,
  *  captureHints: boolean,
  * }} props Props object.
@@ -185,5 +169,3 @@ function ReviewIssuesStep({
 }
 
 export default withBackgroundEncryptedUpload(ReviewIssuesStep);
-
-export { reviewIssuesStepValidator };
