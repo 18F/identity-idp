@@ -4,10 +4,10 @@ import { renderHook } from '@testing-library/react-hooks';
 import { I18nContext, useI18n } from './index.js';
 
 describe('I18nContext', () => {
-  it('defaults to empty object', () => {
+  it('defaults to undefined', () => {
     const { result } = renderHook(() => useContext(I18nContext));
 
-    expect(result.current).to.deep.equal({});
+    expect(result.current).to.equal(undefined);
   });
 });
 
