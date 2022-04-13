@@ -148,8 +148,7 @@ describe Idv::PhoneController do
       it 'disallows non-US numbers' do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
-        expect(flash[:warning]).to be_nil
-        expect(flash[:error]).not_to be_nil
+        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
         expect(response).to render_template(:new)
       end
 
