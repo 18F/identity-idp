@@ -1,10 +1,8 @@
 import { PageHeading, Button } from '@18f/identity-components';
-import { useI18n } from '@18f/identity-react-i18n';
+import { t } from '@18f/identity-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
 
 function PersonalKeyStep() {
-  const { t } = useI18n();
-
   return (
     <>
       <PageHeading>{t('headings.personal_key')}</PageHeading>
