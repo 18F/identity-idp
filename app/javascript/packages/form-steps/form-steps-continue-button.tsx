@@ -5,16 +5,10 @@ import FormStepsContext from './form-steps-context';
 
 function FormStepsContinueButton() {
   const { t } = useI18n();
-  const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
+  const { isLastStep } = useContext(FormStepsContext);
 
   return (
-    <Button
-      type="submit"
-      isBig
-      isWide
-      className="display-block margin-y-5"
-      isVisuallyDisabled={!canContinueToNextStep}
-    >
+    <Button type="submit" isBig isWide className="display-block margin-y-5">
       {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
     </Button>
   );

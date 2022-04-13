@@ -3,9 +3,9 @@ import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep, { documentsStepValidator } from './documents-step';
-import SelfieStep, { selfieStepValidator } from './selfie-step';
-import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-step';
+import DocumentsStep from './documents-step';
+import SelfieStep from './selfie-step';
+import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
 import Submission from './submission';
@@ -106,7 +106,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
             captureHints:
               submissionError instanceof UploadFormEntriesError ? submissionError.hints : null,
           })(ReviewIssuesStep),
-          validator: reviewIssuesStepValidator,
         },
       ]
     : /** @type {FormStep[]} */ (
@@ -114,12 +113,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           {
             name: 'documents',
             form: DocumentsStep,
-            validator: documentsStepValidator,
           },
           serviceProvider.isLivenessRequired && {
             name: 'selfie',
             form: SelfieStep,
-            validator: selfieStepValidator,
           },
         ].filter(Boolean)
       );

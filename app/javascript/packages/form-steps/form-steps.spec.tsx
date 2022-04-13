@@ -417,7 +417,6 @@ describe('FormSteps', () => {
 
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
-      canContinueToNextStep: true,
     });
 
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
@@ -428,7 +427,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#step=second');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
-      canContinueToNextStep: false,
     });
 
     userEvent.type(getByLabelText('Second Input One'), 'one');
@@ -438,7 +436,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#step=last');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
-      canContinueToNextStep: true,
     });
   });
 

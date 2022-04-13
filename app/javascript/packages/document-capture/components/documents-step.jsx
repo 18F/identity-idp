@@ -30,13 +30,6 @@ import StartOverOrCancel from './start-over-or-cancel';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
- * @return {Boolean} whether or not the value is valid for the document step
- */
-function documentsStepValidator(value = {}) {
-  return DOCUMENT_SIDES.every((side) => !!value[side]);
-}
-
-/**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
@@ -79,5 +72,3 @@ function DocumentsStep({
 }
 
 export default withBackgroundEncryptedUpload(DocumentsStep);
-
-export { documentsStepValidator };
