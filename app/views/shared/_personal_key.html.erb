@@ -1,9 +1,6 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
 <p>
-  <%= t(
-        'instructions.personal_key.info_html',
-        accent: content_tag(:strong, t('instructions.personal_key.accent')),
-      ) %>
+  <%= t('instructions.personal_key.info') %>
 </p>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
