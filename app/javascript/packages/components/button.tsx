@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactNode } from 'react';
+import { getAssetPath } from '@18f/identity-assets';
 
 type ButtonType = 'button' | 'reset' | 'submit';
 
@@ -77,6 +78,8 @@ function Button({
   ]
     .filter(Boolean)
     .join(' ');
+
+  const icon = getAssetPath('identity-style-guide/dist/assets/img/sprite.svg');
 
   return (
     // Disable reason: We can assume `type` is provided as valid, or the default `button`.

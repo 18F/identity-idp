@@ -1,0 +1,12 @@
+{
+  "name": "@18f/identity-assets",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "webpack-sources": "^2.3.0"
+  },
+  "peerDependencies": {
+    "webpack": ">=5"
+  }
+}
