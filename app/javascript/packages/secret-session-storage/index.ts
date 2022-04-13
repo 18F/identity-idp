@@ -13,6 +13,10 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
 
   iv: Uint8Array;
 
+  constructor(storageKey: string) {
+    this.storageKey = storageKey;
+  }
+
   async load() {
     const storage = await this.#readStorage();
     if (storage) {

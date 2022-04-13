@@ -7,7 +7,6 @@ import { trackEvent } from '@18f/identity-analytics';
 import { STEPS } from './steps';
 
 export { SecretsContextProvider } from './context/secrets-context';
-export type { SecretValues } from './context/secrets-context';
 
 export interface VerifyFlowValues {
   personalKey?: string;

@@ -1,19 +1,15 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import SecretsContext from '../context/secrets-context';
 import type { SecretValues } from '../context/secrets-context';
 
 function useSecretValue<K extends keyof SecretValues>(
   key: K,
 ): [SecretValues[K], (nextValue: SecretValues[K]) => void] {
-  const store = useContext(SecretsContext);
-  const [value, setValue] = useState(store.getItem(key));
+  const { storage, setItem } = useContext(SecretsContext);
 
-  function setStateValue(nextValue: SecretValues[K]) {
-    store.setItem(key, nextValue);
-    setValue(nextValue);
-  }
+  const setValue = (nextValue: SecretValues[K]) => setItem(key, nextValue);
 
-  return [value, setStateValue];
+  return [storage.getItem(key), setValue];
 }
 
 export default useSecretValue;
