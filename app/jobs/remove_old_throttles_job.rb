@@ -20,11 +20,13 @@ class RemoveOldThrottlesJob < ApplicationJob
     total_removed = 0
 
     loop do
-      removed_count = Throttle.
-        where('updated_at < ?', now - (WINDOW + max_window.minutes)).
-        or(Throttle.where(updated_at: nil)).
-        limit(limit).
-        delete_all
+      removed_count = write_transaction_with_timeout do
+        Throttle.
+          where('updated_at < ?', now - (WINDOW + max_window.minutes)).
+          or(Throttle.where(updated_at: nil)).
+          limit(limit).
+          delete_all
+      end
 
       total_removed += removed_count
 
@@ -39,6 +41,19 @@ class RemoveOldThrottlesJob < ApplicationJob
 
       break if removed_count.zero?
       break if total_removed >= total_limit
+    end
+  end
+
+  def write_transaction_with_timeout(rails_env = Rails.env)
+    # rspec-rails's use_transactional_tests does not seem to act as expected when switching
+    # connections mid-test, so we just skip for now :[
+    return yield if rails_env.test?
+
+    ActiveRecord::Base.transaction do
+      # 30 seconds
+      quoted_timeout = ActiveRecord::Base.connection.quote(30_000)
+      ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+      yield
     end
   end
 end
