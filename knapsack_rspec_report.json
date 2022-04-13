@@ -803,5 +803,5 @@
   "spec/views/users/shared/_otp_delivery_preference_selection.html.erb_spec.rb": 0.10677100002067164,
   "spec/views/users/totp_setup/new.html.erb_spec.rb": 0.21409199998015538,
   "spec/views/users/two_factor_authentication_setup/index.html.erb_spec.rb": 0.11337300000013784,
-  "spec/views/vendor_outage/show.html.erb_spec.rb": 0.026540999999269843
+  "spec/views/vendor_outage/show.html.erb_spec.rb": 0.026540999999269844
 }
