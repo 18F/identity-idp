@@ -13,7 +13,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'creates backup codes' do
-    user = create(:user, :signed_up)
+    user = build(:user, :signed_up)
     stub_sign_in(user)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
@@ -24,7 +24,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deletes backup codes' do
-    user = create(:user, :signed_up)
+    user = build(:user, :signed_up)
     stub_sign_in(user)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
@@ -32,6 +32,31 @@ describe Users::BackupCodeSetupController do
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
     expect(user.backup_code_configurations.length).to eq 0
+  end
+
+  context 'when user selects multiple mfas on account creation' do
+    it 'redirects to phone setup page' do
+      user = build(:user, :signed_up)
+      stub_sign_in(user)
+      codes = BackupCodeGenerator.new(user).create
+      controller.user_session[:backup_codes] = codes
+
+      controller.user_session[:selected_mfa_options] = ['voice']
+      post :continue
+
+      expect(response).to redirect_to(phone_setup_url)
+    end
+  end
+
+  context 'when user only selects backup code on account creation' do
+    it 'redirects to account page' do
+      user = build(:user, :signed_up)
+      stub_sign_in(user)
+      codes = BackupCodeGenerator.new(user).create
+      controller.user_session[:backup_codes] = codes
+      post :continue
+      expect(response).to redirect_to(account_url)
+    end
   end
 
   describe '#refreshed' do

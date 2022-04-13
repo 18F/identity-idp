@@ -78,8 +78,8 @@ module Users
       mark_user_as_fully_authenticated
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
-      redirect_to after_mfa_setup_path
       user_session.delete(:new_totp_secret)
+      redirect_to user_next_authentication_setup_path!(after_mfa_setup_path)
     end
 
     def handle_remember_device

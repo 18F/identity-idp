@@ -64,14 +64,14 @@ describe Users::TwoFactorAuthenticationSetupController do
         },
       }
       params = ActionController::Parameters.new(voice_params)
-      response = FormResponse.new(success: true, errors: {}, extra: { selection: 'voice' })
+      response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
 
       form = instance_double(TwoFactorOptionsForm)
       allow(TwoFactorOptionsForm).to receive(:new).with(user).and_return(form)
       expect(form).to receive(:submit).
         with(params.require(:two_factor_options_form).permit(:selection)).
         and_return(response)
-      expect(form).to receive(:selection).and_return('voice')
+      expect(form).to receive(:selection).and_return(['voice'])
 
       patch :create, params: voice_params
     end
@@ -81,7 +81,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       result = {
-        selection: 'voice',
+        selection: ['voice'],
         success: true,
         errors: {},
       }
@@ -107,6 +107,32 @@ describe Users::TwoFactorAuthenticationSetupController do
         }
 
         expect(response).to redirect_to phone_setup_url
+      end
+    end
+
+    context 'when multi selection with phone first' do
+      it 'redirects properly' do
+        stub_sign_in_before_2fa
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: ['phone', 'auth_app'],
+          },
+        }
+
+        expect(response).to redirect_to phone_setup_url
+      end
+    end
+
+    context 'when multi selection with auth app first' do
+      it 'redirects properly' do
+        stub_sign_in_before_2fa
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: ['auth_app', 'phone', 'webauthn'],
+          },
+        }
+
+        expect(response).to redirect_to authenticator_setup_url
       end
     end
 
