@@ -306,7 +306,6 @@ class IdentityConfig
     config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
-    config.add(:sms_resubscribe_enabled, type: :boolean)
     config.add(:sp_context_needed_environment, type: :string)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
