@@ -29,7 +29,7 @@ import { ClipboardButton } from '@18f/identity-clipboard-button';
 
 export function Example() {
   return (
-    <ClipboardButton clipboardText="text to copy">Copy</ClipboardButton>
+    <ClipboardButton clipboardText="text to copy" />
   );
 }
 ```

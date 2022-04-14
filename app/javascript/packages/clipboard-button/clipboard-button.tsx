@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import { Button } from '@18f/identity-components';
 import type { ButtonProps } from '@18f/identity-components';
+import { t } from '@18f/identity-i18n';
 import type { ClipboardButtonElement } from './clipboard-button-element';
 import './clipboard-button-element';
 
@@ -22,7 +23,7 @@ interface ClipboardButtonProps {
 function ClipboardButton({ clipboardText, ...buttonProps }: ClipboardButtonProps & ButtonProps) {
   return (
     <lg-clipboard-button data-clipboard-text={clipboardText}>
-      <Button {...buttonProps} />
+      <Button {...buttonProps}>{t('components.clipboard_button.label')}</Button>
     </lg-clipboard-button>
   );
 }

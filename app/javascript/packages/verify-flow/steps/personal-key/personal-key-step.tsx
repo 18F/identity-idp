@@ -49,9 +49,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         clipboardText="0000-0000-0000-0000"
         isOutline
         className="margin-bottom-2 tablet:margin-bottom-0"
-      >
-        {t('components.clipboard_button.label')}
-      </ClipboardButton>
+      />
       <div className="margin-y-5 clearfix">
         <p className="margin-bottom-0">
           <strong>{t('instructions.personal_key.email_title')}</strong>
