@@ -1,7 +1,8 @@
 ---
 es:
   multi_factor_authentication:
-    account_secure: ¡Felicitaciones! Está haciendo muy bien en mantener su cuenta segura. Añada nuevos dispositivos para mantenerse al día.
+    account_secure: ¡Felicitaciones! Está haciendo muy bien en mantener su cuenta
+      segura. Añada nuevos dispositivos para mantenerse al día.
     add: Agregar otro método
     cta: Agregar otro método de autenticación evita que se le bloquee el acceso a su
       cuenta si pierde uno de sus métodos.

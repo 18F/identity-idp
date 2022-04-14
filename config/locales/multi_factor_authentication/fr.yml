@@ -1,7 +1,8 @@
 ---
 fr:
   multi_factor_authentication:
-    account_secure: Félicitations! Vous faites très bien d'assurer la sécurité de votre compte. Ajoutez de nouveaux appareils pour rester à jour.
+    account_secure: Félicitations! Vous faites très bien d’assurer la sécurité de
+      votre compte. Ajoutez de nouveaux appareils pour rester à jour.
     add: Agregar otro método
     cta: L’ajout d’une autre méthode d’authentification vous empêche d’être bloqué
       sur votre compte si vous perdez l’une de vos méthodes.
