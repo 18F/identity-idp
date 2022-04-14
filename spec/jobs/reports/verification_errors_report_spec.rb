@@ -28,20 +28,24 @@ describe Reports::VerificationErrorsReport do
 
   it 'sends out a document error if the user submits document but does not progress forward' do
     now = Time.zone.now
-    DocAuthLog.create(user_id: user.id,
-                      welcome_view_at: now,
-                      document_capture_submit_at: now + 1.second,
-                      issuer: issuer)
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      document_capture_submit_at: now + 1.second,
+      issuer: issuer
+    )
 
     run_report_and_expect("#{user.uuid},#{now.utc},DOCUMENT_FAIL\r\n")
   end
 
   it 'sends out a verify error if the user submits PII but does not progress forward' do
     now = Time.zone.now
-    DocAuthLog.create(user_id: user.id,
-                      welcome_view_at: now,
-                      verify_submit_at: now + 1.second,
-                      issuer: issuer)
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      verify_submit_at: now + 1.second,
+      issuer: issuer
+    )
 
     run_report_and_expect("#{user.uuid},#{now.utc},VERIFY_FAIL\r\n")
   end
@@ -69,12 +73,12 @@ describe Reports::VerificationErrorsReport do
   def run_report_and_expect(report)
     allow(IdentityConfig.store).to receive(:verification_errors_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],
-      )
+    )
     allow(UserMailer).to receive(:verification_errors_report).and_call_original
 
     expect(UserMailer).to receive(:verification_errors_report).with(
       email: email, name: name, issuers: [issuer], data: report,
-      )
+    )
 
     Reports::VerificationErrorsReport.new.perform(Time.zone.today)
   end

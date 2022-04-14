@@ -130,7 +130,7 @@ class UserMailerPreview < ActionMailer::Preview
       name: 'my name',
       issuers: %w[issuer1 issuer2],
       data: 'data',
-      )
+    )
   end
 
   def account_verified
