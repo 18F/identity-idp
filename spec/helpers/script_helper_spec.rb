@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+def content_security_policy_nonce; end
+
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
