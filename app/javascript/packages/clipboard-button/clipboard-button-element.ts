@@ -21,3 +21,7 @@ export class ClipboardButtonElement extends HTMLElement {
     navigator.clipboard.writeText(this.clipboardText);
   }
 }
+
+if (!customElements.get('lg-clipboard-button')) {
+  customElements.define('lg-clipboard-button', ClipboardButtonElement);
+}

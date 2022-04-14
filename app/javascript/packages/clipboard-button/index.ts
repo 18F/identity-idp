@@ -1,1 +1,1 @@
-export { ClipboardButtonElement } from './clipboard-button-element';
+import './clipboard-button-element';
