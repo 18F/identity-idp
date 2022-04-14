@@ -86,7 +86,7 @@ class AssetsWebpackPlugin {
             return value;
           });
 
-          compilation.emitAsset('_assets.json', new RawSource(manifest));
+          compilation.emitAsset('assets.json', new RawSource(manifest));
         },
       );
     });
