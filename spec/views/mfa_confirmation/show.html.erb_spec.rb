@@ -11,7 +11,7 @@ describe 'mfa_confirmation/show.html.erb' do
       MfaConfirmationShowPresenter.new(
         current_user: user,
         next_path: phone_setup_url,
-        final_path: account_url 
+        final_path: account_url,
       ),
     )
   end

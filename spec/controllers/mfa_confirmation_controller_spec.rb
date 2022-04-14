@@ -5,7 +5,7 @@ describe MfaConfirmationController do
     it 'presents the mfa confirmation page.' do
       stub_sign_in
 
-      get :show, final_path: account_url
+      get :show, params: { final_path: account_url }
 
       expect(response.status).to eq 200
     end
