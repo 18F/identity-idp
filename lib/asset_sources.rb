@@ -26,7 +26,7 @@ class AssetSources
 
       names.flat_map do |name|
         manifest&.dig('entrypoints', name, 'assets')&.except('js')&.values&.flatten
-      end.uniq
+      end.uniq.compact
     end
 
     def load_manifest
