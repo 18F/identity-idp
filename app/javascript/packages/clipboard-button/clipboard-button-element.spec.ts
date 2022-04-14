@@ -4,7 +4,7 @@ import { getByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import './clipboard-button-element';
 
-describe('ClipboardButton', () => {
+describe('ClipboardButtonElement', () => {
   const sandbox = sinon.createSandbox();
 
   beforeEach(() => {
