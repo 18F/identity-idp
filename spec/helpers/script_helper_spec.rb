@@ -36,6 +36,18 @@ RSpec.describe ScriptHelper do
         allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
+        allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
+          and_return(['clock.svg'])
+      end
+
+      it 'prints asset paths sources' do
+        output = render_javascript_pack_once_tags
+
+        expect(output).to have_css(
+          'script',
+          visible: :all,
+          text: 'window._asset_paths = {"clock.svg":"/clock.svg"};',
+        )
       end
 
       it 'prints script sources' do
