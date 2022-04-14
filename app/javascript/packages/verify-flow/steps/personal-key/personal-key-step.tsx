@@ -1,4 +1,5 @@
 import { PageHeading, Button } from '@18f/identity-components';
+import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
@@ -44,9 +45,13 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
       <Button isOutline className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0">
         {t('users.personal_key.print')}
       </Button>
-      <Button isOutline className="margin-bottom-2 tablet:margin-bottom-0">
+      <ClipboardButton
+        clipboardText="0000-0000-0000-0000"
+        isOutline
+        className="margin-bottom-2 tablet:margin-bottom-0"
+      >
         {t('links.copy')}
-      </Button>
+      </ClipboardButton>
       <div className="margin-y-5 clearfix">
         <p className="margin-bottom-0">
           <strong>{t('instructions.personal_key.email_title')}</strong>
