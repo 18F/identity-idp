@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
-import PageHeading from '@18f/identity-document-capture/components/page-heading';
+import { PageHeading } from '@18f/identity-components';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';

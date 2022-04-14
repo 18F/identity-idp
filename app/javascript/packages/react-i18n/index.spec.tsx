@@ -1,13 +1,14 @@
 import { useContext } from 'react';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
+import { I18n } from '@18f/identity-i18n';
 import { I18nContext, useI18n } from './index.js';
 
 describe('I18nContext', () => {
-  it('defaults to empty object', () => {
+  it('defaults to an instance of I18n', () => {
     const { result } = renderHook(() => useContext(I18nContext));
 
-    expect(result.current).to.deep.equal({});
+    expect(result.current).to.be.instanceof(I18n);
   });
 });
 
@@ -90,7 +91,9 @@ describe('useI18n', () => {
     it('returns localized key value', () => {
       const { result } = renderHook(() => useI18n(), {
         wrapper: ({ children }) => (
-          <I18nContext.Provider value={{ sample: 'translation' }}>{children}</I18nContext.Provider>
+          <I18nContext.Provider value={new I18n({ strings: { sample: 'translation' } })}>
+            {children}
+          </I18nContext.Provider>
         ),
       });
 

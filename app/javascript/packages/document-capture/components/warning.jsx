@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { PageHeading } from '@18f/identity-components';
 import AnalyticsContext from '../context/analytics';
 import useAsset from '../hooks/use-asset';
-import PageHeading from './page-heading';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 

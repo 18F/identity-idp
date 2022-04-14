@@ -1,9 +1,9 @@
-import { createElement, cloneElement, createContext, useContext, useMemo } from 'react';
-import { I18n } from '@18f/identity-i18n';
+import { createElement, cloneElement, createContext, useContext } from 'react';
+import { i18n } from '@18f/identity-i18n';
 
 /** @typedef {import('react').FC|import('react').ComponentClass} Component */
 
-export const I18nContext = createContext({});
+export const I18nContext = createContext(i18n);
 
 I18nContext.displayName = 'I18nContext';
 
@@ -53,8 +53,7 @@ export function formatHTML(html, handlers) {
 }
 
 export function useI18n() {
-  const strings = useContext(I18nContext);
-  const { t } = useMemo(() => new I18n({ strings }), [strings]);
+  const { t } = useContext(I18nContext);
 
   return { t, formatHTML };
 }
