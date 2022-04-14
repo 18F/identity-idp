@@ -23,24 +23,25 @@ branch_environments.map do |upload_environment|
   end
 
   key = "#{upload_environment}/#{sha}.idp.tar.gz"
-  puts "uploading #{key!}"
+  puts "uploading #{key}!"
   s3_artifact_uri = "s3://#{artifact_bucket}/#{key}"
 
   Open3.capture2(
     'aws', 's3', 'cp', ARGV[0], s3_artifact_uri
   )
 
-  Open3.capture2(
-    'aws', 's3', 'sync', '--size-only', '--cache-control', 'max-age=31536000',
-    '--exclude .sprockets-manifest-*.json', 'public/assets', "s3://#{static_bucket}/assets"
-  )
+  assets_sync_command = <<-CMD
+    aws s3 sync --size-only --cache-control max-age=31536000 --exclude .sprockets-manifest-*.json public/assets s3://#{static_bucket}/assets
+  CMD
+  Open3.capture2(assets_sync_command)
 
-  Open3.capture2(
-    'aws', 's3', 'sync', '--size-only', '--cache-control max-age=31536000',
-    '--exclude manifest.json', 'public/packs', "s3://#{static_bucket}/packs"
-  )
+  packs_sync_command = <<-CMD
+    aws s3 sync --size-only --cache-control max-age=31536000 --exclude "manifest.json" public/packs s3://#{static_bucket}/packs
+  CMD
+  Open3.capture2(packs_sync_command)
 
-  Open3.capture2(
-    'aws', 's3', 'cp', 'public/packs/manifest.json', "s3://#{static_bucket}/packs/manifest.json"
-  )
+  manifest_sync_command = <<-CMD
+    aws s3 cp public/packs/manifest.json s3://#{static_bucket}/packs/manifest.json
+  CMD
+  Open3.capture2(manifest_sync_command)
 end
