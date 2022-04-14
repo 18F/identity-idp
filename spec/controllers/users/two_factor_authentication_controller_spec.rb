@@ -348,8 +348,6 @@ describe Users::TwoFactorAuthenticationController do
       context 'when the phone has been marked as opted out in the DB' do
         before do
           PhoneNumberOptOut.mark_opted_out(@user.phone_configurations.first.phone)
-
-          allow(IdentityConfig.store).to receive(:sms_resubscribe_enabled)
         end
 
         it 'does not send an OTP' do
@@ -368,39 +366,20 @@ describe Users::TwoFactorAuthenticationController do
             phone_config.phone = Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER
             phone_config.save!
           end
-
-          allow(IdentityConfig.store).to receive(:sms_resubscribe_enabled).
-            and_return(sms_resubscribe_enabled)
         end
 
-        context 'when SMS resubscribing is enabled' do
-          let(:sms_resubscribe_enabled) { true }
+        it 'redirects to the opt in controller' do
+          get :send_code, params: {
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          }
 
-          it 'redirects to the opt in controller' do
-            get :send_code, params: {
-              otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
-            }
+          opt_out = PhoneNumberOptOut.create_or_find_with_phone(
+            Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER,
+          )
 
-            opt_out = PhoneNumberOptOut.create_or_find_with_phone(
-              Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER,
-            )
-
-            expect(response).to redirect_to(
-              login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out),
-            )
-          end
-        end
-
-        context 'when SMS resubscribing is disabled' do
-          let(:sms_resubscribe_enabled) { false }
-
-          it 'shows an opt out error flash' do
-            get :send_code, params: {
-              otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
-            }
-
-            expect(flash[:error]).to eq(I18n.t('telephony.error.friendly_message.opt_out'))
-          end
+          expect(response).to redirect_to(
+            login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out),
+          )
         end
       end
     end
