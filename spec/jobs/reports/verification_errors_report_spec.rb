@@ -6,6 +6,8 @@ describe Reports::VerificationErrorsReport do
   let(:name) { 'An SP' }
   let(:user) { create(:user) }
   let(:uuid) { 'foo' }
+  let(:user2) { create(:user) }
+  let(:uuid2) { 'foo2' }
 
   subject { described_class.new }
 
@@ -24,6 +26,13 @@ describe Reports::VerificationErrorsReport do
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
 
     run_report_and_expect("#{uuid},#{now.utc},ABANDON\r\n")
+  end
+
+  it 'sends out a blank report if no issuer data' do
+    now = Time.zone.now
+    DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: 'issuer2')
+
+    run_report_and_expect('')
   end
 
   it 'sends out a document error if the user submits document but does not progress forward' do
@@ -60,6 +69,20 @@ describe Reports::VerificationErrorsReport do
     )
 
     run_report_and_expect("#{uuid},#{now.utc},PHONE_FAIL\r\n")
+  end
+
+  it 'sends more than one user' do
+    now = Time.zone.now
+    DocAuthLog.create(user_id: user2.id, welcome_view_at: now, issuer: issuer)
+    AgencyIdentity.create(agency_id: 1, user_id: user2.id, uuid: uuid2)
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      document_capture_submit_at: now + 1.second,
+      issuer: issuer,
+    )
+
+    run_report_and_expect("#{uuid},#{now.utc},DOCUMENT_FAIL\r\n#{uuid2},#{now.utc},ABANDON\r\n")
   end
 
   describe '#good_job_concurrency_key' do

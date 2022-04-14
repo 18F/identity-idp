@@ -8,6 +8,7 @@ class VerificationErrorsReport
         users.id=doc_auth_logs.user_id AND 
         service_providers.issuer = '%s' AND 
         agency_identities.agency_id = service_providers.agency_id AND 
+        agency_identities.user_id = users.id AND 
         doc_auth_logs.issuer='%s' AND
         verified_view_at is null AND
         welcome_view_at > '%s'
