@@ -1,4 +1,4 @@
-export class ClipboardButtonElement extends HTMLElement {
+class ClipboardButtonElement extends HTMLElement {
   button: HTMLButtonElement;
 
   connectedCallback() {
@@ -31,3 +31,5 @@ declare global {
 if (!customElements.get('lg-clipboard-button')) {
   customElements.define('lg-clipboard-button', ClipboardButtonElement);
 }
+
+export default ClipboardButtonElement;

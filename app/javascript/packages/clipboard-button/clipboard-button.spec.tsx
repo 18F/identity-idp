@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import ClipboardButton from './clipboard-button';
-import { ClipboardButtonElement } from './clipboard-button-element';
+import ClipboardButtonElement from './clipboard-button-element';
 
 describe('ClipboardButton', () => {
   it('renders custom element with clipboard text data attribute', () => {
