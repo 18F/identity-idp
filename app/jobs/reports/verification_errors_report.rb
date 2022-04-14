@@ -56,10 +56,14 @@ module Reports
       encrypt_at = row['encrypt_view_at']
       ssn_at = row['ssn_view_at']
       info_at = row['enter_info_view_at']
-      return 'PHONE_FAIL' if phone_at && phone_at>=welcome_at && (!encrypt_at||encrypt_at<phone_at)
-      return 'VERIFY_FAIL' if verify_at && verify_at>=welcome_at && (!ssn_at||ssn_at<verify_at)
-      return 'DOCUMENT_FAIL' if doc_at && doc_at>=welcome_at && (!info_at||info_at<doc_at)
+      return 'PHONE_FAIL' if submit_failed?(welcome_at, phone_at, encrypt_at)
+      return 'VERIFY_FAIL' if submit_failed?(welcome_at, verify_at, ssn_at)
+      return 'DOCUMENT_FAIL' if submit_failed?(welcome_at, doc_at, info_at)
       'ABANDON'
+    end
+
+    def submit_failed?(welcome_at, submit_at, next_step_at)
+      submit_at && submit_at >= welcome_at && (!next_step_at || next_step_at < submit_at)
     end
   end
 end
