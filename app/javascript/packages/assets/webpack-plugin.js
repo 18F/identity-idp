@@ -10,6 +10,11 @@ const { RawSource } = require('webpack-sources');
 const PLUGIN = 'AssetsWebpackPlugin';
 
 /**
+ * File name of manifest output.
+ */
+const OUTPUT_FILE = 'assets.json';
+
+/**
  * Regular expression matching calls to retrieve asset path.
  */
 const GET_ASSET_CALL = /getAssetPath\)?\(\s*['"](.+?)['"]/g;
@@ -50,7 +55,7 @@ class AssetsWebpackPlugin {
   apply(compiler) {
     compiler.hooks.compilation.tap('compile', (compilation) => {
       compilation.hooks.processAssets.tap(
-        { name: PLUGIN, stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL },
+        { name: PLUGIN, stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS },
         () => {
           const chunkAssets = /** @type {Map<string, Set<string>>} */ (new Map());
 
@@ -74,17 +79,21 @@ class AssetsWebpackPlugin {
             });
           });
 
-          const manifest = JSON.stringify(chunkAssets, (_key, value) => {
-            if (value instanceof Map) {
-              return Object.fromEntries(value);
-            }
+          const manifest = JSON.stringify(
+            chunkAssets,
+            (_key, value) => {
+              if (value instanceof Map) {
+                return Object.fromEntries(value);
+              }
 
-            if (value instanceof Set) {
-              return Array.from(value);
-            }
+              if (value instanceof Set) {
+                return Array.from(value);
+              }
 
-            return value;
-          });
+              return value;
+            },
+            2,
+          );
 
           compilation.emitAsset('assets.json', new RawSource(manifest));
         },

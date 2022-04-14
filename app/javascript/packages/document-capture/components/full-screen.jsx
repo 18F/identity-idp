@@ -2,7 +2,7 @@ import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted } from '@18f/identity-react-hooks';
-import useAsset from '../hooks/use-asset';
+import { getAssetPath } from '@18f/identity-assets';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 import useFocusTrap from '../hooks/use-focus-trap';
@@ -57,7 +57,6 @@ export function useInertSiblingElements(containerRef) {
  */
 function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
   const { t } = useI18n();
-  const { getAssetPath } = useAsset();
   const ifStillMounted = useIfStillMounted();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const onFocusTrapDeactivate = useImmutableCallback(ifStillMounted(onRequestClose));

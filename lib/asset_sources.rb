@@ -1,6 +1,7 @@
 class AssetSources
   class << self
     attr_accessor :manifest_path
+    attr_accessor :pack_assets_path
     attr_accessor :manifest
     attr_accessor :cache_manifest
 
@@ -21,9 +22,16 @@ class AssetSources
       ]
     end
 
+    def get_assets(*names)
+      load_manifest if !manifest || !cache_manifest
+
+      manifest['assets'].slice(*names).values.reduce([], :concat).uniq
+    end
+
     def load_manifest
       self.manifest = begin
-        JSON.parse(File.read(manifest_path))
+        JSON.parse(File.read(manifest_path)).
+          merge('assets' => JSON.parse(File.read(pack_assets_path)))
       rescue JSON::ParserError, Errno::ENOENT
         nil
       end

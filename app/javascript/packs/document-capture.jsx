@@ -3,7 +3,6 @@ import { composeComponents } from '@18f/identity-compose-components';
 import {
   AppContext,
   DocumentCapture,
-  AssetContext,
   DeviceContext,
   AcuantContextProvider,
   UploadContextProvider,
@@ -63,8 +62,6 @@ import { trackEvent } from '@18f/identity-analytics';
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
-
-const { assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
 
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
@@ -198,7 +195,6 @@ const noticeError = (error) =>
       },
     ],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],
-    [AssetContext.Provider, { value: assets }],
     [
       FailedCaptureAttemptsContextProvider,
       {

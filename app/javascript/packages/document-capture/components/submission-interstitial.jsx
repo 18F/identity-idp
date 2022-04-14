@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading } from '@18f/identity-components';
-import useAsset from '../hooks/use-asset';
+import { getAssetPath } from '@18f/identity-assets';
 
 /**
  * @typedef SubmissionInterstitialProps
@@ -14,7 +14,6 @@ import useAsset from '../hooks/use-asset';
  */
 function SubmissionInterstitial({ autoFocus = false }) {
   const { t } = useI18n();
-  const { getAssetPath } = useAsset();
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   useEffect(() => {
     if (autoFocus) {
