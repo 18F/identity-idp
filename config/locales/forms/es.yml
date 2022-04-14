@@ -64,7 +64,6 @@ es:
           submit: Cambiar la contraseña
         labels:
           password: Nueva contraseña
-      show: Mostrar contraseña
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
@@ -111,7 +110,8 @@ es:
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
-      code: Código de seguridad de sólo un uso
+      # removed "security code" form labels as they trigger ios credit card reader
+      code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     two_factor_choice:

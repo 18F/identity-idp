@@ -1,22 +1,3 @@
-@mixin color-list($color: $yellow) {
-  list-style: none;
-  padding: 0;
-
-  li {
-    padding-left: 1rem;
-    text-indent: -1rem;
-
-    &::before {
-      color: $color;
-      content: '•';
-      font-size: 2rem;
-      line-height: 1.5rem;
-      padding-right: 0.5rem;
-      vertical-align: -3px;
-    }
-  }
-}
-
 .success-bullets {
   .success-bullet {
     padding: 1rem 1rem 1rem 0;
@@ -34,16 +15,4 @@
       width: 1rem;
     }
   }
-}
-
-.red-dots {
-  @include color-list($red);
-}
-
-.teal-dots {
-  @include color-list($teal);
-}
-
-.yellow-dots {
-  @include color-list($yellow);
 }

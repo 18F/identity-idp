@@ -69,7 +69,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Sp Success Rate Report to S3
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
@@ -114,6 +113,12 @@ else
       # Total SP Costs Report to S3
       total_sp_costs: {
         class: 'Reports::TotalSpCostReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Total IAL2 Costs Report to S3
+      total_ial2_costs: {
+        class: 'Reports::TotalIal2CostsReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },

@@ -59,7 +59,6 @@ en:
           submit: Change password
         labels:
           password: New password
-      show: Show password
     personal_key:
       alternative: Don’t have your personal key?
       confirmation_label: Personal key
@@ -104,7 +103,8 @@ en:
       totp_step_4: Enter the temporary code from your app
     two_factor:
       backup_code: Security code
-      code: One-time security code
+      # removed "security code" form labels as they trigger ios credit card reader
+      code: One-time code
       personal_key: Personal key
       try_again: Use another phone number
     two_factor_choice:

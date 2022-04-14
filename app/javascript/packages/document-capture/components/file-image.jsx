@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
+import { useIfStillMounted } from '@18f/identity-react-hooks';
 import FileBase64CacheContext from '../context/file-base64-cache';
 
 /**

@@ -76,8 +76,8 @@ es:
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
       warnings:
-        warning_1: Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
-        warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
+        - Si olvidó su contraseña, deberá restablecerla y completarla nuevamente.
+        - Tendrá que volver a ingresar su información personal, como su nombre,
           documento de identidad emitido por el estado, etc.
     form:
       address1: Dirección

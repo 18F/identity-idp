@@ -65,7 +65,6 @@ fr:
           submit: Changer le mot de passe
         labels:
           password: Nouveau mot de passe
-      show: Afficher le mot de passe
     personal_key:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
@@ -112,7 +111,8 @@ fr:
       totp_step_4: Entrez le code temporaire de votre application
     two_factor:
       backup_code: Code de sécurité
-      code: Code de sécurité
+      # removed "security code" form labels as they trigger ios credit card reader
+      code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
     two_factor_choice:

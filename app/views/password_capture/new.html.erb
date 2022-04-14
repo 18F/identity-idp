@@ -9,8 +9,11 @@
       method: :post,
       html: { autocomplete: 'off', class: 'margin-top-6' },
     ) do |f| %>
-  <%= f.input :password, label: t('account.index.password'), required: true,
-                         input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        label: t('account.index.password'),
+        required: true,
+      ) %>
   <%= f.button :submit, t('forms.buttons.submit.default'), class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
 <% end %>
 

@@ -121,7 +121,7 @@ feature 'User profile' do
       fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
       expect(page).to have_content 'Great'
 
-      check t('forms.passwords.show')
+      check t('components.password_toggle.toggle_label')
 
       expect(page).to_not have_css('input.password[type="password"]')
       expect(page).to have_css('input.password[type="text"]')

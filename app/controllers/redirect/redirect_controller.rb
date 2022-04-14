@@ -8,8 +8,13 @@ module Redirect
       params.permit(*PERMITTED_LOCATION_PARAMS).to_h.symbolize_keys
     end
 
-    def redirect_to_and_log(url, event: Analytics::EXTERNAL_REDIRECT)
-      analytics.track_event(event, redirect_url: url, **location_params)
+    def redirect_to_and_log(url, event: nil, tracker_method: analytics.method(:external_redirect))
+      if event
+        # Once all events have been moved to tracker methods, we can remove the event: param
+        analytics.track_event(event, redirect_url: url, **location_params)
+      else
+        tracker_method.call(redirect_url: url, **location_params)
+      end
       redirect_to(url)
     end
   end

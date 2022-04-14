@@ -1,11 +1,11 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useIfStillMounted } from '@18f/identity-react-hooks';
 import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 import useFocusTrap from '../hooks/use-focus-trap';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -76,9 +76,9 @@ function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
         type="button"
         aria-label={t('users.personal_key.close')}
         onClick={onRequestClose}
-        className="full-screen-close-button usa-button padding-2 margin-2"
+        className="full-screen__close-button usa-button padding-2 margin-2"
       >
-        <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen-close-icon" />
+        <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen__close-icon" />
       </button>
     </div>,
     document.body,

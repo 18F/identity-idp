@@ -18,6 +18,7 @@ module.exports = (api) => {
       ],
     ],
     plugins: [
+      ['@babel/plugin-proposal-decorators', { version: 'legacy' }],
       [
         'polyfill-corejs3',
         {

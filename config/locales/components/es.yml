@@ -1,12 +1,16 @@
 ---
 es:
   components:
+    password_toggle:
+      label: Contraseña
+      toggle_label: Mostrar contraseña
     phone_input:
       country_code_label: Código del país
     status_page:
       icons:
         error: Error
         lock: Candado
+        question: Pregunta
         warning: Advertencia
     troubleshooting_options:
       default_heading: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'

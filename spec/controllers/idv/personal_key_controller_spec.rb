@@ -187,45 +187,4 @@ describe Idv::PersonalKeyController do
       end
     end
   end
-
-  describe '#download' do
-    before do
-      stub_idv_session
-      stub_analytics
-    end
-
-    it 'allows download of code' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
-
-      get :show
-      get :download
-
-      expect(response.body).to eq(code + "\r\n")
-      expect(response.header['Content-Type']).to eq('text/plain')
-      expect(@analytics).to have_logged_event(Analytics::IDV_PERSONAL_KEY_DOWNLOADED, success: true)
-    end
-
-    it 'recovers pii and verifies personal key digest with the code' do
-      get :show
-      get :download
-
-      code = response.body.chomp
-
-      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
-      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
-        subject.idv_session.pii,
-      )
-    end
-
-    it 'is a bad request when there is no personal_key in the session' do
-      get :download
-
-      expect(response).to be_bad_request
-      expect(@analytics).to have_logged_event(
-        Analytics::IDV_PERSONAL_KEY_DOWNLOADED,
-        success: false,
-      )
-    end
-  end
 end
