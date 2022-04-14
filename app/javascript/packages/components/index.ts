@@ -5,3 +5,5 @@ export { default as Icon } from './icon';
 export { default as PageHeading } from './page-heading';
 export { default as SpinnerDots } from './spinner-dots';
 export { default as TroubleshootingOptions } from './troubleshooting-options';
+
+export type { ButtonProps } from './button';
