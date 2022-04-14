@@ -40,7 +40,7 @@ module ScriptHelper
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path) }
       # rubocop:disable Rails/OutputSafety
-      javascript_tag(nonce: true) { "window._asset_paths = #{asset_map.to_json};".html_safe }
+      javascript_tag("window._asset_paths = #{asset_map.to_json};".html_safe, nonce: true)
       # rubocop:enable Rails/OutputSafety
     end
   end
