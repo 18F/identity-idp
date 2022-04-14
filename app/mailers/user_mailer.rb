@@ -210,6 +210,14 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
   end
 
+  def verification_errors_report(email:, name:, issuers:, data:)
+    @name = name
+    @issuers = issuers
+    @data = data
+    attachments['verification_errors.csv'] = data
+    mail(to: email, subject: t('user_mailer.verification_errors_report.subject'))
+  end
+
   def account_verified(user, email_address, date_time:, sp_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 

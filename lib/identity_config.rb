@@ -331,6 +331,7 @@ class IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
+    config.add(:verification_errors_report_configs, type: :json)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
     config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)
