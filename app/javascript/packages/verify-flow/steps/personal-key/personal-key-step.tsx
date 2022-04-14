@@ -50,7 +50,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         isOutline
         className="margin-bottom-2 tablet:margin-bottom-0"
       >
-        {t('links.copy')}
+        {t('components.clipboard_button.label')}
       </ClipboardButton>
       <div className="margin-y-5 clearfix">
         <p className="margin-bottom-0">

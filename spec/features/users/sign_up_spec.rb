@@ -141,7 +141,7 @@ feature 'Sign Up' do
       name.execute_script('this.addEventListener("invalid", () => this.didValidate = true);')
       did_validate_name = -> { name.evaluate_script('this.didValidate') }
 
-      click_on t('links.copy')
+      click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 

@@ -1,6 +1,8 @@
 ---
 fr:
   components:
+    clipboard_button:
+      label: Copier
     password_toggle:
       label: Mot de passe
       toggle_label: Afficher le mot de passe

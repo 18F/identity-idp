@@ -1,6 +1,8 @@
 ---
 es:
   components:
+    clipboard_button:
+      label: Copiar
     password_toggle:
       label: Contraseña
       toggle_label: Mostrar contraseña
