@@ -23,7 +23,7 @@ describe Reports::VerificationErrorsReport do
     now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
 
-    run_report_and_expect("#{user.uuid},#{now.utc},ABANDON\r\n")
+    run_report_and_expect("#{uuid},#{now.utc},ABANDON\r\n")
   end
 
   it 'sends out a document error if the user submits document but does not progress forward' do
@@ -32,10 +32,10 @@ describe Reports::VerificationErrorsReport do
       user_id: user.id,
       welcome_view_at: now,
       document_capture_submit_at: now + 1.second,
-      issuer: issuer
+      issuer: issuer,
     )
 
-    run_report_and_expect("#{user.uuid},#{now.utc},DOCUMENT_FAIL\r\n")
+    run_report_and_expect("#{uuid},#{now.utc},DOCUMENT_FAIL\r\n")
   end
 
   it 'sends out a verify error if the user submits PII but does not progress forward' do
@@ -44,20 +44,22 @@ describe Reports::VerificationErrorsReport do
       user_id: user.id,
       welcome_view_at: now,
       verify_submit_at: now + 1.second,
-      issuer: issuer
+      issuer: issuer,
     )
 
-    run_report_and_expect("#{user.uuid},#{now.utc},VERIFY_FAIL\r\n")
+    run_report_and_expect("#{uuid},#{now.utc},VERIFY_FAIL\r\n")
   end
 
   it 'sends out a phone error if the user submits phone info but does not progress forward' do
     now = Time.zone.now
-    DocAuthLog.create(user_id: user.id,
-                      welcome_view_at: now,
-                      verify_phone_submit_at: now + 1.second,
-                      issuer: issuer)
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      verify_phone_submit_at: now + 1.second,
+      issuer: issuer,
+    )
 
-    run_report_and_expect("#{user.uuid},#{now.utc},PHONE_FAIL\r\n")
+    run_report_and_expect("#{uuid},#{now.utc},PHONE_FAIL\r\n")
   end
 
   describe '#good_job_concurrency_key' do
@@ -71,6 +73,9 @@ describe Reports::VerificationErrorsReport do
   end
 
   def run_report_and_expect(report)
+    ServiceProvider.create(issuer: issuer, agency_id: 1, friendly_name: issuer)
+    AgencyIdentity.create(agency_id: 1, user_id: user.id, uuid: uuid)
+
     allow(IdentityConfig.store).to receive(:verification_errors_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],
     )
