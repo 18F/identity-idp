@@ -325,6 +325,10 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
+    scope '/verify/v2' do
+      get '/personal_key' => 'verify#show'
+    end
+
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
     if FeatureManagement.enable_gpo_verification?
