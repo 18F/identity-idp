@@ -7,8 +7,8 @@ RSpec.describe RenderConditionConcern, type: :controller do
   controller ApplicationController do
     include RenderConditionConcern
 
-    render_if -> { FeatureManagement.all_feature? }
-    render_if -> { FeatureManagement.show_feature? }, only: [:show]
+    check_or_render_not_found -> { FeatureManagement.all_feature? }
+    check_or_render_not_found -> { FeatureManagement.show_feature? }, only: [:show]
 
     def index
       render plain: ''
