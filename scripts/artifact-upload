@@ -1,31 +1,46 @@
 #!/usr/bin/env ruby
 
-require 'aws-sdk-s3'
 require 'yaml'
+require 'open3'
 
 config = YAML.safe_load(File.read('./.gitlab-ci-deploy.yml'))
 
-puts ENV['CI_COMMIT_BRANCH']
-
-bucket = ENV['ARTIFACT_BUCKET']
-region = ENV['AWS_REGION']
-sha = ENV['CI_COMMIT_SHA']
+artifact_bucket = ENV['ARTIFACT_BUCKET']
+_region = ENV.fetch('AWS_REGION')
+sha = ENV.fetch('CI_COMMIT_SHA')
 
 branch_environments = config.dig(
   'deploy_branch_to_environment_map',
-  ENV['CI_COMMIT_BRANCH'],
+  ENV.fetch('CI_COMMIT_BRANCH'),
 )
 
-if region && bucket && branch_environments && sha
-  s3_client = Aws::S3::Client.new(region: region)
+branch_environments.map do |upload_environment|
+  static_bucket = ENV["#{upload_environment.upcase}_STATIC_BUCKET"]
 
-  branch_environments.map do |upload_environment|
-    key = "#{upload_environment}/#{sha}.idp.tar.gz"
-    puts "Uploading #{key}!"
-    s3_client.put_object(
-      bucket: bucket,
-      key: key,
-      body: File.read(ARGV[0]),
-    )
+  if static_bucket.nil?
+    puts "skipping #{upload environment} because it is missing static bucket config!"
+    next
   end
+
+  key = "#{upload_environment}/#{sha}.idp.tar.gz"
+  puts "uploading #{key!}"
+  s3_artifact_uri = "s3://#{artifact_bucket}/#{key}"
+
+  Open3.capture2(
+    'aws', 's3', 'cp', ARGV[0], s3_artifact_uri
+  )
+
+  Open3.capture2(
+    'aws', 's3', 'sync', '--size-only', '--cache-control', 'max-age=31536000',
+    '--exclude .sprockets-manifest-*.json', 'public/assets', "s3://#{static_bucket}/assets"
+  )
+
+  Open3.capture2(
+    'aws', 's3', 'sync', '--size-only', '--cache-control max-age=31536000',
+    '--exclude manifest.json', 'public/packs', "s3://#{static_bucket}/packs"
+  )
+
+  Open3.capture2(
+    'aws', 's3', 'cp', 'public/packs/manifest.json', "s3://#{static_bucket}/packs/manifest.json"
+  )
 end
