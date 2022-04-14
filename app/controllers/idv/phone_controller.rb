@@ -32,6 +32,7 @@ module Idv
     def create
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
+      flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
       submit_proofing_attempt
       redirect_to idv_phone_path
