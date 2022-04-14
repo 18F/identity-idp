@@ -10,5 +10,5 @@ interface VerifyFlowProps {
 }
 
 export function VerifyFlow({ initialValues = {} }: VerifyFlowProps) {
-  return <FormSteps steps={STEPS} initialValues={initialValues} />;
+  return <FormSteps steps={STEPS} initialValues={initialValues} promptOnNavigate={false} />;
 }

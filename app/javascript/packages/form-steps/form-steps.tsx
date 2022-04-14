@@ -125,6 +125,12 @@ interface FormStepsProps {
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
+
+  /**
+   * Whether to prompt the user about unsaved changes when navigating away from an in-progress form.
+   * Defaults to true.
+   */
+  promptOnNavigate?: boolean;
 }
 
 /**
@@ -164,6 +170,7 @@ function FormSteps({
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
+  promptOnNavigate = true,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
@@ -278,7 +285,7 @@ function FormSteps({
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
-      {Object.keys(values).length > 0 && <PromptOnNavigate />}
+      {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           {error.message}
