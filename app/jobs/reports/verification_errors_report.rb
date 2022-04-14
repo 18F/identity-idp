@@ -42,7 +42,9 @@ module Reports
           end
         end
       end
-      csv.string
+      data = csv.string
+      save_report("%{REPORT_NAME}.{issuers.join('.')}", data, extension: 'csv')
+      data
     end
 
     def ial2_error_code(row)
