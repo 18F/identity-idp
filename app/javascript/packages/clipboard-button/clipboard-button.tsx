@@ -2,7 +2,7 @@ import type { HTMLAttributes } from 'react';
 import { Button } from '@18f/identity-components';
 import type { ButtonProps } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
-import type { ClipboardButtonElement } from './clipboard-button-element';
+import type ClipboardButtonElement from './clipboard-button-element';
 import './clipboard-button-element';
 
 declare global {
