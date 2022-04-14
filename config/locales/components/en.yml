@@ -8,6 +8,8 @@ en:
       toggle_label: Show password
     phone_input:
       country_code_label: Country code
+    print_button:
+      label: Print
     status_page:
       icons:
         error: Error
