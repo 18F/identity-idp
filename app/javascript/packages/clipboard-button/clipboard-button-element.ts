@@ -1,4 +1,4 @@
-export class ClipboardButton extends HTMLElement {
+export class ClipboardButtonElement extends HTMLElement {
   button: HTMLButtonElement;
 
   connectedCallback() {
