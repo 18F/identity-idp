@@ -1,5 +1,4 @@
 const { Compilation } = require('webpack');
-const { RawSource } = require('webpack-sources');
 
 /** @typedef {import('webpack/lib/ChunkGroup')} ChunkGroup */
 /** @typedef {import('webpack/lib/Entrypoint')} Entrypoint */
@@ -8,11 +7,6 @@ const { RawSource } = require('webpack-sources');
  * Webpack plugin name.
  */
 const PLUGIN = 'AssetsWebpackPlugin';
-
-/**
- * File name of manifest output.
- */
-const OUTPUT_FILE = 'assets.json';
 
 /**
  * Regular expression matching calls to retrieve asset path.
