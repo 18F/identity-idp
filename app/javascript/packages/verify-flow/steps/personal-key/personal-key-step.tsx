@@ -29,9 +29,9 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
           <p className="margin-y-0">
             {formatHTML(
               t('users.personal_key.generated_on_html', {
-                date: `<strong>${new Intl.DateTimeFormat([], { dateStyle: 'long' }).format(
-                  new Date(),
-                )}</strong>`,
+                date: `<strong>${new Intl.DateTimeFormat([], {
+                  dateStyle: 'long',
+                }).format()}</strong>`,
               }),
               { strong: 'strong' },
             )}
