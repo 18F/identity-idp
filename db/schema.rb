@@ -174,6 +174,7 @@ ActiveRecord::Schema.define(version: 2022_04_22_190622) do
     t.datetime "verify_phone_submit_at"
     t.integer "verify_phone_submit_count", default: 0
     t.datetime "document_capture_submit_at"
+    t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -576,6 +577,11 @@ ActiveRecord::Schema.define(version: 2022_04_22_190622) do
     t.string "reset_password_token", limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip", limit: 255
+    t.string "last_sign_in_ip", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "confirmation_token", limit: 255
