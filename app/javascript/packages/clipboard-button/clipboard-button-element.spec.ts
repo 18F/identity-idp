@@ -2,7 +2,7 @@ import 'clipboard-polyfill/overwrite-globals'; // See: https://github.com/jsdom/
 import sinon from 'sinon';
 import { getByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { ClipboardButton } from './index';
+import { ClipboardButton } from './clipboard-button-element';
 
 describe('ClipboardButton', () => {
   const sandbox = sinon.createSandbox();
