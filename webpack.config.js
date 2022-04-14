@@ -1,4 +1,5 @@
 const { parse, resolve } = require('path');
+const url = require('url');
 const { sync: glob } = require('fast-glob');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
@@ -68,7 +69,11 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   plugins: [
     new WebpackAssetsManifest({
       entrypoints: true,
-      publicPath: true,
+      publicPath(filename, plugin) {
+        return filename.endsWith('.js')
+          ? url.resolve(plugin.compiler.options.output.publicPath, filename)
+          : filename;
+      },
       writeToDisk: true,
       output: 'manifest.json',
     }),

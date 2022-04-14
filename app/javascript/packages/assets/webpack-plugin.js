@@ -41,12 +41,13 @@ const getAssetPaths = (source) =>
 /**
  * Adds the given asset file name to the list of files of the group's parent entrypoint.
  *
+ * @param {string[]} filenames Asset filename.
  * @param {ChunkGroup|Entrypoint} group Chunk group.
  */
-const getEntrypointChunk = (group) =>
+const addFilesToEntrypoint = (filenames, group) =>
   typeof group.getEntrypointChunk === 'function'
-    ? group.getEntrypointChunk()
-    : Array.from(group.parentsIterable).find((parent) => getEntrypointChunk(parent));
+    ? filenames.forEach((filename) => group.getEntrypointChunk().files.add(filename))
+    : group.parentsIterable.forEach((parent) => addFilesToEntrypoint(filenames, parent));
 
 class AssetsWebpackPlugin {
   /**
@@ -57,45 +58,17 @@ class AssetsWebpackPlugin {
       compilation.hooks.processAssets.tap(
         { name: PLUGIN, stage: Compilation.PROCESS_ASSETS_STAGE_ADDITIONS },
         () => {
-          const chunkAssets = /** @type {Map<string, Set<string>>} */ (new Map());
-
           compilation.chunks.forEach((chunk) => {
             [...chunk.files].filter(isJavaScriptFile).forEach((filename) => {
               const source = compilation.assets[filename].source();
               const assetPaths = getAssetPaths(source);
-              if (!assetPaths.length) {
-                return;
+              if (assetPaths.length) {
+                Array.from(chunk.groupsIterable).forEach((group) => {
+                  addFilesToEntrypoint(assetPaths, group);
+                });
               }
-
-              Array.from(chunk.groupsIterable).forEach((group) => {
-                const { name } = getEntrypointChunk(group);
-                if (!chunkAssets.has(name)) {
-                  chunkAssets.set(name, new Set());
-                }
-
-                const assets = /** @type {Set<string>} */ (chunkAssets.get(name));
-                assetPaths.forEach((assetPath) => assets.add(assetPath));
-              });
             });
           });
-
-          const manifest = JSON.stringify(
-            chunkAssets,
-            (_key, value) => {
-              if (value instanceof Map) {
-                return Object.fromEntries(value);
-              }
-
-              if (value instanceof Set) {
-                return Array.from(value);
-              }
-
-              return value;
-            },
-            2,
-          );
-
-          compilation.emitAsset('assets.json', new RawSource(manifest));
         },
       );
     });

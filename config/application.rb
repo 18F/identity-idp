@@ -32,7 +32,6 @@ module Upaya
     IdentityConfig.build_store(configuration)
 
     AssetSources.manifest_path = Rails.root.join('public', 'packs', 'manifest.json')
-    AssetSources.pack_assets_path = Rails.root.join('public', 'packs', 'assets.json')
     AssetSources.cache_manifest = Rails.env.production? || Rails.env.test?
 
     console do
