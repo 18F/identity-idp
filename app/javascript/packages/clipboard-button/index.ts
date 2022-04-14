@@ -1,17 +1,16 @@
 export class ClipboardButton extends HTMLElement {
-  connectedCallback() {
-    /** @type {HTMLButtonElement?} */
-    this.button = this.querySelector('button');
+  button: HTMLButtonElement;
 
-    this.button?.addEventListener('click', () => this.writeToClipboard());
+  connectedCallback() {
+    this.button = this.querySelector('button')!;
+
+    this.button.addEventListener('click', () => this.writeToClipboard());
   }
 
   /**
    * Returns the text to be copied to the clipboard.
-   *
-   * @return {string}
    */
-  get clipboardText() {
+  get clipboardText(): string {
     return this.dataset.clipboardText || '';
   }
 
