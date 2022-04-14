@@ -12,6 +12,7 @@ class VerificationErrorsReport
         doc_auth_logs.issuer='%s' AND
         verified_view_at is null AND
         welcome_view_at > '%s'
+     ORDER BY agency_identities.uuid ASC
     SQL
     sql = format(report_sql, service_provider, service_provider, since)
     ActiveRecord::Base.connection.execute(sql)
