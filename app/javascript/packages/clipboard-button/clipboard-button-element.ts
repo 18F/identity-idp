@@ -22,6 +22,12 @@ export class ClipboardButtonElement extends HTMLElement {
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-clipboard-button': ClipboardButtonElement;
+  }
+}
+
 if (!customElements.get('lg-clipboard-button')) {
   customElements.define('lg-clipboard-button', ClipboardButtonElement);
 }
