@@ -1,5 +1,8 @@
 {
   "name": "@18f/identity-verify-flow",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "peerDependencies": {
+    "react": "*"
+  }
 }
