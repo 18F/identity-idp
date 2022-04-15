@@ -35,7 +35,9 @@ describe Encryption::Encryptors::BackgroundProofingArgEncryptor do
   end
 
   describe '#decrypt' do
-    let(:ciphertext) { Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(plaintext) }
+    let(:ciphertext) do
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(plaintext)
+    end
 
     it 'decrypts the ciphertext' do
       expect(subject.decrypt(ciphertext)).to eq(plaintext)
