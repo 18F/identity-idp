@@ -219,7 +219,7 @@ describe 'OpenID Connect' do
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
-    code_challenge = Digest::SHA256.base64digest(code_verifier)
+    code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
 
     _user = user_with_2fa
 
@@ -342,7 +342,7 @@ describe 'OpenID Connect' do
       state = SecureRandom.hex
       nonce = SecureRandom.hex
       code_verifier = SecureRandom.hex
-      code_challenge = Digest::SHA256.base64digest(code_verifier)
+      code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
       user = user_with_2fa
 
       link_identity(user, build(:service_provider, issuer: client_id))
@@ -394,7 +394,7 @@ describe 'OpenID Connect' do
       state1 = SecureRandom.hex
       nonce1 = SecureRandom.hex
       code_verifier1 = SecureRandom.hex
-      code_challenge1 = Digest::SHA256.base64digest(code_verifier1)
+      code_challenge1 = Digest::SHA256.urlsafe_base64digest(code_verifier1)
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -412,7 +412,7 @@ describe 'OpenID Connect' do
       state2 = SecureRandom.hex
       nonce2 = SecureRandom.hex
       code_verifier2 = SecureRandom.hex
-      code_challenge2 = Digest::SHA256.base64digest(code_verifier2)
+      code_challenge2 = Digest::SHA256.urlsafe_base64digest(code_verifier2)
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -476,7 +476,7 @@ describe 'OpenID Connect' do
           state: SecureRandom.hex,
           nonce: SecureRandom.hex,
           prompt: 'select_account',
-          code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
+          code_challenge: Digest::SHA256.urlsafe_base64digest(SecureRandom.hex),
           code_challenge_method: 'S256',
         )
 
@@ -658,7 +658,7 @@ describe 'OpenID Connect' do
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
-    code_challenge = Digest::SHA256.base64digest(code_verifier)
+    code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier)
 
     link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
