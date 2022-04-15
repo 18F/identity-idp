@@ -1,9 +1,7 @@
 require 'rails_helper'
 
-def content_security_policy_nonce; end
-
 RSpec.describe ScriptHelper do
-  include ScriptHelper
+  def content_security_policy_nonce; end
 
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
