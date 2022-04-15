@@ -70,6 +70,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     new WebpackAssetsManifest({
       entrypoints: true,
       publicPath(filename, plugin) {
+        // Only prepend public path for JavaScript files, since all other assets will be processed
+        // using Rails asset pipeline, and should use the original filename.
         return filename.endsWith('.js')
           ? url.resolve(plugin.compiler.options.output.publicPath, filename)
           : filename;
