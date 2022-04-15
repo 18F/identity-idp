@@ -10,11 +10,9 @@ import { useState, useEffect } from 'react';
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param initialValue Value to use as initial in absence of another value.
- *
  * @return Tuple of current state, state setter.
  */
-function useHistoryParam(initialValue?: string): [any, (nextParamValue: any) => void] {
+function useHistoryParam(): [any, (nextParamValue: any) => void] {
   const getCurrentQueryParam = () => window.location.hash.slice(1) || undefined;
 
   const [value, setValue] = useState(getCurrentQueryParam);
@@ -37,15 +35,7 @@ function useHistoryParam(initialValue?: string): [any, (nextParamValue: any) => 
   }
 
   useEffect(() => {
-    function syncValue() {
-      setValue(getCurrentQueryParam());
-    }
-
-    if (initialValue !== undefined) {
-      setValue(initialValue ?? undefined);
-      window.history.replaceState(null, '', getValueURL(initialValue));
-    }
-
+    const syncValue = () => setValue(getCurrentQueryParam());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
   }, []);

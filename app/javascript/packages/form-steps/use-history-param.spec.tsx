@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event';
 import useHistoryParam from './use-history-param';
 
 describe('useHistoryParam', () => {
-  function TestComponent({ initialValue }: { initialValue?: string }) {
-    const [count = 0, setCount] = useHistoryParam(initialValue);
+  function TestComponent() {
+    const [count = 0, setCount] = useHistoryParam();
 
     return (
       <>
@@ -41,20 +41,6 @@ describe('useHistoryParam', () => {
     const { getByDisplayValue } = render(<TestComponent />);
 
     expect(getByDisplayValue('5')).to.be.ok();
-  });
-
-  it('accepts an initial value', () => {
-    const { getByDisplayValue } = render(<TestComponent initialValue="5" />);
-
-    expect(window.location.hash).to.equal('#5');
-    expect(getByDisplayValue('5')).to.be.ok();
-  });
-
-  it('accepts empty initial value', () => {
-    const { getByDisplayValue } = render(<TestComponent />);
-
-    expect(window.location.hash).to.equal('');
-    expect(getByDisplayValue('0')).to.be.ok();
   });
 
   it('syncs by setter', () => {
