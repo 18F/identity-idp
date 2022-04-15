@@ -23,7 +23,9 @@ interface ClipboardButtonProps {
 function ClipboardButton({ clipboardText, ...buttonProps }: ClipboardButtonProps & ButtonProps) {
   return (
     <lg-clipboard-button data-clipboard-text={clipboardText}>
-      <Button {...buttonProps}>{t('components.clipboard_button.label')}</Button>
+      <Button icon="content_copy" {...buttonProps}>
+        {t('components.clipboard_button.label')}
+      </Button>
     </lg-clipboard-button>
   );
 }
