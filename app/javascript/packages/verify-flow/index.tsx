@@ -1,6 +1,14 @@
 import { FormSteps } from '@18f/identity-form-steps';
 import { STEPS } from './steps';
 
-export function VerifyFlow() {
-  return <FormSteps steps={STEPS} />;
+export interface VerifyFlowValues {
+  personalKey?: string;
+}
+
+interface VerifyFlowProps {
+  initialValues?: Partial<VerifyFlowValues>;
+}
+
+export function VerifyFlow({ initialValues = {} }: VerifyFlowProps) {
+  return <FormSteps steps={STEPS} initialValues={initialValues} promptOnNavigate={false} />;
 }

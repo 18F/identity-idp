@@ -218,6 +218,18 @@ describe('FormSteps', () => {
     expect(event.returnValue).to.be.true();
   });
 
+  context('promptOnNavigate prop is set to false', () => {
+    it('does not prompt on navigate', () => {
+      render(<FormSteps steps={STEPS} promptOnNavigate={false} />);
+
+      const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+      window.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.false();
+      expect(event.returnValue).to.be.true();
+    });
+  });
+
   it('pushes step to URL', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
