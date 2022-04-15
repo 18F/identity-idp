@@ -21,6 +21,9 @@ feature 'Multi Two Factor Authentication' do
 
       expect(current_path).to eq phone_setup_path
 
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_security_code
+
       fill_in_code_with_last_phone_otp
       click_submit_default
 
@@ -31,6 +34,7 @@ feature 'Multi Two Factor Authentication' do
       expect(page).to have_link(t('forms.backup_code.download'))
       expect(current_path).to eq backup_code_setup_path
 
+      click_continue
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
@@ -51,6 +55,9 @@ feature 'Multi Two Factor Authentication' do
        to have_content t('titles.phone_setup')
 
       expect(current_path).to eq phone_setup_path
+
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_security_code
 
       fill_in_code_with_last_phone_otp
       click_submit_default
