@@ -18,7 +18,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     }
   end
   let(:encrypted_arguments) do
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: pii }.to_json,
     )
   end

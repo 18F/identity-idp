@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AddressProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: applicant_pii }.to_json,
     )
   end
