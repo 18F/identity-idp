@@ -26,7 +26,7 @@ describe Reports::VerificationErrorsReport do
     now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
 
-    run_report_and_expect("#{header}#{uuid},#{now.utc},ABANDON\r\n")
+    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},ABANDON\r\n")
   end
 
   it 'sends out a blank report if no issuer data' do
@@ -45,7 +45,7 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.utc},DOCUMENT_FAIL\r\n")
+    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},DOCUMENT_FAIL\r\n")
   end
 
   it 'sends out a verify error if the user submits PII but does not progress forward' do
@@ -57,7 +57,7 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.utc},VERIFY_FAIL\r\n")
+    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},VERIFY_FAIL\r\n")
   end
 
   it 'sends out a phone error if the user submits phone info but does not progress forward' do
@@ -69,7 +69,7 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.utc},PHONE_FAIL\r\n")
+    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},PHONE_FAIL\r\n")
   end
 
   it 'sends more than one user' do
@@ -84,7 +84,9 @@ describe Reports::VerificationErrorsReport do
     )
 
     run_report_and_expect(
-      "#{header}#{uuid},#{now.utc},DOCUMENT_FAIL\r\n#{uuid2},#{now.utc},ABANDON\r\n",
+      "#{header}"\
+      "#{uuid},#{now.to_time.utc.iso8601},DOCUMENT_FAIL\r\n"\
+      "#{uuid2},#{now.to_time.utc.iso8601},ABANDON\r\n",
     )
   end
 

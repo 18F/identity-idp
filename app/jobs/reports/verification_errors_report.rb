@@ -39,7 +39,7 @@ module Reports
         transaction_with_timeout do
           rows = ::VerificationErrorsReport.call(issuer, 24.hours.ago)
           rows.each do |row|
-            csv << [row['uuid'], row['welcome_view_at'], ial2_error_code(row)]
+            csv << [row['uuid'], row['welcome_view_at'].iso8601, ial2_error_code(row)]
           end
         end
       end
