@@ -2,21 +2,17 @@ import 'clipboard-polyfill/overwrite-globals'; // See: https://github.com/jsdom/
 import sinon from 'sinon';
 import { getByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { ClipboardButton } from './index.js';
+import './clipboard-button-element';
 
-describe('ClipboardButton', () => {
-  before(() => {
-    if (!customElements.get('lg-clipboard-button')) {
-      customElements.define('lg-clipboard-button', ClipboardButton);
-    }
-  });
+describe('ClipboardButtonElement', () => {
+  const sandbox = sinon.createSandbox();
 
   beforeEach(() => {
-    sinon.spy(navigator.clipboard, 'writeText');
+    sandbox.spy(navigator.clipboard, 'writeText');
   });
 
   afterEach(() => {
-    navigator.clipboard.writeText.restore();
+    sandbox.restore();
   });
 
   function createAndConnectElement({ clipboardText = '' } = {}) {

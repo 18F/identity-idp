@@ -1,4 +1,5 @@
 import { PageHeading, Button } from '@18f/identity-components';
+import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
@@ -19,8 +20,8 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
           <h2 className="margin-y-0">{t('users.personal_key.header')}</h2>
           <div className="bg-personal-key padding-top-4 margin-y-2">
             <div className="padding-x-0 tablet:padding-x-1 padding-y-2 separator-text bg-pk-box">
-              {personalKey.split('-').map((segment) => (
-                <strong key={segment} className="separator-text__code">
+              {personalKey.split('-').map((segment, index) => (
+                <strong key={[segment, index].join()} className="separator-text__code">
                   {segment}
                 </strong>
               ))}
@@ -44,9 +45,11 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
       <Button isOutline className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0">
         {t('users.personal_key.print')}
       </Button>
-      <Button isOutline className="margin-bottom-2 tablet:margin-bottom-0">
-        {t('links.copy')}
-      </Button>
+      <ClipboardButton
+        clipboardText={personalKey}
+        isOutline
+        className="margin-bottom-2 tablet:margin-bottom-0"
+      />
       <div className="margin-y-5 clearfix">
         <p className="margin-bottom-0">
           <strong>{t('instructions.personal_key.email_title')}</strong>
