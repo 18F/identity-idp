@@ -21,7 +21,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
           <div className="bg-personal-key padding-top-4 margin-y-2">
             <div className="padding-x-0 tablet:padding-x-1 padding-y-2 separator-text bg-pk-box">
               {personalKey.split('-').map((segment, index) => (
-                <strong key={index} className="separator-text__code">
+                <strong key={[segment, index].join()} className="separator-text__code">
                   {segment}
                 </strong>
               ))}
