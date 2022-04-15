@@ -33,7 +33,7 @@ class Api::Verify::CompleteController < ApplicationController
   end
 
   def confirm_profile_has_been_created
-    render json: { error: 'User credentials not found'} if idv_session.profile.blank?
+    render json: { error: '401 - User credentials not found'.to_json, status: 401 } if idv_session.profile.blank?
   end
 
 end
