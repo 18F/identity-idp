@@ -20,7 +20,12 @@ export function VerifyFlow({ initialValues = {} }: VerifyFlowProps) {
         <StepIndicatorStep title="Verify phone or address" status={StepStatus.COMPLETE} />
         <StepIndicatorStep title="Secure your account" status={StepStatus.CURRENT} />
       </StepIndicator>
-      <FormSteps steps={STEPS} initialValues={initialValues} promptOnNavigate={false} />
+      <FormSteps
+        steps={STEPS}
+        initialValues={initialValues}
+        promptOnNavigate={false}
+        basePath="/verify/v2/"
+      />
     </>
   );
 }
