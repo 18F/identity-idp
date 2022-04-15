@@ -1,17 +1,18 @@
-/**
- * @typedef IconProps
- *
- * @prop {string=} className Optional class name to apply to SVG element.
- */
+import type { ComponentType } from 'react';
+
+interface IconProps {
+  /**
+   * Optional class name to apply to SVG element.
+   */
+  className?: string;
+}
 
 /**
  * Creates a new icon component, accepting common props, and applying common wrapping elements.
  *
- * @param {string} path SVG icon path definition.
- *
- * @return {import('react').FunctionComponent<IconProps>}
+ * @param path SVG icon path definition.
  */
-function createIconComponent(path) {
+function createIconComponent(path: string): ComponentType<IconProps> {
   return ({ className }) => (
     <svg
       aria-hidden
