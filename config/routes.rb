@@ -326,7 +326,9 @@ Rails.application.routes.draw do
     end
 
     scope '/verify/v2' do
+      get '/' => 'verify#show'
       get '/personal_key' => 'verify#show'
+      get '/personal_key_confirm' => 'verify#show'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
