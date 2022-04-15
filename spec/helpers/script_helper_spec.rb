@@ -55,7 +55,6 @@ RSpec.describe ScriptHelper do
         let(:production_domain_name) { 'http://example.com' }
 
         before do
-          allow(Rails.env).to receive(:production?).and_return(true)
           allow(IdentityConfig.store).to receive(:asset_host).and_return(production_asset_host)
           allow(IdentityConfig.store).to receive(:domain_name).and_return(production_domain_name)
         end
