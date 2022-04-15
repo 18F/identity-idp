@@ -8,6 +8,8 @@ fr:
       toggle_label: Afficher le mot de passe
     phone_input:
       country_code_label: Code pays
+    print_button:
+      label: Imprimer cette page
     status_page:
       icons:
         error: Erreur

@@ -18,13 +18,12 @@
       outline: true,
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ).with_content(t('forms.backup_code.download')) %>
-<%= render ButtonComponent.new(
+<%= render PrintButtonComponent.new(
       icon: :print,
       outline: true,
       type: :button,
-      data: { print: '' },
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ).with_content(t('users.personal_key.print')) %>
+    ) %>
 <%= render ClipboardButtonComponent.new(
       clipboard_text: code,
       outline: true,
