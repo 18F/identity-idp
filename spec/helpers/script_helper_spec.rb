@@ -33,7 +33,7 @@ RSpec.describe ScriptHelper do
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
         allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
-          and_return(['clock.svg'])
+          and_return(['clock.svg', 'identity-style-guide/dist/assets/img/sprite.svg'])
       end
 
       it 'prints asset paths sources' do
@@ -42,8 +42,37 @@ RSpec.describe ScriptHelper do
         expect(output).to have_css(
           'script[type="application/json"][data-asset-map]',
           visible: :all,
-          text: '{"clock.svg":"/clock.svg"}',
+          text: {
+            'clock.svg' => '/clock.svg',
+            'identity-style-guide/dist/assets/img/sprite.svg' =>
+              '/identity-style-guide/dist/assets/img/sprite.svg',
+          }.to_json,
         )
+      end
+
+      context 'with configured asset host' do
+        let(:production_asset_host) { 'http://assets.example.com' }
+        let(:production_domain_name) { 'http://example.com' }
+
+        before do
+          allow(Rails.env).to receive(:production?).and_return(true)
+          allow(IdentityConfig.store).to receive(:asset_host).and_return(production_asset_host)
+          allow(IdentityConfig.store).to receive(:domain_name).and_return(production_domain_name)
+        end
+
+        it 'uses asset_host for non-same-origin assets and domain_name for same-origin assets' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            'script[type="application/json"][data-asset-map]',
+            visible: :all,
+            text: {
+              'clock.svg' => 'http://assets.example.com/clock.svg',
+              'identity-style-guide/dist/assets/img/sprite.svg' =>
+                'http://example.com/identity-style-guide/dist/assets/img/sprite.svg',
+            }.to_json,
+          )
+        end
       end
 
       it 'prints script sources' do
