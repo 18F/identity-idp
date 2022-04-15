@@ -11,7 +11,7 @@ class VerifyController < ApplicationController
 
   def app_data
     {
-      initial_values: { personalKey: '0000-0000-0000-0000' },
+      initial_values: { 'personalKey' => '0000-0000-0000-0000' },
     }
   end
 end
