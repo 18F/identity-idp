@@ -272,26 +272,26 @@ class ApplicationController < ActionController::Base
 
   def confirm_two_factor_authenticated(id = nil)
     respond_to do |format|
-      if user_needs_new_session_with_request_id?(id) do
-        format.json { render json: { error: 'There was an authentication error'.to_json, status: 401 } }
+      if user_needs_new_session_with_request_id?(id)
+        format.json { render json: { error: 'There was an authentication error', status: 401 } }
         format.html { return prompt_to_sign_in_with_request_id(id) }
       end
       authenticate_user!(force: true)
 
-      unless two_factor_enabled? do
-        format.json { render json: { error:  'two factor auth was not enabled'.to_json, status: 401 } }
+      unless two_factor_enabled?
+        format.json { render json: { error:  'two factor auth was not enabled', status: 401 } }
         format.html { prompt_to_setup_mfa }
       end
-      unless user_fully_authenticated? do
-        format.json { render json: { error: 'user is not fully authenticated'.to_json, status: 401 } }
+      unless user_fully_authenticated?
+        format.json { render json: { error: 'user is not fully authenticated', status: 401 } }
         format.html { prompt_to_verify_mfa }
       end
       if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
-        format.json { render json: { error: 'user needs sp auth method setup'.to_json, status: 401 } }
+        format.json { render json: { error: 'user needs sp auth method setup', status: 401 } }
         format.html { return prompt_to_setup_mfa }
       end
-      if service_provider_mfa_policy.user_needs_sp_auth_method_verification? do
-        format.json { render json: { error: 'prompt to verify sp required mfa'.to_json, status: 401 } }
+      if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
+        format.json { render json: { error: 'prompt to verify sp required mfa', status: 401 } }
         format.html { return prompt_to_verify_sp_required_mfa }
       end
     end
@@ -299,8 +299,6 @@ class ApplicationController < ActionController::Base
     enforce_total_session_duration_timeout
     true
   end
-
-
 
   def enforce_total_session_duration_timeout
     return sign_out_with_timeout_error if session_total_duration_expired?
