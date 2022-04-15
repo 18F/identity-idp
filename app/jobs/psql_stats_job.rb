@@ -10,6 +10,8 @@ class PsqlStatsJob < ApplicationJob
     end,
   )
 
+  discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+
   # gather data on bloat for each table
   # https://github.com/ioguix/pgsql-bloat-estimation/blob/master/table/table_bloat.sql
   QUERY = <<-SQL
