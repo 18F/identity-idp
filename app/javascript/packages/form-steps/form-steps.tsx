@@ -175,7 +175,7 @@ function FormSteps({
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam('step', null);
+  const [stepName, setStepName] = useHistoryParam();
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);

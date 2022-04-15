@@ -1,36 +1,6 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Given a query string and parameter name, returns the decoded value associated with that parameter
- * in the query string, or null if the value cannot be found. The query string should be provided
- * without a leading "?".
- *
- * This is intended to polyfill a behavior equivalent to:
- *
- * ```
- * new URLSearchParams(queryString).get(name)
- * ```
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/get
- *
- * @param queryString Query string to search within.
- * @param name        Parameter name to search for.
- *
- * @return Decoded parameter value if found, or null otherwise.
- */
-export function getQueryParam(queryString: string, name: string): string | null {
-  const pairs = queryString.split('&');
-  for (let i = 0; i < pairs.length; i += 1) {
-    const [key, value = ''] = pairs[i].split('=').map(decodeURIComponent);
-    if (key === name) {
-      return value;
-    }
-  }
-
-  return null;
-}
-
-/**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
  * Returns a `useState`-like tuple of the current value and a setter to assign the next parameter
  * value.
@@ -40,24 +10,17 @@ export function getQueryParam(queryString: string, name: string): string | null 
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param name Parameter name to sync.
  * @param initialValue Value to use as initial in absence of another value.
  *
  * @return Tuple of current state, state setter.
  */
-function useHistoryParam(
-  name: string,
-  initialValue?: string | null,
-): [any, (nextParamValue: any) => void] {
-  const getCurrentQueryParam = () =>
-    getQueryParam(window.location.hash.slice(1), name) ?? undefined;
+function useHistoryParam(initialValue?: string): [any, (nextParamValue: any) => void] {
+  const getCurrentQueryParam = () => window.location.hash.slice(1) || undefined;
 
   const [value, setValue] = useState(getCurrentQueryParam);
 
   function getValueURL(nextValue) {
-    return nextValue
-      ? `#${[name, nextValue].map(encodeURIComponent).join('=')}`
-      : window.location.pathname + window.location.search;
+    return nextValue ? `#${nextValue}` : window.location.pathname + window.location.search;
   }
 
   function setParamValue(nextValue) {
