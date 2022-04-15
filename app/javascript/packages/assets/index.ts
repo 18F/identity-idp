@@ -1,4 +1,16 @@
-type AssetPaths = Record<string, string> | undefined;
+type AssetPaths = Record<string, string>;
 
-// eslint-disable-next-line no-underscore-dangle
-export const getAssetPath = (path) => ((global as any)._asset_paths as AssetPaths)?.[path];
+export function getAssetPath(path) {
+  if (!getAssetPath.cache) {
+    try {
+      const script = document.querySelector('[data-asset-map]') as HTMLScriptElement;
+      getAssetPath.cache = JSON.parse(script.textContent!);
+    } catch {
+      getAssetPath.cache = {};
+    }
+  }
+
+  return getAssetPath.cache![path];
+}
+
+getAssetPath.cache = undefined as AssetPaths | undefined;

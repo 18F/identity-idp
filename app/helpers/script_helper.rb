@@ -39,9 +39,12 @@ module ScriptHelper
     assets = AssetSources.get_assets(*names)
     if assets.present?
       asset_map = assets.index_with { |path| asset_path(path) }
-      # rubocop:disable Rails/OutputSafety
-      javascript_tag("window._asset_paths = #{asset_map.to_json};".html_safe, nonce: true)
-      # rubocop:enable Rails/OutputSafety
+      content_tag(
+        :script,
+        asset_map.to_json,
+        { type: 'application/json', data: { asset_map: '' } },
+        false,
+      )
     end
   end
 

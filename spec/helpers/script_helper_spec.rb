@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ScriptHelper do
-  def content_security_policy_nonce; end
-
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
       output = javascript_include_tag_without_preload 'application'
@@ -42,9 +40,9 @@ RSpec.describe ScriptHelper do
         output = render_javascript_pack_once_tags
 
         expect(output).to have_css(
-          'script',
+          'script[type="application/json"][data-asset-map]',
           visible: :all,
-          text: 'window._asset_paths = {"clock.svg":"/clock.svg"};',
+          text: '{"clock.svg":"/clock.svg"}',
         )
       end
 
