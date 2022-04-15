@@ -8,7 +8,7 @@ function PersonalKeyInput(_props, ref) {
       aria-label={t('forms.personal_key.confirmation_label')}
       autoComplete="off"
       className="width-full margin-bottom-6 border-dashed field font-family-mono personal-key text-uppercase"
-      maxLength={16}
+      maxLength={19}
       pattern="[a-zA-Z0-9-]"
       spellCheck={false}
       type="text"
