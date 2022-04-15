@@ -20,8 +20,8 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
           <h2 className="margin-y-0">{t('users.personal_key.header')}</h2>
           <div className="bg-personal-key padding-top-4 margin-y-2">
             <div className="padding-x-0 tablet:padding-x-1 padding-y-2 separator-text bg-pk-box">
-              {personalKey.split('-').map((segment) => (
-                <strong key={segment} className="separator-text__code">
+              {personalKey.split('-').map((segment, index) => (
+                <strong key={index} className="separator-text__code">
                   {segment}
                 </strong>
               ))}
