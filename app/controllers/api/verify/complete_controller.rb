@@ -1,8 +1,8 @@
 class Api::Verify::CompleteController < ApplicationController
   include IdvSession
-  before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_vendor_session_started
-  before_action :confirm_profile_has_been_created
+  #before_action :confirm_two_factor_authenticated
+  #before_action :confirm_idv_vendor_session_started
+  #before_action :confirm_profile_has_been_created
 
 
   def get_personal_key
@@ -33,7 +33,7 @@ class Api::Verify::CompleteController < ApplicationController
   end
 
   def confirm_profile_has_been_created
-    render json: { error: '401 - User credentials not found'.to_json, status: 401 } if idv_session.profile.blank?
+    render json: { error: 'User credentials not found'.to_json, status: 401 } if idv_session.profile.blank?
   end
 
 end
