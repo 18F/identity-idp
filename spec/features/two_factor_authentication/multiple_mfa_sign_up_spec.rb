@@ -4,7 +4,7 @@ feature 'Multi Two Factor Authentication' do
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
   end
-  
+
   describe 'When the user has not set up 2FA' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
