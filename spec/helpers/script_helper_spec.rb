@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ScriptHelper do
-  include ScriptHelper
-
   describe '#javascript_include_tag_without_preload' do
     it 'avoids modifying headers' do
       output = javascript_include_tag_without_preload 'application'
@@ -34,6 +32,18 @@ RSpec.describe ScriptHelper do
         allow(AssetSources).to receive(:get_sources).with('polyfill').and_return(['/polyfill.js'])
         allow(AssetSources).to receive(:get_sources).with('application', 'document-capture').
           and_return(['/application.js', '/document-capture.js'])
+        allow(AssetSources).to receive(:get_assets).with('application', 'document-capture').
+          and_return(['clock.svg'])
+      end
+
+      it 'prints asset paths sources' do
+        output = render_javascript_pack_once_tags
+
+        expect(output).to have_css(
+          'script[type="application/json"][data-asset-map]',
+          visible: :all,
+          text: '{"clock.svg":"/clock.svg"}',
+        )
       end
 
       it 'prints script sources' do

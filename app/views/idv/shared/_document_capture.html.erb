@@ -141,18 +141,4 @@
       ) %>
 </div>
 
-<%= backwards_compatible_javascript_tag do %>
-  <% asset_keys = [
-       'close-white-alt.svg',
-       'id-card.svg',
-       'spinner.gif',
-       'spinner@2x.gif',
-       'status/warning.svg',
-       'idv/capture-tips-clean.svg',
-       'idv/capture-tips-surface.svg',
-       'idv/capture-tips-lighting.svg',
-     ] %>
-  window.LoginGov = window.LoginGov || {};
-  window.LoginGov.assets = <%= raw asset_keys.index_with { |key| asset_path(key) }.to_json %>;
-<% end %>
 <%= javascript_packs_tag_once 'document-capture' %>

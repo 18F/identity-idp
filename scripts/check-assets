@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-$LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
-require 'asset_checker'
-
-has_missing_assets = AssetChecker.new(ARGV).check_files
-exit 1 if has_missing_assets

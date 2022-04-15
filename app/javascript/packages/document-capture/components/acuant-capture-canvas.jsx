@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { getAssetPath } from '@18f/identity-assets';
 import AcuantContext from '../context/acuant';
-import useAsset from '../hooks/use-asset';
 
 /**
  * Capture type.
@@ -33,7 +33,6 @@ export function defineObservableProperty(object, property, onChangeCallback) {
 
 function AcuantCaptureCanvas() {
   const { isReady } = useContext(AcuantContext);
-  const { getAssetPath } = useAsset();
   const { t } = useI18n();
   const cameraRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
