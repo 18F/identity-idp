@@ -131,6 +131,12 @@ interface FormStepsProps {
    * Defaults to true.
    */
   promptOnNavigate?: boolean;
+
+  /**
+   * When using path fragments for maintaining history, the base path to which the current step name
+   * is appended.
+   */
+  basePath?: string;
 }
 
 /**
@@ -171,11 +177,12 @@ function FormSteps({
   initialActiveErrors = [],
   autoFocus,
   promptOnNavigate = true,
+  basePath,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam();
+  const [stepName, setStepName] = useHistoryParam({ basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);

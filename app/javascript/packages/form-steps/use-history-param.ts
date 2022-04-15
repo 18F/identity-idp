@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
 
+interface HistoryOptions {
+  basePath?: string;
+}
+
 /**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
  * Returns a `useState`-like tuple of the current value and a setter to assign the next parameter
@@ -12,13 +16,20 @@ import { useState, useEffect } from 'react';
  *
  * @return Tuple of current state, state setter.
  */
-function useHistoryParam(): [any, (nextParamValue: any) => void] {
-  const getCurrentQueryParam = () => window.location.hash.slice(1) || undefined;
+function useHistoryParam({ basePath }: HistoryOptions = {}): [
+  string | undefined,
+  (nextParamValue: string) => void,
+] {
+  const getCurrentQueryParam = () =>
+    (typeof basePath === 'string'
+      ? window.location.pathname.split(basePath)[1]?.replace(/\/$/, '')
+      : window.location.hash.slice(1)) || undefined;
 
   const [value, setValue] = useState(getCurrentQueryParam);
 
   function getValueURL(nextValue) {
-    return nextValue ? `#${nextValue}` : window.location.pathname + window.location.search;
+    const prefix = typeof basePath === 'string' ? basePath : '#';
+    return nextValue ? `${prefix}${nextValue}` : window.location.pathname + window.location.search;
   }
 
   function setParamValue(nextValue) {
