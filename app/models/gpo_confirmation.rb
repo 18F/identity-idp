@@ -14,9 +14,6 @@ class GpoConfirmation < ApplicationRecord
   private
 
   def encryptor
-    # This currently uses the SessionEncryptor, which is meant to be used to
-    # encrypt the session. When this code is changed to integrate a new mail
-    # vendor we should create a purpose built encryptor for that vendor
-    Encryption::Encryptors::SessionEncryptor.new
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new
   end
 end

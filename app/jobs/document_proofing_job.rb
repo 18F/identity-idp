@@ -22,7 +22,7 @@ class DocumentProofingJob < ApplicationJob
     user = dcs.user
 
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
     )
     document_args = decrypted_args[:document_arguments]

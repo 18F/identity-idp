@@ -22,7 +22,7 @@ module EncryptedRedisStructStorage
     ciphertext = REDIS_POOL.with { |client| client.get(key(id, type: type)) }
     return nil if ciphertext.blank?
 
-    json = Encryption::Encryptors::SessionEncryptor.new.decrypt(ciphertext)
+    json = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(ciphertext)
     data = JSON.parse(json, symbolize_names: true)
     type.new.tap do |struct|
       struct.id = id
@@ -52,7 +52,7 @@ module EncryptedRedisStructStorage
     payload.transform_values!(&utf_8_encode_strs)
 
     struct_key = key(struct.id, type: struct.class)
-    ciphertext = Encryption::Encryptors::SessionEncryptor.new.encrypt(payload.to_json)
+    ciphertext = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(payload.to_json)
 
     REDIS_POOL.with do |client|
       client.setex(struct_key, expires_in, ciphertext)
