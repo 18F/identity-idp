@@ -46,7 +46,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         {t('users.personal_key.print')}
       </Button>
       <ClipboardButton
-        clipboardText="0000-0000-0000-0000"
+        clipboardText={personalKey}
         isOutline
         className="margin-bottom-2 tablet:margin-bottom-0"
       />
