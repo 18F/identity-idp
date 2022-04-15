@@ -277,14 +277,13 @@ class ApplicationController < ActionController::Base
         format.html { return prompt_to_sign_in_with_request_id(id) }
       end
       authenticate_user!(force: true)
-
       unless two_factor_enabled?
         format.json { render json: { error:  'two factor auth was not enabled', status: 401 } }
-        format.html { prompt_to_setup_mfa }
+        format.html { return prompt_to_setup_mfa }
       end
       unless user_fully_authenticated?
         format.json { render json: { error: 'user is not fully authenticated', status: 401 } }
-        format.html { prompt_to_verify_mfa }
+        format.html { return prompt_to_verify_mfa }
       end
       if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
         format.json { render json: { error: 'user needs sp auth method setup', status: 401 } }
@@ -294,11 +293,14 @@ class ApplicationController < ActionController::Base
         format.json { render json: { error: 'prompt to verify sp required mfa', status: 401 } }
         format.html { return prompt_to_verify_sp_required_mfa }
       end
-    end
 
-    enforce_total_session_duration_timeout
-    true
+      format.html {
+        enforce_total_session_duration_timeout
+        true
+      }
+    end
   end
+
 
   def enforce_total_session_duration_timeout
     return sign_out_with_timeout_error if session_total_duration_expired?
