@@ -15,7 +15,7 @@ class RemoveOldThrottlesJob < ApplicationJob
 
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
-  def perform(now, limit: 1000, total_limit: 100_000)
+  def perform(now, limit: 500, total_limit: 50_000)
     max_window = Throttle::THROTTLE_CONFIG.map { |_, config| config[:attempt_window] }.max
     total_removed = 0
 
