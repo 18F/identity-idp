@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'open3'
+
+config = YAML.safe_load(File.read('./.gitlab-ci-deploy.yml'))
+
+artifact_bucket = ENV['ARTIFACT_BUCKET']
+_region = ENV.fetch('AWS_REGION')
+sha = ENV.fetch('CI_COMMIT_SHA')
+
+branch_environments = config.dig(
+  'deploy_branch_to_environment_map',
+  ENV.fetch('CI_COMMIT_BRANCH'),
+)
+
+branch_environments.map do |upload_environment|
+  static_bucket = ENV["#{upload_environment.upcase}_STATIC_BUCKET"]
+  if static_bucket.nil?
+    puts "skipping #{upload environment} because it is missing static bucket config!"
+    next
+  end
+
+  key = "#{upload_environment}/#{sha}.idp.tar.gz"
+  puts "uploading #{key}!"
+  s3_artifact_uri = "s3://#{artifact_bucket}/#{key}"
+
+  _output, status = Open3.capture2('aws', 's3', 'cp', ARGV[0], s3_artifact_uri)
+  raise 'artifact copy failed' unless status.success?
+
+  assets_sync_command = <<-CMD
+    aws s3 sync --size-only --cache-control max-age=31536000 --exclude .sprockets-manifest-*.json public/assets s3://#{static_bucket}/assets
+  CMD
+  _output, status = Open3.capture2(assets_sync_command)
+  raise 'assets sync failed' unless status.success?
+
+  packs_sync_command = <<-CMD
+    aws s3 sync --size-only --cache-control max-age=31536000 --exclude "manifest.json" public/packs s3://#{static_bucket}/packs
+  CMD
+  _output, status = Open3.capture2(packs_sync_command)
+  raise 'packs sync failed' unless status.success?
+
+  manifest_upload_command = <<-CMD
+    aws s3 cp public/packs/manifest.json s3://#{static_bucket}/packs/manifest.json
+  CMD
+  _output, status = Open3.capture2(manifest_upload_command)
+  raise 'manifest upload failed' unless status.success?
+end

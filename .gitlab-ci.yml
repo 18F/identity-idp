@@ -201,7 +201,7 @@ coverage:
       - coverage/assets/
       - coverage/coverage.xml
 
-artifact:
+prepare_deploy:
   stage: after_test
   tags:
     - build-pool
@@ -213,3 +213,4 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'
