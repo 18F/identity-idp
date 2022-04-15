@@ -5,8 +5,6 @@ let instances = 0;
 /**
  * Returns a string value guaranteed to be unique to all element instances in the application. This
  * can be used in generic unique IDs when needed in, for example, form input label association.
- *
- * @return {string}
  */
 function useInstanceId() {
   return useMemo(() => {
