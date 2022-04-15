@@ -53,7 +53,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         </p>
         <p>{t('instructions.personal_key.email_body')}</p>
       </div>
-      <FormStepsContinueButton />
+      <FormStepsContinueButton className="margin-bottom-0" />
     </>
   );
 }
