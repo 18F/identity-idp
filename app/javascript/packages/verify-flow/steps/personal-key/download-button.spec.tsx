@@ -14,6 +14,15 @@ describe('DownloadButton', () => {
     expect(link.getAttribute('href')).to.equal('data:,Hello%2C%20world!');
   });
 
+  it('renders with download icon', () => {
+    const { getByRole } = render(<DownloadButton fileName="example.txt" content="example" />);
+
+    const icon = getByRole('img', { hidden: true });
+
+    expect(icon.classList.contains('usa-icon')).to.be.true();
+    expect(icon.querySelector('use[href$="#file_download"]'));
+  });
+
   it('does not prevent default when clicked', () => {
     const { getByRole } = render(<DownloadButton fileName="example.txt" content="example" />);
 
