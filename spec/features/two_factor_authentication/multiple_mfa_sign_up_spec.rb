@@ -28,7 +28,8 @@ feature 'Multi Two Factor Authentication' do
       click_submit_default
 
       expect(page).to have_current_path(
-          auth_method_confirmation_path(next_setup_choice: 'backup_code'))
+        auth_method_confirmation_path(next_setup_choice: 'backup_code'),
+      )
 
       click t('multi_factor_authentication.add')
 
@@ -64,7 +65,8 @@ feature 'Multi Two Factor Authentication' do
       click_submit_default
 
       expect(page).to have_current_path(
-        auth_method_confirmation_path(next_setup_choice: 'backup_code'))
+        auth_method_confirmation_path(next_setup_choice: 'backup_code'),
+      )
 
       click t('multi_factor_authentication.skip')
 
