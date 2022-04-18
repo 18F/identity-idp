@@ -14,6 +14,7 @@ module MfaSetupConcern
   end
 
   def determine_next_mfa_selection
+    return unless user_session[:selected_mfa_options]
     current_session = user_session[:next_mfa_selection_choice]
     current_index = user_session[:selected_mfa_options].find_index(current_session) || 0
     current_index + 1
