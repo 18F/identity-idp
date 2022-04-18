@@ -5,7 +5,7 @@ class MfaConfirmationController < ApplicationController
   def show
     @presenter = MfaConfirmationShowPresenter.new(
       current_user: current_user,
-      next_path: confirmation_path(final_path),
+      next_path: confirmation_path(params[:next_setup_choice]) || final_path,
       final_path: final_path,
     )
   end
@@ -29,7 +29,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def final_path
-    params.require(:final_path)
+    user_session[:mfa_selection_final_path]
   end
 
   def handle_valid_password
