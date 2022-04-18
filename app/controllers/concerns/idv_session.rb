@@ -34,7 +34,7 @@ module IdvSession
         format.json { render json: { error: 'unable to find session', status: 401 } }
         format.html { redirect_to idv_doc_auth_url  }
       end
-
+      format.html {}
     end
   end
 
@@ -59,6 +59,7 @@ module IdvSession
         format.json { render json: { error: 'unable to find user', status: 401 } }
         format.html { redirect_to root_url }
       end
+      format.html {}
     end
   end
 

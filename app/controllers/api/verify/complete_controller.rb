@@ -1,8 +1,8 @@
 class Api::Verify::CompleteController < ApplicationController
   include IdvSession
-  #before_action :confirm_two_factor_authenticated
-  #before_action :confirm_idv_vendor_session_started
-  #before_action :confirm_profile_has_been_created
+  before_action :confirm_two_factor_authenticated
+  before_action :confirm_idv_vendor_session_started
+  before_action :confirm_profile_has_been_created
 
 
   def get_personal_key
