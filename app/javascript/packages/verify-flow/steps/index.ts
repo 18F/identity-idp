@@ -4,11 +4,11 @@ import PersonalKeyConfirmStep from './personal-key-confirm/personal-key-confirm-
 
 export const STEPS: FormStep[] = [
   {
-    name: 'personal-key',
+    name: 'personal_key',
     form: PersonalKeyStep,
   },
   {
-    name: 'personal-key-confirm',
+    name: 'personal_key_confirm',
     form: PersonalKeyConfirmStep,
   },
 ];

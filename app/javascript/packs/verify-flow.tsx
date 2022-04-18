@@ -1,10 +1,28 @@
 import { render } from 'react-dom';
 import { VerifyFlow } from '@18f/identity-verify-flow';
 
-const appRoot = document.getElementById('app-root')!;
-let initialValues;
+interface AppRootValues {
+  /**
+   * JSON-encoded object of initial application data.
+   */
+  initialValues: string;
+
+  /**
+   * The path to which the current step is appended to create the current step URL.
+   */
+  basePath: string;
+}
+
+interface AppRootElement extends HTMLElement {
+  dataset: DOMStringMap & AppRootValues;
+}
+
+const appRoot = document.getElementById('app-root') as AppRootElement;
+const { initialValues, basePath } = appRoot.dataset;
+
+let parsedInitialValues;
 try {
-  initialValues = JSON.parse(appRoot.dataset.initialValues!);
+  parsedInitialValues = JSON.parse(initialValues);
 } catch {}
 
-render(<VerifyFlow initialValues={initialValues} />, appRoot);
+render(<VerifyFlow initialValues={parsedInitialValues} basePath={basePath} />, appRoot);

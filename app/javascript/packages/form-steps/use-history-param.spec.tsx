@@ -1,32 +1,15 @@
+import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import useHistoryParam, { getQueryParam } from './use-history-param';
-
-describe('getQueryParam', () => {
-  const queryString = 'a&b=Hello%20world&c';
-
-  it('returns null does not exist', () => {
-    const value = getQueryParam(queryString, 'd');
-
-    expect(value).to.be.null();
-  });
-
-  it('returns decoded value of parameter', () => {
-    const value = getQueryParam(queryString, 'b');
-
-    expect(value).to.equal('Hello world');
-  });
-
-  it('defaults to empty string for empty value', () => {
-    const value = getQueryParam(queryString, 'c');
-
-    expect(value).to.equal('');
-  });
-});
+import { useDefineProperty } from '@18f/identity-test-helpers';
+import useHistoryParam from './use-history-param';
 
 describe('useHistoryParam', () => {
-  function TestComponent({ initialValue }: { initialValue?: string | null }) {
-    const [count = 0, setCount] = useHistoryParam('the count', initialValue);
+  const sandbox = sinon.createSandbox();
+  const defineProperty = useDefineProperty();
+
+  function TestComponent({ basePath }: { basePath?: string }) {
+    const [count = 0, setCount] = useHistoryParam({ basePath });
 
     return (
       <>
@@ -35,7 +18,7 @@ describe('useHistoryParam', () => {
         <label>
           Count: <input value={count} onChange={(event) => setCount(event.target.value)} />
         </label>
-        <button type="button" onClick={() => setCount(count + 1)}>
+        <button type="button" onClick={() => setCount(String(Number(count) + 1))}>
           Increment
         </button>
       </>
@@ -50,6 +33,7 @@ describe('useHistoryParam', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
+    sandbox.restore();
   });
 
   it('returns undefined value if absent from initial URL', () => {
@@ -59,24 +43,10 @@ describe('useHistoryParam', () => {
   });
 
   it('returns initial value if present in initial URL', () => {
-    window.location.hash = '#the%20count=5';
+    window.location.hash = '#5';
     const { getByDisplayValue } = render(<TestComponent />);
 
     expect(getByDisplayValue('5')).to.be.ok();
-  });
-
-  it('accepts an initial value', () => {
-    const { getByDisplayValue } = render(<TestComponent initialValue="5" />);
-
-    expect(window.location.hash).to.equal('#the%20count=5');
-    expect(getByDisplayValue('5')).to.be.ok();
-  });
-
-  it('accepts empty initial value', () => {
-    const { getByDisplayValue } = render(<TestComponent initialValue={null} />);
-
-    expect(window.location.hash).to.equal('');
-    expect(getByDisplayValue('0')).to.be.ok();
   });
 
   it('syncs by setter', () => {
@@ -85,12 +55,12 @@ describe('useHistoryParam', () => {
     userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('1')).to.be.ok();
-    expect(window.location.hash).to.equal('#the%20count=1');
+    expect(window.location.hash).to.equal('#1');
 
     userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
-    expect(window.location.hash).to.equal('#the%20count=2');
+    expect(window.location.hash).to.equal('#2');
   });
 
   it('scrolls to top on programmatic history manipulation', () => {
@@ -119,17 +89,17 @@ describe('useHistoryParam', () => {
     userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('1')).to.be.ok();
-    expect(window.location.hash).to.equal('#the%20count=1');
+    expect(window.location.hash).to.equal('#1');
 
     userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
-    expect(window.location.hash).to.equal('#the%20count=2');
+    expect(window.location.hash).to.equal('#2');
 
     window.history.back();
 
     expect(await findByDisplayValue('1')).to.be.ok();
-    expect(window.location.hash).to.equal('#the%20count=1');
+    expect(window.location.hash).to.equal('#1');
 
     window.history.back();
 
@@ -144,6 +114,116 @@ describe('useHistoryParam', () => {
     userEvent.clear(input);
     userEvent.type(input, 'one hundred');
 
-    expect(window.location.hash).to.equal('#the%20count=one%20hundred');
+    expect(window.location.hash).to.equal('#one%20hundred');
+  });
+
+  Object.entries({
+    'with basePath': '/base/',
+    'with basePath, no trailing slash': '/base',
+  }).forEach(([description, basePath]) => {
+    context(description, () => {
+      context('without initial value', () => {
+        beforeEach(() => {
+          const history: string[] = [basePath];
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return history[history.length - 1];
+              },
+            },
+          });
+
+          sandbox.stub(window.history, 'pushState').callsFake((_data, _unused, url) => {
+            history.push(url as string);
+          });
+          sandbox.stub(window.history, 'back').callsFake(() => {
+            history.pop();
+            window.dispatchEvent(new CustomEvent('popstate'));
+          });
+        });
+
+        it('returns undefined value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('0')).to.be.ok();
+        });
+
+        it('syncs by setter', () => {
+          const { getByText, getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('2')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/2');
+        });
+
+        it('syncs by history events', async () => {
+          const { getByText, getByDisplayValue, findByDisplayValue } = render(
+            <TestComponent basePath="/base/" />,
+          );
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('2')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/2');
+
+          window.history.back();
+
+          expect(await findByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          window.history.back();
+
+          expect(await findByDisplayValue('0')).to.be.ok();
+          expect(window.location.pathname).to.equal(basePath);
+        });
+      });
+
+      context('with initial value', () => {
+        beforeEach(() => {
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return '/base/5/';
+              },
+            },
+          });
+        });
+
+        it('returns initial value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('5')).to.be.ok();
+        });
+      });
+
+      context('with initial value, no trailing slash', () => {
+        beforeEach(() => {
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return '/base/5';
+              },
+            },
+          });
+        });
+
+        it('returns initial value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('5')).to.be.ok();
+        });
+      });
+    });
   });
 });

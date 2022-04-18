@@ -326,7 +326,11 @@ Rails.application.routes.draw do
     end
 
     scope '/verify/v2' do
-      get '/personal_key' => 'verify#show'
+      get '/' => 'verify#show', as: :idv_app_root
+      %w[
+        /personal_key
+        /personal_key_confirm
+      ].each { |step_path| get step_path => 'verify#show' }
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

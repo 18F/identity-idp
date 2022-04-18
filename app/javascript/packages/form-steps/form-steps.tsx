@@ -131,6 +131,12 @@ interface FormStepsProps {
    * Defaults to true.
    */
   promptOnNavigate?: boolean;
+
+  /**
+   * When using path fragments for maintaining history, the base path to which the current step name
+   * is appended.
+   */
+  basePath?: string;
 }
 
 /**
@@ -142,8 +148,8 @@ interface FormStepsProps {
  *
  * @return Step index.
  */
-export function getStepIndexByName(steps: FormStep[], name: string) {
-  return steps.findIndex((step) => step.name === name);
+export function getStepIndexByName(steps: FormStep[], name?: string) {
+  return name ? steps.findIndex((step) => step.name === name) : -1;
 }
 
 /**
@@ -171,11 +177,12 @@ function FormSteps({
   initialActiveErrors = [],
   autoFocus,
   promptOnNavigate = true,
+  basePath,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam('step', null);
+  const [stepName, setStepName] = useHistoryParam({ basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
@@ -271,8 +278,6 @@ function FormSteps({
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
-      // Clear step parameter from URL.
-      setStepName(null);
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
