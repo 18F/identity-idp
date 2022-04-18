@@ -20,11 +20,8 @@ function DownloadButton({ content, fileName, ...buttonProps }: DownloadButtonPro
 
     if ('msSaveBlob' in window.navigator) {
       event.preventDefault();
-
-      const filename = (event.target as HTMLButtonElement).getAttribute('download');
       const blob = new Blob([content], { type: 'text/plain' });
-
-      (window.navigator as any).msSaveBlob(blob, filename);
+      (window.navigator as any).msSaveBlob(blob, fileName);
     }
   };
 
