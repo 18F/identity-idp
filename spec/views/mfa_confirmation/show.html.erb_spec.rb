@@ -34,9 +34,9 @@ describe 'mfa_confirmation/show.html.erb' do
     expect(rendered).to have_selector('p', text: t('multi_factor_authentication.cta'))
   end
 
-  it 'has a button with the next step' do
+  it 'has a button with the ability to skip step' do
     render
 
-    expect(rendered).to have_selector('a', text: t('multi_factor_authentication.skip'))
+    expect(rendered).to have_selector('button', text: t('multi_factor_authentication.skip'))
   end
 end
