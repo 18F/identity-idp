@@ -1,5 +1,13 @@
 {
   "name": "@18f/identity-step-indicator",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react": "*"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
 }
