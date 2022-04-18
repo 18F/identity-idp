@@ -7,10 +7,18 @@ export interface VerifyFlowValues {
 }
 
 interface VerifyFlowProps {
+  /**
+   * Initial values for the form, if applicable.
+   */
   initialValues?: Partial<VerifyFlowValues>;
+
+  /**
+   * The path to which the current step is appended to create the current step URL.
+   */
+  basePath: string;
 }
 
-export function VerifyFlow({ initialValues = {} }: VerifyFlowProps) {
+export function VerifyFlow({ initialValues = {}, basePath }: VerifyFlowProps) {
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -24,7 +32,7 @@ export function VerifyFlow({ initialValues = {} }: VerifyFlowProps) {
         steps={STEPS}
         initialValues={initialValues}
         promptOnNavigate={false}
-        basePath="/verify/v2/"
+        basePath={basePath}
       />
     </>
   );

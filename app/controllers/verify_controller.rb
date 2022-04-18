@@ -11,6 +11,7 @@ class VerifyController < ApplicationController
 
   def app_data
     {
+      base_path: idv_app_root_path,
       initial_values: { 'personalKey' => '0000-0000-0000-0000' },
     }
   end
