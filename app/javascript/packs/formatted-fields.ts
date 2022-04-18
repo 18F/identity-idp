@@ -1,6 +1,7 @@
 import Cleave from 'cleave.js';
+import type { CleaveOptions } from 'cleave.js/options';
 
-const SELECTOR_CONFIGS = {
+const SELECTOR_CONFIGS: Record<string, CleaveOptions> = {
   '.personal-key': {
     blocks: [4, 4, 4, 4],
     delimiter: '-',
@@ -17,7 +18,10 @@ const SELECTOR_CONFIGS = {
   },
 };
 
-Object.entries(SELECTOR_CONFIGS)
-  .map(([selector, config]) => [document.querySelector(selector), config])
-  .filter(([element]) => element)
-  .forEach(([element, config]) => new Cleave(element, config));
+for (const [selector, config] of Object.entries(SELECTOR_CONFIGS)) {
+  const element = document.querySelector(selector);
+  if (element) {
+    // eslint-disable-next-line no-new
+    new Cleave(element as HTMLElement, config);
+  }
+}
