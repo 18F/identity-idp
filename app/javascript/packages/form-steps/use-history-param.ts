@@ -18,7 +18,7 @@ interface HistoryOptions {
  */
 function useHistoryParam({ basePath }: HistoryOptions = {}): [
   string | undefined,
-  (nextParamValue: string) => void,
+  (nextParamValue?: string) => void,
 ] {
   const getCurrentQueryParam = () =>
     (typeof basePath === 'string'

@@ -148,8 +148,8 @@ interface FormStepsProps {
  *
  * @return Step index.
  */
-export function getStepIndexByName(steps: FormStep[], name: string) {
-  return steps.findIndex((step) => step.name === name);
+export function getStepIndexByName(steps: FormStep[], name?: string) {
+  return name ? steps.findIndex((step) => step.name === name) : -1;
 }
 
 /**
@@ -279,7 +279,7 @@ function FormSteps({
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
       // Clear step parameter from URL.
-      setStepName(null);
+      setStepName(undefined);
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
