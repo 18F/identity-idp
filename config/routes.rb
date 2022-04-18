@@ -14,7 +14,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     # This will change to post. Its get for now to test some things.
-    get '/verify/complete/personal_key' => 'verify/complete#get_personal_key'
+    get '/verify/complete' => 'verify/complete#create'
   end
 
   # SAML secret rotation paths
