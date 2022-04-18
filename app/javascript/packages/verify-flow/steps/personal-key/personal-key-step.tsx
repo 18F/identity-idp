@@ -1,4 +1,4 @@
-import { PageHeading, Button } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
