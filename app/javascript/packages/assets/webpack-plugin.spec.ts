@@ -80,7 +80,7 @@ describe('AssetsWebpackPlugin', () => {
       });
     });
 
-    context('manged export name, no whitespace', () => {
+    context('mangled export name, no whitespace', () => {
       const source = "(0,assets/* getAssetPath */.K)('foo.svg'),";
 
       it('returns asset paths', () => {
