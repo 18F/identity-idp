@@ -5,12 +5,12 @@ import DownloadButton from './download-button';
 
 describe('DownloadButton', () => {
   it('renders a link to download the given content as file', () => {
-    const { getByRole } = render(<DownloadButton fileName="example.txt" content="example" />);
+    const { getByRole } = render(<DownloadButton fileName="example.txt" content="Hello, world!" />);
 
     const link = getByRole('link');
 
     expect(link.getAttribute('download')).to.equal('example.txt');
-    expect(link.getAttribute('href')).to.equal('data:text/plain;base64,ZXhhbXBsZQ==');
+    expect(link.getAttribute('href')).to.equal('data:,Hello%2C%20world!');
   });
 
   it('does not prevent default when clicked', () => {

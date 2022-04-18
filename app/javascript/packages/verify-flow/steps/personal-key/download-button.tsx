@@ -36,7 +36,7 @@ function DownloadButton({ content, fileName, ...buttonProps }: DownloadButtonPro
   return (
     <Button
       {...buttonProps}
-      href={`data:text/plain;base64,${btoa(content)}`}
+      href={`data:,${encodeURIComponent(content)}`}
       download={fileName}
       onClick={download}
     />
