@@ -14,14 +14,22 @@ interface DownloadButtonProps {
   fileName: string;
 }
 
+interface NavigatorWithSaveBlob extends Navigator {
+  msSaveBlob: (blob: Blob, filename: string) => void;
+}
+
+const hasProprietarySaveBlob = (
+  navigator: Navigator | NavigatorWithSaveBlob,
+): navigator is NavigatorWithSaveBlob => 'msSaveBlob' in navigator;
+
 function DownloadButton({ content, fileName, ...buttonProps }: DownloadButtonProps & ButtonProps) {
   const download: MouseEventHandler = (event) => {
     buttonProps.onClick?.(event);
 
-    if ('msSaveBlob' in window.navigator) {
+    if (hasProprietarySaveBlob(window.navigator)) {
       event.preventDefault();
       const blob = new Blob([content], { type: 'text/plain' });
-      (window.navigator as any).msSaveBlob(blob, fileName);
+      window.navigator.msSaveBlob(blob, fileName);
     }
   };
 
