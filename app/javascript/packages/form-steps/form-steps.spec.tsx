@@ -264,21 +264,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
   });
 
-  it('clear URL parameter after submission', async () => {
-    const onComplete = sinon.spy();
-    const { getByText, getByLabelText } = render(
-      <FormSteps steps={STEPS} onComplete={onComplete} />,
-    );
-
-    userEvent.click(getByText('forms.buttons.continue'));
-    await userEvent.type(getByLabelText('Second Input One'), 'one');
-    await userEvent.type(getByLabelText('Second Input Two'), 'two');
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('forms.buttons.submit.default'));
-    await waitFor(() => expect(onComplete.calledOnce).to.be.true());
-    expect(window.location.hash).to.equal('');
-  });
-
   it('shifts focus to next heading on step change', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 

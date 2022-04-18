@@ -278,8 +278,6 @@ function FormSteps({
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
-      // Clear step parameter from URL.
-      setStepName(undefined);
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
