@@ -12,4 +12,10 @@
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { t('multi_factor_authentication.add') } %>
 </div>
-<%= link_to t('multi_factor_authentication.skip'), @presenter.final_path %>
+
+<%= button_to( auth_method_confirmation_skip_path,
+  method: :post,
+  class: 'usa-button usa-button--unstyled',
+  ) do %>
+  <%= t('multi_factor_authentication.skip') %>
+<% end %>

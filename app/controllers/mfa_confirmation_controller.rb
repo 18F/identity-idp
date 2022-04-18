@@ -10,6 +10,11 @@ class MfaConfirmationController < ApplicationController
     )
   end
 
+  def skip
+    user_session[:selected_mfa_options] = nil
+    redirect_to final_path
+  end
+
   def new
     session[:password_attempts] ||= 0
   end

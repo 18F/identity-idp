@@ -38,7 +38,7 @@ feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).to have_link(t('forms.backup_code.download'))
-      
+
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
@@ -70,7 +70,7 @@ feature 'Multi Two Factor Authentication' do
         auth_method_confirmation_path(next_setup_choice: 'backup_code'),
       )
 
-      click_link t('multi_factor_authentication.skip')
+      click_button t('multi_factor_authentication.skip')
 
       expect(current_path).to eq account_path
     end

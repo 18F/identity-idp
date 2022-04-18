@@ -141,6 +141,7 @@ Rails.application.routes.draw do
     end
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
+    post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
