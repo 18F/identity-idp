@@ -27,7 +27,7 @@ feature 'Multi Two Factor Authentication' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_current_path(auth_method_confirmation_path)
+      expect(page).to have_current_path(next_setup_choice: 'backup_code')
 
       click t('multi_factor_authentication.add')
 
