@@ -20,12 +20,12 @@ function useHistoryParam({ basePath }: HistoryOptions = {}): [
   string | undefined,
   (nextParamValue?: string) => void,
 ] {
-  const getCurrentQueryParam = () =>
+  const getCurrentValue = () =>
     (typeof basePath === 'string'
       ? window.location.pathname.split(basePath)[1]?.replace(/\/$/, '')
       : window.location.hash.slice(1)) || undefined;
 
-  const [value, setValue] = useState(getCurrentQueryParam);
+  const [value, setValue] = useState(getCurrentValue);
 
   function getValueURL(nextValue) {
     const prefix = typeof basePath === 'string' ? basePath : '#';
@@ -46,7 +46,7 @@ function useHistoryParam({ basePath }: HistoryOptions = {}): [
   }
 
   useEffect(() => {
-    const syncValue = () => setValue(getCurrentQueryParam());
+    const syncValue = () => setValue(getCurrentValue());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
   }, []);
