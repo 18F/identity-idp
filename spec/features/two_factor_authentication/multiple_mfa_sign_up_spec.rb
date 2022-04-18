@@ -33,10 +33,12 @@ feature 'Multi Two Factor Authentication' do
 
       click_link t('multi_factor_authentication.add')
 
-      expect(page).to have_link(t('forms.backup_code.download'))
       expect(current_path).to eq backup_code_setup_path
 
       click_continue
+
+      expect(page).to have_link(t('forms.backup_code.download'))
+      
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
