@@ -21,19 +21,21 @@ module Api
     def submit
       @form_valid = valid?
 
-      create_profile
-      cache_encrypted_pii
-      generate_personal_key
-      # complete_session
-      # if idv_session.phone_confirmed?
-      #   event = create_user_event_with_disavowal(:account_verified)
-      #   UserAlerts::AlertUserAboutAccountVerified.call(
-      #     user: current_user,
-      #     date_time: event.created_at,
-      #     sp_name: decorated_session.sp_name,
-      #     disavowal_token: event.disavowal_token,
-      #     )
-      # end
+      if form_valid?
+        create_profile
+        cache_encrypted_pii
+        generate_personal_key
+        # complete_session
+        # if idv_session.phone_confirmed?
+        #   event = create_user_event_with_disavowal(:account_verified)
+        #   UserAlerts::AlertUserAboutAccountVerified.call(
+        #     user: current_user,
+        #     date_time: event.created_at,
+        #     sp_name: decorated_session.sp_name,
+        #     disavowal_token: event.disavowal_token,
+        #     )
+        # end
+      end
 
       FormResponse.new(
         success: form_valid?,
@@ -95,8 +97,9 @@ module Api
     end
 
     def current_user
+      return nil unless user_bundle_headers
       return @current_user if defined?(@current_user)
-      @current_user = User.find_by(:user_uuid, user_bundle_headers['sub'])
+      @current_user = User.find_by(user_uuid: user_bundle_headers['sub'])
     end
 
     def set_idv_session
@@ -123,9 +126,11 @@ module Api
       @user_bundle_payload = payload
       @user_bundle_headers = headers
     rescue JWT::DecodeError => err
-      errors.add(jwt: "decode error: #{err.message}")
+      #errors.add(jwt: "decode error: #{err.message}")
+      "decode error: #{err.message}"
     rescue JWT::ExpiredSignature => err
       errors.add(jwt: "expired signature: #{err.message}")
+      "expired signature: #{err.message}"
     end
 
     def valid_user
@@ -134,7 +139,7 @@ module Api
     end
 
     def valid_password
-      return if current_user.valid_password?(password)
+      return if current_user&.valid_password?(password)
       errors.add(password: 'invalid password')
     end
 
@@ -151,7 +156,7 @@ module Api
     end
 
     def public_key
-      Base64.strict_decode64(IdentityConfig.store.idv_public_key)
+      OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_public_key))
     end
   end
 end

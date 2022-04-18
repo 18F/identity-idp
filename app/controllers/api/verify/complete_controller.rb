@@ -3,7 +3,7 @@ class Api::Verify::CompleteController < Api::BaseController
 
   def create
     result = Api::ProfileCreationForm.new(
-      user_password: verify_params[user_password],
+      user_password: verify_params[:password],
       user_bundle: verify_params[:details],
       user_session: user_session,
     ).submit
@@ -25,7 +25,7 @@ class Api::Verify::CompleteController < Api::BaseController
   private
 
   def verify_params
-    params.require(:verify).permit(:password, :details)
+    params.permit(:password, :details)
   end
 
   def add_proofing_component(user)
