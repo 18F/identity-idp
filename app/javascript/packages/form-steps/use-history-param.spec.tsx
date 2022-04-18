@@ -117,89 +117,112 @@ describe('useHistoryParam', () => {
     expect(window.location.hash).to.equal('#one%20hundred');
   });
 
-  context('with basePath', () => {
-    context('without initial value', () => {
-      beforeEach(() => {
-        const history: string[] = ['/base/'];
-        defineProperty(window, 'location', {
-          value: {
-            get pathname() {
-              return history[history.length - 1];
+  Object.entries({
+    'with basePath': '/base/',
+    'with basePath, no trailing slash': '/base',
+  }).forEach(([description, basePath]) => {
+    context(description, () => {
+      context('without initial value', () => {
+        beforeEach(() => {
+          const history: string[] = [basePath];
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return history[history.length - 1];
+              },
             },
-          },
+          });
+
+          sandbox.stub(window.history, 'pushState').callsFake((_data, _unused, url) => {
+            history.push(url as string);
+          });
+          sandbox.stub(window.history, 'back').callsFake(() => {
+            history.pop();
+            window.dispatchEvent(new CustomEvent('popstate'));
+          });
         });
 
-        sandbox.stub(window.history, 'pushState').callsFake((_data, _unused, url) => {
-          history.push(url as string);
+        it('returns undefined value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('0')).to.be.ok();
         });
-        sandbox.stub(window.history, 'back').callsFake(() => {
-          history.pop();
-          window.dispatchEvent(new CustomEvent('popstate'));
+
+        it('syncs by setter', () => {
+          const { getByText, getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('2')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/2');
+        });
+
+        it('syncs by history events', async () => {
+          const { getByText, getByDisplayValue, findByDisplayValue } = render(
+            <TestComponent basePath="/base/" />,
+          );
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          userEvent.click(getByText('Increment'));
+
+          expect(getByDisplayValue('2')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/2');
+
+          window.history.back();
+
+          expect(await findByDisplayValue('1')).to.be.ok();
+          expect(window.location.pathname).to.equal('/base/1');
+
+          window.history.back();
+
+          expect(await findByDisplayValue('0')).to.be.ok();
+          expect(window.location.pathname).to.equal(basePath);
         });
       });
 
-      it('returns undefined value', () => {
-        const { getByDisplayValue } = render(<TestComponent basePath="/base/" />);
-
-        expect(getByDisplayValue('0')).to.be.ok();
-      });
-
-      it('syncs by setter', () => {
-        const { getByText, getByDisplayValue } = render(<TestComponent basePath="/base/" />);
-
-        userEvent.click(getByText('Increment'));
-
-        expect(getByDisplayValue('1')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/1');
-
-        userEvent.click(getByText('Increment'));
-
-        expect(getByDisplayValue('2')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/2');
-      });
-
-      it('syncs by history events', async () => {
-        const { getByText, getByDisplayValue, findByDisplayValue } = render(
-          <TestComponent basePath="/base/" />,
-        );
-
-        userEvent.click(getByText('Increment'));
-
-        expect(getByDisplayValue('1')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/1');
-
-        userEvent.click(getByText('Increment'));
-
-        expect(getByDisplayValue('2')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/2');
-
-        window.history.back();
-
-        expect(await findByDisplayValue('1')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/1');
-
-        window.history.back();
-
-        expect(await findByDisplayValue('0')).to.be.ok();
-        expect(window.location.pathname).to.equal('/base/');
-      });
-    });
-
-    context('with initial value', () => {
-      beforeEach(() => {
-        defineProperty(window, 'location', {
-          value: {
-            get pathname() {
-              return '/base/5/';
+      context('with initial value', () => {
+        beforeEach(() => {
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return '/base/5/';
+              },
             },
-          },
+          });
+        });
+
+        it('returns initial value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('5')).to.be.ok();
         });
       });
 
-      it('returns initial value', () => {
-        const { getByDisplayValue } = render(<TestComponent basePath="/base/" />);
+      context('with initial value, no trailing slash', () => {
+        beforeEach(() => {
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return '/base/5';
+              },
+            },
+          });
+        });
 
-        expect(getByDisplayValue('5')).to.be.ok();
+        it('returns initial value', () => {
+          const { getByDisplayValue } = render(<TestComponent basePath={basePath} />);
+
+          expect(getByDisplayValue('5')).to.be.ok();
+        });
       });
     });
   });

@@ -22,13 +22,13 @@ function useHistoryParam({ basePath }: HistoryOptions = {}): [
 ] {
   const getCurrentValue = () =>
     (typeof basePath === 'string'
-      ? window.location.pathname.split(basePath)[1]?.replace(/\/$/, '')
+      ? window.location.pathname.split(basePath)[1]?.replace(/^\/|\/$/g, '')
       : window.location.hash.slice(1)) || undefined;
 
   const [value, setValue] = useState(getCurrentValue);
 
   function getValueURL(nextValue) {
-    const prefix = typeof basePath === 'string' ? basePath : '#';
+    const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
     return nextValue ? `${prefix}${nextValue}` : window.location.pathname + window.location.search;
   }
 
