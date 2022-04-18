@@ -5,7 +5,7 @@ class Api::Verify::CompleteController < Api::BaseController
     result = Api::ProfileCreationForm.new(
       user_password: verify_params[user_password],
       user_bundle: verify_params[:details],
-      user_session: user_session
+      user_session: user_session,
     ).submit
     analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED, result.to_h)
 

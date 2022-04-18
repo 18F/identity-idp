@@ -96,6 +96,8 @@ identity_pki_local_dev: false
 idv_attempt_window_in_hours: 6
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_public_key:
+idv_private_key: 
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 in_person_proofing_enabled: true

@@ -60,6 +60,32 @@ module Api
       @personal_key = profile.encrypt_recovery_pii(pii)
     end
 
+    def complete_session
+      complete_profile if phone_confirmed?
+      create_gpo_entry if session[:address_verification_mechanism] == 'gpo'
+    end
+
+    def phone_confirmed?
+      session[:vendor_phone_confirmation] == true && session[:user_phone_confirmation] == true
+    end
+
+    def complete_profile
+      current_user.pending_profile&.activate
+      move_pii_to_user_session
+    end
+
+    def create_gpo_entry
+      move_pii_to_user_session
+      self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
+      confirmation_maker = GpoConfirmationMaker.new(
+        pii: pii, service_provider: service_provider,
+        profile: profile
+      )
+      confirmation_maker.perform
+
+      @gpo_otp = confirmation_maker.otp
+    end
+
     def build_profile_maker
       Idv::ProfileMaker.new(
         applicant: user_bundle_payload,
@@ -70,7 +96,7 @@ module Api
 
     def current_user
       return @current_user if defined?(@current_user)
-      @current_user = User.find_by(:user_uuid, user_bundle_headers[:sub])
+      @current_user = User.find_by(:user_uuid, user_bundle_headers['sub'])
     end
 
     def set_idv_session
@@ -90,11 +116,9 @@ module Api
     def valid_user_bundle
       payload, headers = JWT.decode(
         user_bundle,
-        ssl_cert.public_key,
+        public_key,
         true,
         algorithm: 'RS256',
-        iss: %r{https://secure.login.gov},
-        verify_iss: true,
       )
       @user_bundle_payload = payload
       @user_bundle_headers = headers
@@ -124,6 +148,10 @@ module Api
         profile_pending: current_user.pending_profile?,
         user_uuid: current_user.uuid,
       }
+    end
+
+    def public_key
+      Base64.strict_decode64(IdentityConfig.store.idv_public_key)
     end
   end
 end
