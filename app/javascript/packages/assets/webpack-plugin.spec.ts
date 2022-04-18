@@ -72,6 +72,14 @@ describe('AssetsWebpackPlugin', () => {
       });
     });
 
+    context('mangled export name, multiple letters', () => {
+      const source = "(0,_assets__WEBPACK_IMPORTED_MODULE_0__/* .getAssetPath */ .Aa)('foo.svg');";
+
+      it('returns asset paths', () => {
+        expect(getAssetPaths(source)).to.have.all.members(['foo.svg']);
+      });
+    });
+
     context('manged export name, no whitespace', () => {
       const source = "(0,assets/* getAssetPath */.K)('foo.svg'),";
 

@@ -11,7 +11,7 @@ const PLUGIN = 'AssetsWebpackPlugin';
 /**
  * Regular expression matching calls to retrieve asset path.
  */
-const GET_ASSET_CALL = /getAssetPath(?: \*\/ ?\.[A-Za-z_$])?\)?\(\s*['"](.+?)['"]/g;
+const GET_ASSET_CALL = /getAssetPath(?: \*\/ ?\.[A-Za-z_$]+)?\)?\(\s*['"](.+?)['"]/g;
 
 /**
  * Given a file name, returns true if the file is a JavaScript file, or false otherwise.
