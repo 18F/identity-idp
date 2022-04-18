@@ -33,7 +33,7 @@ module ScriptHelper
 
   SAME_ORIGIN_ASSETS = %w[
     identity-style-guide/dist/assets/img/sprite.svg
-  ]
+  ].to_set.freeze
 
   def local_crossorigin_sources?
     Rails.env.development? && ENV['WEBPACK_PORT'].present?
