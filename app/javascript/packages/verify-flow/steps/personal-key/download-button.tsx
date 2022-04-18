@@ -14,11 +14,11 @@ interface DownloadButtonProps {
   fileName: string;
 }
 
-interface NavigatorWithSaveBlob extends Navigator {
+export interface NavigatorWithSaveBlob extends Navigator {
   msSaveBlob: (blob: Blob, filename: string) => void;
 }
 
-const hasProprietarySaveBlob = (
+export const hasProprietarySaveBlob = (
   navigator: Navigator | NavigatorWithSaveBlob,
 ): navigator is NavigatorWithSaveBlob => 'msSaveBlob' in navigator;
 
