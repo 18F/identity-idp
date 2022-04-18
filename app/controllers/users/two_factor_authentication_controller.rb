@@ -1,6 +1,7 @@
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
+    include ActionView::Helpers::DateHelper
 
     before_action :check_remember_device_preference
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
@@ -164,6 +165,7 @@ module Users
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
       otp_rate_limiter.increment
       return handle_too_many_otp_sends if exceeded_otp_send_limit?
+      return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
       handle_telephony_result(method: method, default: default)
@@ -194,6 +196,18 @@ module Users
 
     def exceeded_otp_send_limit?
       return otp_rate_limiter.lock_out_user if otp_rate_limiter.exceeded_otp_send_limit?
+    end
+
+    def phone_confirmation_throttle
+      @phone_confirmation_throttle ||= Throttle.for(
+        user: current_user,
+        throttle_type: :phone_confirmation,
+      )
+    end
+
+    def exceeded_phone_confirmation_limit?
+      return false unless UserSessionContext.confirmation_context?(context)
+      phone_confirmation_throttle.throttled_else_increment?
     end
 
     def send_user_otp(method)
@@ -273,6 +287,22 @@ module Users
       params = reauthn_params
       params[:platform] = current_user.webauthn_configurations.platform_authenticators.present?
       params
+    end
+
+    def handle_too_many_confirmation_sends
+      flash[:error] = t(
+        'errors.messages.phone_confirmation_throttled',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [phone_confirmation_throttle.expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      )
+      if user_fully_authenticated?
+        redirect_to account_url
+      else
+        redirect_to login_two_factor_options_url
+      end
     end
   end
 end

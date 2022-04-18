@@ -153,6 +153,8 @@ participate_in_dap: false
 partner_api_bucket_prefix: ''
 password_max_attempts: 3
 personal_key_retired: true
+phone_confirmation_max_attempts: 20
+phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -428,6 +430,8 @@ test:
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  phone_confirmation_max_attempts: 5
+  phone_confirmation_max_attempt_window_in_minutes: 10
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
