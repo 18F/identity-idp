@@ -1,4 +1,4 @@
-import { PageHeading, Button } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
@@ -6,6 +6,7 @@ import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import type { VerifyFlowValues } from '../..';
+import DownloadButton from './download-button';
 
 interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
@@ -40,9 +41,14 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
           </p>
         </div>
       </div>
-      <Button isOutline className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0">
+      <DownloadButton
+        content={personalKey}
+        fileName="personal_key.txt"
+        isOutline
+        className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0"
+      >
         {t('forms.backup_code.download')}
-      </Button>
+      </DownloadButton>
       <PrintButton isOutline className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0" />
       <ClipboardButton
         clipboardText={personalKey}
