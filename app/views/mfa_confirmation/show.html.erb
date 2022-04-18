@@ -13,9 +13,10 @@
       ) { t('multi_factor_authentication.add') } %>
 </div>
 
-<%= button_to( auth_method_confirmation_skip_path,
-  method: :post,
-  class: 'usa-button usa-button--unstyled',
-  ) do %>
+<%= button_to(
+      auth_method_confirmation_skip_path,
+      method: :post,
+      class: 'usa-button usa-button--unstyled',
+    ) do %>
   <%= t('multi_factor_authentication.skip') %>
 <% end %>
