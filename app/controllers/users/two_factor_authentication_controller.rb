@@ -301,7 +301,7 @@ module Users
       if user_fully_authenticated?
         redirect_to account_url
       else
-        redirect_to login_two_factor_options_url
+        redirect_to two_factor_options_url
       end
     end
   end
