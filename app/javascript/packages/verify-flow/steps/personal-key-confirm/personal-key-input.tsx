@@ -32,9 +32,7 @@ function PersonalKeyInput(
           blocks: [4, 4, 4, 4],
           delimiter: '-',
         }}
-        htmlRef={(cleaveRef: HTMLInputElement) => {
-          ref && (ref as (instance: HTMLElement) => void)(cleaveRef);
-        }}
+        htmlRef={(cleaveRef) => typeof ref === 'function' && ref(cleaveRef)}
         aria-label={t('forms.personal_key.confirmation_label')}
         autoComplete="off"
         className="width-full field font-family-mono text-uppercase"
