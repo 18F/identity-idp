@@ -57,7 +57,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         className="margin-bottom-2 tablet:margin-bottom-0"
       />
       <div className="margin-y-5 clearfix">
-        <img className="float-left margin-right-2" alt="" src={getAssetPath('icon-lock-alert-important.svg')} width="80" height="80"></img>
+        <img className="float-left margin-right-2" alt="" src={getAssetPath('icon-lock-alert-important.svg')} width="80" height="80" />
         <p className="margin-bottom-0">
           <strong>{t('instructions.personal_key.email_title')}</strong>
         </p>
