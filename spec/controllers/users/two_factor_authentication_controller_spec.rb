@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Users::TwoFactorAuthenticationController do
+  include ActionView::Helpers::DateHelper
+
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
@@ -444,13 +446,13 @@ describe Users::TwoFactorAuthenticationController do
       before do
         @user = create(:user)
         @unconfirmed_phone = '+1 (202) 555-1213'
-
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
       end
 
       it 'sends OTP inline when confirming phone' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
@@ -465,7 +467,62 @@ describe Users::TwoFactorAuthenticationController do
         )
       end
 
+      it 'rate limits confirmation OTPs on sign up' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+
+        freeze_time do
+          (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
+            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+            get :send_code,
+                params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+          end
+
+          timeout = distance_of_time_in_words(
+            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+          )
+
+          expect(flash[:error]).to eq(
+            I18n.t(
+              'errors.messages.phone_confirmation_throttled',
+              timeout: timeout,
+            ),
+          )
+          expect(response).to redirect_to login_two_factor_options_url
+        end
+      end
+
+      it 'rate limits confirmation OTPs when adding number to existing account' do
+        stub_sign_in(@user)
+        subject.user_session[:context] = 'confirmation'
+        allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+
+        freeze_time do
+          (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
+            subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+            get :send_code,
+                params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+          end
+
+          timeout = distance_of_time_in_words(
+            Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+          )
+
+          expect(flash[:error]).to eq(
+            I18n.t(
+              'errors.messages.phone_confirmation_throttled',
+              timeout: timeout,
+            ),
+          )
+          expect(response).to redirect_to account_url
+        end
+      end
+
       it 'flashes an sms error when the telephony gem responds with an sms error' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
         subject.user_session[:unconfirmed_phone] = '+1 (225) 555-1000'
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
