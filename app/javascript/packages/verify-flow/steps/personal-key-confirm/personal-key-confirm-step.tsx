@@ -3,10 +3,11 @@ import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-st
 import { t } from '@18f/identity-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { Modal } from '@18f/identity-modal';
+import { getAssetPath } from '@18f/identity-assets';
 import PersonalKeyStep from '../personal-key/personal-key-step';
 import PersonalKeyInput from './personal-key-input';
 import type { VerifyFlowValues } from '../..';
-import { getAssetPath } from '@18f/identity-assets';
+
 
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
