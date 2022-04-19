@@ -157,6 +157,12 @@ div.selfie-capture__label[tabindex='-1']:focus {
 .selfie-capture__capture-icon {
   height: 2rem;
   width: 2rem;
+
+  .usa-button:not(.usa-button--unstyled) > &.usa-icon:first-child {
+    // Unset icon placement where assumed to be adjacent to text, since the selfie capture button
+    // uses a standalone icon.
+    margin: 0;
+  }
 }
 
 .selfie-capture__preview-heading.usa-file-input__preview-heading {
