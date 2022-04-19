@@ -124,15 +124,6 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def verification_errors_report
-    UserMailer.verification_errors_report(
-      email: email_address,
-      name: 'my name',
-      issuers: %w[issuer1 issuer2],
-      data: 'data',
-    )
-  end
-
   def account_verified
     UserMailer.account_verified(
       user,
