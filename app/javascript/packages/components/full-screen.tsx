@@ -8,6 +8,8 @@ import { getAssetPath } from '@18f/identity-assets';
 import useToggleBodyClassByPresence from './hooks/use-toggle-body-class-by-presence';
 import useFocusTrap from './hooks/use-focus-trap';
 
+type BackgroundColor = 'white' | 'none';
+
 interface FullScreenProps {
   /**
    * Callback invoked when user initiates close intent.
@@ -23,6 +25,11 @@ interface FullScreenProps {
    * Whether to omit default close button, in case it is implemented by full screen content.
    */
   hideCloseButton?: boolean;
+
+  /**
+   * Background color of full-screen dialog. Defaults to "white".
+   */
+  bgColor?: BackgroundColor;
 
   /**
    * Child elements.
@@ -58,7 +65,13 @@ export function useInertSiblingElements(containerRef: MutableRefObject<HTMLEleme
 }
 
 function FullScreen(
-  { onRequestClose = () => {}, label, hideCloseButton = false, children }: FullScreenProps,
+  {
+    onRequestClose = () => {},
+    label,
+    hideCloseButton = false,
+    bgColor = 'white',
+    children,
+  }: FullScreenProps,
   ref: ForwardedRef<FullScreenRefHandle>,
 ) {
   const { t } = useI18n();
@@ -74,7 +87,12 @@ function FullScreen(
   useInertSiblingElements(containerRef);
 
   return createPortal(
-    <div ref={containerRef} role="dialog" aria-label={label} className="full-screen bg-white">
+    <div
+      ref={containerRef}
+      role="dialog"
+      aria-label={label}
+      className={`full-screen bg-${bgColor}`}
+    >
       {children}
       {!hideCloseButton && (
         <button

@@ -68,6 +68,20 @@ describe('FullScreen', () => {
     });
   });
 
+  it('renders with white background', () => {
+    const { baseElement } = render(<FullScreen>Content</FullScreen>);
+
+    expect(baseElement.querySelector('.full-screen.bg-white')).to.exist();
+  });
+
+  context('bgColor prop', () => {
+    it('renders without a close button', () => {
+      const { baseElement } = render(<FullScreen bgColor="none">Content</FullScreen>);
+
+      expect(baseElement.querySelector('.full-screen.bg-none')).to.exist();
+    });
+  });
+
   it('focuses the first interactive element', async () => {
     const { getByRole } = render(
       <FullScreen>
