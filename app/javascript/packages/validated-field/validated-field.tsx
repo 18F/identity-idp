@@ -1,5 +1,11 @@
 import { useRef, useEffect, Children, cloneElement, createElement } from 'react';
-import type { MutableRefObject, ReactNode, HTMLAttributes, ReactHTMLElement } from 'react';
+import type {
+  MutableRefObject,
+  ReactNode,
+  HTMLAttributes,
+  InputHTMLAttributes,
+  ReactHTMLElement,
+} from 'react';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import './validated-field-element';
 import type ValidatedFieldElement from './validated-field-element';
@@ -35,7 +41,7 @@ function ValidatedField({
   validate = () => {},
   children,
   ...inputProps
-}: ValidatedFieldProps & HTMLAttributes<HTMLInputElement>) {
+}: ValidatedFieldProps & InputHTMLAttributes<HTMLInputElement>) {
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
   useEffect(() => {
@@ -51,6 +57,11 @@ function ValidatedField({
 
         input.setCustomValidity(nextError);
         return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
+      };
+
+      input.reportValidity = () => {
+        input.checkValidity();
+        return HTMLInputElement.prototype.reportValidity.call(input);
       };
     }
   }, [validate]);
