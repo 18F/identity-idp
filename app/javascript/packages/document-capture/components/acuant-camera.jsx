@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import useImmutableCallback from '../hooks/use-immutable-callback';
+import { useImmutableCallback } from '@18f/identity-react-hooks';
 import AcuantContext from '../context/acuant';
 
 /** @typedef {import('../context/acuant').AcuantJavaScriptWebSDK} AcuantJavaScriptWebSDK */
