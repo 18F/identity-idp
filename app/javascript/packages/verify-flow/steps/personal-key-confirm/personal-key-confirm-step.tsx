@@ -21,7 +21,13 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
       <Modal>
         <div className="pin-top pin-x">
           <div className="display-flex flex-column flex-align-center">
-           <img className="top-neg-3" alt="" height="60" width="60" src={getAssetPath('p-key.svg')} />
+            <img
+              className="top-neg-3"
+              alt=""
+              height="60"
+              width="60"
+              src={getAssetPath('p-key.svg')}
+            />
           </div>
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>
