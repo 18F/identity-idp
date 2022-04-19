@@ -36,7 +36,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   let(:encrypted_arguments) do
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       {
         document_arguments: {
           encryption_key: Base64.encode64(encryption_key),

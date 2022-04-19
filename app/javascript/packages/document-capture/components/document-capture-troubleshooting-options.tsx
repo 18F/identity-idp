@@ -15,47 +15,67 @@ interface DocumentCaptureTroubleshootingOptionsProps {
    * Location parameter to append to links.
    */
   location?: string;
+
+  /**
+   * If there are any errors (toggles whether or not to show in person proofing option)
+   */
+  hasErrors?: boolean;
 }
 
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
+  hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { getHelpCenterURL } = useContext(HelpCenterContext);
+  const { getHelpCenterURL, idvInPersonURL } = useContext(HelpCenterContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
-    <TroubleshootingOptions
-      heading={heading}
-      options={
-        [
-          {
-            url: getHelpCenterURL({
-              category: 'verify-your-identity',
-              article: 'how-to-add-images-of-your-state-issued-id',
-              location,
-            }),
-            text: t('idv.troubleshooting.options.doc_capture_tips'),
-            isExternal: true,
-          },
-          {
-            url: getHelpCenterURL({
-              category: 'verify-your-identity',
-              article: 'accepted-state-issued-identification',
-              location,
-            }),
-            text: t('idv.troubleshooting.options.supported_documents'),
-            isExternal: true,
-          },
-          spName && {
-            url: getFailureToProofURL(location),
-            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
-            isExternal: true,
-          },
-        ].filter(Boolean) as TroubleshootingOption[]
-      }
-    />
+    <>
+      <TroubleshootingOptions
+        heading={heading}
+        options={
+          [
+            {
+              url: getHelpCenterURL({
+                category: 'verify-your-identity',
+                article: 'how-to-add-images-of-your-state-issued-id',
+                location,
+              }),
+              text: t('idv.troubleshooting.options.doc_capture_tips'),
+              isExternal: true,
+            },
+            {
+              url: getHelpCenterURL({
+                category: 'verify-your-identity',
+                article: 'accepted-state-issued-identification',
+                location,
+              }),
+              text: t('idv.troubleshooting.options.supported_documents'),
+              isExternal: true,
+            },
+            spName && {
+              url: getFailureToProofURL(location),
+              text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
+              isExternal: true,
+            },
+          ].filter(Boolean) as TroubleshootingOption[]
+        }
+      />
+      {hasErrors && idvInPersonURL && (
+        <TroubleshootingOptions
+          isNewFeatures
+          heading={t('idv.troubleshooting.headings.are_you_near')}
+          options={[
+            {
+              url: idvInPersonURL,
+              text: t('idv.troubleshooting.options.verify_in_person'),
+            },
+          ]}
+        />
+      )}
+    </>
   );
 }
 

@@ -30,6 +30,23 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
       end
     end
 
+    context 'with :new_features' do
+      it 'renders a new features tag' do
+        rendered = render_inline(
+          TroubleshootingOptionsComponent.new(new_features: true),
+        ) { |c| c.option(url: '/').with_content('Link Text') }
+
+        expect(rendered).to have_css(
+          '.troubleshooting-options.troubleshooting-options--no-bar',
+        ), 'it hides the visual bar'
+
+        expect(rendered).to have_css(
+          '.troubleshooting-options .usa-tag.text-uppercase',
+          text: t('components.troubleshooting_options.new_feature'),
+        )
+      end
+    end
+
     context 'with header' do
       it 'renders header' do
         rendered = render_inline(TroubleshootingOptionsComponent.new) do |c|

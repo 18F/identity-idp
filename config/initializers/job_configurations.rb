@@ -1,3 +1,4 @@
+cron_1m = '* * * * *'
 cron_5m = '0/5 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
@@ -69,7 +70,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send Sp Success Rate Report to S3
       # Proofing Costs Report to S3
       proofing_costs: {
         class: 'Reports::ProofingCostsReport',
@@ -114,6 +114,12 @@ else
       # Total SP Costs Report to S3
       total_sp_costs: {
         class: 'Reports::TotalSpCostReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
+      # Total IAL2 Costs Report to S3
+      total_ial2_costs: {
+        class: 'Reports::TotalIal2CostsReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
@@ -193,6 +199,12 @@ else
       heartbeat_job: {
         class: 'HeartbeatJob',
         cron: cron_5m,
+      },
+      # Queue psql stats job to GoodJob
+      psql_stats_job: {
+        class: 'PsqlStatsJob',
+        cron: cron_1m,
+        args: -> { [Time.zone.now] },
       },
     }
   end

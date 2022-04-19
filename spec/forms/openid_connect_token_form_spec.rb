@@ -305,7 +305,7 @@ RSpec.describe OpenidConnectTokenForm do
       let(:client_assertion) { nil }
       let(:client_assertion_type) { nil }
 
-      let(:code_challenge) { Digest::SHA256.base64digest(code_verifier) }
+      let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
       let(:code_verifier) { SecureRandom.hex }
 
       context 'with valid params' do
@@ -352,10 +352,7 @@ RSpec.describe OpenidConnectTokenForm do
 
       context 'with a code_challenge does not have base64 padding' do
         let(:code_verifier) { SecureRandom.uuid }
-        let(:code_challenge) do
-          padded_base64 = Digest::SHA256.base64digest(code_verifier)
-          Base64.urlsafe_encode64(Base64.decode64(padded_base64), padding: false)
-        end
+        let(:code_challenge) { Digest::SHA256.urlsafe_base64digest(code_verifier) }
 
         it 'is valid' do
           expect(Digest::SHA256.base64digest(code_verifier)).to end_with('=')

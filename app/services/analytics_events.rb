@@ -180,6 +180,114 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Email Deletion Requested
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks request for deletion of email address
+  def email_deletion_request(success:, errors:, **extra)
+    track_event(
+      'Email Deletion Requested',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Email Language: Visited
+  # Tracks if Email Language is visited
+  def email_language_visited
+    track_event('Email Language: Visited')
+  end
+
+  # @identity.idp.event_name Email Language: Updated
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks if Email Language is updated
+  def email_language_updated(success:, errors:, **extra)
+    track_event(
+      'Email Language: Updated',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Event disavowal visited
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Time, nil] event_created_at timestamp for the event
+  # @param [Time, nil] disavowed_device_last_used_at
+  # @param [String, nil] disavowed_device_user_agent
+  # @param [String, nil] disavowed_device_last_ip
+  # @param [Integer, nil] event_id events table id
+  # @param [String, nil] event_type (see Event#event_type)
+  # @param [String, nil] event_ip ip address for the event
+  # Tracks disavowed event
+  def event_disavowal(
+    success:,
+    errors:,
+    event_created_at: nil,
+    disavowed_device_last_used_at: nil,
+    disavowed_device_user_agent: nil,
+    disavowed_device_last_ip: nil,
+    event_id: nil,
+    event_type: nil,
+    event_ip: nil,
+    **extra
+  )
+    track_event(
+      'Event disavowal visited',
+      success: success,
+      errors: errors,
+      event_created_at: event_created_at,
+      disavowed_device_last_used_at: disavowed_device_last_used_at,
+      disavowed_device_user_agent: disavowed_device_user_agent,
+      disavowed_device_last_ip: disavowed_device_last_ip,
+      event_id: event_id,
+      event_type: event_type,
+      event_ip: event_ip,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Event disavowal password reset
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Time, nil] event_created_at timestamp for the event
+  # @param [Time, nil] disavowed_device_last_used_at
+  # @param [String, nil] disavowed_device_user_agent
+  # @param [String, nil] disavowed_device_last_ip
+  # @param [Integer, nil] event_id events table id
+  # @param [String, nil] event_type (see Event#event_type)
+  # @param [String, nil] event_ip ip address for the event
+  # Event disavowal password reset was performed
+  def event_disavowal_password_reset(
+    success:,
+    errors:,
+    event_created_at: nil,
+    disavowed_device_last_used_at: nil,
+    disavowed_device_user_agent: nil,
+    disavowed_device_last_ip: nil,
+    event_id: nil,
+    event_type: nil,
+    event_ip: nil,
+    **extra
+  )
+    track_event(
+      'Event disavowal password reset',
+      success: success,
+      errors: errors,
+      event_created_at: event_created_at,
+      disavowed_device_last_used_at: disavowed_device_last_used_at,
+      disavowed_device_user_agent: disavowed_device_user_agent,
+      disavowed_device_last_ip: disavowed_device_last_ip,
+      event_id: event_id,
+      event_type: event_type,
+      event_ip: event_ip,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors
@@ -251,6 +359,38 @@ module AnalyticsEvents
   # The user visited the "forget all browsers" page
   def forget_all_browsers_visited
     track_event('Forget All Browsers Visited')
+  end
+
+  # @identity.idp.event_name Idv address submitted
+  # @param [Boolean] success
+  # @param [Boolean] address_edited
+  # @param [Hash] pii_like_keypaths
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # User submitted an idv address
+  def idv_address_submitted(
+    success:,
+    errors:,
+    address_edited: nil,
+    pii_like_keypaths: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'IdV: address submitted',
+      success: success,
+      errors: errors,
+      address_edited: address_edited,
+      pii_like_keypaths: pii_like_keypaths,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Idv Address Visit
+  # User visited idv address page
+  def idv_address_visit
+    track_event('IdV: address visited')
   end
 
   # @deprecated
@@ -382,6 +522,93 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # @identity.idp.event_name Return to SP: Failed to proof
+  # Tracks when a user is redirected back to the service provider after failing to proof.
+  # @param [String] redirect_url the url of the service provider
+  # @param [String] flow
+  # @param [String] step
+  # @param [String] location
+  def return_to_sp_failure_to_proof(redirect_url:, flow: nil, step: nil, location: nil, **extra)
+    track_event(
+      'Return to SP: Failed to proof',
+      redirect_url: redirect_url,
+      flow: flow,
+      step: step,
+      location: location,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Rules of Use Visited
+  # Tracks when rules of use is visited
+  def rules_of_use_visit
+    track_event('Rules of Use Visited')
+  end
+
+  # @identity.idp.event_name Rules of Use Submitted
+  # Tracks when rules of use is submitted with a success or failure
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def rules_of_use_submitted(success: nil, errors: nil, **extra)
+    track_event(
+      'Rules of Use Submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name RISC: Security event received
+  # Tracks when security event is received
+  # @param [Boolean] success
+  # @param [String] error_code
+  # @param [Hash] errors
+  # @param [String] jti
+  # @param [String] user_id
+  # @param [String] client_id
+  def security_event_received(
+    success:,
+    error_code: nil,
+    errors: nil,
+    jti: nil,
+    user_id: nil,
+    client_id: nil,
+    **extra
+  )
+    track_event(
+      'RISC: Security event received',
+      success: success,
+      error_code: error_code,
+      errors: errors,
+      jti: jti,
+      user_id: user_id,
+      client_id: client_id,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name SP Revoke Consent: Revoked
+  # Tracks when service provider consent is revoked
+  # @param [String] issuer issuer of the service provider consent to be revoked
+  def sp_revoke_consent_revoked(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Revoked',
+      issuer: issuer,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name SP Revoke Consent: Visited
+  # Tracks when the page to revoke consent (unlink from) a service provider visited
+  # @param [String] issuer which issuer
+  def sp_revoke_consent_visited(issuer:, **extra)
+    track_event(
+      'SP Revoke Consent: Visited',
+      issuer: issuer,
+      **extra,
+    )
   end
 
   # @identity.idp.event_name SAML Auth Request

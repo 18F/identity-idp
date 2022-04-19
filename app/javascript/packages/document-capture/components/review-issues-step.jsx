@@ -1,20 +1,19 @@
 import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContext, FormStepsContinueButton } from './form-steps';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
+import { PageHeading } from '@18f/identity-components';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
-import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
-import useDidUpdateEffect from '../hooks/use-did-update-effect';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -39,23 +38,7 @@ const DOCUMENT_SIDES = ['front', 'back'];
 const DISPLAY_ATTEMPTS = 3;
 
 /**
- * @param {Partial<ReviewIssuesStepValue>=} value
- *
- * @return {boolean} Whether the value is valid for the review issues step.
- */
-function reviewIssuesStepValidator(value = {}) {
-  const hasDocuments = DOCUMENT_SIDES.every((side) => !!value[side]);
-
-  // Absent availability of service provider context here, this relies on the fact that:
-  // 1) The review step is only shown with an existing, complete set of values.
-  // 2) Clearing an existing value sets it as null, but doesn't remove the key from the object.
-  const hasSelfieIfApplicable = !('selfie' in value) || !!value.selfie;
-
-  return hasDocuments && hasSelfieIfApplicable;
-}
-
-/**
- * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
  *  remainingAttempts: number,
  *  captureHints: boolean,
  * }} props Props object.
@@ -133,7 +116,7 @@ function ReviewIssuesStep({
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
               allowUpload={false}
               className="document-capture-review-issues-step__input"
-              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              errorMessage={selfieError?.message}
               name="selfie"
             />
           ) : (
@@ -141,7 +124,7 @@ function ReviewIssuesStep({
               ref={registerField('selfie', { isRequired: true })}
               value={value.selfie}
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              errorMessage={selfieError?.message}
               className={[
                 'document-capture-review-issues-step__input',
                 !value.selfie && 'document-capture-review-issues-step__input--unconstrained-width',
@@ -164,7 +147,10 @@ function ReviewIssuesStep({
       location="doc_auth_review_issues"
       remainingAttempts={remainingAttempts}
       troubleshootingOptions={
-        <DocumentCaptureTroubleshootingOptions location="post_submission_warning" />
+        <DocumentCaptureTroubleshootingOptions
+          location="post_submission_warning"
+          hasErrors={!!errors?.length}
+        />
       }
     >
       {!!unknownFieldErrors &&
@@ -186,5 +172,3 @@ function ReviewIssuesStep({
 }
 
 export default withBackgroundEncryptedUpload(ReviewIssuesStep);
-
-export { reviewIssuesStepValidator };

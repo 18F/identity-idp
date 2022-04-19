@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { PageHeading } from '@18f/identity-components';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 
 /**
@@ -30,14 +30,7 @@ import StartOverOrCancel from './start-over-or-cancel';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
- * @return {Boolean} whether or not the value is valid for the document step
- */
-function documentsStepValidator(value = {}) {
-  return DOCUMENT_SIDES.every((side) => !!value[side]);
-}
-
-/**
- * @param {import('./form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
   value = {},
@@ -72,12 +65,10 @@ function DocumentsStep({
         />
       ))}
       <FormStepsContinueButton />
-      <DocumentCaptureTroubleshootingOptions />
+      <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
       <StartOverOrCancel />
     </CaptureTroubleshooting>
   );
 }
 
 export default withBackgroundEncryptedUpload(DocumentsStep);
-
-export { documentsStepValidator };

@@ -1,13 +1,24 @@
+import { FormError } from '@18f/identity-form-steps';
+
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 /** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
 /** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
 
-export class UploadFormEntryError extends Error {
+export class UploadFormEntryError extends FormError {
   /** @type {string} */
   field = '';
+
+  /**
+   * @param {string} message
+   */
+  constructor(message) {
+    super();
+
+    this.message = message;
+  }
 }
 
-export class UploadFormEntriesError extends Error {
+export class UploadFormEntriesError extends FormError {
   /** @type {UploadFormEntryError[]} */
   formEntryErrors = [];
 

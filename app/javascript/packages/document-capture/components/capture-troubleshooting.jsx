@@ -1,10 +1,10 @@
 import { useContext, useState } from 'react';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { FormStepsContext } from '@18f/identity-form-steps';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AnalyticsContext from '../context/analytics';
 import CallbackOnMount from './callback-on-mount';
 import CaptureAdvice from './capture-advice';
-import { FormStepsContext } from './form-steps';
-import useDidUpdateEffect from '../hooks/use-did-update-effect';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 

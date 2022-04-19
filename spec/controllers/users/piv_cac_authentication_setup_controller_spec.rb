@@ -94,26 +94,55 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         context 'when redirected with a good token' do
-          it 'redirects to account page' do
-            get :new, params: { token: good_token }
-            expect(response).to redirect_to(account_url)
+          context 'with no additional MFAs chosen on setup' do
+            it 'redirects to account page' do
+              get :new, params: { token: good_token }
+              expect(response).to redirect_to(account_url)
+            end
+
+            it 'sets the piv/cac session information' do
+              get :new, params: { token: good_token }
+              json = {
+                'subject' => 'some dn',
+                'issuer' => nil,
+                'presented' => true,
+              }.to_json
+
+              expect(subject.user_session[:decrypted_x509]).to eq json
+            end
+
+            it 'sets the session to not require piv setup upon sign-in' do
+              get :new, params: { token: good_token }
+
+              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+            end
           end
 
-          it 'sets the piv/cac session information' do
-            get :new, params: { token: good_token }
-            json = {
-              'subject' => 'some dn',
-              'issuer' => nil,
-              'presented' => true,
-            }.to_json
+          context 'with additional MFAs leftover' do
+            before do
+              subject.user_session[:selected_mfa_options] = ['voice']
+            end
+            it 'redirects to phone setup page' do
+              get :new, params: { token: good_token }
+              expect(response).to redirect_to(phone_setup_url)
+            end
 
-            expect(subject.user_session[:decrypted_x509]).to eq json
-          end
+            it 'sets the piv/cac session information' do
+              get :new, params: { token: good_token }
+              json = {
+                'subject' => 'some dn',
+                'issuer' => nil,
+                'presented' => true,
+              }.to_json
 
-          it 'sets the session to not require piv setup upon sign-in' do
-            get :new, params: { token: good_token }
+              expect(subject.user_session[:decrypted_x509]).to eq json
+            end
 
-            expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+            it 'sets the session to not require piv setup upon sign-in' do
+              get :new, params: { token: good_token }
+
+              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+            end
           end
         end
 

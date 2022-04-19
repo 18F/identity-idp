@@ -117,6 +117,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     end
   end
 
+  def self.reports_logger
+    @reports_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'reports.log'))
+  end
+
   def self.worker_logger
     @worker_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
   end

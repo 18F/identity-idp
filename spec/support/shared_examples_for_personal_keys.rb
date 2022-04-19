@@ -27,7 +27,7 @@ shared_examples_for 'personal key page' do
     end
 
     it 'allows a user to copy the code into the confirmation modal' do
-      click_on t('links.copy')
+      click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
 
       code = page.all('[data-personal-key]').map(&:text).join('-')

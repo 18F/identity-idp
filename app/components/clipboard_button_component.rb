@@ -12,6 +12,6 @@ class ClipboardButtonComponent < ButtonComponent
   end
 
   def content
-    t('links.copy')
+    t('components.clipboard_button.label')
   end
 end

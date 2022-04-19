@@ -53,6 +53,7 @@ describe Analytics do
         success_state: success_state,
         new_event: true,
         path: path,
+        session_duration: nil,
       }
 
       expect(ahoy).to receive(:track).
@@ -73,6 +74,7 @@ describe Analytics do
         success_state: success_state,
         new_event: nil,
         path: path,
+        session_duration: nil,
       }
 
       expect(ahoy).to receive(:track).
@@ -95,6 +97,7 @@ describe Analytics do
         new_session_path: true,
         new_event: true,
         path: path,
+        session_duration: nil,
       }
 
       expect(ahoy).to receive(:track).
@@ -132,6 +135,7 @@ describe Analytics do
         path: path,
         new_session_success_state: true,
         success_state: success_state,
+        session_duration: nil,
       }
 
       expect(ahoy).to receive(:track).
@@ -190,6 +194,37 @@ describe Analytics do
           some_uuid: '12345678-1234-1234-1234-123456789012',
         )
       end.to_not raise_error
+    end
+  end
+
+  it 'tracks session duration' do
+    freeze_time do
+      analytics = Analytics.new(
+        user: current_user,
+        request: request,
+        sp: 'http://localhost:3000',
+        session: { session_started_at: 7.seconds.ago },
+        ahoy: ahoy,
+      )
+
+      analytics_hash = {
+        event_properties: {},
+        user_id: current_user.uuid,
+        locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_success_state: true,
+        success_state: success_state,
+        new_session_path: true,
+        new_event: true,
+        path: path,
+        session_duration: 7.0,
+      }
+
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
+
+      analytics.track_event('Trackable Event')
     end
   end
 end

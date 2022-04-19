@@ -41,7 +41,7 @@ feature 'doc auth document capture step' do
 
       within_window new_window do
         expect(fake_analytics).to have_logged_event(
-          Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+          'Return to SP: Failed to proof',
           step: 'document_capture',
           location: 'document_capture_troubleshooting_options',
         )
@@ -389,7 +389,7 @@ feature 'doc auth document capture step' do
       expect(page).to have_current_path(next_step, wait: 20)
       expect(DocumentProofingJob).to have_received(:perform_later) do |encrypted_arguments:, **|
         args = JSON.parse(
-          Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+          Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted_arguments),
           symbolize_names: true,
         )[:document_arguments]
 

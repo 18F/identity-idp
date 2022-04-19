@@ -21,6 +21,14 @@ class AssetSources
       ]
     end
 
+    def get_assets(*names)
+      load_manifest if !manifest || !cache_manifest
+
+      names.flat_map do |name|
+        manifest&.dig('entrypoints', name, 'assets')&.except('js')&.values&.flatten
+      end.uniq.compact
+    end
+
     def load_manifest
       self.manifest = begin
         JSON.parse(File.read(manifest_path))

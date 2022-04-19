@@ -17,11 +17,6 @@
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
-        IdentityConfig.store.in_person_proofing_enabled && {
-          url: idv_in_person_url,
-          text: t('in_person_proofing.link'),
-          new_tab: false,
-        },
       ].select(&:present?),
     ) do %>
       <p>
@@ -35,3 +30,5 @@
             ) %>
       </p>
     <% end %>
+
+<%= render partial: 'idv/session_errors/in_person_proofing_options' %>

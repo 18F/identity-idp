@@ -19,7 +19,7 @@ class ResolutionProofingJob < ApplicationJob
     raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
     )
 

@@ -18,6 +18,9 @@ RSpec.describe AssetSources do
                 "application.fr.js",
                 "application.es.js",
                 "application.js"
+              ],
+              "svg": [
+                "clock.svg"
               ]
             }
           },
@@ -29,6 +32,12 @@ RSpec.describe AssetSources do
                 "input.fr.js",
                 "input.es.js",
                 "input.js"
+              ],
+              "svg": [
+                "clock.svg"
+              ],
+              "gif": [
+                "spinner.gif"
               ]
             }
           }
@@ -86,6 +95,43 @@ RSpec.describe AssetSources do
 
         AssetSources.get_sources('application')
         AssetSources.get_sources('input')
+      end
+    end
+  end
+
+  describe '.get_assets' do
+    it 'returns unique, flattened assets' do
+      expect(AssetSources.get_assets('application', 'application', 'input')).to eq [
+        'clock.svg',
+        'spinner.gif',
+      ]
+    end
+
+    context 'unset manifest' do
+      let(:manifest_content) { nil }
+
+      it 'returns an empty array' do
+        expect(AssetSources.get_assets('missing')).to eq([])
+      end
+    end
+
+    it 'loads the manifest once' do
+      expect(AssetSources).to receive(:load_manifest).once.and_call_original
+
+      AssetSources.get_assets('application')
+      AssetSources.get_assets('input')
+    end
+
+    context 'uncached manifest' do
+      before do
+        allow(AssetSources).to receive(:cache_manifest).and_return(false)
+      end
+
+      it 'loads the manifest' do
+        expect(AssetSources).to receive(:load_manifest).twice.and_call_original
+
+        AssetSources.get_assets('application')
+        AssetSources.get_assets('input')
       end
     end
   end
