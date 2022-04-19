@@ -30,8 +30,8 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
       end
     end
 
-    it 'requires MFA when AAL2 request is sent after 12 hours' do
-      travel_to(12.hours.from_now + 1.day) do
+    it "requires MFA when AAL2 request is sent after #{expiration_time.inspect}" do
+      travel_to(expiration_time.from_now + 1.day) do
         visit_idp_from_sp_with_ial1_aal2(protocol)
         sign_in_user(user)
 
@@ -76,8 +76,8 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
       end
     end
 
-    it 'does require MFA when AAL2 request is sent after 12 hours' do
-      travel_to(12.hours.from_now + 1.day) do
+    it 'does require MFA when AAL2 request is sent after  #{expiration_time.inspect}' do
+      travel_to(expiration_time.from_now + 1.day) do
         visit_idp_from_sp_with_ial1_aal2(protocol)
         sign_in_user(user)
 
