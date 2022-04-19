@@ -489,7 +489,7 @@ describe Users::TwoFactorAuthenticationController do
               timeout: timeout,
             ),
           )
-          expect(response).to redirect_to login_two_factor_options_url
+          expect(response).to redirect_to two_factor_options_url
         end
       end
 
