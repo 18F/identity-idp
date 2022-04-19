@@ -61,6 +61,7 @@ const config = {
     semi: 'off',
     'semi-spacing': 'off',
     'semi-style': 'off',
+    'space-before-function-paren': 'off',
     'space-in-parens': 'off',
     'switch-colon-spacing': 'off',
     'template-curly-spacing': 'off',
