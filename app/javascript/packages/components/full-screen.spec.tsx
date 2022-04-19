@@ -74,11 +74,43 @@ describe('FullScreen', () => {
     expect(baseElement.querySelector('.full-screen.bg-white')).to.exist();
   });
 
-  context('bgColor prop', () => {
+  context('with bgColor prop', () => {
     it('renders without a close button', () => {
       const { baseElement } = render(<FullScreen bgColor="none">Content</FullScreen>);
 
       expect(baseElement.querySelector('.full-screen.bg-none')).to.exist();
+    });
+  });
+
+  it('applies label to dialog', () => {
+    render(<FullScreen label="Modal">Content</FullScreen>);
+
+    expect(screen.getByRole('dialog', { name: 'Modal' })).to.exist();
+  });
+
+  context('with labelledBy prop', () => {
+    it('applies associates dialog with label', () => {
+      render(
+        <FullScreen labelledBy="custom-label">
+          <span id="custom-label">Modal</span>
+        </FullScreen>,
+      );
+
+      expect(screen.getByRole('dialog', { name: 'Modal' })).to.exist();
+    });
+  });
+
+  context('with describedBy prop', () => {
+    it('applies associates dialog with label', () => {
+      render(
+        <FullScreen describedBy="custom-description">
+          <span id="custom-description">Description</span>
+        </FullScreen>,
+      );
+
+      const dialog = screen.getByRole('dialog');
+
+      expect(dialog.getAttribute('aria-describedby')).to.equal('custom-description');
     });
   });
 

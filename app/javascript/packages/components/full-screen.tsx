@@ -32,6 +32,16 @@ interface FullScreenProps {
   bgColor?: BackgroundColor;
 
   /**
+   * Identifier of element(s) which label the modal.
+   */
+  labelledBy?: string;
+
+  /**
+   * Identifier of element(s) which describe the modal.
+   */
+  describedBy?: string;
+
+  /**
    * Child elements.
    */
   children: ReactNode;
@@ -70,6 +80,8 @@ function FullScreen(
     label,
     hideCloseButton = false,
     bgColor = 'white',
+    labelledBy,
+    describedBy,
     children,
   }: FullScreenProps,
   ref: ForwardedRef<FullScreenRefHandle>,
@@ -91,6 +103,8 @@ function FullScreen(
       ref={containerRef}
       role="dialog"
       aria-label={label}
+      aria-labelledby={labelledBy}
+      aria-describedby={describedBy}
       className={`full-screen bg-${bgColor}`}
     >
       {children}
