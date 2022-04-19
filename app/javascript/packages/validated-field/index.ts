@@ -1,1 +1,1 @@
-export { default as ValidatedFieldElement } from './validated-field-element';
+import './validated-field-element';

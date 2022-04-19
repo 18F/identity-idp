@@ -133,4 +133,14 @@ class ValidatedFieldElement extends HTMLElement {
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-validated-field': ValidatedFieldElement;
+  }
+}
+
+if (!customElements.get('lg-validated-field')) {
+  customElements.define('lg-validated-field', ValidatedFieldElement);
+}
+
 export default ValidatedFieldElement;
