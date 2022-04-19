@@ -30,7 +30,7 @@ interface FormStepRegisterFieldOptions {
 export type RegisterFieldCallback = (
   field: string,
   options?: Partial<FormStepRegisterFieldOptions>,
-) => undefined | RefCallback<HTMLElement>;
+) => undefined | RefCallback<HTMLInputElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
@@ -87,7 +87,7 @@ interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLElement>;
+  refCallback: RefCallback<HTMLInputElement>;
 
   /**
    * Whether field is required.
@@ -97,7 +97,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLElement | null;
+  element: HTMLInputElement | null;
 }
 
 interface FormStepsProps {
@@ -242,8 +242,23 @@ function FormSteps({
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
 
-      if (isActive && isRequired && !values[key]) {
-        result = result.concat({ field: key, error: new RequiredValueMissingError() });
+      let error: Error | undefined;
+      if (isActive) {
+        const validatedField = element.closest('lg-validated-field');
+        if (validatedField) {
+          validatedField.validate();
+        }
+
+        if (element.validationMessage) {
+          error = new Error(element.validationMessage);
+          element.reportValidity();
+        } else if (isRequired && !values[key]) {
+          error = new RequiredValueMissingError();
+        }
+      }
+
+      if (error) {
+        result = result.concat({ field: key, error });
       }
 
       return result;
