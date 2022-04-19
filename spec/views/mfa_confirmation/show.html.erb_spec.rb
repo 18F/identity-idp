@@ -31,7 +31,7 @@ describe 'mfa_confirmation/show.html.erb' do
   it 'provides a call to action to add another MFA method' do
     render
 
-    expect(rendered).to have_selector('p', text: t('multi_factor_authentication.cta'))
+    expect(rendered).to have_selector('p', text: t('multi_factor_authentication.account_info', count: 1))
   end
 
   it 'has a button with the ability to skip step' do

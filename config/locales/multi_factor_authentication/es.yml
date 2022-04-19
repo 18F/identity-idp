@@ -9,13 +9,13 @@ es:
     add: Agregar otro método
     cta: null
     current_method_count:
-      '2': Segundo
-      '3': Tercero
-      '4': Cuarto
-      '5': Quinto
-      '6': Sexto
-      '7': Séptimo
-      '8': Octavo
+      - segundo
+      - tercero
+      - cuarto
+      - quinto
+      - sexto
+      - séptimo
+      - octavo
     info: Le recomendamos que seleccione al menos (2) dos métodos diferentes para
       tener una copia de seguridad si pierde uno de los dispositivos de
       autenticación elegidos.

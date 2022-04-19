@@ -8,13 +8,13 @@ en:
         new devices to stay up to date.
     add: Add another method
     current_method_count:
-      '2': second
-      '3': third
-      '4': fourth
-      '5': fifth
-      '6': sixth
-      '7': seventh
-      '8': eighth
+      - second
+      - third
+      - fourth
+      - fifth
+      - sixth
+      - seventh
+      - eighth
     info: We recommend you select at least (2) two different methods so you have a
       backup if you lose one of your chosen authentication devices.
     skip: Skip for now
