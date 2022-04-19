@@ -244,11 +244,10 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        element.checkValidity();
+        element.reportValidity();
 
         if (element.validationMessage) {
           error = new Error(element.validationMessage);
-          element.reportValidity();
         } else if (isRequired && !values[key]) {
           error = new RequiredValueMissingError();
         }
