@@ -165,7 +165,7 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
-      # Send list of verification errors to emails
+      # Upload list of verification errors to S3
       verification_errors_report: {
         class: 'Reports::VerificationErrorsReport',
         cron: cron_24h,
