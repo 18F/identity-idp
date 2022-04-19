@@ -32,4 +32,13 @@ describe('PrintButton', () => {
     expect(button.closest('lg-print-button')).to.exist();
     expect(button.classList.contains('usa-button--outline')).to.be.true();
   });
+
+  it('renders with print icon', () => {
+    const { getByRole } = render(<PrintButton />);
+
+    const icon = getByRole('img', { hidden: true });
+
+    expect(icon.classList.contains('usa-icon')).to.be.true();
+    expect(icon.querySelector('use[href$="#print"]'));
+  });
 });

@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import Button from './button';
 
-describe('document-capture/components/button', () => {
+describe('Button', () => {
   it('renders with default props', () => {
     const { getByText } = render(<Button>Click me</Button>);
 
@@ -118,5 +118,14 @@ describe('document-capture/components/button', () => {
     const button = getByText('Click me');
 
     expect(button.classList.contains('my-button')).to.be.true();
+  });
+
+  it('renders icon', () => {
+    const { getByRole } = render(<Button icon="add">Click me</Button>);
+
+    const icon = getByRole('img', { hidden: true });
+
+    expect(icon.classList.contains('usa-icon')).to.be.true();
+    expect(icon.querySelector('use')!.getAttribute('href')).to.match(/#add$/);
   });
 });

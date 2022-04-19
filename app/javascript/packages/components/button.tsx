@@ -1,5 +1,7 @@
-import { createElement, MouseEvent, ReactNode } from 'react';
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import { createElement } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
+import Icon from './icon';
+import type { DesignSystemIcon } from './icon';
 
 type ButtonType = 'button' | 'reset' | 'submit';
 
@@ -55,6 +57,11 @@ export interface ButtonProps {
   isUnstyled?: boolean;
 
   /**
+   * Icon to show next to button text.
+   */
+  icon?: DesignSystemIcon;
+
+  /**
    * Optional additional class names.
    */
   className?: string;
@@ -70,6 +77,7 @@ function Button({
   isOutline,
   isDisabled,
   isUnstyled,
+  icon,
   className,
   ...htmlAttributes
 }: ButtonProps &
@@ -92,6 +100,7 @@ function Button({
   return createElement(
     tagName,
     { type, href, disabled: isDisabled, className: classes, ...htmlAttributes },
+    icon && <Icon icon={icon} />,
     children,
   );
 }

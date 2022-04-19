@@ -16,7 +16,9 @@ declare global {
 function PrintButton(buttonProps: ButtonProps) {
   return (
     <lg-print-button>
-      <Button {...buttonProps}>{t('components.print_button.label')}</Button>
+      <Button icon="print" {...buttonProps}>
+        {t('components.print_button.label')}
+      </Button>
     </lg-print-button>
   );
 }

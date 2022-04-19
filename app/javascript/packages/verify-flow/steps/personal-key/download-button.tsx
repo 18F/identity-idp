@@ -36,6 +36,7 @@ function DownloadButton({ content, fileName, ...buttonProps }: DownloadButtonPro
   return (
     <Button
       {...buttonProps}
+      icon="file_download"
       href={`data:,${encodeURIComponent(content)}`}
       download={fileName}
       onClick={download}
