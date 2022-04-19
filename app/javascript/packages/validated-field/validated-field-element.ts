@@ -41,6 +41,7 @@ class ValidatedFieldElement extends HTMLElement {
 
     this.input?.addEventListener('input', () => this.setErrorMessage());
     this.input?.addEventListener('input', () => this.setInputIsValid(true));
+    this.input?.addEventListener('input', () => this.validate());
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
   }
 
@@ -131,6 +132,12 @@ class ValidatedFieldElement extends HTMLElement {
 
     return this.errorMessage;
   }
+
+  /**
+   * Validation behavior assumed to be implemented in an extending class or assigned by the instance
+   * of the element. Validation should set error using setCustomValidity.
+   */
+  validate() {}
 }
 
 declare global {
