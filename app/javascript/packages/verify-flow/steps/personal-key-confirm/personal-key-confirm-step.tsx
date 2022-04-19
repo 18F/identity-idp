@@ -1,4 +1,4 @@
-import { Alert, Button } from '@18f/identity-components';
+import { Button } from '@18f/identity-components';
 import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
 import { t } from '@18f/identity-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -11,7 +11,8 @@ import type { VerifyFlowValues } from '../..';
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
-  const { registerField, errors, toPreviousStep } = stepProps;
+  const { registerField, value, toPreviousStep } = stepProps;
+  const personalKey = value.personalKey!;
 
   return (
     <>
@@ -24,13 +25,11 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>
         <Modal.Description>{t('forms.personal_key.instructions')}</Modal.Description>
-        {errors.length > 0 && (
-          <Alert type="error" className="margin-bottom-4">
-            {t('users.personal_key.confirmation_error')}
-          </Alert>
-        )}
-        <PersonalKeyInput ref={registerField('personalKeyConfirmation', { isRequired: true })} />
-        <div className="grid-row grid-gap">
+        <PersonalKeyInput
+          expectedValue={personalKey}
+          ref={registerField('personalKeyConfirmation')}
+        />
+        <div className="grid-row grid-gap margin-top-5">
           <div className="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 tablet:display-none">
             <FormStepsContinueButton className="margin-y-0" />
           </div>
