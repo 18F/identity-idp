@@ -40,7 +40,7 @@ module Api
       FormResponse.new(
         success: form_valid?,
         errors: errors,
-        extra: extra_attributes,
+        extra: extra_attributes
       )
     end
 
@@ -153,6 +153,7 @@ module Api
           user_uuid: current_user.uuid,
         }
       end
+      @extra_attributes = {} unless @extra_attributes.present?
     end
 
     def public_key
