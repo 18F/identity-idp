@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { ValidatedFieldElement } from '.';
+import ValidatedFieldElement from './validated-field-element';
 
 describe('ValidatedFieldElement', () => {
   before(() => {
