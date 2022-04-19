@@ -8,10 +8,10 @@ class MfaConfirmationShowPresenter
   end
 
   def title
-    if current_user.enabled_mfa_methods_count > 1
+    if enabled_method_count > 1
       t(
         'titles.mfa_setup.multiple_authentication_methods_setup',
-        method_count: current_user.enabled_mfa_methods_count.ordinalize,
+        method_count: t("multi_factor_authentication.current_method_count.#{enabled_method_count}"),
       )
     else
       t('titles.mfa_setup.first_authentication_method')
@@ -19,10 +19,12 @@ class MfaConfirmationShowPresenter
   end
 
   def info
-    if current_user.enabled_mfa_methods_count > 1
-      t('multi_factor_authentication.account_secure')
-    else
-      t('multi_factor_authentication.cta')
-    end
+    t('multi_factor_authentication.account_info', count: enabled_method_count)
+  end
+
+  private
+
+  def enabled_method_count
+    current_user.enabled_mfa_methods_count
   end
 end

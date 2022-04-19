@@ -1,11 +1,20 @@
 ---
 en:
   multi_factor_authentication:
-    account_secure: Congratulations! You are doing very well to keep your account
-      secure. Add new devices to stay up to date.
+    account_info:
+      one: Adding another authentication method prevents you from getting locked out
+        of your account if you lose one of your methods.
+      other: Congratulations! You are doing very well to keep your account secure. Add
+        new devices to stay up to date.
     add: Add another method
-    cta: Adding another authentication method prevents you from getting locked out
-      of your account if you lose one of your methods.
+    current_method_count:
+      '2': second
+      '3': third
+      '4': fourth
+      '5': fifth
+      '6': sixth
+      '7': seventh
+      '8': eighth
     info: We recommend you select at least (2) two different methods so you have a
       backup if you lose one of your chosen authentication devices.
     skip: Skip for now
