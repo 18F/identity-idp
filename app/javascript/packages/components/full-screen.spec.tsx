@@ -54,6 +54,20 @@ describe('FullScreen', () => {
     expect(button.nodeName).to.equal('BUTTON');
   });
 
+  context('hideCloseButton prop is true', () => {
+    it('renders without a close button', () => {
+      const { queryByLabelText } = render(
+        <FullScreen hideCloseButton>
+          <input />
+        </FullScreen>,
+      );
+
+      const button = queryByLabelText('users.personal_key.close');
+
+      expect(button).to.not.exist();
+    });
+  });
+
   it('focuses the first interactive element', async () => {
     const { getByRole } = render(
       <FullScreen>

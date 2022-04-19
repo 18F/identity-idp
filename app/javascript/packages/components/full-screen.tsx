@@ -20,6 +20,11 @@ interface FullScreenProps {
   label?: string;
 
   /**
+   * Whether to omit default close button, in case it is implemented by full screen content.
+   */
+  hideCloseButton?: boolean;
+
+  /**
    * Child elements.
    */
   children: ReactNode;
@@ -53,7 +58,7 @@ export function useInertSiblingElements(containerRef: MutableRefObject<HTMLEleme
 }
 
 function FullScreen(
-  { onRequestClose = () => {}, label, children }: FullScreenProps,
+  { onRequestClose = () => {}, label, hideCloseButton = false, children }: FullScreenProps,
   ref: ForwardedRef<FullScreenRefHandle>,
 ) {
   const { t } = useI18n();
@@ -71,14 +76,20 @@ function FullScreen(
   return createPortal(
     <div ref={containerRef} role="dialog" aria-label={label} className="full-screen bg-white">
       {children}
-      <button
-        type="button"
-        aria-label={t('users.personal_key.close')}
-        onClick={onRequestClose}
-        className="full-screen__close-button usa-button padding-2 margin-2"
-      >
-        <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen__close-icon" />
-      </button>
+      {!hideCloseButton && (
+        <button
+          type="button"
+          aria-label={t('users.personal_key.close')}
+          onClick={onRequestClose}
+          className="full-screen__close-button usa-button padding-2 margin-2"
+        >
+          <img
+            alt=""
+            src={getAssetPath('close-white-alt.svg')}
+            className="full-screen__close-icon"
+          />
+        </button>
+      )}
     </div>,
     document.body,
   );
