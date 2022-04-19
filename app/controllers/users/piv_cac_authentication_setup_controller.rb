@@ -108,7 +108,8 @@ module Users
         :selected_mfa_options,
         determine_next_mfa_selection,
       )
-      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user, final_path)
+      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
+                  final_path
     end
 
     def piv_cac_enabled?

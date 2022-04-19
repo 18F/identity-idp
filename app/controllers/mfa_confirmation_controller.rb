@@ -6,13 +6,14 @@ class MfaConfirmationController < ApplicationController
     @presenter = MfaConfirmationShowPresenter.new(
       current_user: current_user,
       next_path: next_path,
-      final_path: final_path,
+      final_path: after_mfa_setup_path,
     )
   end
 
   def skip
-    user_session[:selected_mfa_options] = nil
-    redirect_to final_path
+    user_session.delete(:selected_mfa_options)
+    user_session.delete(:next_mfa_selection_choice)
+    redirect_to after_mfa_setup_path
   end
 
   def new
@@ -34,11 +35,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def next_path
-    confirmation_path(params[:next_setup_choice]) || final_path
-  end
-
-  def final_path
-    user_session[:mfa_selection_final_path]
+    confirmation_path(params[:next_setup_choice])
   end
 
   def handle_valid_password

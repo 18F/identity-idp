@@ -25,7 +25,6 @@ module TwoFactorAuthentication
           )
           next_url = user_next_authentication_setup_path(
             next_mfa_setup_for_user,
-            after_otp_verification_confirmation_url
           )
         end
         handle_valid_otp(next_url)

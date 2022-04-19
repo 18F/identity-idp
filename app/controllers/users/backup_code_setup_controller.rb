@@ -29,7 +29,8 @@ module Users
         :selected_mfa_options,
         determine_next_mfa_selection,
       )
-      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user, after_mfa_setup_path)
+      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
+                  after_mfa_setup_path
     end
 
     def download
