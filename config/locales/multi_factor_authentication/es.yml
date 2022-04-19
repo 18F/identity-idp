@@ -7,7 +7,6 @@ es:
       other: ¡Felicitaciones! Está haciendo muy bien en mantener su cuenta segura.
         Añada nuevos dispositivos para mantenerse al día.
     add: Agregar otro método
-    cta: null
     current_method_count:
       - primero 
       - segundo

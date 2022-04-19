@@ -11,7 +11,7 @@ class MfaConfirmationShowPresenter
     if enabled_method_count > 1
       t(
         'titles.mfa_setup.multiple_authentication_methods_setup',
-        method_count: t("multi_factor_authentication.current_method_count")[enabled_method_count - 1],
+        method_count: method_count_text,
       )
     else
       t('titles.mfa_setup.first_authentication_method')
@@ -26,5 +26,9 @@ class MfaConfirmationShowPresenter
 
   def enabled_method_count
     current_user.enabled_mfa_methods_count
+  end
+
+  def method_count_text
+    t('multi_factor_authentication.current_method_count')[enabled_method_count - 1]
   end
 end
