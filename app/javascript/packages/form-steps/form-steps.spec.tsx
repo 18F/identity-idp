@@ -323,6 +323,29 @@ describe('FormSteps', () => {
     expect(document.activeElement).to.equal(getByText('Last Title'));
   });
 
+  it('respects native custom input validity', async () => {
+    const { getByRole } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    const inputOne = getByRole('textbox', { name: 'Second Input One' }) as HTMLInputElement;
+    const inputTwo = getByRole('textbox', { name: 'Second Input Two' }) as HTMLInputElement;
+
+    // Make inputs otherwise valid.
+    await userEvent.type(inputOne, 'one');
+    await userEvent.type(inputTwo, 'two');
+
+    // Add custom validity error.
+    inputOne.checkValidity = () => {
+      inputOne.setCustomValidity('Custom Error');
+      return false;
+    };
+
+    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+
+    expect(inputOne.hasAttribute('data-is-error')).to.be.true();
+    expect(document.activeElement).to.equal(inputOne);
+  });
+
   it('distinguishes empty errors from progressive error removal', async () => {
     const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 

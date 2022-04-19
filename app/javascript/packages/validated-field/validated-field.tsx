@@ -39,18 +39,20 @@ function ValidatedField({
   const fieldRef = useRef<ValidatedFieldElement>();
   const instanceId = useInstanceId();
   useEffect(() => {
-    fieldRef.current!.validate = () => {
-      const input = fieldRef.current!.input!;
+    if (fieldRef.current && fieldRef.current.input) {
+      const { input } = fieldRef.current;
+      input.checkValidity = () => {
+        let nextError: string = '';
+        try {
+          validate(input.value);
+        } catch (error) {
+          nextError = error.message;
+        }
 
-      let nextError: string = '';
-      try {
-        validate(input.value);
-      } catch (error) {
-        nextError = error.message;
-      }
-
-      input.setCustomValidity(nextError);
-    };
+        input.setCustomValidity(nextError);
+        return !nextError && HTMLInputElement.prototype.checkValidity.call(input);
+      };
+    }
   }, [validate]);
 
   const errorId = `validated-field-error-${instanceId}`;

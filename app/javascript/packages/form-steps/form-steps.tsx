@@ -244,10 +244,7 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        const validatedField = element.closest('lg-validated-field');
-        if (validatedField) {
-          validatedField.validate();
-        }
+        element.checkValidity();
 
         if (element.validationMessage) {
           error = new Error(element.validationMessage);
@@ -271,8 +268,6 @@ function FormSteps({
   }
 
   const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
-  const hasUnresolvedFieldErrors =
-    activeErrors.length && activeErrors.length > unknownFieldErrors.length;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -281,8 +276,8 @@ function FormSteps({
   const toNextStep: FormEventHandler = (event) => {
     event.preventDefault();
 
-    // Don't proceed if field errors have yet to be resolved.
-    if (hasUnresolvedFieldErrors) {
+    // Don't proceed if initial active errors have yet to be resolved.
+    if (activeErrors.length && activeErrors === initialActiveErrors) {
       setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;
@@ -315,7 +310,7 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep}>
+    <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
