@@ -3,13 +3,12 @@ import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import FullScreen, {
-  useInertSiblingElements,
-} from '@18f/identity-document-capture/components/full-screen';
+import FullScreen, { useInertSiblingElements } from './full-screen';
+import type { FullScreenRefHandle } from './full-screen';
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-describe('document-capture/components/full-screen', () => {
+describe('FullScreen', () => {
   describe('useInertSiblingElements', () => {
     beforeEach(() => {
       document.body.innerHTML = `
@@ -48,7 +47,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('renders with a close button', () => {
-    const { getByLabelText } = render(<FullScreen>Content</FullScreen>);
+    const { getByLabelText } = render(<FullScreen label="label">Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -57,7 +56,7 @@ describe('document-capture/components/full-screen', () => {
 
   it('focuses the first interactive element', async () => {
     const { getByRole } = render(
-      <FullScreen>
+      <FullScreen label="label">
         <button type="button">One</button>
         <button type="button">Two</button>
       </FullScreen>,
@@ -68,7 +67,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('focuses the close button as a fallback', async () => {
-    const { getByRole } = render(<FullScreen />);
+    const { getByRole } = render(<FullScreen label="label">Content</FullScreen>);
 
     await delay(); // focus-trap delays initial focus by default
     expect(document.activeElement).to.equal(
@@ -77,7 +76,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('is rendered as an accessible modal', () => {
-    const { getByRole } = render(<FullScreen>Content</FullScreen>);
+    const { getByRole } = render(<FullScreen label="label">Content</FullScreen>);
 
     expect(getByRole('dialog')).to.be.ok();
   });
@@ -85,7 +84,9 @@ describe('document-capture/components/full-screen', () => {
   it('calls close callback when close button is clicked', () => {
     const onRequestClose = sinon.spy();
     const { getByLabelText } = render(
-      <FullScreen onRequestClose={onRequestClose}>Content</FullScreen>,
+      <FullScreen label="label" onRequestClose={onRequestClose}>
+        Content
+      </FullScreen>,
     );
 
     const button = getByLabelText('users.personal_key.close');
@@ -96,7 +97,11 @@ describe('document-capture/components/full-screen', () => {
 
   it('does not call close callback when unmounted', () => {
     const onRequestClose = sinon.spy();
-    const { unmount } = render(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
+    const { unmount } = render(
+      <FullScreen label="label" onRequestClose={onRequestClose}>
+        Content
+      </FullScreen>,
+    );
 
     unmount();
 
@@ -104,7 +109,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('transitions focus into the modal', (done) => {
-    const { baseElement } = render(<FullScreen>Content</FullScreen>);
+    const { baseElement } = render(<FullScreen label="label">Content</FullScreen>);
 
     // The `focus-trap` library only assigns initial focus after a timeout.
     // Schedule to assert immediately following.
@@ -116,7 +121,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('traps focus', (done) => {
-    const { baseElement, getByLabelText } = render(<FullScreen>Content</FullScreen>);
+    const { baseElement, getByLabelText } = render(<FullScreen label="label">Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -139,8 +144,12 @@ describe('document-capture/components/full-screen', () => {
 
   it('closes on escape press', () => {
     const onRequestClose = sinon.spy();
-    const { getByLabelText, rerender } = render(<FullScreen>Content</FullScreen>);
-    rerender(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
+    const { getByLabelText, rerender } = render(<FullScreen label="label">Content</FullScreen>);
+    rerender(
+      <FullScreen label="label" onRequestClose={onRequestClose}>
+        Content
+      </FullScreen>,
+    );
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -156,7 +165,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('toggles modal class on body while mounted', () => {
-    const { unmount } = render(<FullScreen>Content</FullScreen>);
+    const { unmount } = render(<FullScreen label="label">Content</FullScreen>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
@@ -166,26 +175,30 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('only removes body class when last mounted modal is removed', () => {
-    const { rerender } = render(
+    const { rerender, unmount } = render(
       <>
-        <FullScreen>Please don’t</FullScreen>
-        <FullScreen>do this.</FullScreen>
+        <FullScreen label="label">Please don’t</FullScreen>
+        <FullScreen label="label">do this.</FullScreen>
       </>,
     );
 
-    rerender(<FullScreen>Please don’t</FullScreen>);
+    rerender(<FullScreen label="label">Please don’t</FullScreen>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
-    rerender(null);
+    unmount();
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
   });
 
   it('exposes focus trap on its ref', () => {
-    const ref = createRef();
-    render(<FullScreen ref={ref}>Content</FullScreen>);
+    const ref = createRef<FullScreenRefHandle>();
+    render(
+      <FullScreen label="label" ref={ref}>
+        Content
+      </FullScreen>,
+    );
 
-    expect(ref.current.focusTrap.deactivate).to.be.a('function');
+    expect(ref.current!.focusTrap!.deactivate).to.be.a('function');
   });
 });

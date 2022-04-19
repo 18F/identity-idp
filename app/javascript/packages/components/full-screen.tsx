@@ -1,37 +1,39 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
+import type { ReactNode, ForwardedRef, MutableRefObject } from 'react';
 import { createPortal } from 'react-dom';
+import type { FocusTrap } from 'focus-trap';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useImmutableCallback } from '@18f/identity-react-hooks';
 import { getAssetPath } from '@18f/identity-assets';
-import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
-import useFocusTrap from '../hooks/use-focus-trap';
+import useToggleBodyClassByPresence from './hooks/use-toggle-body-class-by-presence';
+import useFocusTrap from './hooks/use-focus-trap';
 
-/** @typedef {import('focus-trap').FocusTrap} FocusTrap */
-/** @typedef {import('react').ReactNode} ReactNode */
+interface FullScreenProps {
+  /**
+   * Callback invoked when user initiates close intent.
+   */
+  onRequestClose?: () => void;
 
-/**
- * @typedef FullScreenProps
- *
- * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
- * @prop {string} label Accessible label for modal.
- * @prop {ReactNode} children Child elements.
- */
+  /**
+   * Accessible label for modal.
+   */
+  label: string;
 
-/**
- * @typedef {{focusTrap: import('focus-trap').FocusTrap?}} FullScreenRefHandle
- */
+  /**
+   * Child elements.
+   */
+  children: ReactNode;
+}
 
-/**
- * @param {React.MutableRefObject<HTMLElement?>} containerRef
- */
-export function useInertSiblingElements(containerRef) {
+export interface FullScreenRefHandle {
+  focusTrap: FocusTrap | null;
+}
+
+export function useInertSiblingElements(containerRef: MutableRefObject<HTMLElement | null>) {
   useEffect(() => {
     const container = containerRef.current;
 
-    /**
-     * @type {[Element, string|null][]}
-     */
-    const originalElementAttributeValues = [];
+    const originalElementAttributeValues: [Element, string | null][] = [];
     if (container && container.parentNode) {
       for (const child of container.parentNode.children) {
         if (child !== container) {
@@ -50,14 +52,13 @@ export function useInertSiblingElements(containerRef) {
   });
 }
 
-/**
- * @param {FullScreenProps} props Props object.
- * @param {import('react').ForwardedRef<FullScreenRefHandle>} ref
- */
-function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
+function FullScreen(
+  { onRequestClose = () => {}, label, children }: FullScreenProps,
+  ref: ForwardedRef<FullScreenRefHandle>,
+) {
   const { t } = useI18n();
   const ifStillMounted = useIfStillMounted();
-  const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const containerRef = useRef(null as HTMLDivElement | null);
   const onFocusTrapDeactivate = useImmutableCallback(ifStillMounted(onRequestClose));
   const focusTrap = useFocusTrap(containerRef, {
     clickOutsideDeactivates: true,

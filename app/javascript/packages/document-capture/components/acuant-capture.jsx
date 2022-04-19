@@ -9,14 +9,13 @@ import {
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { Button } from '@18f/identity-components';
+import { Button, FullScreen } from '@18f/identity-components';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
-import FullScreen from './full-screen';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
@@ -25,7 +24,7 @@ import useCookie from '../hooks/use-cookie';
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./acuant-camera').AcuantSuccessResponse} AcuantSuccessResponse */
 /** @typedef {import('./acuant-camera').AcuantDocumentType} AcuantDocumentType */
-/** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
+/** @typedef {import('@18f/identity-components').FullScreenRefHandle} FullScreenRefHandle */
 /** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
 
 /**

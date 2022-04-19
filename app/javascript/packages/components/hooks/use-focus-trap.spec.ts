@@ -3,11 +3,11 @@ import { useRef } from 'react';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { renderHook } from '@testing-library/react-hooks';
-import useFocusTrap from '@18f/identity-document-capture/hooks/use-focus-trap';
+import useFocusTrap from './use-focus-trap';
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-describe('document-capture/hooks/use-focus-trap', () => {
+describe('useFocusTrap', () => {
   // Common options for test instances. Default delayed initial focus adds complexity to assertions.
   const DEFAULT_OPTIONS = { delayInitialFocus: false };
 
@@ -22,15 +22,15 @@ describe('document-capture/hooks/use-focus-trap', () => {
   });
 
   it('returns focus trap', () => {
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.container') as HTMLElement;
     const { result } = renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
-    const trap = result.current;
+    const trap = result.current!;
     expect(trap.deactivate).to.be.a('function');
   });
 
   it('traps focus', () => {
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.container') as HTMLElement;
     renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
     expect(container.contains(document.activeElement)).to.be.true();
@@ -40,10 +40,10 @@ describe('document-capture/hooks/use-focus-trap', () => {
 
   it('restores focus on deactivate', async () => {
     const originalActiveElement = document.activeElement;
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.container') as HTMLElement;
     const { result } = renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
-    const trap = result.current;
+    const trap = result.current!;
     trap.deactivate();
 
     // Delay for focus return isn't configurable.
@@ -53,7 +53,7 @@ describe('document-capture/hooks/use-focus-trap', () => {
   });
 
   it('accepts options', () => {
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.container') as HTMLElement;
     const onDeactivate = sinon.spy();
     renderHook(() =>
       useFocusTrap(useRef(container), {
