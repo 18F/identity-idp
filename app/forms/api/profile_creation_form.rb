@@ -40,7 +40,7 @@ module Api
       FormResponse.new(
         success: form_valid?,
         errors: errors,
-        extra: extra_attributes
+        extra: extra_attributes,
       )
     end
 
@@ -99,7 +99,7 @@ module Api
     def current_user
       return nil unless user_bundle_headers
       return @current_user if defined?(@current_user)
-      @current_user = User.find_by(user_uuid: user_bundle_headers['sub'])
+      @current_user = User.find_by(uuid: user_bundle_headers['sub'])
     end
 
     def set_idv_session
@@ -137,7 +137,7 @@ module Api
     end
 
     def valid_password
-      return if current_user&.valid_password?(password)
+      return if current_user&.valid_password?(user_password)
       errors.add(:password, 'invalid password')
     end
 
@@ -152,8 +152,9 @@ module Api
           profile_pending: current_user.pending_profile?,
           user_uuid: current_user.uuid,
         }
+      else
+        @extra_attributes = {}
       end
-      @extra_attributes = {} unless @extra_attributes.present?
     end
 
     def public_key

@@ -10,7 +10,7 @@ class Api::Verify::CompleteController < Api::BaseController
     analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED, result.to_h)
 
     if result.success?
-      user = User.find_by(:uuid, result.extra[:user_uuid])
+      user = User.find_by(uuid: result.extra[:user_uuid])
       add_proofing_component(user)
       render json: {
         personal_key: result.extra[:personal_key],
