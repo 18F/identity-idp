@@ -124,7 +124,7 @@ feature 'Sign Up' do
         Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
       )
 
-      expect(current_path).to eq(login_two_factor_options_path)
+      expect(current_path).to eq(two_factor_options_path)
       expect(page).to have_content(
         I18n.t(
           'errors.messages.phone_confirmation_throttled',
