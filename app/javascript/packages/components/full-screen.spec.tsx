@@ -47,7 +47,7 @@ describe('FullScreen', () => {
   });
 
   it('renders with a close button', () => {
-    const { getByLabelText } = render(<FullScreen label="label">Content</FullScreen>);
+    const { getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -56,7 +56,7 @@ describe('FullScreen', () => {
 
   it('focuses the first interactive element', async () => {
     const { getByRole } = render(
-      <FullScreen label="label">
+      <FullScreen>
         <button type="button">One</button>
         <button type="button">Two</button>
       </FullScreen>,
@@ -67,7 +67,7 @@ describe('FullScreen', () => {
   });
 
   it('focuses the close button as a fallback', async () => {
-    const { getByRole } = render(<FullScreen label="label">Content</FullScreen>);
+    const { getByRole } = render(<FullScreen>Content</FullScreen>);
 
     await delay(); // focus-trap delays initial focus by default
     expect(document.activeElement).to.equal(
@@ -76,7 +76,7 @@ describe('FullScreen', () => {
   });
 
   it('is rendered as an accessible modal', () => {
-    const { getByRole } = render(<FullScreen label="label">Content</FullScreen>);
+    const { getByRole } = render(<FullScreen>Content</FullScreen>);
 
     expect(getByRole('dialog')).to.be.ok();
   });
@@ -84,9 +84,7 @@ describe('FullScreen', () => {
   it('calls close callback when close button is clicked', () => {
     const onRequestClose = sinon.spy();
     const { getByLabelText } = render(
-      <FullScreen label="label" onRequestClose={onRequestClose}>
-        Content
-      </FullScreen>,
+      <FullScreen onRequestClose={onRequestClose}>Content</FullScreen>,
     );
 
     const button = getByLabelText('users.personal_key.close');
@@ -97,11 +95,7 @@ describe('FullScreen', () => {
 
   it('does not call close callback when unmounted', () => {
     const onRequestClose = sinon.spy();
-    const { unmount } = render(
-      <FullScreen label="label" onRequestClose={onRequestClose}>
-        Content
-      </FullScreen>,
-    );
+    const { unmount } = render(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
 
     unmount();
 
@@ -109,7 +103,7 @@ describe('FullScreen', () => {
   });
 
   it('transitions focus into the modal', (done) => {
-    const { baseElement } = render(<FullScreen label="label">Content</FullScreen>);
+    const { baseElement } = render(<FullScreen>Content</FullScreen>);
 
     // The `focus-trap` library only assigns initial focus after a timeout.
     // Schedule to assert immediately following.
@@ -121,7 +115,7 @@ describe('FullScreen', () => {
   });
 
   it('traps focus', (done) => {
-    const { baseElement, getByLabelText } = render(<FullScreen label="label">Content</FullScreen>);
+    const { baseElement, getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -144,12 +138,8 @@ describe('FullScreen', () => {
 
   it('closes on escape press', () => {
     const onRequestClose = sinon.spy();
-    const { getByLabelText, rerender } = render(<FullScreen label="label">Content</FullScreen>);
-    rerender(
-      <FullScreen label="label" onRequestClose={onRequestClose}>
-        Content
-      </FullScreen>,
-    );
+    const { getByLabelText, rerender } = render(<FullScreen>Content</FullScreen>);
+    rerender(<FullScreen onRequestClose={onRequestClose}>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -165,7 +155,7 @@ describe('FullScreen', () => {
   });
 
   it('toggles modal class on body while mounted', () => {
-    const { unmount } = render(<FullScreen label="label">Content</FullScreen>);
+    const { unmount } = render(<FullScreen>Content</FullScreen>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
@@ -177,12 +167,12 @@ describe('FullScreen', () => {
   it('only removes body class when last mounted modal is removed', () => {
     const { rerender, unmount } = render(
       <>
-        <FullScreen label="label">Please don’t</FullScreen>
-        <FullScreen label="label">do this.</FullScreen>
+        <FullScreen>Please don’t</FullScreen>
+        <FullScreen>do this.</FullScreen>
       </>,
     );
 
-    rerender(<FullScreen label="label">Please don’t</FullScreen>);
+    rerender(<FullScreen>Please don’t</FullScreen>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
@@ -193,11 +183,7 @@ describe('FullScreen', () => {
 
   it('exposes focus trap on its ref', () => {
     const ref = createRef<FullScreenRefHandle>();
-    render(
-      <FullScreen label="label" ref={ref}>
-        Content
-      </FullScreen>,
-    );
+    render(<FullScreen ref={ref}>Content</FullScreen>);
 
     expect(ref.current!.focusTrap!.deactivate).to.be.a('function');
   });

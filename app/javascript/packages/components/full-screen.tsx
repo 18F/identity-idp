@@ -17,7 +17,7 @@ interface FullScreenProps {
   /**
    * Accessible label for modal.
    */
-  label: string;
+  label?: string;
 
   /**
    * Child elements.
