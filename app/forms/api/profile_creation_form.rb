@@ -1,4 +1,4 @@
-# rubocop:disable Style/RedundantAssignment, IdentityIdp/ErrorsAddLinter
+# rubocop:disable IdentityIdp/ErrorsAddLinter
 module Api
   class ProfileCreationForm
     include ActiveModel::Model
@@ -39,7 +39,7 @@ module Api
 
       FormResponse.new(
         success: form_valid?,
-        errors: errors,
+        errors: errors.to_hash,
         extra: extra_attributes,
       )
     end
@@ -162,4 +162,4 @@ module Api
     end
   end
 end
-# rubocop:enable Style/RedundantAssignment, IdentityIdp/ErrorsAddLinter
+# rubocop:enable IdentityIdp/ErrorsAddLinter
