@@ -20,12 +20,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
       </FormStepsContext.Provider>
       <Modal>
         <div className="pin-top pin-x display-flex flex-column flex-align-center top-neg-3">
-            <img
-              alt=""
-              height="60"
-              width="60"
-              src={getAssetPath('p-key.svg')}
-            />
+          <img alt="" height="60" width="60" src={getAssetPath('p-key.svg')} />
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>
         <Modal.Description>{t('forms.personal_key.instructions')}</Modal.Description>
