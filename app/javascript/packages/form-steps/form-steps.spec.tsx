@@ -335,7 +335,7 @@ describe('FormSteps', () => {
     await userEvent.type(inputTwo, 'two');
 
     // Add custom validity error.
-    inputOne.checkValidity = () => {
+    inputOne.reportValidity = () => {
       inputOne.setCustomValidity('Custom Error');
       return false;
     };
