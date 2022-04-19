@@ -221,7 +221,3 @@ fr:
       help: ''
       info: Certains SP ont dépassé leur limite de quota.
       subject: Certains SP ont atteint leur limite de quota
-    verification_errors_report:
-      issuers: Émetteurs
-      name: Nom
-      subject: Rapport d’erreurs de vérification

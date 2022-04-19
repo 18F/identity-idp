@@ -8,7 +8,6 @@ describe Reports::VerificationErrorsReport do
   let(:uuid) { 'foo' }
   let(:user2) { create(:user) }
   let(:uuid2) { 'foo2' }
-  let(:header) { "uuid,welcome_view_at,error_code\r\n" }
 
   subject { described_class.new }
 
@@ -19,21 +18,35 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out a blank report if no users went through doc auth' do
-    run_report_and_expect(header)
+    reports = run_reports
+
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv.length).to eq(1)
   end
 
   it 'sends out an abandon code on a user lands on welcome and leaves' do
     now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
 
-    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},ABANDON\r\n")
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'ABANDON'])
   end
 
   it 'sends out a blank report if no issuer data' do
     now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: 'issuer2')
 
-    run_report_and_expect(header)
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv.length).to eq(1)
   end
 
   it 'sends out a document error if the user submits document but does not progress forward' do
@@ -45,7 +58,12 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},DOCUMENT_FAIL\r\n")
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
   end
 
   it 'sends out a verify error if the user submits PII but does not progress forward' do
@@ -57,7 +75,12 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},VERIFY_FAIL\r\n")
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'VERIFY_FAIL'])
   end
 
   it 'sends out a phone error if the user submits phone info but does not progress forward' do
@@ -69,7 +92,12 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect("#{header}#{uuid},#{now.to_time.utc.iso8601},PHONE_FAIL\r\n")
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'PHONE_FAIL'])
   end
 
   it 'sends more than one user' do
@@ -83,11 +111,13 @@ describe Reports::VerificationErrorsReport do
       issuer: issuer,
     )
 
-    run_report_and_expect(
-      "#{header}"\
-      "#{uuid},#{now.to_time.utc.iso8601},DOCUMENT_FAIL\r\n"\
-      "#{uuid2},#{now.to_time.utc.iso8601},ABANDON\r\n",
-    )
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(3)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
+    expect(csv[2]).to eq([uuid2, now.to_time.utc.iso8601, 'ABANDON'])
   end
 
   describe '#good_job_concurrency_key' do
@@ -100,17 +130,12 @@ describe Reports::VerificationErrorsReport do
     end
   end
 
-  def run_report_and_expect(report)
+  def run_reports
     ServiceProvider.create(issuer: issuer, agency_id: 1, friendly_name: issuer)
     AgencyIdentity.create(agency_id: 1, user_id: user.id, uuid: uuid)
 
     allow(IdentityConfig.store).to receive(:verification_errors_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],
-    )
-    allow(UserMailer).to receive(:verification_errors_report).and_call_original
-
-    expect(UserMailer).to receive(:verification_errors_report).with(
-      email: email, name: name, issuers: [issuer], data: report,
     )
 
     Reports::VerificationErrorsReport.new.perform(Time.zone.today)

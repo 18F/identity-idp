@@ -198,7 +198,3 @@ en:
       help: ''
       info: There are SPs that have gone over their quota limit.
       subject: Some SPs have reached their quota limit
-    verification_errors_report:
-      issuers: Issuers
-      name: Name
-      subject: Verification errors report

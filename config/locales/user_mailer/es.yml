@@ -207,7 +207,3 @@ es:
       help: ''
       info: Hay SP que han superado su límite de cuota.
       subject: Algunos SP han alcanzado su límite de cuota.
-    verification_errors_report:
-      issuers: Emisores
-      name: Nombre
-      subject: Informe de errores de verificación

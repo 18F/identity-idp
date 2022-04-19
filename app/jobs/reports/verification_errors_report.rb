@@ -13,21 +13,14 @@ module Reports
     )
 
     def perform(_date)
+      csv_reports = []
       configs = IdentityConfig.store.verification_errors_report_configs
       configs.each do |report_hash|
-        name = report_hash['name']
-        emails = report_hash['emails']
         issuers = report_hash['issuers']
         report = verification_errors_data_for_issuers(issuers)
-        emails.each do |email|
-          UserMailer.verification_errors_report(
-            email: email,
-            name: name,
-            issuers: issuers,
-            data: report,
-          ).deliver_now_or_later
-        end
+        csv_reports << report
       end
+      csv_reports
     end
 
     private
