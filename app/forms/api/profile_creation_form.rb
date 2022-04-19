@@ -126,21 +126,19 @@ module Api
       @user_bundle_payload = payload
       @user_bundle_headers = headers
     rescue JWT::DecodeError => err
-      #errors.add(jwt: "decode error: #{err.message}")
-      "decode error: #{err.message}"
+      errors.add(:jwt, "decode error: #{err.message}")
     rescue JWT::ExpiredSignature => err
-      errors.add(jwt: "expired signature: #{err.message}")
-      "expired signature: #{err.message}"
+      errors.add(:jwt, "expired signature: #{err.message}")
     end
 
     def valid_user
       return if current_user
-      errors.add(user: 'user not found')
+      errors.add(:user, 'user not found')
     end
 
     def valid_password
       return if current_user&.valid_password?(password)
-      errors.add(password: 'invalid password')
+      errors.add(:password, 'invalid password')
     end
 
     def form_valid?
@@ -148,11 +146,13 @@ module Api
     end
 
     def extra_attributes
-      @extra_attributes ||= {
-        personal_key: personal_key,
-        profile_pending: current_user.pending_profile?,
-        user_uuid: current_user.uuid,
-      }
+      if current_user.present?
+        @extra_attributes ||= {
+          personal_key: personal_key,
+          profile_pending: current_user.pending_profile?,
+          user_uuid: current_user.uuid,
+        }
+      end
     end
 
     def public_key

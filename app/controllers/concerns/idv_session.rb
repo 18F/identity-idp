@@ -29,13 +29,7 @@ module IdvSession
 
   def confirm_idv_vendor_session_started
     return if flash[:allow_confirmations_continue]
-    respond_to do |format|
-      unless idv_session.proofing_started?
-        format.json { render json: { error: 'unable to find session', status: 401 } }
-        format.html { redirect_to idv_doc_auth_url  }
-      end
-      format.html {}
-    end
+    redirect_to idv_doc_auth_url unless idv_session.proofing_started?
   end
 
   def idv_session
@@ -54,13 +48,7 @@ module IdvSession
   end
 
   def redirect_unless_effective_user
-    respond_to do |format|
-      unless effective_user
-        format.json { render json: { error: 'unable to find user', status: 401 } }
-        format.html { redirect_to root_url }
-      end
-      format.html {}
-    end
+    redirect_to root_url if !effective_user
   end
 
   def redirect_if_sp_context_needed
