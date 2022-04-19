@@ -16,7 +16,7 @@ const TEXT_LIKE_INPUT_TYPES = new Set([
   'url',
 ]);
 
-export class ValidatedField extends HTMLElement {
+export class ValidatedFieldElement extends HTMLElement {
   errorStrings: Partial<ValidityState> = {};
 
   input: HTMLInputElement | null;

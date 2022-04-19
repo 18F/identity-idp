@@ -1,11 +1,11 @@
 import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { ValidatedField } from '.';
+import { ValidatedFieldElement } from '.';
 
-describe('ValidatedField', () => {
+describe('ValidatedFieldElement', () => {
   before(() => {
-    customElements.define('lg-validated-field', ValidatedField);
+    customElements.define('lg-validated-field', ValidatedFieldElement);
   });
 
   let idCounter = 0;
