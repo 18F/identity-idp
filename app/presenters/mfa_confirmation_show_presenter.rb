@@ -11,7 +11,7 @@ class MfaConfirmationShowPresenter
     if enabled_method_count > 1
       t(
         'titles.mfa_setup.multiple_authentication_methods_setup',
-        method_count: t("multi_factor_authentication.current_method_count")[enabled_method_count],
+        method_count: t("multi_factor_authentication.current_method_count")[enabled_method_count - 1],
       )
     else
       t('titles.mfa_setup.first_authentication_method')

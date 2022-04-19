@@ -9,6 +9,7 @@ es:
     add: Agregar otro método
     cta: null
     current_method_count:
+      - primero 
       - segundo
       - tercero
       - cuarto

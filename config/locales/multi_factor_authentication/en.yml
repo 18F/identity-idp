@@ -8,6 +8,7 @@ en:
         new devices to stay up to date.
     add: Add another method
     current_method_count:
+      - first
       - second
       - third
       - fourth

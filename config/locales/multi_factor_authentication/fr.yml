@@ -9,6 +9,7 @@ fr:
     add: Agregar otro método
     cta: null
     current_method_count:
+      - premiere
       - deuxième
       - troisième
       - quatrième
