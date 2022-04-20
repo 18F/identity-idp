@@ -19,7 +19,7 @@ describe Idv::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer', step: nil }
 
-      expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
+      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
 
       get :new
     end
@@ -30,7 +30,7 @@ describe Idv::CancellationsController do
       request.env['HTTP_REFERER'] = 'http://example.com/'
       properties = { request_came_from: 'users/sessions#new', step: nil }
 
-      expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
+      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
 
       get :new
     end
@@ -40,7 +40,7 @@ describe Idv::CancellationsController do
       stub_analytics
       properties = { request_came_from: 'no referer', step: 'first' }
 
-      expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
+      expect(@analytics).to receive(:track_event).with('IdV: cancellation visited', properties)
 
       get :new, params: { step: 'first' }
     end
@@ -107,7 +107,7 @@ describe Idv::CancellationsController do
     context 'with cancel param' do
       it 'logs cancellation go back' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_CANCELLATION_GO_BACK,
+          'IdV: cancellation go back',
           step: 'first',
         )
 
@@ -144,7 +144,7 @@ describe Idv::CancellationsController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).with(
-        Analytics::IDV_CANCELLATION_CONFIRMED,
+        'IdV: cancellation confirmed',
         step: 'first',
       )
 
