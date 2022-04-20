@@ -6,18 +6,32 @@ import { useInstanceId } from '@18f/identity-react-hooks';
 const ModalContext = createContext('');
 
 interface ModalProps {
+  /**
+   * Callback invoked in response to user interaction indicating a request to close the modal.
+   */
+  onRequestClose?: () => void;
+
+  /**
+   * Modal content.
+   */
   children: ReactNode;
 }
 
 interface ModalHeadingProps {
+  /**
+   * Heading text.
+   */
   children: ReactNode;
 }
 
 interface ModalDescriptionProps {
+  /**
+   * Description text.
+   */
   children: ReactNode;
 }
 
-function Modal({ children }: ModalProps) {
+function Modal({ children, onRequestClose }: ModalProps) {
   const instanceId = useInstanceId();
 
   return (
@@ -27,6 +41,7 @@ function Modal({ children }: ModalProps) {
         describedBy={`modal-description-${instanceId}`}
         bgColor="none"
         hideCloseButton
+        onRequestClose={onRequestClose}
       >
         <div className="usa-modal-wrapper is-visible">
           <div className="usa-modal-overlay">
