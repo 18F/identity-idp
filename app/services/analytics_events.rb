@@ -421,6 +421,12 @@ module AnalyticsEvents
     track_event('IdV: cancellation go back', step: step, **extra)
   end
 
+  # @identity.idp.event_name IdV: come back later visited
+  # The user visited the "come back later" page shown during the GPO mailing flow
+  def idv_come_back_later_visit
+    track_event('IdV: come back later visited')
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
