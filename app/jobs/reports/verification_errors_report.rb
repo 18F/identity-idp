@@ -12,13 +12,13 @@ module Reports
       key: -> { "#{REPORT_NAME}-#{arguments.first}" },
     )
 
-    def perform(_date)
+    def perform(date)
       csv_reports = []
       configs = IdentityConfig.store.verification_errors_report_configs
       configs.each do |report_hash|
         name = report_hash['name']
         issuers = report_hash['issuers']
-        report = verification_errors_data_for_issuers(name, issuers)
+        report = verification_errors_data_for_issuers(date, name, issuers)
         csv_reports << report
       end
       csv_reports
@@ -26,12 +26,16 @@ module Reports
 
     private
 
-    def verification_errors_data_for_issuers(report_name, issuers)
+    def verification_errors_data_for_issuers(date, report_name, issuers)
       csv = CSV.new('', row_sep: "\r\n")
       csv << %w[uuid welcome_view_at error_code]
       issuers.each do |issuer|
         transaction_with_timeout do
-          rows = ::VerificationErrorsReport.call(issuer, 24.hours.ago)
+          rows = ::VerificationErrorsReport.call(
+            issuer,
+            (date.beginning_of_day - 1).beginning_of_day,
+            date.beginning_of_day,
+          )
           rows.each do |row|
             csv << [row['uuid'], row['welcome_view_at'].iso8601, ial2_error_code(row)]
           end

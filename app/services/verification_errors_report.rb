@@ -1,5 +1,5 @@
 class VerificationErrorsReport
-  def self.call(service_provider, since)
+  def self.call(service_provider, start_time, end_time)
     report_sql = <<~SQL
       SELECT 
         agency_identities.uuid,
@@ -18,13 +18,14 @@ class VerificationErrorsReport
         agency_identities.user_id = users.id AND 
         doc_auth_logs.issuer=%{issuer} AND
         verified_view_at is null AND
-        welcome_view_at > %{since}
+        %{start_time} <= welcome_view_at AND welcome_view_at <= %{end_time}
       ORDER BY agency_identities.uuid ASC
     SQL
     sql = format(
       report_sql,
       issuer: ActiveRecord::Base.connection.quote(service_provider),
-      since: ActiveRecord::Base.connection.quote(since),
+      start_time: ActiveRecord::Base.connection.quote(start_time),
+      end_time: ActiveRecord::Base.connection.quote(end_time),
     )
     ActiveRecord::Base.connection.execute(sql)
   end

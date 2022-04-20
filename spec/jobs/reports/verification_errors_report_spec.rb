@@ -8,6 +8,7 @@ describe Reports::VerificationErrorsReport do
   let(:uuid) { 'foo' }
   let(:user2) { create(:user) }
   let(:uuid2) { 'foo2' }
+  let(:now) { Time.zone.now.beginning_of_day }
 
   subject { described_class.new }
 
@@ -27,7 +28,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out an abandon code on a user lands on welcome and leaves' do
-    now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: issuer)
 
     reports = run_reports
@@ -39,7 +39,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out a blank report if no issuer data' do
-    now = Time.zone.now
     DocAuthLog.create(user_id: user.id, welcome_view_at: now, issuer: 'issuer2')
 
     reports = run_reports
@@ -50,7 +49,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out a document error if the user submits document but does not progress forward' do
-    now = Time.zone.now
     DocAuthLog.create(
       user_id: user.id,
       welcome_view_at: now,
@@ -67,7 +65,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out a verify error if the user submits PII but does not progress forward' do
-    now = Time.zone.now
     DocAuthLog.create(
       user_id: user.id,
       welcome_view_at: now,
@@ -84,7 +81,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends out a phone error if the user submits phone info but does not progress forward' do
-    now = Time.zone.now
     DocAuthLog.create(
       user_id: user.id,
       welcome_view_at: now,
@@ -101,7 +97,6 @@ describe Reports::VerificationErrorsReport do
   end
 
   it 'sends more than one user' do
-    now = Time.zone.now
     DocAuthLog.create(user_id: user2.id, welcome_view_at: now, issuer: issuer)
     AgencyIdentity.create(agency_id: 1, user_id: user2.id, uuid: uuid2)
     DocAuthLog.create(
