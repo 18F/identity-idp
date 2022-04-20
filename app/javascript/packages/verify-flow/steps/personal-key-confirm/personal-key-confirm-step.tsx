@@ -16,7 +16,9 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
 
   return (
     <>
-      <FormStepsContext.Provider value={{ isLastStep: false, onPageTransition() {} }}>
+      <FormStepsContext.Provider
+        value={{ isLastStep: false, toNextStep() {}, onPageTransition() {} }}
+      >
         <PersonalKeyStep {...stepProps} />
       </FormStepsContext.Provider>
       <Modal onRequestClose={toPreviousStep}>
