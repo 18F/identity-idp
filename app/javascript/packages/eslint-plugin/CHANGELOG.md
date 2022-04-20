@@ -28,6 +28,7 @@
   - `semi`
   - `semi-spacing`
   - `semi-style`
+  - `space-before-function-paren`
   - `space-in-parens`
   - `switch-colon-spacing`
   - `template-curly-spacing`

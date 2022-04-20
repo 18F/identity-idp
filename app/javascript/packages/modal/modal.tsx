@@ -1,44 +1,62 @@
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
+import { FullScreen } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 
 const ModalContext = createContext('');
 
 interface ModalProps {
+  /**
+   * Callback invoked in response to user interaction indicating a request to close the modal.
+   */
+  onRequestClose?: () => void;
+
+  /**
+   * Modal content.
+   */
   children: ReactNode;
 }
 
 interface ModalHeadingProps {
+  /**
+   * Heading text.
+   */
   children: ReactNode;
 }
 
 interface ModalDescriptionProps {
+  /**
+   * Description text.
+   */
   children: ReactNode;
 }
 
-function Modal({ children }: ModalProps) {
+function Modal({ children, onRequestClose }: ModalProps) {
   const instanceId = useInstanceId();
 
   return (
     <ModalContext.Provider value={instanceId}>
-      <div className="usa-modal-wrapper is-visible">
-        <div className="usa-modal-overlay">
-          <div
-            role="dialog"
-            className="padding-x-2 padding-y-6 modal"
-            aria-labelledby={`modal-heading-${instanceId}`}
-            aria-describedby={`modal-description-${instanceId}`}
-          >
-            <div className="modal-center">
-              <div className="modal-content">
-                <div className="padding-y-8 padding-x-2 tablet:padding-x-8 cntnr-skinny bg-white radius-lg">
-                  {children}
+      <FullScreen
+        labelledBy={`modal-heading-${instanceId}`}
+        describedBy={`modal-description-${instanceId}`}
+        bgColor="none"
+        hideCloseButton
+        onRequestClose={onRequestClose}
+      >
+        <div className="usa-modal-wrapper is-visible">
+          <div className="usa-modal-overlay">
+            <div className="padding-x-2 padding-y-6 modal">
+              <div className="modal-center">
+                <div className="modal-content">
+                  <div className="padding-y-8 padding-x-2 tablet:padding-x-8 cntnr-skinny bg-white radius-lg">
+                    {children}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </FullScreen>
     </ModalContext.Provider>
   );
 }
