@@ -36,13 +36,12 @@ describe('PersonalKeyConfirmStep', () => {
     expect(toPreviousStep).to.have.been.called();
   });
 
-  it('allows the user to continue only with a correct value', () => {
-    const personalKey = '0000-0000-0000-0000';
+  it('allows the user to continue only with a correct value', async () => {
     const onComplete = sinon.spy();
     const { getByLabelText, getAllByText, container } = render(
       <FormSteps
         steps={[{ name: 'personal_key_confirm', form: PersonalKeyConfirmStep }]}
-        initialValues={{ personalKey }}
+        initialValues={{ personalKey: '0000-0000-0000-0000' }}
         onComplete={onComplete}
       />,
     );
@@ -53,10 +52,18 @@ describe('PersonalKeyConfirmStep', () => {
 
     expect(onComplete).not.to.have.been.called();
     expect(container.ownerDocument.activeElement).to.equal(input);
-    const errorMessage = document.getElementById(input.getAttribute('aria-describedby')!)!;
-    expect(errorMessage.textContent).to.equal('users.personal_key.confirmation_error');
+    let errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
+    expect(errorMessage!.textContent).to.equal('users.personal_key.confirmation_error');
 
-    userEvent.type(input, personalKey);
+    await userEvent.type(input, '0000-0000-0000-000');
+    errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
+    expect(errorMessage).to.not.exist();
+    await userEvent.type(input, '{enter}');
+    expect(onComplete).not.to.have.been.called();
+    errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
+    expect(errorMessage!.textContent).to.equal('users.personal_key.confirmation_error');
+
+    await userEvent.type(input, '0');
     userEvent.click(submitButton);
 
     expect(onComplete).to.have.been.called();
