@@ -16,6 +16,11 @@ interface AppRootValues {
    * Application name.
    */
   appName: string;
+
+  /**
+   * URL to which user should be redirected after completing the form.
+   */
+  completionUrl: string;
 }
 
 interface AppRootElement extends HTMLElement {
@@ -23,7 +28,7 @@ interface AppRootElement extends HTMLElement {
 }
 
 const appRoot = document.getElementById('app-root') as AppRootElement;
-const { initialValues, basePath, appName } = appRoot.dataset;
+const { initialValues, basePath, appName, completionUrl: completionURL } = appRoot.dataset;
 
 let parsedInitialValues;
 try {
@@ -31,6 +36,11 @@ try {
 } catch {}
 
 render(
-  <VerifyFlow initialValues={parsedInitialValues} basePath={basePath} appName={appName} />,
+  <VerifyFlow
+    initialValues={parsedInitialValues}
+    basePath={basePath}
+    appName={appName}
+    completionURL={completionURL}
+  />,
   appRoot,
 );

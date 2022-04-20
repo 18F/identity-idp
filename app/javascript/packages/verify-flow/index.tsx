@@ -25,9 +25,23 @@ interface VerifyFlowProps {
    * Application name, used in generating page titles for current step.
    */
   appName: string;
+
+  /**
+   * URL to which user should be redirected after completing the form.
+   */
+  completionURL: string;
 }
 
-export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlowProps) {
+export function VerifyFlow({
+  initialValues = {},
+  basePath,
+  appName,
+  completionURL,
+}: VerifyFlowProps) {
+  function onComplete() {
+    window.location.href = completionURL;
+  }
+
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -46,6 +60,7 @@ export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlow
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
+        onComplete={onComplete}
       />
     </>
   );
