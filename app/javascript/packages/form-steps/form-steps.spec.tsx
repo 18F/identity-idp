@@ -44,6 +44,7 @@ describe('FormSteps', () => {
         onChange,
         onError,
         registerField,
+        toPreviousStep,
       }: FormStepComponentProps<StepValues>) => (
         <>
           <PageHeading>Second Title</PageHeading>
@@ -71,6 +72,9 @@ describe('FormSteps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
+          <button type="button" onClick={toPreviousStep}>
+            Back
+          </button>
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
@@ -458,5 +462,14 @@ describe('FormSteps', () => {
     expect(window.scrollY).to.equal(0);
     expect(document.activeElement).to.equal(getByRole('heading', { name: 'Content Title' }));
     expect(window.history.pushState).not.to.have.been.called();
+  });
+
+  it('provides the step implementation the option to navigate to the previous step', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('Back'));
+
+    expect(getByText('First Title')).to.be.ok();
   });
 });

@@ -64,6 +64,11 @@ export interface FormStepComponentProps<V> {
    * Registers field by given name, returning ref assignment function.
    */
   registerField: RegisterFieldCallback;
+
+  /**
+   * Callback to navigate to the previous step.
+   */
+  toPreviousStep: () => void;
 }
 
 export interface FormStep {
@@ -285,6 +290,12 @@ function FormSteps({
     }
   };
 
+  const toPreviousStep = () => {
+    const previousStepIndex = Math.max(stepIndex - 1, 0);
+    const { name: nextStepName } = steps[previousStepIndex];
+    setStepName(nextStepName);
+  };
+
   const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
@@ -332,6 +343,7 @@ function FormSteps({
 
             return fields.current[field].refCallback;
           }}
+          toPreviousStep={toPreviousStep}
         />
       </FormStepsContext.Provider>
     </form>

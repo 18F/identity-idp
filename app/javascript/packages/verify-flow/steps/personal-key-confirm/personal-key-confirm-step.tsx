@@ -1,4 +1,4 @@
-import { Alert } from '@18f/identity-components';
+import { Alert, Button } from '@18f/identity-components';
 import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
 import { t } from '@18f/identity-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -10,7 +10,7 @@ import type { VerifyFlowValues } from '../..';
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
-  const { registerField, errors } = stepProps;
+  const { registerField, errors, toPreviousStep } = stepProps;
 
   return (
     <>
@@ -31,13 +31,9 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
             <FormStepsContinueButton className="margin-y-0" />
           </div>
           <div className="grid-col-12 tablet:grid-col-6">
-            <button
-              className="usa-button usa-button--big usa-button--full-width usa-button--outline"
-              type="button"
-              data-dismiss="personal-key-confirm"
-            >
+            <Button isBig isWide isOutline onClick={toPreviousStep}>
               {t('forms.buttons.back')}
-            </button>
+            </Button>
           </div>
           <div className="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 display-none tablet:display-block">
             <FormStepsContinueButton className="margin-y-0" />
