@@ -7,7 +7,6 @@ module MfaSetupConcern
       auth_method_confirmation_url(next_setup_choice: next_setup_choice)
     else
       user_session.delete(:selected_mfa_options)
-      user_session.delete(:mfa_selection_final_path)
       nil
     end
   end

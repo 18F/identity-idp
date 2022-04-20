@@ -34,8 +34,13 @@ class MfaConfirmationController < ApplicationController
     params.require(:user)[:password]
   end
 
+  def next_mfa_selection_choice
+    params[:next_setup_choice] ||
+      user_session[:next_mfa_selection_choice]
+  end
+
   def next_path
-    confirmation_path(params[:next_setup_choice])
+    confirmation_path(next_mfa_selection_choice)
   end
 
   def handle_valid_password
