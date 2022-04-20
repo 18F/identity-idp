@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+import type { FormEventHandler } from 'react';
 import { Button } from '@18f/identity-components';
 import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
 import { t } from '@18f/identity-i18n';
@@ -11,8 +13,14 @@ import type { VerifyFlowValues } from '../..';
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
+  const { toNextStep } = useContext(FormStepsContext);
   const { registerField, value, toPreviousStep } = stepProps;
   const personalKey = value.personalKey!;
+
+  const onFieldSubmit: FormEventHandler = (event) => {
+    event.preventDefault();
+    toNextStep();
+  };
 
   return (
     <>
@@ -27,10 +35,12 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>
         <Modal.Description>{t('forms.personal_key.instructions')}</Modal.Description>
-        <PersonalKeyInput
-          expectedValue={personalKey}
-          ref={registerField('personalKeyConfirmation')}
-        />
+        <form onSubmit={onFieldSubmit}>
+          <PersonalKeyInput
+            expectedValue={personalKey}
+            ref={registerField('personalKeyConfirmation')}
+          />
+        </form>
         <div className="grid-row grid-gap margin-top-5">
           <div className="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 tablet:display-none">
             <FormStepsContinueButton className="margin-y-0" />
