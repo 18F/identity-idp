@@ -7,14 +7,22 @@ interface FormStepsContextValue {
   isLastStep: boolean;
 
   /**
+   * Validate form and continue to next step if valid.
+   */
+  toNextStep: () => void;
+
+  /**
    * Callback invoked when content is reset in a page transition.
    */
   onPageTransition: () => void;
 }
 
-const FormStepsContext = createContext({
+export const DEFAULT_CONTEXT: FormStepsContextValue = {
   isLastStep: true,
-  onPageTransition: () => {},
-} as FormStepsContextValue);
+  toNextStep() {},
+  onPageTransition() {},
+};
+
+const FormStepsContext = createContext(DEFAULT_CONTEXT);
 
 export default FormStepsContext;

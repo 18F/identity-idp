@@ -272,9 +272,7 @@ function FormSteps({
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
    */
-  const toNextStep: FormEventHandler = (event) => {
-    event.preventDefault();
-
+  function toNextStep() {
     // Don't proceed if initial active errors have yet to be resolved.
     if (activeErrors.length && activeErrors === initialActiveErrors) {
       setActiveErrors(Array.from(activeErrors));
@@ -284,8 +282,8 @@ function FormSteps({
 
     const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
-    didSubmitWithErrors.current = true;
     if (nextActiveErrors.length) {
+      didSubmitWithErrors.current = true;
       return;
     }
 
@@ -297,7 +295,7 @@ function FormSteps({
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
-  };
+  }
 
   const toPreviousStep = () => {
     const previousStepIndex = Math.max(stepIndex - 1, 0);
@@ -309,14 +307,14 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep} noValidate>
+    <form ref={formRef} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, onPageTransition }}>
+      <FormStepsContext.Provider value={{ isLastStep, toNextStep, onPageTransition }}>
         <Form
           key={name}
           value={values}

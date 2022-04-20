@@ -39,7 +39,7 @@ describe('PersonalKeyConfirmStep', () => {
   it('allows the user to continue only with a correct value', () => {
     const personalKey = '0000-0000-0000-0000';
     const onComplete = sinon.spy();
-    const { getByRole, getAllByRole, container } = render(
+    const { getByLabelText, getAllByText, container } = render(
       <FormSteps
         steps={[{ name: 'personal_key_confirm', form: PersonalKeyConfirmStep }]}
         initialValues={{ personalKey }}
@@ -47,8 +47,8 @@ describe('PersonalKeyConfirmStep', () => {
       />,
     );
 
-    const input = getByRole('textbox', { name: 'forms.personal_key.confirmation_label' });
-    const submitButton = getAllByRole('button', { name: 'forms.buttons.submit.default' })[1];
+    const input = getByLabelText('forms.personal_key.confirmation_label');
+    const submitButton = getAllByText('forms.buttons.submit.default')[1];
     userEvent.click(submitButton);
 
     expect(onComplete).not.to.have.been.called();

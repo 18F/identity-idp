@@ -12,12 +12,12 @@ interface FormStepsContinueButtonProps {
 
 function FormStepsContinueButton({ className }: FormStepsContinueButtonProps) {
   const { t } = useI18n();
-  const { isLastStep } = useContext(FormStepsContext);
+  const { isLastStep, toNextStep } = useContext(FormStepsContext);
 
   const classes = ['display-block', 'margin-y-5', className].filter(Boolean).join(' ');
 
   return (
-    <Button type="submit" isBig isWide className={classes}>
+    <Button onClick={toNextStep} isBig isWide className={classes}>
       {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
     </Button>
   );
