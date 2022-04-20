@@ -16,8 +16,9 @@ module Reports
       csv_reports = []
       configs = IdentityConfig.store.verification_errors_report_configs
       configs.each do |report_hash|
+        name = report_hash['name']
         issuers = report_hash['issuers']
-        report = verification_errors_data_for_issuers(issuers)
+        report = verification_errors_data_for_issuers(name, issuers)
         csv_reports << report
       end
       csv_reports
@@ -25,7 +26,7 @@ module Reports
 
     private
 
-    def verification_errors_data_for_issuers(issuers)
+    def verification_errors_data_for_issuers(report_name, issuers)
       csv = CSV.new('', row_sep: "\r\n")
       csv << %w[uuid welcome_view_at error_code]
       issuers.each do |issuer|
@@ -37,7 +38,7 @@ module Reports
         end
       end
       data = csv.string
-      save_report("%{REPORT_NAME}.{issuers.join('.')}", data, extension: 'csv')
+      save_report(report_name, data, extension: 'csv')
       data
     end
 
