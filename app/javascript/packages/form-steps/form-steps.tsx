@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefCallback, FormEventHandler, FC } from 'react';
+import type { RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
 import RequiredValueMissingError from './required-value-missing-error';
