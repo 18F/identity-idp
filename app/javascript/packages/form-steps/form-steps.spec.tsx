@@ -363,6 +363,9 @@ describe('FormSteps', () => {
     const { getByLabelText, getByText, getByRole } = render(
       <FormSteps
         steps={steps}
+        initialValues={{
+          secondInputTwo: 'two',
+        }}
         initialActiveErrors={[
           {
             field: 'unknown',
@@ -372,26 +375,30 @@ describe('FormSteps', () => {
             field: 'secondInputOne',
             error: new FormError(),
           },
+          {
+            field: 'secondInputTwo',
+            error: new FormError(),
+          },
         ]}
         onComplete={onComplete}
       />,
     );
 
-    // Field associated errors are handled by the field. There should only be one.
+    // Field associated errors are handled by the field.
     const inputOne = getByLabelText('Second Input One');
     const inputTwo = getByLabelText('Second Input Two');
     expect(inputOne.matches('[data-is-error]')).to.be.true();
-    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Attempting to submit without adjusting field value does not submit and shows error.
     await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputOne));
 
-    // Changing the value for the field should unset the error.
+    // Changing the value for the first field should unset the first error.
     await userEvent.type(inputOne, 'one');
     expect(inputOne.matches('[data-is-error]')).to.be.false();
-    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Default required validation should still happen and take the place of any unknown errors.
     await userEvent.click(getByText('forms.buttons.submit.default'));
@@ -401,7 +408,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.true();
     expect(() => getByRole('alert')).to.throw();
 
-    // Changing the value for the field should unset the error.
+    // Changing the value for the second field should unset the second error.
     await userEvent.type(inputTwo, 'two');
     expect(inputOne.matches('[data-is-error]')).to.be.false();
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
