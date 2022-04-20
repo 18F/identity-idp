@@ -393,6 +393,34 @@ module AnalyticsEvents
     track_event('IdV: address visited')
   end
 
+  # @identity.idp.event_name IdV: cancellation visited
+  # @param [String] step the step that the user was on when they clicked cancel
+  # @param [String] request_came_from the controller and action from the
+  #   source such as "users/sessions#new"
+  # The user clicked cancel during IDV (presented with an option to go back or confirm)
+  def idv_cancellation_visited(step:, request_came_from:, **extra)
+    track_event(
+      'IdV: cancellation visited',
+      step: step,
+      request_came_from: request_came_from,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name IdV: cancellation confirmed
+  # @param [String] step the step that the user was on when they clicked cancel
+  # The user confirmed their choice to cancel going through IDV
+  def idv_cancellation_confirmed(step:, **extra)
+    track_event('IdV: cancellation confirmed', step: step, **extra)
+  end
+
+  # @identity.idp.event_name IdV: cancellation go back
+  # @param [String] step the step that the user was on when they clicked cancel
+  # The user chose to go back instead of cancel IDV
+  def idv_cancellation_go_back(step:, **extra)
+    track_event('IdV: cancellation go back', step: step, **extra)
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
