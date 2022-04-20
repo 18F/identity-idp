@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
-import PageHeading from '@18f/identity-document-capture/components/page-heading';
+import { PageHeading } from '@18f/identity-components';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
@@ -18,7 +18,11 @@ interface StepValues {
 }
 
 describe('FormSteps', () => {
-  const { spy } = sinon.createSandbox();
+  const sandbox = sinon.createSandbox();
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   const STEPS = [
     {
@@ -40,6 +44,7 @@ describe('FormSteps', () => {
         onChange,
         onError,
         registerField,
+        toPreviousStep,
       }: FormStepComponentProps<StepValues>) => (
         <>
           <PageHeading>Second Title</PageHeading>
@@ -67,6 +72,9 @@ describe('FormSteps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
+          <button type="button" onClick={toPreviousStep}>
+            Back
+          </button>
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
@@ -218,6 +226,18 @@ describe('FormSteps', () => {
     expect(event.returnValue).to.be.true();
   });
 
+  context('promptOnNavigate prop is set to false', () => {
+    it('does not prompt on navigate', () => {
+      render(<FormSteps steps={STEPS} promptOnNavigate={false} />);
+
+      const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+      window.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.false();
+      expect(event.returnValue).to.be.true();
+    });
+  });
+
   it('pushes step to URL', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
@@ -225,7 +245,7 @@ describe('FormSteps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('#second');
   });
 
   it('syncs step by history events', async () => {
@@ -245,22 +265,7 @@ describe('FormSteps', () => {
     expect(await findByText('Second Title')).to.be.ok();
     expect((getByLabelText('Second Input One') as HTMLInputElement).value).to.equal('one');
     expect((getByLabelText('Second Input Two') as HTMLInputElement).value).to.equal('two');
-    expect(window.location.hash).to.equal('#step=second');
-  });
-
-  it('clear URL parameter after submission', async () => {
-    const onComplete = sinon.spy();
-    const { getByText, getByLabelText } = render(
-      <FormSteps steps={STEPS} onComplete={onComplete} />,
-    );
-
-    userEvent.click(getByText('forms.buttons.continue'));
-    await userEvent.type(getByLabelText('Second Input One'), 'one');
-    await userEvent.type(getByLabelText('Second Input Two'), 'two');
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('forms.buttons.submit.default'));
-    await waitFor(() => expect(onComplete.calledOnce).to.be.true());
-    expect(window.location.hash).to.equal('');
+    expect(window.location.hash).to.equal('#second');
   });
 
   it('shifts focus to next heading on step change', () => {
@@ -275,14 +280,6 @@ describe('FormSteps', () => {
     const { activeElement: originalActiveElement } = document;
     render(<FormSteps steps={STEPS} />);
     expect(document.activeElement).to.equal(originalActiveElement);
-  });
-
-  it('resets to first step at mount', () => {
-    window.location.hash = '#step=last';
-
-    render(<FormSteps steps={STEPS} />);
-
-    expect(window.location.hash).to.equal('');
   });
 
   it('optionally auto-focuses', () => {
@@ -308,7 +305,7 @@ describe('FormSteps', () => {
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('#second');
     expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(2);
 
@@ -420,11 +417,11 @@ describe('FormSteps', () => {
     });
 
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('#second');
 
     // Trigger validation errors on second step.
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('#second');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
     });
@@ -433,7 +430,7 @@ describe('FormSteps', () => {
     userEvent.type(getByLabelText('Second Input Two'), 'two');
 
     userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
-    expect(window.location.hash).to.equal('#step=last');
+    expect(window.location.hash).to.equal('#last');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
     });
@@ -460,10 +457,19 @@ describe('FormSteps', () => {
 
     window.scrollY = 100;
     userEvent.click(getByRole('button', { name: 'Replace' }));
-    spy(window.history, 'pushState');
+    sandbox.spy(window.history, 'pushState');
 
     expect(window.scrollY).to.equal(0);
     expect(document.activeElement).to.equal(getByRole('heading', { name: 'Content Title' }));
     expect(window.history.pushState).not.to.have.been.called();
+  });
+
+  it('provides the step implementation the option to navigate to the previous step', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('Back'));
+
+    expect(getByText('First Title')).to.be.ok();
   });
 });

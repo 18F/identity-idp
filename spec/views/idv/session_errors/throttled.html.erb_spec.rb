@@ -69,7 +69,7 @@ describe 'idv/session_errors/throttled.html.erb' do
 
     it 'renders an in person proofing link' do
       expect(rendered).to have_link(
-        t('in_person_proofing.link'),
+        t('idv.troubleshooting.options.verify_in_person'),
         href: idv_in_person_url,
       )
     end

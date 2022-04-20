@@ -1,33 +1,7 @@
 import { useState, useEffect } from 'react';
 
-/**
- * Given a query string and parameter name, returns the decoded value associated with that parameter
- * in the query string, or null if the value cannot be found. The query string should be provided
- * without a leading "?".
- *
- * This is intended to polyfill a behavior equivalent to:
- *
- * ```
- * new URLSearchParams(queryString).get(name)
- * ```
- *
- * @see https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/get
- *
- * @param queryString Query string to search within.
- * @param name        Parameter name to search for.
- *
- * @return Decoded parameter value if found, or null otherwise.
- */
-export function getQueryParam(queryString: string, name: string): string | null {
-  const pairs = queryString.split('&');
-  for (let i = 0; i < pairs.length; i += 1) {
-    const [key, value = ''] = pairs[i].split('=').map(decodeURIComponent);
-    if (key === name) {
-      return value;
-    }
-  }
-
-  return null;
+interface HistoryOptions {
+  basePath?: string;
 }
 
 /**
@@ -40,24 +14,22 @@ export function getQueryParam(queryString: string, name: string): string | null 
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param name Parameter name to sync.
- * @param initialValue Value to use as initial in absence of another value.
- *
  * @return Tuple of current state, state setter.
  */
-function useHistoryParam(
-  name: string,
-  initialValue?: string | null,
-): [any, (nextParamValue: any) => void] {
-  const getCurrentQueryParam = () =>
-    getQueryParam(window.location.hash.slice(1), name) ?? undefined;
+function useHistoryParam({ basePath }: HistoryOptions = {}): [
+  string | undefined,
+  (nextParamValue?: string) => void,
+] {
+  const getCurrentValue = () =>
+    (typeof basePath === 'string'
+      ? window.location.pathname.split(basePath)[1]?.replace(/^\/|\/$/g, '')
+      : window.location.hash.slice(1)) || undefined;
 
-  const [value, setValue] = useState(getCurrentQueryParam);
+  const [value, setValue] = useState(getCurrentValue);
 
   function getValueURL(nextValue) {
-    return nextValue
-      ? `#${[name, nextValue].map(encodeURIComponent).join('=')}`
-      : window.location.pathname + window.location.search;
+    const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
+    return nextValue ? `${prefix}${nextValue}` : window.location.pathname + window.location.search;
   }
 
   function setParamValue(nextValue) {
@@ -74,15 +46,7 @@ function useHistoryParam(
   }
 
   useEffect(() => {
-    function syncValue() {
-      setValue(getCurrentQueryParam());
-    }
-
-    if (initialValue !== undefined) {
-      setValue(initialValue ?? undefined);
-      window.history.replaceState(null, '', getValueURL(initialValue));
-    }
-
+    const syncValue = () => setValue(getCurrentValue());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
   }, []);

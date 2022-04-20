@@ -64,6 +64,11 @@ export interface FormStepComponentProps<V> {
    * Registers field by given name, returning ref assignment function.
    */
   registerField: RegisterFieldCallback;
+
+  /**
+   * Callback to navigate to the previous step.
+   */
+  toPreviousStep: () => void;
 }
 
 export interface FormStep {
@@ -125,6 +130,18 @@ interface FormStepsProps {
    * Callback triggered on step change.
    */
   onStepChange?: () => void;
+
+  /**
+   * Whether to prompt the user about unsaved changes when navigating away from an in-progress form.
+   * Defaults to true.
+   */
+  promptOnNavigate?: boolean;
+
+  /**
+   * When using path fragments for maintaining history, the base path to which the current step name
+   * is appended.
+   */
+  basePath?: string;
 }
 
 /**
@@ -136,8 +153,8 @@ interface FormStepsProps {
  *
  * @return Step index.
  */
-export function getStepIndexByName(steps: FormStep[], name: string) {
-  return steps.findIndex((step) => step.name === name);
+export function getStepIndexByName(steps: FormStep[], name?: string) {
+  return name ? steps.findIndex((step) => step.name === name) : -1;
 }
 
 /**
@@ -164,11 +181,13 @@ function FormSteps({
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
+  promptOnNavigate = true,
+  basePath,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam('step', null);
+  const [stepName, setStepName] = useHistoryParam({ basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
@@ -264,8 +283,6 @@ function FormSteps({
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
-      // Clear step parameter from URL.
-      setStepName(null);
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
@@ -273,12 +290,18 @@ function FormSteps({
     }
   };
 
+  const toPreviousStep = () => {
+    const previousStepIndex = Math.max(stepIndex - 1, 0);
+    const { name: nextStepName } = steps[previousStepIndex];
+    setStepName(nextStepName);
+  };
+
   const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
-      {Object.keys(values).length > 0 && <PromptOnNavigate />}
+      {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           {error.message}
@@ -320,6 +343,7 @@ function FormSteps({
 
             return fields.current[field].refCallback;
           }}
+          toPreviousStep={toPreviousStep}
         />
       </FormStepsContext.Provider>
     </form>

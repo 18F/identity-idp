@@ -3,7 +3,7 @@ import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import Button from './button';
 
-describe('document-capture/components/button', () => {
+describe('Button', () => {
   it('renders with default props', () => {
     const { getByText } = render(<Button>Click me</Button>);
 
@@ -12,6 +12,7 @@ describe('document-capture/components/button', () => {
 
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
+    expect(button.hasAttribute('href')).to.be.false();
     expect(button.classList.contains('usa-button')).to.be.true();
     expect(button.classList.contains('usa-button--big')).to.be.false();
     expect(button.classList.contains('usa-button--flexible-width')).to.be.false();
@@ -20,7 +21,15 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('usa-button--unstyled')).to.be.false();
   });
 
-  it('calls click callback with the event argument', () => {
+  it('renders styled as a link', () => {
+    const { getByRole } = render(<Button href="about:blank">Click me</Button>);
+
+    const link = getByRole('link') as HTMLAnchorElement;
+    expect(link.href).to.equal('about:blank');
+    expect(link.hasAttribute('type')).to.be.false();
+  });
+
+  it('forwards additional props to the rendered element', () => {
     const onClick = sinon.spy();
     const { getByText } = render(
       <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
@@ -109,5 +118,14 @@ describe('document-capture/components/button', () => {
     const button = getByText('Click me');
 
     expect(button.classList.contains('my-button')).to.be.true();
+  });
+
+  it('renders icon', () => {
+    const { getByRole } = render(<Button icon="add">Click me</Button>);
+
+    const icon = getByRole('img', { hidden: true });
+
+    expect(icon.classList.contains('usa-icon')).to.be.true();
+    expect(icon.querySelector('use')!.getAttribute('href')).to.match(/#add$/);
   });
 });

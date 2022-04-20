@@ -173,6 +173,7 @@ fr:
         review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
+        are_you_near: Êtes-vous près de Washington, D.C.?
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
@@ -187,3 +188,4 @@ fr:
         learn_more_verify_by_phone: En savoir plus sur la vérification de votre numéro de téléphone
         supported_documents: Voir la liste des pièces d’identité acceptées et délivrées par l’État
         verify_by_mail: Vérifiez plutôt votre adresse par courrier
+        verify_in_person: Vérifiez votre identité en personne dans un bureau de poste

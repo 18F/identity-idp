@@ -49,4 +49,24 @@ describe('TroubleshootingOptions', () => {
     expect(links[1].href).to.equal('https://example.com/2');
     expect(links[1].target).to.be.empty();
   });
+
+  it('renders a new features tag with isNewFeatures', () => {
+    const { container, getByText } = render(
+      <TroubleshootingOptions
+        heading=""
+        isNewFeatures
+        options={[
+          { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
+          { text: 'Option 2', url: 'https://example.com/2' },
+        ]}
+      />,
+    );
+
+    expect(
+      container.firstElementChild?.classList.contains('troubleshooting-options--no-bar'),
+    ).to.eq(true, 'it hides the visual bar');
+
+    const tag = getByText('components.troubleshooting_options.new_feature');
+    expect(tag.classList.contains('text-uppercase')).to.eq(true);
+  });
 });

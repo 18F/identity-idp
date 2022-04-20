@@ -17,7 +17,7 @@ shared_examples 'cancel at idv step' do |step, sp|
     expect(page).to have_content(t('headings.cancellations.prompt'))
     expect(current_path).to eq(idv_cancel_path)
     expect(fake_analytics).to have_logged_event(
-      Analytics::IDV_CANCELLATION,
+      'IdV: cancellation visited',
       step: step.to_s,
     )
 
@@ -25,7 +25,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
     expect(current_path).to eq(original_path)
     expect(fake_analytics).to have_logged_event(
-      Analytics::IDV_CANCELLATION_GO_BACK,
+      'IdV: cancellation go back',
       step: step.to_s,
     )
   end
@@ -40,14 +40,14 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
-      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: step.to_s)
+      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: step.to_s)
 
       click_on t('forms.buttons.cancel')
 
       expect(page).to have_content(t('headings.cancellations.confirmation', app_name: APP_NAME))
       expect(current_path).to eq(idv_cancel_path)
       expect(fake_analytics).to have_logged_event(
-        Analytics::IDV_CANCELLATION_CONFIRMED,
+        'IdV: cancellation confirmed',
         step: step.to_s,
       )
 
@@ -69,7 +69,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
-      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: step.to_s)
+      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: step.to_s)
 
       click_on t('forms.buttons.cancel')
 
@@ -80,7 +80,7 @@ shared_examples 'cancel at idv step' do |step, sp|
         href: account_url,
       )
       expect(fake_analytics).to have_logged_event(
-        Analytics::IDV_CANCELLATION_CONFIRMED,
+        'IdV: cancellation confirmed',
         step: step.to_s,
       )
 

@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { PageHeading } from '@18f/identity-components';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 
 /**

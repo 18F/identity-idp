@@ -24,7 +24,6 @@ es:
       confirmation_error: Ha ingresado una clave personal incorrecta.
       generated_on_html: Generado el %{date}
       header: Su clave personal
-      print: Imprima esta página
     phones:
       error_message: Agregó el número máximo de números de teléfono.
     rules_of_use:

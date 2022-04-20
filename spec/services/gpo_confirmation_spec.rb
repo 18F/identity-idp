@@ -8,7 +8,7 @@ describe GpoConfirmation do
       ssn: '123-456-7890',
     }
   end
-  let(:encryptor) { Encryption::Encryptors::SessionEncryptor.new }
+  let(:encryptor) { Encryption::Encryptors::BackgroundProofingArgEncryptor.new }
 
   subject { GpoConfirmation.create!(entry: attributes) }
 

@@ -9,10 +9,10 @@ import {
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { SpinnerDots } from '@18f/identity-components';
+import { useInstanceId } from '@18f/identity-react-hooks';
 import FileImage from './file-image';
 import StatusMessage, { Status } from './status-message';
 import DeviceContext from '../context/device';
-import useInstanceId from '../hooks/use-instance-id';
 import usePrevious from '../hooks/use-previous';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */

@@ -21,6 +21,7 @@ module ScriptHelper
     if @scripts && (sources = AssetSources.get_sources(*@scripts)).present?
       safe_join(
         [
+          javascript_assets_tag(*@scripts),
           javascript_polyfill_pack_tag,
           javascript_include_tag(*sources, crossorigin: local_crossorigin_sources? ? true : nil),
         ],
@@ -30,8 +31,25 @@ module ScriptHelper
 
   private
 
+  SAME_ORIGIN_ASSETS = %w[
+    identity-style-guide/dist/assets/img/sprite.svg
+  ].to_set.freeze
+
   def local_crossorigin_sources?
     Rails.env.development? && ENV['WEBPACK_PORT'].present?
+  end
+
+  def javascript_assets_tag(*names)
+    assets = AssetSources.get_assets(*names)
+    if assets.present?
+      asset_map = assets.index_with { |path| asset_path(path, host: asset_host(path)) }
+      content_tag(
+        :script,
+        asset_map.to_json,
+        { type: 'application/json', data: { asset_map: '' } },
+        false,
+      )
+    end
   end
 
   def javascript_polyfill_pack_tag
@@ -48,6 +66,18 @@ module ScriptHelper
     result = yield
     ActionView::Helpers::AssetTagHelper.preload_links_header = original_preload_links_header
     result
+  end
+
+  def asset_host(path)
+    if IdentityConfig.store.asset_host.present?
+      if SAME_ORIGIN_ASSETS.include?(path)
+        IdentityConfig.store.domain_name
+      else
+        IdentityConfig.store.asset_host
+      end
+    elsif request
+      request.base_url
+    end
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

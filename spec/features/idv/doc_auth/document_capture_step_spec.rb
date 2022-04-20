@@ -389,7 +389,7 @@ feature 'doc auth document capture step' do
       expect(page).to have_current_path(next_step, wait: 20)
       expect(DocumentProofingJob).to have_received(:perform_later) do |encrypted_arguments:, **|
         args = JSON.parse(
-          Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+          Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted_arguments),
           symbolize_names: true,
         )[:document_arguments]
 

@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { PageHeading } from '@18f/identity-components';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 
 /**
@@ -65,7 +65,7 @@ function DocumentsStep({
         />
       ))}
       <FormStepsContinueButton />
-      <DocumentCaptureTroubleshootingOptions />
+      <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
       <StartOverOrCancel />
     </CaptureTroubleshooting>
   );
