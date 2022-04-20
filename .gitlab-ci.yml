@@ -69,6 +69,7 @@ workflow:
 check_changelog:
   stage: build
   script:
+    - echo 'secrets'
     - echo "$CI_PIPELINE_SOURCE"
     - |
       if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
