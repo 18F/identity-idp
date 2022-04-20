@@ -10,10 +10,15 @@ interface PersonalKeyInputProps {
    * The correct personal key to validate against.
    */
   expectedValue?: string;
+
+  /**
+   * Callback invoked when the value of the input has changed.
+   */
+  onChange?: (nextValue: string) => void;
 }
 
 function PersonalKeyInput(
-  { expectedValue }: PersonalKeyInputProps,
+  { expectedValue, onChange = () => {} }: PersonalKeyInputProps,
   ref: ForwardedRef<HTMLElement>,
 ) {
   const validate = useCallback<ValidatedFieldValidator>(
@@ -39,6 +44,7 @@ function PersonalKeyInput(
         pattern="[a-zA-Z0-9-]+"
         spellCheck={false}
         type="text"
+        onInput={(event) => onChange((event.target as HTMLInputElement).value)}
       />
     </ValidatedField>
   );

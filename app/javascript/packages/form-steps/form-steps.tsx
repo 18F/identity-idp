@@ -195,7 +195,11 @@ function FormSteps({
   const ifStillMounted = useIfStillMounted();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
-      getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
+      const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
+      if (activeErrorFieldElement) {
+        activeErrorFieldElement.reportValidity();
+        activeErrorFieldElement.focus();
+      }
     }
 
     didSubmitWithErrors.current = false;
@@ -244,7 +248,7 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        element.reportValidity();
+        element.checkValidity();
 
         if (element.validationMessage) {
           error = new Error(element.validationMessage);
@@ -267,6 +271,8 @@ function FormSteps({
   }
 
   const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
+  const hasUnresolvedFieldErrors =
+    activeErrors.length && activeErrors.length > unknownFieldErrors.length;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -274,7 +280,7 @@ function FormSteps({
    */
   function toNextStep() {
     // Don't proceed if initial active errors have yet to be resolved.
-    if (activeErrors.length && activeErrors === initialActiveErrors) {
+    if (hasUnresolvedFieldErrors) {
       setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;

@@ -14,7 +14,7 @@ interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowV
 
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   const { toNextStep } = useContext(FormStepsContext);
-  const { registerField, value, toPreviousStep } = stepProps;
+  const { registerField, value, onChange, toPreviousStep } = stepProps;
   const personalKey = value.personalKey!;
 
   const onFieldSubmit: FormEventHandler = (event) => {
@@ -35,10 +35,11 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
         </div>
         <Modal.Heading>{t('forms.personal_key.title')}</Modal.Heading>
         <Modal.Description>{t('forms.personal_key.instructions')}</Modal.Description>
-        <form onSubmit={onFieldSubmit}>
+        <form onSubmit={onFieldSubmit} noValidate>
           <PersonalKeyInput
             expectedValue={personalKey}
-            ref={registerField('personalKeyConfirmation')}
+            ref={registerField('personalKeyConfirm')}
+            onChange={(personalKeyConfirm) => onChange({ personalKeyConfirm })}
           />
         </form>
         <div className="grid-row grid-gap margin-top-5">
