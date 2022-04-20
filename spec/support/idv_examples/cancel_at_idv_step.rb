@@ -69,7 +69,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('headings.cancellations.prompt'))
       expect(current_path).to eq(idv_cancel_path)
-      expect(fake_analytics).to have_logged_event('IdV: cancellation go back', step: step.to_s)
+      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: step.to_s)
 
       click_on t('forms.buttons.cancel')
 
