@@ -18,7 +18,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
       <FormStepsContext.Provider value={{ isLastStep: false, onPageTransition() {} }}>
         <PersonalKeyStep {...stepProps} />
       </FormStepsContext.Provider>
-      <Modal>
+      <Modal onRequestClose={toPreviousStep}>
         <div className="pin-top pin-x display-flex flex-column flex-align-center top-neg-3">
           <img alt="" height="60" width="60" src={getAssetPath('p-key.svg')} />
         </div>
