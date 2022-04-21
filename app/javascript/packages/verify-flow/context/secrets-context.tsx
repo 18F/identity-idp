@@ -1,9 +1,9 @@
-import { createContext, useEffect, useCallback, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useCallback, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
 import { useIfStillMounted } from '@18f/identity-react-hooks';
 
-export type SecretValues = {
+type SecretValues = {
   example: string;
 };
 
@@ -22,7 +22,7 @@ const SecretsContext = createContext({
   setItem: (async () => {}) as SetItem,
 });
 
-function SecretsContextProvider({ storeKey, children }: SecretsContextProviderProps) {
+export function SecretsContextProvider({ storeKey, children }: SecretsContextProviderProps) {
   const ifStillMounted = useIfStillMounted();
   const storage = useMemo(() => new SecretSessionStorage<SecretValues>(STORAGE_KEY), []);
   const [value, setValue] = useState({ storage, setItem: storage.setItem });
@@ -48,5 +48,14 @@ function SecretsContextProvider({ storeKey, children }: SecretsContextProviderPr
   return <SecretsContext.Provider value={value}>{children}</SecretsContext.Provider>;
 }
 
-export { SecretsContextProvider };
+export function useSecretValue<K extends keyof SecretValues>(
+  key: K,
+): [SecretValues[K], (nextValue: SecretValues[K]) => void] {
+  const { storage, setItem } = useContext(SecretsContext);
+
+  const setValue = (nextValue: SecretValues[K]) => setItem(key, nextValue);
+
+  return [storage.getItem(key), setValue];
+}
+
 export default SecretsContext;
