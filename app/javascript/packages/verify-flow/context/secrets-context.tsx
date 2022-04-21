@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useCallback, useMemo, useState } 
 import type { ReactNode } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
 import { useIfStillMounted } from '@18f/identity-react-hooks';
-import { VerifyFlowValues } from '..';
+import { VerifyFlowValues } from '../verify-flow';
 
 type SecretValues = Partial<VerifyFlowValues>;
 
