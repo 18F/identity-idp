@@ -13,8 +13,8 @@ interface FormStepsContextValue {
 }
 
 const FormStepsContext = createContext({
-  isLastStep: false,
-  onPageTransition() {},
+  isLastStep: true,
+  onPageTransition: () => {},
 } as FormStepsContextValue);
 
 export default FormStepsContext;
