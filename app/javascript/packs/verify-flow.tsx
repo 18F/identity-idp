@@ -35,12 +35,16 @@ try {
   parsedInitialValues = JSON.parse(initialValues);
 } catch {}
 
+function onComplete() {
+  window.location.href = completionURL;
+}
+
 render(
   <VerifyFlow
     initialValues={parsedInitialValues}
     basePath={basePath}
     appName={appName}
-    completionURL={completionURL}
+    onComplete={onComplete}
   />,
   appRoot,
 );

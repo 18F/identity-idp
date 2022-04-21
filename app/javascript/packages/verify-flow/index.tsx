@@ -27,21 +27,12 @@ interface VerifyFlowProps {
   appName: string;
 
   /**
-   * URL to which user should be redirected after completing the form.
+   * Callback invoked after completing the form.
    */
-  completionURL: string;
+  onComplete: () => void;
 }
 
-export function VerifyFlow({
-  initialValues = {},
-  basePath,
-  appName,
-  completionURL,
-}: VerifyFlowProps) {
-  function onComplete() {
-    window.location.href = completionURL;
-  }
-
+export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
