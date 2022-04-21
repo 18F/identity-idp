@@ -209,9 +209,9 @@ describe('FormSteps', () => {
       <FormSteps steps={STEPS} onComplete={onComplete} />,
     );
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
-    await userEvent.type(getByLabelText('Second Input Two'), 'two{enter}');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two{Enter}');
 
     expect(getByText('Last Title')).to.be.ok();
   });
@@ -339,7 +339,7 @@ describe('FormSteps', () => {
   it('respects native custom input validity', async () => {
     const { getByRole } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     const inputOne = getByRole('textbox', { name: 'Second Input One' }) as HTMLInputElement;
     const inputTwo = getByRole('textbox', { name: 'Second Input Two' }) as HTMLInputElement;
 
@@ -355,7 +355,7 @@ describe('FormSteps', () => {
     inputOne.reportValidity = checkValidity;
     inputOne.checkValidity = checkValidity;
 
-    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
 
     expect(inputOne.hasAttribute('data-is-error')).to.be.true();
     expect(document.activeElement).to.equal(inputOne);

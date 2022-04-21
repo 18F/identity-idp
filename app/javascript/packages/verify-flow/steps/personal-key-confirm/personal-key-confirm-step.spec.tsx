@@ -48,7 +48,7 @@ describe('PersonalKeyConfirmStep', () => {
 
     const input = getByLabelText('forms.personal_key.confirmation_label');
     const submitButton = getAllByText('forms.buttons.submit.default')[1];
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     expect(onComplete).not.to.have.been.called();
     expect(container.ownerDocument.activeElement).to.equal(input);
@@ -58,17 +58,17 @@ describe('PersonalKeyConfirmStep', () => {
     await userEvent.type(input, '0000-0000-0000-000');
     errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
     expect(errorMessage).to.not.exist();
-    await userEvent.type(input, '{enter}');
+    await userEvent.type(input, '{Enter}');
     expect(onComplete).not.to.have.been.called();
     errorMessage = document.getElementById(input.getAttribute('aria-describedby')!);
     expect(errorMessage!.textContent).to.equal('users.personal_key.confirmation_error');
 
     await userEvent.type(input, '0');
 
-    await userEvent.type(input, '{enter}');
+    await userEvent.type(input, '{Enter}');
     expect(onComplete).to.have.been.calledOnce();
 
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     expect(onComplete).to.have.been.calledTwice();
   });
 });
