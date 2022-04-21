@@ -309,17 +309,24 @@ module Features
     end
 
     def acknowledge_and_confirm_personal_key(js: true)
-      button_text = t('forms.buttons.continue')
+      click_acknowledge_personal_key
 
-      click_on button_text, class: 'personal-key-continue' if js
-
-      fill_in 'personal_key', with: scrape_personal_key
-
-      find_all('.personal-key-confirm', text: button_text).first.click
+      if js
+        page.find(':focus').fill_in with: scrape_personal_key
+        if page.current_path == idv_personal_key_url
+          click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+        else
+          click_submit_default
+        end
+      end
     end
 
     def click_acknowledge_personal_key
-      click_continue
+      if page.current_path == idv_personal_key_url
+        click_on t('forms.buttons.continue'), class: 'personal-key-continue'
+      else
+        click_continue
+      end
     end
 
     def enter_personal_key(personal_key:, selector: 'input[type="text"]')
