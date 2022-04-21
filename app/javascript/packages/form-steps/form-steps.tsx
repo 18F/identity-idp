@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefCallback, FormEventHandler, FC } from 'react';
+import type { FormEventHandler, RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
 import RequiredValueMissingError from './required-value-missing-error';
@@ -30,7 +30,7 @@ interface FormStepRegisterFieldOptions {
 export type RegisterFieldCallback = (
   field: string,
   options?: Partial<FormStepRegisterFieldOptions>,
-) => undefined | RefCallback<HTMLElement>;
+) => undefined | RefCallback<HTMLInputElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
@@ -87,7 +87,7 @@ interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLElement>;
+  refCallback: RefCallback<HTMLInputElement>;
 
   /**
    * Whether field is required.
@@ -97,7 +97,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLElement | null;
+  element: HTMLInputElement | null;
 }
 
 interface FormStepsProps {
@@ -195,7 +195,11 @@ function FormSteps({
   const ifStillMounted = useIfStillMounted();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
-      getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
+      const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
+      if (activeErrorFieldElement) {
+        activeErrorFieldElement.reportValidity();
+        activeErrorFieldElement.focus();
+      }
     }
 
     didSubmitWithErrors.current = false;
@@ -242,8 +246,19 @@ function FormSteps({
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
 
-      if (isActive && isRequired && !values[key]) {
-        result = result.concat({ field: key, error: new RequiredValueMissingError() });
+      let error: Error | undefined;
+      if (isActive) {
+        element.checkValidity();
+
+        if (element.validationMessage) {
+          error = new Error(element.validationMessage);
+        } else if (isRequired && !values[key]) {
+          error = new RequiredValueMissingError();
+        }
+      }
+
+      if (error) {
+        result = result.concat({ field: key, error });
       }
 
       return result;
@@ -275,8 +290,8 @@ function FormSteps({
 
     const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
-    didSubmitWithErrors.current = true;
     if (nextActiveErrors.length) {
+      didSubmitWithErrors.current = true;
       return;
     }
 
@@ -300,7 +315,7 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep}>
+    <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">

@@ -4,6 +4,8 @@ import { STEPS } from './steps';
 
 export interface VerifyFlowValues {
   personalKey?: string;
+
+  personalKeyConfirm?: string;
 }
 
 interface VerifyFlowProps {
