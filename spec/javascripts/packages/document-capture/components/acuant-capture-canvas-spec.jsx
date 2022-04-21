@@ -28,7 +28,7 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     });
   });
 
-  it('renders a "take photo" button', () => {
+  it('renders a "take photo" button', async () => {
     const { getByRole, container } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -53,8 +53,8 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
     const onClick = sinon.spy();
     canvas.addEventListener('click', onClick);
-    userEvent.click(button);
-    userEvent.type(button, 'b{space}{enter}', { skipClick: true });
+    await userEvent.click(button);
+    await userEvent.type(button, 'b {Enter}', { skipClick: true });
     expect(onClick).to.have.been.calledThrice();
   });
 });

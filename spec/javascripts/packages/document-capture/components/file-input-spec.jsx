@@ -175,15 +175,15 @@ describe('document-capture/components/file-input', () => {
     );
   });
 
-  it('always emits a change event, regardless what the browser assumes is the current value', () => {
+  it('always emits a change event, regardless what the browser assumes is the current value', async () => {
     const onChange = sinon.spy();
     const { rerender, getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file);
 
     rerender(<FileInput label="File" value={null} onChange={onChange} />);
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file);
 
     expect(onChange).to.have.been.calledTwice();
   });
@@ -222,12 +222,12 @@ describe('document-capture/components/file-input', () => {
     expect(getByLabelText('File').accept).to.equal('image/png,image/bmp');
   });
 
-  it('calls onChange with next value', () => {
+  it('calls onChange with next value', async () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file);
 
     expect(onChange.getCall(0).args[0]).to.equal(file);
   });
@@ -263,12 +263,12 @@ describe('document-capture/components/file-input', () => {
     expect(queryByAriaLabel).to.exist();
   });
 
-  it('calls onClick when clicked', () => {
+  it('calls onClick when clicked', async () => {
     const onClick = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onClick={onClick} />);
 
     const input = getByLabelText('File');
-    userEvent.click(input);
+    await userEvent.click(input);
 
     expect(onClick).to.have.been.calledOnce();
   });
@@ -283,26 +283,26 @@ describe('document-capture/components/file-input', () => {
     expect(onDrop).to.have.been.calledOnce();
   });
 
-  it('allows changing the selected value', () => {
+  it('allows changing the selected value', async () => {
     const file2 = new window.File([file], 'file2.jpg');
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
-    userEvent.upload(input, file2);
+    await userEvent.upload(input, file);
+    await userEvent.upload(input, file2);
 
     expect(onChange.getCall(0).args[0]).to.equal(file);
     expect(onChange.getCall(1).args[0]).to.equal(file2);
   });
 
-  it('allows clearing the selected value', () => {
+  it('allows clearing the selected value', async () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
-    fireEvent.change(input, { target: { files: [] } });
+    await userEvent.upload(input, file);
+    await userEvent.upload(input, []);
     expect(onChange.getCall(1).args[0]).to.be.null();
     expect(input.value).to.be.empty();
   });
@@ -358,7 +358,7 @@ describe('document-capture/components/file-input', () => {
     expect(container.classList.contains('usa-file-input--drag')).to.be.false();
   });
 
-  it('shows an error state', () => {
+  it('shows an error state', async () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
@@ -372,13 +372,13 @@ describe('document-capture/components/file-input', () => {
     );
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Invalid type')).to.be.ok();
     expect(onError.getCall(0).args[0]).to.equal('Invalid type');
   });
 
-  it('allows customization of invalid file type error message', () => {
+  it('allows customization of invalid file type error message', async () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
@@ -392,13 +392,13 @@ describe('document-capture/components/file-input', () => {
     );
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Wrong type')).to.be.ok();
     expect(onError.getCall(0).args[0]).to.equal('Wrong type');
   });
 
-  it('shows an error from rendering parent', () => {
+  it('shows an error from rendering parent', async () => {
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const props = {
@@ -411,7 +411,7 @@ describe('document-capture/components/file-input', () => {
     const { getByLabelText, getByText, rerender } = render(<FileInput {...props} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file);
+    await userEvent.upload(input, file, { applyAccept: false });
 
     expect(getByText('Invalid type')).to.be.ok();
     expect(onError.getCall(0).args[0]).to.equal('Invalid type');

@@ -138,37 +138,37 @@ describe('FormSteps', () => {
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
-  it('renders the active step', () => {
+  it('renders the active step', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('Second Title')).to.be.ok();
   });
 
-  it('renders continue button until at last step', () => {
+  it('renders continue button until at last step', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
-  it('calls onStepChange callback on step change', () => {
+  it('calls onStepChange callback on step change', async () => {
     const onStepChange = sinon.spy();
     const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(onStepChange.calledOnce).to.be.true();
   });
 
-  it('does not call onStepChange if step does not progress due to validation error', () => {
+  it('does not call onStepChange if step does not progress due to validation error', async () => {
     const onStepChange = sinon.spy();
     const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(onStepChange.callCount).to.equal(1);
   });
@@ -176,10 +176,10 @@ describe('FormSteps', () => {
   it('renders submit button at last step', async () => {
     const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     await userEvent.type(getByLabelText('Second Input Two'), 'two');
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
@@ -190,11 +190,11 @@ describe('FormSteps', () => {
       <FormSteps steps={STEPS} onComplete={onComplete} />,
     );
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     await userEvent.type(getByLabelText('Second Input Two'), 'two');
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
 
     expect(onComplete.getCall(0).args[0]).to.eql({
       secondInputOne: 'one',
@@ -206,7 +206,7 @@ describe('FormSteps', () => {
   it('prompts on navigate if values have been assigned', async () => {
     const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
 
     const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
@@ -238,12 +238,12 @@ describe('FormSteps', () => {
     });
   });
 
-  it('pushes step to URL', () => {
+  it('pushes step to URL', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
     expect(window.location.hash).to.equal('');
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#second');
   });
@@ -251,7 +251,7 @@ describe('FormSteps', () => {
   it('syncs step by history events', async () => {
     const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     await userEvent.type(getByLabelText('Second Input Two'), 'two');
 
@@ -268,10 +268,10 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
   });
 
-  it('shifts focus to next heading on step change', () => {
+  it('shifts focus to next heading on step change', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(document.activeElement).to.equal(getByText('Second Title'));
   });
@@ -288,12 +288,12 @@ describe('FormSteps', () => {
     expect(document.activeElement).to.equal(getByText('First Title'));
   });
 
-  it('accepts initial values', () => {
+  it('accepts initial values', async () => {
     const { getByText, getByLabelText } = render(
       <FormSteps steps={STEPS} initialValues={{ secondInputOne: 'prefilled' }} />,
     );
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     const input = getByLabelText('Second Input One') as HTMLInputElement;
 
     expect(input.value).to.equal('prefilled');
@@ -302,8 +302,8 @@ describe('FormSteps', () => {
   it('prevents submission if step is invalid', async () => {
     const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#second');
     expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
@@ -312,13 +312,13 @@ describe('FormSteps', () => {
     await userEvent.type(document.activeElement as HTMLInputElement, 'one');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     expect(document.activeElement).to.equal(getByLabelText('Second Input Two'));
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
 
     await userEvent.type(document.activeElement as HTMLInputElement, 'two');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(document.activeElement).to.equal(getByText('Last Title'));
   });
@@ -326,7 +326,7 @@ describe('FormSteps', () => {
   it('distinguishes empty errors from progressive error removal', async () => {
     const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
@@ -361,7 +361,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
 
     // Attempting to submit without adjusting field value does not submit and shows error.
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputOne));
 
@@ -371,7 +371,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
 
     // Default required validation should still happen and take the place of any unknown errors.
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputTwo));
     expect(inputOne.matches('[data-is-error]')).to.be.false();
@@ -384,59 +384,59 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
 
     // The user can submit once all errors have been resolved.
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.calledOnce).to.be.true();
   });
 
-  it('renders field-emitted errors', () => {
+  it('renders field-emitted errors', async () => {
     const steps = [STEPS[1]];
 
     const { getByLabelText } = render(<FormSteps steps={steps} />);
     const inputOne = getByLabelText('Second Input One') as HTMLInputElement;
     inputOne.setCustomValidity('uh oh');
-    userEvent.type(inputOne, 'one');
+    await userEvent.type(inputOne, 'one');
 
     expect(inputOne.hasAttribute('data-is-error')).to.be.true();
   });
 
-  it('renders and moves focus to step errors', () => {
+  it('renders and moves focus to step errors', async () => {
     const steps = [STEPS[1]];
 
     const { getByRole } = render(<FormSteps steps={steps} />);
     const button = getByRole('button', { name: 'Create Step Error' });
-    userEvent.click(button);
+    await await userEvent.click(button);
 
     expect(getByRole('alert')).to.equal(document.activeElement);
   });
 
-  it('provides context', () => {
+  it('provides context', async () => {
     const { getByTestId, getByRole, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
     });
 
-    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     expect(window.location.hash).to.equal('#second');
 
     // Trigger validation errors on second step.
-    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     expect(window.location.hash).to.equal('#second');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
     });
 
-    userEvent.type(getByLabelText('Second Input One'), 'one');
-    userEvent.type(getByLabelText('Second Input Two'), 'two');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
 
-    userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
     expect(window.location.hash).to.equal('#last');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
     });
   });
 
-  it('allows context consumers to trigger content reset', () => {
+  it('allows context consumers to trigger content reset', async () => {
     const { getByRole } = render(
       <FormSteps
         steps={[
@@ -456,7 +456,7 @@ describe('FormSteps', () => {
     );
 
     window.scrollY = 100;
-    userEvent.click(getByRole('button', { name: 'Replace' }));
+    await userEvent.click(getByRole('button', { name: 'Replace' }));
     sandbox.spy(window.history, 'pushState');
 
     expect(window.scrollY).to.equal(0);
@@ -464,11 +464,11 @@ describe('FormSteps', () => {
     expect(window.history.pushState).not.to.have.been.called();
   });
 
-  it('provides the step implementation the option to navigate to the previous step', () => {
+  it('provides the step implementation the option to navigate to the previous step', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.click(getByText('Back'));
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('Back'));
 
     expect(getByText('First Title')).to.be.ok();
   });

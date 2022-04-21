@@ -139,13 +139,22 @@ describe('OneTimeCodeInput', () => {
     });
 
     context('in form', () => {
-      it('syncs text to hidden input', () => {
+      it('syncs received code to hidden input', async () => {
         const otcInput = initialize({ inForm: true });
-        const { input, hiddenInput } = otcInput.elements;
-        userEvent.type(input, '134567');
+        const { hiddenInput } = otcInput.elements;
 
-        expect(hiddenInput.value).to.eq('134567');
+        await waitFor(() => hiddenInput.value === '123456');
       });
+    });
+  });
+
+  context('in form', () => {
+    it('syncs text to hidden input', async () => {
+      const otcInput = initialize({ inForm: true });
+      const { input, hiddenInput } = otcInput.elements;
+      await userEvent.type(input, '134567');
+
+      expect(hiddenInput.value).to.eq('134567');
     });
   });
 });

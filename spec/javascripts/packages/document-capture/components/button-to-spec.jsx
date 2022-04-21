@@ -54,7 +54,7 @@ describe('document-capture/components/button-to', () => {
     });
   });
 
-  it('submits to form on click', () => {
+  it('submits to form on click', async () => {
     const { getByRole } = render(
       <ButtonTo url="" method="" isUnstyled>
         Click me
@@ -64,7 +64,7 @@ describe('document-capture/components/button-to', () => {
     const form = document.querySelector('form');
     sinon.stub(form, 'submit');
 
-    userEvent.click(getByRole('button'));
+    await userEvent.click(getByRole('button'));
 
     expect(form.submit).to.have.been.calledOnce();
   });

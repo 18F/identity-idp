@@ -49,27 +49,27 @@ describe('useHistoryParam', () => {
     expect(getByDisplayValue('5')).to.be.ok();
   });
 
-  it('syncs by setter', () => {
+  it('syncs by setter', async () => {
     const { getByText, getByDisplayValue } = render(<TestComponent />);
 
-    userEvent.click(getByText('Increment'));
+    await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
 
-    userEvent.click(getByText('Increment'));
+    await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
     expect(window.location.hash).to.equal('#2');
   });
 
-  it('scrolls to top on programmatic history manipulation', () => {
+  it('scrolls to top on programmatic history manipulation', async () => {
     const { getByText } = render(<TestComponent />);
 
     window.scrollX = 100;
     window.scrollY = 100;
 
-    userEvent.click(getByText('Increment'));
+    await userEvent.click(getByText('Increment'));
 
     expect(window.scrollX).to.equal(0);
     expect(window.scrollY).to.equal(0);
@@ -86,12 +86,12 @@ describe('useHistoryParam', () => {
   it('syncs by history events', async () => {
     const { getByText, getByDisplayValue, findByDisplayValue } = render(<TestComponent />);
 
-    userEvent.click(getByText('Increment'));
+    await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
 
-    userEvent.click(getByText('Increment'));
+    await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
     expect(window.location.hash).to.equal('#2');
@@ -107,12 +107,12 @@ describe('useHistoryParam', () => {
     expect(window.location.hash).to.equal('');
   });
 
-  it('encodes parameter names and values', () => {
+  it('encodes parameter names and values', async () => {
     const { getByDisplayValue } = render(<TestComponent />);
 
     const input = getByDisplayValue('0');
-    userEvent.clear(input);
-    userEvent.type(input, 'one hundred');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'one hundred');
 
     expect(window.location.hash).to.equal('#one%20hundred');
   });
@@ -148,15 +148,15 @@ describe('useHistoryParam', () => {
           expect(getByDisplayValue('0')).to.be.ok();
         });
 
-        it('syncs by setter', () => {
+        it('syncs by setter', async () => {
           const { getByText, getByDisplayValue } = render(<TestComponent basePath={basePath} />);
 
-          userEvent.click(getByText('Increment'));
+          await userEvent.click(getByText('Increment'));
 
           expect(getByDisplayValue('1')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/1');
 
-          userEvent.click(getByText('Increment'));
+          await userEvent.click(getByText('Increment'));
 
           expect(getByDisplayValue('2')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/2');
@@ -167,12 +167,12 @@ describe('useHistoryParam', () => {
             <TestComponent basePath="/base/" />,
           );
 
-          userEvent.click(getByText('Increment'));
+          await userEvent.click(getByText('Increment'));
 
           expect(getByDisplayValue('1')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/1');
 
-          userEvent.click(getByText('Increment'));
+          await userEvent.click(getByText('Increment'));
 
           expect(getByDisplayValue('2')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/2');
