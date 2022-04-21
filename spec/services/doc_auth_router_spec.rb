@@ -59,9 +59,9 @@ RSpec.describe DocAuthRouter do
           results.push(DocAuthRouter.doc_auth_vendor(discriminator: i.to_s(16)))
         end
 
-        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+        target_value = iterations * (doc_auth_vendor_randomize_percent.to_f / 100)
 
-        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
+        expect(results.tally['test2']).to be_within(iterations * percent_variance).of(target_value)
       end
 
       it 'doc_auth_vendor randomizes at 100 when set above 100' do
@@ -129,10 +129,10 @@ RSpec.describe DocAuthRouter do
           results.push(client.class.to_s)
         end
 
-        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+        target_value = iterations * (doc_auth_vendor_randomize_percent.to_f / 100)
 
         expect(results.tally['DocAuth::LexisNexis::LexisNexisClient']).
-          to be_within(iterations*percent_variance).of(target_value)
+          to be_within(iterations * percent_variance).of(target_value)
       end
     end
   end

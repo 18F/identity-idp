@@ -5,7 +5,7 @@ namespace :convert_application_yml_to_proper_types do
     if filename
       content = ''
       add_spaces = false
-      File.open(filename+'.tmp', 'w') do |newfile|
+      File.open(filename + '.tmp', 'w') do |newfile|
         IO.foreach(filename) do |line|
           add_spaces = true if line.include?('development:')
           content = line
@@ -21,7 +21,7 @@ namespace :convert_application_yml_to_proper_types do
           newfile.puts content.rstrip
         end
       end
-      FileUtils.mv filename+'.tmp', filename
+      FileUtils.mv filename + '.tmp', filename
     else
       puts 'Please specify argument of filename.'
       puts 'Example: rake convert_application_yml_to_proper_types:convert[application.yml]'
