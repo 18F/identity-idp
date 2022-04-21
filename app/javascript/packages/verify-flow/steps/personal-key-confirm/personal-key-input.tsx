@@ -23,7 +23,7 @@ function PersonalKeyInput(
 ) {
   const validate = useCallback<ValidatedFieldValidator>(
     (value) => {
-      if (expectedValue && value !== expectedValue) {
+      if (expectedValue && value.toLowerCase() !== expectedValue.toLowerCase()) {
         throw new Error(t('users.personal_key.confirmation_error'));
       }
     },
