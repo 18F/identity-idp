@@ -25,16 +25,7 @@ module Api
         create_profile
         cache_encrypted_pii
         generate_personal_key
-        # complete_session
-        # if idv_session.phone_confirmed?
-        #   event = create_user_event_with_disavowal(:account_verified)
-        #   UserAlerts::AlertUserAboutAccountVerified.call(
-        #     user: current_user,
-        #     date_time: event.created_at,
-        #     sp_name: decorated_session.sp_name,
-        #     disavowal_token: event.disavowal_token,
-        #     )
-        # end
+
       end
 
       FormResponse.new(
@@ -110,11 +101,6 @@ module Api
     def session
       user_session.fetch(:idv, {})
     end
-
-    # def move_pii_to_user_session
-    #   return if session[:decrypted_pii].blank?
-    #   user_session[:decrypted_pii] = session.delete(:decrypted_pii)
-    # end
 
     def valid_user_bundle
       payload, headers = JWT.decode(
