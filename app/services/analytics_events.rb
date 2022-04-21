@@ -117,7 +117,6 @@ module AnalyticsEvents
   end
 
   # @identity.idp.event_name Account deletion and reset visited
-  # @identity.idp.previous_event_name Account Reset
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
