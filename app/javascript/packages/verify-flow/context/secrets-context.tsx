@@ -8,11 +8,20 @@ type SecretValues = {};
 type SetItem = typeof SecretSessionStorage.prototype.setItem;
 
 interface SecretsContextProviderProps {
+  /**
+   * Encryption key.
+   */
   storeKey: Uint8Array;
 
+  /**
+   * Context provider children.
+   */
   children?: ReactNode;
 }
 
+/**
+ * Web storage key.
+ */
 const STORAGE_KEY = 'verify';
 
 const SecretsContext = createContext({
