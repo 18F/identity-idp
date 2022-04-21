@@ -41,14 +41,19 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
     try {
       const storageData = sessionStorage.getItem(this.storageKey)!;
       const [encryptedData, iv] = (JSON.parse(storageData) as [string, string]).map(s2ab);
-      const data = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.key, encryptedData);
+      const data = await window.crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        this.key,
+        encryptedData,
+      );
+
       return JSON.parse(ab2s(data));
     } catch {}
   }
 
   async #writeStorage() {
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const encryptedData = await crypto.subtle.encrypt(
+    const encryptedData = await window.crypto.subtle.encrypt(
       { name: 'AES-GCM', iv },
       this.key,
       s2ab(JSON.stringify(this.storage)),
