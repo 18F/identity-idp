@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from './form-steps';
+import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { PageHeading } from '@18f/identity-components';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import PageHeading from './page-heading';
 import StartOverOrCancel from './start-over-or-cancel';
 
 /**
@@ -16,14 +16,7 @@ import StartOverOrCancel from './start-over-or-cancel';
  */
 
 /**
- * @return {Boolean} whether or not the value is valid for the selfie step
- */
-function selfieStepValidator(value = {}) {
-  return !!value.selfie;
-}
-
-/**
- * @param {import('./form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
 function SelfieStep({
   value = {},
@@ -72,5 +65,3 @@ function SelfieStep({
 }
 
 export default withBackgroundEncryptedUpload(SelfieStep);
-
-export { selfieStepValidator };

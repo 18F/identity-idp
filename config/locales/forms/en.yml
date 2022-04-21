@@ -18,7 +18,6 @@ en:
       generate: Get codes
       last_code: You used your last backup code. Please print, copy or download the
         codes below. You can use these new codes the next time you sign in.
-      print: Print
       regenerate: Get new codes
       subinfo_html: '<b>Don’t lose these codes</b>. Download, print, or copy them.
         Each code can only be used once. After you’ve used all 10 codes, we’ll

@@ -21,6 +21,7 @@ class Analytics
       new_session_success_state: first_success_state_this_session?,
       success_state: success_state_token(event),
       path: request&.path,
+      session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
@@ -121,19 +122,19 @@ class Analytics
     }
   end
 
+  def session_duration
+    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+  end
+
+  def session_started_at
+    value = @session[:session_started_at]
+    return value unless value.is_a?(String)
+    Time.zone.parse(value)
+  end
+
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  EMAIL_DELETION_REQUEST = 'Email Deletion Requested'
-  EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'
-  EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'
-  EVENT_DISAVOWAL = 'Event disavowal visited'
-  EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'
-  IDV_ADDRESS_VISIT = 'IdV: address visited'
-  IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'
-  IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'
-  IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'
-  IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'
   IDV_CANCELLATION = 'IdV: cancellation visited'
   IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'

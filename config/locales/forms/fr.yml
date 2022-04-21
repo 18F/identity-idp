@@ -22,7 +22,6 @@ fr:
       last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
         imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
         utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
-      print: Impression
       regenerate: Obtenir de nouveaux codes
       subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
         copiez-les. Chaque code ne peut être utilisé qu’une seule fois. Une fois

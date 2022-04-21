@@ -112,8 +112,12 @@ class OpenidConnectTokenForm
 
   def validate_code_verifier
     expected_code_challenge = remove_base64_padding(identity.try(:code_challenge))
-    given_code_challenge = remove_base64_padding(Digest::SHA256.base64digest(code_verifier.to_s))
-    return if expected_code_challenge == given_code_challenge
+    given_code_challenge = Digest::SHA256.urlsafe_base64digest(code_verifier.to_s)
+    if expected_code_challenge &&
+       given_code_challenge &&
+       ActiveSupport::SecurityUtils.secure_compare(expected_code_challenge, given_code_challenge)
+      return
+    end
     errors.add :code_verifier,
                t('openid_connect.token.errors.invalid_code_verifier'),
                type: :invalid_code_verifier

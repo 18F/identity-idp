@@ -1,4 +1,4 @@
-import { FormError } from '../components/form-steps';
+import { FormError } from '@18f/identity-form-steps';
 
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 /** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */

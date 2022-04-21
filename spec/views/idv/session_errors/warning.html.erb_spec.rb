@@ -30,23 +30,4 @@ describe 'idv/session_errors/warning.html.erb' do
       href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'warning'),
     )
   end
-
-  context 'with in person proofing disabled' do
-    let(:in_person_proofing_enabled) { false }
-
-    it 'does not render an in person proofing link' do
-      expect(rendered).not_to have_link(href: idv_in_person_url)
-    end
-  end
-
-  context 'with in person proofing enabled' do
-    let(:in_person_proofing_enabled) { true }
-
-    it 'renders an in person proofing link' do
-      expect(rendered).to have_link(
-        t('in_person_proofing.link'),
-        href: idv_in_person_url,
-      )
-    end
-  end
 end

@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Sign Up' do
   include SamlAuthHelper
   include DocAuthHelper
+  include ActionView::Helpers::DateHelper
 
   context 'confirmation token error message does not persist on success' do
     scenario 'with blank token' do
@@ -107,6 +108,32 @@ feature 'Sign Up' do
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
+  scenario 'rate limits sign-up phone confirmation attempts' do
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(999)
+
+    sign_up_and_set_password
+
+    freeze_time do
+      (IdentityConfig.store.phone_confirmation_max_attempts + 1).times do
+        visit phone_setup_path
+        fill_in 'new_phone_form_phone', with: '2025551313'
+        click_send_security_code
+      end
+
+      timeout = distance_of_time_in_words(
+        Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+      )
+
+      expect(current_path).to eq(two_factor_options_path)
+      expect(page).to have_content(
+        I18n.t(
+          'errors.messages.phone_confirmation_throttled',
+          timeout: timeout,
+        ),
+      )
+    end
+  end
+
   context 'with js', js: true do
     before do
       page.driver.browser.execute_cdp(
@@ -141,7 +168,7 @@ feature 'Sign Up' do
       name.execute_script('this.addEventListener("invalid", () => this.didValidate = true);')
       did_validate_name = -> { name.evaluate_script('this.didValidate') }
 
-      click_on t('links.copy')
+      click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
       expect(did_validate_name.call).to_not eq true
 

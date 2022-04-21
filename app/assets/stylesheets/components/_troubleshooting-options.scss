@@ -13,6 +13,10 @@
     height: 4px;
     width: 5rem;
   }
+
+  &.troubleshooting-options--no-bar::before {
+    content: none;
+  }
 }
 
 .troubleshooting-options__heading {

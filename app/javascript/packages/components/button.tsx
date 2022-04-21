@@ -1,4 +1,7 @@
-import type { MouseEvent, ReactNode } from 'react';
+import { createElement } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
+import Icon from './icon';
+import type { DesignSystemIcon } from './icon';
 
 type ButtonType = 'button' | 'reset' | 'submit';
 
@@ -7,6 +10,11 @@ export interface ButtonProps {
    * Button type, defaulting to "button".
    */
   type?: ButtonType;
+
+  /**
+   * For a link styled as a button, the destination of the link.
+   */
+  href?: string;
 
   /**
    * Click handler.
@@ -49,9 +57,9 @@ export interface ButtonProps {
   isUnstyled?: boolean;
 
   /**
-   * Whether button should appear disabled (but remain clickable).
+   * Icon to show next to button text.
    */
-  isVisuallyDisabled?: boolean;
+  icon?: DesignSystemIcon;
 
   /**
    * Optional additional class names.
@@ -60,8 +68,8 @@ export interface ButtonProps {
 }
 
 function Button({
-  type = 'button',
-  onClick,
+  href,
+  type = href ? undefined : 'button',
   children,
   isBig,
   isFlexibleWidth,
@@ -69,9 +77,12 @@ function Button({
   isOutline,
   isDisabled,
   isUnstyled,
-  isVisuallyDisabled,
+  icon,
   className,
-}: ButtonProps) {
+  ...htmlAttributes
+}: ButtonProps &
+  AnchorHTMLAttributes<HTMLAnchorElement> &
+  ButtonHTMLAttributes<HTMLButtonElement>) {
   const classes = [
     'usa-button',
     isBig && 'usa-button--big',
@@ -79,18 +90,18 @@ function Button({
     isWide && 'usa-button--wide',
     isOutline && 'usa-button--outline',
     isUnstyled && 'usa-button--unstyled',
-    isVisuallyDisabled && 'usa-button--disabled',
     className,
   ]
     .filter(Boolean)
     .join(' ');
 
-  return (
-    // Disable reason: We can assume `type` is provided as valid, or the default `button`.
-    // eslint-disable-next-line react/button-has-type
-    <button type={type} onClick={onClick} disabled={isDisabled} className={classes}>
-      {children}
-    </button>
+  const tagName = href ? 'a' : 'button';
+
+  return createElement(
+    tagName,
+    { type, href, disabled: isDisabled, className: classes, ...htmlAttributes },
+    icon && <Icon icon={icon} />,
+    children,
   );
 }
 

@@ -1,10 +1,10 @@
 import { t } from '@18f/identity-i18n';
+import { FormError } from '@18f/identity-form-steps';
 import AcuantCapture from './acuant-capture';
-import { FormError } from './form-steps';
 
-/** @typedef {import('./form-steps').FormStepError<*>} FormStepError */
-/** @typedef {import('./form-steps').RegisterFieldCallback} RegisterFieldCallback */
-/** @typedef {import('./form-steps').OnErrorCallback} OnErrorCallback */
+/** @typedef {import('@18f/identity-form-steps').FormStepError<*>} FormStepError */
+/** @typedef {import('@18f/identity-form-steps').RegisterFieldCallback} RegisterFieldCallback */
+/** @typedef {import('@18f/identity-form-steps').OnErrorCallback} OnErrorCallback */
 
 /**
  * @typedef DocumentSideAcuantCaptureProps

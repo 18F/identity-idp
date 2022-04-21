@@ -1,3 +1,4 @@
+cron_1m = '* * * * *'
 cron_5m = '0/5 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
@@ -198,6 +199,12 @@ else
       heartbeat_job: {
         class: 'HeartbeatJob',
         cron: cron_5m,
+      },
+      # Queue psql stats job to GoodJob
+      psql_stats_job: {
+        class: 'PsqlStatsJob',
+        cron: cron_1m,
+        args: -> { [Time.zone.now] },
       },
     }
   end

@@ -15,7 +15,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	brakeman \
 	build_artifact \
 	check \
-	check_asset_strings \
 	docker_setup \
 	fast_setup \
 	fast_test \
@@ -77,8 +76,6 @@ lint: ## Runs all lint tests
 	@echo "--- es5-safe ---"
 	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
-	@echo "--- asset check ---"
-	make check_asset_strings
 	@echo "--- lint yaml ---"
 	make lint_yaml
 	@echo "--- check assets are optimized ---"
@@ -163,9 +160,6 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
-
-check_asset_strings: ## Checks for strings
-	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
 
 build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"

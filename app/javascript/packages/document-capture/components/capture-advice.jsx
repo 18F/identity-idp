@@ -1,5 +1,5 @@
 import { useI18n } from '@18f/identity-react-i18n';
-import useAsset from '../hooks/use-asset';
+import { getAssetPath } from '@18f/identity-assets';
 import Warning from './warning';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
@@ -17,7 +17,6 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
  * @param {CaptureAdviceProps} props
  */
 function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
-  const { getAssetPath } = useAsset();
   const { t } = useI18n();
 
   return (
@@ -30,6 +29,7 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
         <DocumentCaptureTroubleshootingOptions
           heading={t('idv.troubleshooting.headings.still_having_trouble')}
           location="capture_tips"
+          hasErrors
         />
       }
     >

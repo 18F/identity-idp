@@ -9,7 +9,7 @@ module Idv
     )
       document_capture_session.create_proofing_session
 
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
 
@@ -30,7 +30,7 @@ module Idv
 
     def proof_address(document_capture_session, user_id:, issuer:, trace_id:)
       document_capture_session.create_proofing_session
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
 
@@ -57,7 +57,7 @@ module Idv
       analytics_data:,
       flow_path: 'standard'
     )
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         @applicant.to_json,
       )
 

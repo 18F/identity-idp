@@ -103,7 +103,8 @@ module Users
       create_user_event(:piv_cac_enabled)
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       session[:needs_to_setup_piv_cac_after_sign_in] = false
-      redirect_to after_sign_in_path_for(current_user)
+      final_path = after_sign_in_path_for(current_user)
+      redirect_to user_next_authentication_setup_path!(final_path)
     end
 
     def piv_cac_enabled?
