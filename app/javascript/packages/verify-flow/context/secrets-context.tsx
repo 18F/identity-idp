@@ -2,8 +2,9 @@ import { createContext, useContext, useEffect, useCallback, useMemo, useState } 
 import type { ReactNode } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
 import { useIfStillMounted } from '@18f/identity-react-hooks';
+import { VerifyFlowValues } from '..';
 
-type SecretValues = {};
+type SecretValues = Partial<VerifyFlowValues>;
 
 type SetItem = typeof SecretSessionStorage.prototype.setItem;
 
