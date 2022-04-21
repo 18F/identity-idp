@@ -57,7 +57,8 @@ RSpec.describe Api::ProfileCreationForm do
       it 'saves the user pii encrypted with their personal_key in the profile' do
         response = subject.submit
         profile = user.profiles.first
-        decrypted_recovery_pii = profile.recover_pii(response.extra[:personal_key])
+        personal_key = PersonalKeyGenerator.new(user).normalize(response.extra[:personal_key])
+        decrypted_recovery_pii = profile.recover_pii(personal_key)
 
         expect(decrypted_recovery_pii[:first_name]).to eq 'Ada'
       end
