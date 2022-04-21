@@ -8,7 +8,7 @@ describe('VerifyFlow', () => {
     const personalKey = '0000-0000-0000-0000';
     const onComplete = sinon.spy();
 
-    const { getByRole } = render(
+    const { getByText, getByLabelText } = render(
       <VerifyFlow
         appName="Example App"
         initialValues={{ personalKey }}
@@ -17,11 +17,8 @@ describe('VerifyFlow', () => {
       />,
     );
 
-    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
-    await userEvent.type(
-      getByRole('textbox', { name: 'forms.personal_key.confirmation_label' }),
-      personalKey,
-    );
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');
 
     expect(onComplete).to.have.been.called();
