@@ -1,6 +1,6 @@
 import { render } from 'react-dom';
 import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
-import { encode } from '@18f/identity-secret-session-storage';
+import { s2ab } from '@18f/identity-secret-session-storage';
 
 interface AppRootValues {
   /**
@@ -41,8 +41,8 @@ const {
   appName,
   completionUrl: completionURL,
 } = appRoot.dataset;
-const key = encode(atob(appRoot.dataset.storeKey!));
-const iv = encode(atob(appRoot.dataset.storeIv!));
+const key = s2ab(atob(appRoot.dataset.storeKey!));
+const iv = s2ab(atob(appRoot.dataset.storeIv!));
 
 const initialValues = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];

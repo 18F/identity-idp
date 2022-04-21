@@ -1,8 +1,14 @@
 type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
-const ab2s = (buffer: Uint8Array) => String.fromCharCode.apply(null, new Uint8Array(buffer));
+/**
+ * Convert an ArrayBuffer to an equivalent string.
+ */
+export const ab2s = (buffer: Uint8Array) => String.fromCharCode.apply(null, new Uint8Array(buffer));
 
-export const encode = (string: string) => Uint8Array.from(string, (c) => c.charCodeAt(0));
+/**
+ * Convert a string to an equivalent ArrayBuffer.
+ */
+export const s2ab = (string: string) => Uint8Array.from(string, (c) => c.charCodeAt(0));
 
 class SecretSessionStorage<S extends Record<string, JSONValue>> {
   storageKey: string;
@@ -51,7 +57,7 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
     const data = await crypto.subtle.encrypt(
       { name: 'AES-GCM', iv: this.iv },
       this.key,
-      encode(JSON.stringify(this.storage)),
+      s2ab(JSON.stringify(this.storage)),
     );
 
     sessionStorage.setItem(this.storageKey, ab2s(data));
