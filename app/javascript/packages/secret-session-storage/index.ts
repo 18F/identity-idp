@@ -1,3 +1,6 @@
+/**
+ * Serializable JSON value.
+ */
 type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
 
 /**
@@ -11,16 +14,34 @@ export const ab2s = (buffer: Uint8Array) => String.fromCharCode.apply(null, new 
 export const s2ab = (string: string) => Uint8Array.from(string, (c) => c.charCodeAt(0));
 
 class SecretSessionStorage<S extends Record<string, JSONValue>> {
+  /**
+   * Web storage key.
+   */
   storageKey: string;
 
+  /**
+   * In-memory reflection of unencrypted web storage payload.
+   */
   storage: S = {} as S;
 
+  /**
+   * Encryption key.
+   */
   key: CryptoKey;
 
+  /**
+   * Constructs a new session store.
+   *
+   * @param storageKey Web storage key.
+   * @param key Encryption key.
+   */
   constructor(storageKey: string) {
     this.storageKey = storageKey;
   }
 
+  /**
+   * Reads and decrypts storage object into in-memory reflection, if available.
+   */
   async load() {
     const storage = await this.#readStorage();
     if (storage) {
@@ -28,15 +49,29 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
     }
   }
 
+  /**
+   * Sets a value into storage.
+   *
+   * @param key Storage object key.
+   * @param value Storage object value.
+   */
   async setItem(key: keyof S, value: S[typeof key]) {
     this.storage[key] = value;
     await this.#writeStorage();
   }
 
+  /**
+   * Gets a value from the in-memory storage.
+   *
+   * @param key Storage object key.
+   */
   getItem(key: keyof S) {
     return this.storage[key];
   }
 
+  /**
+   * Reads and decrypts storage object, if available.
+   */
   async #readStorage() {
     try {
       const storageData = sessionStorage.getItem(this.storageKey)!;
@@ -51,6 +86,9 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
     } catch {}
   }
 
+  /**
+   * Encrypts and writes current in-memory reflection of storage object to web storage.
+   */
   async #writeStorage() {
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const encryptedData = await window.crypto.subtle.encrypt(
