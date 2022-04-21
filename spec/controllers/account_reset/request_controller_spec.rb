@@ -28,7 +28,7 @@ describe AccountReset::RequestController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_RESET_VISIT)
+      expect(@analytics).to receive(:track_event).with('Account deletion and reset visited')
 
       get :show
     end

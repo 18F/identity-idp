@@ -115,6 +115,13 @@ module AnalyticsEvents
     track_event('Account Reset: notifications', count: count, **extra)
   end
 
+  # @identity.idp.event_name Account deletion and reset visited
+  # @identity.idp.previous_event_name Account Reset
+  # User visited the account deletion and reset page
+  def account_reset_visit
+    track_event('Account deletion and reset visited')
+  end
+
   # @identity.idp.event_name Account Delete submitted
   # @param [Boolean] success
   # When a user submits a form to delete their account

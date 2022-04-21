@@ -5,7 +5,7 @@ module AccountReset
     before_action :confirm_two_factor_enabled
 
     def show
-      analytics.track_event(Analytics::ACCOUNT_RESET_VISIT)
+      analytics.account_reset_visit
     end
 
     def create
