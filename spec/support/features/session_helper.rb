@@ -3,6 +3,7 @@ require 'cgi'
 module Features
   module SessionHelper
     include PersonalKeyHelper
+    include JavascriptDriverHelper
 
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
@@ -319,7 +320,11 @@ module Features
     end
 
     def click_acknowledge_personal_key
-      click_on t('forms.buttons.continue'), class: 'personal-key-continue'
+      if javascript_enabled?
+        acknowledge_and_confirm_personal_key
+      else
+        click_on t('forms.buttons.continue'), class: 'personal-key-continue'
+      end
     end
 
     def enter_personal_key(personal_key:, selector: 'input[type="text"]')
