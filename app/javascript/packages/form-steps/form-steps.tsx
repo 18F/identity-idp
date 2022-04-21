@@ -150,7 +150,7 @@ interface FormStepsProps {
   basePath?: string;
 
   /**
-   * Formatted string for page title, interpolated with step title as `step`.
+   * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
 }
@@ -159,7 +159,7 @@ interface FormStepsProps {
  * React hook which sets page title for the current step.
  *
  * @param step Current step.
- * @param titleFormat Formatted string for page title, interpolated with step title as `step`.
+ * @param titleFormat Format string for page title.
  */
 function useStepTitle(step: FormStep, titleFormat?: string) {
   useEffect(() => {
