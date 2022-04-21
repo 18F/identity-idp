@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefCallback, FormEventHandler, FC } from 'react';
 import { Alert } from '@18f/identity-components';
+import { replaceVariables } from '@18f/identity-i18n';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
@@ -81,6 +82,11 @@ export interface FormStep {
    * Step form component.
    */
   form: FC<FormStepComponentProps<Record<string, any>>>;
+
+  /**
+   * Human-readable step label.
+   */
+  title?: string;
 }
 
 interface FieldsRefEntry {
@@ -142,6 +148,25 @@ interface FormStepsProps {
    * is appended.
    */
   basePath?: string;
+
+  /**
+   * Formatted string for page title, interpolated with step title as `step`.
+   */
+  titleFormat?: string;
+}
+
+/**
+ * React hook which sets page title for the current step.
+ *
+ * @param step Current step.
+ * @param titleFormat Formatted string for page title, interpolated with step title as `step`.
+ */
+function useStepTitle(step: FormStep, titleFormat?: string) {
+  useEffect(() => {
+    if (titleFormat && step.title) {
+      document.title = replaceVariables(titleFormat, { step: step.title });
+    }
+  }, [step]);
 }
 
 /**
@@ -183,6 +208,7 @@ function FormSteps({
   autoFocus,
   promptOnNavigate = true,
   basePath,
+  titleFormat,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
@@ -231,6 +257,7 @@ function FormSteps({
     }
   }, [stepErrors]);
 
+  useStepTitle(step, titleFormat);
   useDidUpdateEffect(onStepChange, [step]);
   useDidUpdateEffect(onPageTransition, [step]);
 

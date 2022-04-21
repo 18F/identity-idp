@@ -11,6 +11,11 @@ interface AppRootValues {
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;
+
+  /**
+   * Application name.
+   */
+  appName: string;
 }
 
 interface AppRootElement extends HTMLElement {
@@ -18,11 +23,14 @@ interface AppRootElement extends HTMLElement {
 }
 
 const appRoot = document.getElementById('app-root') as AppRootElement;
-const { initialValues, basePath } = appRoot.dataset;
+const { initialValues, basePath, appName } = appRoot.dataset;
 
 let parsedInitialValues;
 try {
   parsedInitialValues = JSON.parse(initialValues);
 } catch {}
 
-render(<VerifyFlow initialValues={parsedInitialValues} basePath={basePath} />, appRoot);
+render(
+  <VerifyFlow initialValues={parsedInitialValues} basePath={basePath} appName={appName} />,
+  appRoot,
+);
