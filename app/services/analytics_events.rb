@@ -5,6 +5,7 @@ module AnalyticsEvents
   # @param [String] user_id
   # @param [String, nil] message_id from AWS Pinpoint API
   # @param [String, nil] request_id from AWS Pinpoint API
+  # An account reset was cancelled
   def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
     track_event(
       'Account Reset: cancel',

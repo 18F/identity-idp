@@ -18,7 +18,7 @@ module AccountReset
 
     def create_account_reset_request
       response = AccountReset::CreateRequest.new(current_user).call
-      analytics.account_reset_request(**response.to_h.merge(analytics_attributes))
+      analytics.account_reset_request(**response.to_h, **analytics_attributes)
     end
 
     def confirm_two_factor_enabled
