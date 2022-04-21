@@ -1,7 +1,4 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import FormStepsContext, { DEFAULT_CONTEXT } from './form-steps-context';
 import FormStepsContinueButton from './form-steps-continue-button';
 
 describe('FormStepsContinueButton', () => {
@@ -14,21 +11,6 @@ describe('FormStepsContinueButton', () => {
       'display-block',
       'margin-y-5',
     ]);
-  });
-
-  it('submits using FormStepsContext', () => {
-    const toNextStep = sinon.spy();
-
-    const { getByRole } = render(
-      <FormStepsContext.Provider value={{ ...DEFAULT_CONTEXT, toNextStep }}>
-        <FormStepsContinueButton />
-      </FormStepsContext.Provider>,
-    );
-
-    const button = getByRole('button');
-    userEvent.click(button);
-
-    expect(toNextStep).to.have.been.called();
   });
 
   context('with className prop', () => {

@@ -65,28 +65,6 @@ describe('PersonalKeyConfirmStep', () => {
 
     await userEvent.type(input, '0');
 
-    input.closest('form')!.addEventListener(
-      'submit',
-      function (event) {
-        // A form should not emit a submit event if any of its fields are invalid, but either JSDOM
-        // or @testing-library/user-event is not considering this, and happily allows submission. We
-        // emulate this behavior to match the expected browser experience.
-        //
-        // "If the submitter element's no-validate state is false, then interactively validate the
-        //  constraints of form and examine the result. If the result is negative (i.e., the
-        //  constraint validation concluded that there were invalid fields and probably informed the
-        //  user of this), then: [...] Set form's firing submission events to false. [...] Return."
-        //
-        // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-algorithm
-
-        if (!this.noValidate && !this.checkValidity()) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-        }
-      },
-      true,
-    );
-
     await userEvent.type(input, '{enter}');
     expect(onComplete).to.have.been.calledOnce();
 

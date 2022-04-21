@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefCallback, FC } from 'react';
+import type { FormEventHandler, RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
 import RequiredValueMissingError from './required-value-missing-error';
@@ -278,8 +278,10 @@ function FormSteps({
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
    */
-  function toNextStep() {
-    // Don't proceed if initial active errors have yet to be resolved.
+  const toNextStep: FormEventHandler = (event) => {
+    event.preventDefault();
+
+    // Don't proceed if field errors have yet to be resolved.
     if (hasUnresolvedFieldErrors) {
       setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
@@ -301,7 +303,7 @@ function FormSteps({
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
-  }
+  };
 
   const toPreviousStep = () => {
     const previousStepIndex = Math.max(stepIndex - 1, 0);
@@ -313,14 +315,14 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} noValidate>
+    <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, toNextStep, onPageTransition }}>
+      <FormStepsContext.Provider value={{ isLastStep, onPageTransition }}>
         <Form
           key={name}
           value={values}
