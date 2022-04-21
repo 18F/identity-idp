@@ -3,9 +3,7 @@ import type { ReactNode } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
 import { useIfStillMounted } from '@18f/identity-react-hooks';
 
-type SecretValues = {
-  example: string;
-};
+type SecretValues = {};
 
 type SetItem = typeof SecretSessionStorage.prototype.setItem;
 
