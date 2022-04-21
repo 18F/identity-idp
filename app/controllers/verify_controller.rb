@@ -17,7 +17,6 @@ class VerifyController < ApplicationController
   def app_data
     cipher = Encryption::AesCipher.encryption_cipher
     session[:idv_api_store_key] ||= Base64.strict_encode64(cipher.random_key)
-    session[:idv_api_store_iv] ||= Base64.strict_encode64(cipher.random_iv)
 
     {
       base_path: idv_app_root_path,
@@ -26,7 +25,6 @@ class VerifyController < ApplicationController
       initial_values: { 'personalKey' => personal_key },
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: session[:idv_api_store_key],
-      store_iv: session[:idv_api_store_iv],
     }
   end
 

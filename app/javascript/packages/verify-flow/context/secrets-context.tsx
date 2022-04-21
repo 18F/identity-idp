@@ -12,8 +12,6 @@ type SetItem = typeof SecretSessionStorage.prototype.setItem;
 interface SecretsContextProviderProps {
   storeKey: Uint8Array;
 
-  storeIV: Uint8Array;
-
   children?: ReactNode;
 }
 
@@ -24,7 +22,7 @@ const SecretsContext = createContext({
   setItem: (() => {}) as SetItem,
 });
 
-function SecretsContextProvider({ storeKey, storeIV, children }: SecretsContextProviderProps) {
+function SecretsContextProvider({ storeKey, children }: SecretsContextProviderProps) {
   const ifStillMounted = useIfStillMounted();
   const storage = useMemo(() => new SecretSessionStorage<SecretValues>(STORAGE_KEY), []);
   const [value, setValue] = useState({ storage, setItem: storage.setItem });
@@ -43,7 +41,6 @@ function SecretsContextProvider({ storeKey, storeIV, children }: SecretsContextP
       .importKey('raw', storeKey, 'AES-GCM', true, ['encrypt', 'decrypt'])
       .then((cryptoKey) => {
         storage.key = cryptoKey;
-        storage.iv = storeIV;
         storage.load().then(ifStillMounted(onChange));
       });
   }, []);

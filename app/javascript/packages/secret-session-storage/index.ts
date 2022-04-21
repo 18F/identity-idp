@@ -17,8 +17,6 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
 
   key: CryptoKey;
 
-  iv: Uint8Array;
-
   constructor(storageKey: string) {
     this.storageKey = storageKey;
   }
@@ -41,26 +39,22 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
 
   async #readStorage() {
     try {
-      const rawData = sessionStorage.getItem(this.storageKey)!;
-
-      const data = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: this.iv },
-        this.key,
-        encode(rawData),
-      );
-
+      const storageData = sessionStorage.getItem(this.storageKey)!;
+      const [encryptedData, iv] = (JSON.parse(storageData) as [string, string]).map(s2ab);
+      const data = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, this.key, encryptedData);
       return JSON.parse(ab2s(data));
     } catch {}
   }
 
   async #writeStorage() {
-    const data = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv: this.iv },
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const encryptedData = await crypto.subtle.encrypt(
+      { name: 'AES-GCM', iv },
       this.key,
       s2ab(JSON.stringify(this.storage)),
     );
 
-    sessionStorage.setItem(this.storageKey, ab2s(data));
+    sessionStorage.setItem(this.storageKey, JSON.stringify([encryptedData, iv].map(ab2s)));
   }
 }
 

@@ -42,7 +42,6 @@ const {
   completionUrl: completionURL,
 } = appRoot.dataset;
 const key = s2ab(atob(appRoot.dataset.storeKey!));
-const iv = s2ab(atob(appRoot.dataset.storeIv!));
 
 const initialValues = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
@@ -52,7 +51,7 @@ function onComplete() {
 }
 
 render(
-  <SecretsContextProvider storeKey={key} storeIV={iv}>
+  <SecretsContextProvider storeKey={key}>
     <VerifyFlow
       initialValues={initialValues}
       enabledStepNames={enabledStepNames}
