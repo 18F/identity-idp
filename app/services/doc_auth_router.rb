@@ -217,7 +217,7 @@ module DocAuthRouter
   end
 
   def self.randomize?(target_percent, discriminator)
-    max_sha = (16 ** 64) - 1
+    max_sha = (16**64) - 1
     user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
 
     user_value < target_percent.clamp(0, 100)

@@ -276,6 +276,9 @@ Layout/SpaceAroundKeyword:
 Layout/SpaceAroundMethodCallOperator:
   Enabled: true
 
+Layout/SpaceAroundOperators:
+  Enabled: true
+
 Layout/SpaceBeforeBlockBraces:
   Enabled: true
   EnforcedStyle: space

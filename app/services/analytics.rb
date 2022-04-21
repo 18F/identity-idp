@@ -208,7 +208,7 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
   REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'
-  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT= 'Report IAL2 Users Linked to SPs Count'
+  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT = 'Report IAL2 Users Linked to SPs Count'
   REPORT_SP_USER_COUNTS = 'Report SP User Counts'
   RESPONSE_TIMED_OUT = 'Response Timed Out'
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'
