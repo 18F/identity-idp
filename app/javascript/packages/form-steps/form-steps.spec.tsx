@@ -27,6 +27,7 @@ describe('FormSteps', () => {
   const STEPS = [
     {
       name: 'first',
+      title: 'First Title',
       form: () => (
         <>
           <PageHeading>First Title</PageHeading>
@@ -130,6 +131,12 @@ describe('FormSteps', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
     expect(getByText('First')).to.be.ok();
+  });
+
+  it('sets the browser page title using titleFormat', () => {
+    render(<FormSteps steps={STEPS} titleFormat="%{step} - Example" />);
+
+    expect(document.title).to.equal('First Title - Example');
   });
 
   it('renders continue button at first step', () => {
