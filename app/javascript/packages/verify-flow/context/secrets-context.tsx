@@ -19,7 +19,7 @@ const STORAGE_KEY = 'verify';
 
 const SecretsContext = createContext({
   storage: new SecretSessionStorage<SecretValues>(STORAGE_KEY),
-  setItem: (() => {}) as SetItem,
+  setItem: (async () => {}) as SetItem,
 });
 
 function SecretsContextProvider({ storeKey, children }: SecretsContextProviderProps) {
@@ -29,8 +29,8 @@ function SecretsContextProvider({ storeKey, children }: SecretsContextProviderPr
   const onChange = useCallback(() => {
     setValue({
       storage,
-      setItem(...args) {
-        storage.setItem(...args);
+      async setItem(...args) {
+        await storage.setItem(...args);
         onChange();
       },
     });

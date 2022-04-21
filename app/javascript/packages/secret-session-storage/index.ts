@@ -28,9 +28,9 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
     }
   }
 
-  setItem(key: keyof S, value: S[typeof key]) {
+  async setItem(key: keyof S, value: S[typeof key]) {
     this.storage[key] = value;
-    this.#writeStorage();
+    await this.#writeStorage();
   }
 
   getItem(key: keyof S) {
