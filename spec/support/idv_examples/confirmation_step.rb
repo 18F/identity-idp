@@ -6,7 +6,7 @@ shared_examples 'idv confirmation step' do |sp|
     end
 
     it 'redirects to the come back later url then to the sp or account' do
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(idv_come_back_later_path)
       click_on t('forms.buttons.continue')
@@ -52,7 +52,7 @@ shared_examples 'idv confirmation step' do |sp|
     end
 
     it 'redirects to the completions page and then to the SP', if: sp.present? do
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(sign_up_completed_path)
 
@@ -66,7 +66,7 @@ shared_examples 'idv confirmation step' do |sp|
     end
 
     it 'redirects to the account page', if: sp.nil? do
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_content(t('headings.account.verified_account'))
       expect(page).to have_current_path(account_path)
