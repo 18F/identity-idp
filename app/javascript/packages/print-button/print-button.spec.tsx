@@ -14,12 +14,12 @@ describe('PrintButton', () => {
     sandbox.restore();
   });
 
-  it('renders a button that prints when clicked', () => {
+  it('renders a button that prints when clicked', async () => {
     const { getByRole } = render(<PrintButton />);
 
     const button = getByRole('button', { name: 'components.print_button.label' });
 
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(window.print).to.have.been.called();
   });

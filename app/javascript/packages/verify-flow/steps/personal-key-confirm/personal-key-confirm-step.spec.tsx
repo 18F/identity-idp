@@ -13,24 +13,24 @@ describe('PersonalKeyConfirmStep', () => {
     registerField: () => () => {},
   };
 
-  it('allows the user to return to the previous step by clicking "Back" button', () => {
+  it('allows the user to return to the previous step by clicking "Back" button', async () => {
     const toPreviousStep = sinon.spy();
     const { getByText } = render(
       <PersonalKeyConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
     );
 
-    userEvent.click(getByText('forms.buttons.back'));
+    await userEvent.click(getByText('forms.buttons.back'));
 
     expect(toPreviousStep).to.have.been.called();
   });
 
-  it('allows the user to return to the previous step by pressing Escape', () => {
+  it('allows the user to return to the previous step by pressing Escape', async () => {
     const toPreviousStep = sinon.spy();
     const { getByRole } = render(
       <PersonalKeyConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
     );
 
-    userEvent.type(getByRole('textbox'), '{esc}');
+    await userEvent.type(getByRole('textbox'), '{Escape}');
 
     expect(toPreviousStep).to.have.been.called();
   });

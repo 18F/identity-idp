@@ -75,7 +75,7 @@ describe('ValidatedField', () => {
     expect(getByText(element, 'custom validity')).to.be.ok();
   });
 
-  it('clears existing validation state on input', () => {
+  it('clears existing validation state on input', async () => {
     const element = createAndConnectElement();
 
     /** @type {HTMLInputElement} */
@@ -85,7 +85,7 @@ describe('ValidatedField', () => {
     const form = element.parentNode;
     form.checkValidity();
 
-    userEvent.type(input, '5');
+    await userEvent.type(input, '5');
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
@@ -108,7 +108,7 @@ describe('ValidatedField', () => {
   });
 
   context('with initial error message', () => {
-    it('clears existing validation state on input', () => {
+    it('clears existing validation state on input', async () => {
       const element = createAndConnectElement();
 
       /** @type {HTMLInputElement} */
@@ -118,7 +118,7 @@ describe('ValidatedField', () => {
       const form = element.parentNode;
       form.checkValidity();
 
-      userEvent.type(input, '5');
+      await userEvent.type(input, '5');
 
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');

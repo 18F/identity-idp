@@ -23,17 +23,17 @@ describe('ClipboardButtonElement', () => {
     return element;
   }
 
-  it('copies text to clipboard when clicking its button', () => {
+  it('copies text to clipboard when clicking its button', async () => {
     const clipboardText = 'example';
     const element = createAndConnectElement({ clipboardText });
     const button = getByRole(element, 'button');
 
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(navigator.clipboard.writeText).to.have.been.calledWith(clipboardText);
   });
 
-  it('copies the latest clipboard attribute value after initialization', () => {
+  it('copies the latest clipboard attribute value after initialization', async () => {
     const clipboardText = 'example';
     const element = createAndConnectElement({ clipboardText });
     const changedClipbordText = 'example2';
@@ -41,17 +41,17 @@ describe('ClipboardButtonElement', () => {
 
     const button = getByRole(element, 'button');
 
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(navigator.clipboard.writeText).to.have.been.calledWith(changedClipbordText);
   });
 
   context('with nothing to copy', () => {
-    it('does writes an empty string to the clipboard', () => {
+    it('does writes an empty string to the clipboard', async () => {
       const element = createAndConnectElement();
       const button = getByRole(element, 'button');
 
-      userEvent.click(button);
+      await userEvent.click(button);
 
       expect(navigator.clipboard.writeText).to.have.been.calledWith('');
     });

@@ -32,7 +32,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
     expect(getByText('doc_auth.headings.capture_troubleshooting_tips')).to.be.ok();
   });
 
-  it('shows children again after clicking try again', () => {
+  it('shows children again after clicking try again', async () => {
     const { getByRole, getByText } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={0}>
         <CaptureTroubleshooting>Default children</CaptureTroubleshooting>
@@ -40,12 +40,12 @@ describe('document-capture/context/capture-troubleshooting', () => {
     );
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
-    userEvent.click(tryAgainButton);
+    await userEvent.click(tryAgainButton);
 
     expect(getByText('Default children')).to.be.ok();
   });
 
-  it('triggers content resets', () => {
+  it('triggers content resets', async () => {
     const onPageTransition = sinon.spy();
     function FailButton() {
       return (
@@ -70,15 +70,15 @@ describe('document-capture/context/capture-troubleshooting', () => {
     expect(onPageTransition).not.to.have.been.called();
 
     const failButton = getByRole('button', { name: 'Fail' });
-    userEvent.click(failButton);
+    await userEvent.click(failButton);
     expect(onPageTransition).to.have.been.calledOnce();
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
-    userEvent.click(tryAgainButton);
+    await userEvent.click(tryAgainButton);
     expect(onPageTransition).to.have.been.calledTwice();
   });
 
-  it('logs events', () => {
+  it('logs events', async () => {
     const addPageAction = sinon.spy();
     const { getByRole } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
@@ -95,7 +95,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
     });
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
-    userEvent.click(tryAgainButton);
+    await userEvent.click(tryAgainButton);
 
     expect(addPageAction.callCount).to.equal(4);
     expect(addPageAction).to.have.been.calledWith({

@@ -5,7 +5,7 @@ import CaptureAdvice from '@18f/identity-document-capture/components/capture-adv
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/capture-advice', () => {
-  it('logs warning events', () => {
+  it('logs warning events', async () => {
     const addPageAction = sinon.spy();
 
     const { getByRole } = render(
@@ -23,7 +23,7 @@ describe('document-capture/components/capture-advice', () => {
     });
 
     const button = getByRole('button');
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: warning action triggered',
