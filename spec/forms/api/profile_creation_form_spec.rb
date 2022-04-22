@@ -70,7 +70,7 @@ RSpec.describe Api::ProfileCreationForm do
             idv: {
               vendor_phone_confirmation: true,
               user_phone_confirmation: true,
-            }
+            },
           }
         end
 
@@ -94,7 +94,7 @@ RSpec.describe Api::ProfileCreationForm do
           {
             idv: {
               address_verification_mechanism: 'gpo',
-            }
+            },
           }
         end
 
