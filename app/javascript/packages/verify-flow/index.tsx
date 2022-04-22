@@ -1,5 +1,7 @@
 import { FormSteps } from '@18f/identity-form-steps';
 import { StepIndicator, StepIndicatorStep, StepStatus } from '@18f/identity-step-indicator';
+import { t } from '@18f/identity-i18n';
+import { Alert } from '@18f/identity-components';
 import { STEPS } from './steps';
 
 export interface VerifyFlowValues {
@@ -35,6 +37,9 @@ export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlow
         <StepIndicatorStep title="Verify phone or address" status={StepStatus.COMPLETE} />
         <StepIndicatorStep title="Secure your account" status={StepStatus.CURRENT} />
       </StepIndicator>
+      <Alert type="success" className="margin-bottom-4">
+          {t('idv.messages.confirm')}
+      </Alert>
       <FormSteps
         steps={STEPS}
         initialValues={initialValues}
