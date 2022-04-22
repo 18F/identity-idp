@@ -13,12 +13,13 @@ RSpec.describe Api::ProfileCreationForm do
   let(:bundle) do
     JWT.encode(pii, key, 'RS256', sub: uuid.to_s)
   end
+  let(:user_session) { {} }
 
   subject do
     Api::ProfileCreationForm.new(
       user_password: entered_password,
       user_bundle: bundle,
-      user_session: {},
+      user_session: user_session,
     )
   end
 
@@ -61,6 +62,62 @@ RSpec.describe Api::ProfileCreationForm do
         decrypted_recovery_pii = profile.recover_pii(personal_key)
 
         expect(decrypted_recovery_pii[:first_name]).to eq 'Ada'
+      end
+
+      context 'with the user having verified their phone' do
+        let(:user_session) do
+          {
+            idv: {
+              vendor_phone_confirmation: true,
+              user_phone_confirmation: true,
+            }
+          }
+        end
+
+        it 'activates the user profile' do
+          subject.submit
+          profile = user.profiles.first
+
+          expect(profile.active?).to be true
+        end
+
+        it 'moves the pii to the user_session' do
+          subject.submit
+          stored_pii = JSON.parse(user_session[:decrypted_pii])
+
+          expect(stored_pii['first_name']).to eq 'Ada'
+        end
+      end
+
+      context 'with the user having verified their address via GPO letter' do
+        let(:user_session) do
+          {
+            idv: {
+              address_verification_mechanism: 'gpo',
+            }
+          }
+        end
+
+        it 'does not activate the user profile' do
+          subject.submit
+          profile = user.profiles.first
+
+          expect(profile.active?).to be false
+        end
+
+        it 'moves the pii to the user_session' do
+          subject.submit
+          stored_pii = JSON.parse(user_session[:decrypted_pii])
+
+          expect(stored_pii['first_name']).to eq 'Ada'
+        end
+
+        it 'creates a GPO confirmation code' do
+          subject.submit
+          profile = user.profiles.first
+
+          expect(profile.gpo_confirmation_codes.first_with_otp(subject.gpo_otp)).not_to be_nil
+        end
       end
     end
 
