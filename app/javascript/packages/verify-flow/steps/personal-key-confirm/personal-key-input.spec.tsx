@@ -49,17 +49,17 @@ describe('PersonalKeyInput', () => {
     expect(input.value).to.equal('1234-1234-1234-1234');
   });
 
-  it('validates the input value against the expected value, case-insensitive', async () => {
-    const { getByRole } = render(<PersonalKeyInput expectedValue="abcd-0000-DEFG-0000" />);
+  it('validates the input value against the expected value (case-insensitive, crockford)', async () => {
+    const { getByRole } = render(<PersonalKeyInput expectedValue="abcd-0011-DEFG-0011" />);
 
     const input = getByRole('textbox') as HTMLInputElement;
 
-    await userEvent.type(input, 'ABCD-0000-defg-000');
+    await userEvent.type(input, 'ABCDoOlL-defg-001');
     input.checkValidity();
     expect(input.validationMessage).to.equal('users.personal_key.confirmation_error');
 
-    await userEvent.type(input, '0');
+    await userEvent.type(input, '1');
     input.checkValidity();
-    expect(input.validationMessage).to.be.empty();
+    expect(input.validity.valid).to.be.true();
   });
 });
