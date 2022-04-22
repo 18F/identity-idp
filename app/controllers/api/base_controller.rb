@@ -1,5 +1,7 @@
 module Api
   class BaseController < ApplicationController
+    before_action :confirm_two_factor_authenticated_for_api
+
     respond_to :json
 
     def confirm_two_factor_authenticated_for_api

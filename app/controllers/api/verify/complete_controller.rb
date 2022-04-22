@@ -1,5 +1,4 @@
 class Api::Verify::CompleteController < Api::BaseController
-  before_action :confirm_two_factor_authenticated_for_api
 
   def create
     result = Api::ProfileCreationForm.new(
