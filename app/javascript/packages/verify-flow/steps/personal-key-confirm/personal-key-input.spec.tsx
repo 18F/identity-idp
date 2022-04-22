@@ -50,11 +50,11 @@ describe('PersonalKeyInput', () => {
   });
 
   it('validates the input value against the expected value (case-insensitive, crockford)', async () => {
-    const { getByRole } = render(<PersonalKeyInput expectedValue="abcd-0011-DEFG-0011" />);
+    const { getByRole } = render(<PersonalKeyInput expectedValue="abcd-0011-DEFG-1111" />);
 
     const input = getByRole('textbox') as HTMLInputElement;
 
-    await userEvent.type(input, 'ABCDoOlL-defg-001');
+    await userEvent.type(input, 'ABCDoOlL-defg-iI1');
     input.checkValidity();
     expect(input.validationMessage).to.equal('users.personal_key.confirmation_error');
 
