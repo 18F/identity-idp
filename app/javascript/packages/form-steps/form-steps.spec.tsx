@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
+import * as analytics from '@18f/identity-analytics';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
@@ -19,6 +20,10 @@ interface StepValues {
 
 describe('FormSteps', () => {
   const sandbox = sinon.createSandbox();
+
+  beforeEach(() => {
+    sandbox.spy(analytics, 'trackEvent');
+  });
 
   afterEach(() => {
     sandbox.restore();

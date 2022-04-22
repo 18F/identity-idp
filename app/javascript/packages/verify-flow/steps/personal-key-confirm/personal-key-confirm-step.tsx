@@ -4,6 +4,7 @@ import { t } from '@18f/identity-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { Modal } from '@18f/identity-modal';
 import { getAssetPath } from '@18f/identity-assets';
+import { trackEvent } from '@18f/identity-analytics';
 import PersonalKeyStep from '../personal-key/personal-key-step';
 import PersonalKeyInput from './personal-key-input';
 import type { VerifyFlowValues } from '../..';
@@ -14,12 +15,17 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   const { registerField, value, onChange, toPreviousStep } = stepProps;
   const personalKey = value.personalKey!;
 
+  const closeModalActions = () => {
+    trackEvent('IdV: hide personal key modal');
+    toPreviousStep();
+  };
+
   return (
     <>
       <FormStepsContext.Provider value={{ isLastStep: false, onPageTransition() {} }}>
         <PersonalKeyStep {...stepProps} />
       </FormStepsContext.Provider>
-      <Modal onRequestClose={toPreviousStep}>
+      <Modal onRequestClose={closeModalActions}>
         <div className="pin-top pin-x display-flex flex-column flex-align-center top-neg-3">
           <img alt="" height="60" width="60" src={getAssetPath('p-key.svg')} />
         </div>
@@ -40,7 +46,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
               <FormStepsContinueButton className="margin-y-0" />
             </div>
             <div className="grid-col-12 tablet:grid-col-6">
-              <Button isBig isWide isOutline onClick={toPreviousStep}>
+              <Button isBig isWide isOutline onClick={closeModalActions}>
                 {t('forms.buttons.back')}
               </Button>
             </div>
