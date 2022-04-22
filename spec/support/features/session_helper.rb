@@ -308,16 +308,14 @@ module Features
       click_submit_default
     end
 
-    def acknowledge_and_confirm_personal_key(js: true)
+    def acknowledge_and_confirm_personal_key
       click_acknowledge_personal_key
 
-      if js
-        page.find(':focus').fill_in with: scrape_personal_key
-        if page.current_path == idv_personal_key_url
-          click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-        else
-          click_submit_default
-        end
+      page.find(':focus').fill_in with: scrape_personal_key
+      if page.current_path == idv_personal_key_url
+        click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+      else
+        click_submit_default
       end
     end
 

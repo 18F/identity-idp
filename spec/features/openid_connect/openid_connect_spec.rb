@@ -244,7 +244,7 @@ describe 'OpenID Connect' do
       to include('Verified within value must be at least 30 days or older')
   end
 
-  it 'sends the user through idv again via verified_within param' do
+  it 'sends the user through idv again via verified_within param', js: true do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     user = user_with_2fa
     _profile = create(
@@ -270,7 +270,7 @@ describe 'OpenID Connect' do
         fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
         click_continue
 
-        acknowledge_and_confirm_personal_key(js: false)
+        acknowledge_and_confirm_personal_key
       end,
       handoff_page_steps: proc do
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
@@ -281,14 +281,16 @@ describe 'OpenID Connect' do
     access_token = token_response[:access_token]
     expect(access_token).to be_present
 
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+    Capybara.using_driver(:desktop_rack_test) do
+      page.driver.get api_openid_connect_userinfo_path,
+                      {},
+                      'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:verified_at]).to be > 60.days.ago.to_i
-    expect(userinfo_response[:verified_at]).to eq(user.active_profile.verified_at.to_i)
+      userinfo_response = JSON.parse(page.body).with_indifferent_access
+      expect(userinfo_response[:email]).to eq(user.email)
+      expect(userinfo_response[:verified_at]).to be > 60.days.ago.to_i
+      expect(userinfo_response[:verified_at]).to eq(user.active_profile.verified_at.to_i)
+    end
   end
 
   it 'prompts for consent if last consent time was over a year ago', driver: :mobile_rack_test do
@@ -687,13 +689,15 @@ describe 'OpenID Connect' do
     code = redirect_params[:code]
     expect(code).to be_present
 
-    page.driver.post api_openid_connect_token_path,
-                     grant_type: 'authorization_code',
-                     code: code,
-                     code_verifier: code_verifier
-    expect(page.status_code).to eq(200)
+    Capybara.using_driver(:desktop_rack_test) do
+      page.driver.post api_openid_connect_token_path,
+                       grant_type: 'authorization_code',
+                       code: code,
+                       code_verifier: code_verifier
+      expect(page.status_code).to eq(200)
 
-    JSON.parse(page.body).with_indifferent_access
+      JSON.parse(page.body).with_indifferent_access
+    end
   end
 
   def certs_response
