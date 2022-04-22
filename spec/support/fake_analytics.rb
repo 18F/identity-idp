@@ -37,7 +37,7 @@ class FakeAnalytics
         end
       end
 
-      pii_attr_names = Pii::Attributes.members + [:personal_key] - [
+      pii_attr_names = Pii::Attributes.members - [
         :state, # state on its own is not enough to be a pii leak
       ]
 

@@ -80,11 +80,7 @@ class Analytics
   end
 
   def track_mfa_submit_event(attributes)
-    track_event(
-      MULTI_FACTOR_AUTH,
-      **attributes,
-      pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
-    )
+    track_event(MULTI_FACTOR_AUTH, attributes)
     attributes[:success] ? 'success' : 'fail'
   end
 
