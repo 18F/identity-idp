@@ -1,0 +1,16 @@
+<lg-spinner-button>
+  <div class="spinner-button__content">
+    <%= render ButtonComponent.new(type: :button, **button_options).with_content(content) %>
+    <span class="spinner-dots spinner-dots--centered text-white" aria-hidden="true">
+      <span class="spinner-dots__dot"></span>
+      <span class="spinner-dots__dot"></span>
+      <span class="spinner-dots__dot"></span>
+    </span>
+  </div>
+  <% if action_message %>
+    <%= tag.div '',
+                role: 'status',
+                data: { message: action_message },
+                class: 'spinner-button__action-message usa-sr-only' %>
+  <% end %>
+</lg-spinner-button>
