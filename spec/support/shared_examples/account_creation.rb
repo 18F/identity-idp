@@ -42,7 +42,7 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
 end
 
 shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |sp|
-  it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true do
+  it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true, js: true do
     visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
@@ -94,7 +94,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 end
 
 shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
-  it 'does not prompt for recovery code before IdV flow', email: true do
+  it 'does not prompt for recovery code before IdV flow', email: true, js: true do
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_ial2(sp)
     confirm_email_and_password('test@test.com')

@@ -7,7 +7,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
   context 'sign up' do
     let(:user) { User.find_with_email(email) }
 
-    it 'requires idv and hands off correctly' do
+    it 'requires idv and hands off correctly', js: true do
       visit_idp_from_sp_with_ial2(sp)
       register_user(email)
 
@@ -36,7 +36,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
   context 'unverified user sign in' do
     let(:user) { user_with_2fa }
 
-    it 'requires idv and hands off successfully' do
+    it 'requires idv and hands off successfully', js: true do
       visit_idp_from_sp_with_ial2(sp)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
@@ -64,7 +64,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     end
   end
 
-  context 'verified user sign in' do
+  context 'verified user sign in', js: true do
     let(:user) { user_with_2fa }
 
     before do
@@ -92,7 +92,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
     end
   end
 
-  context 'second time a user signs in to an SP' do
+  context 'second time a user signs in to an SP', js: true do
     let(:user) { user_with_2fa }
 
     before do

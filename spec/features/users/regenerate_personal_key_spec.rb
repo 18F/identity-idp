@@ -31,7 +31,7 @@ feature 'View personal key' do
     end
 
     context 'regenerating new code after canceling edit password action' do
-      scenario 'displays new code' do
+      scenario 'displays new code', js: true do
         sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 

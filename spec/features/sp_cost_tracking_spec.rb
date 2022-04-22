@@ -20,7 +20,7 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(2, 1, 'authentication')
   end
 
-  it 'logs the correct costs for an ial2 user creation from sp with oidc' do
+  it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
     create_ial2_user_from_sp(email)
 
     expect_sp_cost_type(0, 2, 'sms')
@@ -40,7 +40,7 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(8, 2, 'authentication')
   end
 
-  it 'logs the cost to the SP for reproofing' do
+  it 'logs the cost to the SP for reproofing', js: true do
     create_ial2_user_from_sp(email)
 
     # track costs without dealing with 'remember device'
@@ -93,7 +93,7 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(2, 1, 'authentication')
   end
 
-  it 'logs the correct costs for an ial2 authentication' do
+  it 'logs the correct costs for an ial2 authentication', js: true do
     create_ial2_user_from_sp(email)
     SpCost.delete_all
 

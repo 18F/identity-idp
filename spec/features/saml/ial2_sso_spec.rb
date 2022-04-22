@@ -90,7 +90,7 @@ feature 'IAL2 Single Sign On' do
       )
     end
 
-    context 'having previously selected USPS verification' do
+    context 'having previously selected USPS verification', js: true do
       let(:phone_confirmed) { false }
 
       context 'provides an option to send another letter' do
@@ -140,7 +140,7 @@ feature 'IAL2 Single Sign On' do
       end
 
       context 'provides an option to update address if undeliverable' do
-        it 'allows the user to update the address' do
+        it 'allows the user to update the address', js: true do
           user = create(:user, :signed_up)
 
           perform_id_verification_with_gpo_without_confirming_code(user)

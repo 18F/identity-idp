@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'A user with a UAK passwords attempts IdV' do
   include IdvStepHelper
 
-  it 'allows the user to continue to the SP' do
+  it 'allows the user to continue to the SP', js: true do
     user = user_with_2fa
     user.update!(
       encrypted_password_digest: Encryption::UakPasswordVerifier.digest(user.password),

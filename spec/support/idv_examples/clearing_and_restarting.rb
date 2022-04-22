@@ -1,5 +1,5 @@
 shared_examples 'clearing and restarting idv' do
-  it 'allows the user to retry verification with phone' do
+  it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.pending_profile?).to eq(false)
@@ -14,7 +14,7 @@ shared_examples 'clearing and restarting idv' do
     expect(user.reload.decorate.identity_verified?).to eq(true)
   end
 
-  it 'allows the user to retry verification with gpo' do
+  it 'allows the user to retry verification with gpo', js: true do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.pending_profile?).to eq(false)
