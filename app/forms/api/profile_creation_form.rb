@@ -2,17 +2,17 @@ module Api
   class ProfileCreationForm
     include ActiveModel::Model
 
-    validate :valid_user_bundle
+    validate :valid_jwt
     validate :valid_user
     validate :valid_password
 
-    attr_reader :user_password, :user_bundle, :user_bundle_headers, :user_bundle_payload
+    attr_reader :password, :jwt, :jwt_headers, :jwt_payload
     attr_reader :user_session, :service_provider
     attr_reader :profile, :gpo_otp
 
-    def initialize(user_password:, user_bundle:, user_session:, service_provider: nil)
-      @user_password = user_password
-      @user_bundle = user_bundle
+    def initialize(password:, jwt:, user_session:, service_provider: nil)
+      @password = password
+      @jwt = jwt
       @user_session = user_session
       @service_provider = service_provider
       set_idv_session
@@ -46,8 +46,8 @@ module Api
     end
 
     def cache_encrypted_pii
-      cacher = Pii::Cacher.new(current_user, session)
-      cacher.save(user_password, profile)
+      cacher = Pii::Cacher.new(user, session)
+      cacher.save(password, profile)
     end
 
     def complete_session
@@ -60,7 +60,7 @@ module Api
     end
 
     def complete_profile
-      current_user.pending_profile&.activate
+      user.pending_profile&.activate
       move_pii_to_user_session
     end
 
@@ -86,16 +86,16 @@ module Api
 
     def build_profile_maker
       Idv::ProfileMaker.new(
-        applicant: user_bundle_payload,
-        user: current_user,
-        user_password: user_password,
+        applicant: jwt_payload,
+        user: user,
+        user_password: password,
       )
     end
 
-    def current_user
-      return nil unless user_bundle_headers
-      return @current_user if defined?(@current_user)
-      @current_user = User.find_by(uuid: user_bundle_headers['sub'])
+    def user
+      return nil unless jwt_headers
+      return @user if defined?(@user)
+      @user = User.find_by(uuid: jwt_headers['sub'])
     end
 
     def set_idv_session
@@ -107,15 +107,15 @@ module Api
       user_session.fetch(:idv, {})
     end
 
-    def valid_user_bundle
+    def valid_jwt
       payload, headers = JWT.decode(
-        user_bundle,
+        jwt,
         public_key,
         true,
         algorithm: 'RS256',
       )
-      @user_bundle_payload = payload
-      @user_bundle_headers = headers
+      @jwt_payload = payload
+      @jwt_headers = headers
     rescue JWT::DecodeError => err
       errors.add(:jwt, "decode error: #{err.message}", type: :invalid)
     rescue JWT::ExpiredSignature => err
@@ -123,12 +123,12 @@ module Api
     end
 
     def valid_user
-      return if current_user
+      return if user
       errors.add(:user, 'user not found', type: :invalid)
     end
 
     def valid_password
-      return if current_user&.valid_password?(user_password)
+      return if user&.valid_password?(password)
       errors.add(:password, 'invalid password', type: :invalid)
     end
 
@@ -137,11 +137,11 @@ module Api
     end
 
     def extra_attributes
-      if current_user.present?
+      if user.present?
         @extra_attributes ||= {
           personal_key: personal_key,
-          profile_pending: current_user.pending_profile?,
-          user_uuid: current_user.uuid,
+          profile_pending: user.pending_profile?,
+          user_uuid: user.uuid,
         }
       else
         @extra_attributes = {}
@@ -155,9 +155,5 @@ module Api
     def public_key
       OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_public_key))
     end
-
-    alias_method :jwt, :user_bundle
-    alias_method :user, :current_user
-    alias_method :password, :user_password
   end
 end

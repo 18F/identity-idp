@@ -17,8 +17,8 @@ RSpec.describe Api::ProfileCreationForm do
 
   subject do
     Api::ProfileCreationForm.new(
-      user_password: entered_password,
-      user_bundle: bundle,
+      password: entered_password,
+      jwt: bundle,
       user_session: user_session,
     )
   end
