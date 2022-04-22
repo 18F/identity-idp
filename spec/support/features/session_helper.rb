@@ -312,19 +312,11 @@ module Features
       click_acknowledge_personal_key
 
       page.find(':focus').fill_in with: scrape_personal_key
-      if page.current_path == idv_personal_key_url
-        click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-      else
-        click_submit_default
-      end
+      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
-      if page.current_path == idv_personal_key_url
-        click_on t('forms.buttons.continue'), class: 'personal-key-continue'
-      else
-        click_continue
-      end
+      click_continue
     end
 
     def enter_personal_key(personal_key:, selector: 'input[type="text"]')
