@@ -95,7 +95,9 @@ describe Users::VerifyPersonalKeyController do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
           Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
-          { errors: {}, success: true },
+          errors: {},
+          success: true,
+          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         ).once
 
         expect(@analytics).to receive(:track_event).with(
@@ -134,6 +136,7 @@ describe Users::VerifyPersonalKeyController do
           errors: { personal_key: ['Please fill in this field.', 'Incorrect personal key'] },
           error_details: { personal_key: [:blank, :personal_key_incorrect] },
           success: false,
+          pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
