@@ -16,12 +16,12 @@ describe 'mfa_confirmation/index.html.erb' do
   it 'provides a call to action to add another MFA method' do
     render
 
-    expect(rendered).to have_selector('p', text: t('multi_factor_authentication.cta'))
+    expect(rendered).to have_selector('p', text: t('mfa.cta'))
   end
 
   it 'has a button with the next step' do
     render
 
-    expect(rendered).to have_selector('button', text: t('multi_factor_authentication.add'))
+    expect(rendered).to have_selector('button', text: t('mfa.add'))
   end
 end

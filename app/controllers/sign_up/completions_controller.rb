@@ -12,6 +12,7 @@ module SignUp
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         analytics_attributes(''),
       )
+      @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
       @presenter = completions_presenter
     end
 
