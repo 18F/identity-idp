@@ -1,5 +1,4 @@
 class Api::Verify::CompleteController < Api::BaseController
-
   def create
     result = Api::ProfileCreationForm.new(
       password: verify_params[:password],
