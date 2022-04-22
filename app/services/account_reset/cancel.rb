@@ -54,7 +54,6 @@ module AccountReset
 
     def extra_analytics_attributes
       @telephony_response.to_h.merge(
-        event: 'cancel',
         user_id: user.uuid,
       )
     end
