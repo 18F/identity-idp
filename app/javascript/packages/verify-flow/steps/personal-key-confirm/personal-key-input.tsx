@@ -17,13 +17,22 @@ interface PersonalKeyInputProps {
   onChange?: (nextValue: string) => void;
 }
 
+/**
+ * Normalize an input value for validation comparison.
+ *
+ * @param string Denormalized value.
+ *
+ * @return Normalized value.
+ */
+const normalize = (string: string) => string.toLowerCase().replace(/o/g, '0').replace(/[il]/g, '1');
+
 function PersonalKeyInput(
   { expectedValue, onChange = () => {} }: PersonalKeyInputProps,
   ref: ForwardedRef<HTMLElement>,
 ) {
   const validate = useCallback<ValidatedFieldValidator>(
     (value) => {
-      if (expectedValue && value !== expectedValue) {
+      if (expectedValue && normalize(value) !== normalize(expectedValue)) {
         throw new Error(t('users.personal_key.confirmation_error'));
       }
     },

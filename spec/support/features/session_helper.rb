@@ -2,6 +2,8 @@ require 'cgi'
 
 module Features
   module SessionHelper
+    include PersonalKeyHelper
+
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
     def sign_up_with(email)
@@ -307,18 +309,11 @@ module Features
     end
 
     def acknowledge_and_confirm_personal_key(js: true)
-      extra_characters_get_ignored = 'abc123qwerty'
-      code_words = []
-
-      page.all(:css, '[data-personal-key]').map do |node|
-        code_words << node.text
-      end
-
       button_text = t('forms.buttons.continue')
 
       click_on button_text, class: 'personal-key-continue' if js
 
-      fill_in 'personal_key', with: code_words.join.downcase + extra_characters_get_ignored
+      fill_in 'personal_key', with: scrape_personal_key
 
       find_all('.personal-key-confirm', text: button_text).first.click
     end
