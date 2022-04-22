@@ -40,7 +40,6 @@ class User < ApplicationRecord
   has_many :webauthn_configurations, dependent: :destroy, inverse_of: :user
   has_many :piv_cac_configurations, dependent: :destroy, inverse_of: :user
   has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
-  has_one :doc_auth, dependent: :destroy, inverse_of: :user, class_name: 'DocAuthRecord'
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
   has_many :throttles, dependent: :destroy
