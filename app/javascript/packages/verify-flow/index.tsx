@@ -38,7 +38,7 @@ export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlow
         <StepIndicatorStep title="Secure your account" status={StepStatus.CURRENT} />
       </StepIndicator>
       <Alert type="success" className="margin-bottom-4">
-          {t('idv.messages.confirm')}
+        {t('idv.messages.confirm')}
       </Alert>
       <FormSteps
         steps={STEPS}
