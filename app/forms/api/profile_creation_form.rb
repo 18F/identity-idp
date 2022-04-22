@@ -77,7 +77,7 @@ module Api
       confirmation_maker = GpoConfirmationMaker.new(
         pii: session[:pii],
         service_provider: service_provider,
-        profile: profile
+        profile: profile,
       )
       confirmation_maker.perform
 

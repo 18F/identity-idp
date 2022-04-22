@@ -12,10 +12,11 @@ class Api::Verify::CompleteController < Api::BaseController
     if result.success?
       user = User.find_by(uuid: result.extra[:user_uuid])
       add_proofing_component(user)
-      render json: {
-        personal_key: result.extra[:personal_key],
-        profile_pending: result.extra[:profile_pending],
-      }, status: :ok
+      render(
+        json: { personal_key: result.extra[:personal_key],
+                profile_pending: result.extra[:profile_pending] },
+        status: :ok,
+      )
     else
       render json: { error: result.errors }, status: :bad_request
     end
