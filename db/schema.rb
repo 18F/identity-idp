@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_21_183611) do
+ActiveRecord::Schema.define(version: 2022_04_22_190622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -172,17 +172,6 @@ ActiveRecord::Schema.define(version: 2022_04_21_183611) do
     t.boolean "aamva"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
-  end
-
-  create_table "doc_auths", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.datetime "attempted_at"
-    t.integer "attempts", default: 0
-    t.datetime "license_confirmed_at"
-    t.datetime "selfie_confirmed_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_doc_auths_on_user_id"
   end
 
   create_table "document_capture_sessions", force: :cascade do |t|
