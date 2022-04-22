@@ -313,7 +313,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue' if js
 
-      fill_in 'personal_key', with: scrape_personal_key(jumbled_for_entry: true)
+      fill_in 'personal_key', with: scrape_personal_key
 
       find_all('.personal-key-confirm', text: button_text).first.click
     end
