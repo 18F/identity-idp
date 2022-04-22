@@ -71,7 +71,8 @@ module Api
       move_pii_to_user_session
       self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
       confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii, service_provider: service_provider,
+        pii: pii,
+        service_provider: service_provider,
         profile: profile
       )
       confirmation_maker.perform

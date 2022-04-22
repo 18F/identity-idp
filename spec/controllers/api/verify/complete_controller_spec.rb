@@ -39,7 +39,7 @@ describe Api::Verify::CompleteController do
   end
 
   describe 'before_actions' do
-    it 'includes before_actions from AccountStateChecker' do
+    it 'includes before_actions from Api::BaseController' do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated_for_api,
@@ -52,7 +52,7 @@ describe Api::Verify::CompleteController do
       it 'does not create a profile or return a key' do
         post :create, params: { password: 'iambatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
-        expect(JSON.parse(response.body)['status']).to eq 'ERROR'
+        expect(JSON.parse(response.status.to_s)).to eq 401
         expect(JSON.parse(response.body)['error']).to eq 'user is not fully authenticated'
       end
     end
@@ -65,13 +65,13 @@ describe Api::Verify::CompleteController do
       it 'creates a profile and returns a key' do
         post :create, params: { password: 'iambatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).not_to be_nil
-        expect(JSON.parse(response.body)['status']).to eq 'SUCCESS'
+        expect(JSON.parse(response.status.to_s)).to eq 200
       end
 
       it 'does not create a profile and return a key when it has the wrong password' do
         post :create, params: { password: 'iamnotbatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
-        expect(JSON.parse(response.body)['status']).to eq 'ERROR'
+        expect(JSON.parse(response.status.to_s)).to eq 400
       end
     end
   end

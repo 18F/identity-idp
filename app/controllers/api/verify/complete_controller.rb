@@ -7,7 +7,6 @@ class Api::Verify::CompleteController < Api::BaseController
       user_bundle: verify_params[:details],
       user_session: user_session,
     ).submit
-    analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED, result.to_h)
 
     if result.success?
       user = User.find_by(uuid: result.extra[:user_uuid])
@@ -15,10 +14,9 @@ class Api::Verify::CompleteController < Api::BaseController
       render json: {
         personal_key: result.extra[:personal_key],
         profile_pending: result.extra[:profile_pending],
-        status: SUCCESS,
-      }
+      }, status: :ok
     else
-      render json: { error: result.errors, status: ERROR }
+      render json: { error: result.errors }, status: :bad_request
     end
   end
 

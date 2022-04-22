@@ -13,7 +13,6 @@ Rails.application.routes.draw do
   post '/api/risc/security_events' => 'risc/security_events#create'
 
   namespace :api do
-    # This will change to post. Its get for now to test some things.
     post '/verify/complete' => 'verify/complete#create'
   end
 
