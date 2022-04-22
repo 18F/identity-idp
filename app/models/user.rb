@@ -1,6 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp idv_attempted_at idv_attempts attribute_cost
-                            failed_attempts locked_at]
+  self.ignored_columns = %w[totp_timestamp]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
