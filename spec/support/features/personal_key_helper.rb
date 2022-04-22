@@ -27,23 +27,7 @@ module PersonalKeyHelper
     click_email_link_matching(/reset_password_token/)
   end
 
-  def scrape_personal_key(jumbled_for_entry: false)
-    code_segments = page.all(:css, '.separator-text__code').map(&:text)
-
-    return code_segments.join('-') if !jumbled_for_entry
-
-    # Include dash between some segments and not others
-    code = code_segments[0..1].join('-') + code_segments[2..3].join
-
-    # Randomize case
-    code = code.chars.map { |c| (rand 2) == 0 ? c.downcase : c.upcase }.join
-
-    # De-normalize Crockford encoding
-    code = code.sub('1', 'l').sub('0', 'O')
-
-    # Add extra characters
-    code += 'abc123qwerty'
-
-    code
+  def scrape_personal_key
+    page.all(:css, '.separator-text__code').map(&:text).join('-')
   end
 end

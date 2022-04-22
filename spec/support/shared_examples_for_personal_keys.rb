@@ -1,5 +1,5 @@
 shared_examples_for 'personal key page' do
-  include XPathHelper
+  include PersonalKeyHelper
 
   context 'informational text' do
     context 'modal content' do
@@ -32,6 +32,29 @@ shared_examples_for 'personal key page' do
 
       code = page.all('[data-personal-key]').map(&:text).join('-')
       expect(copied_text).to eq(code)
+    end
+
+    it 'validates as case-insensitive, crockford-normalized, length-limited, dash-flexible' do
+      code_segments = scrape_personal_key.split('-')
+
+      # Include dash between some segments and not others
+      code = code_segments[0..1].join('-') + code_segments[2..3].join
+
+      # Randomize case
+      code = code.chars.map { |c| (rand 2) == 0 ? c.downcase : c.upcase }.join
+
+      # De-normalize Crockford encoding
+      code = code.sub('1', 'l').sub('0', 'O')
+
+      # Add extra characters
+      code += 'abc123qwerty'
+
+      click_acknowledge_personal_key
+      page.find(':focus').fill_in with: code
+
+      path_before_submit = current_path
+      within('[role=dialog]') { click_on t('forms.buttons.continue') }
+      expect(current_path).not_to eq path_before_submit
     end
   end
 end
