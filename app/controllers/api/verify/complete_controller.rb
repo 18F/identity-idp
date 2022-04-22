@@ -6,6 +6,7 @@ class Api::Verify::CompleteController < Api::BaseController
       user_password: verify_params[:password],
       user_bundle: verify_params[:details],
       user_session: user_session,
+      service_provider: current_sp,
     ).submit
 
     if result.success?

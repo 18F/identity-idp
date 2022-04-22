@@ -1,4 +1,3 @@
-# rubocop:disable IdentityIdp/ErrorsAddLinter
 module Api
   class ProfileCreationForm
     include ActiveModel::Model
@@ -8,13 +7,14 @@ module Api
     validate :valid_password
 
     attr_reader :user_password, :user_bundle, :user_bundle_headers, :user_bundle_payload
-    attr_reader :user_session
-    attr_reader :pii, :profile, :personal_key
+    attr_reader :user_session, :service_provider
+    attr_reader :profile, :gpo_otp
 
-    def initialize(user_password:, user_bundle:, user_session:)
+    def initialize(user_password:, user_bundle:, user_session:, service_provider: nil)
       @user_password = user_password
       @user_bundle = user_bundle
       @user_session = user_session
+      @service_provider = service_provider
       set_idv_session
     end
 
@@ -24,8 +24,7 @@ module Api
       if form_valid?
         create_profile
         cache_encrypted_pii
-        generate_personal_key
-
+        complete_session
       end
 
       FormResponse.new(
@@ -40,17 +39,15 @@ module Api
     def create_profile
       profile_maker = build_profile_maker
       profile = profile_maker.save_profile
-      @pii = profile_maker.pii_attributes
       @profile = profile
+      session[:pii] = profile_maker.pii_attributes
+      session[:profile_id] = profile.id
+      session[:personal_key] = profile.personal_key
     end
 
     def cache_encrypted_pii
       cacher = Pii::Cacher.new(current_user, session)
       cacher.save(user_password, profile)
-    end
-
-    def generate_personal_key
-      @personal_key = profile.encrypt_recovery_pii(pii)
     end
 
     def complete_session
@@ -67,11 +64,18 @@ module Api
       move_pii_to_user_session
     end
 
+    def move_pii_to_user_session
+      return if session[:decrypted_pii].blank?
+      user_session[:decrypted_pii] = session.delete(:decrypted_pii)
+    end
+
     def create_gpo_entry
       move_pii_to_user_session
-      self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
+      if session[:pii].is_a?(String)
+        session[:pii] = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
+      end
       confirmation_maker = GpoConfirmationMaker.new(
-        pii: pii,
+        pii: session[:pii],
         service_provider: service_provider,
         profile: profile
       )
@@ -113,19 +117,19 @@ module Api
       @user_bundle_payload = payload
       @user_bundle_headers = headers
     rescue JWT::DecodeError => err
-      errors.add(:jwt, "decode error: #{err.message}")
+      errors.add(:jwt, "decode error: #{err.message}", type: :invalid)
     rescue JWT::ExpiredSignature => err
-      errors.add(:jwt, "expired signature: #{err.message}")
+      errors.add(:jwt, "expired signature: #{err.message}", type: :invalid)
     end
 
     def valid_user
       return if current_user
-      errors.add(:user, 'user not found')
+      errors.add(:user, 'user not found', type: :invalid)
     end
 
     def valid_password
       return if current_user&.valid_password?(user_password)
-      errors.add(:password, 'invalid password')
+      errors.add(:password, 'invalid password', type: :invalid)
     end
 
     def form_valid?
@@ -144,9 +148,16 @@ module Api
       end
     end
 
+    def personal_key
+      @personal_key ||= profile&.personal_key || profile&.encrypt_recovery_pii(pii)
+    end
+
     def public_key
       OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_public_key))
     end
+
+    alias_method :jwt, :user_bundle
+    alias_method :user, :current_user
+    alias_method :password, :user_password
   end
 end
-# rubocop:enable IdentityIdp/ErrorsAddLinter
