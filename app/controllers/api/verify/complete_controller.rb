@@ -3,8 +3,8 @@ class Api::Verify::CompleteController < Api::BaseController
 
   def create
     result = Api::ProfileCreationForm.new(
-      user_password: verify_params[:password],
-      user_bundle: verify_params[:details],
+      password: verify_params[:password],
+      jwt: verify_params[:details],
       user_session: user_session,
       service_provider: current_sp,
     ).submit
