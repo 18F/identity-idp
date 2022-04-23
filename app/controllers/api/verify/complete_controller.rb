@@ -3,11 +3,11 @@ module Api
     class CompleteController < Api::BaseController
       def create
         result = Api::ProfileCreationForm.new(
-            password: verify_params[:password],
-            jwt: verify_params[:details],
-            user_session: user_session,
-            service_provider: current_sp,
-            ).submit
+          password: verify_params[:password],
+          jwt: verify_params[:details],
+          user_session: user_session,
+          service_provider: current_sp,
+        ).submit
 
         if result.success?
           user = User.find_by(uuid: result.extra[:user_uuid])
