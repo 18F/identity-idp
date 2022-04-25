@@ -71,14 +71,14 @@ describe Users::PhonesController do
   end
 
   context 'user exceeds limit of phones added' do
-    before do
-      15.times do |index|
-        user.phone_configurations.create(encrypted_phone: '4105555551' + index)
-        user.phone_configurations.destroy!
-      end
-    end
-  end
       it 'displays error if sms exceeds limit' do
+        15.times do
+          post :create, params: {
+              new_phone_form: { phone: '703-555-0100',
+                                international_code: 'US',
+                              otp_delivery_preferenc: 'sms' },
+            }
+        end
       controller.request.headers.merge({ HTTP_REFERER: account_url })
 
       get :add
@@ -86,10 +86,23 @@ describe Users::PhonesController do
       expect(response.request.flash[:phone_error]).to_not be_nil
     end
 
-    it 'renders the #phone anchor when it exceeds limit' do
+    it 'redirects with the #phone anchor when user exceded create requests' do
+              15.times do
+          post :create, params: {
+              new_phone_form: { phone: '703-555-0100',
+                                international_code: 'US',
+                              otp_delivery_preferenc: 'sms' },
+            }
+        end
       controller.request.headers.merge({ HTTP_REFERER: account_url })
 
-      get :add
-      expect(response.location).to include('#phone')
+      post :create, params: {
+              new_phone_form: { phone: '703-555-0101',
+                                international_code: 'US',
+                              otp_delivery_preferenc: 'sms' },
+            }
+      expect(response).to redirect_to(account_url(anchor: 'phones'))
+      expect(response.request.flash[:phone_error]).to_not be_nil
     end
+end
 end

@@ -7,11 +7,25 @@ module Users
     before_action :check_max_phone_numbers_per_account, only: %i[add create]
 
     def add
+      if throttle.throttled?
+        flash[:phone_error] = t('users.phones.error_message')
+        redirect_path = request.referer.match(account_two_factor_authentication_url) ?
+                        account_two_factor_authentication_url(anchor: 'phones') :
+                        account_url(anchor: 'phones')
+       redirect_to redirect_path and return
+      end
       user_session[:phone_id] = nil
       @new_phone_form = NewPhoneForm.new(current_user)
     end
 
     def create
+      if throttle.throttled_else_increment?
+        flash[:phone_error] = t('users.phones.error_message')
+        redirect_path = request.referer.match(account_two_factor_authentication_url) ?
+                        account_two_factor_authentication_url(anchor: 'phones') :
+                        account_url(anchor: 'phones')
+       redirect_to redirect_path and return
+      end
       @new_phone_form = NewPhoneForm.new(current_user)
       if @new_phone_form.submit(user_params).success?
         confirm_phone
@@ -53,6 +67,14 @@ module Users
                         account_two_factor_authentication_url(anchor: 'phones') :
                         account_url(anchor: 'phones')
       redirect_to redirect_path
+    end
+
+    def throttle
+      @throttle ||= Throttle.for(user: current_user, throttle_type: :add_phone)
+    end
+
+    def check_total_numbers_throttle
+
     end
   end
 end
