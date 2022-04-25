@@ -14,7 +14,7 @@ module IdvFromSpHelper
     click_continue
     fill_in 'Password', with: password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
   end
 
@@ -23,7 +23,7 @@ module IdvFromSpHelper
     click_continue
     fill_in 'Password', with: password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
   end
 
   def create_ial1_user_from_sp(email)

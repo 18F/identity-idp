@@ -17,7 +17,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_continue
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_content t(
         'titles.sign_up.completion_ial2',
@@ -48,7 +48,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_content t(
         'titles.sign_up.completion_ial2',
@@ -73,7 +73,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       first(:link, t('links.sign_out')).click
     end
 
@@ -106,7 +106,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
       visit account_path
       first(:link, t('links.sign_out')).click

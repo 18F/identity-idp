@@ -25,7 +25,7 @@ RSpec.describe 'proofing components' do
       expect(page).to have_current_path('/verify/review', wait: 5)
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
     end
 
     context 'async proofing', js: true do

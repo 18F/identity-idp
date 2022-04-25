@@ -48,7 +48,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       click_idv_continue
       fill_in 'Password', with: user.password
       click_idv_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')

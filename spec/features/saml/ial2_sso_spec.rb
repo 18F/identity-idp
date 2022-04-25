@@ -29,7 +29,7 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.send')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_link t('idv.buttons.continue_plain')
   end
 
@@ -48,7 +48,7 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.resend')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_link t('idv.buttons.continue_plain')
   end
 
@@ -140,7 +140,7 @@ feature 'IAL2 Single Sign On' do
       end
 
       context 'provides an option to update address if undeliverable' do
-        it 'allows the user to update the address', js: true do
+        it 'allows the user to update the address' do
           user = create(:user, :signed_up)
 
           perform_id_verification_with_gpo_without_confirming_code(user)

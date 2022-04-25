@@ -54,7 +54,7 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).
@@ -110,7 +110,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     if sp == :oidc
       expect(page.response_headers['Content-Security-Policy']).

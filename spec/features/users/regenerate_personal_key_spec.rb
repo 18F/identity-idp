@@ -53,7 +53,7 @@ feature 'View personal key' do
         click_continue
 
         expect(page).to have_content(t('headings.personal_key'))
-        click_acknowledge_personal_key
+        acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end

@@ -158,7 +158,7 @@ feature 'User profile' do
         click_idv_continue
         fill_in 'Password', with: user_password
         click_idv_continue
-        click_acknowledge_personal_key
+        acknowledge_and_confirm_personal_key
 
         expect(current_path).to eq(sign_up_completed_path)
 

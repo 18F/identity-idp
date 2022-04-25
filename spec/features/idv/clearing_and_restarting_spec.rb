@@ -9,7 +9,7 @@ describe 'clearing IdV and restarting' do
     before do
       start_idv_from_sp
       complete_idv_steps_with_gpo_before_confirmation_step(user)
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
     end
 
     context 'before signing out' do

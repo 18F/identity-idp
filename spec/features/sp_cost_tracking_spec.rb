@@ -57,7 +57,7 @@ feature 'SP Costing', :email do
     click_continue
     fill_in 'Password', with: password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
     %w[

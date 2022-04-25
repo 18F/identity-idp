@@ -133,7 +133,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
     expect(current_path).to eq manage_personal_key_path
 
     new_personal_key = scrape_personal_key
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     expect(current_path).to eq reactivate_account_path
 
@@ -141,7 +141,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
 
     expect(current_path).to eq manage_personal_key_path
 
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
@@ -221,7 +221,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
       code = page.all('.separator-text__code').map(&:text).join(' ')
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(user.reload.valid_personal_key?(code)).to eq(true)
       expect(user.active_profile.reload.recover_pii(code)).to be_present
@@ -244,7 +244,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
       code = page.all('.separator-text__code').map(&:text).join(' ')
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(user.reload.valid_personal_key?(code)).to eq(true)
       expect(user.active_profile.reload.recover_pii(code)).to be_present

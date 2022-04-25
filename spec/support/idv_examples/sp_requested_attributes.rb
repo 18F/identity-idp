@@ -27,7 +27,7 @@ shared_examples 'sp requesting attributes' do |sp|
       click_idv_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(current_path).to eq(sign_up_completed_path)
 
@@ -59,7 +59,7 @@ shared_examples 'sp requesting attributes' do |sp|
       click_idv_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
       visit account_path
       first(:link, t('links.sign_out')).click

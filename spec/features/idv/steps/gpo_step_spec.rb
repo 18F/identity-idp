@@ -49,7 +49,7 @@ feature 'idv gpo step' do
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       visit root_path
       click_on t('idv.buttons.cancel')
       first(:link, t('links.sign_out')).click
