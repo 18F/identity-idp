@@ -3,7 +3,7 @@ module UnconfirmedUserConcern
 
   def find_user_with_confirmation_token
     @confirmation_token = params.permit(:confirmation_token)[:confirmation_token]
-    @email_address = EmailConfirmationTokenValidator.email_address_from_token(@confirmation_token)
+    @email_address = EmailAddress.find_with_confirmation_token(@confirmation_token)
     @user = @email_address&.user
   end
 
@@ -29,24 +29,10 @@ module UnconfirmedUserConcern
   end
 
   def stop_if_invalid_token
-    return if @email_address.present?
-    hash = {
-      success: false,
-      errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
-      user_id: nil,
-    }
-    analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
-    process_unsuccessful_confirmation
-  end
-
-  def process_confirmation
     result = email_confirmation_token_validator.submit
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, result.to_h)
-    if result.success?
-      process_successful_confirmation
-    else
-      process_unsuccessful_confirmation
-    end
+    return if result.success?
+    process_unsuccessful_confirmation
   end
 
   def email_confirmation_token_validator
@@ -71,17 +57,9 @@ module UnconfirmedUserConcern
 
   def unsuccessful_confirmation_error
     if email_confirmation_token_validator.confirmation_period_expired?
-      confirmation_period_expired_error
+      t('errors.messages.confirmation_period_expired')
     else
       t('errors.messages.confirmation_invalid_token')
     end
-  end
-
-  def confirmation_period_expired_error
-    current_time = Time.zone.now
-    confirmation_period = distance_of_time_in_words(
-      current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
-    )
-    I18n.t('errors.messages.confirmation_period_expired', period: confirmation_period)
   end
 end
