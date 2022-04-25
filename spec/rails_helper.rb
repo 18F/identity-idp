@@ -70,8 +70,8 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
-    allow(IdentityConfig.store).to receive(:domain_name).and_return('127.0.0.1')
     server = Capybara.current_session.server
+    allow(IdentityConfig.store).to receive(:domain_name).and_return("#{server.host}:#{server.port}")
     allow(Rails.application.routes).to receive(:default_url_options).and_return(
       Rails.application.routes.default_url_options.merge(host: "#{server.host}:#{server.port}"),
     )
