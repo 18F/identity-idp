@@ -25,7 +25,6 @@ describe UpdateUserPasswordForm, type: :model do
         }
 
         expect(UpdateUser).not_to receive(:new)
-        expect(EmailNotifier).not_to receive(:new)
         expect(ActiveProfileEncryptor).not_to receive(:new)
         expect(subject.submit(params).to_h).to include(
           success: false,
