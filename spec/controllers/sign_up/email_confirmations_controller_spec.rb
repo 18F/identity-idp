@@ -9,7 +9,8 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+        error_details: { confirmation_token: [:not_found] },
+        errors: { confirmation_token: ['not found'] },
         user_id: nil,
       }
 
@@ -25,7 +26,8 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+        error_details: { confirmation_token: [:not_found] },
+        errors: { confirmation_token: ['not found'] },
         user_id: nil,
       }
 
@@ -41,7 +43,8 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a single-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+        error_details: { confirmation_token: [:not_found] },
+        errors: { confirmation_token: ['not found'] },
         user_id: nil,
       }
 
@@ -57,7 +60,8 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       analytics_hash = {
         success: false,
-        errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+        error_details: { confirmation_token: [:not_found] },
+        errors: { confirmation_token: ['not found'] },
         user_id: nil,
       }
 
@@ -104,8 +108,7 @@ describe SignUp::EmailConfirmationsController do
 
       get :create, params: { confirmation_token: 'foo' }
 
-      expect(flash[:error]).
-        to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
+      expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
       expect(response).to redirect_to sign_up_email_resend_path
     end
 
@@ -128,8 +131,7 @@ describe SignUp::EmailConfirmationsController do
 
       get :create, params: { confirmation_token: 'foo' }
 
-      expect(flash[:error]).
-        to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
+      expect(flash[:error]).to eq t('errors.messages.confirmation_period_expired')
       expect(response).to redirect_to sign_up_email_resend_path
     end
   end
@@ -155,17 +157,13 @@ describe SignUp::EmailConfirmationsController do
 
   describe 'Two users simultaneously confirm email with race condition' do
     it 'does not throw a 500 error' do
-      create(:user, :unconfirmed, confirmation_token: 'foo')
-      allow(subject).to receive(:process_confirmation).and_raise(ActiveRecord::RecordNotUnique)
+      allow(subject).to receive(:process_successful_confirmation).
+        and_raise(ActiveRecord::RecordNotUnique)
 
       get :create, params: { confirmation_token: 'foo' }
 
-      expect(flash[:error]).
-        to eq t(
-          'devise.confirmations.already_confirmed',
-          action: t('devise.confirmations.sign_in'),
-        )
-      expect(response).to redirect_to root_url
+      expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
   end
 end
