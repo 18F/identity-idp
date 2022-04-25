@@ -6,5 +6,10 @@ FactoryBot.define do
     confirmation_sent_at { Time.zone.now - 5.minutes }
     email { Faker::Internet.safe_email }
     user { association :user }
+
+    trait :unconfirmed do
+      confirmed_at { nil }
+      confirmation_sent_at { 5.minutes.ago }
+    end
   end
 end
