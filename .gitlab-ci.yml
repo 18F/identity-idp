@@ -6,9 +6,10 @@
 variables:
   GITLAB_CI: 'true'
   ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+  IDP_CI_SHA: "sha256:8650f43d0e6d44729bff92657b59e511c874103ae6207b3c0781df042df6932f"
 
 default:
-  image: "${ECR_REGISTRY}/idp/ci:latest"
+  image: "${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}"
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby

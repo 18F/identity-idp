@@ -40,13 +40,13 @@ describe('PasswordToggleElement', () => {
     expect(input.type).to.equal('password');
   });
 
-  it('changes input type on toggle', () => {
+  it('changes input type on toggle', async () => {
     const element = createElement();
 
     const input = getByLabelText(element, 'Password') as HTMLInputElement;
     const toggle = getByLabelText(element, 'Show password') as HTMLInputElement;
 
-    userEvent.click(toggle);
+    await userEvent.click(toggle);
 
     expect(input.type).to.equal('text');
   });

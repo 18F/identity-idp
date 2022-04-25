@@ -24,6 +24,15 @@
         sp: content_tag(:strong, decorated_session.sp_name),
       ) %>
 </p>
+<% if !@multiple_factors_enabled && IdentityConfig.store.select_multiple_mfa_options %>
+  <%= render(AlertComponent.new(type: :warning, class: 'margin-bottom-4')) do %>
+    <%= link_to(
+          t('mfa.second_method_warning.link'),
+          two_factor_options_url(multiple_mfa_setup: ''),
+        ) %>
+    <%= t('mfa.second_method_warning.text') %>
+  <% end %>
+<% end %>
 <p>
   <%= validated_form_for(:idv_form, url: sign_up_completed_path) do %>
     <%= submit_tag t('sign_up.agree_and_continue'), class: 'usa-button usa-button--big usa-button--wide' %>

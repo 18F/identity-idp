@@ -39,18 +39,18 @@ describe('SpinnerButton', () => {
     clock.restore();
   });
 
-  it('shows spinner on click', () => {
+  it('shows spinner on click', async () => {
     const wrapper = createWrapper();
     const spinnerButton = new SpinnerButton(wrapper);
     spinnerButton.bind();
     const { button } = spinnerButton.elements;
 
-    userEvent.click(button);
+    await userEvent.click(button, { advanceTimers: clock.tick });
 
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
   });
 
-  it('disables button without preventing form handlers', () => {
+  it('disables button without preventing form handlers', async () => {
     const wrapper = createWrapper({ tagName: 'button' });
     let submitted = false;
     const form = document.createElement('form');
@@ -65,14 +65,14 @@ describe('SpinnerButton', () => {
     spinnerButton.bind();
     const { button } = spinnerButton.elements;
 
-    userEvent.type(button, '{enter}');
+    await userEvent.type(button, '{Enter}', { advanceTimers: clock.tick });
     clock.tick(0);
 
     expect(submitted).to.be.true();
     expect(button.hasAttribute('disabled')).to.be.true();
   });
 
-  it('announces action message', () => {
+  it('announces action message', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
     const spinnerButton = new SpinnerButton(wrapper);
@@ -81,13 +81,13 @@ describe('SpinnerButton', () => {
 
     expect(status.textContent).to.be.empty();
 
-    userEvent.click(button);
+    await userEvent.click(button, { advanceTimers: clock.tick });
 
     expect(status.textContent).to.equal('Verifying...');
     expect(status.classList.contains('usa-sr-only')).to.be.true();
   });
 
-  it('shows action message visually after long delay', () => {
+  it('shows action message visually after long delay', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
     const spinnerButton = new SpinnerButton(wrapper);
@@ -96,7 +96,7 @@ describe('SpinnerButton', () => {
 
     expect(status.textContent).to.be.empty();
 
-    userEvent.click(button);
+    await userEvent.click(button, { advanceTimers: clock.tick });
     clock.tick(longWaitDurationMs - 1);
     expect(status.classList.contains('usa-sr-only')).to.be.true();
     clock.tick(1);

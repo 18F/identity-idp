@@ -1,62 +1,125 @@
 # rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
-  # @identity.idp.event_name Account Reset
-  # @param [Boolean] success
-  # @param ["cancel", "delete", "cancel token validation", "granted token validation",
-  #  "notifications"] event
-  # @param [String] message_id from AWS Pinpoint API
-  # @param [String] request_id from AWS Pinpoint API
-  # @param [Boolean] sms_phone
-  # @param [Boolean] totp does the user have an authentication app as a 2FA option?
-  # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
-  # @param [Integer] count number of notifications sent
-  # @param [Hash] errors
-  # @param [Hash] error_details
+  # @identity.idp.event_name Account Reset: cancel
+  # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
-  # @param [Integer] account_age_in_days
-  # @param [Hash] mfa_method_counts
-  # @param [Integer] email_addresses number of email addresses the user has
-  # Tracks events related to a user requesting to delete their account during the sign in process
-  # (because they have no other means to sign in).
-  def account_reset(
-    success: nil,
-    event: nil,
-    message_id: nil,
-    piv_cac: nil,
-    request_id: nil,
-    sms_phone: nil,
-    totp: nil,
-    count: nil,
-    errors: nil,
-    user_id: nil,
-    account_age_in_days: nil,
-    mfa_method_counts: nil,
-    pii_like_keypaths: nil,
-    error_details: nil,
-    email_addresses: nil,
-    **extra
-  )
+  # @param [String, nil] message_id from AWS Pinpoint API
+  # @param [String, nil] request_id from AWS Pinpoint API
+  # An account reset was cancelled
+  def account_reset_cancel(user_id:, message_id: nil, request_id: nil, **extra)
     track_event(
-      'Account Reset',
+      'Account Reset: cancel',
       {
-        success: success,
-        event: event,
-        message_id: message_id,
-        piv_cac: piv_cac,
-        request_id: request_id,
-        sms_phone: sms_phone,
-        totp: totp,
-        count: count,
-        errors: errors,
         user_id: user_id,
-        account_age_in_days: account_age_in_days,
-        mfa_method_counts: mfa_method_counts,
-        pii_like_keypaths: pii_like_keypaths,
-        error_details: error_details,
-        email_addresses: email_addresses,
+        message_id: message_id,
+        request_id: request_id,
         **extra,
       }.compact,
     )
+  end
+
+  # @identity.idp.event_name Account Reset: delete
+  # @identity.idp.previous_event_name Account Reset
+  # @param [Boolean] success
+  # @param [String] user_id
+  # @param [Integer] account_age_in_days
+  # @param [Hash] mfa_method_counts
+  # @param [Hash] errors
+  # An account has been deleted through the account reset flow
+  def account_reset_delete(
+    success:,
+    user_id:,
+    account_age_in_days:,
+    mfa_method_counts:,
+    errors: nil,
+    **extra
+  )
+    track_event(
+      'Account Reset: delete',
+      success: success,
+      user_id: user_id,
+      account_age_in_days: account_age_in_days,
+      mfa_method_counts: mfa_method_counts,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Account Reset: request
+  # @identity.idp.previous_event_name Account Reset
+  # @param [Boolean] success
+  # @param [Boolean] sms_phone does the user have a phone factor configured?
+  # @param [Boolean] totp does the user have an authentication app as a 2FA option?
+  # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
+  # @param [Integer] email_addresses number of email addresses the user has
+  # @param [String, nil] message_id from AWS Pinpoint API
+  # @param [String, nil] request_id from AWS Pinpoint API
+  # An account reset has been requested
+  def account_reset_request(
+    success:,
+    sms_phone:,
+    totp:,
+    piv_cac:,
+    email_addresses:,
+    request_id: nil,
+    message_id: nil,
+    **extra
+  )
+    track_event(
+      'Account Reset: request',
+      {
+        success: success,
+        sms_phone: sms_phone,
+        totp: totp,
+        piv_cac: piv_cac,
+        email_addresses: email_addresses,
+        request_id: request_id,
+        message_id: message_id,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # @identity.idp.event_name Account Reset: cancel token validation
+  # @identity.idp.previous_event_name Account Reset
+  # @param [String] user_id
+  # @param [Hash] errors
+  # Validates the token used for cancelling an account reset
+  def account_reset_cancel_token_validation(user_id:, errors: nil, **extra)
+    track_event(
+      'Account Reset: cancel token validation',
+      user_id: user_id,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Account Reset: granted token validation
+  # @identity.idp.previous_event_name Account Reset
+  # @param [String] user_id
+  # @param [Hash] errors
+  # Validates the granted token for account reset
+  def account_reset_granted_token_validation(user_id: nil, errors: nil, **extra)
+    track_event(
+      'Account Reset: granted token validation',
+      user_id: user_id,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Account Reset: notifications
+  # @identity.idp.previous_event_name Account Reset
+  # @param [Integer] count number of email notifications sent
+  # Account reset was performed, logs the number of email notifications sent
+  def account_reset_notifications(count:, **extra)
+    track_event('Account Reset: notifications', count: count, **extra)
+  end
+
+  # @identity.idp.event_name Account deletion and reset visited
+  # User visited the account deletion and reset page
+  def account_reset_visit
+    track_event('Account deletion and reset visited')
   end
 
   # @identity.idp.event_name Account Delete submitted

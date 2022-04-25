@@ -35,20 +35,20 @@ describe('MaskedTextToggle', () => {
   const getToggle = () => screen.getByRole('checkbox');
   const initialize = () => new MaskedTextToggle(getToggle()).bind();
 
-  it('sets initial visibility', () => {
-    userEvent.click(getToggle());
+  it('sets initial visibility', async () => {
+    await userEvent.click(getToggle());
     initialize();
 
     screen.getByText('123-12-1234', { ignore: '.display-none' });
   });
 
-  it('toggles masked texts', () => {
+  it('toggles masked texts', async () => {
     initialize();
 
     expect(screen.getByText('123-12-1234').closest('.display-none')).to.exist();
     expect(screen.getByText('1**-**-***4').closest('.display-none')).to.not.exist();
 
-    userEvent.click(getToggle());
+    await userEvent.click(getToggle());
 
     expect(screen.getByText('123-12-1234').closest('.display-none')).to.not.exist();
     expect(screen.getByText('1**-**-***4').closest('.display-none')).to.exist();

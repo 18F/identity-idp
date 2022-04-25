@@ -1,0 +1,28 @@
+---
+fr:
+  mfa:
+    add: Agregar otro método
+    current_method_count:
+      - premiere
+      - deuxième
+      - troisième
+      - quatrième
+      - cinquième
+      - sixième
+      - septième
+      - huitième
+    account_info:
+      one: L’ajout d’une autre méthode d’authentification vous empêche d’être bloqué
+        sur votre compte si vous perdez l’une de vos méthodes.
+      other: Félicitations! Vous faites très bien d’assurer la sécurité de votre
+        compte. Ajoutez de nouveaux appareils pour rester à jour.
+    info: Nous vous recommandons de sélectionner au moins (2) deux méthodes
+      différentes afin d’avoir une sauvegarde si vous perdez l’un de vos
+      dispositifs d’authentification choisis.
+    method_confirmation:
+      face_id: Face ID a été ajouté à votre compte
+    second_method_warning:
+      link: Ajoutez une deuxième méthode d’authentification.
+      text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
+        seule méthode d’authentification.
+    skip: Ignorer pour l’instant

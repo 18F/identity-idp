@@ -111,7 +111,7 @@ es:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
     phone_fallback:
-      question: '¿No tiene acceso a su teléfono ahora mismo?'
+      question: '¿No puede utilizar su teléfono?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad
       <strong>cada vez que inicie sesión</strong>.
