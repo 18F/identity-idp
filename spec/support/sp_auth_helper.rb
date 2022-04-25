@@ -7,7 +7,7 @@ module SpAuthHelper
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
     set_up_2fa_with_valid_phone
-    visit sign_out_url
+    visit sign_out_path
     User.find_with_email(email)
   end
 
@@ -25,7 +25,7 @@ module SpAuthHelper
     acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(sign_up_completed_path)
     click_agree_and_continue
-    visit sign_out_url
+    visit sign_out_path
     user.reload
   end
 end
