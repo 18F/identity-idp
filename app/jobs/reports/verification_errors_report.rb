@@ -49,14 +49,14 @@ module Reports
     def ial2_error_code(row)
       welcome_at = row['welcome_view_at']
       verify_at = row['verify_submit_at']
-      phone_at = row['verify_phone_submit_at']
+      phone_submit_at = row['verify_phone_submit_at']
       doc_at = row['document_capture_submit_at']
       encrypt_at = row['encrypt_view_at']
       ssn_at = row['ssn_view_at']
-      info_at = row['enter_info_view_at']
-      return 'PHONE_FAIL' if submit_failed?(welcome_at, phone_at, encrypt_at)
-      return 'VERIFY_FAIL' if submit_failed?(welcome_at, verify_at, ssn_at)
-      return 'DOCUMENT_FAIL' if submit_failed?(welcome_at, doc_at, info_at)
+      phone_view_at = row['verify_phone_view_at']
+      return 'PHONE_FAIL' if submit_failed?(welcome_at, phone_submit_at, encrypt_at)
+      return 'VERIFY_FAIL' if submit_failed?(welcome_at, verify_at, phone_view_at)
+      return 'DOCUMENT_FAIL' if submit_failed?(welcome_at, doc_at, ssn_at)
       'ABANDON'
     end
 

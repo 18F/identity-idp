@@ -8,6 +8,7 @@ class VerificationErrorsReport
         enter_info_view_at,
         ssn_view_at,
         verify_phone_submit_at,
+        verify_phone_view_at,
         verify_submit_at,
         welcome_view_at
       FROM doc_auth_logs, users, agency_identities, service_providers
