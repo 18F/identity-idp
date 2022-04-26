@@ -157,14 +157,14 @@ def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
 end
 
 def submit_form_without_entering_the_code
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-  expect(page).to have_selector('.validation-message')
-  expect(page).not_to have_selector('#personal-key-alert')
+  within('[role=dialog]') { click_continue }
+  expect(page).to have_content(t('simple_form.required.text'))
+  expect(page).not_to have_content(t('users.personal_key.confirmation_error'))
 end
 
 def submit_form_with_the_wrong_code
   fill_in 'personal_key', with: 'hellohellohello'
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  within('[role=dialog]') { click_continue }
   expect(page).to have_content(t('users.personal_key.confirmation_error'))
-  expect(page).not_to have_selector('.validation-message')
+  expect(page).not_to have_content(t('simple_form.required.text'))
 end
