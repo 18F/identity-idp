@@ -42,16 +42,13 @@ shared_examples 'verification step max attempts' do |step, sp|
       sign_in_live_with_2fa(user)
 
       expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
-      expect(current_url).to eq(idv_doc_auth_step_url(step: :welcome))
+      expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
 
       complete_all_doc_auth_steps
       click_idv_continue
       fill_in 'Password', with: user.password
       click_idv_continue
       acknowledge_and_confirm_personal_key
-      click_agree_and_continue
-
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
 
     scenario 'user sees the failure screen' do
