@@ -27,12 +27,12 @@ module Api
         complete_session
       end
 
-      ProfileCreationFormResponse.new(
+      response = FormResponse.new(
         success: form_valid?,
         errors: errors.to_hash,
         extra: extra_attributes,
-        personal_key: personal_key,
       )
+      [response, personal_key]
     end
 
     private

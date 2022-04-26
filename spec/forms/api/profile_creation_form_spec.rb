@@ -34,10 +34,10 @@ RSpec.describe Api::ProfileCreationForm do
   describe '#submit' do
     context 'with the correct password' do
       it 'returns a successful response with the personal_key in the extra hash' do
-        response = subject.submit
+        response, personal_key = subject.submit
 
         expect(response.success?).to be true
-        expect(response.personal_key).to be_present
+        expect(personal_key).to be_present
       end
 
       it 'creates and saves the user profile' do
@@ -57,9 +57,9 @@ RSpec.describe Api::ProfileCreationForm do
       end
 
       it 'saves the user pii encrypted with their personal_key in the profile' do
-        response = subject.submit
+        _response, key = subject.submit
         profile = user.profiles.first
-        personal_key = PersonalKeyGenerator.new(user).normalize(response.personal_key)
+        personal_key = PersonalKeyGenerator.new(user).normalize(key)
         decrypted_recovery_pii = profile.recover_pii(personal_key)
 
         expect(decrypted_recovery_pii[:first_name]).to eq 'Ada'
@@ -122,10 +122,10 @@ RSpec.describe Api::ProfileCreationForm do
       let(:entered_password) { 'wild guess' }
 
       it 'returns an unsuccessful response with an error about the password' do
-        response = subject.submit
+        response, personal_key = subject.submit
 
         expect(response.success?).to be false
-        expect(response.extra[:personal_key]).to be_nil
+        expect(personal_key).to be_nil
         expect(response.errors[:password]).to eq ['invalid password']
       end
     end
@@ -134,10 +134,10 @@ RSpec.describe Api::ProfileCreationForm do
       let(:uuid) { SecureRandom.uuid }
 
       it 'returns an unsuccessful response with an error about the user' do
-        response = subject.submit
+        response, personal_key = subject.submit
 
         expect(response.success?).to be false
-        expect(response.extra[:personal_key]).to be_nil
+        expect(personal_key).to be_nil
         expect(response.errors[:user]).to eq ['user not found']
       end
     end
@@ -146,10 +146,10 @@ RSpec.describe Api::ProfileCreationForm do
       let(:bundle) { JWT.encode(pii.merge(exp: 1.day.ago.to_i), key, 'RS256', sub: uuid.to_s) }
 
       it 'returns an unsuccessful response with an error about the jwt' do
-        response = subject.submit
+        response, personal_key = subject.submit
 
         expect(response.success?).to be false
-        expect(response.extra[:personal_key]).to be_nil
+        expect(personal_key).to be_nil
         expect(response.errors[:jwt]).to eq ['decode error: Signature has expired']
       end
     end
@@ -201,7 +201,7 @@ RSpec.describe Api::ProfileCreationForm do
           key,
           'RS256',
           sub: uuid,
-          )
+        )
       end
 
       it 'is an invalid form' do

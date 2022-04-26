@@ -2,7 +2,7 @@ module Api
   module Verify
     class CompleteController < Api::BaseController
       def create
-        result = Api::ProfileCreationForm.new(
+        result, personal_key = Api::ProfileCreationForm.new(
           password: verify_params[:password],
           jwt: verify_params[:details],
           user_session: user_session,
@@ -12,7 +12,7 @@ module Api
         if result.success?
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
-          render json: { personal_key: result.personal_key,
+          render json: { personal_key: personal_key,
                          profile_pending: result.extra[:profile_pending] },
                  status: :ok
         else
