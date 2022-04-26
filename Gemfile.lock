@@ -36,6 +36,19 @@ GIT
       pkcs11
       uuid
 
+GIT
+  remote: https://github.com/hashrocket/capybara-webmock.git
+  revision: 63d790a0b6c779b9700634bfc153e25ccdeb3688
+  ref: 63d790a0
+  specs:
+    capybara-webmock (0.6.0)
+      capybara (>= 2.4, < 4)
+      rack (>= 1.4)
+      rack-proxy (>= 0.6.0)
+      rexml (>= 3.2)
+      selenium-webdriver (>= 4.0)
+      webrick (>= 1.7)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -442,6 +455,8 @@ GEM
     rack-headers_filter (0.0.1)
     rack-mini-profiler (2.3.3)
       rack (>= 1.2.0)
+    rack-proxy (0.7.2)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.6.0)
@@ -700,6 +715,7 @@ DEPENDENCIES
   bullet (>= 6.0.2)
   bundler-audit
   capybara-selenium (>= 0.0.6)
+  capybara-webmock!
   connection_pool
   cssbundling-rails
   data_uri
