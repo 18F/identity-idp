@@ -41,7 +41,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-        expect(page).to have_content good_ssn
+        expect(page).to have_css '.masked-text__text', text: good_ssn, visible: :hidden
       end
     end
   end
