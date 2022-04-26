@@ -9,7 +9,7 @@ module Api
         public_key,
         true,
         algorithm: 'RS256',
-        )
+      )
       @jwt_payload = payload
       @jwt_headers = headers
 
