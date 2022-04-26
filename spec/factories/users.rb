@@ -187,5 +187,14 @@ FactoryBot.define do
       confirmation_token { 'token' }
       password { nil }
     end
+
+    trait :proofed do
+      signed_up
+
+      after :build do |user|
+        user.save
+        user.profiles << create(:profile, :active, :verified, user: user)
+      end
+    end
   end
 end
