@@ -60,11 +60,6 @@ module IdvHelper
           embed_sign: false,
         },
       }
-      if javascript_enabled?
-        idp_domain_name = "#{page.server.host}:#{page.server.port}"
-        saml_overrides[:idp_sso_target_url] = "http://#{idp_domain_name}/api/saml/auth"
-        saml_overrides[:idp_slo_target_url] = "http://#{idp_domain_name}/api/saml/logout"
-      end
       visit_saml_authn_request_url(overrides: saml_overrides)
     elsif sp == :oidc
       @state = SecureRandom.hex
