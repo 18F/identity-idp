@@ -93,6 +93,8 @@ class ServiceProviderSessionDecorator
     aal_2_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_2.hours
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
+    return aal_2_expiration if requested_aal > 1
+
     aal_1_expiration
   end
 
@@ -121,6 +123,10 @@ class ServiceProviderSessionDecorator
 
   def sp_ial
     sp.ial || 1
+  end
+
+  def requested_aal
+    sp_session[:aal_level_requested] || 1
   end
 
   def request_url
