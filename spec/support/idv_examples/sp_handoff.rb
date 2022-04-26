@@ -1,6 +1,7 @@
 shared_examples 'sp handoff after identity verification' do |sp|
   include SamlAuthHelper
   include IdvHelper
+  include JavascriptDriverHelper
 
   let(:email) { 'test@test.com' }
 
@@ -128,6 +129,9 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_csp_headers_to_be_present
+    # Selenium driver does not support response header inspection, but we should be able to expect
+    # that the browser itself would respect CSP and refuse invalid form targets.
+    return if javascript_enabled?
     expect(page.response_headers['Content-Security-Policy']).
       to(include('form-action \'self\' http://localhost:7654'))
   end
