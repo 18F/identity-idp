@@ -6,7 +6,7 @@ module Api
     validate :valid_user
     validate :valid_password
 
-    attr_reader :password, :jwt, :jwt_headers, :jwt_payload
+    attr_reader :password, :user_bundle
     attr_reader :user_session, :service_provider
     attr_reader :profile, :gpo_otp
 
@@ -27,14 +27,17 @@ module Api
         complete_session
       end
 
-      FormResponse.new(
+      ProfileCreationFormResponse.new(
         success: form_valid?,
         errors: errors.to_hash,
         extra: extra_attributes,
+        personal_key: personal_key,
       )
     end
 
     private
+
+    attr_reader :jwt
 
     def create_profile
       profile_maker = build_profile_maker
@@ -52,11 +55,11 @@ module Api
 
     def complete_session
       complete_profile if phone_confirmed?
-      create_gpo_entry if session[:address_verification_mechanism] == 'gpo'
+      create_gpo_entry if user_bundle.gpo_address_verification?
     end
 
     def phone_confirmed?
-      session[:vendor_phone_confirmation] == true && session[:user_phone_confirmation] == true
+      user_bundle.vendor_phone_confirmation? && user_bundle.user_phone_confirmation?
     end
 
     def complete_profile
@@ -86,16 +89,14 @@ module Api
 
     def build_profile_maker
       Idv::ProfileMaker.new(
-        applicant: jwt_payload,
+        applicant: user_bundle.pii,
         user: user,
         user_password: password,
       )
     end
 
     def user
-      return nil unless jwt_headers
-      return @user if defined?(@user)
-      @user = User.find_by(uuid: jwt_headers['sub'])
+      user_bundle&.user
     end
 
     def set_idv_session
@@ -108,18 +109,11 @@ module Api
     end
 
     def valid_jwt
-      payload, headers = JWT.decode(
-        jwt,
-        public_key,
-        true,
-        algorithm: 'RS256',
-      )
-      @jwt_payload = payload
-      @jwt_headers = headers
+      @user_bundle = Api::UserBundleDecorator.new(user_bundle: jwt, public_key: public_key)
     rescue JWT::DecodeError => err
       errors.add(:jwt, "decode error: #{err.message}", type: :invalid)
-    rescue JWT::ExpiredSignature => err
-      errors.add(:jwt, "expired signature: #{err.message}", type: :invalid)
+    rescue ::Api::UserBundleError => err
+      errors.add(:jwt, "malformed user bundle: #{err.message}", type: :invalid)
     end
 
     def valid_user
@@ -139,7 +133,6 @@ module Api
     def extra_attributes
       if user.present?
         @extra_attributes ||= {
-          personal_key: personal_key,
           profile_pending: user.pending_profile?,
           user_uuid: user.uuid,
         }

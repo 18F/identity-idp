@@ -12,7 +12,7 @@ module Api
         if result.success?
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
-          render json: { personal_key: result.extra[:personal_key],
+          render json: { personal_key: result.personal_key,
                          profile_pending: result.extra[:profile_pending] },
                  status: :ok
         else

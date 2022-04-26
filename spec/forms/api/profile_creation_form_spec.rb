@@ -8,10 +8,11 @@ RSpec.describe Api::ProfileCreationForm do
   let(:pii) do
     { first_name: 'Ada', last_name: 'Lovelace', ssn: '900-90-0900' }
   end
+  let(:metadata) { {} }
   let(:key) { OpenSSL::PKey::RSA.new 2048 }
   let(:pub) { key.public_key }
   let(:bundle) do
-    JWT.encode(pii, key, 'RS256', sub: uuid.to_s)
+    JWT.encode({ pii: pii, metadata: metadata }, key, 'RS256', sub: uuid.to_s)
   end
   let(:user_session) { {} }
 
@@ -36,7 +37,7 @@ RSpec.describe Api::ProfileCreationForm do
         response = subject.submit
 
         expect(response.success?).to be true
-        expect(response.extra[:personal_key]).to be_present
+        expect(response.personal_key).to be_present
       end
 
       it 'creates and saves the user profile' do
@@ -58,19 +59,17 @@ RSpec.describe Api::ProfileCreationForm do
       it 'saves the user pii encrypted with their personal_key in the profile' do
         response = subject.submit
         profile = user.profiles.first
-        personal_key = PersonalKeyGenerator.new(user).normalize(response.extra[:personal_key])
+        personal_key = PersonalKeyGenerator.new(user).normalize(response.personal_key)
         decrypted_recovery_pii = profile.recover_pii(personal_key)
 
         expect(decrypted_recovery_pii[:first_name]).to eq 'Ada'
       end
 
       context 'with the user having verified their phone' do
-        let(:user_session) do
+        let(:metadata) do
           {
-            idv: {
-              vendor_phone_confirmation: true,
-              user_phone_confirmation: true,
-            },
+            vendor_phone_confirmation: true,
+            user_phone_confirmation: true,
           }
         end
 
@@ -90,11 +89,9 @@ RSpec.describe Api::ProfileCreationForm do
       end
 
       context 'with the user having verified their address via GPO letter' do
-        let(:user_session) do
+        let(:metadata) do
           {
-            idv: {
-              address_verification_mechanism: 'gpo',
-            },
+            address_verification_mechanism: 'gpo',
           }
         end
 
@@ -182,10 +179,50 @@ RSpec.describe Api::ProfileCreationForm do
     end
 
     context 'with an expired JWT' do
-      let(:bundle) { JWT.encode(pii.merge(exp: 1.day.ago.to_i), key, 'RS256', sub: uuid.to_s) }
+      let(:bundle) do
+        JWT.encode(
+          { pii: pii, metadata: metadata, exp: 1.day.ago.to_i },
+          key,
+          'RS256',
+          sub: uuid,
+        )
+      end
 
       it 'is an invalid form' do
         expect(subject.valid?).to be false
+        expect(subject.errors.to_a.join(' ')).to match(%r{decode error})
+      end
+    end
+
+    context 'with a JWT missing pii' do
+      let(:bundle) do
+        JWT.encode(
+          { metadata: metadata },
+          key,
+          'RS256',
+          sub: uuid,
+          )
+      end
+
+      it 'is an invalid form' do
+        expect(subject.valid?).to be false
+        expect(subject.errors.to_a.join(' ')).to match(%r{pii is missing})
+      end
+    end
+
+    context 'with a JWT missing metadata' do
+      let(:bundle) do
+        JWT.encode(
+          { pii: pii },
+          key,
+          'RS256',
+          sub: uuid,
+        )
+      end
+
+      it 'is an invalid form' do
+        expect(subject.valid?).to be false
+        expect(subject.errors.to_a.join(' ')).to match(%r{metadata is missing})
       end
     end
   end
