@@ -51,6 +51,9 @@
                       </span>
                     </div>
                   <% end %>
+                  <% if flash["#{option.type}_error"] %>
+                    <%= render AlertComponent.new(type: :error, id: 'phones', class: 'margin-bottom-1', message: flash["#{option.type}_error"]) %>
+                  <% end %>
           <% else %>
             <%= radio_button_tag(
                   'two_factor_options_form[selection]',

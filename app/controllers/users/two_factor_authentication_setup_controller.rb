@@ -7,6 +7,7 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :confirm_user_needs_2fa_setup
     before_action :handle_empty_selection, only: :create
+    before_action :handle_only_phone_selection, only: :create
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -51,6 +52,13 @@ module Users
       return if params[:two_factor_options_form].present?
 
       flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
+      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
+    end
+
+    def handle_only_phone_selection
+      return if !params[:two_factor_options_form][:selection].include?("phone") || params[:two_factor_options_form][:selection].length > 1
+
+      flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_option')
       redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end
 

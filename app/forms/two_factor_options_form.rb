@@ -7,6 +7,7 @@ class TwoFactorOptionsForm
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
+  validates :selection, length: { minimum: 2, message: "phone" }, if: :phone_selected?
 
   def initialize(user)
     self.user = user
@@ -17,7 +18,6 @@ class TwoFactorOptionsForm
 
     success = valid?
     update_otp_delivery_preference_for_user if success && user_needs_updating?
-
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
@@ -41,5 +41,9 @@ class TwoFactorOptionsForm
     user_attributes = { otp_delivery_preference:
       selection.find { |element| %w[voice sms].include?(element) } }
     UpdateUser.new(user: user, attributes: user_attributes).call
+  end
+
+  def phone_selected?
+    selection.include? "phone"
   end
 end
