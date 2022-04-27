@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
-  unless IdentityConfig.store.idv_api_enabled
+  if IdentityConfig.store.idv_api_enabled
     namespace :api do
       post '/verify/complete' => 'verify/complete#create'
     end
