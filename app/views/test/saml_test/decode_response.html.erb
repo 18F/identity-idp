@@ -26,6 +26,7 @@
         <%= link_to 'Open in New Window',
                     "data:text/xml;charset=utf-8;base64,#{xml_doc}",
                     target: '_blank', rel: 'noopener noreferrer' %>
+        <input type="hidden" id="SAMLResponse" value="<%= xml_doc %>">
       </td>
     </tr>
     <tr>

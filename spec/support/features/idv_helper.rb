@@ -60,6 +60,11 @@ module IdvHelper
           embed_sign: false,
         },
       }
+      sp = ServiceProvider.find_by(issuer: sp1_issuer)
+      acs_url = URI.parse(sp.acs_url)
+      acs_url.host = page.server.host
+      acs_url.port = page.server.port
+      sp.update(acs_url: acs_url.to_s)
       visit_saml_authn_request_url(overrides: saml_overrides)
     elsif sp == :oidc
       @state = SecureRandom.hex
