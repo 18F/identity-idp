@@ -25,7 +25,8 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   end
   let(:done) { true }
   let(:async_state) { OpenStruct.new(result: result, pii: pii, pii_from_doc: pii, 'done?' => done) }
-  let(:sp) { create(:service_provider, issuer: 'urn:gov:gsa:openidconnect:sp:test_cookie') }
+  let(:issuer) { 'urn:gov:gsa:openidconnect:sp:test_cookie' }
+  let(:sp) { create(:service_provider, issuer: issuer) }
 
   subject { described_class.new(flow) }
 
@@ -50,7 +51,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       it 'adds costs' do
         subject.call
 
-        expect(SpCost.all.map(&:cost_type)).to contain_exactly(
+        expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
           'acuant_front_image',
           'acuant_back_image',
           'acuant_result',
@@ -63,7 +64,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         it 'adds costs' do
           subject.call
 
-          expect(SpCost.all.map(&:cost_type)).to contain_exactly(
+          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
             'acuant_front_image',
             'acuant_back_image',
           )
@@ -80,7 +81,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         it 'adds costs' do
           subject.call
 
-          expect(SpCost.all.map(&:cost_type)).to contain_exactly(
+          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
             'acuant_front_image',
             'acuant_back_image',
             'acuant_selfie',
