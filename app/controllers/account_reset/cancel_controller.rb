@@ -4,7 +4,7 @@ module AccountReset
       return render :show unless token
 
       result = AccountReset::ValidateCancelToken.new(token).call
-      track_event(result)
+      analytics.account_reset_cancel_token_validation(**result.to_h)
 
       if result.success?
         handle_valid_token
@@ -16,7 +16,7 @@ module AccountReset
     def create
       result = AccountReset::Cancel.new(session[:cancel_token]).call
 
-      track_event(result)
+      analytics.account_reset_cancel(**result.to_h)
 
       handle_success if result.success?
 
@@ -24,10 +24,6 @@ module AccountReset
     end
 
     private
-
-    def track_event(result)
-      analytics.account_reset(**result.to_h)
-    end
 
     def handle_valid_token
       session[:cancel_token] = token

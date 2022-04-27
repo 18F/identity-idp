@@ -14,7 +14,7 @@ import { getFixtureFile } from '../../../support/file';
 describe('document-capture/components/review-issues-step', () => {
   const sandbox = useSandbox();
 
-  it('logs warning events', () => {
+  it('logs warning events', async () => {
     const addPageAction = sinon.spy();
 
     const { getByRole } = render(
@@ -32,7 +32,7 @@ describe('document-capture/components/review-issues-step', () => {
     });
 
     const button = getByRole('button');
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: warning action triggered',
@@ -59,7 +59,7 @@ describe('document-capture/components/review-issues-step', () => {
     ).to.exist();
   });
 
-  it('renders warning page with error and displays one attempt remaining then continues on', () => {
+  it('renders warning page with error and displays one attempt remaining then continues on', async () => {
     const { getByRole, getByLabelText, getByText } = render(
       <ReviewIssuesStep
         remainingAttempts={1}
@@ -77,16 +77,16 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByRole('button', { name: 'idv.failure.button.warning' })).to.be.ok();
 
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByText('An unknown error occurred')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
   });
 
-  it('renders with front, back, and selfie inputs', () => {
+  it('renders with front, back, and selfie inputs', async () => {
     const { getByLabelText, getByRole } = render(<ReviewIssuesStep />);
 
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
     expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
@@ -97,10 +97,12 @@ describe('document-capture/components/review-issues-step', () => {
     const onChange = sinon.stub();
     const { getByLabelText, getByRole } = render(<ReviewIssuesStep onChange={onChange} />);
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-    await new Promise((resolve) => onChange.callsFake(resolve));
+    await Promise.all([
+      new Promise((resolve) => onChange.callsFake(resolve)),
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file),
+    ]);
     expect(onChange).to.have.been.calledWith({
       front: file,
       front_image_metadata: sinon.match(/^\{.+\}$/),
@@ -134,16 +136,18 @@ describe('document-capture/components/review-issues-step', () => {
     );
 
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), file);
-    await new Promise((resolve) => onChange.callsFake(resolve));
+    await Promise.all([
+      new Promise((resolve) => onChange.callsFake(resolve)),
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), file),
+    ]);
     const patch = onChange.getCall(0).args[0];
     expect(await patch.back_image_url).to.equal('about:blank#back');
     expect(window.fetch.getCall(0).args[0]).to.equal('about:blank#back');
   });
 
-  it('renders troubleshooting options', () => {
+  it('renders troubleshooting options', async () => {
     const { getByRole } = render(
       <ServiceProviderContextProvider
         value={{
@@ -156,7 +160,7 @@ describe('document-capture/components/review-issues-step', () => {
       </ServiceProviderContextProvider>,
     );
 
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     expect(
       getByRole('heading', { name: 'components.troubleshooting_options.default_heading' }),
@@ -171,7 +175,7 @@ describe('document-capture/components/review-issues-step', () => {
 
   context('service provider context', () => {
     context('ial2', () => {
-      it('renders with front and back inputs', () => {
+      it('renders with front and back inputs', async () => {
         const { getByLabelText, getByRole } = render(
           <ServiceProviderContextProvider
             value={{
@@ -183,7 +187,7 @@ describe('document-capture/components/review-issues-step', () => {
             <ReviewIssuesStep />
           </ServiceProviderContextProvider>,
         );
-        userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+        await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
@@ -192,7 +196,7 @@ describe('document-capture/components/review-issues-step', () => {
     });
 
     context('ial2 strict', () => {
-      it('renders with front, back, and selfie inputs', () => {
+      it('renders with front, back, and selfie inputs', async () => {
         const { getByLabelText, getByRole } = render(
           <ServiceProviderContextProvider
             value={{
@@ -204,7 +208,7 @@ describe('document-capture/components/review-issues-step', () => {
             <ReviewIssuesStep />
           </ServiceProviderContextProvider>,
         );
-        userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+        await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();

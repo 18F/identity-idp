@@ -1,5 +1,13 @@
 {
   "name": "@18f/identity-validated-field",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
 }

@@ -10,7 +10,7 @@ locals:
 * numeric: if the field should only accept digits. Defualts to true
 %>
 <% name = local_assigns.delete(:name) { :code }
-   numeric =local_assigns.delete(:numeric) { true }
+   numeric = local_assigns.delete(:numeric) { true }
    transport = local_assigns.delete(:transport) { 'sms' }
    classes = ['field font-family-mono usa-input one-time-code-input']
    classes << local_assigns.delete(:class) if local_assigns[:class] %>

@@ -5,7 +5,7 @@ module AccountReset
     before_action :confirm_two_factor_enabled
 
     def show
-      analytics.track_event(Analytics::ACCOUNT_RESET_VISIT)
+      analytics.account_reset_visit
     end
 
     def create
@@ -18,7 +18,7 @@ module AccountReset
 
     def create_account_reset_request
       response = AccountReset::CreateRequest.new(current_user).call
-      analytics.account_reset(**response.to_h.merge(analytics_attributes))
+      analytics.account_reset_request(**response.to_h, **analytics_attributes)
     end
 
     def confirm_two_factor_enabled
@@ -29,7 +29,6 @@ module AccountReset
 
     def analytics_attributes
       {
-        event: 'request',
         sms_phone: TwoFactorAuthentication::PhonePolicy.new(current_user).configured?,
         totp: TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured?,
         piv_cac: TwoFactorAuthentication::PivCacPolicy.new(current_user).configured?,

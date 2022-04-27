@@ -74,7 +74,7 @@ describe('PhoneInput', () => {
     expect(input.querySelector('.iti.iti--allow-dropdown')).to.be.ok();
   });
 
-  it('validates input', () => {
+  it('validates input', async () => {
     const input = createAndConnectElement();
 
     /** @type {HTMLInputElement} */
@@ -82,14 +82,14 @@ describe('PhoneInput', () => {
 
     expect(phoneNumber.validity.valueMissing).to.be.true();
 
-    userEvent.type(phoneNumber, '5');
+    await userEvent.type(phoneNumber, '5');
     expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
 
-    userEvent.type(phoneNumber, '13-555-1234');
+    await userEvent.type(phoneNumber, '13-555-1234');
     expect(phoneNumber.validity.valid).to.be.true();
   });
 
-  it('validates supported delivery method', () => {
+  it('validates supported delivery method', async () => {
     const input = createAndConnectElement();
 
     /** @type {HTMLInputElement} */
@@ -97,13 +97,13 @@ describe('PhoneInput', () => {
     /** @type {HTMLSelectElement} */
     const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
 
-    userEvent.selectOptions(countryCode, 'LK');
+    await userEvent.selectOptions(countryCode, 'LK');
     expect(phoneNumber.validationMessage).to.equal(
       'We are unable to verify phone numbers from Sri Lanka',
     );
   });
 
-  it('formats on country change', () => {
+  it('formats on country change', async () => {
     const input = createAndConnectElement();
 
     /** @type {HTMLInputElement} */
@@ -111,12 +111,12 @@ describe('PhoneInput', () => {
     /** @type {HTMLSelectElement} */
     const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
 
-    userEvent.type(phoneNumber, '071');
+    await userEvent.type(phoneNumber, '071');
 
-    userEvent.selectOptions(countryCode, 'LK');
+    await userEvent.selectOptions(countryCode, 'LK');
     expect(phoneNumber.value).to.equal('+94 071');
 
-    userEvent.selectOptions(countryCode, 'US');
+    await userEvent.selectOptions(countryCode, 'US');
     expect(phoneNumber.value).to.equal('+1 071');
   });
 
@@ -127,31 +127,31 @@ describe('PhoneInput', () => {
       expect(input.querySelector('.iti:not(.iti--allow-dropdown)')).to.be.ok();
     });
 
-    it('validates phone from region', () => {
+    it('validates phone from region', async () => {
       const input = createAndConnectElement({ isSingleOption: true });
 
       /** @type {HTMLInputElement} */
       const phoneNumber = getByLabelText(input, 'Phone number');
 
-      userEvent.type(phoneNumber, '306-555-1234');
+      await userEvent.type(phoneNumber, '306-555-1234');
       expect(phoneNumber.validationMessage).to.equal('Must be a U.S. phone number');
     });
 
     context('with non-U.S. single option', () => {
-      it('validates phone from region', () => {
+      it('validates phone from region', async () => {
         const input = createAndConnectElement({ isNonUSSingleOption: true });
 
         /** @type {HTMLInputElement} */
         const phoneNumber = getByLabelText(input, 'Phone number');
 
-        userEvent.type(phoneNumber, '513-555-1234');
+        await userEvent.type(phoneNumber, '513-555-1234');
         expect(phoneNumber.validationMessage).to.equal('Phone number is not valid');
       });
     });
   });
 
   context('with constrained delivery options', () => {
-    it('validates supported delivery method', () => {
+    it('validates supported delivery method', async () => {
       const input = createAndConnectElement({ deliveryMethods: ['voice'] });
 
       /** @type {HTMLInputElement} */
@@ -159,7 +159,7 @@ describe('PhoneInput', () => {
       /** @type {HTMLSelectElement} */
       const countryCode = getByLabelText(input, 'Country code', { selector: 'select' });
 
-      userEvent.selectOptions(countryCode, 'CA');
+      await userEvent.selectOptions(countryCode, 'CA');
       expect(phoneNumber.validationMessage).to.equal(
         'We are unable to verify phone numbers from Canada',
       );

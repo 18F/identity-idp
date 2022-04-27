@@ -122,7 +122,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(getByText('doc_auth.buttons.take_picture')).to.be.ok();
     });
 
-    it('cancels capture if assumed support is not actually supported once ready', () => {
+    it('cancels capture if assumed support is not actually supported once ready', async () => {
       const { container, getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -131,7 +131,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      userEvent.click(getByText('doc_auth.buttons.take_picture'));
+      await userEvent.click(getByText('doc_auth.buttons.take_picture'));
 
       initialize({ isCameraSupported: false });
 
@@ -149,7 +149,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       const button = await findByText('doc_auth.buttons.upload_picture');
       expect(button.classList.contains('usa-button--outline')).to.be.true();
-      userEvent.click(button);
+      await userEvent.click(button);
     });
 
     it('renders without capture button if acuant fails to initialize', async () => {
@@ -273,7 +273,7 @@ describe('document-capture/components/acuant-capture', () => {
       });
 
       const button = getByLabelText('Image');
-      userEvent.click(button);
+      await userEvent.click(button);
 
       await findByText('doc_auth.errors.camera.failed');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
@@ -308,7 +308,7 @@ describe('document-capture/components/acuant-capture', () => {
       });
 
       const button = getByLabelText('Image');
-      userEvent.click(button);
+      await userEvent.click(button);
 
       await findByText('doc_auth.errors.upload_error errors.messages.try_again');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
@@ -348,7 +348,7 @@ describe('document-capture/components/acuant-capture', () => {
       });
 
       const button = getByLabelText('Image');
-      userEvent.click(button);
+      await userEvent.click(button);
 
       await Promise.all([
         expect(onCameraAccessDeclined).to.eventually.be.called(),
@@ -386,7 +386,7 @@ describe('document-capture/components/acuant-capture', () => {
       });
 
       const button = getByLabelText('Image');
-      userEvent.click(button);
+      await userEvent.click(button);
 
       await waitFor(() => !container.querySelector('.full-screen'));
       expect(document.activeElement).to.equal(outsideInput);
@@ -507,7 +507,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture_retry');
       expect(button).to.be.ok();
 
-      userEvent.click(button);
+      await userEvent.click(button);
       expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
     });
 
@@ -529,7 +529,7 @@ describe('document-capture/components/acuant-capture', () => {
       // Since file input prompt occurs by button click proxy to input, we must fire upload event
       // directly at the input. At least ensure that clicking button does "click" input.
       input.addEventListener('click', onClick);
-      userEvent.click(getByText('doc_auth.buttons.upload_picture'));
+      await userEvent.click(getByText('doc_auth.buttons.upload_picture'));
       expect(onClick).to.have.been.calledOnce();
 
       uploadFile(input, validUpload);
@@ -929,7 +929,7 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   context('desktop', () => {
-    it('does not render acuant capture canvas for environmental capture', () => {
+    it('does not render acuant capture canvas for environmental capture', async () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: false }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -938,7 +938,7 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      userEvent.click(getByLabelText('Image'));
+      await userEvent.click(getByLabelText('Image'));
 
       // It would be expected that if AcuantCaptureCanvas was rendered, an error would be thrown at
       // this point, since it references Acuant globals not loaded.
@@ -1015,7 +1015,7 @@ describe('document-capture/components/acuant-capture', () => {
     });
   });
 
-  it('logs clicks', () => {
+  it('logs clicks', async () => {
     const addPageAction = sinon.stub();
     const { getByText, getByLabelText } = render(
       <I18nContext.Provider
@@ -1036,11 +1036,11 @@ describe('document-capture/components/acuant-capture', () => {
     );
 
     const placeholder = getByLabelText('Image');
-    userEvent.click(placeholder);
-    userEvent.click(getByLabelText('users.personal_key.close'));
+    await userEvent.click(placeholder);
+    await userEvent.click(getByLabelText('users.personal_key.close'));
     const button = getByText('doc_auth.buttons.take_picture');
-    userEvent.click(button);
-    userEvent.click(getByLabelText('users.personal_key.close'));
+    await userEvent.click(button);
+    await userEvent.click(getByLabelText('users.personal_key.close'));
     const upload = getByText('Upload');
     fireEvent.click(upload);
 
