@@ -318,7 +318,11 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_password_and_submit(user.password)
 
   if sp == :saml
-    expect(current_url).to eq @saml_authn_request
+    if javascript_enabled?
+      expect(current_path).to eq('/test/saml/decode_assertion')
+    else
+      expect(current_url).to include(@saml_authn_request)
+    end
   elsif sp == :oidc
     redirect_uri = URI(current_url)
 
@@ -347,7 +351,11 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 
   fill_in_password_and_submit(user.password)
 
-  expect(current_url).to eq @saml_authn_request
+  if javascript_enabled?
+    expect(current_path).to eq('/test/saml/decode_assertion')
+  else
+    expect(current_url).to eq @saml_authn_request
+  end
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
