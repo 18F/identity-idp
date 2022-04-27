@@ -12,12 +12,6 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
-  if IdentityConfig.store.idv_api_enabled
-    namespace :api do
-      post '/verify/complete' => 'verify/complete#create'
-    end
-  end
-
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
@@ -337,6 +331,10 @@ Rails.application.routes.draw do
         /personal_key
         /personal_key_confirm
       ].each { |step_path| get step_path => 'verify#show' }
+    end
+
+    namespace :api do
+      post '/verify/complete' => 'verify/complete#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

@@ -36,6 +36,7 @@ describe Api::Verify::CompleteController do
         and_return(Base64.strict_encode64(key.to_s))
     allow(IdentityConfig.store).to receive(:idv_public_key).
         and_return(Base64.strict_encode64(pub.to_s))
+    allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(true)
   end
 
   describe 'before_actions' do
@@ -52,7 +53,7 @@ describe Api::Verify::CompleteController do
       it 'does not create a profile or return a key' do
         post :create, params: { password: 'iambatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
-        expect(JSON.parse(response.status.to_s)).to eq 401
+        expect(response.status).to eq 401
         expect(JSON.parse(response.body)['error']).to eq 'user is not fully authenticated'
       end
     end
@@ -65,13 +66,26 @@ describe Api::Verify::CompleteController do
       it 'creates a profile and returns a key' do
         post :create, params: { password: 'iambatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).not_to be_nil
-        expect(JSON.parse(response.status.to_s)).to eq 200
+        expect(response.status).to eq 200
       end
 
       it 'does not create a profile and return a key when it has the wrong password' do
         post :create, params: { password: 'iamnotbatman', details: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
-        expect(JSON.parse(response.status.to_s)).to eq 400
+        expect(response.status).to eq 400
+      end
+    end
+
+    context 'when the idv api is not enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(false)
+      end
+
+      it 'responds with not found' do
+        post :create, params: { password: 'iambatman', details: jwt }
+        expect(response.status).to eq 404
+        expect(JSON.parse(response.body)['error']).
+          to eq "The page you were looking for doesn't exist"
       end
     end
   end
