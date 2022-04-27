@@ -77,7 +77,6 @@ RSpec.describe 'proofing components' do
     complete_proofing_steps
     
     user = User.find(user.id)
-    binding.pry
     expect(user.active_profile.includes_liveness_check?).to be_falsy
   end
 end
