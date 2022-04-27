@@ -4,7 +4,7 @@ feature 'Visitor sets password during signup' do
   scenario 'visitor is redirected back to password form when password is blank' do
     create(:user, :unconfirmed)
     confirm_last_user
-    fill_in 'password_form_password', with: ''
+    fill_in t('forms.password'), with: ''
     click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('errors.messages.blank')
@@ -18,7 +18,7 @@ feature 'Visitor sets password during signup' do
     end
 
     it 'does not allow the user to submit the form' do
-      fill_in 'password_form_password', with: ''
+      fill_in t('forms.password'), with: ''
 
       expect(page).to_not have_button(t('forms.buttons.continue'))
     end
@@ -44,17 +44,17 @@ feature 'Visitor sets password during signup' do
     it 'updates as password changes' do
       expect(page).to have_content '...'
 
-      fill_in 'password_form_password', with: 'password'
+      fill_in t('forms.password'), with: 'password'
       expect(page).to have_content 'Very weak'
 
-      fill_in 'password_form_password', with: 'this is a great sentence'
+      fill_in t('forms.password'), with: 'this is a great sentence'
       expect(page).to have_content 'Great!'
     end
 
     it 'has dynamic password strength feedback' do
       expect(page).to have_content '...'
 
-      fill_in 'password_form_password', with: '123456789'
+      fill_in t('forms.password'), with: '123456789'
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
     end
   end
@@ -65,7 +65,7 @@ feature 'Visitor sets password during signup' do
 
     expect(page).to have_css('input.password[type="password"]')
 
-    check t('forms.passwords.show')
+    check t('components.password_toggle.toggle_label')
 
     expect(page).to_not have_css('input.password[type="password"]')
     expect(page).to have_css('input.password[type="text"]')
@@ -75,7 +75,7 @@ feature 'Visitor sets password during signup' do
     scenario 'visitor is redirected back to password form' do
       create(:user, :unconfirmed)
       confirm_last_user
-      fill_in 'password_form_password', with: 'Q!2e'
+      fill_in t('forms.password'), with: 'Q!2e'
 
       click_button t('forms.buttons.continue')
 
@@ -86,7 +86,7 @@ feature 'Visitor sets password during signup' do
     scenario 'visitor gets password help message' do
       create(:user, :unconfirmed)
       confirm_last_user
-      fill_in 'password_form_password', with: '1234567891011'
+      fill_in t('forms.password'), with: '1234567891011'
 
       click_button t('forms.buttons.continue')
 
@@ -96,7 +96,7 @@ feature 'Visitor sets password during signup' do
     scenario 'visitor gets password pwned message' do
       create(:user, :unconfirmed)
       confirm_last_user
-      fill_in 'password_form_password', with: '3.1415926535'
+      fill_in t('forms.password'), with: '3.1415926535'
 
       click_button t('forms.buttons.continue')
 

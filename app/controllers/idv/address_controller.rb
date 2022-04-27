@@ -6,12 +6,12 @@ module Idv
     before_action :confirm_pii_from_doc
 
     def new
-      analytics.track_event(Analytics::IDV_ADDRESS_VISIT)
+      analytics.idv_address_visit
     end
 
     def update
       form_result = idv_form.submit(profile_params)
-      analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
+      analytics.idv_address_submitted(**form_result.to_h)
       capture_address_edited(form_result)
       if form_result.success?
         success

@@ -104,8 +104,8 @@ module Features
     end
 
     def fill_in_credentials_and_submit(email, password)
-      fill_in 'user_email', with: email
-      fill_in 'user_password', with: password
+      fill_in t('account.index.email'), with: email
+      fill_in t('account.index.password'), with: password
       click_button t('links.next')
     end
 
@@ -121,7 +121,7 @@ module Features
     end
 
     def fill_in_password_and_submit(password)
-      fill_in 'user_password', with: password
+      fill_in t('account.index.password'), with: password
       click_button t('forms.buttons.submit.default')
     end
 
@@ -154,14 +154,14 @@ module Features
 
     def sign_up_and_set_password
       user = sign_up
-      fill_in 'password_form_password', with: VALID_PASSWORD
+      fill_in t('forms.password'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end
 
     def sign_up_with_backup_codes_and_set_password
       user = sign_up_with_backup_codes
-      fill_in 'password_form_password', with: VALID_PASSWORD
+      fill_in t('forms.password'), with: VALID_PASSWORD
       click_button t('forms.buttons.continue')
       user
     end
@@ -615,10 +615,10 @@ module Features
       nonce
     end
 
-    def link_identity(user, client_id, ial = nil)
+    def link_identity(user, service_provider, ial = nil)
       IdentityLinker.new(
         user,
-        client_id,
+        service_provider,
       ).link_identity(
         ial: ial,
       )

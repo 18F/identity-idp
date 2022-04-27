@@ -1,5 +1,5 @@
 .card {
-  background-color: $white;
+  background-color: color('white');
   max-width: $container-skinny-width;
 
   &-wide {
@@ -9,13 +9,13 @@
     padding-right: 0;
   }
 
-  @media #{$breakpoint-sm} {
+  @include at-media('tablet') {
     @include u-padding-x(10);
     @include u-margin-bottom(8);
     border-radius: 5px;
 
     &-wide {
-      margin-top: $space-4;
+      margin-top: units(6);
       max-width: 100%;
       padding-bottom: 0;
       padding-left: 0;

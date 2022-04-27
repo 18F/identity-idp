@@ -1,4 +1,3 @@
-@import 'general';
 @import 'account-header';
 @import 'banner';
 @import 'block-link';
@@ -6,8 +5,10 @@
 @import 'card';
 @import 'container';
 @import 'file-input';
+@import 'form-steps';
 @import 'footer';
 @import 'form';
+@import 'hr';
 @import 'icon';
 @import 'list';
 @import 'modal';
@@ -20,7 +21,6 @@
 @import 'personal-key';
 @import 'spinner-button';
 @import 'spinner-dots';
-@import 'full-screen';
 @import 'step-indicator';
 @import 'troubleshooting-options';
 @import 'i18n-dropdown';

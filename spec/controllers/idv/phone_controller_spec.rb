@@ -104,9 +104,7 @@ describe Idv::PhoneController do
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
 
       get :new
-      expect(@analytics).to have_received(:track_event).with(
-        Analytics::PROOFING_ADDRESS_RESULT_MISSING,
-      )
+      expect(@analytics).to have_received(:track_event).with('Proofing Address Result Missing')
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -143,14 +141,14 @@ describe Idv::PhoneController do
       it 'renders #new' do
         put :create, params: { idv_phone_form: { phone: '703' } }
 
-        expect(flash[:warning]).to be_nil
+        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
         expect(response).to render_template(:new)
       end
 
       it 'disallows non-US numbers' do
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
-        expect(flash[:warning]).to be_nil
+        expect(flash[:error]).to eq t('errors.messages.must_have_us_country_code')
         expect(response).to render_template(:new)
       end
 

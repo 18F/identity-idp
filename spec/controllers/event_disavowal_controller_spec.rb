@@ -17,7 +17,7 @@ describe EventDisavowalController do
     context 'with a valid disavowal_token' do
       it 'tracks an analytics event' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL,
+          'Event disavowal visited',
           build_analytics_hash,
         )
 
@@ -26,7 +26,7 @@ describe EventDisavowalController do
 
       it 'assigns forbidden passwords' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL,
+          'Event disavowal visited',
           build_analytics_hash,
         )
 
@@ -41,7 +41,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -55,7 +55,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -73,7 +73,7 @@ describe EventDisavowalController do
     context 'with a valid password' do
       it 'tracks an analytics event' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
+          'Event disavowal password reset',
           build_analytics_hash,
         )
 
@@ -87,7 +87,7 @@ describe EventDisavowalController do
     context 'with an invalid password' do
       it 'tracks an analytics event' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
+          'Event disavowal password reset',
           build_analytics_hash(
             success: false,
             errors: { password: ['This password is too short (minimum is 12 characters)'] },
@@ -104,7 +104,7 @@ describe EventDisavowalController do
 
       it 'assigns forbidden passwords' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
+          'Event disavowal password reset',
           build_analytics_hash(
             success: false,
             errors: { password: ['This password is too short (minimum is 12 characters)'] },
@@ -127,7 +127,7 @@ describe EventDisavowalController do
         event.update!(disavowed_at: Time.zone.now)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
@@ -150,7 +150,7 @@ describe EventDisavowalController do
 
       it 'errors' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          'Event disavowal token invalid',
           build_analytics_hash(
             success: false,
             errors: {

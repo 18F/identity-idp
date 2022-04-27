@@ -36,7 +36,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   let(:encrypted_arguments) do
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       {
         document_arguments: {
           encryption_key: Base64.encode64(encryption_key),
@@ -240,57 +240,6 @@ RSpec.describe DocumentProofingJob, type: :job do
         end
 
         perform
-      end
-    end
-
-    context 'with an unsuccessful response from the proofer' do
-      let(:doc_auth_client) { instance_double(DocAuth::Acuant::AcuantClient) }
-
-      before do
-        allow(instance).to receive(:build_doc_auth_client).and_return(doc_auth_client)
-
-        expect(doc_auth_client).to receive(:post_images).
-          and_return(DocAuth::Response.new(success: false, exception: RuntimeError.new))
-      end
-
-      it 'returns a response' do
-        perform
-
-        result = document_capture_session.load_doc_auth_async_result
-
-        expect(result.result[:success]).to eq(false)
-      end
-    end
-
-    context 'with an expired license response from the proofer' do
-      before do
-        allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
-        allow(IdentityConfig.store).to receive(:proofing_expired_license_after).
-          and_return(Date.new(2020, 3, 1))
-        allow(IdentityConfig.store).to receive(:proofing_expired_license_reproof_at).
-          and_return(Date.new(2025, 3, 1))
-
-        DocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_images,
-          response: DocAuth::Response.new(
-            success: false,
-            pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
-              state_id_expiration: '2020-04-01',
-            ),
-            errors: {
-              id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
-            },
-          ),
-        )
-      end
-
-      it 'records the document expired status in the result' do
-        perform
-
-        result = document_capture_session.load_doc_auth_async_result
-
-        expect(result.result[:success]).to eq(true)
-        expect(result.result[:document_expired]).to eq(true)
       end
     end
 

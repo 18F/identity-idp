@@ -43,7 +43,7 @@ module Users
 
     def delete
       result = DeleteUserEmailForm.new(current_user, email_address).submit
-      analytics.track_event(Analytics::EMAIL_DELETION_REQUEST, result.to_h)
+      analytics.email_deletion_request(**result.to_h)
       if result.success?
         handle_successful_delete
       else

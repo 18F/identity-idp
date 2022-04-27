@@ -5,15 +5,8 @@ const webpack = require('webpack');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
-const {
-  dig,
-  fromPairs,
-  uniq,
-  compact,
-  getKeyPath,
-  getKeyDomain,
-  getKeyDomains,
-} = RailsI18nWebpackPlugin;
+const { dig, fromPairs, uniq, compact, getKeyPath, getKeyDomain, getKeyDomains } =
+  RailsI18nWebpackPlugin;
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
@@ -21,6 +14,8 @@ describe('RailsI18nWebpackPlugin', () => {
 
     webpack(
       {
+        mode: 'development',
+        devtool: false,
         entry: {
           1: path.resolve(__dirname, 'spec/fixtures/in1.js'),
           2: path.resolve(__dirname, 'spec/fixtures/in2.js'),

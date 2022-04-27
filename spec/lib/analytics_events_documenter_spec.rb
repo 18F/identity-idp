@@ -8,7 +8,10 @@ RSpec.describe AnalyticsEventsDocumenter do
       @database_dir = database_dir
 
       YARD::Registry.clear
-      YARD::Tags::Library.define_tag('Event Name', :'identity.idp.event_name')
+      YARD::Tags::Library.define_tag('Event Name', AnalyticsEventsDocumenter::EVENT_NAME_TAG)
+      YARD::Tags::Library.define_tag(
+        'Previous Event Name', AnalyticsEventsDocumenter::PREVIOUS_EVENT_NAME_TAG
+      )
       YARD.parse_string(source_code)
       YARD::Registry.save(false, database_dir)
 
@@ -23,7 +26,7 @@ RSpec.describe AnalyticsEventsDocumenter do
       class AnalyticsEvents
         # @identity.idp.event_name Some Event
         # @param [Boolean] success
-        def some_event(success:)
+        def some_event(success:, **extra)
         end
       end
     RUBY
@@ -70,7 +73,7 @@ RSpec.describe AnalyticsEventsDocumenter do
         class AnalyticsEvents
           # @identity.idp.event_name Some Event
           # @param [Boolean] success
-          def some_event(success:)
+          def some_event(success:, **extra)
           end
         end
       RUBY
@@ -107,16 +110,31 @@ RSpec.describe AnalyticsEventsDocumenter do
       end
     end
 
-    context 'when a method is skips documenting an param, such as pii_like_keypaths' do
+    context 'when a method skips documenting an param, such as pii_like_keypaths' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
           # @identity.idp.event_name Some Event
-          def some_event(pii_like_keypaths:); end
+          def some_event(pii_like_keypaths:, **extra); end
         end
       RUBY
 
-      it 'allow documentation to be missing' do
+      it 'allows documentation to be missing' do
         expect(documenter.missing_documentation).to be_empty
+      end
+    end
+
+    context 'when a method does not have a **extra param' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          # @identity.idp.event_name Some Event
+          # @param [Boolean] success
+          def some_event(success:)
+          end
+        end
+      RUBY
+
+      it 'requires **extra param' do
+        expect(documenter.missing_documentation.first).to include('some_event missing **extra')
       end
     end
   end
@@ -131,6 +149,8 @@ RSpec.describe AnalyticsEventsDocumenter do
         def some_event(success:, count:); end
 
         # @identity.idp.event_name Other Event
+        # @identity.idp.previous_event_name The Old Other Event
+        # @identity.idp.previous_event_name Even Older Other Event
         def other_event; end
       end
     RUBY
@@ -140,6 +160,7 @@ RSpec.describe AnalyticsEventsDocumenter do
         [
           {
             event_name: 'Some Event',
+            previous_event_names: [],
             description: 'The event that does something with stuff',
             attributes: [
               { name: 'success', types: ['Boolean'], description: nil },
@@ -148,6 +169,10 @@ RSpec.describe AnalyticsEventsDocumenter do
           },
           {
             event_name: 'Other Event',
+            previous_event_names: [
+              'The Old Other Event',
+              'Even Older Other Event',
+            ],
             description: nil,
             attributes: [],
           },

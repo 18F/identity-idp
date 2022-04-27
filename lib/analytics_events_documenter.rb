@@ -8,7 +8,8 @@ require 'active_support/core_ext/object/blank'
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
   DEFAULT_DATABASE_PATH = '.yardoc'
-  EVENT_NAME_TAG = 'identity.idp.event_name'
+  EVENT_NAME_TAG = :'identity.idp.event_name'
+  PREVIOUS_EVENT_NAME_TAG = :'identity.idp.previous_event_name'
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
     pii_like_keypaths
@@ -77,7 +78,12 @@ class AnalyticsEventsDocumenter
       errors << "#{error_prefix} missing @#{EVENT_NAME_TAG}" if !method_object.tag(EVENT_NAME_TAG)
 
       missing_attributes.each do |attribute|
+        next if attribute.start_with?('**')
         errors << "#{error_prefix} #{attribute} (undocumented)"
+      end
+
+      if param_names.size > 0 && !param_names.last.start_with?('**')
+        errors << "#{error_prefix} missing **extra"
       end
 
       errors
@@ -87,8 +93,6 @@ class AnalyticsEventsDocumenter
   # @return [{ events: Array<Hash>}]
   def as_json
     events_json_summary = analytics_methods.map do |method_object|
-      param_names = method_object.parameters.map { |p| p.first.chomp(':') }
-
       attributes = method_object.tags('param').map do |tag|
         {
           name: tag.name,
@@ -99,6 +103,7 @@ class AnalyticsEventsDocumenter
 
       {
         event_name: method_object.tag(EVENT_NAME_TAG)&.text,
+        previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
         attributes: attributes,
       }

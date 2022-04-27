@@ -22,7 +22,7 @@ class DocumentProofingJob < ApplicationJob
     user = dcs.user
 
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+      Encryption::Encryptors::BackgroundProofingArgEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
     )
     document_args = decrypted_args[:document_arguments]
@@ -109,7 +109,7 @@ class DocumentProofingJob < ApplicationJob
   def build_doc_auth_client(analytics, document_capture_session)
     DocAuthRouter.client(
       vendor_discriminator: document_capture_session.uuid,
-      warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+      warn_notifier: proc { |attrs| analytics.doc_auth_warning(**attrs) },
     )
   end
 

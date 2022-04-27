@@ -20,16 +20,17 @@
       MarketingSite.security_url,
     ) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       current_user,
       url: idv_review_path,
       html: { autocomplete: 'off', method: :put, class: 'margin-top-6' },
     ) do |f| %>
-  <%= f.input :password, label: t('idv.form.password'), required: true,
-                         input_html: { aria: { invalid: false }, class: 'password-toggle' }, wrapper: false %>
-  <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-    <%= t('simple_form.required.text') %>
-  </span>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        label: t('idv.form.password'),
+        required: true,
+        wrapper_html: { class: 'margin-bottom-0' },
+      ) %>
   <div class="text-right margin-top-2 margin-bottom-4">
     <%= t(
           'idv.forgot_password.link_html',

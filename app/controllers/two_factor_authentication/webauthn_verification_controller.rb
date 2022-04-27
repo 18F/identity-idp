@@ -20,6 +20,8 @@ module TwoFactorAuthentication
       handle_webauthn_result(result)
     end
 
+    def error; end
+
     private
 
     def handle_webauthn_result(result)
@@ -47,8 +49,24 @@ module TwoFactorAuthentication
     end
 
     def handle_invalid_webauthn
-      flash[:error] = t('errors.general')
-      redirect_to login_two_factor_webauthn_url
+      is_platform_auth = params[:platform].to_s == 'true'
+      if is_platform_auth
+        if presenter_for_two_factor_authentication_method.multiple_factors_enabled?
+          flash[:error] = t(
+            'two_factor_authentication.webauthn_error.multiple_methods',
+            link: view_context.link_to(
+              t('two_factor_authentication.webauthn_error.additional_methods_link'),
+              login_two_factor_options_path,
+            ),
+          )
+          redirect_to login_two_factor_webauthn_url(platform: params[:platform])
+        else
+          redirect_to login_two_factor_webauthn_error_url
+        end
+      else
+        flash[:error] = t('errors.general')
+        redirect_to login_two_factor_webauthn_url
+      end
     end
 
     def confirm_webauthn_enabled
@@ -62,6 +80,7 @@ module TwoFactorAuthentication
         view: view_context,
         data: { credential_ids: credential_ids,
                 user_opted_remember_device_cookie: user_opted_remember_device_cookie },
+        service_provider: current_sp,
         remember_device_default: remember_device_default,
         platform_authenticator: params[:platform].to_s == 'true',
       )

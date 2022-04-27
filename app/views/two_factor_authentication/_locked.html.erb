@@ -1,0 +1,28 @@
+<% title t('titles.account_locked') %>
+
+<%= render StatusPageComponent.new(status: :error, icon: :lock) do |c| %>
+  <% c.header { t('titles.account_locked') } %>
+
+  <p><%= presenter.locked_reason %></p>
+
+  <p>
+    <%= t(
+          'two_factor_authentication.please_try_again_html',
+          countdown: render(
+            CountdownComponent.new(expiration: presenter.decorated_user.lockout_time_expiration),
+          ),
+        ) %>
+  </p>
+
+  <% c.troubleshooting_options do |tc| %>
+    <% tc.header { t('components.troubleshooting_options.default_heading') } %>
+    <% tc.option(
+         url: MarketingSite.help_url,
+         new_tab: true,
+       ).with_content(t('two_factor_authentication.read_about_two_factor_authentication')) %>
+    <% tc.option(
+         url: MarketingSite.contact_url,
+         new_tab: true,
+       ).with_content(t('idv.troubleshooting.options.contact_support', app_name: APP_NAME)) %>
+  <% end %>
+<% end %>

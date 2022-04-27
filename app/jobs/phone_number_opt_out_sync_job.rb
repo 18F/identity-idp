@@ -1,4 +1,5 @@
 class PhoneNumberOptOutSyncJob < ApplicationJob
+  queue_as :long_running
   include GoodJob::ActiveJobExtensions::Concurrency
 
   good_job_control_concurrency_with(
@@ -10,17 +11,6 @@ class PhoneNumberOptOutSyncJob < ApplicationJob
   )
 
   def perform(_now)
-    if !IdentityConfig.store.sms_resubscribe_enabled
-      Rails.logger.info(
-        {
-          name: 'opt_out_sync_job',
-          message: 'skipping sync',
-        }.to_json,
-      )
-
-      return
-    end
-
     all_phone_numbers = Set.new
 
     opt_out_manager.opted_out_numbers.each do |phone_number|

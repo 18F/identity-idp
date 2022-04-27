@@ -11,7 +11,7 @@
       url: login_two_factor_webauthn_path,
       method: :patch,
       html: {
-        class: 'margin-bottom-1 read-after-submit',
+        class: 'margin-bottom-1',
         id: 'webauthn_form',
       },
     ) do |f| %>
@@ -21,9 +21,20 @@
   <%= hidden_field_tag :authenticator_data, '', id: 'authenticator_data' %>
   <%= hidden_field_tag :signature, '', id: 'signature' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+  <%= hidden_field_tag :errors, '', id: 'errors' %>
+  <%= hidden_field_tag :platform, '', id: 'platform' %>
+  <%= hidden_field_tag :webauthn_device, '', id: 'webauthn_device' %>
 
-  <%= content_tag :div, id: 'webauthn-auth-in-progress', data: { webauthn_not_enabled_url: login_two_factor_options_path } do %>
-    <div class="hidden spinner text-center margin-bottom-4" id="spinner">
+  <%= content_tag(
+        :div,
+        id: 'webauthn-auth-in-progress',
+        data: {
+          webauthn_not_enabled_url: @presenter.webauthn_not_enabled_link,
+          platform_authenticator_requested: @presenter.platform_authenticator?,
+          multiple_factors_enabled: @presenter.multiple_factors_enabled?,
+        },
+      ) do %>
+    <div class="display-none spinner text-center margin-bottom-4" id="spinner">
       <%= image_tag(
             asset_url('spinner.gif'),
             srcset: asset_url('spinner@2x.gif'),
@@ -41,7 +52,7 @@
     <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
 
-  <div id='webauthn-auth-successful' class="hidden">
+  <div id='webauthn-auth-successful' class="display-none">
     <div class="text-center margin-bottom-2">
       <%= image_tag(
             asset_url('webauthn-verified.svg'),

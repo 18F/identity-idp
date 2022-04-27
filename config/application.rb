@@ -19,7 +19,14 @@ APP_NAME = 'Login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
+    if (log_level = ENV['LOGIN_TASK_LOG_LEVEL'])
+      Identity::Hostdata.logger.level = log_level
+    end
+
+    configuration = Identity::Hostdata::ConfigReader.new(
+      app_root: Rails.root,
+      logger: Identity::Hostdata.logger,
+    ).read_configuration(
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
     IdentityConfig.build_store(configuration)
@@ -60,7 +67,7 @@ module Upaya
     # see config/initializers/job_configurations.rb for cron schedule
 
     includes_star_queue = config.good_job.queues.split(';').any? do |name_threads|
-      name, threads = name_threads.split(':', 2)
+      name, _threads = name_threads.split(':', 2)
       name == '*'
     end
     raise 'good_job.queues does not contain *, but it should' if !includes_star_queue

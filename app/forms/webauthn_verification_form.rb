@@ -18,6 +18,7 @@ class WebauthnVerificationForm
     @signature = nil
     @credential_id = nil
     @webauthn_configuration = nil
+    @webauthn_errors = nil
   end
 
   def submit(protocol, params)
@@ -49,9 +50,11 @@ class WebauthnVerificationForm
     @client_data_json = params[:client_data_json]
     @signature = params[:signature]
     @credential_id = params[:credential_id]
+    @webauthn_errors = params[:errors]
   end
 
   def valid_assertion_response?(protocol)
+    return false if @webauthn_errors.present?
     assertion_response = ::WebAuthn::AuthenticatorAssertionResponse.new(
       authenticator_data: Base64.decode64(@authenticator_data),
       client_data_json: Base64.decode64(@client_data_json),
@@ -62,10 +65,15 @@ class WebauthnVerificationForm
     return false unless @webauthn_configuration
 
     public_key = @webauthn_configuration.credential_public_key
-    assertion_response.valid?(
-      @challenge.pack('c*'), original_origin,
-      public_key: Base64.decode64(public_key), sign_count: 0
-    )
+
+    begin
+      assertion_response.valid?(
+        @challenge.pack('c*'), original_origin,
+        public_key: Base64.decode64(public_key), sign_count: 0
+      )
+    rescue OpenSSL::PKey::PKeyError
+      false
+    end
   end
 
   def extra_analytics_attributes

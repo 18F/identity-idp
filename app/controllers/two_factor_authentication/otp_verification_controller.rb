@@ -1,6 +1,7 @@
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include MfaSetupConcern
 
     before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
@@ -16,7 +17,11 @@ module TwoFactorAuthentication
       result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
       post_analytics(result)
       if result.success?
-        handle_valid_otp
+        next_url = nil
+        if UserSessionContext.confirmation_context?(context)
+          next_url = user_next_authentication_setup_path!
+        end
+        handle_valid_otp(next_url)
       else
         handle_invalid_otp
       end

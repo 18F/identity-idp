@@ -154,7 +154,7 @@ feature 'doc capture document capture step' do
 
         within_window new_window do
           expect(fake_analytics).to have_logged_event(
-            Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+            'Return to SP: Failed to proof',
             step: 'document_capture',
             location: 'document_capture_troubleshooting_options',
           )
@@ -255,7 +255,7 @@ feature 'doc capture document capture step' do
         click_idv_continue
       end
 
-      expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+      expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do

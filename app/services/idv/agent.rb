@@ -5,14 +5,11 @@ module Idv
     end
 
     def proof_resolution(
-      document_capture_session,
-      should_proof_state_id:,
-      trace_id:,
-      document_expired:
+      document_capture_session, should_proof_state_id:, trace_id:
     )
       document_capture_session.create_proofing_session
 
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
 
@@ -22,7 +19,6 @@ module Idv
         dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
-        document_expired: document_expired,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
@@ -34,7 +30,7 @@ module Idv
 
     def proof_address(document_capture_session, user_id:, issuer:, trace_id:)
       document_capture_session.create_proofing_session
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
 
@@ -61,7 +57,7 @@ module Idv
       analytics_data:,
       flow_path: 'standard'
     )
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+      encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         @applicant.to_json,
       )
 

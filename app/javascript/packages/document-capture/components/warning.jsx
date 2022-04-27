@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { PageHeading } from '@18f/identity-components';
+import { getAssetPath } from '@18f/identity-assets';
 import AnalyticsContext from '../context/analytics';
-import useAsset from '../hooks/use-asset';
-import PageHeading from './page-heading';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -30,7 +30,6 @@ function Warning({
   location,
   remainingAttempts,
 }) {
-  const { getAssetPath } = useAsset();
   const { addPageAction } = useContext(AnalyticsContext);
   const { t } = useI18n();
   useEffect(() => {
@@ -44,7 +43,7 @@ function Warning({
     <>
       <img
         alt={t('errors.alt.warning')}
-        src={getAssetPath('alert/warning-lg.svg')}
+        src={getAssetPath('status/warning.svg')}
         width={54}
         height={54}
         className="display-block margin-bottom-4"

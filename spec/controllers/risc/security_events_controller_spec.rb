@@ -4,7 +4,7 @@ RSpec.describe Risc::SecurityEventsController do
   include Rails.application.routes.url_helpers
 
   let(:user) { create(:user) }
-  let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
+  let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
   let(:service_provider) { create(:service_provider) }
 
   let(:rp_private_key) do
@@ -48,7 +48,7 @@ RSpec.describe Risc::SecurityEventsController do
     it 'tracks an successful in analytics' do
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::SECURITY_EVENT_RECEIVED,
+        with('RISC: Security event received',
              client_id: service_provider.issuer,
              error_code: nil,
              errors: {},
@@ -77,7 +77,7 @@ RSpec.describe Risc::SecurityEventsController do
       it 'tracks an error event in analytics' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SECURITY_EVENT_RECEIVED,
+          with('RISC: Security event received',
                client_id: service_provider.issuer,
                error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
                errors: kind_of(Hash),

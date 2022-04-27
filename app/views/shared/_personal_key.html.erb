@@ -1,28 +1,29 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.personal_key')) %>
 <p>
-  <%= t(
-        'instructions.personal_key.info_html',
-        accent: content_tag(:strong, t('instructions.personal_key.accent')),
-      ) %>
+  <%= t('instructions.personal_key.info') %>
 </p>
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key', code: code %>
 </div>
 <%= render ButtonComponent.new(
       action: ->(**tag_options, &block) do
-        link_to(idv_download_personal_key_path, **tag_options, &block)
+        link_to(
+          "data:text/plain;charset=utf-8,#{CGI.escape(code)}",
+          download: 'personal_key.txt',
+          **tag_options,
+          &block
+        )
       end,
       icon: :file_download,
       outline: true,
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
     ).with_content(t('forms.backup_code.download')) %>
-<%= render ButtonComponent.new(
+<%= render PrintButtonComponent.new(
       icon: :print,
       outline: true,
       type: :button,
-      data: { print: '' },
       class: 'margin-right-2 margin-bottom-2 tablet:margin-bottom-0',
-    ).with_content(t('users.personal_key.print')) %>
+    ) %>
 <%= render ClipboardButtonComponent.new(
       clipboard_text: code,
       outline: true,

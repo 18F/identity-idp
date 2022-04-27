@@ -194,30 +194,51 @@ describe Users::TotpSetupController, devise: true do
       end
 
       context 'when user presents correct code' do
+        let(:selected_mfa_options) { nil }
         before do
           secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
           stub_analytics
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
+          subject.user_session[:selected_mfa_options] = selected_mfa_options
 
           patch :confirm, params: { code: generate_totp_code(secret) }
         end
+        context 'when user selected only one method on account creation' do
+          it 'redirects to account_path with a success message' do
+            expect(response).to redirect_to(account_path)
+            expect(subject.user_session[:new_totp_secret]).to be_nil
 
-        it 'redirects to account_path with a success message' do
-          expect(response).to redirect_to(account_path)
-          expect(subject.user_session[:new_totp_secret]).to be_nil
+            result = {
+              success: true,
+              errors: {},
+              totp_secret_present: true,
+              multi_factor_auth_method: 'totp',
+              auth_app_configuration_id: next_auth_app_id,
+            }
 
-          result = {
-            success: true,
-            errors: {},
-            totp_secret_present: true,
-            multi_factor_auth_method: 'totp',
-            auth_app_configuration_id: next_auth_app_id,
-          }
+            expect(@analytics).to have_received(:track_event).
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+          end
+        end
 
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+        context 'when user has multiple MFA methods left in user session' do
+          let(:selected_mfa_options) { ['voice'] }
+          it 'redirects to phone_setup_path with a success message and still logs analytics' do
+            expect(response).to redirect_to(phone_setup_path)
+
+            result = {
+              success: true,
+              errors: {},
+              totp_secret_present: true,
+              multi_factor_auth_method: 'totp',
+              auth_app_configuration_id: next_auth_app_id,
+            }
+
+            expect(@analytics).to have_received(:track_event).
+              with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+          end
         end
       end
 

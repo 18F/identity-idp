@@ -3,7 +3,6 @@ import { composeComponents } from '@18f/identity-compose-components';
 import {
   AppContext,
   DocumentCapture,
-  AssetContext,
   DeviceContext,
   AcuantContextProvider,
   UploadContextProvider,
@@ -12,11 +11,8 @@ import {
   FailedCaptureAttemptsContextProvider,
   HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
-import { i18n } from '@18f/identity-i18n';
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
-import { I18nContext } from '@18f/identity-react-i18n';
 
 /** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
@@ -59,14 +55,13 @@ import { I18nContext } from '@18f/identity-react-i18n';
  * @prop {FlowPath} flowPath
  * @prop {string} startOverUrl
  * @prop {string} cancelUrl
+ * @prop {string=} idvInPersonUrl
  *
  * @see AppContext
  * @see HelpCenterContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
-
-const { assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
 
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
@@ -125,7 +120,7 @@ function addPageAction(action) {
 const noticeError = (error) =>
   /** @type {DocumentCaptureGlobal} */ (window).newrelic?.noticeError(error);
 
-loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
+(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
   const csrf = getMetaContent('csrf-token');
@@ -164,11 +159,12 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     flowPath,
     startOverUrl: startOverURL,
     cancelUrl: cancelURL,
+    idvInPersonUrl: idvInPersonURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL, idvInPersonURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [
@@ -198,9 +194,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
         cancelURL,
       },
     ],
-    [I18nContext.Provider, { value: i18n.strings }],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],
-    [AssetContext.Provider, { value: assets }],
     [
       FailedCaptureAttemptsContextProvider,
       {
@@ -211,4 +205,4 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   );
 
   render(<App />, appRoot);
-});
+})();

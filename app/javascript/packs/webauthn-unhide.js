@@ -1,10 +1,10 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
 import { isWebAuthnEnabled } from '../app/webauthn';
 
 export async function unhideWebauthn() {
   Object.entries({
     select_webauthn: isWebAuthnEnabled(),
-    select_webauthn_platform: await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable(),
+    select_webauthn_platform:
+      await window.PublicKeyCredential?.isUserVerifyingPlatformAuthenticatorAvailable(),
   }).forEach(([id, hasSupport]) => {
     const element = document.getElementById(id);
     element?.classList.toggle('display-none', !hasSupport);
@@ -23,5 +23,5 @@ export async function unhideWebauthn() {
 }
 
 if (process.env.NODE_ENV !== 'test') {
-  loadPolyfills(['classlist']).then(unhideWebauthn);
+  unhideWebauthn();
 }

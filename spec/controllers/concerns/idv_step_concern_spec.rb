@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'IdvStepConcern' do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:idv_session) do
-    Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
+    Idv::Session.new(user_session: subject.user_session, current_user: user, service_provider: nil)
   end
 
   module Idv

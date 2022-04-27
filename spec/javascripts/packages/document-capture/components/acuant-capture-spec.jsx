@@ -10,6 +10,7 @@ import AcuantCapture, {
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import { I18nContext } from '@18f/identity-react-i18n';
+import { I18n } from '@18f/identity-i18n';
 import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
@@ -768,7 +769,13 @@ describe('document-capture/components/acuant-capture', () => {
     it('triggers forced upload', () => {
       const { getByText } = render(
         <I18nContext.Provider
-          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+          value={
+            new I18n({
+              strings: {
+                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
+              },
+            })
+          }
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -790,7 +797,13 @@ describe('document-capture/components/acuant-capture', () => {
     it('triggers forced upload with `capture` value', () => {
       const { getByText, getByLabelText } = render(
         <I18nContext.Provider
-          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+          value={
+            new I18n({
+              strings: {
+                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
+              },
+            })
+          }
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -815,7 +828,13 @@ describe('document-capture/components/acuant-capture', () => {
     it('optionally disallows upload', () => {
       const { getByText, getByLabelText } = render(
         <I18nContext.Provider
-          value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+          value={
+            new I18n({
+              strings: {
+                'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>',
+              },
+            })
+          }
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
@@ -1000,7 +1019,11 @@ describe('document-capture/components/acuant-capture', () => {
     const addPageAction = sinon.stub();
     const { getByText, getByLabelText } = render(
       <I18nContext.Provider
-        value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+        value={
+          new I18n({
+            strings: { 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' },
+          })
+        }
       >
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AnalyticsContext.Provider value={{ addPageAction }}>

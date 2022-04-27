@@ -111,7 +111,7 @@ en:
       question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
-    please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Please try again in <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: Read about two-factor authentication
     totp_fallback:
       question: Don’t have your authenticator app?
@@ -136,7 +136,8 @@ en:
       more_secure_label: More Secure
       phone: Text or Voice Message
       phone_info: Receive a secure code by (SMS) text or phone call to your device.
-      phone_info_no_voip: Please do not use web-based (VOIP) phone services.
+      phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
+        (toll) phone numbers.
       piv_cac: Government Employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
       secure_label: Secure
@@ -154,6 +155,12 @@ en:
     two_factor_hspd12_choice_intro: This app requires a higher level of security.
       You need to verify your identity using a government employee ID (PIV/CAC)
       to access your information.
+    webauthn_error:
+      additional_methods_link: choose another authentication method
+      error_page_text: You have face or touch unlock enabled for this account. Use the
+        same device and browser profile each time.
+      multiple_methods: Face or touch unlock was unsuccessful. Please try again or %{link}.
+      title: We can’t identify your device
     webauthn_fallback:
       question: Don’t have your security key available?
     webauthn_header_text: Connect your security key

@@ -10,6 +10,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
+  let(:service_provider) { build(:service_provider, issuer: client_id) }
   let(:params) do
     {
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -34,7 +35,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
       context 'with valid params' do
         it 'redirects back to the client app with a code' do
-          IdentityLinker.new(user, client_id).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
@@ -61,7 +62,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::SP_REDIRECT_INITIATED,
                  ial: 1)
 
-          IdentityLinker.new(user, client_id).link_identity(ial: 1)
+          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
           action
@@ -74,10 +75,14 @@ RSpec.describe OpenidConnect::AuthorizationController do
           before { params[:acr_values] = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
           context 'account is already verified' do
-            let(:user) { create(:profile, :active, :verified).user }
+            let(:user) do
+              create(
+                :profile, :active, :verified, proofing_components: { liveness_check: true }
+              ).user
+            end
 
             it 'redirects to the redirect_uri immediately when pii is unlocked' do
-              IdentityLinker.new(user, client_id).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -88,7 +93,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             it 'redirects to the password capture url when pii is locked' do
-              IdentityLinker.new(user, client_id).link_identity(ial: 3)
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -113,7 +118,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 with(Analytics::SP_REDIRECT_INITIATED,
                      ial: 2)
 
-              IdentityLinker.new(user, client_id).link_identity(ial: 2)
+              IdentityLinker.new(user, service_provider).link_identity(ial: 2)
               user.identities.last.update!(
                 verified_attributes: %w[given_name family_name birthdate verified_at],
               )
@@ -128,10 +133,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
               before do
                 params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
                 allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+                stub_sign_in user
               end
 
               it 'creates an IAL2 SpReturnLog record' do
-                IdentityLinker.new(user, client_id).link_identity(ial: 22)
+                IdentityLinker.new(user, service_provider).link_identity(ial: 22)
                 user.identities.last.update!(
                   verified_attributes: %w[given_name family_name birthdate verified_at],
                 )
@@ -176,7 +182,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         context 'user has already approved this application' do
           before do
-            IdentityLinker.new(user, client_id).link_identity
+            IdentityLinker.new(user, service_provider).link_identity
             user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           end
 

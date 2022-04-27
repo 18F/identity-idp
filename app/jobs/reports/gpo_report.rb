@@ -30,7 +30,7 @@ module Reports
         sent = letters_sent_since(days_ago)
         validated = letters_sent_and_validated_since(days_ago)
         @results[:percent_sent_and_validated_since_days][days_ago] =
-           validated.zero? ? 0 : (validated * 100.0 / sent).round(2)
+          validated.zero? ? 0 : (validated * 100.0 / sent).round(2)
       end
     end
 

@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe AddressProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
-    Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: applicant_pii }.to_json,
     )
   end
   let(:user_id) { SecureRandom.random_number(1000) }
-  let(:issuer) { build(:service_provider).issuer }
+  let(:service_provider) { create(:service_provider) }
   let(:applicant_pii) do
     {
       first_name: 'Johnny',
@@ -28,7 +28,7 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user_id,
-        issuer: issuer,
+        issuer: service_provider.issuer,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -46,7 +46,7 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user_id,
-        issuer: issuer,
+        issuer: service_provider.issuer,
       )
     end
 
@@ -96,7 +96,7 @@ RSpec.describe AddressProofingJob, type: :job do
           to(change { SpCost.count }.by(1).and(change { ProofingCost.count }.by(1)))
 
         sp_cost = SpCost.last
-        expect(sp_cost.issuer).to eq(issuer)
+        expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
 
         proofing_cost = ProofingCost.last

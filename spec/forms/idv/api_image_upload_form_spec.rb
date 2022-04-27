@@ -12,7 +12,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         document_capture_session_uuid: document_capture_session_uuid,
       ),
       liveness_checking_enabled: liveness_checking_enabled?,
-      issuer: 'test_issuer',
+      service_provider: build(:service_provider, issuer: 'test_issuer'),
       analytics: fake_analytics,
     )
   end
@@ -133,7 +133,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'logs a doc auth warning' do
         form.submit
 
-        expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+        expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
       end
     end
 

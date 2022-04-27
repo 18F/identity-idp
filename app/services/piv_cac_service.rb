@@ -71,7 +71,7 @@ module PivCacService
       ) do |req|
         req.options.context = { service_name: 'piv_cac_token' }
       end
-    rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+    rescue Faraday::ConnectionFailed, Faraday::TimeoutError
       nil
     end
 

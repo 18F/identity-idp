@@ -6,7 +6,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :ensure_backup_codes_in_session, only: %i[continue download]
+    before_action :ensure_backup_codes_in_session, only: %i[continue download refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
 
@@ -25,7 +25,7 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
-      redirect_to after_mfa_setup_path
+      redirect_to user_next_authentication_setup_path!(after_mfa_setup_path)
     end
 
     def download

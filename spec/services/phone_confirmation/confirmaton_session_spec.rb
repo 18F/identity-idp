@@ -74,7 +74,7 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
 
     it 'returns false if the code does not match' do
       bad_code = '1' * (TwoFactorAuthenticatable::DIRECT_OTP_LENGTH - 1)
-      expect(subject.matches_code?('11111')).to eq(false)
+      expect(subject.matches_code?(bad_code)).to eq(false)
     end
 
     it 'uses a secure comparison' do

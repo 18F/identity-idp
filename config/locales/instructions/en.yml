@@ -100,12 +100,11 @@ en:
         iv: Good
         v: Great!
     personal_key:
-      accent: Write it down or print it out.
-      email_body: Don’t lose your personal key or share it with others.  We’ll ask for
+      email_body: Don’t lose your personal key or share it with others. We’ll ask for
         it if you reset your password.
-      email_title: Save it.  Keep it safe.
-      info_html: You’ll need this personal key if you forget your password.  If you
-        reset your password and don’t have this key, you’ll have to verify your
+      email_title: Save it. Keep it safe.
+      info: You’ll need this personal key if you forget your password. If you reset
+        your password and don’t have this key, you’ll have to verify your
         identity again.
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
       %{app_name}. Please contact %{sp_link} for help.

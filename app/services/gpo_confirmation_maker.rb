@@ -1,9 +1,9 @@
 class GpoConfirmationMaker
-  def initialize(pii:, issuer:, profile: nil, profile_id: nil, otp: nil)
+  def initialize(pii:, service_provider:, profile: nil, profile_id: nil, otp: nil)
     raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id
 
     @pii = pii
-    @issuer = issuer
+    @service_provider = service_provider
     @profile = profile
     @profile_id = profile_id
     @otp = otp
@@ -25,7 +25,7 @@ class GpoConfirmationMaker
 
   private
 
-  attr_reader :pii, :issuer, :profile, :profile_id
+  attr_reader :pii, :service_provider, :profile, :profile_id
 
   def attributes
     {
@@ -37,7 +37,7 @@ class GpoConfirmationMaker
       last_name: pii[:last_name],
       state: pii[:state],
       zipcode: pii[:zipcode],
-      issuer: issuer,
+      issuer: service_provider&.issuer,
     }
   end
 
@@ -50,6 +50,6 @@ class GpoConfirmationMaker
 
   def update_proofing_cost
     Db::ProofingCost::AddUserProofingCost.call(profile&.user&.id, :gpo_letter)
-    Db::SpCost::AddSpCost.call(issuer, 2, :gpo_letter)
+    Db::SpCost::AddSpCost.call(service_provider, 2, :gpo_letter)
   end
 end

@@ -5,11 +5,11 @@
 <div class="border-bottom border-primary-light">
   <% MfaContext.new(current_user).webauthn_roaming_configurations.each do |cfg| %>
     <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
-      <div class="grid-col-8 mobile-lg:grid-col-6 truncate">
+      <div class="grid-col-8 tablet:grid-col-6 truncate">
         <%= cfg.name %>
       </div>
       <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-        <div class="grid-col-4 mobile-lg:grid-col-6 text-right">
+        <div class="grid-col-4 tablet:grid-col-6 text-right">
           <%= link_to(
                 t('account.index.webauthn_delete'),
                 webauthn_setup_delete_path(id: cfg.id),

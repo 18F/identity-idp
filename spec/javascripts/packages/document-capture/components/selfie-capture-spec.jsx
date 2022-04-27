@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { cleanup } from '@testing-library/react';
 import { I18nContext } from '@18f/identity-react-i18n';
+import { I18n } from '@18f/identity-i18n';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
@@ -16,10 +17,14 @@ describe('document-capture/components/selfie-capture', () => {
 
   const wrapper = ({ children }) => (
     <I18nContext.Provider
-      value={{
-        'doc_auth.instructions.document_capture_selfie_consent_action':
-          '<lg-underline>Allow access</lg-underline>',
-      }}
+      value={
+        new I18n({
+          strings: {
+            'doc_auth.instructions.document_capture_selfie_consent_action':
+              '<lg-underline>Allow access</lg-underline>',
+          },
+        })
+      }
     >
       {children}
     </I18nContext.Provider>

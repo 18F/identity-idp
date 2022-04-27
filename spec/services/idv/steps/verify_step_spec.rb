@@ -60,10 +60,24 @@ describe Idv::Steps::VerifyStep do
           kind_of(DocumentCaptureSession),
           should_proof_state_id: anything,
           trace_id: amzn_trace_id,
-          document_expired: nil,
         )
 
       step.call
+    end
+
+    context 'when pii_from_doc is not present' do
+      let(:flow) do
+        Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
+          flow.flow_session = { 'Idv::Steps::SsnStep' => true }
+        end
+      end
+
+      it 'marks step as incomplete' do
+        expect(flow.flow_session['Idv::Steps::SsnStep']).to eq true
+        result = step.call
+        expect(flow.flow_session['Idv::Steps::SsnStep']).to eq nil
+        expect(result.success?).to eq false
+      end
     end
 
     context 'when different users use the same SSN within the same timeframe' do

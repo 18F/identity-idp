@@ -87,11 +87,11 @@ RSpec.describe UuidReporter do
       let!(:user2) { create(:user, :signed_up, email: 'user2@example.com') }
       let!(:user3) { create(:user, :signed_up, email: 'user3@example.com') }
       let!(:uuid1) do
-        IdentityLinker.new(user1, sp1.issuer).link_identity
+        IdentityLinker.new(user1, sp1).link_identity
         AgencyIdentity.find_by(user_id: user1.id, agency_id: agency.id).uuid
       end
       let!(:uuid2) do
-        IdentityLinker.new(user2, sp2.issuer).link_identity
+        IdentityLinker.new(user2, sp2).link_identity
         AgencyIdentity.find_by(user_id: user2.id, agency_id: agency.id).uuid
       end
 
@@ -104,7 +104,7 @@ RSpec.describe UuidReporter do
       end
 
       before(:each) do
-        IdentityLinker.new(user3, create(:service_provider).issuer).link_identity
+        IdentityLinker.new(user3, create(:service_provider)).link_identity
       end
 
       after(:each) { File.delete(valid_output) }

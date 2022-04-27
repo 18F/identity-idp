@@ -21,7 +21,7 @@ module Idv
       elsif current_async_state.in_progress?
         render :wait
       elsif current_async_state.missing?
-        analytics.track_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING)
+        analytics.proofing_address_result_missing
         render :index
       elsif current_async_state.done?
         async_state_done(current_async_state)
@@ -74,7 +74,9 @@ module Idv
     end
 
     def pii_to_h
-      JSON.parse(user_session[:decrypted_pii])
+      JSON.parse(
+        Pii::Cacher.new(current_user, user_session).fetch_string,
+      )
     end
 
     def resolution_success(hash)
@@ -118,7 +120,7 @@ module Idv
     def confirmation_maker_perform
       confirmation_maker = GpoConfirmationMaker.new(
         pii: Pii::Cacher.new(current_user, user_session).fetch,
-        issuer: sp_session[:issuer],
+        service_provider: current_sp,
         profile: current_user.pending_profile,
       )
       confirmation_maker.perform
@@ -210,7 +212,6 @@ module Idv
         document_capture_session,
         should_proof_state_id: false,
         trace_id: amzn_trace_id,
-        document_expired: idv_session.document_expired,
       )
     end
 
@@ -242,7 +243,7 @@ module Idv
 
     def async_state_done_analytics(result)
       analytics.track_event(Analytics::IDV_GPO_ADDRESS_SUBMITTED, result.to_h)
-      Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, 2, :lexis_nexis_resolution)
+      Db::SpCost::AddSpCost.call(current_sp, 2, :lexis_nexis_resolution)
       Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
     end
 

@@ -1,15 +1,15 @@
 import usePropertyValue from './use-property-value';
 
 describe('usePropertyValue', () => {
-  (global as any).foo = 10;
-  usePropertyValue(global as any, 'foo', 20);
+  (global as any).usePropertyValue = 10;
+  usePropertyValue(global as any, 'usePropertyValue', 20);
 
   after(() => {
-    expect((global as any).foo).to.equal(10);
-    delete (global as any).foo;
+    expect((global as any).usePropertyValue).to.equal(10);
+    delete (global as any).usePropertyValue;
   });
 
   it('has value during spec', () => {
-    expect((global as any).foo).to.equal(20);
+    expect((global as any).usePropertyValue).to.equal(20);
   });
 });

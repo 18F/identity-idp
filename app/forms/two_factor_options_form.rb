@@ -13,7 +13,7 @@ class TwoFactorOptionsForm
   end
 
   def submit(params)
-    self.selection = params[:selection]
+    self.selection = Array(params[:selection])
 
     success = valid?
     update_otp_delivery_preference_for_user if success && user_needs_updating?
@@ -33,11 +33,13 @@ class TwoFactorOptionsForm
   end
 
   def user_needs_updating?
-    %w[voice sms].include?(selection) && selection != user.otp_delivery_preference
+    (%w[voice sms] & selection).present? &&
+      !selection.include?(user.otp_delivery_preference)
   end
 
   def update_otp_delivery_preference_for_user
-    user_attributes = { otp_delivery_preference: selection }
+    user_attributes = { otp_delivery_preference:
+      selection.find { |element| %w[voice sms].include?(element) } }
     UpdateUser.new(user: user, attributes: user_attributes).call
   end
 end

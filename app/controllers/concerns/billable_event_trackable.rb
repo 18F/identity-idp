@@ -1,10 +1,10 @@
 module BillableEventTrackable
   def track_billing_events
     if current_session_has_been_billed?
-      update_sp_return_log(billable: false)
+      create_sp_return_log(billable: false)
     else
       increment_sp_monthly_auths
-      update_sp_return_log(billable: true)
+      create_sp_return_log(billable: true)
       mark_current_session_billed
       add_sp_cost(:authentication)
     end
@@ -13,23 +13,24 @@ module BillableEventTrackable
   private
 
   def increment_sp_monthly_auths
-    issuer = sp_session[:issuer]
     MonthlySpAuthCount.increment(
       user_id: current_user.id,
-      issuer: issuer,
+      service_provider: current_sp,
       ial: sp_session_ial,
     )
   end
 
-  def update_sp_return_log(billable:)
+  def create_sp_return_log(billable:)
     ial_context = IalContext.new(
       ial: sp_session_ial, service_provider: current_sp, user: current_user,
     )
-    Db::SpReturnLog.add_return(
+    Db::SpReturnLog.create_return(
       request_id: request_id,
       user_id: current_user.id,
       billable: billable,
       ial: ial_context.bill_for_ial_1_or_2,
+      issuer: current_sp.issuer,
+      requested_at: session[:session_started_at],
     )
   end
 

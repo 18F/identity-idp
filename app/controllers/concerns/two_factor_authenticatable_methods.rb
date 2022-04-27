@@ -34,7 +34,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       decorated_user,
     )
     sign_out
-    render_full_width('shared/_failure', locals: { presenter: presenter })
+    render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
   end
 
   def require_current_password
@@ -314,6 +314,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
       data: data,
       view: view_context,
+      service_provider: current_sp,
       remember_device_default: remember_device_default,
     )
   end

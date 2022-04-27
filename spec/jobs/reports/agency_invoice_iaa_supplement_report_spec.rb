@@ -164,6 +164,8 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
               iaa_end_date: iaa2_range.end.to_s,
             },
           ]
+
+          expect(results).to match_array(rows)
         end
       end
 

@@ -13,7 +13,7 @@ describe 'two_factor_authentication/totp_verification/show.html.erb' do
   before do
     allow(view).to receive(:current_user).and_return(user)
     @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
-      data: presenter_data, view: ActionController::Base.new.view_context,
+      data: presenter_data, view: ActionController::Base.new.view_context, service_provider: nil,
     )
     allow(@presenter).to receive(:reauthn).and_return(false)
 

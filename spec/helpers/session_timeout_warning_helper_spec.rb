@@ -1,14 +1,23 @@
 require 'rails_helper'
 
 describe SessionTimeoutWarningHelper do
-  describe '#time_left_in_session' do
-    it 'describes time left based on when the timeout warning appears' do
-      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
-      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).and_return(3)
+  describe '#expires_at' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
 
-      expect(helper.time_left_in_session).
-        to eq distance_of_time_in_words(time_between_warning_and_timeout)
+    it 'returns time before now' do
+      expect(helper.expires_at).to be < Time.zone.now
+    end
+
+    context 'with session expiration' do
+      before do
+        allow(helper).to receive(:session).and_return(session_expires_at: Time.zone.now + 1)
+      end
+
+      it 'returns time remaining in user session' do
+        expect(helper.expires_at).to be > Time.zone.now
+      end
     end
   end
 

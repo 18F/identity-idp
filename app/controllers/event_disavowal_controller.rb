@@ -4,19 +4,17 @@ class EventDisavowalController < ApplicationController
   def new
     # Memoize the form for use in the views
     password_reset_from_disavowal_form
-    analytics.track_event(
-      Analytics::EVENT_DISAVOWAL,
-      FormResponse.new(
-        success: true,
-        extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
-      ).to_h,
+    result = FormResponse.new(
+      success: true,
+      extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
     )
+    analytics.event_disavowal(**result.to_h)
     @forbidden_passwords = forbidden_passwords
   end
 
   def create
     result = password_reset_from_disavowal_form.submit(password_reset_params)
-    analytics.track_event(Analytics::EVENT_DISAVOWAL_PASSWORD_RESET, result.to_h)
+    analytics.event_disavowal_password_reset(**result.to_h)
     if result.success?
       handle_successful_password_reset
     else
@@ -46,7 +44,7 @@ class EventDisavowalController < ApplicationController
   def validate_disavowed_event
     result = EventDisavowal::ValidateDisavowedEvent.new(disavowed_event).call
     return if result.success?
-    analytics.track_event(Analytics::EVENT_DISAVOWAL_TOKEN_INVALID, result.to_h)
+    analytics.event_disavowal_token_invalid(**result.to_h)
     flash[:error] = (result.errors[:event] || result.errors.first.last).first
     redirect_to root_url
   end

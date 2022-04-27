@@ -5,7 +5,7 @@
   max-width: $container-xxskinny-width;
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .cntnr-xxskinny {
     max-width: $container-xskinny-width;
   }

@@ -9,7 +9,7 @@ describe Idv::PersonalKeyController do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
-      issuer: nil,
+      service_provider: nil,
     )
     idv_session.applicant = applicant
     idv_session.resolution_successful = true
@@ -17,7 +17,6 @@ describe Idv::PersonalKeyController do
       applicant: applicant,
       user: user,
       user_password: password,
-      document_expired: nil,
     )
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
@@ -186,47 +185,6 @@ describe Idv::PersonalKeyController do
 
         expect(response).to redirect_to idv_come_back_later_path
       end
-    end
-  end
-
-  describe '#download' do
-    before do
-      stub_idv_session
-      stub_analytics
-    end
-
-    it 'allows download of code' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
-
-      get :show
-      get :download
-
-      expect(response.body).to eq(code + "\r\n")
-      expect(response.header['Content-Type']).to eq('text/plain')
-      expect(@analytics).to have_logged_event(Analytics::IDV_PERSONAL_KEY_DOWNLOADED, success: true)
-    end
-
-    it 'recovers pii and verifies personal key digest with the code' do
-      get :show
-      get :download
-
-      code = response.body.chomp
-
-      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
-      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
-        subject.idv_session.pii,
-      )
-    end
-
-    it 'is a bad request when there is no personal_key in the session' do
-      get :download
-
-      expect(response).to be_bad_request
-      expect(@analytics).to have_logged_event(
-        Analytics::IDV_PERSONAL_KEY_DOWNLOADED,
-        success: false,
-      )
     end
   end
 end

@@ -97,6 +97,7 @@ Rails.application.routes.draw do
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
+      get '/login/two_factor/webauthn_error' => 'two_factor_authentication/webauthn_verification#error'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
       post 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#create'
@@ -137,6 +138,10 @@ Rails.application.routes.draw do
         get '/s3/:key' => 'fake_s3#show', as: :fake_s3
         put '/s3/:key' => 'fake_s3#update'
       end
+    end
+
+    if IdentityConfig.store.select_multiple_mfa_options
+      get '/auth_method_confirmation' => 'mfa_confirmation#show'
     end
 
     # Non-devise-controller routes. Alphabetically sorted.
@@ -271,7 +276,6 @@ Rails.application.routes.draw do
       get '/come_back_later' => 'come_back_later#show'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
-      get '/download_personal_key' => 'personal_key#download'
       get '/forgot_password' => 'forgot_password#new'
       post '/forgot_password' => 'forgot_password#update'
       get '/otp_delivery_method' => 'otp_delivery_method#new'
@@ -312,9 +316,21 @@ Rails.application.routes.draw do
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
 
+      get '/in_person' => 'in_person#index'
+      get '/in_person/:step' => 'in_person#show', as: :in_person_step
+      put '/in_person/:step' => 'in_person#update'
+
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
+    end
+
+    scope '/verify/v2' do
+      get '/' => 'verify#show', as: :idv_app_root
+      %w[
+        /personal_key
+        /personal_key_confirm
+      ].each { |step_path| get step_path => 'verify#show' }
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

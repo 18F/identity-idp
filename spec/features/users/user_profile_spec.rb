@@ -43,8 +43,9 @@ feature 'User profile' do
     it 'deletes the account and pushes notifications if push_notifications_enabled is true' do
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
 
+      service_provider = build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:test')
       user = sign_in_and_2fa_user
-      identity = IdentityLinker.new(user, 'urn:gov:gsa:openidconnect:test').link_identity
+      identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 
       visit account_path
@@ -117,10 +118,10 @@ feature 'User profile' do
       expect(page).to_not have_css('#pw-strength-cntnr.display-none')
       expect(page).to have_content '...'
 
-      fill_in 'update_user_password_form_password', with: 'this is a great sentence'
+      fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
       expect(page).to have_content 'Great'
 
-      check t('forms.passwords.show')
+      check t('components.password_toggle.toggle_label')
 
       expect(page).to_not have_css('input.password[type="password"]')
       expect(page).to have_css('input.password[type="text"]')
@@ -136,7 +137,7 @@ feature 'User profile' do
         sign_in_live_with_2fa(profile.user)
 
         visit manage_password_path
-        fill_in 'update_user_password_form_password', with: 'this is a great sentence'
+        fill_in t('forms.passwords.edit.labels.password'), with: 'this is a great sentence'
         click_button 'Update'
 
         expect(current_path).to eq account_path

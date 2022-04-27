@@ -16,6 +16,5 @@ es:
       phone: Teléfono
       social_security_number: Número de Seguro Social
       verified_at: Actualizado en
-      verified_at_blank: Aún no verificado
       x509_issuer: Emisor PIV/CAC
       x509_subject: Identidad PIV/CAC

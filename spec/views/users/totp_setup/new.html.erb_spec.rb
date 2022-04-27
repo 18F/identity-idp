@@ -42,7 +42,7 @@ describe 'users/totp_setup/new.html.erb' do
     it 'has a button to copy the QR code' do
       render
 
-      expect(rendered).to have_button(t('links.copy'), type: 'button')
+      expect(rendered).to have_button(t('components.clipboard_button.label'), type: 'button')
     end
 
     it 'has labelled fields' do
@@ -64,6 +64,7 @@ describe 'users/totp_setup/new.html.erb' do
       @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
         view: view,
         data: { current_user: user },
+        service_provider: nil,
       )
 
       render

@@ -258,7 +258,7 @@ RSpec.describe Telephony::OtpSender do
 
   describe '#authentication_message' do
     let(:sender) do
-      sender = Telephony::OtpSender.new(
+      Telephony::OtpSender.new(
         to: '+18888675309',
         otp: 'ABC123',
         channel: 'sms',
@@ -306,7 +306,7 @@ RSpec.describe Telephony::OtpSender do
 
   describe '#confirmation_message' do
     let(:sender) do
-      sender = Telephony::OtpSender.new(
+      Telephony::OtpSender.new(
         to: '+18888675309',
         otp: 'ABC123',
         channel: 'sms',

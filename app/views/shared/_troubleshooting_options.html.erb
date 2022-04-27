@@ -5,17 +5,7 @@ locals:
 * options: List of link options to display, as an array of hashes with `url`, `text`, `new_tab` values.
 * class: Additional class names to add to wrapper element.
 %>
-<% if local_assigns[:options].presence %>
-  <% heading_tag = local_assigns[:heading_tag] || :h2 %>
-  <% classes = ['troubleshooting-options', *local_assigns[:class]] %>
-  <%= tag.section class: classes do %>
-    <%= content_tag(heading_tag, heading, class: 'troubleshooting-options__heading') %>
-    <ul class="troubleshooting-options__options">
-      <% options.each do |option| %>
-        <li>
-          <%= render('shared/block_link', **option.except(:text)) { option[:text] } %>
-        </li>
-      <% end %>
-    </ul>
-  <% end %>
+<%= render TroubleshootingOptionsComponent.new(class: local_assigns[:class]) do |c| %>
+  <% c.header(heading_level: local_assigns[:heading_tag] || :h2).with_content(heading) %>
+  <% options.each { |option| c.option(**option.except(:text)).with_content(option[:text]) } %>
 <% end %>

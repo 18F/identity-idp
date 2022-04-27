@@ -19,12 +19,12 @@ module Idv
       resolution_successful
     ].freeze
 
-    attr_reader :current_user, :gpo_otp, :issuer
+    attr_reader :current_user, :gpo_otp, :service_provider
 
-    def initialize(user_session:, current_user:, issuer:)
+    def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
-      @issuer = issuer
+      @service_provider = service_provider
       set_idv_session
     end
 
@@ -89,7 +89,10 @@ module Idv
     def create_gpo_entry
       move_pii_to_user_session
       self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
-      confirmation_maker = GpoConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
+      confirmation_maker = GpoConfirmationMaker.new(
+        pii: pii, service_provider: service_provider,
+        profile: profile
+      )
       confirmation_maker.perform
 
       @gpo_otp = confirmation_maker.otp
@@ -111,10 +114,6 @@ module Idv
 
     def user_phone_confirmation_session=(new_user_phone_confirmation_session)
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
-    end
-
-    def document_expired
-      user_session.dig('idv/doc_auth', :document_expired) # via flow_session[:document_expired]
     end
 
     private
@@ -144,7 +143,6 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
-        document_expired: document_expired,
       )
     end
   end

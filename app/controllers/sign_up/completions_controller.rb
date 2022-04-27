@@ -8,11 +8,11 @@ module SignUp
     before_action :verify_needs_completions_screen
 
     def show
-      @presenter = completions_presenter
       analytics.track_event(
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         analytics_attributes(''),
       )
+      @presenter = completions_presenter
     end
 
     def update
@@ -72,6 +72,8 @@ module SignUp
       { ial2: sp_session[:ial2],
         ialmax: sp_session[:ialmax],
         service_provider_name: decorated_session.sp_name,
+        sp_session_requested_attributes: sp_session[:requested_attributes],
+        sp_request_requested_attributes: service_provider_request.requested_attributes,
         page_occurence: page_occurence,
         needs_completion_screen_reason: needs_completion_screen_reason }
     end
@@ -81,7 +83,8 @@ module SignUp
     end
 
     def pii
-      JSON.parse(user_session.fetch('decrypted_pii', '{}')).symbolize_keys
+      pii_string = Pii::Cacher.new(current_user, user_session).fetch_string
+      JSON.parse(pii_string || '{}', symbolize_names: true)
     end
   end
 end

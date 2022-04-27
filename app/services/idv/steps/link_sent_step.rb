@@ -18,13 +18,8 @@ module Idv
 
       def handle_document_verification_success(get_results_response)
         save_proofing_components
-        extract_pii_from_doc(get_results_response)
+        extract_pii_from_doc(get_results_response, store_in_session: true)
         mark_steps_complete
-      end
-
-      def handle_document_verification_failure(get_results_response)
-        mark_step_incomplete(:send_link)
-        failure(get_results_response.first_error_message, get_results_response.to_h)
       end
 
       def render_document_capture_cancelled

@@ -11,10 +11,11 @@ module Idv
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, issuer:, analytics: nil, uuid_prefix: nil)
+    def initialize(params, liveness_checking_enabled:, service_provider:, analytics: nil,
+                   uuid_prefix: nil)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
-      @issuer = issuer
+      @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
@@ -42,7 +43,7 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :issuer, :form_response, :uuid_prefix
+    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix
 
     def throttled_else_increment
       return unless document_capture_session
@@ -188,7 +189,7 @@ module Idv
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
         vendor_discriminator: document_capture_session_uuid,
-        warn_notifier: proc { |attrs| track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+        warn_notifier: proc { |attrs| analytics&.doc_auth_warning(**attrs) },
       )
     end
 
@@ -249,7 +250,7 @@ module Idv
     def add_costs(response)
       Db::AddDocumentVerificationAndSelfieCosts.
         new(user_id: user_id,
-            issuer: issuer,
+            service_provider: service_provider,
             liveness_checking_enabled: liveness_checking_enabled?).
         call(response)
     end
@@ -258,7 +259,7 @@ module Idv
       steps = %i[front_image back_image]
       steps << :selfie if liveness_checking_enabled?
       steps.each do |step|
-        Funnel::DocAuth::RegisterStep.new(user_id, issuer).
+        Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer).
           call(step.to_s, :update, client_response.success?)
       end
     end

@@ -2,7 +2,8 @@ $step-indicator-current-step-border-width: 3px;
 $step-indicator-line-height: 4px;
 $step-indicator-pending-color: #a8b6c6;
 
-.step-indicator {
+lg-step-indicator {
+  display: block;
   border-bottom: 1px solid color('primary-light');
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   margin-bottom: units(4);

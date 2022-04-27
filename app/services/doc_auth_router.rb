@@ -112,9 +112,6 @@ module DocAuthRouter
     def translate_form_response!(response)
       return response unless response.is_a?(DocAuth::Response)
 
-      # This needs to happen before we translate, since it relies on the original error keys
-      response = ExpiredLicenseAllower.new(response).processed_response
-
       translate_doc_auth_errors!(response)
       translate_generic_errors!(response)
 

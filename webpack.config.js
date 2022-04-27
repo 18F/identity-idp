@@ -1,7 +1,9 @@
 const { parse, resolve } = require('path');
+const url = require('url');
 const { sync: glob } = require('fast-glob');
 const WebpackAssetsManifest = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
+const RailsAssetsWebpackPlugin = require('@18f/identity-assets/webpack-plugin');
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
@@ -52,7 +54,8 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
       },
       {
         test: /\.[jt]sx?$/,
-        exclude: /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+        exclude:
+          /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
         use: {
           loader: 'babel-loader',
         },
@@ -61,12 +64,18 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
   },
   optimization: {
     chunkIds: 'natural',
-    splitChunks: { chunks: 'all' },
+    splitChunks: { chunks: (chunk) => chunk.name !== 'polyfill' },
   },
   plugins: [
     new WebpackAssetsManifest({
       entrypoints: true,
-      publicPath: true,
+      publicPath(filename, plugin) {
+        // Only prepend public path for JavaScript files, since all other assets will be processed
+        // using Rails asset pipeline, and should use the original filename.
+        return filename.endsWith('.js')
+          ? url.resolve(plugin.compiler.options.output.publicPath, filename)
+          : filename;
+      },
       writeToDisk: true,
       output: 'manifest.json',
     }),
@@ -77,5 +86,6 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         }
       },
     }),
+    new RailsAssetsWebpackPlugin(),
   ],
 });

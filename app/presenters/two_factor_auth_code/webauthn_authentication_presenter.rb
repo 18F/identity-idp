@@ -5,9 +5,15 @@ module TwoFactorAuthCode
 
     attr_reader :credential_ids, :user_opted_remember_device_cookie
 
-    def initialize(data:, view:, remember_device_default: true, platform_authenticator: false)
+    def initialize(data:, view:, service_provider:, remember_device_default: true,
+                   platform_authenticator: false)
       @platform_authenticator = platform_authenticator
-      super(data: data, view: view, remember_device_default: remember_device_default)
+      super(
+        data: data,
+        view: view,
+        service_provider: service_provider,
+        remember_device_default: remember_device_default,
+      )
     end
 
     def webauthn_help
@@ -99,6 +105,14 @@ module TwoFactorAuthCode
       end
     end
 
+    def webauthn_not_enabled_link
+      if platform_authenticator?
+        login_two_factor_webauthn_error_path
+      else
+        login_two_factor_options_path
+      end
+    end
+
     def fallback_question
       return '' unless service_provider_mfa_policy.allow_user_to_switch_method?
       if platform_authenticator?
@@ -106,6 +120,10 @@ module TwoFactorAuthCode
       else
         t('two_factor_authentication.webauthn_fallback.question')
       end
+    end
+
+    def multiple_factors_enabled?
+      service_provider_mfa_policy.multiple_factors_enabled?
     end
 
     def platform_authenticator?

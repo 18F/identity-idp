@@ -22,19 +22,6 @@ module Idv
       redirect_to next_step
     end
 
-    def download
-      personal_key = user_session[:personal_key]
-
-      analytics.track_event(Analytics::IDV_PERSONAL_KEY_DOWNLOADED, success: personal_key.present?)
-
-      if personal_key.present?
-        data = personal_key + "\r\n"
-        send_data data, filename: 'personal_key.txt'
-      else
-        head :bad_request
-      end
-    end
-
     private
 
     def step_indicator_steps

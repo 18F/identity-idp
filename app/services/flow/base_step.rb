@@ -24,6 +24,7 @@ module Flow
     def mark_step_incomplete(step = nil)
       klass = step.nil? ? self.class : steps[step]
       flow_session.delete(klass.to_s)
+      nil
     end
 
     def self.acceptable_response_object?(obj)
@@ -81,7 +82,7 @@ module Flow
       request.headers['X-Amzn-Trace-Id']
     end
 
-    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request,
+    delegate :flash, :session, :flow_session, :current_user, :current_sp, :params, :steps, :request,
              :poll_with_meta_refresh, to: :@flow
   end
 end

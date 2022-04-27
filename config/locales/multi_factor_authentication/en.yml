@@ -1,0 +1,11 @@
+---
+en:
+  multi_factor_authentication:
+    add: Add another method
+    cta: Adding another authentication method prevents you from getting locked out
+      of your account if you lose one of your methods.
+    info: We recommend you select at least (2) two different methods so you have a
+      backup if you lose one of your chosen authentication devices.
+    method_confirmation:
+      face_id: Face ID has been added to your account
+    skip: Skip for now

@@ -1,12 +1,5 @@
-html {
-  font-size: $base-font-size;
-}
 body {
   -webkit-font-smoothing: antialiased;
-}
-
-.text-decoration-none {
-  text-decoration: none;
 }
 
 .text-wrap-anywhere {
@@ -21,10 +14,6 @@ body {
 }
 .fs-20p {
   font-size: 20px;
-}
-
-.line-height-1 {
-  line-height: $line-height-1;
 }
 
 %h1 {

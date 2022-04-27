@@ -8,7 +8,7 @@ class BaseComponent < ViewComponent::Base
   end
 
   def self.scripts
-    @scripts ||= _sidecar_files(['js']).map { |file| File.basename(file, '.js') }
+    @scripts ||= _sidecar_files(['js', 'ts']).map { |file| File.basename(file, '.*') }
   end
 
   def unique_id

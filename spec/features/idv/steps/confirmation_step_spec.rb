@@ -9,8 +9,6 @@ feature 'idv confirmation step' do
 
   context 'personal key information and actions' do
     before do
-      personal_key = 'a1b2c3d4e5f6g7h8'
-
       @user = sign_in_and_2fa_user
 
       visit idv_path

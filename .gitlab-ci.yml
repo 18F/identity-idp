@@ -1,12 +1,14 @@
-# When adding a new job, you'll want to add `extends: .on_push` to ignore
-# scheduled executions, unless you're specifically adding something that should
-# be run periodically, like metric exporters or syncs.
-
-default:
-  image: mitchh/ruby-node-yarn-chrome-chromedriver:3.0.3
+# Jobs defined here use the idp/ci docker image from ECR by default. To find
+# other available images:
+#   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
+# Images are built via the identity-devops GitLab pipeline.
 
 variables:
   GITLAB_CI: 'true'
+  ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+
+default:
+  image: "${ECR_REGISTRY}/idp/ci:latest"
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
@@ -17,7 +19,7 @@ variables:
 .yarn_production_install: &yarn_production_install
   - yarn install --production --frozen-lockfile --ignore-engines --cache-folder .yarn-cache
 
-cache:
+.build_cache:
   - &ruby_cache
     key:
       files:
@@ -55,30 +57,33 @@ stages:
   - test
   - after_test
 
-.on_push:
+workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
-    - if: $CI_MERGE_REQUEST_IID
-    - if: $CI_OPEN_MERGE_REQUESTS
-      when: never
-    - if: $CI_COMMIT_BRANCH
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
+    - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
+    - if: '$CI_COMMIT_BRANCH'
 
 check_changelog:
-  extends: .on_push
   stage: build
   script:
+    - echo "$CI_PIPELINE_SOURCE"
     - |
-      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" != "main" ]
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]
       then
+        git fetch origin --quiet
+        ./scripts/changelog_check.rb -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+      elif [ "$CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME" == "main" ]
+      then
+        git fetch origin --quiet
+        ./scripts/changelog_check.rb -b origin/"${CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_EXTERNAL_PULL_REQUEST_SOURCE_BRANCH_NAME}"
+      else
         echo "Skipping because this is not a PR or is not targeting main"
         exit 0
-      else
-        git fetch origin --quiet
-        ./scripts/changelog-check -b origin/"${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" -s origin/"${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
       fi
 install:
-  extends: .on_push
   stage: build
   variables:
     RAILS_ENV: test
@@ -96,7 +101,6 @@ install:
     - bundle exec rake assets:precompile
 
 specs:
-  extends: .on_push
   stage: test
   parallel: 5
   cache:
@@ -148,7 +152,6 @@ specs:
     - bundle exec rake knapsack:rspec
 
 lint:
-  extends: .on_push
   stage: test
   cache:
     - <<: *ruby_cache
@@ -160,18 +163,18 @@ lint:
     - make lint
 
 js_build:
-  extends: .on_push
   stage: test
   cache:
     - <<: *ruby_cache
     - <<: *yarn_production_cache
+  variables:
+    NODE_ENV: 'production'
   script:
     - *bundle_install
     - *yarn_production_install
     - bundle exec rake assets:precompile
 
 js_tests:
-  extends: .on_push
   stage: test
   cache:
     - <<: *yarn_cache
@@ -180,27 +183,25 @@ js_tests:
     - yarn test
 
 coverage:
-  extends: .on_push
   stage: after_test
   script:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
     - mv coverage/coverage/* coverage/
   artifacts:
-      reports:
-        cobertura: coverage/coverage.xml
-      name: coverage
-      expire_in: 31d
-      paths:
-        - coverage/index.html
-        - coverage/assets/
-        - coverage/coverage.xml
+    reports:
+      cobertura: coverage/coverage.xml
+    name: coverage
+    expire_in: 31d
+    paths:
+      - coverage/index.html
+      - coverage/assets/
+      - coverage/coverage.xml
 
 artifact:
-  extends: .on_push
   stage: after_test
-  cache:
-    - <<: *yarn_production_cache
+  tags:
+    - build-pool
   variables:
     NODE_ENV: 'production'
     RAILS_ENV: 'production'
@@ -209,9 +210,3 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
-
-# Sync from GitHub
-include:
-  project: 'lg/identity-gitlab'
-  ref: 'main'
-  file: '.gitlab-ci-sync.yml'

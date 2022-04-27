@@ -51,7 +51,7 @@
       content: '';
       display: block;
       height: 48px;
-      margin: $space-2 auto $space-3;
+      margin: units(2) auto units(4);
       position: relative;
       width: 48px;
     }
@@ -62,7 +62,7 @@
   }
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('tablet') {
   .modal-content {
     vertical-align: middle;
   }
@@ -74,17 +74,17 @@
   }
 
   hr {
-    border-color: $teal;
+    border-color: color('info');
   }
 }
 
 .modal-warning {
   &::before {
-    background-image: url('alert/warning-lg.svg');
+    background-image: url('status/warning.svg');
   }
 
   hr {
-    border-color: $yellow;
+    border-color: color('warning');
   }
 }
 

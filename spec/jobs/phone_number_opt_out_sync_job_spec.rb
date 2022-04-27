@@ -7,12 +7,8 @@ RSpec.describe PhoneNumberOptOutSyncJob do
     let(:phone1) { Faker::PhoneNumber.cell_phone }
     let(:phone2) { Faker::PhoneNumber.cell_phone }
     let(:phone3) { Faker::PhoneNumber.cell_phone }
-    let(:sms_resubscribe_enabled) { true }
 
     before do
-      allow(IdentityConfig.store).to receive(:sms_resubscribe_enabled).
-        and_return(sms_resubscribe_enabled)
-
       Aws.config[:sns] = {
         stub_responses: {
           list_phone_numbers_opted_out: [
@@ -33,16 +29,6 @@ RSpec.describe PhoneNumberOptOutSyncJob do
 
       [phone1, phone2, phone3].each do |phone|
         expect(PhoneNumberOptOut.find_with_phone(phone)).to be_present
-      end
-    end
-
-    context 'when sms_resubscribe_enabled is off' do
-      let(:sms_resubscribe_enabled) { false }
-
-      it 'does not sync opt outs' do
-        expect do
-          PhoneNumberOptOutSyncJob.new.perform(Time.zone.now)
-        end.to_not change { PhoneNumberOptOut.count }
       end
     end
   end

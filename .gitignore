@@ -71,6 +71,7 @@ Vagrantfile
 /.vscode/
 /vendor/bundle
 .yardoc
+/doc/
 
 package-lock.json
 

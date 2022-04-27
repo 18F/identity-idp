@@ -21,7 +21,7 @@ module Idv
       elsif async_state.in_progress?
         render :wait
       elsif async_state.missing?
-        analytics.track_event(Analytics::PROOFING_ADDRESS_RESULT_MISSING)
+        analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.done?
@@ -32,6 +32,7 @@ module Idv
     def create
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
+      flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
       submit_proofing_attempt
       redirect_to idv_phone_path

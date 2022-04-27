@@ -125,6 +125,10 @@ module SamlAuthHelper
 
   public
 
+  def sp1
+    build(:service_provider, issuer: sp1_issuer)
+  end
+
   def sp1_issuer
     'https://rp1.serviceprovider.com/auth/saml/metadata'
   end
@@ -175,7 +179,7 @@ module SamlAuthHelper
 
     IdentityLinker.new(
       user,
-      settings.issuer,
+      build(:service_provider, issuer: settings.issuer),
     ).link_identity(
       ial: ial2_requested?(settings) ? true : nil,
       verified_attributes: ['email'],

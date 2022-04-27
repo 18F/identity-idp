@@ -8,6 +8,8 @@ import {
   useImperativeHandle,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
+import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
+import { Button } from '@18f/identity-components';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -15,11 +17,8 @@ import AcuantCamera from './acuant-camera';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
-import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
-import useIfStillMounted from '../hooks/use-if-still-mounted';
-import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
 
@@ -142,10 +141,8 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
     return 'User or system denied camera access';
   }
 
-  const {
-    REPEAT_FAIL_CODE,
-    SEQUENCE_BREAK_CODE,
-  } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
+    .AcuantJavascriptWebSdk;
 
   switch (code) {
     case REPEAT_FAIL_CODE:
@@ -284,9 +281,8 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] = useCookie(
-    'AcuantCameraHasFailed',
-  );
+  const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
+    useCookie('AcuantCameraHasFailed');
   const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
     FailedCaptureAttemptsContext,
   );
@@ -368,16 +364,17 @@ function AcuantCapture(
    * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
    */
   function withLoggedClick(source, metadata = { isDrop: false }) {
-    return (fn) => (...args) => {
-      if (!isSuppressingClickLogging.current) {
-        addPageAction({
-          label: `IdV: ${name} image clicked`,
-          payload: { source, ...metadata },
-        });
-      }
+    return (fn) =>
+      (...args) => {
+        if (!isSuppressingClickLogging.current) {
+          addPageAction({
+            label: `IdV: ${name} image clicked`,
+            payload: { source, ...metadata },
+          });
+        }
 
-      return fn(...args);
-    };
+        return fn(...args);
+      };
   }
 
   /**
@@ -515,9 +512,8 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={(error, code) => {
-            const {
-              SEQUENCE_BREAK_CODE,
-            } = /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk;
+            const { SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
+              .AcuantJavascriptWebSdk;
             if (isAcuantCameraAccessFailure(error)) {
               if (fullScreenRef.current?.focusTrap) {
                 suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);

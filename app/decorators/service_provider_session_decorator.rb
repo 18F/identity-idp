@@ -11,10 +11,12 @@ class ServiceProviderSessionDecorator
     @service_provider_request = service_provider_request
   end
 
-  delegate :redirect_uris, to: :sp, prefix: true
-
   def remember_device_default
     sp_aal < 2
+  end
+
+  def sp_redirect_uris
+    @sp.redirect_uris
   end
 
   def custom_alert(section)
@@ -64,7 +66,7 @@ class ServiceProviderSessionDecorator
   end
 
   def requested_attributes
-    sp_session[:requested_attributes].sort
+    (sp_session[:requested_attributes] || service_provider_request.requested_attributes).sort
   end
 
   def sp_create_link

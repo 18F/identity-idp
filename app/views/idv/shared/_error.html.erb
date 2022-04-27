@@ -9,11 +9,11 @@ locals:
 * options: Array of troubleshooting options.
 %>
 <% if local_assigns.fetch(:type, :error) == :error
-  image_src = 'alert/fail-x.svg'
+  image_src = 'status/error.svg'
   troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
   alt = t('errors.alt.error')
 else
-  image_src = 'alert/warning-lg.svg'
+  image_src = 'status/warning.svg'
   troubleshooting_heading = t('components.troubleshooting_options.default_heading')
   alt = t('errors.alt.warning')
 end

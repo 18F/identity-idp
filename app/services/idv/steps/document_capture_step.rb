@@ -54,7 +54,7 @@ module Idv
 
         save_proofing_components
         document_capture_session.store_result_from_response(response)
-        extract_pii_from_doc(response)
+        extract_pii_from_doc(response, store_in_session: !hybrid_flow_mobile?)
         response
       end
 
@@ -64,7 +64,7 @@ module Idv
         result = DocAuthRouter.client(
           vendor_discriminator: flow_session[:document_capture_session_uuid],
           warn_notifier: proc do |attrs|
-            @flow.analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs)
+            @flow.analytics.doc_auth_warning(**attrs)
           end,
         ).post_images(
           front_image: front_image.read,
@@ -97,7 +97,7 @@ module Idv
       def handle_stored_result
         if stored_result.success?
           save_proofing_components
-          extract_pii_from_doc(stored_result)
+          extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
         else
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('doc_auth.errors.general.network_error'), extra)

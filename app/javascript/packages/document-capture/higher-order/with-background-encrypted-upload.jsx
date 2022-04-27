@@ -1,20 +1,39 @@
 import { useContext } from 'react';
+import { t } from '@18f/identity-i18n';
+import { FormError } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 
 /**
- * @typedef {import('../components/form-steps').FormStepComponentProps<V>} FormStepComponentProps
+ * @typedef {import('@18f/identity-form-steps').FormStepComponentProps<V>} FormStepComponentProps
  * @template V
  */
 
 /**
+ * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
+ * happily tolerate than an HTML entity.
+ */
+const NBSP_UNICODE = '\u00A0';
+
+/**
+ * Returns a new string from the given string, replacing spaces with non-breaking spaces.
+ *
+ * @param {string} string Original string.
+ *
+ * @return String with non-breaking spaces.
+ */
+const nonBreaking = (string) => string.split(' ').join(NBSP_UNICODE);
+
+/**
  * An error representing a failure to complete encrypted upload of image.
  */
-export class BackgroundEncryptedUploadError extends Error {
+export class BackgroundEncryptedUploadError extends FormError {
   baseField = '';
 
   /** @type {string[]} */
   fields = [];
+
+  message = `${t('doc_auth.errors.upload_error')} ${nonBreaking(t('errors.messages.try_again'))}`;
 }
 
 /**

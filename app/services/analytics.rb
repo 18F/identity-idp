@@ -21,6 +21,7 @@ class Analytics
       new_session_success_state: first_success_state_this_session?,
       success_state: success_state_token(event),
       path: request&.path,
+      session_duration: session_duration,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
@@ -80,7 +81,7 @@ class Analytics
 
   def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
-    mfa_event_type = (attributes[:success] ? 'success' : 'fail')
+    attributes[:success] ? 'success' : 'fail'
   end
 
   attr_reader :user, :request, :sp, :ahoy
@@ -121,38 +122,19 @@ class Analytics
     }
   end
 
+  def session_duration
+    @session[:session_started_at].present? ? Time.zone.now - session_started_at : nil
+  end
+
+  def session_started_at
+    value = @session[:session_started_at]
+    return value unless value.is_a?(String)
+    Time.zone.parse(value)
+  end
+
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
-  ACCOUNT_VISIT = 'Account Page Visited'
-  ADD_EMAIL = 'Add Email: Email Submitted'
-  ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'
-  ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'
-  ADD_EMAIL_VISIT = 'Add Email: enter email visited'
-  AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'
-  AUTHENTICATION_CONFIRMATION_CONTINUE = 'Authentication Confirmation: Continue selected'
-  AUTHENTICATION_CONFIRMATION_RESET = 'Authentication Confirmation: Reset selected'
-  BANNED_USER_REDIRECT = 'Banned User redirected'
-  BANNED_USER_VISITED = 'Banned User visited'
-  BROKEN_PERSONAL_KEY_REGENERATED = 'Broken Personal Key: Regenerated'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  DOC_AUTH_ASYNC = 'Doc Auth Async'
-  DOC_AUTH_WARNING = 'Doc Auth Warning'
-  EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'
-  EMAIL_DELETION_REQUEST = 'Email Deletion Requested'
-  EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'
-  EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'
-  EVENT_DISAVOWAL = 'Event disavowal visited'
-  EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'
-  EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'
-  EVENTS_VISIT = 'Events Page Visited'
-  EXTERNAL_REDIRECT = 'External Redirect'
-  FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'
-  FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'
-  IDV_ADDRESS_VISIT = 'IdV: address visited'
-  IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'
-  IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'
-  IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'
-  IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'
   IDV_CANCELLATION = 'IdV: cancellation visited'
   IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'
@@ -168,7 +150,6 @@ class Analytics
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PERSONAL_KEY_DOWNLOADED = 'IdV: personal key downloaded' # previously "IdV: download personal key"
   IDV_PERSONAL_KEY_VISITED = 'IdV: personal key visited'
   IDV_PERSONAL_KEY_SUBMITTED = 'IdV: personal key submitted'
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'
@@ -178,11 +159,6 @@ class Analytics
   IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'
   IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'
-  IDV_PHONE_CONFIRMATION_OTP_SUBMITTED = 'IdV: phone confirmation otp submitted'
-  IDV_PHONE_CONFIRMATION_OTP_VISIT = 'IdV: phone confirmation otp visited'
-  IDV_PHONE_ERROR_VISITED = 'IdV: phone error visited'
-  IDV_PHONE_ERROR_SUBMITTED = 'IdV: phone error submitted'
-  IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED = 'IdV: Phone OTP Delivery Selection Submitted'
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'
   IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'
@@ -233,11 +209,6 @@ class Analytics
   PHONE_DELETION = 'Phone Number Deletion: Submitted'
   PIV_CAC_LOGIN = 'PIV/CAC Login'
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
-  PROFILE_PERSONAL_KEY_VISIT = 'Profile: Visited new personal key'
-  PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'
-  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'
-  PROOFING_ADDRESS_RESULT_MISSING = 'Proofing Address Result Missing' # Previously "Proofing Address Timeout"
-  PROOFING_DOCUMENT_RESULT_MISSING = 'Proofing Document Result Missing' # Previously "Proofing Document Timeout"
   PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
@@ -248,12 +219,6 @@ class Analytics
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'
   REMOTE_LOGOUT_INITIATED = 'Remote Logout initiated'
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'
-  RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'
-  RULES_OF_USE_VISIT = 'Rules Of Use Visited'
-  RULES_OF_USE_SUBMITTED = 'Rules Of Use Submitted'
-  SECURITY_EVENT_RECEIVED = 'RISC: Security event received'
-  SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'
-  SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
   SP_INACTIVE_VISIT = 'SP inactive visited'

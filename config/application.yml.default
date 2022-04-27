@@ -93,11 +93,13 @@ gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
+idv_api_enabled: false
 idv_attempt_window_in_hours: 6
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
+in_person_proofing_enabled: true
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -151,6 +153,8 @@ participate_in_dap: false
 partner_api_bucket_prefix: ''
 password_max_attempts: 3
 personal_key_retired: true
+phone_confirmation_max_attempts: 20
+phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -164,9 +168,6 @@ piv_cac_verify_token_url: https://localhost:8443/
 platform_authentication_enabled: true
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
-proofing_allow_expired_license: false
-proofing_expired_license_after: '2020-03-01'
-proofing_expired_license_reproof_at: '2023-03-01'
 proofing_send_partial_dob: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
@@ -176,7 +177,6 @@ push_notifications_enabled: false
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: false
 rack_timeout_service_timeout_seconds: 15
-rails_csp_tooling_enabled: true
 rails_mailer_previews_enabled: false
 reauthn_window: 120
 recovery_code_length: 4
@@ -189,7 +189,9 @@ reg_unconfirmed_email_window_in_minutes: 60
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
 report_timeout: 0
+requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
+requests_per_ip_path_prefixes_allowlist: ''
 requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
@@ -207,6 +209,7 @@ s3_public_reports_enabled: false
 s3_reports_enabled: false
 saml_secret_rotation_enabled: false
 seed_agreements_data: true
+select_multiple_mfa_options: false
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
@@ -214,11 +217,9 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
-show_select_account_on_repeat_sp_visits: false
 sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
-sms_resubscribe_enabled: false
 test_ssn_allowed_list: ''
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
@@ -342,6 +343,7 @@ production:
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
+  in_person_proofing_enabled: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
@@ -428,6 +430,8 @@ test:
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  phone_confirmation_max_attempts: 5
+  phone_confirmation_max_attempt_window_in_minutes: 10
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
@@ -437,6 +441,7 @@ test:
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70
+  requests_per_ip_cidr_allowlist: '172.16.0.0/12'
   requests_per_ip_limit: 4
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
@@ -445,6 +450,7 @@ test:
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
+  select_multiple_mfa_options: false
   secret_key_base: test_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'

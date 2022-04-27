@@ -14,6 +14,14 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
+<%# If it is decided that there will be an info banner on this page for MFA setup, the text will need Gengo translations %>
+
+<% if IdentityConfig.store.select_multiple_mfa_options %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('multi_factor_authentication.info') %>
+  <% end %>
+<% end %>
+
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
@@ -23,24 +31,46 @@
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-          <%= radio_button_tag(
-                'two_factor_options_form[selection]',
-                option.type,
-                false,
-                disabled: option.disabled?,
-                class: 'usa-radio__input usa-radio__input--tile',
-              ) %>
-          <%= label_tag(
-                "two_factor_options_form_selection_#{option.type}",
-                class: 'usa-radio__label usa-radio__label--illustrated',
-              ) do %>
-                  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
-                  <div class="usa-radio__label--text tablet:padding-left-1"><%= option.label %>
-                    <span class="usa-radio__label-description">
-                      <%= option.info %>
-                    </span>
-                  </div>
-                <% end %>
+          <% if IdentityConfig.store.select_multiple_mfa_options %>
+            <%= check_box_tag(
+                  'two_factor_options_form[selection][]',
+                  option.type,
+                  false,
+                  disabled: option.disabled?,
+                  class: 'usa-checkbox__input usa-checkbox__input--tile',
+                  id: "two_factor_options_form_selection_#{option.type}",
+                ) %>
+            <%= label_tag(
+                  "two_factor_options_form_selection_#{option.type}",
+                  class: 'usa-checkbox__label usa-checkbox__label--illustrated',
+                ) do %>
+                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
+                    <div class="usa-checkbox__label--text"><%= option.label %>
+                      <span class="usa-checkbox__label-description">
+                        <%= option.info %>
+                      </span>
+                    </div>
+                  <% end %>
+          <% else %>
+            <%= radio_button_tag(
+                  'two_factor_options_form[selection]',
+                  option.type,
+                  false,
+                  disabled: option.disabled?,
+                  class: 'usa-radio__input usa-radio__input--tile',
+                ) %>
+            <%= label_tag(
+                  "two_factor_options_form_selection_#{option.type}",
+                  class: 'usa-radio__label usa-radio__label--illustrated',
+                ) do %>
+                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-radio__image') %>
+                    <div class="usa-radio__label--text"><%= option.label %>
+                      <span class="usa-radio__label-description">
+                        <%= option.info %>
+                      </span>
+                    </div>
+                  <% end %>
+          <% end %>
         </div>
       <% end %>
     </fieldset>

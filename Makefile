@@ -15,7 +15,6 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	brakeman \
 	build_artifact \
 	check \
-	check_asset_strings \
 	docker_setup \
 	fast_setup \
 	fast_test \
@@ -31,7 +30,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
-	run \
+	urn \
 	setup \
 	test \
 	update_pinpoint_supported_countries
@@ -68,6 +67,8 @@ lint: ## Runs all lint tests
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript
+	@echo "--- yarn audit ---"
+	yarn audit --groups dependencies; test $$? -le 7
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -75,8 +76,6 @@ lint: ## Runs all lint tests
 	@echo "--- es5-safe ---"
 	NODE_ENV=production yarn build && yarn es5-safe
 	# Other
-	@echo "--- asset check ---"
-	make check_asset_strings
 	@echo "--- lint yaml ---"
 	make lint_yaml
 	@echo "--- check assets are optimized ---"
@@ -123,6 +122,10 @@ tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local H
 run: ## Runs the development server
 	foreman start -p $(PORT)
 
+urn:
+	@echo "⚱️"
+	make run
+
 run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt ## Runs the development server with HTTPS
 	HTTPS=on FOREMAN_HOST="ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt" foreman start -p $(PORT)
 
@@ -158,9 +161,6 @@ update_pinpoint_supported_countries: ## Updates list of countries supported by P
 lint_country_dialing_codes: update_pinpoint_supported_countries ## Checks that countries supported by Pinpoint for voice and SMS are up to date
 	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
 
-check_asset_strings: ## Checks for strings
-	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
-
 build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact with IDP source code and Ruby/JS dependencies
 	@echo "Building artifact into $(ARTIFACT_DESTINATION_FILE)"
 	bundle config set --local cache_all true
@@ -178,6 +178,8 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 	  --exclude='./certs/sp' \
 	  --exclude='./identity-idp-config' \
 	  --exclude='./tmp' \
+	  --exclude='./log' \
+	  --exclude='./app/javascript/packages/**/node_modules' \
 	  --exclude='./node_modules' \
 	  --exclude='./geo_data/GeoLite2-City.mmdb' \
 	  --exclude='./pwned_passwords/pwned_passwords.txt' \
@@ -195,4 +197,9 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
 
 .yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
-	bundle exec yard doc --type-tag identity.idp.event_name:"Event Name" --db $@ -- $<
+	bundle exec yard doc \
+		--type-tag identity.idp.event_name:"Event Name" \
+		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
+		--no-output \
+		--db $@ \
+		-- $<

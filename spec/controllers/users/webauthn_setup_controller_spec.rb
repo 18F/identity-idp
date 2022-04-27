@@ -134,4 +134,42 @@ describe Users::WebauthnSetupController do
       end
     end
   end
+
+  describe 'when signed in and account creation' do
+    let(:user) { create(:user, :signed_up) }
+    let(:params) do
+      {
+        attestation_object: attestation_object,
+        client_data_json: setup_client_data_json,
+        name: 'mykey',
+      }
+    end
+
+    before do
+      stub_analytics
+      stub_sign_in(user)
+      allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+      controller.user_session[:webauthn_challenge] = webauthn_challenge
+    end
+
+    context 'with multiple MFA methods chosen on account creation' do
+      before do
+        controller.user_session[:selected_mfa_options] = ['voice']
+      end
+
+      it 'should direct user to phone page' do
+        patch :confirm, params: params
+
+        expect(response).to redirect_to(phone_setup_url)
+      end
+    end
+
+    context 'with a single MFA method chosen on account creation' do
+      it 'should direct user to account page' do
+        patch :confirm, params: params
+
+        expect(response).to redirect_to(account_url)
+      end
+    end
+  end
 end

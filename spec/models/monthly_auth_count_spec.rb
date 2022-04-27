@@ -3,12 +3,13 @@ require 'rails_helper'
 describe MonthlySpAuthCount do
   let(:user_id) { 1 }
   let(:issuer) { 'foo' }
+  let(:service_provider) { build(:service_provider, issuer: issuer) }
   let(:ial) { 1 }
 
   describe '.increment' do
     it 'sets the monthly count to 1' do
       year_month = current_year_month
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
 
       monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)
@@ -19,8 +20,8 @@ describe MonthlySpAuthCount do
 
     it 'updates the monthly count to 2' do
       year_month = current_year_month
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
 
       monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)
@@ -31,9 +32,9 @@ describe MonthlySpAuthCount do
 
     it 'updates the monthly count to 3' do
       year_month = current_year_month
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
-      MonthlySpAuthCount.increment(user_id: user_id, issuer: issuer, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
+      MonthlySpAuthCount.increment(user_id: user_id, service_provider: service_provider, ial: ial)
 
       monthly_auth_count = MonthlySpAuthCount.first
       expect(monthly_auth_count.user_id).to eq(user_id)

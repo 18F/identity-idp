@@ -19,7 +19,7 @@ feature 'doc auth ssn step' do
 
     it 'proceeds to the next page with valid info', js: true do
       fill_out_ssn_form_ok
-      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('false')
+      expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('false')
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)
@@ -29,7 +29,7 @@ feature 'doc auth ssn step' do
       fill_out_ssn_form_fail
       click_idv_continue
 
-      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('true')
+      expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('true')
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
@@ -64,7 +64,7 @@ feature 'doc auth ssn step' do
     end
 
     it 'proceeds to the next page if the user enters extra digits' do
-      fill_in 'doc_auth_ssn', with: '666-66-12345'
+      fill_in t('idv.form.ssn_label_html'), with: '666-66-12345'
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)

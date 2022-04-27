@@ -7,17 +7,20 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   let(:reauthn) {}
   let(:presenter) do
     TwoFactorAuthCode::WebauthnAuthenticationPresenter.
-      new(data: { reauthn: reauthn }, view: view, platform_authenticator: platform_authenticator)
+      new(data: { reauthn: reauthn }, service_provider: nil,
+          view: view, platform_authenticator: platform_authenticator)
   end
 
   let(:allow_user_to_switch_method) { false }
   let(:aal3_required) { false }
   let(:platform_authenticator) { false }
+  let(:multiple_factors_enabled) { false }
   let(:service_provider_mfa_policy) do
     instance_double(
       ServiceProviderMfaPolicy,
       aal3_required?: aal3_required,
       allow_user_to_switch_method?: allow_user_to_switch_method,
+      multiple_factors_enabled?: multiple_factors_enabled,
     )
   end
 
@@ -87,6 +90,22 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
         expect(presenter.authenticate_button_text).to eq(
           t('two_factor_authentication.webauthn_platform_use_key'),
         )
+      end
+    end
+  end
+
+  describe '#multiple_factors_enabled?' do
+    context 'with multiple factors enabled in user policy' do
+      let(:multiple_factors_enabled) { true }
+
+      it 'returns true' do
+        expect(presenter.multiple_factors_enabled?).to be_truthy
+      end
+    end
+
+    context 'with multiple factors not enabled for user policy' do
+      it 'returns false' do
+        expect(presenter.multiple_factors_enabled?).to be_falsey
       end
     end
   end

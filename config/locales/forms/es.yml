@@ -20,7 +20,6 @@ es:
       last_code: Usted utilizó el último código de seguridad. Imprima, copie o
         descargue los códigos que aparecen a continuación. Puede introducir
         estos nuevos códigos la próxima vez que se registre.
-      print: Impresión
       regenerate: Obtener nuevos códigos
       subinfo_html: '<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos.
         Cada código solo se puede usar una vez. Después de que haya utilizado el
@@ -64,7 +63,6 @@ es:
           submit: Cambiar la contraseña
         labels:
           password: Nueva contraseña
-      show: Mostrar contraseña
     personal_key:
       alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
@@ -111,7 +109,8 @@ es:
       totp_step_4: Ingrese el código temporal de su aplicación
     two_factor:
       backup_code: Código de seguridad
-      code: Código de seguridad de sólo un uso
+      # removed "security code" form labels as they trigger ios credit card reader
+      code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
     two_factor_choice:

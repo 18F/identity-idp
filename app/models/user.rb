@@ -9,7 +9,6 @@ class User < ApplicationRecord
     :recoverable,
     :registerable,
     :timeoutable,
-    :trackable,
     authentication_keys: [:email],
   )
 

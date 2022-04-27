@@ -3,13 +3,6 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  before do
-    # All the tests here were written prior to the interstitial
-    # authorization confirmation page so let's force the system
-    # to skip past that page
-    allow(controller).to receive(:auth_count).and_return(2)
-  end
-
   render_views
 
   describe '/api/saml/logout' do
@@ -431,6 +424,13 @@ describe SamlIdpController do
   end
 
   describe 'GET /api/saml/auth' do
+    before do
+      # All the tests here were written prior to the interstitial
+      # authorization confirmation page so let's force the system
+      # to skip past that page
+      allow(controller).to receive(:auth_count).and_return(2)
+    end
+
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
     let(:aal_level) { 2 }
     let(:ial2_settings) do
@@ -452,6 +452,7 @@ describe SamlIdpController do
           zipcode: '12345',
         )
       end
+      let(:pii_json) { pii.present? ? pii.to_json : nil }
       let(:this_authn_request) do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
@@ -475,13 +476,13 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1_issuer).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
 
-        controller.user_session[:decrypted_pii] = pii
+        controller.user_session[:decrypted_pii] = pii_json
       end
 
       it 'calls AttributeAsserter#build' do
@@ -518,6 +519,10 @@ describe SamlIdpController do
 
       it 'tracks IAL2 authentication events' do
         stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               service_provider: sp1_issuer)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH,
                success: true,
@@ -891,7 +896,8 @@ describe SamlIdpController do
         end
 
         it 'does not redirect after verifying attributes' do
-          IdentityLinker.new(@user, saml_settings.issuer).link_identity(
+          service_provider = build(:service_provider, issuer: saml_settings.issuer)
+          IdentityLinker.new(@user, service_provider).link_identity(
             verified_attributes: ['email'],
           )
           saml_get_auth(saml_settings)
@@ -967,7 +973,8 @@ describe SamlIdpController do
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           ] },
         )
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1001,7 +1008,8 @@ describe SamlIdpController do
 
       it 'defaults to persistent' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1034,7 +1042,7 @@ describe SamlIdpController do
         ServiceProvider.
           find_by(issuer: auth_settings.issuer).
           update!(email_nameid_format_allowed: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        IdentityLinker.new(user, sp1).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1102,7 +1110,8 @@ describe SamlIdpController do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = build(:service_provider, issuer: auth_settings.issuer)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1125,14 +1134,14 @@ describe SamlIdpController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
       end
+
       it 'sends the appropriate identifier for email NameID SPs' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        ServiceProvider.
-          find_by(issuer: auth_settings.issuer).
-          update!(email_nameid_format_allowed: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(email_nameid_format_allowed: true)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1155,14 +1164,14 @@ describe SamlIdpController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
       end
+
       it 'sends the old user ID for legacy SPS' do
         auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
-        ServiceProvider.
-          find_by(issuer: auth_settings.issuer).
-          update!(use_legacy_name_id_behavior: true)
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        service_provider = ServiceProvider.find_by(issuer: auth_settings.issuer)
+        service_provider.update!(use_legacy_name_id_behavior: true)
+        IdentityLinker.new(user, service_provider).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
 
@@ -1212,13 +1221,20 @@ describe SamlIdpController do
     end
 
     context 'when user is not logged in' do
-      before do
-        saml_get_auth(saml_settings)
-      end
-
       it 'redirects the user to the SP landing page with the request_id in the params' do
+        saml_get_auth(saml_settings)
         sp_request_id = ServiceProviderRequestProxy.last.uuid
         expect(response).to redirect_to new_user_session_path(request_id: sp_request_id)
+      end
+
+      it 'logs SAML Auth Request but does not log SAML Auth' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
+
+        saml_get_auth(saml_settings)
       end
     end
 
@@ -1662,6 +1678,10 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
+        expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
 
         get :auth
@@ -1699,6 +1719,10 @@ describe SamlIdpController do
           finish_profile: false,
         }
 
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,
@@ -1731,6 +1755,10 @@ describe SamlIdpController do
           finish_profile: true,
         }
 
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+               service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,

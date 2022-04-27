@@ -19,7 +19,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id: SecureRandom.hex)
-    encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
+    encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: { phone: Faker::PhoneNumber.cell_phone } }.to_json,
     )
 

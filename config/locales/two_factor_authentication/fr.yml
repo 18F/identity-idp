@@ -124,8 +124,7 @@ fr:
       question: Votre PIV ou CAC n’est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
-    please_try_again_html: Veuillez essayer de nouveau dans <strong
-      id=%{id}>%{time_remaining}</strong>.
+    please_try_again_html: Veuillez essayer de nouveau dans <strong>%{countdown}</strong>.
     read_about_two_factor_authentication: En savoir plus sur l’authentification à deux facteurs
     totp_fallback:
       question: Vous n’avez pas votre application d’authentification?
@@ -153,8 +152,8 @@ fr:
       phone: Message texte ou vocal
       phone_info: Recevez un code sécurisé par message texte ou appel téléphonique sur
         votre appareil.
-      phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés
-        sur le Web (VOIP).
+      phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
+        Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
       piv_cac: Carte d’identification des employés du gouvernement
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
@@ -175,6 +174,14 @@ fr:
       sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
       physique tel qu’une clé de sécurité ou un identifiant d’employé du
       gouvernement (PIC/CAC) pour accéder à vos informations.
+    webauthn_error:
+      additional_methods_link: choisir une autre méthode d’authentification
+      error_page_text: Vous avez activé le déverrouillage facial ou tactile pour ce
+        compte. Utilisez le même appareil et le même profil de navigateur chaque
+        fois.
+      multiple_methods: Le déverrouillage facial ou tactile n’a pas fonctionné.
+        Veuillez réessayer ou %{link}.
+      title: Nous ne pouvons pas identifier votre appareil
     webauthn_fallback:
       question: Vous n’avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
