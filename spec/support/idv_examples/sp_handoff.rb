@@ -157,45 +157,47 @@ shared_examples 'sp handoff after identity verification' do |sp|
     client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
     client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
-    page.driver.post api_openid_connect_token_path,
-                     grant_type: 'authorization_code',
-                     code: code,
-                     client_assertion_type: client_assertion_type,
-                     client_assertion: client_assertion
+    Capybara.using_driver(:desktop_rack_test) do
+      page.driver.post api_openid_connect_token_path,
+                       grant_type: 'authorization_code',
+                       code: code,
+                       client_assertion_type: client_assertion_type,
+                       client_assertion: client_assertion
 
-    expect(page.status_code).to eq(200)
-    token_response = JSON.parse(page.body).with_indifferent_access
+      expect(page.status_code).to eq(200)
+      token_response = JSON.parse(page.body).with_indifferent_access
 
-    id_token = token_response[:id_token]
-    expect(id_token).to be_present
+      id_token = token_response[:id_token]
+      expect(id_token).to be_present
 
-    decoded_id_token, _headers = JWT.decode(
-      id_token, sp_public_key, true, algorithm: 'RS256'
-    ).map(&:with_indifferent_access)
+      decoded_id_token, _headers = JWT.decode(
+        id_token, sp_public_key, true, algorithm: 'RS256'
+      ).map(&:with_indifferent_access)
 
-    sub = decoded_id_token[:sub]
-    expect(sub).to be_present
-    expect(decoded_id_token[:nonce]).to eq(@nonce)
-    expect(decoded_id_token[:aud]).to eq(@client_id)
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
-    expect(decoded_id_token[:iss]).to eq(root_url)
-    expect(decoded_id_token[:email]).to eq(user.email)
-    expect(decoded_id_token[:given_name]).to eq('FAKEY')
-    expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+      sub = decoded_id_token[:sub]
+      expect(sub).to be_present
+      expect(decoded_id_token[:nonce]).to eq(@nonce)
+      expect(decoded_id_token[:aud]).to eq(@client_id)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:iss]).to eq(root_url)
+      expect(decoded_id_token[:email]).to eq(user.email)
+      expect(decoded_id_token[:given_name]).to eq('FAKEY')
+      expect(decoded_id_token[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
 
-    access_token = token_response[:access_token]
-    expect(access_token).to be_present
+      access_token = token_response[:access_token]
+      expect(access_token).to be_present
 
-    page.driver.get api_openid_connect_userinfo_path,
-                    {},
-                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+      page.driver.get api_openid_connect_userinfo_path,
+                      {},
+                      'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
-    userinfo_response = JSON.parse(page.body).with_indifferent_access
-    expect(userinfo_response[:sub]).to eq(sub)
-    expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
-    expect(userinfo_response[:email]).to eq(user.email)
-    expect(userinfo_response[:given_name]).to eq('FAKEY')
-    expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+      userinfo_response = JSON.parse(page.body).with_indifferent_access
+      expect(userinfo_response[:sub]).to eq(sub)
+      expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
+      expect(userinfo_response[:email]).to eq(user.email)
+      expect(userinfo_response[:given_name]).to eq('FAKEY')
+      expect(userinfo_response[:social_security_number]).to eq(DocAuthHelper::GOOD_SSN)
+    end
   end
 
   def expect_successful_saml_handoff
