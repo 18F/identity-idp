@@ -33,7 +33,7 @@ FactoryBot.define do
     end
 
     after(:build) do |profile, evaluator|
-      if evaluator.pii
+      if evaluator.pii && profile.user
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)
         profile.encrypt_pii(pii_attrs, profile.user.password)
       end
