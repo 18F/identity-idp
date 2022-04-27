@@ -31,18 +31,18 @@ RSpec.describe 'proofing components' do
     context 'async proofing', js: true do
       let(:ruby_workers_idv_enabled) { true }
       let(:doc_auth_enable_presigned_s3_urls) { true }
-  
+
       it 'records proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
         expect(proofing_components['document_type']).to eq('state_id')
       end
     end
-  
+
     context 'sync proofing', js: true do
       let(:ruby_workers_idv_enabled) { false }
       let(:doc_auth_enable_presigned_s3_urls) { false }
-  
+
       it 'records proofing components' do
         proofing_components = user.active_profile.proofing_components
         expect(proofing_components['document_check']).to eq('mock')
@@ -57,7 +57,7 @@ RSpec.describe 'proofing components' do
     sign_in_and_2fa_user(user)
     visit_idp_from_oidc_sp_with_ial2_strict
     complete_proofing_steps
-    
+
     expect(user.active_profile.includes_liveness_check?).to be_truthy
 
     visit account_path
@@ -75,7 +75,7 @@ RSpec.describe 'proofing components' do
     click_on t('forms.buttons.continue')
 
     complete_proofing_steps
-    
+
     user = User.find(user.id)
     expect(user.active_profile.includes_liveness_check?).to be_falsy
   end
