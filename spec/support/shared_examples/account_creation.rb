@@ -62,7 +62,7 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
     end
 
     click_agree_and_continue
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
@@ -118,7 +118,7 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     end
 
     click_agree_and_continue
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)

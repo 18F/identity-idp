@@ -76,7 +76,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(current_url).to include('http://localhost:7654/auth/result')
       elsif sp == :saml
         if javascript_enabled?
-          expect(current_path).to eq('/test/saml/decode_assertion')
+          expect(current_path).to eq(test_saml_decode_assertion_path)
         else
           expect(current_url).to include(api_saml_auth2022_url)
         end

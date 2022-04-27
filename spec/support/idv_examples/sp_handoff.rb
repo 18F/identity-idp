@@ -205,6 +205,11 @@ shared_examples 'sp handoff after identity verification' do |sp|
     xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
+    if javascript_enabled?
+      expect(current_path).to eq test_saml_decode_assertion_path
+    else
+      expect(current_url).to eq @saml_authn_request
+    end
     expect(xmldoc.phone_number.children.children.to_s).to eq(Phonelib.parse(profile_phone).e164)
   end
 

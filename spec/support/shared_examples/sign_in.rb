@@ -319,7 +319,7 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
 
   if sp == :saml
     if javascript_enabled?
-      expect(current_path).to eq('/test/saml/decode_assertion')
+      expect(current_path).to eq(test_saml_decode_assertion_path)
     else
       expect(current_url).to include(@saml_authn_request)
     end
@@ -352,7 +352,7 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
   fill_in_password_and_submit(user.password)
 
   if javascript_enabled?
-    expect(current_path).to eq('/test/saml/decode_assertion')
+    expect(current_path).to eq(test_saml_decode_assertion_path)
   else
     expect(current_url).to eq @saml_authn_request
   end
