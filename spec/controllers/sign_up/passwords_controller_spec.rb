@@ -4,12 +4,7 @@ describe SignUp::PasswordsController do
   describe '#create' do
     it 'tracks a valid password event' do
       token = 'new token'
-      email = create(
-        :email_address, :unconfirmed,
-        confirmation_token: token,
-        user: build(:user, :unconfirmed)
-      )
-      user = email.user
+      user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
 
@@ -42,15 +37,14 @@ describe SignUp::PasswordsController do
       invalid_confirmation_sent_at =
         Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
       token = 'new token'
-      email = create(
-        :email_address, :unconfirmed,
-        confirmation_sent_at: invalid_confirmation_sent_at,
+      user = create(
+        :user,
+        :unconfirmed,
         confirmation_token: token,
-        user: build(:user, :unconfirmed)
+        confirmation_sent_at: invalid_confirmation_sent_at,
       )
-      user = email.user
 
-      validator = EmailConfirmationTokenValidator.new(email)
+      validator = EmailConfirmationTokenValidator.new(user.email_addresses.first)
       result = validator.submit
       expect(result.success?).to eq false
 
@@ -67,12 +61,7 @@ describe SignUp::PasswordsController do
 
     it 'tracks an invalid password event' do
       token = 'new token'
-      email = create(
-        :email_address, :unconfirmed,
-        confirmation_token: token,
-        user: build(:user, :unconfirmed)
-      )
-      user = email.user
+      user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
 
@@ -106,11 +95,7 @@ describe SignUp::PasswordsController do
     render_views
     it 'instructs crawlers to not index this page' do
       token = 'foo token'
-      create(
-        :email_address, :unconfirmed,
-        confirmation_token: token,
-        user: build(:user, :unconfirmed)
-      )
+      create(:user, :unconfirmed, confirmation_token: token)
       get :new, params: { confirmation_token: token }
 
       expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
@@ -121,10 +106,10 @@ describe SignUp::PasswordsController do
         Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
       token = 'new token'
       create(
-        :email_address, :unconfirmed,
-        confirmation_sent_at: invalid_confirmation_sent_at,
+        :user,
+        :unconfirmed,
         confirmation_token: token,
-        user: build(:user, :unconfirmed)
+        confirmation_sent_at: invalid_confirmation_sent_at,
       )
 
       get :new, params: { confirmation_token: token }
