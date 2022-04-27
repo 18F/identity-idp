@@ -8,7 +8,7 @@ module Api
 
     attr_reader :password, :user_bundle
     attr_reader :user_session, :service_provider
-    attr_reader :profile, :gpo_otp
+    attr_reader :profile
 
     def initialize(password:, jwt:, user_session:, service_provider: nil)
       @password = password
@@ -83,8 +83,6 @@ module Api
         profile: profile,
       )
       confirmation_maker.perform
-
-      @gpo_otp = confirmation_maker.otp
     end
 
     def build_profile_maker

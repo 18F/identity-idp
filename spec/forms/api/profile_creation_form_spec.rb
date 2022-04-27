@@ -112,8 +112,9 @@ RSpec.describe Api::ProfileCreationForm do
         it 'creates a GPO confirmation code' do
           subject.submit
           profile = user.profiles.first
+          gpo_otp = GpoConfirmation.last.entry[:otp]
 
-          expect(profile.gpo_confirmation_codes.first_with_otp(subject.gpo_otp)).not_to be_nil
+          expect(profile.gpo_confirmation_codes.first_with_otp(gpo_otp)).not_to be_nil
         end
       end
     end
