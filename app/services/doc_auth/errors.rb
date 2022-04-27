@@ -40,7 +40,7 @@ module DocAuth
     GLARE_LOW_ONE_SIDE = 'glare_low_one_side'
     GLARE_LOW_BOTH_SIDES = 'glare_low_both_sides'
     # Other
-    FALLBACK_FIELD_LEVEL= 'fallback_field_level'
+    FALLBACK_FIELD_LEVEL = 'fallback_field_level'
 
     ALL = [
       BARCODE_CONTENT_CHECK,

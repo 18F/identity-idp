@@ -79,7 +79,7 @@ describe('document-capture/components/document-capture', () => {
     // See: https://github.com/18F/identity-idp/blob/164231d/app/javascript/packages/document-capture/components/acuant-capture.jsx#L114
     window.AcuantCameraUI.start.callsFake((_callbacks, onError) => onError(new Error()));
 
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
     await findByText('doc_auth.errors.camera.blocked_detail');
   });
@@ -110,7 +110,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Attempting to proceed without providing values will trigger error messages.
     let continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     let errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
     expect(document.activeElement).to.equal(
@@ -128,18 +128,18 @@ describe('document-capture/components/document-capture', () => {
       getByLabelText('doc_auth.headings.document_capture_front'),
     );
 
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
 
     // Continue only once all errors have been removed.
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     continueButton = getByText('forms.buttons.continue');
     expect(isFormValid(continueButton.closest('form'))).to.be.true();
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
 
     // Trigger validation by attempting to submit.
     const submitButton = getByText('forms.buttons.submit.default');
 
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(1);
     expect(document.activeElement).to.equal(
@@ -178,20 +178,20 @@ describe('document-capture/components/document-capture', () => {
     );
 
     const continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
 
     let submitButton = getByText('forms.buttons.submit.default');
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    userEvent.upload(selfieInput, validUpload);
+    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     await findByText('doc_auth.errors.general.network_error');
 
@@ -201,7 +201,7 @@ describe('document-capture/components/document-capture', () => {
     );
 
     // Make sure that the first element after a tab is what we expect it to be.
-    userEvent.tab();
+    await userEvent.tab();
     const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
     expect(document.activeElement).to.equal(firstFocusable);
 
@@ -212,7 +212,7 @@ describe('document-capture/components/document-capture', () => {
     // screen is shown once more.
 
     submitButton = getByText('forms.buttons.submit.default');
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     const interstitialHeading = getByText('doc_auth.headings.interstitial');
     expect(interstitialHeading).to.be.ok();
 
@@ -242,20 +242,20 @@ describe('document-capture/components/document-capture', () => {
     );
 
     const continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
 
     let submitButton = getByText('forms.buttons.submit.default');
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    userEvent.upload(selfieInput, validUpload);
+    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     let notices = await findAllByRole('alert');
     expect(notices[0].textContent).to.equal('Image has glare');
@@ -268,7 +268,7 @@ describe('document-capture/components/document-capture', () => {
     );
 
     // Make sure that the first focusable element after a tab is what we expect it to be.
-    userEvent.tab();
+    await userEvent.tab();
     const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
     expect(document.activeElement).to.equal(firstFocusable);
 
@@ -276,8 +276,8 @@ describe('document-capture/components/document-capture', () => {
     expect(hasValueSelected).to.be.true();
 
     submitButton = getByText('forms.buttons.submit.default');
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
 
     // Once fields are changed, their notices should be cleared. If all field-specific errors are
     // addressed, submit should be enabled once more.
@@ -287,7 +287,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
     // screen is shown once more.
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     const interstitialHeading = getByText('doc_auth.headings.interstitial');
     expect(interstitialHeading).to.be.ok();
 
@@ -326,11 +326,11 @@ describe('document-capture/components/document-capture', () => {
 
     const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
     const backImage = getByLabelText('doc_auth.headings.document_capture_back');
-    userEvent.upload(frontImage, validUpload);
-    userEvent.upload(backImage, validUpload);
+    await userEvent.upload(frontImage, validUpload);
+    await userEvent.upload(backImage, validUpload);
     await waitFor(() => frontImage.src && backImage.src);
 
-    userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     await waitFor(() => window.location.hash === '#teapot');
 
     // JSDOM doesn't support full page navigation, but at this point we should assume navigation
@@ -398,20 +398,20 @@ describe('document-capture/components/document-capture', () => {
     );
 
     const continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
 
     const submitButton = getByText('forms.buttons.submit.default');
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    userEvent.upload(selfieInput, validUpload);
+    fireEvent.change(selfieInput, { target: { files: [validUpload] } });
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     return new Promise((resolve) => {
       onSubmit.callsFake(() => {
@@ -444,30 +444,25 @@ describe('document-capture/components/document-capture', () => {
     );
 
     const continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    await userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(continueButton);
+    await userEvent.click(continueButton);
     expect(onStepChange.callCount).to.equal(1);
 
     const submitButton = getByText('forms.buttons.submit.default');
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     expect(onStepChange.callCount).to.equal(1);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    userEvent.upload(selfieInput, validUpload);
+    await fireEvent.change(selfieInput, { target: { files: validUpload } });
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
     expect(onStepChange.callCount).to.equal(1);
 
     await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
-
-    expect(console).to.have.loggedError(/^Error: Uncaught/);
-    expect(console).to.have.loggedError(
-      /React will try to recreate this component tree from scratch using the error boundary you provided/,
-    );
 
     expect(onStepChange.callCount).to.equal(1);
   });
@@ -518,14 +513,20 @@ describe('document-capture/components/document-capture', () => {
       );
       const { getByLabelText, getByText } = renderResult;
 
-      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+      await userEvent.upload(
+        getByLabelText('doc_auth.headings.document_capture_front'),
+        validUpload,
+      );
+      await userEvent.upload(
+        getByLabelText('doc_auth.headings.document_capture_back'),
+        validUpload,
+      );
       submit = () => userEvent.click(getByText('forms.buttons.submit.default'));
     });
 
     context('success', () => {
       it('calls to upload once pending values resolve', async () => {
-        submit();
+        await submit();
         expect(upload).not.to.have.been.called();
         completeUploadAsSuccess();
         await new Promise((resolve) => onSubmit.callsFake(resolve));
@@ -535,7 +536,7 @@ describe('document-capture/components/document-capture', () => {
 
     context('failure', () => {
       it('shows an error screen once pending values reject', async () => {
-        submit();
+        await submit();
         expect(upload).not.to.have.been.called();
         completeUploadAsFailure();
         const { findAllByRole, getByLabelText } = renderResult;
@@ -550,7 +551,6 @@ describe('document-capture/components/document-capture', () => {
         const input = await getByLabelText('doc_auth.headings.document_capture_front');
         expect(input.closest('.usa-file-input--has-value')).to.be.null();
 
-        expect(console).to.have.loggedError(/PromiseRejectionHandledWarning/);
         expect(console).to.have.loggedError(/^Error: Uncaught/);
         expect(console).to.have.loggedError(
           /React will try to recreate this component tree from scratch using the error boundary you provided/,

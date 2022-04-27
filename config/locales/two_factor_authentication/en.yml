@@ -103,7 +103,7 @@ en:
         failure: Unable to remove your phone.
         success: Your phone has been removed.
     phone_fallback:
-      question: Don’t have access to your phone right now?
+      question: Can’t use your phone?
     phone_fee_disclosure: Message and data rates may apply.
     phone_info_html: We’ll send you a security code <strong>each time you sign in</strong>.
     phone_label: Phone number

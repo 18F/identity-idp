@@ -38,6 +38,11 @@ class EmailAddress < ApplicationRecord
       find_by(email_fingerprint: email_fingerprint)
     end
 
+    def find_with_confirmation_token(token)
+      return if token.blank? || token.include?("\x00")
+      EmailAddress.find_by(confirmation_token: token)
+    end
+
     def update_last_sign_in_at_on_user_id_and_email(user_id:, email:)
       return nil if email.to_s.empty?
 

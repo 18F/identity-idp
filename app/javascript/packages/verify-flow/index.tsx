@@ -1,9 +1,13 @@
 import { FormSteps } from '@18f/identity-form-steps';
 import { StepIndicator, StepIndicatorStep, StepStatus } from '@18f/identity-step-indicator';
+import { t } from '@18f/identity-i18n';
+import { Alert } from '@18f/identity-components';
 import { STEPS } from './steps';
 
 export interface VerifyFlowValues {
   personalKey?: string;
+
+  personalKeyConfirm?: string;
 }
 
 interface VerifyFlowProps {
@@ -16,9 +20,14 @@ interface VerifyFlowProps {
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;
+
+  /**
+   * Application name, used in generating page titles for current step.
+   */
+  appName: string;
 }
 
-export function VerifyFlow({ initialValues = {}, basePath }: VerifyFlowProps) {
+export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlowProps) {
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -28,11 +37,15 @@ export function VerifyFlow({ initialValues = {}, basePath }: VerifyFlowProps) {
         <StepIndicatorStep title="Verify phone or address" status={StepStatus.COMPLETE} />
         <StepIndicatorStep title="Secure your account" status={StepStatus.CURRENT} />
       </StepIndicator>
+      <Alert type="success" className="margin-bottom-4">
+        {t('idv.messages.confirm')}
+      </Alert>
       <FormSteps
         steps={STEPS}
         initialValues={initialValues}
         promptOnNavigate={false}
         basePath={basePath}
+        titleFormat={`%{step} - ${appName}`}
       />
     </>
   );

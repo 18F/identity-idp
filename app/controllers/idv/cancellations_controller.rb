@@ -7,14 +7,14 @@ module Idv
 
     def new
       properties = ParseControllerFromReferer.new(request.referer).call
-      analytics.track_event(Analytics::IDV_CANCELLATION, properties.merge(step: params[:step]))
+      analytics.idv_cancellation_visited(step: params[:step], **properties)
       self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
     end
 
     def update
       if params.key?(:cancel)
-        analytics.track_event(Analytics::IDV_CANCELLATION_GO_BACK, step: params[:step])
+        analytics.idv_cancellation_go_back(step: params[:step])
         redirect_to session_go_back_path || idv_path
       else
         render :new
@@ -22,7 +22,7 @@ module Idv
     end
 
     def destroy
-      analytics.track_event(Analytics::IDV_CANCELLATION_CONFIRMED, step: params[:step])
+      analytics.idv_cancellation_confirmed(step: params[:step])
       @return_to_sp_path = return_to_sp_failure_to_proof_path(location_params)
       @hybrid_session = hybrid_session?
       if hybrid_session?

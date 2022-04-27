@@ -8,7 +8,7 @@ module SignUp
 
     def create
       clear_setup_piv_cac_from_sign_in
-      process_confirmation
+      process_successful_confirmation
     rescue ActiveRecord::RecordNotUnique
       process_already_confirmed_user
     end

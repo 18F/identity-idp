@@ -102,7 +102,7 @@ describe('document-capture/components/selfie-capture', () => {
 
   it('renders video element that plays after consent granted', async () => {
     const { getByText, getByLabelText, findByLabelText } = render(<SelfieCapture />, { wrapper });
-    userEvent.click(getByText('Allow access'));
+    await userEvent.click(getByText('Allow access'));
 
     await findByLabelText('doc_auth.buttons.take_picture');
     const video = getByLabelText('doc_auth.headings.document_capture_selfie');
@@ -111,7 +111,7 @@ describe('document-capture/components/selfie-capture', () => {
 
   it('stops capture when unmounted', async () => {
     const { getByText, findByLabelText, unmount } = render(<SelfieCapture />, { wrapper });
-    userEvent.click(getByText('Allow access'));
+    await userEvent.click(getByText('Allow access'));
 
     await findByLabelText('doc_auth.buttons.take_picture');
     unmount();
@@ -135,7 +135,7 @@ describe('document-capture/components/selfie-capture', () => {
     error.name = 'NotAllowedError';
     navigator.mediaDevices.getUserMedia = () => Promise.reject(error);
     const { getByText, findByText } = render(<SelfieCapture />, { wrapper });
-    userEvent.click(getByText('Allow access'));
+    await userEvent.click(getByText('Allow access'));
 
     await findByText('doc_auth.instructions.document_capture_selfie_consent_blocked');
   });
@@ -151,7 +151,7 @@ describe('document-capture/components/selfie-capture', () => {
   it('stops capture after rerendered with value', async () => {
     const { findByLabelText, getByText, rerender } = render(<SelfieCapture />, { wrapper });
 
-    userEvent.click(getByText('Allow access'));
+    await userEvent.click(getByText('Allow access'));
     await findByLabelText('doc_auth.buttons.take_picture');
     rerender(<SelfieCapture value={value} />);
     expect(track.stop.calledOnce).to.be.true();

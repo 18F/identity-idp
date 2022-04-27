@@ -134,8 +134,8 @@ describe('DocumentCapturePolling', () => {
       expect(event.defaultPrevented).to.be.true();
     });
 
-    it('does not prompt by navigating away via back link', () => {
-      userEvent.click(screen.getByText('Back'));
+    it('does not prompt by navigating away via back link', async () => {
+      await userEvent.click(screen.getByText('Back'), { advanceTimers: sandbox.clock.tick });
       window.dispatchEvent(event);
 
       expect(event.defaultPrevented).to.be.false();

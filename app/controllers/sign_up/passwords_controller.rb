@@ -8,7 +8,7 @@ module SignUp
 
     def new
       password_form # Memoize the password form to use in the view
-      process_confirmation
+      process_successful_confirmation
     end
 
     def create

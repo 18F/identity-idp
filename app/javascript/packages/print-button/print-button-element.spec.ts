@@ -14,11 +14,11 @@ describe('PrintButtonElement', () => {
     sandbox.restore();
   });
 
-  it('prints when clicked', () => {
+  it('prints when clicked', async () => {
     document.body.innerHTML = `<lg-print-button><button type="button">Print</button><lg-print-button>`;
     const button = screen.getByRole('button');
 
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(window.print).to.have.been.called();
   });

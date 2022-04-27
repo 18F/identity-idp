@@ -4,12 +4,7 @@ describe SignUp::PasswordsController do
   describe '#create' do
     it 'tracks a valid password event' do
       token = 'new token'
-      user = create(
-        :user,
-        :unconfirmed,
-        confirmation_token: token,
-        confirmation_sent_at: Time.zone.now,
-      )
+      user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
 
@@ -20,6 +15,11 @@ describe SignUp::PasswordsController do
         request_id_present: false,
       }
 
+      expect(@analytics).to receive(:track_event).
+        with(
+          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
+          { errors: {}, success: true, user_id: user.uuid },
+        )
       expect(@analytics).to receive(:track_event).
         with(Analytics::PASSWORD_CREATION, analytics_hash)
 
@@ -33,11 +33,35 @@ describe SignUp::PasswordsController do
       expect(user.confirmed?).to eq true
     end
 
-    it 'tracks an invalid password event' do
+    it 'rejects when confirmation_token is invalid' do
+      invalid_confirmation_sent_at =
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
       token = 'new token'
       user = create(
-        :user, :unconfirmed, confirmation_token: token, confirmation_sent_at: Time.zone.now
+        :user,
+        :unconfirmed,
+        confirmation_token: token,
+        confirmation_sent_at: invalid_confirmation_sent_at,
       )
+
+      validator = EmailConfirmationTokenValidator.new(user.email_addresses.first)
+      result = validator.submit
+      expect(result.success?).to eq false
+
+      post :create, params: {
+        password_form: { password: 'NewVal!dPassw0rd' },
+        confirmation_token: token,
+      }
+
+      user.reload
+      expect(user.valid_password?('NewVal!dPassw0rd')).to eq false
+      expect(user.confirmed?).to eq false
+      expect(response).to redirect_to(sign_up_email_resend_url)
+    end
+
+    it 'tracks an invalid password event' do
+      token = 'new token'
+      user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
 
@@ -55,6 +79,12 @@ describe SignUp::PasswordsController do
       }
 
       expect(@analytics).to receive(:track_event).
+        with(
+          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
+          { errors: {}, success: true, user_id: user.uuid },
+        )
+
+      expect(@analytics).to receive(:track_event).
         with(Analytics::PASSWORD_CREATION, analytics_hash)
 
       post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
@@ -65,10 +95,25 @@ describe SignUp::PasswordsController do
     render_views
     it 'instructs crawlers to not index this page' do
       token = 'foo token'
-      create(:user, :unconfirmed, confirmation_token: token, confirmation_sent_at: Time.zone.now)
+      create(:user, :unconfirmed, confirmation_token: token)
       get :new, params: { confirmation_token: token }
 
       expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
+    end
+
+    it 'rejects when confirmation_token is invalid' do
+      invalid_confirmation_sent_at =
+        Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+      token = 'new token'
+      create(
+        :user,
+        :unconfirmed,
+        confirmation_token: token,
+        confirmation_sent_at: invalid_confirmation_sent_at,
+      )
+
+      get :new, params: { confirmation_token: token }
+      expect(response).to redirect_to(sign_up_email_resend_url)
     end
   end
 end

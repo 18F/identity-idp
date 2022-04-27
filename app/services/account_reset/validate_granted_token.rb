@@ -20,7 +20,6 @@ module AccountReset
     def extra_analytics_attributes
       {
         user_id: user.uuid,
-        event: 'granted token validation',
       }
     end
   end

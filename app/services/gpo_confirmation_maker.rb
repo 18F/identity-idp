@@ -44,7 +44,7 @@ class GpoConfirmationMaker
   def generate_otp
     ProfanityDetector.without_profanity do
       # Crockford encoding is 5 bits per character
-      Base32::Crockford.encode(SecureRandom.random_number(2**(5 * 10)), length: 10)
+      Base32::Crockford.encode(SecureRandom.random_number(2 ** (5 * 10)), length: 10)
     end
   end
 

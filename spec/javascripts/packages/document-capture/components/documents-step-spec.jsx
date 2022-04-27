@@ -28,8 +28,10 @@ describe('document-capture/components/documents-step', () => {
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-    await new Promise((resolve) => onChange.callsFake(resolve));
+    await Promise.all([
+      new Promise((resolve) => onChange.callsFake(resolve)),
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file),
+    ]);
     expect(onChange).to.have.been.calledWith({
       front: file,
       front_image_metadata: sinon.match(/^\{.+\}$/),
@@ -50,7 +52,7 @@ describe('document-capture/components/documents-step', () => {
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
   });
 
-  it('renders additional tips after failed attempts', () => {
+  it('renders additional tips after failed attempts', async () => {
     const { getByLabelText, getByText, getByRole } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -65,26 +67,26 @@ describe('document-capture/components/documents-step', () => {
     const result = { sharpness: 100, image: { data: '' } };
 
     window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
     // Reset after successful attempt.
     window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 80 }));
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
     // Fail twice more to trigger troubleshooting.
     window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
     getByText(
       'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
     );
 
-    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+    await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
     // Only show troubleshooting a single time, even after 2 more failed attempts.
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
-    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    await userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
     expect(() =>
       getByText(
         'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',

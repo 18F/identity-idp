@@ -4,14 +4,16 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   include IdvHelper
 
   let(:user) { create(:user) }
-  let(:session) { { 'idv/doc_auth' => {} } }
+  let(:sp_session) { {} }
+  let(:session) { { 'idv/doc_auth' => {}, sp: sp_session } }
   let(:controller) do
     instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
+  let(:billed) { true }
   let(:result) do
-    { doc_auth_result: 'Passed', success: true, errors: {}, exception: nil, billed: true }
+    { doc_auth_result: 'Passed', success: true, errors: {}, exception: nil, billed: billed }
   end
   let(:pii) do
     {
@@ -23,6 +25,8 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   end
   let(:done) { true }
   let(:async_state) { OpenStruct.new(result: result, pii: pii, pii_from_doc: pii, 'done?' => done) }
+  let(:issuer) { 'urn:gov:gsa:openidconnect:sp:test_cookie' }
+  let(:sp) { create(:service_provider, issuer: issuer) }
 
   subject { described_class.new(flow) }
 
@@ -30,8 +34,8 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     context 'successful async result' do
       before do
         allow(subject).to receive(:async_state).and_return(async_state)
-        allow(subject).to receive(:add_cost).and_return(true)
         allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:current_sp).and_return(sp)
       end
 
       it 'calls analytics to log the successful event' do
@@ -42,6 +46,48 @@ describe Idv::Actions::VerifyDocumentStatusAction do
           success: true,
           errors: {},
         )
+      end
+
+      it 'adds costs' do
+        subject.call
+
+        expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
+          'acuant_front_image',
+          'acuant_back_image',
+          'acuant_result',
+        )
+      end
+
+      context 'unbilled' do
+        let(:billed) { false }
+
+        it 'adds costs' do
+          subject.call
+
+          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
+            'acuant_front_image',
+            'acuant_back_image',
+          )
+        end
+      end
+
+      context 'ial2 strict' do
+        let(:sp_session) { { ial2_strict: true } }
+
+        before do
+          allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        end
+
+        it 'adds costs' do
+          subject.call
+
+          expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
+            'acuant_front_image',
+            'acuant_back_image',
+            'acuant_selfie',
+            'acuant_result',
+          )
+        end
       end
     end
 

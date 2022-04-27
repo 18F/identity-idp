@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read('.ruby-version').strip}"
 
-gem 'rails', '~> 6.1.4'
+gem 'rails', '~> 6.1.5.1'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
@@ -56,7 +56,6 @@ gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
 gem 'saml_idp', github: '18F/saml_idp', tag: '0.16.0-18f'
 gem 'scrypt'
-gem 'secure_headers', '~> 6.3'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'

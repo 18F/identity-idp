@@ -29,12 +29,12 @@ describe('useFocusTrap', () => {
     expect(trap.deactivate).to.be.a('function');
   });
 
-  it('traps focus', () => {
+  it('traps focus', async () => {
     const container = document.querySelector('.container') as HTMLElement;
     renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
     expect(container.contains(document.activeElement)).to.be.true();
-    userEvent.tab();
+    await userEvent.tab();
     expect(container.contains(document.activeElement)).to.be.true();
   });
 
@@ -52,7 +52,7 @@ describe('useFocusTrap', () => {
     expect(document.activeElement).to.equal(originalActiveElement);
   });
 
-  it('accepts options', () => {
+  it('accepts options', async () => {
     const container = document.querySelector('.container') as HTMLElement;
     const onDeactivate = sinon.spy();
     renderHook(() =>
@@ -65,7 +65,7 @@ describe('useFocusTrap', () => {
 
     const outsideButton = screen.getByTestId('outsideButton');
 
-    userEvent.click(outsideButton);
+    await userEvent.click(outsideButton);
     expect(onDeactivate).to.have.been.called();
   });
 });
