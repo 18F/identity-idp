@@ -9,8 +9,7 @@ RSpec.describe Api::ProfileCreationForm do
     { first_name: 'Ada', last_name: 'Lovelace', ssn: '900-90-0900' }
   end
   let(:metadata) { {} }
-  let(:key) { OpenSSL::PKey::RSA.new 2048 }
-  let(:pub) { key.public_key }
+  let(:key) { OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_private_key)) }
   let(:bundle) do
     JWT.encode({ pii: pii, metadata: metadata }, key, 'RS256', sub: uuid.to_s)
   end
@@ -22,13 +21,6 @@ RSpec.describe Api::ProfileCreationForm do
       jwt: bundle,
       user_session: user_session,
     )
-  end
-
-  before do
-    allow(IdentityConfig.store).to receive(:idv_private_key).
-                                     and_return(Base64.strict_encode64(key.to_s))
-    allow(IdentityConfig.store).to receive(:idv_public_key).
-                                     and_return(Base64.strict_encode64(pub.to_s))
   end
 
   describe '#submit' do

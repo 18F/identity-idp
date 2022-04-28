@@ -27,15 +27,10 @@ describe Api::Verify::CompleteController do
   end
 
   let(:profile) { subject.idv_session.profile }
-  let(:key) { OpenSSL::PKey::RSA.new 2048 }
-  let(:pub) { key.public_key }
+  let(:key) { OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_private_key)) }
   let(:jwt) { JWT.encode({ pii: pii, metadata: {} }, key, 'RS256', sub: user.uuid) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_private_key).
-        and_return(Base64.strict_encode64(key.to_s))
-    allow(IdentityConfig.store).to receive(:idv_public_key).
-        and_return(Base64.strict_encode64(pub.to_s))
     allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(true)
   end
 
