@@ -69,6 +69,8 @@ workflow:
 
 check_changelog:
   stage: build
+  variables:
+    GIT_DEPTH: 100
   script:
     - echo "$CI_PIPELINE_SOURCE"
     - |
