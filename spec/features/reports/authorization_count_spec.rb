@@ -251,7 +251,7 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.active_profile.update(proofing_components: { liveness_check: '' })
+        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
         visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
         click_agree_and_continue
         expect_ial2_count_only(client_id_1)
@@ -331,7 +331,7 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.active_profile.update(proofing_components: { liveness_check: '' })
+        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,
