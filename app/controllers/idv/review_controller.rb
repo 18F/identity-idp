@@ -44,7 +44,7 @@ module Idv
     def create
       init_profile
       user_session[:need_personal_key_confirmation] = true
-      redirect_to idv_personal_key_url
+      redirect_to next_step
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
       analytics.track_event(Analytics::IDV_FINAL, success: true)
 
@@ -106,11 +106,19 @@ module Idv
     def personal_key_confirmed
       return unless current_user
       return unless current_user.active_profile.present? && need_personal_key_confirmation?
-      redirect_to idv_personal_key_url
+      redirect_to next_step
     end
 
     def need_personal_key_confirmation?
       user_session[:need_personal_key_confirmation]
+    end
+
+    def next_step
+      if IdentityConfig.store.idv_api_enabled && idv_session.address_verification_mechanism != 'gpo'
+        idv_app_root_url
+      else
+        idv_personal_key_url
+      end
     end
   end
 end
