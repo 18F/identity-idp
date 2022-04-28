@@ -32,28 +32,11 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <% if IdentityConfig.store.select_multiple_mfa_options %>
-            <%= check_box_tag(
-                  'two_factor_options_form[selection][]',
-                  option.type,
-                  false,
-                  disabled: option.disabled?,
-                  class: 'usa-checkbox__input usa-checkbox__input--tile',
-                  id: "two_factor_options_form_selection_#{option.type}",
-                ) %>
-            <%= label_tag(
-                  "two_factor_options_form_selection_#{option.type}",
-                  class: 'usa-checkbox__label usa-checkbox__label--illustrated',
-                ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-                    <div class="usa-checkbox__label--text"><%= option.label %>
-                      <span class="usa-checkbox__label-description">
-                        <%= option.info %>
-                      </span>
-                    </div>
-                  <% end %>
-                  <% if flash["#{option.type}_error"] %>
-                    <%= render AlertComponent.new(type: :error, id: 'phones', class: 'margin-bottom-1', message: flash["#{option.type}_error"]) %>
-                  <% end %>
+             <%= render MfaSelectionComponent.new(
+                    form: f,
+                    name: :selection,
+                    option: option,
+                  ) %>
           <% else %>
             <%= radio_button_tag(
                   'two_factor_options_form[selection]',

@@ -1,0 +1,10 @@
+.checkbox_invalid {
+  border-color: color('secondary') !important;
+  border-width: 2px !important;
+}
+
+.checkbox_alert {
+  color: color('secondary');
+  background: none;
+  margin-top: -0.5rem;
+}

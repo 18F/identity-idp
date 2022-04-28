@@ -59,7 +59,7 @@ module Users
       return if !params[:two_factor_options_form][:selection].include?("phone") || params[:two_factor_options_form][:selection].length > 1
 
       flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_option')
-      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
+      redirect_to two_factor_options_path(anchor: "select_phone")
     end
 
     def confirm_user_needs_2fa_setup
