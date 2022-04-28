@@ -543,6 +543,8 @@ module Features
 
       expect(page).to have_current_path authenticator_setup_path
 
+      fill_in t('forms.totp_setup.totp_step_1'), with: "App #{SecureRandom.hex(4)}"
+
       secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
