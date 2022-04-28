@@ -68,7 +68,7 @@ describe 'authorization count' do
         click_agree_and_continue
         expect_ial1_count_only(client_id_1)
 
-        user.profiles << create(:profile, :active, :verified, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, user: user)
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
         fill_in t('account.index.password'), with: user.password
         click_submit_default
@@ -84,7 +84,7 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.profiles << create(:profile, :active, :verified, :with_liveness, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
         visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
         fill_in t('account.index.password'), with: user.password
         click_submit_default
@@ -109,7 +109,7 @@ describe 'authorization count' do
         click_agree_and_continue
         expect_ial1_count_only(issuer_1)
 
-        user.profiles << create(:profile, :active, :verified, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, user: user)
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         fill_in t('account.index.password'), with: user.password
         click_submit_default
@@ -138,7 +138,7 @@ describe 'authorization count' do
       end
 
       it 'counts IAL2 auth when ial2 strict is requested' do
-        user.profiles << create(:profile, :active, :verified, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, user: user)
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,
@@ -161,7 +161,7 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        user.profiles << create(:profile, :active, :verified, :with_liveness, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,

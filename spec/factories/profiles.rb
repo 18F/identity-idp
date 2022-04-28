@@ -30,6 +30,15 @@ FactoryBot.define do
       proofing_components { { liveness_check: '' } }
     end
 
+    trait :with_pii do
+      pii do
+        DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+          ssn: DocAuthHelper::GOOD_SSN,
+          phone: '+1 (555) 555-1234',
+        )
+      end
+    end
+
     after(:build) do |profile, evaluator|
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)

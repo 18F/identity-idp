@@ -193,7 +193,7 @@ FactoryBot.define do
 
       after :build do |user|
         user.save
-        user.profiles << create(:profile, :active, :verified, user: user)
+        user.profiles << create(:profile, :active, :verified, :with_pii, user: user)
       end
     end
   end
