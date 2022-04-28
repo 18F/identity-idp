@@ -121,8 +121,8 @@ fr:
     sign_in:
       bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion.
     two_factor_auth_setup:
+      must_select_additional_option: Sélectionnez une méthode d’authentification supplémentaire.
       must_select_option: Sélectionnez une méthode d’authentification.
-      must_select_additional_option: Sélectionnez une méthode d'authentification supplémentaire.
     verify_personal_key:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     verify_profile:
