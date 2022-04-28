@@ -1,9 +1,8 @@
 module MfaSetupConcern
   extend ActiveSupport::Concern
 
-  def user_next_authentication_setup_path(next_setup_choice)
-    if user_session.dig(:selected_mfa_options, determine_next_mfa_selection).present? &&
-       IdentityConfig.store.select_multiple_mfa_options
+  def user_next_authentication_setup_path(next_setup_choice = nil)
+    if user_needs_confirmation_screen?
       auth_method_confirmation_url(next_setup_choice: next_setup_choice)
     else
       user_session.delete(:selected_mfa_options)
@@ -41,5 +40,12 @@ module MfaSetupConcern
     return if user_fully_authenticated?
     return unless MfaPolicy.new(current_user).two_factor_enabled?
     redirect_to user_two_factor_authentication_url
+  end
+
+  def user_needs_confirmation_screen? 
+    (user_session.dig(:selected_mfa_options, determine_next_mfa_selection).present? || 
+      user_session[:suggest_second_mfa]
+    ) &&
+       IdentityConfig.store.select_multiple_mfa_options
   end
 end

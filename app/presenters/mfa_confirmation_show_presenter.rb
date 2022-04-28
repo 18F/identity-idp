@@ -19,7 +19,7 @@ class MfaConfirmationShowPresenter
   end
 
   def info
-    t('multi_factor_authentication.account_info', count: enabled_method_count)
+    t('mfa.account_info', count: enabled_method_count)
   end
 
   private
@@ -29,6 +29,6 @@ class MfaConfirmationShowPresenter
   end
 
   def method_count_text
-    t('multi_factor_authentication.current_method_count')[enabled_method_count - 1]
+    t('mfa.current_method_count')[enabled_method_count - 1]
   end
 end
