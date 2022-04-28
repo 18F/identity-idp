@@ -24,14 +24,14 @@ module DocumentCaptureStepHelper
   end
 
   def attach_images_with_js
-    attach_file 'Front of your ID', 'app/assets/images/logo.png'
-    attach_file 'Back of your ID', 'app/assets/images/logo.png'
+    attach_file t('doc_auth.headings.document_capture_front'), 'app/assets/images/logo.png'
+    attach_file t('doc_auth.headings.document_capture_back'), 'app/assets/images/logo.png'
     if selfie_required?
       # Disable `mediaDevices` support so that selfie upload does not attempt a live capture, and
       # instead falls back to image upload.
       page.execute_script('Object.defineProperty(navigator, "mediaDevices", { value: undefined });')
       click_idv_continue
-      attach_file 'Your photo', 'app/assets/images/logo.png'
+      attach_file t('doc_auth.headings.document_capture_selfie'), 'app/assets/images/logo.png'
     end
   end
 
