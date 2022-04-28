@@ -10,7 +10,7 @@ class TwoFactorOptionsPresenter
 
   def options
     webauthn_platform_option + webauthn_option + piv_cac_option + totp_option +
-      sms_options + voice_options + phone_options + backup_code_option
+      phone_options + sms_option + voice_option + backup_code_option
   end
 
   def icon
@@ -63,19 +63,33 @@ class TwoFactorOptionsPresenter
     [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new]
   end
 
-  def sms_options
-    return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
-    [TwoFactorAuthentication::SmsSelectionPresenter.new]
-  end
-
-  def voice_options
-    return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
-    [TwoFactorAuthentication::VoiceSelectionPresenter.new]
-  end
-
   def phone_options
     return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
     [TwoFactorAuthentication::PhoneSelectionPresenter.new]
+  end
+
+  def sms_option
+    if piv_cac_required ||
+       aal3_only? ||
+       IdentityConfig.store.hide_phone_mfa_signup ||
+       phone_options.any?
+
+       return []
+    else
+      [TwoFactorAuthentication::SmsSelectionPresenter.new]
+    end
+  end
+
+  def voice_option
+    if piv_cac_required ||
+       aal3_only? ||
+       IdentityConfig.store.hide_phone_mfa_signup ||
+       phone_options.any?
+
+       return []
+    else
+      [TwoFactorAuthentication::VoiceSelectionPresenter.new]
+    end
   end
 
   def totp_option
