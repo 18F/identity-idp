@@ -4,7 +4,7 @@ describe TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }
-  let(:name) { SecureRandom.hex(4) }
+  let(:name) { SecureRandom.hex }
 
   describe '#submit' do
     context 'when TOTP code is valid' do

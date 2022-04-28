@@ -75,7 +75,7 @@ describe Users::TotpSetupController, devise: true do
   end
 
   describe '#confirm' do
-    let(:name) { SecureRandom.hex(4) }
+    let(:name) { SecureRandom.hex }
 
     context 'user is already signed up' do
       context 'when user presents invalid code' do
