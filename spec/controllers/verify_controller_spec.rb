@@ -24,11 +24,7 @@ describe VerifyController do
       stub_idv_session
     end
 
-<<<<<<< HEAD
-    context 'with step feature-disabled' do
-=======
     context 'with idv_api_enabled feature disabled' do
->>>>>>> fb064a9d9 (LG-6193: Integrate IdV app personal key step into proofing flow (feature-flagged) (#6269))
       before do
         allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
       end
