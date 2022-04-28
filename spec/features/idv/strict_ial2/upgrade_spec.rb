@@ -64,6 +64,20 @@ feature 'Strict IAL2 upgrade' do
       expect(user.active_profile.strict_ial2_proofed?).to be_truthy
     end
 
-    scenario 'an IAL2 strict request for a user with a phone check does not trigger an upgrade'
+    scenario 'an IAL2 strict request for a user with a phone check does not trigger an upgrade' do
+      user = create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' },
+        proofing_components: { liveness_check: :acuant, address_check: :lexis_nexis_address },
+      ).user
+      visit_idp_from_oidc_sp_with_ial2_strict
+      sign_in_user(user)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+      click_agree_and_continue
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(user.active_profile.strict_ial2_proofed?).to be_truthy
+    end
   end
 end
