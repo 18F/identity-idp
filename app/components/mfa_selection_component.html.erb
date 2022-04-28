@@ -1,34 +1,33 @@
  <lg-validated-field>
-  <%= content_tag(
-        :script,
-        error_messages.to_json,
-        {
-          type: 'application/json',
-          class: 'validated-field__error-strings',
-        },
-        false,
+      <%= content_tag(
+            :script,
+            error_messages.to_json,
+            {
+              type: 'application/json',
+              class: 'validated-field__error-strings',
+            },
+            false,
+          ) %>
+    <%= check_box_tag(
+        'two_factor_options_form[selection][]',
+        option.type,
+        option.type === "phone" && flash[:phone_error].present?,
+        disabled: option.disabled?,
+        class: 'usa-checkbox__input usa-checkbox__input--tile',
+        id: "two_factor_options_form_selection_#{option.type}",
       ) %>
-<%= check_box_tag(
-                  'two_factor_options_form[selection][]',
-                  option.type,
-                  option.type === "phone" && flash[:phone_error].present?,
-                  disabled: option.disabled?,
-                  class: 'usa-checkbox__input usa-checkbox__input--tile',
-                  id: "two_factor_options_form_selection_#{option.type}",
-                ) %>
-            <%= label_tag(
-                  "two_factor_options_form_selection_#{option.type}",
-                  class: "usa-checkbox__label usa-checkbox__label--illustrated #{'checkbox_invalid' if option.type === "phone" && flash[:phone_error]}",
-                ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-                    <div class="usa-checkbox__label--text"><%= option.label %>
-                      <span class="usa-checkbox__label-description">
-                        <%= option.info %>
-                      </span>
-                    </div>
-
-                  <% end %>
-                                          <% if option.type === "phone" && flash[:phone_error] %>
-                          <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 margin-top-neg-1 checkbox_alert', message: flash[:phone_error]) %>
-                        <% end %>
-                  </lg-validated-field>
+    <%= label_tag(
+          "two_factor_options_form_selection_#{option.type}",
+          class: "usa-checkbox__label usa-checkbox__label--illustrated #{'checkbox_invalid' if option.type === "phone" && flash[:phone_error]}",
+      ) do %>
+          <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
+          <div class="usa-checkbox__label--text"><%= option.label %>
+            <span class="usa-checkbox__label-description">
+              <%= option.info %>
+            </span>
+          </div>
+    <% end %>
+    <% if option.type === "phone" && flash[:phone_error] %>
+        <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 margin-top-neg-1 checkbox_alert', message: flash[:phone_error]) %>
+    <% end %>
+</lg-validated-field>

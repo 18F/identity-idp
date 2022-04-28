@@ -7,7 +7,7 @@ class TwoFactorOptionsForm
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
-  validates :selection, length: { minimum: 2, message: "phone" }, if: :phone_selected?
+  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_selected?
 
   def initialize(user)
     self.user = user
@@ -44,6 +44,6 @@ class TwoFactorOptionsForm
   end
 
   def phone_selected?
-   selection.include? "phone"
+   selection.include? 'phone'
   end
 end
