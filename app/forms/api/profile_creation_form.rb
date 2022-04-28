@@ -74,11 +74,8 @@ module Api
 
     def create_gpo_entry
       move_pii_to_user_session
-      if session[:pii].is_a?(String)
-        session[:pii] = Pii::Cacher.new(current_user, user_session).fetch
-      end
       confirmation_maker = GpoConfirmationMaker.new(
-        pii: session[:pii],
+        pii: Pii::Cacher.new(user, user_session).fetch,
         service_provider: service_provider,
         profile: profile,
       )
