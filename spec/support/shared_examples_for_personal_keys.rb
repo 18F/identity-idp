@@ -1,6 +1,18 @@
 shared_examples_for 'personal key page' do
   include PersonalKeyHelper
 
+  context 'informational text' do
+    context 'modal content' do
+      it 'displays the modal title' do
+        expect(page).to have_content t('forms.personal_key.title')
+      end
+
+      it 'displays the modal instructions' do
+        expect(page).to have_content t('forms.personal_key.instructions')
+      end
+    end
+  end
+
   context 'with javascript enabled', js: true do
     before do
       page.driver.browser.execute_cdp(
@@ -18,7 +30,7 @@ shared_examples_for 'personal key page' do
       click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
 
-      code = page.all('.separator-text__code').map(&:text).join('-')
+      code = page.all('[data-personal-key]').map(&:text).join('-')
       expect(copied_text).to eq(code)
     end
 
@@ -43,18 +55,6 @@ shared_examples_for 'personal key page' do
       path_before_submit = current_path
       within('[role=dialog]') { click_on t('forms.buttons.continue') }
       expect(current_path).not_to eq path_before_submit
-    end
-
-    it 'displays the modal title' do
-      click_continue
-
-      expect(page).to have_content t('forms.personal_key.title')
-    end
-
-    it 'displays the modal instructions' do
-      click_continue
-
-      expect(page).to have_content t('forms.personal_key.instructions')
     end
   end
 end
