@@ -10,7 +10,7 @@
   <%= link_to(
         @presenter.next_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-      ) { t('multi_factor_authentication.add') } %>
+      ) { t('mfa.add') } %>
 </div>
 
 <%= button_to(
@@ -18,5 +18,5 @@
       method: :post,
       class: 'usa-button usa-button--unstyled',
     ) do %>
-  <%= t('multi_factor_authentication.skip') %>
+  <%= t('mfa.skip') %>
 <% end %>
