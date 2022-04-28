@@ -14,7 +14,7 @@ export function isLikelyMobile() {
  * @return {boolean}
  */
 export function hasMediaAccess() {
-  return 'mediaDevices' in window.navigator;
+  return !!navigator.mediaDevices;
 }
 
 /**
