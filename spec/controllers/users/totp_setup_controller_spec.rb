@@ -75,6 +75,8 @@ describe Users::TotpSetupController, devise: true do
   end
 
   describe '#confirm' do
+    let(:name) { SecureRandom.hex(4) }
+
     context 'user is already signed up' do
       context 'when user presents invalid code' do
         before do
@@ -84,7 +86,7 @@ describe Users::TotpSetupController, devise: true do
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          patch :confirm, params: { code: 123 }
+          patch :confirm, params: { name: name, code: 123 }
         end
 
         it 'redirects with an error message' do
@@ -114,7 +116,7 @@ describe Users::TotpSetupController, devise: true do
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
-          patch :confirm, params: { code: generate_totp_code(secret) }
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
 
         it 'redirects to account_path with a success message' do
@@ -143,7 +145,7 @@ describe Users::TotpSetupController, devise: true do
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
 
-          patch :confirm, params: {}
+          patch :confirm, params: { name: name }
         end
 
         it 'redirects with an error message' do
@@ -173,7 +175,7 @@ describe Users::TotpSetupController, devise: true do
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = 'abcdehij'
 
-          patch :confirm, params: { code: 123 }
+          patch :confirm, params: { name: name, code: 123 }
         end
 
         it 'redirects with an error message' do
@@ -203,7 +205,7 @@ describe Users::TotpSetupController, devise: true do
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:selected_mfa_options] = selected_mfa_options
 
-          patch :confirm, params: { code: generate_totp_code(secret) }
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
         context 'when user selected only one method on account creation' do
           it 'redirects to account_path with a success message' do
@@ -248,7 +250,7 @@ describe Users::TotpSetupController, devise: true do
           stub_analytics
           allow(@analytics).to receive(:track_event)
 
-          patch :confirm, params: { code: 123 }
+          patch :confirm, params: { name: name, code: 123 }
         end
 
         it 'redirects with an error message' do
