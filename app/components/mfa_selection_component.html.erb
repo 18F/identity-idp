@@ -29,6 +29,6 @@
 
                   <% end %>
                                           <% if option.type === "phone" && flash[:phone_error] %>
-                          <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 checkbox_alert', message: flash[:phone_error]) %>
+                          <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 margin-top-neg-1 checkbox_alert', message: flash[:phone_error]) %>
                         <% end %>
                   </lg-validated-field>
