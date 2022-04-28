@@ -33,13 +33,7 @@ interface AppRootElement extends HTMLElement {
 }
 
 const appRoot = document.getElementById('app-root') as AppRootElement;
-const {
-  initialValues: initialValuesJSON,
-  enabledStepNames: enabledStepNamesJSON,
-  basePath,
-  appName,
-  completionUrl: completionURL,
-} = appRoot.dataset;
+const { initialValues, basePath, appName, completionUrl: completionURL } = appRoot.dataset;
 
 const initialValues = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
@@ -48,10 +42,13 @@ function onComplete() {
   window.location.href = completionURL;
 }
 
+function onComplete() {
+  window.location.href = completionURL;
+}
+
 render(
   <VerifyFlow
-    initialValues={initialValues}
-    enabledStepNames={enabledStepNames}
+    initialValues={parsedInitialValues}
     basePath={basePath}
     appName={appName}
     onComplete={onComplete}

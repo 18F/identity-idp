@@ -53,43 +53,7 @@ interface VerifyFlowProps {
   onComplete: () => void;
 }
 
-/**
- * Returns a step name normalized for event logging.
- *
- * @param stepName Original step name.
- *
- * @return Step name normalized for event logging.
- */
-const getEventStepName = (stepName: string) => stepName.toLowerCase().replace(/[^a-z]/g, ' ');
-
-/**
- * Logs step visited event.
- */
-const logStepVisited = (stepName: string) =>
-  trackEvent(`IdV: ${getEventStepName(stepName)} visited`);
-
-/**
- * Logs step submitted event.
- */
-const logStepSubmitted = (stepName: string) =>
-  trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
-
-export function VerifyFlow({
-  initialValues = {},
-  enabledStepNames,
-  basePath,
-  appName,
-  onComplete,
-}: VerifyFlowProps) {
-  useEffect(() => {
-    logStepVisited(STEPS[0].name);
-  }, []);
-
-  let steps = STEPS;
-  if (enabledStepNames) {
-    steps = steps.filter(({ name }) => enabledStepNames.includes(name));
-  }
-
+export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -108,8 +72,6 @@ export function VerifyFlow({
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
-        onStepSubmit={logStepSubmitted}
-        onStepChange={logStepVisited}
         onComplete={onComplete}
       />
     </>

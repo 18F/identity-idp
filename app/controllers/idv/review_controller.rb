@@ -114,16 +114,11 @@ module Idv
     end
 
     def next_step
-      if idv_api_personal_key_step_enabled?
+      if IdentityConfig.store.idv_api_enabled && idv_session.address_verification_mechanism != 'gpo'
         idv_app_root_url
       else
         idv_personal_key_url
       end
-    end
-
-    def idv_api_personal_key_step_enabled?
-      return false if idv_session.address_verification_mechanism == 'gpo'
-      IdentityConfig.store.idv_api_enabled_steps.include?(:personal_key)
     end
   end
 end
