@@ -1,0 +1,7 @@
+deploy_branch_to_environment_map:
+  main:
+    - mhenke
+    - int
+    - dev
+  stages/mhenke:
+    - mhenke
