@@ -56,11 +56,6 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
     click_continue
     acknowledge_and_confirm_personal_key
 
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
-
     click_agree_and_continue
     expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
@@ -111,11 +106,6 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
-
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
 
     click_agree_and_continue
     expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml

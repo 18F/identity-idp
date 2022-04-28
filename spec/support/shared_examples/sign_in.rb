@@ -310,11 +310,6 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   # capture password before redirecting to SP
   expect(current_url).to eq capture_password_url
 
-  if sp == :oidc && !javascript_enabled?
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-  end
-
   fill_in_password_and_submit(user.password)
 
   if sp == :saml
