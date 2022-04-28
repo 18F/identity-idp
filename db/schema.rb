@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_22_190622) do
+ActiveRecord::Schema.define(version: 2022_04_28_141746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -509,7 +509,6 @@ ActiveRecord::Schema.define(version: 2022_04_22_190622) do
     t.boolean "allow_prompt_login", default: false
     t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
-    t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
     t.date "launch_date"
     t.string "iaa"
