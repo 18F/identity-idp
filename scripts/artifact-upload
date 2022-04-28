@@ -13,6 +13,10 @@ branch_environments = config.dig(
   'deploy_branch_to_environment_map',
   ENV.fetch('CI_COMMIT_BRANCH'),
 )
+if branch_environments.nil?
+  puts 'Skipping upload because no environments are configured for this branch'
+  exit 0
+end
 
 branch_environments.map do |upload_environment|
   static_bucket = ENV["#{upload_environment.upcase}_STATIC_BUCKET"]
