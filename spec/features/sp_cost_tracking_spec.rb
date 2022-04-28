@@ -74,13 +74,6 @@ feature 'SP Costing', :email do
     expect(sp_cost.transaction_id).to(eq(transaction_id)) if transaction_id
   end
 
-  def expect_direct_cost_type(sp_cost_index, token)
-    sp_cost = sp_costs(sp_cost_index)
-    expect(sp_cost.issuer).to eq('')
-    expect(sp_cost.agency_id).to eq(0)
-    expect(sp_cost.cost_type).to eq(token)
-  end
-
   def sp_costs(index)
     SpCost.order('id asc')[index]
   end
