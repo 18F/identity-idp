@@ -1,4 +1,5 @@
 require 'identity/hostdata'
+require 'csv'
 
 module Reports
   class SpActiveUsersReport < BaseReport
@@ -24,7 +25,7 @@ module Reports
       results = transaction_with_timeout do
         Db::Identity::SpActiveUserCounts.call(start_time(date), finish_time(date))
       end
-      save_report(REPORT_NAME, results.to_json, extension: 'json')
+      save_report(REPORT_NAME, to_csv(results), extension: 'csv')
     end
 
     def start_time(time)
@@ -45,6 +46,21 @@ module Reports
 
     def fiscal_end_date(time)
       time.change(year: time.month >= 10 ? time.year : time.year + 1, month: 9, day: 30).end_of_day
+    end
+
+    def to_csv(results)
+      CSV.generate do |csv|
+        csv << %w[
+          issuer
+          app_id
+          total_ial1_active
+          total_ial2_active
+        ]
+
+        results.each do |row|
+          csv << row.values_at('issuer', 'app_id', 'total_ial1_active', 'total_ial2_active')
+        end
+      end
     end
   end
 end

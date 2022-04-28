@@ -8,7 +8,12 @@ describe Reports::SpActiveUsersReport do
   let(:app_id) { 'app' }
 
   it 'is empty' do
-    expect(subject.perform(Time.zone.today)).to eq('[]')
+    expect(CSV.parse(subject.perform(Time.zone.today))).to eq(
+      [
+        ['issuer', 'app_id',
+         'total_ial1_active', 'total_ial2_active'],
+      ],
+    )
   end
 
   it 'returns total active user counts per sp broken down by ial1 and ial2' do
@@ -31,10 +36,14 @@ describe Reports::SpActiveUsersReport do
       user_id: 4, service_provider: issuer, uuid: 'foo4',
       last_ial2_authenticated_at: authenticated_time
     )
-    result = [{ issuer: issuer, app_id: app_id, total_ial1_active: 2,
-                total_ial2_active: 3 }].to_json
 
-    expect(subject.perform(Time.zone.today)).to eq(result)
+    result = CSV.parse(subject.perform(Time.zone.today))
+    expect(result).to eq(
+      [
+        ['issuer', 'app_id', 'total_ial1_active', 'total_ial2_active'],
+        [issuer, app_id, '2', '3'],
+      ],
+    )
   end
 
   it 'when Oct 1, returns total active user counts per sp by ial1 and ial2 for last fiscal year' do
@@ -71,10 +80,13 @@ describe Reports::SpActiveUsersReport do
       last_ial2_authenticated_at: current_fiscal_year
     )
 
-    result = [{ issuer: issuer, app_id: app_id, total_ial1_active: 2,
-                total_ial2_active: 3 }].to_json
-
-    expect(subject.perform(job_date)).to eq(result)
+    result = CSV.parse(subject.perform(job_date))
+    expect(result).to eq(
+      [
+        ['issuer', 'app_id', 'total_ial1_active', 'total_ial2_active'],
+        [issuer, app_id, '2', '3'],
+      ],
+    )
   end
 
   describe '#good_job_concurrency_key' do
