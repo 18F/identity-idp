@@ -39,9 +39,14 @@ interface VerifyFlowProps {
    * Application name, used in generating page titles for current step.
    */
   appName: string;
+
+  /**
+   * Callback invoked after completing the form.
+   */
+  onComplete: () => void;
 }
 
-export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlowProps) {
+export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -60,6 +65,7 @@ export function VerifyFlow({ initialValues = {}, basePath, appName }: VerifyFlow
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
+        onComplete={onComplete}
       />
     </>
   );
