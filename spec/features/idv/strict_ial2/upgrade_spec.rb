@@ -43,7 +43,7 @@ feature 'Strict IAL2 upgrade' do
       user = create(
         :profile, :active, :verified,
         pii: { first_name: 'John', ssn: '111223333' },
-        proofing_components: { liveness_check: :acuant, address_check: :gpo_letter },
+        proofing_components: { liveness_check: :acuant, address_check: :gpo_letter }
       ).user
       visit_idp_from_oidc_sp_with_ial2_strict
       sign_in_user(user)
@@ -68,7 +68,7 @@ feature 'Strict IAL2 upgrade' do
       user = create(
         :profile, :active, :verified,
         pii: { first_name: 'John', ssn: '111223333' },
-        proofing_components: { liveness_check: :acuant, address_check: :lexis_nexis_address },
+        proofing_components: { liveness_check: :acuant, address_check: :lexis_nexis_address }
       ).user
       visit_idp_from_oidc_sp_with_ial2_strict
       sign_in_user(user)
