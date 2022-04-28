@@ -92,7 +92,7 @@ module OpenidConnect
     end
 
     def identity_needs_strict_ial2_verification?
-      @authorize_form.ial2_strict_requested? && current_user.active_profile&.strict_ial2_proofed?
+      @authorize_form.ial2_strict_requested? && !current_user.active_profile&.strict_ial2_proofed?
     end
 
     def build_authorize_form_from_params
