@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :with_liveness do
-      proofing_components { { liveness_check: '' } }
+      proofing_components { { liveness_check: 'vendor' } }
     end
 
     trait :with_pii do
