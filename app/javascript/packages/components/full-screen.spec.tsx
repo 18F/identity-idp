@@ -3,13 +3,12 @@ import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import FullScreen, {
-  useInertSiblingElements,
-} from '@18f/identity-document-capture/components/full-screen';
+import FullScreen, { useInertSiblingElements } from './full-screen';
+import type { FullScreenRefHandle } from './full-screen';
 
 const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
 
-describe('document-capture/components/full-screen', () => {
+describe('FullScreen', () => {
   describe('useInertSiblingElements', () => {
     beforeEach(() => {
       document.body.innerHTML = `
@@ -55,6 +54,66 @@ describe('document-capture/components/full-screen', () => {
     expect(button.nodeName).to.equal('BUTTON');
   });
 
+  context('hideCloseButton prop is true', () => {
+    it('renders without a close button', () => {
+      const { queryByLabelText } = render(
+        <FullScreen hideCloseButton>
+          <input />
+        </FullScreen>,
+      );
+
+      const button = queryByLabelText('users.personal_key.close');
+
+      expect(button).to.not.exist();
+    });
+  });
+
+  it('renders with white background', () => {
+    const { baseElement } = render(<FullScreen>Content</FullScreen>);
+
+    expect(baseElement.querySelector('.full-screen.bg-white')).to.exist();
+  });
+
+  context('with bgColor prop', () => {
+    it('renders without a close button', () => {
+      const { baseElement } = render(<FullScreen bgColor="none">Content</FullScreen>);
+
+      expect(baseElement.querySelector('.full-screen.bg-none')).to.exist();
+    });
+  });
+
+  it('applies label to dialog', () => {
+    render(<FullScreen label="Modal">Content</FullScreen>);
+
+    expect(screen.getByRole('dialog', { name: 'Modal' })).to.exist();
+  });
+
+  context('with labelledBy prop', () => {
+    it('applies associates dialog with label', () => {
+      render(
+        <FullScreen labelledBy="custom-label">
+          <span id="custom-label">Modal</span>
+        </FullScreen>,
+      );
+
+      expect(screen.getByRole('dialog', { name: 'Modal' })).to.exist();
+    });
+  });
+
+  context('with describedBy prop', () => {
+    it('applies associates dialog with label', () => {
+      render(
+        <FullScreen describedBy="custom-description">
+          <span id="custom-description">Description</span>
+        </FullScreen>,
+      );
+
+      const dialog = screen.getByRole('dialog');
+
+      expect(dialog.getAttribute('aria-describedby')).to.equal('custom-description');
+    });
+  });
+
   it('focuses the first interactive element', async () => {
     const { getByRole } = render(
       <FullScreen>
@@ -68,7 +127,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('focuses the close button as a fallback', async () => {
-    const { getByRole } = render(<FullScreen />);
+    const { getByRole } = render(<FullScreen>Content</FullScreen>);
 
     await delay(); // focus-trap delays initial focus by default
     expect(document.activeElement).to.equal(
@@ -166,7 +225,7 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('only removes body class when last mounted modal is removed', () => {
-    const { rerender } = render(
+    const { rerender, unmount } = render(
       <>
         <FullScreen>Please don’t</FullScreen>
         <FullScreen>do this.</FullScreen>
@@ -177,15 +236,15 @@ describe('document-capture/components/full-screen', () => {
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.true();
 
-    rerender(null);
+    unmount();
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
   });
 
   it('exposes focus trap on its ref', () => {
-    const ref = createRef();
+    const ref = createRef<FullScreenRefHandle>();
     render(<FullScreen ref={ref}>Content</FullScreen>);
 
-    expect(ref.current.focusTrap.deactivate).to.be.a('function');
+    expect(ref.current!.focusTrap!.deactivate).to.be.a('function');
   });
 });

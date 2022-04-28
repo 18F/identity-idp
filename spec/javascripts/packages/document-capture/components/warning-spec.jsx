@@ -6,7 +6,7 @@ import { TroubleshootingOptions } from '@18f/identity-components';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/warning', () => {
-  it('renders a warning', () => {
+  it('renders a warning', async () => {
     const actionOnClick = sinon.spy();
     const addPageAction = sinon.spy();
 
@@ -36,7 +36,7 @@ describe('document-capture/components/warning', () => {
     });
 
     const tryAgainButton = getByRole('button', { name: 'Try again' });
-    userEvent.click(tryAgainButton);
+    await userEvent.click(tryAgainButton);
 
     expect(getByRole('heading', { name: 'Oops!' })).to.exist();
     expect(tryAgainButton).to.exist();

@@ -28,10 +28,6 @@ module PersonalKeyHelper
   end
 
   def scrape_personal_key
-    new_personal_key_words = []
-    page.all(:css, '[data-personal-key]').each do |node|
-      new_personal_key_words << node.text
-    end
-    new_personal_key_words.join('-')
+    page.all(:css, '.separator-text__code').map(&:text).join('-')
   end
 end

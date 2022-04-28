@@ -80,7 +80,11 @@ class Analytics
   end
 
   def track_mfa_submit_event(attributes)
-    track_event(MULTI_FACTOR_AUTH, attributes)
+    track_event(
+      MULTI_FACTOR_AUTH,
+      **attributes,
+      pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
+    )
     attributes[:success] ? 'success' : 'fail'
   end
 
@@ -133,13 +137,7 @@ class Analytics
   end
 
   # rubocop:disable Layout/LineLength
-  ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_CANCELLATION = 'IdV: cancellation visited'
-  IDV_CANCELLATION_GO_BACK = 'IdV: cancellation go back'
-  IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'
-  IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'
-  IDV_DOC_AUTH_EXCEPTION_VISITED = 'IdV: doc auth exception visited'
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'
   IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'
@@ -213,7 +211,7 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
   REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'
-  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT= 'Report IAL2 Users Linked to SPs Count'
+  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT = 'Report IAL2 Users Linked to SPs Count'
   REPORT_SP_USER_COUNTS = 'Report SP User Counts'
   RESPONSE_TIMED_OUT = 'Response Timed Out'
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'

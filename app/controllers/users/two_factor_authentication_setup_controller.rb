@@ -56,6 +56,7 @@ module Users
 
     def confirm_user_needs_2fa_setup
       return unless mfa_policy.two_factor_enabled?
+      return if params.has_key?(:multiple_mfa_setup)
       return if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       redirect_to after_mfa_setup_path
     end

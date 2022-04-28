@@ -44,9 +44,9 @@ describe('StepIndicatorElement', () => {
       window.resizeTo(340, 600);
     });
 
-    it('has focusable scroller', () => {
+    it('has focusable scroller', async () => {
       const stepIndicator = initialize();
-      userEvent.click(stepIndicator.elements.scroller);
+      await userEvent.click(stepIndicator.elements.scroller);
       expect(document.activeElement).to.equal(stepIndicator.elements.scroller);
     });
 
@@ -88,10 +88,10 @@ describe('StepIndicatorElement', () => {
       expect(stepIndicator.elements.scroller.scrollLeft).to.equal(327);
     });
 
-    it('makes scroller unfocusable when transitioning to large viewport', () => {
+    it('makes scroller unfocusable when transitioning to large viewport', async () => {
       const stepIndicator = initialize();
       window.resizeTo(1024, 768);
-      userEvent.click(stepIndicator.elements.scroller);
+      await userEvent.click(stepIndicator.elements.scroller);
       expect(document.activeElement).to.not.equal(stepIndicator.elements.scroller);
     });
   });
@@ -101,16 +101,16 @@ describe('StepIndicatorElement', () => {
       window.resizeTo(1024, 768);
     });
 
-    it('does not have focusable scroller', () => {
+    it('does not have focusable scroller', async () => {
       const stepIndicator = initialize();
-      userEvent.click(stepIndicator.elements.scroller);
+      await userEvent.click(stepIndicator.elements.scroller);
       expect(document.activeElement).to.not.equal(stepIndicator.elements.scroller);
     });
 
-    it('makes scroller focusable when transitioning to small viewport', () => {
+    it('makes scroller focusable when transitioning to small viewport', async () => {
       const stepIndicator = initialize();
       window.resizeTo(340, 768);
-      userEvent.click(stepIndicator.elements.scroller);
+      await userEvent.click(stepIndicator.elements.scroller);
       expect(document.activeElement).to.equal(stepIndicator.elements.scroller);
     });
   });

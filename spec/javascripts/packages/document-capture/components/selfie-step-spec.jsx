@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { waitFor } from '@testing-library/dom';
+import { waitFor, fireEvent } from '@testing-library/dom';
 import sinon from 'sinon';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
@@ -21,7 +21,7 @@ describe('document-capture/components/selfie-step', () => {
       initialize();
       window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '8J+Riw==');
 
-      userEvent.click(getByLabelText('doc_auth.headings.document_capture_selfie'));
+      await userEvent.click(getByLabelText('doc_auth.headings.document_capture_selfie'));
 
       await waitFor(() =>
         expect(onChange.getCall(0).args[0].selfie).to.equal('data:image/jpeg;base64,8J+Riw=='),
@@ -41,7 +41,9 @@ describe('document-capture/components/selfie-step', () => {
       );
 
       const file = new window.File([], 'image.png', { type: 'image/png' });
-      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_selfie'), file);
+      fireEvent.change(getByLabelText('doc_auth.headings.document_capture_selfie'), {
+        target: { files: [file] },
+      });
 
       await waitFor(() => expect(onChange.getCall(0).args[0].selfie).to.equal(file));
     });

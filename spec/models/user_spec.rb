@@ -10,7 +10,6 @@ RSpec.describe User do
     it { is_expected.to have_one(:account_reset_request) }
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
-    it { is_expected.to have_one(:doc_auth) }
     it { is_expected.to have_one(:proofing_component) }
     it { is_expected.to have_many(:throttles) }
   end

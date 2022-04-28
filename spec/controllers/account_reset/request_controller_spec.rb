@@ -28,7 +28,7 @@ describe AccountReset::RequestController do
       stub_sign_in_before_2fa(user)
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_RESET_VISIT)
+      expect(@analytics).to receive(:track_event).with('Account deletion and reset visited')
 
       get :show
     end
@@ -41,14 +41,13 @@ describe AccountReset::RequestController do
       stub_analytics
       attributes = {
         success: true,
-        event: 'request',
         sms_phone: false,
         totp: true,
         piv_cac: false,
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
       post :create
     end
@@ -60,7 +59,6 @@ describe AccountReset::RequestController do
       stub_analytics
       attributes = {
         success: true,
-        event: 'request',
         sms_phone: true,
         totp: false,
         piv_cac: false,
@@ -69,7 +67,7 @@ describe AccountReset::RequestController do
         message_id: 'fake-message-id',
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
       post :create
     end
@@ -81,14 +79,13 @@ describe AccountReset::RequestController do
       stub_analytics
       attributes = {
         success: true,
-        event: 'request',
         sms_phone: false,
         totp: false,
         piv_cac: true,
         email_addresses: 1,
         errors: {},
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset', attributes)
+      expect(@analytics).to receive(:track_event).with('Account Reset: request', attributes)
 
       post :create
     end

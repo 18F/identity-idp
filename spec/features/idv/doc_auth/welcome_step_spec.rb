@@ -80,11 +80,11 @@ feature 'doc auth welcome step' do
 
     it 'logs events when returning to sp' do
       click_on t('links.cancel')
-      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: 'welcome')
+      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'welcome')
 
       click_on t('forms.buttons.cancel')
       expect(fake_analytics).to have_logged_event(
-        Analytics::IDV_CANCELLATION_CONFIRMED,
+        'IdV: cancellation confirmed',
         step: 'welcome',
       )
 

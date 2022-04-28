@@ -22,7 +22,7 @@ import { Modal } from '@18f/identity-modal';
 
 export function Example() {
   return (
-    <Modal onSubmit={() => {}} onClose={() => {}}>
+    <Modal>
       <Modal.Heading>Are you sure you want to continue?</Modal.Heading>
       <Modal.Description>You have unsaved changes that will be lost.</Modal.Description>
       <Button>Continue</Button>

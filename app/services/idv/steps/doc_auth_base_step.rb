@@ -24,8 +24,7 @@ module Idv
           )
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
-          @flow.analytics.track_event(
-            Analytics::IDV_DOC_AUTH_EXCEPTION_VISITED,
+          @flow.analytics.idv_doc_auth_exception_visited(
             step_name: self.class.name,
             remaining_attempts: throttle.remaining_count,
           )

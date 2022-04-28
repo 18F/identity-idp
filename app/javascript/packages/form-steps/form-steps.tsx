@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import type { RefCallback, FormEventHandler, FC } from 'react';
+import type { FormEventHandler, RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
+import { replaceVariables } from '@18f/identity-i18n';
 import { useDidUpdateEffect, useIfStillMounted } from '@18f/identity-react-hooks';
 import RequiredValueMissingError from './required-value-missing-error';
 import FormStepsContext from './form-steps-context';
@@ -30,7 +31,7 @@ interface FormStepRegisterFieldOptions {
 export type RegisterFieldCallback = (
   field: string,
   options?: Partial<FormStepRegisterFieldOptions>,
-) => undefined | RefCallback<HTMLElement>;
+) => undefined | RefCallback<HTMLInputElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
 
@@ -64,6 +65,11 @@ export interface FormStepComponentProps<V> {
    * Registers field by given name, returning ref assignment function.
    */
   registerField: RegisterFieldCallback;
+
+  /**
+   * Callback to navigate to the previous step.
+   */
+  toPreviousStep: () => void;
 }
 
 export interface FormStep {
@@ -76,13 +82,18 @@ export interface FormStep {
    * Step form component.
    */
   form: FC<FormStepComponentProps<Record<string, any>>>;
+
+  /**
+   * Human-readable step label.
+   */
+  title?: string;
 }
 
 interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLElement>;
+  refCallback: RefCallback<HTMLInputElement>;
 
   /**
    * Whether field is required.
@@ -92,7 +103,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLElement | null;
+  element: HTMLInputElement | null;
 }
 
 interface FormStepsProps {
@@ -137,6 +148,25 @@ interface FormStepsProps {
    * is appended.
    */
   basePath?: string;
+
+  /**
+   * Format string for page title, interpolated with step title as `%{step}` parameter.
+   */
+  titleFormat?: string;
+}
+
+/**
+ * React hook which sets page title for the current step.
+ *
+ * @param step Current step.
+ * @param titleFormat Format string for page title.
+ */
+function useStepTitle(step: FormStep, titleFormat?: string) {
+  useEffect(() => {
+    if (titleFormat && step.title) {
+      document.title = replaceVariables(titleFormat, { step: step.title });
+    }
+  }, [step]);
 }
 
 /**
@@ -178,6 +208,7 @@ function FormSteps({
   autoFocus,
   promptOnNavigate = true,
   basePath,
+  titleFormat,
 }: FormStepsProps) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
@@ -190,7 +221,11 @@ function FormSteps({
   const ifStillMounted = useIfStillMounted();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
-      getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
+      const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
+      if (activeErrorFieldElement) {
+        activeErrorFieldElement.reportValidity();
+        activeErrorFieldElement.focus();
+      }
     }
 
     didSubmitWithErrors.current = false;
@@ -226,6 +261,7 @@ function FormSteps({
     }
   }, [stepErrors]);
 
+  useStepTitle(step, titleFormat);
   useDidUpdateEffect(onStepChange, [step]);
   useDidUpdateEffect(onPageTransition, [step]);
 
@@ -237,8 +273,19 @@ function FormSteps({
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
 
-      if (isActive && isRequired && !values[key]) {
-        result = result.concat({ field: key, error: new RequiredValueMissingError() });
+      let error: Error | undefined;
+      if (isActive) {
+        element.checkValidity();
+
+        if (element.validationMessage) {
+          error = new Error(element.validationMessage);
+        } else if (isRequired && !values[key]) {
+          error = new RequiredValueMissingError();
+        }
+      }
+
+      if (error) {
+        result = result.concat({ field: key, error });
       }
 
       return result;
@@ -270,8 +317,8 @@ function FormSteps({
 
     const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
-    didSubmitWithErrors.current = true;
     if (nextActiveErrors.length) {
+      didSubmitWithErrors.current = true;
       return;
     }
 
@@ -285,11 +332,17 @@ function FormSteps({
     }
   };
 
+  const toPreviousStep = () => {
+    const previousStepIndex = Math.max(stepIndex - 1, 0);
+    const { name: nextStepName } = steps[previousStepIndex];
+    setStepName(nextStepName);
+  };
+
   const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep}>
+    <form ref={formRef} onSubmit={toNextStep} noValidate>
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
@@ -332,6 +385,7 @@ function FormSteps({
 
             return fields.current[field].refCallback;
           }}
+          toPreviousStep={toPreviousStep}
         />
       </FormStepsContext.Provider>
     </form>
