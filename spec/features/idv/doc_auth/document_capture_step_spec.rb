@@ -168,6 +168,14 @@ feature 'doc auth document capture step' do
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
       expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
+
+    context 'when javascript is enabled', js: true do
+      it 'proceeds to the next step' do
+        attach_and_submit_images
+
+        expect(page).to have_current_path(next_step)
+      end
+    end
   end
 
   context 'when liveness checking is not enabled' do
