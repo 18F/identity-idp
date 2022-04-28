@@ -32,7 +32,7 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <% if IdentityConfig.store.select_multiple_mfa_options %>
-             <%= render MfaSelectionComponent.new(
+            <%= render MfaSelectionComponent.new(
                   form: f,
                   name: :selection,
                   option: option,
