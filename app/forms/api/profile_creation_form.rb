@@ -141,7 +141,15 @@ module Api
     end
 
     def public_key
-      OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_public_key))
+      key = OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_public_key))
+
+      if Identity::Hostdata.in_datacenter?
+        env = Identity::Hostdata.env
+        prod_env = env == 'prod' || env == 'staging' || env == 'dm'
+        raise 'key size too small' if prod_env && key.n.num_bits < 2048
+      end
+
+      key
     end
   end
 end
