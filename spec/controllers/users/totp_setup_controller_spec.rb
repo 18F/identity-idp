@@ -165,6 +165,37 @@ describe Users::TotpSetupController, devise: true do
             with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
         end
       end
+
+      context 'when user omits name' do
+        before do
+          user = create(:user, :signed_up)
+          secret = ROTP::Base32.random_base32
+          stub_sign_in(user)
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+          subject.user_session[:new_totp_secret] = secret
+
+          patch :confirm, params: { code: generate_totp_code(secret) }
+        end
+
+        it 'redirects with an error message' do
+          expect(response).to redirect_to(authenticator_setup_path)
+          expect(flash[:error]).to eq t('errors.invalid_totp')
+          expect(subject.current_user.auth_app_configurations.any?).to eq false
+
+          result = {
+            success: false,
+            error_details: { name: [:blank] },
+            errors: { name: [t('errors.messages.blank')] },
+            totp_secret_present: true,
+            multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+        end
+      end
     end
 
     context 'user is not yet signed up' do
