@@ -13,13 +13,6 @@ FactoryBot.define do
 
     trait :verified do
       verified_at { Time.zone.now }
-
-      pii do
-        DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
-          ssn: DocAuthHelper::GOOD_SSN,
-          phone: '+1 (555) 555-1234',
-        )
-      end
     end
 
     trait :password_reset do
