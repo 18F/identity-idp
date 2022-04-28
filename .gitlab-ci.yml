@@ -187,6 +187,8 @@ js_tests:
 
 coverage:
   stage: after_test
+  cache:
+    - <<: *ruby_cache
   script:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
