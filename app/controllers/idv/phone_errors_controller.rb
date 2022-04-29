@@ -4,6 +4,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
+    before_action :set_gpo_letter_available
 
     def warning
       @remaining_attempts = throttle.remaining_count
@@ -44,6 +45,16 @@ module Idv
       end
 
       analytics.idv_phone_error_visited(**attributes)
+    end
+
+    def set_gpo_letter_available
+      def gpo_letter_available
+        @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+                                  !Idv::GpoMail.new(current_user).mail_spammed? &&
+                                  !(sp_session[:ial2_strict] &&
+                                    !IdentityConfig.store.usps_upload_allowed_for_strict_ial2)
+
+      end
     end
   end
 end

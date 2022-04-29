@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
+    before_action :confirm_gpo_allowed_if_strict_ial2
     before_action :max_attempts_reached, only: [:update]
 
     def index
@@ -61,6 +62,12 @@ module Idv
 
     def failure
       redirect_to idv_gpo_url unless performed?
+    end
+
+    def confirm_gpo_allowed_if_strict_ial2
+      return unless sp_session[:ial2_strict]
+      return if IdentityConfig.store.usps_upload_allowed_for_strict_ial2
+      redirect_to idv_phone_url
     end
 
     def pii(address_pii)

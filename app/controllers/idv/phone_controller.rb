@@ -142,7 +142,10 @@ module Idv
 
     def gpo_letter_available
       @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
+                                !Idv::GpoMail.new(current_user).mail_spammed? &&
+                                !(sp_session[:ial2_strict] &&
+                                  !IdentityConfig.store.usps_upload_allowed_for_strict_ial2)
+
     end
   end
 end
