@@ -42,10 +42,10 @@ module MfaSetupConcern
     redirect_to user_two_factor_authentication_url
   end
 
-  def user_needs_confirmation_screen? 
-    (user_session.dig(:selected_mfa_options, determine_next_mfa_selection).present? || 
+  def user_needs_confirmation_screen?
+    (user_session.dig(:selected_mfa_options, determine_next_mfa_selection).present? ||
       user_session[:suggest_second_mfa]
     ) &&
-       IdentityConfig.store.select_multiple_mfa_options
+      IdentityConfig.store.select_multiple_mfa_options
   end
 end
