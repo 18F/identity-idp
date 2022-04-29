@@ -6,7 +6,7 @@ describe TwoFactorOptionsForm do
 
   describe '#submit' do
     it 'is successful if the selection is valid' do
-      %w[voice sms auth_app piv_cac webauthn webauthn_platform].each do |selection|
+      %w[auth_app piv_cac webauthn webauthn_platform].each do |selection|
         result = subject.submit(selection: selection)
 
         expect(result.success?).to eq true
@@ -14,14 +14,24 @@ describe TwoFactorOptionsForm do
     end
 
     it 'is unsuccessful if the selection is invalid' do
-      result = subject.submit(selection: '!!!!')
+      %w[phone].each do |selection|
+        result = subject.submit(selection: selection)
 
-      expect(result.success?).to eq false
-      expect(result.errors).to include :selection
+        expect(result.success?).to eq false
+      end
+    end
+
+    it 'is unsuccessful if the selection is invalid' do
+      %w[phone sms voice !!!!].each do |selection|
+        result = subject.submit(selection: selection)
+
+        expect(result.success?).to eq false
+        expect(result.errors).to include :selection
+      end
     end
 
     context "when the selection is different from the user's otp_delivery_preference" do
-      it "updates the user's otp_delivery_preference" do
+      it "updates the user's otp_delivery_preference as long as they have an alternate method selected" do
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).
           to receive(:new).
@@ -32,7 +42,7 @@ describe TwoFactorOptionsForm do
           and_return(user_updater)
         expect(user_updater).to receive(:call)
 
-        subject.submit(selection: 'voice')
+        subject.submit(selection: ['voice', 'backup_code'])
       end
     end
 

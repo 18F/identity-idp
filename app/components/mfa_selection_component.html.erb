@@ -1,13 +1,4 @@
 <lg-validated-field>
-  <%= content_tag(
-        :script,
-        error_messages.to_json,
-        {
-          type: 'application/json',
-          class: 'validated-field__error-strings',
-        },
-        false,
-      ) %>
   <%= check_box_tag(
         'two_factor_options_form[selection][]',
         option.type,

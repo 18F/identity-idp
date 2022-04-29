@@ -34,7 +34,6 @@
           <% if IdentityConfig.store.select_multiple_mfa_options %>
             <%= render MfaSelectionComponent.new(
                   form: f,
-                  name: :selection,
                   option: option,
                 ) %>
           <% else %>

@@ -1,11 +1,11 @@
 function clearPhoneSelectionError() {
   const error = document.getElementById('phone_error');
-  const invalid = document.querySelector('label.checkbox_invalid');
+  const invalid = document.querySelector('label.checkbox__invalid');
   if (error) {
     error.style.display = 'none';
   }
   if (invalid) {
-    invalid.classList.remove('checkbox_invalid');
+    invalid.classList.remove('checkbox__invalid');
   }
 }
 

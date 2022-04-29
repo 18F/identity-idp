@@ -44,6 +44,6 @@ class TwoFactorOptionsForm
   end
 
   def phone_selected?
-   selection.include? 'phone'
+   selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
   end
 end
