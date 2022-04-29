@@ -69,7 +69,7 @@ class TwoFactorOptionsPresenter
   end
 
   def sms_option
-    if piv_cac_required ||
+    if piv_cac_required? ||
        aal3_only? ||
        IdentityConfig.store.hide_phone_mfa_signup ||
        phone_options.any?
@@ -81,7 +81,7 @@ class TwoFactorOptionsPresenter
   end
 
   def voice_option
-    if piv_cac_required ||
+    if piv_cac_required? ||
        aal3_only? ||
        IdentityConfig.store.hide_phone_mfa_signup ||
        phone_options.any?
