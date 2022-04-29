@@ -52,10 +52,10 @@ feature 'mfa cta banner' do
       visit_idp_from_sp_with_ial1(:oidc)
       sign_up_and_set_password
       select_2fa_option('backup_code')
-      click_continue
+      set_up_mfa_with_backup_codes
       expect(page).to have_current_path(sign_up_completed_path)
       click_on(t('mfa.second_method_warning.link'))
-      expect(page).to have_content(t('two_factor_authentication.two_factor_choice'))
+      expect(page).to have_current_path(mfa_setup_path)
     end
   end
 end
