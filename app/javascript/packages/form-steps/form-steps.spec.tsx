@@ -8,7 +8,7 @@ import * as analytics from '@18f/identity-analytics';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
-import FormStepsContinueButton from './form-steps-continue-button';
+import FormStepsButton from './form-steps-button';
 
 interface StepValues {
   secondInputOne?: string;
@@ -37,7 +37,7 @@ describe('FormSteps', () => {
         <>
           <PageHeading>First Title</PageHeading>
           <span>First</span>
-          <FormStepsContinueButton />
+          <FormStepsButton.Continue />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
@@ -84,7 +84,7 @@ describe('FormSteps', () => {
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
-          <FormStepsContinueButton />
+          <FormStepsButton.Continue />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
@@ -95,7 +95,7 @@ describe('FormSteps', () => {
         <>
           <PageHeading>Last Title</PageHeading>
           <span>Last</span>
-          <FormStepsContinueButton />
+          <FormStepsButton.Submit />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
@@ -158,14 +158,6 @@ describe('FormSteps', () => {
     expect(getByText('Second Title')).to.be.ok();
   });
 
-  it('renders continue button until at last step', async () => {
-    const { getByText } = render(<FormSteps steps={STEPS} />);
-
-    await userEvent.click(getByText('forms.buttons.continue'));
-
-    expect(getByText('forms.buttons.continue')).to.be.ok();
-  });
-
   it('calls onStepChange callback on step change', async () => {
     const onStepChange = sinon.spy();
     const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);
@@ -183,17 +175,6 @@ describe('FormSteps', () => {
     await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(onStepChange.callCount).to.equal(1);
-  });
-
-  it('renders submit button at last step', async () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
-
-    await userEvent.click(getByText('forms.buttons.continue'));
-    await userEvent.type(getByLabelText('Second Input One'), 'one');
-    await userEvent.type(getByLabelText('Second Input Two'), 'two');
-    await userEvent.click(getByText('forms.buttons.continue'));
-
-    expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
 
   it('submits with form values', async () => {
@@ -418,7 +399,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Attempting to submit without adjusting field value does not submit and shows error.
-    await userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputOne));
 
@@ -428,7 +409,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Default required validation should still happen and take the place of any unknown errors.
-    await userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputTwo));
     expect(inputOne.matches('[data-is-error]')).to.be.false();
@@ -441,7 +422,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
 
     // The user can submit once all errors have been resolved.
-    await userEvent.click(getByText('forms.buttons.submit.default'));
+    await userEvent.click(getByText('forms.buttons.continue'));
     expect(onComplete.calledOnce).to.be.true();
   });
 
