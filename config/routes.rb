@@ -142,6 +142,8 @@ Rails.application.routes.draw do
 
     if IdentityConfig.store.select_multiple_mfa_options
       get '/auth_method_confirmation' => 'mfa_confirmation#show'
+      get '/mfa_setup' => 'users/mfa_selection#index'
+      patch '/mfa_setup' => 'users/mfa_selection#create'
     end
 
     # Non-devise-controller routes. Alphabetically sorted.
@@ -238,9 +240,6 @@ Rails.application.routes.draw do
 
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
-
-    get '/mfa_setup' => 'users/mfa_selection#index'
-    patch '/mfa_setup' => 'users/mfa_selection#create'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
