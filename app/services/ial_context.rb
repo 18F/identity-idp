@@ -40,20 +40,10 @@ class IalContext
   end
 
   def ial2_strict_requested?
-    ial == ::Idp::Constants::IAL2_STRICT ||
-      (ial == ::Idp::Constants::IAL2 && service_provider_requires_liveness?)
-  end
-
-  def ial_for_identity_record
-    return ial unless ial == ::Idp::Constants::IAL2 && service_provider_requires_liveness?
-    ::Idp::Constants::IAL2_STRICT
+    ial == ::Idp::Constants::IAL2_STRICT
   end
 
   private
-
-  def service_provider_requires_liveness?
-    !!service_provider && service_provider.liveness_checking_required
-  end
 
   def int_ial(input)
     Integer(input)

@@ -163,6 +163,7 @@ RSpec.describe VerifySpAttributesConcern do
         {
           issuer: issuer,
           requested_attributes: requested_attributes,
+          request_url: 'http://localhost',
         }
       end
 

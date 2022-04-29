@@ -81,8 +81,13 @@ class Profile < ApplicationRecord
   end
 
   def includes_liveness_check?
-    return if proofing_components.blank?
-    proofing_components['liveness_check']
+    return false if proofing_components.blank?
+    proofing_components['liveness_check'].present?
+  end
+
+  def includes_phone_check?
+    return false if proofing_components.blank?
+    proofing_components['address_check'] == 'lexis_nexis_address'
   end
 
   private

@@ -442,7 +442,15 @@ describe SamlIdpController do
       )
     end
 
-    context 'with IAL2 and the identity is already verified' do
+    shared_examples 'a verified identity' do |authn_context, ial|
+      let(:ial2_settings) do
+        saml_settings(
+          overrides: {
+            issuer: sp1_issuer,
+            authn_context: authn_context,
+          },
+        )
+      end
       let(:user) { create(:profile, :active, :verified).user }
       let(:pii) do
         Pii::Attributes.new_from_hash(
@@ -457,7 +465,7 @@ describe SamlIdpController do
         ial2_authnrequest = saml_authn_request_url(
           overrides: {
             issuer: sp1_issuer,
-            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            authn_context: authn_context,
           },
         )
         raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
@@ -476,7 +484,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1).link_identity(ial: ial)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -491,9 +499,9 @@ describe SamlIdpController do
         saml_get_auth(ial2_settings)
       end
 
-      it 'sets identity ial to 2' do
+      it 'sets identity ial' do
         saml_get_auth(ial2_settings)
-        expect(user.identities.last.ial).to eq(2)
+        expect(user.identities.last.ial).to eq(ial)
       end
 
       it 'does not redirect the user to the IdV URL' do
@@ -521,23 +529,23 @@ describe SamlIdpController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with('SAML Auth Request',
-               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               requested_ial: authn_context,
                service_provider: sp1_issuer)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SAML_AUTH,
                success: true,
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-               authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
+               authn_context: [authn_context],
                authn_context_comparison: 'exact',
-               requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+               requested_ial: authn_context,
                service_provider: sp1_issuer,
                endpoint: '/api/saml/auth2022',
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
           with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 2)
+               ial: ial)
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
@@ -551,6 +559,22 @@ describe SamlIdpController do
           expect(response).to redirect_to capture_password_url
         end
       end
+    end
+
+    context 'with IAL2 and the identity is already verified' do
+      it_behaves_like 'a verified identity',
+                      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                      Idp::Constants::IAL2
+    end
+
+    context 'with IAL2 strict and the identity is already verified' do
+      before do
+        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+      end
+
+      it_behaves_like 'a verified identity',
+                      Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+                      Idp::Constants::IAL2_STRICT
     end
 
     context 'with IAL2 and the identity is not already verified' do
@@ -1729,8 +1753,6 @@ describe SamlIdpController do
                ial: 1)
 
         generate_saml_response(user)
-
-        expect_sp_authentication_cost
       end
     end
 
@@ -1765,8 +1787,6 @@ describe SamlIdpController do
                ial: 1)
 
         generate_saml_response(user)
-
-        expect_sp_authentication_cost
       end
     end
   end
@@ -1781,13 +1801,5 @@ describe SamlIdpController do
         :store_saml_request,
       )
     end
-  end
-
-  def expect_sp_authentication_cost
-    sp_cost = SpCost.where(
-      issuer: 'http://localhost:3000',
-      cost_type: 'authentication',
-    ).first
-    expect(sp_cost).to be_present
   end
 end

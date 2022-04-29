@@ -107,7 +107,7 @@ module SamlIdpAuthConcern
     IdentityLinker.
       new(current_user, saml_request_service_provider).
       link_identity(
-        ial: ial_context.ial_for_identity_record,
+        ial: ial_context.ial,
         rails_session_id: session.id,
       )
   end
