@@ -1802,4 +1802,15 @@ describe SamlIdpController do
       )
     end
   end
+
+  describe '#external_saml_request' do
+    it 'returns false for malformed referer' do
+      request.env['HTTP_REFERER'] = '{{<script>console.log()</script>'
+      expect(subject.external_saml_request?).to eq false
+    end
+
+    it 'returns false for empty referer' do
+      expect(subject.external_saml_request?).to eq false
+    end
+  end
 end
