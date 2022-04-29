@@ -14,7 +14,7 @@ module IdvSession
   def confirm_idv_needed
     return if effective_user.active_profile.blank? ||
               decorated_session.requested_more_recent_verification? ||
-              liveness_upgrade_required?
+              strict_ial2_upgrade_required?
 
     redirect_to idv_activated_url
   end
@@ -23,8 +23,8 @@ module IdvSession
     session[:doc_capture_user_id].present?
   end
 
-  def liveness_upgrade_required?
-    sp_session[:ial2_strict] && !effective_user.active_profile&.includes_liveness_check?
+  def strict_ial2_upgrade_required?
+    sp_session[:ial2_strict] && !effective_user.active_profile&.strict_ial2_proofed?
   end
 
   def confirm_idv_vendor_session_started
