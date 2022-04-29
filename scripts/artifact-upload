@@ -21,7 +21,7 @@ end
 branch_environments.map do |upload_environment|
   static_bucket = ENV["#{upload_environment.upcase}_STATIC_BUCKET"]
   if static_bucket.nil?
-    puts "skipping #{upload environment} because it is missing static bucket config!"
+    puts "skipping #{upload_environment} because it is missing static bucket config!"
     next
   end
 
@@ -49,4 +49,6 @@ branch_environments.map do |upload_environment|
   CMD
   _output, status = Open3.capture2(manifest_upload_command)
   raise 'manifest upload failed' unless status.success?
+
+  puts "uploaded assets to #{upload_environment}!"
 end
