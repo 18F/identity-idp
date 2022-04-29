@@ -4,14 +4,6 @@ module TwoFactorAuthentication
       :sms
     end
 
-    def type
-      if MfaContext.new(configuration&.user).phone_configurations.many?
-        "#{super}_#{configuration.id}"
-      else
-        super
-      end
-    end
-
     def info
       if configuration.present?
         t(
