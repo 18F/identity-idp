@@ -232,11 +232,43 @@ module SamlAuthHelper
     end
   end
 
+  def visit_idp_from_sp_with_ial1_aal2(sp)
+    if sp == :saml
+      visit_saml_authn_request_url(
+        overrides: { authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+        ] },
+      )
+    elsif sp == :oidc
+      @state = SecureRandom.hex
+      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @nonce = SecureRandom.hex
+      visit_idp_from_oidc_sp_with_ial1_aal2(state: @state, client_id: @client_id, nonce: @nonce)
+    end
+  end
+
   def visit_idp_from_oidc_sp_with_ial1(client_id:, nonce:, state: SecureRandom.hex)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+    )
+  end
+
+  def visit_idp_from_oidc_sp_with_ial1_aal2(client_id:, nonce:, state: SecureRandom.hex)
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: [
+        Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      ].join(' '),
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,

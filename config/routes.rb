@@ -333,6 +333,10 @@ Rails.application.routes.draw do
       ].each { |step_path| get step_path => 'verify#show' }
     end
 
+    namespace :api do
+      post '/verify/complete' => 'verify/complete#create'
+    end
+
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
     post '/account/verify' => 'idv/gpo_verify#create'
     if FeatureManagement.enable_gpo_verification?

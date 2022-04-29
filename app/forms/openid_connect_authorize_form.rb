@@ -74,7 +74,7 @@ class OpenidConnectAuthorizeForm
     @identity = identity_linker.link_identity(
       nonce: nonce,
       rails_session_id: rails_session_id,
-      ial: ial_context.ial_for_identity_record,
+      ial: ial_context.ial,
       scope: scope.join(' '),
       code_challenge: code_challenge,
     )

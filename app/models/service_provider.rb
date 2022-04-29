@@ -15,6 +15,8 @@ class ServiceProvider < ApplicationRecord
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation
 
+  self.ignored_columns = %w[liveness_checking_required]
+
   scope(:active, -> { where(active: true) })
   scope(
     :with_push_notification_urls,

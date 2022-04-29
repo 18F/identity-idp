@@ -69,6 +69,16 @@ class SamlIdpController < ApplicationController
     handle_valid_sp_remote_logout_request(user_id)
   end
 
+  def external_saml_request?
+    return true if request.path.start_with?('/api/saml/authpost')
+
+    begin
+      URI(request.referer).host != request.host
+    rescue ArgumentError, URI::Error
+      false
+    end
+  end
+
   private
 
   def confirm_user_is_authenticated_with_fresh_mfa
@@ -90,7 +100,7 @@ class SamlIdpController < ApplicationController
   end
 
   def profile_or_identity_needs_verification_or_decryption?
-    return false unless ial2_requested?
+    return false unless ial_context.ial2_or_greater?
     profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
   end
 
@@ -116,11 +126,6 @@ class SamlIdpController < ApplicationController
       requested_ial: saml_request&.requested_ial_authn_context || 'none',
       service_provider: saml_request&.issuer,
     )
-  end
-
-  def external_saml_request?
-    (!request.referer.nil? && URI(request.referer).host != request.host) ||
-      request.path.start_with?('/api/saml/authpost')
   end
 
   def handle_successful_handoff

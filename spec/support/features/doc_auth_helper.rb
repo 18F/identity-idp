@@ -92,6 +92,11 @@ module DocAuthHelper
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_doc_auth_document_capture_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+    if javascript_enabled?
+      # By default, user would be prevented from continuing on desktop if the proofing flow requires
+      # liveness and there is no detectable camera. This forces the desktop link to be visible.
+      page.find('#upload-comp-liveness-off', visible: :all).evaluate_script('this.className = ""')
+    end
     click_on t('doc_auth.info.upload_computer_link')
   end
 

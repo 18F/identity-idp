@@ -1,6 +1,7 @@
 module VerifySpAttributesConcern
   def needs_completion_screen_reason
     return nil if sp_session[:issuer].blank?
+    return nil if sp_session[:request_url].blank?
 
     if sp_session_identity.nil?
       :new_sp
