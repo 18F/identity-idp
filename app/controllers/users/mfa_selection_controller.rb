@@ -22,7 +22,7 @@ module Users
       end
 
       private
-  
+
       def submit_form
         @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
         @two_factor_options_form.submit(two_factor_options_form_params)
