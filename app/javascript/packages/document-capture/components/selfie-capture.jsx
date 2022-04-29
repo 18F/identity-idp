@@ -225,7 +225,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
                   aria-label={t('doc_auth.buttons.take_picture')}
                   onClick={onCapture}
                 >
-                  <Icon.Camera className="selfie-capture__capture-icon" />
+                  <Icon icon="photo_camera" className="selfie-capture__capture-icon" />
                 </button>
               </>
             ) : (

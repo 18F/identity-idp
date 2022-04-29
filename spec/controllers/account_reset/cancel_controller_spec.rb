@@ -14,13 +14,12 @@ describe AccountReset::CancelController do
       analytics_hash = {
         success: true,
         errors: {},
-        event: 'cancel',
         user_id: user.uuid,
         message_id: 'fake-message-id',
         request_id: 'fake-message-request-id',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
 
       post :create
     end
@@ -33,11 +32,10 @@ describe AccountReset::CancelController do
         error_details: {
           token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
         },
-        event: 'cancel',
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
       session[:cancel_token] = 'FOO'
 
       post :create
@@ -49,11 +47,10 @@ describe AccountReset::CancelController do
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
         error_details: { token: [:blank] },
-        event: 'cancel',
         user_id: 'anonymous-uuid',
       }
 
-      expect(@analytics).to receive(:track_event).with('Account Reset', analytics_hash)
+      expect(@analytics).to receive(:track_event).with('Account Reset: cancel', analytics_hash)
 
       post :create
     end
@@ -91,14 +88,14 @@ describe AccountReset::CancelController do
       stub_analytics
       properties = {
         user_id: 'anonymous-uuid',
-        event: 'cancel token validation',
         success: false,
         errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
         error_details: {
           token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
         },
       }
-      expect(@analytics).to receive(:track_event).with('Account Reset', properties)
+      expect(@analytics).to receive(:track_event).
+        with('Account Reset: cancel token validation', properties)
 
       get :show, params: { token: 'FOO' }
 

@@ -59,7 +59,6 @@ module AccountReset
     def extra_analytics_attributes
       {
         user_id: user.uuid,
-        event: 'delete',
         email: user.email_addresses.take&.email,
         account_age_in_days: account_age,
         mfa_method_counts: mfa_method_counts,

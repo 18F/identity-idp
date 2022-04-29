@@ -4,11 +4,11 @@ import userEvent from '@testing-library/user-event';
 import Button from './button';
 
 describe('Button', () => {
-  it('renders with default props', () => {
+  it('renders with default props', async () => {
     const { getByText } = render(<Button>Click me</Button>);
 
     const button = getByText('Click me') as HTMLButtonElement;
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
@@ -29,14 +29,14 @@ describe('Button', () => {
     expect(link.hasAttribute('type')).to.be.false();
   });
 
-  it('forwards additional props to the rendered element', () => {
+  it('forwards additional props to the rendered element', async () => {
     const onClick = sinon.spy();
     const { getByText } = render(
       <Button onClick={(event) => onClick(event.type)}>Click me</Button>,
     );
 
     const button = getByText('Click me');
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(onClick.calledOnce).to.be.true();
     expect(onClick.getCall(0).args[0]).to.equal('click');
@@ -89,7 +89,7 @@ describe('Button', () => {
     expect(button.classList.contains('usa-button--unstyled')).to.be.true();
   });
 
-  it('renders as disabled', () => {
+  it('renders as disabled', async () => {
     const onClick = sinon.spy();
     const { getByText } = render(
       <Button isDisabled onClick={onClick}>
@@ -98,7 +98,7 @@ describe('Button', () => {
     );
 
     const button = getByText('Click me') as HTMLButtonElement;
-    userEvent.click(button);
+    await userEvent.click(button);
 
     expect(onClick.calledOnce).to.be.false();
     expect(button.disabled).to.be.true();

@@ -43,7 +43,7 @@ class RandomPhrase
     random_string = ProfanityDetector.without_profanity do
       # 5 bits per character means we must multiply what we want by 5
       # :length adds zero padding in case it's a smaller number
-      random_bytes = SecureRandom.random_number(2**(str_size * 5))
+      random_bytes = SecureRandom.random_number(2 ** (str_size * 5))
       Base32::Crockford.encode(random_bytes, length: str_size, split: @word_length)
     end
     random_string.upcase.split('-')

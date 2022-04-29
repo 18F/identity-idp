@@ -6,21 +6,17 @@ import { useRef, useEffect, useCallback } from 'react';
  *
  * @see https://reactjs.org/docs/hooks-faq.html#how-to-read-an-often-changing-value-from-usecallback
  *
- * @template {(...args: any[]) => any} F
- *
- * @param {F} fn
- * @param {any[]=} dependencies Callback dependencies
- *
- * @return {F}
+ * @param fn
+ * @param dependencies Callback dependencies
  */
-function useImmutableCallback(fn, dependencies = []) {
-  const ref = useRef(/** @type {F} */ (() => {}));
+function useImmutableCallback<F extends (...args: any[]) => any>(fn: F, dependencies: any[] = []) {
+  const ref = useRef((() => {}) as F);
 
   useEffect(() => {
     ref.current = fn;
   }, [fn, ...dependencies]);
 
-  return useCallback(/** @type {F} */ ((...args) => ref.current(...args)), [ref]);
+  return useCallback(((...args) => ref.current(...args)) as F, [ref]);
 }
 
 export default useImmutableCallback;

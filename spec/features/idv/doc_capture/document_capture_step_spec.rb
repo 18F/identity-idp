@@ -33,7 +33,7 @@ feature 'doc capture document capture step' do
 
     expect(page).to have_text(t('idv.cancel.headings.prompt.hybrid'))
     expect(fake_analytics).to have_logged_event(
-      Analytics::IDV_CANCELLATION,
+      'IdV: cancellation visited',
       step: 'document_capture',
     )
 
@@ -41,7 +41,7 @@ feature 'doc capture document capture step' do
 
     expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
     expect(fake_analytics).to have_logged_event(
-      Analytics::IDV_CANCELLATION_CONFIRMED,
+      'IdV: cancellation confirmed',
       step: 'document_capture',
     )
   end
@@ -54,7 +54,7 @@ feature 'doc capture document capture step' do
 
     expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     expect(fake_analytics).to have_logged_event(
-      Analytics::IDV_CANCELLATION_GO_BACK,
+      'IdV: cancellation go back',
       step: 'document_capture',
     )
   end

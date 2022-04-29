@@ -68,7 +68,7 @@ en:
       completion_consent_expired: It’s been a year since you gave us consent to share your information
       completion_first_sign_in: You’ve created an account with %{app_name}
       completion_ial2: You’ve verified your identity with %{app_name}
-      completion_new_attributes: '%{sp} is requested new information'
+      completion_new_attributes: '%{sp} is requesting new information'
       completion_new_sp: You are now signing in for the first time
       confirmation: Continue to sign in
     totp_setup:

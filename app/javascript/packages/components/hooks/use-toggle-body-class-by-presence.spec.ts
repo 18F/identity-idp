@@ -1,9 +1,11 @@
-import { renderHook, cleanup } from '@testing-library/react-hooks';
-import useToggleBodyClassByPresence from '@18f/identity-document-capture/hooks/use-toggle-body-class-by-presence';
+/* eslint-disable react/function-component-definition */
 
-describe('document-capture/hooks/use-toggle-body-class-by-presence', () => {
-  function ComponentOne() {}
-  function ComponentTwo() {}
+import { renderHook, cleanup } from '@testing-library/react-hooks';
+import useToggleBodyClassByPresence from './use-toggle-body-class-by-presence';
+
+describe('useToggleBodyClassByPresence', () => {
+  const ComponentOne = () => null;
+  const ComponentTwo = () => null;
 
   afterEach(cleanup);
 

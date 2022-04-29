@@ -1,9 +1,9 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useImmutableCallback from '@18f/identity-document-capture/hooks/use-immutable-callback';
+import useImmutableCallback from './use-immutable-callback';
 
-describe('document-capture/hooks/use-immutable-callback', () => {
-  const callback1 = () => {};
+describe('useImmutableCallback', () => {
+  const callback1 = (_arg1: any, _arg2: any) => {};
   const callback2 = sinon.stub().callsFake(() => {});
 
   it('maintains a consistent reference', () => {
@@ -24,9 +24,8 @@ describe('document-capture/hooks/use-immutable-callback', () => {
     });
 
     rerender({ fn: callback2 });
-    const args = [1, 2];
-    result.current(...args);
+    result.current(1, 2);
 
-    expect(callback2).to.have.been.calledWith(...args);
+    expect(callback2).to.have.been.calledWith(1, 2);
   });
 });

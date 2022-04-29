@@ -1,13 +1,9 @@
 import sinon from 'sinon';
 import { getByRole, getByText } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { ValidatedField } from '.';
+import './validated-field-element';
 
-describe('ValidatedField', () => {
-  before(() => {
-    customElements.define('lg-validated-field', ValidatedField);
-  });
-
+describe('ValidatedFieldElement', () => {
   let idCounter = 0;
 
   function createAndConnectElement({ hasInitialError = false } = {}) {
@@ -45,11 +41,9 @@ describe('ValidatedField', () => {
   it('shows error state and focuses on form validation', () => {
     const element = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const input = getByRole(element, 'textbox');
+    const input = getByRole(element, 'textbox') as HTMLInputElement;
 
-    /** @type {HTMLFormElement} */
-    const form = element.parentNode;
+    const form = element.parentNode as HTMLFormElement;
     form.checkValidity();
 
     expect(input.classList.contains('usa-input--error')).to.be.true();
@@ -63,29 +57,25 @@ describe('ValidatedField', () => {
   it('shows custom validity as message content', () => {
     const element = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const input = getByRole(element, 'textbox');
+    const input = getByRole(element, 'textbox') as HTMLInputElement;
     input.value = 'a';
     input.setCustomValidity('custom validity');
 
-    /** @type {HTMLFormElement} */
-    const form = element.parentNode;
+    const form = element.parentNode as HTMLFormElement;
     form.checkValidity();
 
     expect(getByText(element, 'custom validity')).to.be.ok();
   });
 
-  it('clears existing validation state on input', () => {
+  it('clears existing validation state on input', async () => {
     const element = createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const input = getByRole(element, 'textbox');
+    const input = getByRole(element, 'textbox') as HTMLInputElement;
 
-    /** @type {HTMLFormElement} */
-    const form = element.parentNode;
+    const form = element.parentNode as HTMLFormElement;
     form.checkValidity();
 
-    userEvent.type(input, '5');
+    await userEvent.type(input, '5');
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
@@ -96,11 +86,9 @@ describe('ValidatedField', () => {
     const firstElement = createAndConnectElement();
     createAndConnectElement();
 
-    /** @type {HTMLInputElement} */
-    const firstInput = getByRole(firstElement, 'textbox');
+    const firstInput = getByRole(firstElement, 'textbox') as HTMLInputElement;
 
-    /** @type {HTMLFormElement} */
-    const form = document.querySelector('form');
+    const form = document.querySelector('form') as HTMLFormElement;
 
     form.checkValidity();
 
@@ -108,17 +96,15 @@ describe('ValidatedField', () => {
   });
 
   context('with initial error message', () => {
-    it('clears existing validation state on input', () => {
+    it('clears existing validation state on input', async () => {
       const element = createAndConnectElement();
 
-      /** @type {HTMLInputElement} */
-      const input = getByRole(element, 'textbox');
+      const input = getByRole(element, 'textbox') as HTMLInputElement;
 
-      /** @type {HTMLFormElement} */
-      const form = element.parentNode;
+      const form = element.parentNode as HTMLFormElement;
       form.checkValidity();
 
-      userEvent.type(input, '5');
+      await userEvent.type(input, '5');
 
       expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');
@@ -131,12 +117,10 @@ describe('ValidatedField', () => {
       const inputWidth = 280;
       const element = createAndConnectElement();
 
-      /** @type {HTMLInputElement} */
-      const input = getByRole(element, 'textbox');
+      const input = getByRole(element, 'textbox') as HTMLInputElement;
       sinon.stub(input, 'offsetWidth').value(inputWidth);
 
-      /** @type {HTMLFormElement} */
-      const form = element.parentNode;
+      const form = element.parentNode as HTMLFormElement;
       form.checkValidity();
 
       const message = getByText(element, 'This field is required');
@@ -148,12 +132,10 @@ describe('ValidatedField', () => {
     it('does not set max width on error message', () => {
       const element = createAndConnectElement();
 
-      /** @type {HTMLInputElement} */
-      const input = getByRole(element, 'textbox');
+      const input = getByRole(element, 'textbox') as HTMLInputElement;
       input.type = 'checkbox';
 
-      /** @type {HTMLFormElement} */
-      const form = element.parentNode;
+      const form = element.parentNode as HTMLFormElement;
       form.checkValidity();
 
       const message = getByText(element, 'This field is required');
