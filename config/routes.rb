@@ -240,7 +240,7 @@ Rails.application.routes.draw do
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
 
     get '/mfa_setup' => 'users/mfa_selection#index'
-    patch '/mfa_setup' => 'users/mfa_selection#create' 
+    patch '/mfa_setup' => 'users/mfa_selection#create'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
