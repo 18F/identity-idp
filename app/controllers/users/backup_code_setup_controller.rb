@@ -25,7 +25,12 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
-      redirect_to user_next_authentication_setup_path!(after_mfa_setup_path)
+      next_mfa_setup_for_user = user_session.dig(
+        :selected_mfa_options,
+        determine_next_mfa_selection,
+      )
+      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
+                  after_mfa_setup_path
     end
 
     def download
