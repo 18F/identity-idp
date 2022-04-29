@@ -29,7 +29,7 @@ describe('usePropertyValue', () => {
 
   context('value was a key in object, with an explicitly undefined value', () => {
     const key = `usePropertyValue3`;
-    (global as any)[key] = 10;
+    (global as any)[key] = undefined;
     usePropertyValue(global as any, key, true);
 
     after(() => {
