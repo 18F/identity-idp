@@ -49,9 +49,4 @@ branch_environments.map do |upload_environment|
   CMD
   _output, status = Open3.capture2(manifest_upload_command)
   raise 'manifest upload failed' unless status.success?
-<<<<<<< HEAD
-
-  puts "uploaded assets to #{upload_environment}!"
-=======
->>>>>>> 20d128230 (Upload artifact and sync static assets in GitLab CI (#6207))
 end
