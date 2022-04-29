@@ -55,9 +55,7 @@ feature 'mfa cta banner' do
       click_continue
 
       set_up_mfa_with_backup_codes
-      expect(page).to have_current_path(sign_up_completed_path)
       click_link(t('mfa.second_method_warning.link'))
-
       expect(page).to have_current_path(mfa_setup_path)
     end
   end
