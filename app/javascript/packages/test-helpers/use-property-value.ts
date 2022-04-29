@@ -7,14 +7,20 @@
  * @param value Temporary property value.
  */
 function usePropertyValue<O extends object>(object: O, property: keyof O, value: any) {
+  let wasDefined: boolean;
   let originalValue;
   before(() => {
+    wasDefined = property in object;
     originalValue = object[property];
     object[property] = value;
   });
 
   after(() => {
-    object[property] = originalValue;
+    if (wasDefined) {
+      object[property] = originalValue;
+    } else {
+      delete object[property];
+    }
   });
 }
 
