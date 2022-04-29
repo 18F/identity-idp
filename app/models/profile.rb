@@ -90,6 +90,13 @@ class Profile < ApplicationRecord
     proofing_components['address_check'] == 'lexis_nexis_address'
   end
 
+  def strict_ial2_proofed?
+    return false unless active
+    return false unless includes_liveness_check?
+    return true if IdentityConfig.store.usps_upload_allowed_for_strict_ial2
+    includes_phone_check?
+  end
+
   private
 
   def personal_key_generator
