@@ -1,14 +1,24 @@
 ---
 es:
   mfa:
+    account_info:
+      one: Agregar otro método de autenticación evita que se le bloquee el acceso a su
+        cuenta si pierde uno de sus métodos.
+      other: ¡Felicitaciones! Está haciendo muy bien en mantener su cuenta segura.
+        Añada nuevos dispositivos para mantenerse al día.
     add: Agregar otro método
-    cta: Agregar otro método de autenticación evita que se le bloquee el acceso a su
-      cuenta si pierde uno de sus métodos.
+    current_method_count:
+      - primero
+      - segundo
+      - tercero
+      - cuarto
+      - quinto
+      - sexto
+      - séptimo
+      - octavo
     info: Le recomendamos que seleccione al menos (2) dos métodos diferentes para
       tener una copia de seguridad si pierde uno de los dispositivos de
       autenticación elegidos.
-    method_confirmation:
-      face_id: Se ha agregado Face ID a su cuenta
     second_method_warning:
       link: Agregue un segundo método de autenticación.
       text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
