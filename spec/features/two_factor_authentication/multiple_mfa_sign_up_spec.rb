@@ -31,7 +31,7 @@ feature 'Multi Two Factor Authentication' do
         auth_method_confirmation_path(next_setup_choice: 'backup_code'),
       )
 
-      click_link t('multi_factor_authentication.add')
+      click_link t('mfa.add')
 
       expect(current_path).to eq backup_code_setup_path
 
@@ -70,7 +70,7 @@ feature 'Multi Two Factor Authentication' do
         auth_method_confirmation_path(next_setup_choice: 'backup_code'),
       )
 
-      click_button t('multi_factor_authentication.skip')
+      click_button t('mfa.skip')
 
       expect(current_path).to eq account_path
     end

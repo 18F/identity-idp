@@ -90,7 +90,7 @@ class SamlIdpController < ApplicationController
   end
 
   def profile_or_identity_needs_verification_or_decryption?
-    return false unless ial2_requested?
+    return false unless ial_context.ial2_or_greater?
     profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
   end
 
