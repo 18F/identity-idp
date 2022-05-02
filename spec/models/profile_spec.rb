@@ -85,6 +85,65 @@ describe Profile do
     end
   end
 
+  describe '#strict_ial2_proofed?' do
+    it 'returns false if the profile is not active' do
+      profile = create(:profile, active: false)
+
+      expect(profile.strict_ial2_proofed?).to eq(false)
+    end
+
+    it 'returns false if the profile does not have liveness' do
+      proofing_components = { liveness_check: nil, address_check: :lexis_nexis_address }
+      profile = create(:profile, :active, proofing_components: proofing_components)
+
+      expect(profile.strict_ial2_proofed?).to eq(false)
+    end
+
+    context 'the letter flow is allowed for strict IAL2' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :usps_upload_allowed_for_strict_ial2,
+        ).and_return(true)
+      end
+
+      it 'returns true for a profile with a phone' do
+        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+
+      it 'return true for a profile with a letter' do
+        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+    end
+
+    context 'the letter flow is not allowed for strict IAL2' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :usps_upload_allowed_for_strict_ial2,
+        ).and_return(false)
+      end
+
+      it 'returns true for a profile with a phone' do
+        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+
+      it 'return false for a profile with a letter' do
+        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(false)
+      end
+    end
+  end
+
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
