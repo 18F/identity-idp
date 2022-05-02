@@ -135,7 +135,12 @@ interface FormStepsProps {
   /**
    * Callback triggered on step change.
    */
-  onStepChange?: () => void;
+  onStepChange?: (stepName: string) => void;
+
+  /**
+   * Callback triggered on step submit.
+   */
+  onStepSubmit?: (stepName: string) => void;
 
   /**
    * Whether to prompt the user about unsaved changes when navigating away from an in-progress form.
@@ -161,9 +166,9 @@ interface FormStepsProps {
  * @param step Current step.
  * @param titleFormat Format string for page title.
  */
-function useStepTitle(step: FormStep, titleFormat?: string) {
+function useStepTitle(step?: FormStep, titleFormat?: string) {
   useEffect(() => {
-    if (titleFormat && step.title) {
+    if (titleFormat && step?.title) {
       document.title = replaceVariables(titleFormat, { step: step.title });
     }
   }, [step]);
@@ -203,6 +208,7 @@ function FormSteps({
   steps = [],
   onComplete = () => {},
   onStepChange = () => {},
+  onStepSubmit = () => {},
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
@@ -232,7 +238,7 @@ function FormSteps({
   }, [activeErrors]);
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
-  const step = steps[stepIndex];
+  const step = steps[stepIndex] as FormStep | undefined;
 
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
@@ -248,6 +254,10 @@ function FormSteps({
     setStepName(stepName);
   }
 
+  useStepTitle(step, titleFormat);
+  useDidUpdateEffect(() => onStepChange(stepName!), [step]);
+  useDidUpdateEffect(onPageTransition, [step]);
+
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
     if (autoFocus) {
@@ -260,10 +270,6 @@ function FormSteps({
       onPageTransition();
     }
   }, [stepErrors]);
-
-  useStepTitle(step, titleFormat);
-  useDidUpdateEffect(onStepChange, [step]);
-  useDidUpdateEffect(onPageTransition, [step]);
 
   /**
    * Returns array of form errors for the current set of values.
@@ -322,6 +328,7 @@ function FormSteps({
       return;
     }
 
+    onStepSubmit(step?.name);
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {

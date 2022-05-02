@@ -6,6 +6,7 @@ import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { getAssetPath } from '@18f/identity-assets';
+import { trackEvent } from '@18f/identity-analytics';
 import type { VerifyFlowValues } from '../..';
 import DownloadButton from './download-button';
 
@@ -45,15 +46,21 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
       <DownloadButton
         content={personalKey}
         fileName="personal_key.txt"
+        onClick={() => trackEvent('IdV: download personal key')}
         isOutline
         className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0"
       >
         {t('forms.backup_code.download')}
       </DownloadButton>
-      <PrintButton isOutline className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0" />
+      <PrintButton
+        isOutline
+        onClick={() => trackEvent('IdV: print personal key')}
+        className="margin-right-2 margin-bottom-2 tablet:margin-bottom-0"
+      />
       <ClipboardButton
         clipboardText={personalKey}
         isOutline
+        onClick={() => trackEvent('IdV: copy personal key')}
         className="margin-bottom-2 tablet:margin-bottom-0"
       />
       <div className="margin-y-5 clearfix">
