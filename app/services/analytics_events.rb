@@ -530,6 +530,52 @@ module AnalyticsEvents
     track_event('IdV: personal key confirm visited')
   end
 
+  # @identity.idp.event_name IdV: personal key submitted
+  # The user submitted their personal key on the personal key page
+  def idv_personal_key_submitted
+    track_event('IdV: personal key submitted')
+  end
+
+  # @identity.idp.event_name IdV: personal key visited
+  # The user visited the personal key page
+  def idv_personal_key_visited
+    track_event('IdV: personal key visited')
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation form
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user submitted their phone on the phone confirmation page
+  def idv_phone_confirmation_form_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation form',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation vendor
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The vendor finished the process of confirming the users phone
+  def idv_phone_confirmation_vendor_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation vendor',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
   # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
