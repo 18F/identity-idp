@@ -7,6 +7,7 @@ class MfaConfirmationController < ApplicationController
       current_user: current_user,
       next_path: next_path,
       final_path: after_mfa_setup_path,
+      suggest_second_mfa: user_session[:suggest_second_mfa],
     )
   end
 
