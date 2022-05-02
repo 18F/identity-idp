@@ -47,35 +47,36 @@ describe ReactivateAccountSession do
       @reactivate_account_session.store_decrypted_pii(pii)
 
       expect(@reactivate_account_session.started?).to be(true)
-      expect(@reactivate_account_session.personal_key?).to be(true)
+      expect(@reactivate_account_session.validated_personal_key?).to be(true)
       expect(@reactivate_account_session.decrypted_pii).to eq(pii)
 
       @reactivate_account_session.suspend
 
       expect(@reactivate_account_session.started?).to be(false)
-      expect(@reactivate_account_session.personal_key?).to be(false)
+      expect(@reactivate_account_session.validated_personal_key?).to be(false)
       expect(@reactivate_account_session.decrypted_pii).to eq(nil)
     end
   end
 
   describe '#store_decrypted_pii' do
-    it 'stores the supplied object in the session and toggles `personal_key` flag' do
+    it 'stores the supplied object in the session and toggles `validated_personal_key` flag' do
       pii = Pii::Attributes.new(first_name: 'Test')
       @reactivate_account_session.store_decrypted_pii(pii)
       account_reactivation_obj = user_session[:reactivate_account]
       expect(account_reactivation_obj[:personal_key]).to be(true)
+      expect(account_reactivation_obj[:validated_personal_key]).to be(true)
       expect(account_reactivation_obj[:pii]).to eq(pii.to_json)
     end
   end
 
-  describe '#personal_key?' do
+  describe '#validated_personal_key?' do
     it 'defaults to false' do
-      expect(@reactivate_account_session.personal_key?).to be(false)
+      expect(@reactivate_account_session.validated_personal_key?).to be(false)
     end
 
     it 'returns a boolean indicating if the user hsa validated their personal key' do
       @reactivate_account_session.store_decrypted_pii({})
-      expect(@reactivate_account_session.personal_key?).to be(true)
+      expect(@reactivate_account_session.validated_personal_key?).to be(true)
     end
   end
 
