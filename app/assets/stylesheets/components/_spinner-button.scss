@@ -1,4 +1,6 @@
-.spinner-button {
+lg-spinner-button {
+  display: block;
+
   @include at-media('mobile-lg') {
     display: inline-block;
   }

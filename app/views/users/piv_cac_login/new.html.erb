@@ -6,10 +6,12 @@
   <%= raw @presenter.info %>
 </p>
 
-<%= render 'shared/spinner_button' do %>
-  <%= link_to @presenter.piv_cac_capture_text,
-              @presenter.piv_cac_service_link,
-              class: 'usa-button usa-button--wide usa-button--big' %>
-<% end %>
+<%= render SpinnerButtonComponent.new(
+      action: ->(**tag_options, &block) do
+        link_to(@presenter.piv_cac_service_link, **tag_options, &block)
+      end,
+      big: true,
+      wide: true,
+    ).with_content(@presenter.piv_cac_capture_text) %>
 
 <%= render 'shared/cancel', link: new_user_session_url %>

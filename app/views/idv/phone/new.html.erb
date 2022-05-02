@@ -61,9 +61,12 @@
         class: 'margin-bottom-4',
       ) %>
   <div class="margin-y-5">
-    <%= render('shared/spinner_button', action_message: t('doc_auth.info.verifying')) do %>
-      <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
-    <% end %>
+    <%= render SpinnerButtonComponent.new(
+          action_message: t('doc_auth.info.verifying'),
+          type: :submit,
+          big: true,
+          wide: true,
+        ).with_content(t('forms.buttons.continue')) %>
   </div>
 <% end %>
 
