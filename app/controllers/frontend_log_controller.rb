@@ -14,8 +14,12 @@ class FrontendLogController < ApplicationController
   def create
     event = log_params[:event]
     payload = log_params[:payload].to_h
-    if EVENT_MAP.key?(event)
-      EVENT_MAP[event].bind_call(analytics, **payload)
+    if (analytics_method = EVENT_MAP[event])
+      if analytics_method.parameters.empty?
+        analytics_method.bind_call(analytics)
+      else
+        analytics_method.bind_call(analytics, **payload)
+      end
     else
       analytics.track_event("Frontend: #{event}", payload)
     end
