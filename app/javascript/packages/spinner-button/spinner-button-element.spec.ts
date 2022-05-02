@@ -21,7 +21,7 @@ describe('SpinnerButtonElement', () => {
   function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
     document.body.innerHTML = `
       <lg-spinner-button
-        data-long-wait-duration-ms="${longWaitDurationMs}"
+        long-wait-duration-ms="${longWaitDurationMs}"
         ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
       >
         <div class="spinner-button__content">

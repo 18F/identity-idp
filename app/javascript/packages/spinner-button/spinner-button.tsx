@@ -43,7 +43,7 @@ function SpinnerButton(
   return (
     <lg-spinner-button
       spin-on-click={spinOnClick}
-      data-long-wait-duration-ms={longWaitDurationMs}
+      long-wait-duration-ms={longWaitDurationMs}
       ref={elementRef}
     >
       <div className="spinner-button__content">

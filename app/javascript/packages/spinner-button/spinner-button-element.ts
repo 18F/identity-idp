@@ -4,26 +4,25 @@ interface SpinnerButtonElements {
   actionMessage: HTMLElement;
 }
 
-interface SpinnerButtonOptions {
-  /**
-   * Time after which to show action message, in milliseconds.
-   */
-  longWaitDurationMs: number;
-}
-
-const DEFAULT_OPTIONS: SpinnerButtonOptions = {
-  longWaitDurationMs: 15000,
-};
+/**
+ * Default time after which to show action message, in milliseconds.
+ */
+const DEFAULT_LONG_WAIT_DURATION_MS = 15000;
 
 export class SpinnerButtonElement extends HTMLElement {
   elements: SpinnerButtonElements;
 
-  options: SpinnerButtonOptions;
+  #longWaitTimeout?: number;
 
-  longWaitTimeout?: number;
-
-  get spinOnClick() {
+  get spinOnClick(): boolean {
     return this.getAttribute('spin-on-click') !== 'false';
+  }
+
+  /**
+   * Time after which to show action message, in milliseconds.
+   */
+  get longWaitDurationMs(): number {
+    return Number(this.getAttribute('long-wait-duration-ms')) || DEFAULT_LONG_WAIT_DURATION_MS;
   }
 
   connectedCallback() {
@@ -31,13 +30,6 @@ export class SpinnerButtonElement extends HTMLElement {
       button: this.querySelector('a,button:not([type]),[type="submit"],[type="button"]')!,
       actionMessage: this.querySelector('.spinner-button__action-message')!,
     };
-
-    this.options = {
-      ...DEFAULT_OPTIONS,
-      ...this.dataset,
-    };
-
-    this.options.longWaitDurationMs = Number(this.options.longWaitDurationMs);
 
     if (this.spinOnClick) {
       this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
@@ -63,11 +55,11 @@ export class SpinnerButtonElement extends HTMLElement {
       actionMessage.textContent = isVisible ? (actionMessage.dataset.message as string) : '';
     }
 
-    window.clearTimeout(this.longWaitTimeout);
+    window.clearTimeout(this.#longWaitTimeout);
     if (isVisible) {
-      this.longWaitTimeout = window.setTimeout(
+      this.#longWaitTimeout = window.setTimeout(
         () => this.handleLongWait(),
-        this.options.longWaitDurationMs,
+        this.longWaitDurationMs,
       );
     }
   }
