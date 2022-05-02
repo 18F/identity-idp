@@ -21,6 +21,8 @@ describe TwoFactorOptionsPresenter do
         TwoFactorAuthentication::PivCacSelectionPresenter,
         TwoFactorAuthentication::AuthAppSelectionPresenter,
         TwoFactorAuthentication::PhoneSelectionPresenter,
+        TwoFactorAuthentication::SmsSelectionPresenter,
+        TwoFactorAuthentication::VoiceSelectionPresenter,
         TwoFactorAuthentication::BackupCodeSelectionPresenter,
       ]
     end
