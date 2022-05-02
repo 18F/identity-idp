@@ -47,7 +47,7 @@ describe('PersonalKeyConfirmStep', () => {
     expect(toPreviousStep).to.have.been.called();
   });
 
-  it('calls trackEvent when user dismisses modal by pressing "Back" button ', async () => {
+  it('calls trackEvent when user dismisses modal by pressing "Back" button', async () => {
     const toPreviousStep = sinon.spy();
 
     const { getByText } = render(

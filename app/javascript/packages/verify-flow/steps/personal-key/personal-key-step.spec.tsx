@@ -24,7 +24,7 @@ describe('PersonalKeyStep', () => {
     sandbox.restore();
   });
 
-  it('calls trackEvent when user clicks on "Download" button ', async () => {
+  it('calls trackEvent when user clicks on "Download" button', async () => {
     const { getByText } = render(<PersonalKeyStep {...DEFAULT_PROPS} />);
 
     const button = getByText('forms.backup_code.download');
@@ -33,14 +33,14 @@ describe('PersonalKeyStep', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: download personal key');
   });
 
-  it('calls trackEvent when user clicks on "Clipboard" button ', async () => {
+  it('calls trackEvent when user clicks on "Clipboard" button', async () => {
     const { getByText } = render(<PersonalKeyStep {...DEFAULT_PROPS} />);
 
     await userEvent.click(getByText('components.clipboard_button.label'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: copy personal key');
   });
 
-  it('calls trackEvent when user clicks on "Print" button ', async () => {
+  it('calls trackEvent when user clicks on "Print" button', async () => {
     window.print = () => {};
 
     const { getByText } = render(<PersonalKeyStep {...DEFAULT_PROPS} />);
