@@ -22,7 +22,8 @@ module Reports
     # partial day of October 1st in the current fiscal year.
     def perform(date)
       results = transaction_with_timeout do
-        Db::Identity::SpActiveUserCounts.call(start_time(date), finish_time(date))
+        range = reporting_range(date)
+        Db::Identity::SpActiveUserCounts.call(range.begin, range.end)
       end
       save_report(REPORT_NAME, results.to_json, extension: 'json')
     end
