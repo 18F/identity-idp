@@ -19,11 +19,11 @@ describe('VerifyFlow', () => {
   it('advances through flow to completion', async () => {
     const onComplete = sinon.spy();
 
-    const { getAllByText, getByLabelText } = render(
+    const { getByText, getByLabelText } = render(
       <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={onComplete} />,
     );
 
-    await userEvent.click(getAllByText('forms.buttons.continue')[0]);
+    await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');
 
@@ -31,12 +31,12 @@ describe('VerifyFlow', () => {
   });
 
   it('calls trackEvents for personal key steps', async () => {
-    const { getByLabelText, getAllByText } = render(
+    const { getByLabelText, getByText, getAllByText } = render(
       <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={() => {}} />,
     );
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
 
-    await userEvent.click(getAllByText('forms.buttons.continue')[0]);
+    await userEvent.click(getByText('forms.buttons.continue'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: show personal key modal');
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.click(getAllByText('forms.buttons.submit.default')[1]);
