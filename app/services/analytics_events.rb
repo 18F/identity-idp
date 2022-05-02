@@ -505,13 +505,13 @@ module AnalyticsEvents
 
   # @identity.idp.event_name IdV: personal key visited
   # User visited IDV personal key page
-  def idv_personal_key_visited(*)
+  def idv_personal_key_visited
     track_event('IdV: personal key visited')
   end
 
   # @identity.idp.event_name IdV: personal key submitted
   # User submitted IDV personal key page
-  def idv_personal_key_submitted(*)
+  def idv_personal_key_submitted
     track_event('IdV: personal key submitted')
   end
 
@@ -526,7 +526,7 @@ module AnalyticsEvents
   # @identity.idp.event_name IdV: personal key confirm visited
   # @identity.idp.previous_event_name IdV: show personal key modal
   # User opened IDV personal key confirmation modal
-  def idv_personal_key_confirm_visited(*)
+  def idv_personal_key_confirm_visited
     track_event('IdV: personal key confirm visited')
   end
 
