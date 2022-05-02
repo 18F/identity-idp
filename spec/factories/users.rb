@@ -8,6 +8,8 @@ FactoryBot.define do
       with { {} }
       email { Faker::Internet.safe_email }
       confirmed_at { Time.zone.now }
+      confirmation_token { nil }
+      confirmation_sent_at { 5.minutes.ago }
     end
 
     accepted_terms_at { Time.zone.now if email }
@@ -17,9 +19,13 @@ FactoryBot.define do
       user.email_addresses.build(
         email: evaluator.email,
         confirmed_at: evaluator.confirmed_at,
+        confirmation_sent_at: evaluator.confirmation_sent_at,
+        confirmation_token: evaluator.confirmation_token,
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
+      user.confirmation_sent_at = evaluator.confirmation_sent_at
+      user.confirmation_token = evaluator.confirmation_token
     end
 
     after(:stub) do |user, evaluator|
@@ -27,9 +33,13 @@ FactoryBot.define do
       user.email_addresses.build(
         email: evaluator.email,
         confirmed_at: evaluator.confirmed_at,
+        confirmation_sent_at: evaluator.confirmation_sent_at,
+        confirmation_token: evaluator.confirmation_token,
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
+      user.confirmation_sent_at = evaluator.confirmation_sent_at
+      user.confirmation_token = evaluator.confirmation_token
     end
 
     trait :with_multiple_emails do
@@ -174,6 +184,7 @@ FactoryBot.define do
     trait :unconfirmed do
       confirmed_at { nil }
       confirmation_sent_at { 5.minutes.ago }
+      confirmation_token { 'token' }
       password { nil }
     end
   end

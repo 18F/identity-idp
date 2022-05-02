@@ -2,15 +2,15 @@ class TotpSetupForm
   include ActiveModel::Model
 
   validate :name_is_unique
+  validates :name, presence: true
 
   attr_reader :name_taken
 
-  def initialize(user, secret, code, name = nil)
+  def initialize(user, secret, code, name)
     @user = user
     @secret = secret
     @code = code
     @name = name
-    @name = Time.zone.now.to_s if @name.blank?
     @auth_app_config = nil
   end
 
@@ -19,7 +19,7 @@ class TotpSetupForm
 
     process_valid_submission if success
 
-    FormResponse.new(success: success, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   private

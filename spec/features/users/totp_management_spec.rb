@@ -44,6 +44,7 @@ describe 'totp management' do
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
 
       secret = find('#qr-code').text
+      fill_in 'name', with: 'foo'
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
 

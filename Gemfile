@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read('.ruby-version').strip}"
 
-gem 'rails', '~> 6.1.4'
+gem 'rails', '~> 6.1.5.1'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'

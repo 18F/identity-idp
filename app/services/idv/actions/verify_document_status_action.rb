@@ -63,7 +63,7 @@ module Idv
       end
 
       def process_result(async_state)
-        add_cost(:acuant_result) if async_state.result.to_h[:billed]
+        add_costs(async_state.result)
       end
 
       def verify_document_capture_session

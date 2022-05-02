@@ -22,7 +22,6 @@ FactoryBot.define do
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)
         profile.encrypt_pii(pii_attrs, profile.user.password)
-        profile.encrypt_recovery_pii(pii_attrs)
       end
     end
   end
