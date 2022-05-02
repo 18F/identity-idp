@@ -40,8 +40,9 @@ describe Reports::SpActiveUsersReport do
   it 'when Oct 1, returns total active user counts per sp by ial1 and ial2 for last fiscal year' do
     # run date is from 2019-10-01 to 2020-09-30
     job_date = Date.new(2020, 10, 1)
-    beginning_of_last_fiscal_year = job_date.change(year: 2019, month: 10, day: 1).beginning_of_day
-    end_of_last_fiscal_year = job_date.change(year: 2020, month: 9, day: 30).end_of_day
+    job_date_range = subject.reporting_range(job_date)
+    beginning_of_last_fiscal_year = job_date_range.first
+    end_of_last_fiscal_year = job_date_range.last
     middle_of_last_fiscal_year = job_date.change(year: 2020, month: 1, day: 31).end_of_day
 
     beginning_of_current_fiscal_year = job_date.beginning_of_day
@@ -85,6 +86,29 @@ describe Reports::SpActiveUsersReport do
       job = described_class.new(date)
       expect(job.good_job_concurrency_key).
         to eq("#{described_class::REPORT_NAME}-#{date}")
+    end
+  end
+
+  describe '#reporting_range' do
+    it 'returns entire last fiscal year when it is October 1st' do
+      job_date = Date.new(2022, 10, 1)
+      beginning = Date.new(2021, 10, 1).beginning_of_day
+      ending = Date.new(2022, 9, 30).end_of_day
+      expect(subject.reporting_range(job_date)).to eq(beginning..ending)
+    end
+
+    it 'returns current fiscal year until end of day when prior to Oct 1st' do
+      job_date = Date.new(2022, 5, 1)
+      beginning = Date.new(2021, 10, 1).beginning_of_day
+      ending = job_date.end_of_day
+      expect(subject.reporting_range(job_date)).to eq(beginning..ending)
+    end
+
+    it 'returns current fiscal year until end of day when after to Oct 1st' do
+      job_date = Date.new(2022, 11, 1)
+      beginning = Date.new(2022, 10, 1).beginning_of_day
+      ending = job_date.end_of_day
+      expect(subject.reporting_range(job_date)).to eq(beginning..ending)
     end
   end
 end

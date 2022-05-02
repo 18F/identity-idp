@@ -32,7 +32,7 @@ module Reports
         current_fiscal_start_date = fiscal_start_date(time)
         current_fiscal_start_date.change(year: current_fiscal_start_date.year - 1).beginning_of_day
       else
-        fiscal_start_date(time)
+        fiscal_start_date(time).beginning_of_day
       end
     end
 
@@ -47,6 +47,10 @@ module Reports
 
     def fiscal_end_date(time)
       time.change(year: time.month >= 10 ? time.year + 1 : time.year, month: 9, day: 30).end_of_day
+    end
+
+    def reporting_range(time)
+      start_time(time)..finish_time(time)
     end
   end
 end
