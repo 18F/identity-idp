@@ -1,7 +1,5 @@
-import { useContext, useEffect, useRef } from 'react';
+import { Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
-import SpinnerButton, { SpinnerButtonRefHandle } from '@18f/identity-spinner-button/spinner-button';
-import FormStepsContext from './form-steps-context';
 
 interface FormStepsButtonProps {
   /**
@@ -16,18 +14,12 @@ interface FormStepsButtonProps {
 }
 
 function FormStepsButton({ className, children }: FormStepsButtonProps) {
-  const ref = useRef<SpinnerButtonRefHandle>(null);
-  const { isSubmitting } = useContext(FormStepsContext);
-  useEffect(() => ref.current?.toggleSpinner(isSubmitting), [isSubmitting]);
-
-  const classes = ['margin-y-5', className].filter(Boolean).join(' ');
+  const classes = ['display-block', 'margin-y-5', className].filter(Boolean).join(' ');
 
   return (
-    <div className={classes}>
-      <SpinnerButton ref={ref} spinOnClick={false} type="submit" isBig isWide>
-        {children}
-      </SpinnerButton>
-    </div>
+    <Button type="submit" isBig isWide className={classes}>
+      {children}
+    </Button>
   );
 }
 
