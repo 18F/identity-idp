@@ -10,7 +10,7 @@ module Idv
 
     def show
       @step_indicator_steps = step_indicator_steps
-      analytics.track_event(Analytics::IDV_PERSONAL_KEY_VISITED)
+      analytics.idv_personal_key_visited
       add_proofing_component
 
       finish_idv_session
@@ -18,7 +18,7 @@ module Idv
 
     def update
       user_session[:need_personal_key_confirmation] = false
-      analytics.track_event(Analytics::IDV_PERSONAL_KEY_SUBMITTED)
+      analytics.idv_personal_key_submitted
       redirect_to next_step
     end
 

@@ -34,18 +34,30 @@ interface VerifyFlowProps {
   onComplete: () => void;
 }
 
-export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
-  function trackVisitedStepEvent(stepName) {
-    if (stepName === 'personal_key') {
-      trackEvent('IdV: personal key visited');
-    }
-    if (stepName === 'personal_key_confirm') {
-      trackEvent('IdV: show personal key modal');
-    }
-  }
+/**
+ * Returns a step name normalized for event logging.
+ *
+ * @param stepName Original step name.
+ *
+ * @return Step name normalized for event logging.
+ */
+const getEventStepName = (stepName: string) => stepName.toLowerCase().replace(/[^a-z]/g, ' ');
 
+/**
+ * Logs step visited event.
+ */
+const logStepVisited = (stepName: string) =>
+  trackEvent(`IdV: ${getEventStepName(stepName)} visited`);
+
+/**
+ * Logs step submitted event.
+ */
+const logStepSubmitted = (stepName: string) =>
+  trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
+
+export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
   useEffect(() => {
-    trackVisitedStepEvent(STEPS[0].name);
+    logStepVisited(STEPS[0].name);
   }, []);
 
   return (
@@ -66,14 +78,8 @@ export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
-        onStepSubmit={(submittedStepName) => {
-          if (submittedStepName === 'personal_key_confirm') {
-            trackEvent('IdV: personal key submitted');
-          }
-        }}
-        onStepChange={(stepName) => {
-          trackVisitedStepEvent(stepName);
-        }}
+        onStepSubmit={logStepSubmitted}
+        onStepChange={logStepVisited}
         onComplete={onComplete}
       />
     </>
