@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormSteps } from '@18f/identity-form-steps';
+import * as analytics from '@18f/identity-analytics';
 import PersonalKeyConfirmStep from './personal-key-confirm-step';
 
 describe('PersonalKeyConfirmStep', () => {
@@ -13,6 +14,16 @@ describe('PersonalKeyConfirmStep', () => {
     onError() {},
     registerField: () => () => {},
   };
+
+  const sandbox = sinon.createSandbox();
+
+  beforeEach(() => {
+    sandbox.spy(analytics, 'trackEvent');
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   it('allows the user to return to the previous step by clicking "Back" button', async () => {
     const toPreviousStep = sinon.spy();
@@ -34,6 +45,17 @@ describe('PersonalKeyConfirmStep', () => {
     await userEvent.type(getByRole('textbox'), '{Escape}');
 
     expect(toPreviousStep).to.have.been.called();
+  });
+
+  it('calls trackEvent when user dismisses modal by pressing "Back" button', async () => {
+    const toPreviousStep = sinon.spy();
+
+    const { getByText } = render(
+      <PersonalKeyConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
+    );
+
+    await userEvent.click(getByText('forms.buttons.back'));
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: hide personal key modal');
   });
 
   it('allows the user to continue only with a correct value', async () => {
