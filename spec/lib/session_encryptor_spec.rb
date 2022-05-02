@@ -59,7 +59,7 @@ RSpec.describe SessionEncryptor do
 
       it 'encrypts decrypted_pii bundle without automatically decrypting' do
         session = { 'warden.user.user.session' => {
-          'decrypted_pii' => { 'ssn' => '666-66-6666' },
+          'decrypted_pii' => { 'ssn' => '666-66-6666' }.to_json,
         } }
 
         ciphertext = subject.dump(session)
@@ -72,7 +72,7 @@ RSpec.describe SessionEncryptor do
 
       it 'can decrypt PII bundle with Pii::Cacher' do
         session = { 'warden.user.user.session' => {
-          'decrypted_pii' => { 'ssn' => '666-66-6666' },
+          'decrypted_pii' => { 'ssn' => '666-66-6666' }.to_json,
         } }
 
         ciphertext = subject.dump(session)
@@ -106,11 +106,7 @@ RSpec.describe SessionEncryptor do
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv/doc_auth']).to eq nil
         expect(
-          partially_decrypted_json.fetch('warden.user.user.session')['encrypted_idv'],
-        ).to_not eq nil
-
-        expect(
-          partially_decrypted_json.fetch('warden.user.user.session')['encrypted_idv/doc_auth'],
+          partially_decrypted_json.fetch('sensitive_data'),
         ).to_not eq nil
 
         expect(
@@ -133,11 +129,7 @@ RSpec.describe SessionEncryptor do
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv/doc_auth']).to eq nil
         expect(
-          partially_decrypted_json.fetch('warden.user.user.session')['encrypted_idv'],
-        ).to_not eq nil
-
-        expect(
-          partially_decrypted_json.fetch('warden.user.user.session')['encrypted_idv/doc_auth'],
+          partially_decrypted_json.fetch('sensitive_data'),
         ).to_not eq nil
 
         expect(

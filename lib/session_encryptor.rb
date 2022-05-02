@@ -6,6 +6,13 @@ class SessionEncryptor
     'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc', 'password', 'personal_key'
   ]
 
+  SENSITIVE_PATHS = [
+    ['warden.user.user.session', 'idv/doc_auth'],
+    ['warden.user.user.session', 'idv'],
+    ['warden.user.user.session', 'personal_key'],
+    ['flash', 'flashes', 'personal_key'],
+  ]
+
   def load(value)
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
 
@@ -13,8 +20,7 @@ class SessionEncryptor
     decrypted = outer_encryptor.decrypt(ciphertext)
 
     session = JSON.parse(decrypted, quirks_mode: true).with_indifferent_access
-    kms_decrypt_doc_auth_pii!(session)
-    kms_decrypt_idv_pii!(session)
+    kms_decrypt_sensitive_paths!(session)
 
     session
   end
@@ -24,8 +30,7 @@ class SessionEncryptor
     value.deep_stringify_keys!
 
     kms_encrypt_pii!(value)
-    kms_encrypt_doc_auth_pii!(value)
-    kms_encrypt_idv_pii!(value)
+    kms_encrypt_sensitive_paths!(value, SENSITIVE_PATHS)
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value, quirks_mode: true)
     'v2:' + outer_encryptor.encrypt(plain)
@@ -51,40 +56,47 @@ class SessionEncryptor
     return unless session.dig('warden.user.user.session', 'decrypted_pii')
     decrypted_pii = session['warden.user.user.session'].delete('decrypted_pii')
     session['warden.user.user.session']['encrypted_pii'] =
-      kms_encrypt(JSON.generate(decrypted_pii, quirks_mode: true))
+      kms_encrypt(decrypted_pii)
     nil
   end
 
-  def kms_encrypt_doc_auth_pii!(session)
-    return unless session.dig('warden.user.user.session', 'idv/doc_auth')
-    doc_auth_pii = session.dig('warden.user.user.session').delete('idv/doc_auth')
-    session['warden.user.user.session']['encrypted_idv/doc_auth'] =
-      kms_encrypt(JSON.generate(doc_auth_pii, quirks_mode: true))
-    nil
+  def kms_encrypt_sensitive_paths!(session, sensitive_paths)
+    sensitive_data = {
+    }
+
+    sensitive_paths.each do |path|
+      all_but_last_key = path[0..-2]
+      last_key = path.last
+      value = session.dig(*all_but_last_key)&.delete(last_key)
+      if value
+        all_but_last_key.reduce(sensitive_data) do |hash, key|
+          hash[key] ||= {}
+
+          hash[key]
+        end
+
+        if all_but_last_key.blank?
+          sensitive_data[last_key] = value
+        else
+          sensitive_data.dig(*all_but_last_key).store(last_key, value)
+        end
+      end
+    end
+
+    raise 'invalid session' if session['sensitive_data'].present?
+    return if sensitive_data.blank?
+    session['sensitive_data'] = kms_encrypt(JSON.generate(sensitive_data))
   end
 
-  def kms_decrypt_doc_auth_pii!(session)
-    return unless session.dig('warden.user.user.session', 'encrypted_idv/doc_auth')
-    doc_auth_pii = session['warden.user.user.session'].delete('encrypted_idv/doc_auth')
-    session['warden.user.user.session']['idv/doc_auth'] = JSON.parse(
-      kms_decrypt(doc_auth_pii), quirks_mode: true
+  def kms_decrypt_sensitive_paths!(session)
+    sensitive_data = session.delete('sensitive_data')
+    return if sensitive_data.blank?
+
+    sensitive_data = JSON.parse(
+      kms_decrypt(sensitive_data), quirks_mode: true
     )
-    nil
-  end
 
-  def kms_encrypt_idv_pii!(session)
-    return unless session.dig('warden.user.user.session', 'idv')
-    idv_pii = session.dig('warden.user.user.session').delete('idv')
-    session['warden.user.user.session']['encrypted_idv'] =
-      kms_encrypt(JSON.generate(idv_pii, quirks_mode: true))
-    nil
-  end
-
-  def kms_decrypt_idv_pii!(session)
-    return unless session.dig('warden.user.user.session', 'encrypted_idv')
-    idv_pii = session['warden.user.user.session'].delete('encrypted_idv')
-    session['warden.user.user.session']['idv'] = JSON.parse(kms_decrypt(idv_pii), quirks_mode: true)
-    nil
+    session.deep_merge!(sensitive_data)
   end
 
   def alert_or_raise_if_contains_sensitive_keys!(hash)
