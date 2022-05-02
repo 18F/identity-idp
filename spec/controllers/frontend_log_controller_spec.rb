@@ -29,13 +29,11 @@ describe FrontendLogController do
 
       context 'allowlisted analytics event' do
         let(:event) { 'IdV: personal key visited' }
-        let(:payload) { { foo: 'bar' } }
 
         it 'succeeds' do
-          expect(fake_analytics).to receive(:idv_personal_key_visited).with(foo: 'bar')
-
           action
 
+          expect(fake_analytics).to have_logged_event('IdV: personal key visited')
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
         end
