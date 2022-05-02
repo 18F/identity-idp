@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
@@ -135,7 +135,7 @@ function ReviewIssuesStep({
           )}
         </>
       )}
-      <FormStepsContinueButton />
+      <FormStepsButton.Submit />
       <DocumentCaptureTroubleshootingOptions />
       <StartOverOrCancel />
     </>
