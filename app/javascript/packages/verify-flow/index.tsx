@@ -54,6 +54,19 @@ interface VerifyFlowProps {
 }
 
 export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
+  function trackVisitedStepEvent(stepName) {
+    if (stepName === 'personal_key') {
+      trackEvent('IdV: personal key visited');
+    }
+    if (stepName === 'personal_key_confirm') {
+      trackEvent('IdV: show personal key modal');
+    }
+  }
+
+  useEffect(() => {
+    trackVisitedStepEvent(STEPS[0].name);
+  }, []);
+
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -72,6 +85,14 @@ export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
+        onStepSubmit={(submittedStepName) => {
+          if (submittedStepName === 'personal_key_confirm') {
+            trackEvent('IdV: personal key submitted');
+          }
+        }}
+        onStepChange={(stepName) => {
+          trackVisitedStepEvent(stepName);
+        }}
         onComplete={onComplete}
       />
     </>
