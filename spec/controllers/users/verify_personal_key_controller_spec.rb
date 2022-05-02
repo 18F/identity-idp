@@ -106,7 +106,7 @@ describe Users::VerifyPersonalKeyController do
 
         post :create, params: { personal_key: profiles.first.personal_key }
 
-        expect(subject.reactivate_account_session.personal_key?).to eq(true)
+        expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
       end
     end
 
