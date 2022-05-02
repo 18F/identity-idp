@@ -9,13 +9,13 @@ class FrontendLogController < ApplicationController
     'IdV: personal key visited' => :idv_personal_key_visited,
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key submitted' => :idv_personal_key_submitted,
-  }.freeze
+  }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
 
   def create
     event = log_params[:event]
     payload = log_params[:payload].to_h
     if EVENT_MAP.key?(event)
-      analytics.public_send(EVENT_MAP[event], **payload)
+      EVENT_MAP[event].bind_call(analytics, **payload)
     else
       analytics.track_event("Frontend: #{event}", payload)
     end

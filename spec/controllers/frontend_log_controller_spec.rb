@@ -27,17 +27,12 @@ describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
-      context 'with event handler' do
-        let(:event) { 'foo' }
-        let(:payload) { { bar: 'baz' } }
-
-        before do
-          stub_const('FrontendLogController::EVENT_MAP', { 'foo' => :foo_mapped })
-          allow(fake_analytics).to receive(:foo_mapped)
-        end
+      context 'allowlisted analytics event' do
+        let(:event) { 'IdV: personal key visited' }
+        let(:payload) { { foo: 'bar' } }
 
         it 'succeeds' do
-          expect(fake_analytics).to receive(:foo_mapped).with(bar: 'baz')
+          expect(fake_analytics).to receive(:idv_personal_key_visited).with(foo: 'bar')
 
           action
 
