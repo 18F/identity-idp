@@ -27,6 +27,25 @@ describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
+      context 'with event handler' do
+        let(:event) { 'foo' }
+        let(:payload) { { bar: 'baz' } }
+
+        before do
+          stub_const('FrontendLogController::EVENT_MAP', { 'foo' => :foo_mapped })
+          allow(fake_analytics).to receive(:foo_mapped)
+        end
+
+        it 'succeeds' do
+          expect(fake_analytics).to receive(:foo_mapped).with(bar: 'baz')
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
       context 'empty payload' do
         let(:payload) { {} }
 

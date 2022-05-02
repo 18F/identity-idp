@@ -37,7 +37,7 @@ describe('VerifyFlow', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
 
     await userEvent.click(getByText('forms.buttons.continue'));
-    expect(analytics.trackEvent).to.have.been.calledWith('IdV: show personal key modal');
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key confirm visited');
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.click(getAllByText('forms.buttons.submit.default')[1]);
 
