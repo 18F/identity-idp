@@ -69,8 +69,8 @@ describe('PersonalKeyConfirmStep', () => {
     );
 
     const input = getByLabelText('forms.personal_key.confirmation_label');
-    const submitButton = getAllByText('forms.buttons.submit.default')[1];
-    await userEvent.click(submitButton);
+    const continueButton = getAllByText('forms.buttons.continue')[1];
+    await userEvent.click(continueButton);
 
     expect(onComplete).not.to.have.been.called();
     expect(container.ownerDocument.activeElement).to.equal(input);
@@ -90,7 +90,7 @@ describe('PersonalKeyConfirmStep', () => {
     await userEvent.type(input, '{Enter}');
     expect(onComplete).to.have.been.calledOnce();
 
-    await userEvent.click(submitButton);
+    await userEvent.click(continueButton);
     expect(onComplete).to.have.been.calledTwice();
   });
 });
