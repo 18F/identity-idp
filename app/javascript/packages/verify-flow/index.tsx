@@ -8,6 +8,8 @@ export interface VerifyFlowValues {
   personalKey?: string;
 
   personalKeyConfirm?: string;
+
+  pii?: string;
 }
 
 interface VerifyFlowProps {
