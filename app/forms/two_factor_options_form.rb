@@ -44,6 +44,7 @@ class TwoFactorOptionsForm
   end
 
   def phone_selected?
-   selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
+    return false if !IdentityConfig.store.select_multiple_mfa_options
+    selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
   end
 end
