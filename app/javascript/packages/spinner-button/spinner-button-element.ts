@@ -5,6 +5,9 @@ interface SpinnerButtonElements {
 }
 
 interface SpinnerButtonOptions {
+  /**
+   * Time after which to show action message, in milliseconds.
+   */
   longWaitDurationMs: number;
 }
 
@@ -19,6 +22,10 @@ export class SpinnerButtonElement extends HTMLElement {
 
   longWaitTimeout?: number;
 
+  get spinOnClick() {
+    return this.getAttribute('spin-on-click') !== 'false';
+  }
+
   connectedCallback() {
     this.elements = {
       button: this.querySelector('a,button:not([type]),[type="submit"],[type="button"]')!,
@@ -32,7 +39,9 @@ export class SpinnerButtonElement extends HTMLElement {
 
     this.options.longWaitDurationMs = Number(this.options.longWaitDurationMs);
 
-    this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
+    if (this.spinOnClick) {
+      this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
+    }
     this.addEventListener('spinner.start', () => this.toggleSpinner(true));
     this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
   }
@@ -77,3 +86,5 @@ declare global {
 if (!customElements.get('lg-spinner-button')) {
   customElements.define('lg-spinner-button', SpinnerButtonElement);
 }
+
+export default SpinnerButtonElement;

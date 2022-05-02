@@ -9,6 +9,7 @@ import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-st
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
 import FormStepsButton from './form-steps-button';
+import type { FormStep } from './form-steps';
 
 interface StepValues {
   secondInputOne?: string;
@@ -17,6 +18,8 @@ interface StepValues {
 
   changed?: boolean;
 }
+
+const sleep = (ms: number) => () => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 describe('FormSteps', () => {
   const sandbox = sinon.createSandbox();
@@ -27,18 +30,22 @@ describe('FormSteps', () => {
 
   afterEach(() => {
     sandbox.restore();
+    if (sandbox.clock) {
+      sandbox.clock.restore();
+    }
   });
 
-  const STEPS = [
+  const STEPS: FormStep[] = [
     {
       name: 'first',
       title: 'First Title',
-      form: () => (
+      form: ({ errors }) => (
         <>
           <PageHeading>First Title</PageHeading>
           <span>First</span>
           <FormStepsButton.Continue />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
+          <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
         </>
       ),
     },
@@ -148,6 +155,47 @@ describe('FormSteps', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
     expect(getByText('forms.buttons.continue')).to.be.ok();
+  });
+
+  it('proceeds after resolving step submit implementation, if provided', async () => {
+    sandbox.useFakeTimers();
+    const steps = [{ ...STEPS[0], submit: sleep(1000) }, STEPS[1]];
+    const { getByText } = render(<FormSteps steps={steps} />);
+
+    const continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton, { advanceTimers: sandbox.clock.tick });
+
+    expect(getByText('First Title')).to.be.ok();
+    expect(
+      continueButton
+        .closest('lg-spinner-button')!
+        .classList.contains('spinner-button--spinner-active'),
+    ).to.be.true();
+    await sandbox.clock.tickAsync(1000);
+
+    expect(getByText('Second Title')).to.be.ok();
+  });
+
+  it('does not proceed if step submit implementation throws an error', async () => {
+    sandbox.useFakeTimers();
+    const steps = [
+      {
+        ...STEPS[0],
+        submit: () =>
+          sleep(1000)().then(() => {
+            throw new Error('oops');
+          }),
+      },
+      STEPS[1],
+    ];
+    const { getByText } = render(<FormSteps steps={steps} />);
+
+    const continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton, { advanceTimers: sandbox.clock.tick });
+
+    await sandbox.clock.tickAsync(1000);
+
+    expect(getByText('Errors: oops')).to.be.ok();
   });
 
   it('renders the active step', async () => {
@@ -452,6 +500,7 @@ describe('FormSteps', () => {
 
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
+      isSubmitting: false,
     });
 
     await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
@@ -462,6 +511,7 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
+      isSubmitting: false,
     });
 
     await userEvent.type(getByLabelText('Second Input One'), 'one');
@@ -471,6 +521,7 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#last');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
+      isSubmitting: false,
     });
   });
 

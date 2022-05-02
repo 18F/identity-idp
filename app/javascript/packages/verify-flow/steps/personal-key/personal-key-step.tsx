@@ -63,7 +63,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         onClick={() => trackEvent('IdV: copy personal key')}
         className="margin-bottom-2 tablet:margin-bottom-0"
       />
-      <div className="margin-y-5 clearfix">
+      <div className="margin-top-5 clearfix">
         <img
           className="float-left margin-right-2"
           alt=""
