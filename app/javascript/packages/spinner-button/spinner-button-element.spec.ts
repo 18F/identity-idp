@@ -1,16 +1,23 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { getByRole, fireEvent } from '@testing-library/dom';
-import { SpinnerButton } from '../../../app/javascript/packs/spinner-button';
+import { getByRole, fireEvent, screen } from '@testing-library/dom';
+import './spinner-button-element';
+import type { SpinnerButtonElement } from './spinner-button-element';
 
-describe('SpinnerButton', () => {
+describe('SpinnerButtonElement', () => {
   let clock;
 
   const longWaitDurationMs = 1000;
 
-  function createWrapper({ actionMessage, tagName = 'a' } = {}) {
+  interface WrapperOptions {
+    actionMessage?: string;
+
+    tagName?: string;
+  }
+
+  function createWrapper({ actionMessage, tagName = 'a' }: WrapperOptions = {}) {
     document.body.innerHTML = `
-      <div class="spinner-button" data-long-wait-duration-ms="${longWaitDurationMs}">
+      <lg-spinner-button data-long-wait-duration-ms="${longWaitDurationMs}">
         <div class="spinner-button__content">
           ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
           <span class="spinner-dots" aria-hidden="true">
@@ -20,15 +27,16 @@ describe('SpinnerButton', () => {
           </span>
         </div>
         ${
-          actionMessage &&
-          `<div
-            role="status"
-            data-message="${actionMessage}"
-            class="spinner-button__action-message usa-sr-only"></div>`
+          actionMessage
+            ? `<div
+                 role="status"
+                 data-message="${actionMessage}"
+                 class="spinner-button__action-message usa-sr-only"></div>`
+            : ''
         }
-      </div>`;
+      </lg-spinner-button>`;
 
-    return document.body.firstElementChild;
+    return document.body.firstElementChild as SpinnerButtonElement;
   }
 
   beforeEach(() => {
@@ -41,9 +49,7 @@ describe('SpinnerButton', () => {
 
   it('shows spinner on click', async () => {
     const wrapper = createWrapper();
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
     await userEvent.click(button, { advanceTimers: clock.tick });
 
@@ -61,9 +67,7 @@ describe('SpinnerButton', () => {
     });
     document.body.appendChild(form);
     form.appendChild(wrapper);
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
     await userEvent.type(button, '{Enter}', { advanceTimers: clock.tick });
     clock.tick(0);
@@ -75,9 +79,7 @@ describe('SpinnerButton', () => {
   it('announces action message', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -90,9 +92,7 @@ describe('SpinnerButton', () => {
   it('shows action message visually after long delay', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
@@ -105,8 +105,6 @@ describe('SpinnerButton', () => {
 
   it('supports external dispatched events to control spinner', () => {
     const wrapper = createWrapper();
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
 
     fireEvent(wrapper, new window.CustomEvent('spinner.start'));
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
