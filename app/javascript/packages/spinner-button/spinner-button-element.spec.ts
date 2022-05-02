@@ -1,12 +1,11 @@
 import sinon from 'sinon';
-import baseUserEvent from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { getByRole, fireEvent, screen } from '@testing-library/dom';
 import './spinner-button-element';
 import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
-  let clock: sinon.SinonFakeTimers;
-  const userEvent = baseUserEvent.setup({ advanceTimers: (ms: number) => clock.tick(ms) });
+  let clock;
 
   const longWaitDurationMs = 1000;
 
@@ -14,16 +13,11 @@ describe('SpinnerButtonElement', () => {
     actionMessage?: string;
 
     tagName?: string;
-
-    spinOnClick?: boolean;
   }
 
-  function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
+  function createWrapper({ actionMessage, tagName = 'a' }: WrapperOptions = {}) {
     document.body.innerHTML = `
-      <lg-spinner-button
-        long-wait-duration-ms="${longWaitDurationMs}"
-        ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
-      >
+      <lg-spinner-button data-long-wait-duration-ms="${longWaitDurationMs}">
         <div class="spinner-button__content">
           ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
           <span class="spinner-dots" aria-hidden="true">
