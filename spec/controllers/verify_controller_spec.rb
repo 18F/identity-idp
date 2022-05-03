@@ -24,9 +24,9 @@ describe VerifyController do
       stub_idv_session
     end
 
-    context 'with idv_api_enabled feature disabled' do
+    context 'with step feature-disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
       end
 
       it 'renders 404' do
@@ -34,9 +34,10 @@ describe VerifyController do
       end
     end
 
-    context 'with idv_api_enabled feature enabled' do
+    context 'with step feature-enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+          and_return([:personal_key, :personal_key_confirm])
       end
 
       it 'renders view' do

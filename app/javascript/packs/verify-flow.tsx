@@ -8,6 +8,11 @@ interface AppRootValues {
   initialValues: string;
 
   /**
+   * JSON-encoded array of enabled step names.
+   */
+  enabledStepNames: string;
+
+  /**
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;
@@ -28,12 +33,16 @@ interface AppRootElement extends HTMLElement {
 }
 
 const appRoot = document.getElementById('app-root') as AppRootElement;
-const { initialValues, basePath, appName, completionUrl: completionURL } = appRoot.dataset;
+const {
+  initialValues: initialValuesJSON,
+  enabledStepNames: enabledStepNamesJSON,
+  basePath,
+  appName,
+  completionUrl: completionURL,
+} = appRoot.dataset;
 
-let parsedInitialValues;
-try {
-  parsedInitialValues = JSON.parse(initialValues);
-} catch {}
+const initialValues = JSON.parse(initialValuesJSON);
+const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
 function onComplete() {
   window.location.href = completionURL;
@@ -41,7 +50,8 @@ function onComplete() {
 
 render(
   <VerifyFlow
-    initialValues={parsedInitialValues}
+    initialValues={initialValues}
+    enabledStepNames={enabledStepNames}
     basePath={basePath}
     appName={appName}
     onComplete={onComplete}
