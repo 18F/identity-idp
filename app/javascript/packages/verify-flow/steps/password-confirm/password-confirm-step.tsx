@@ -3,7 +3,7 @@ import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { getAssetPath } from '@18f/identity-assets';
 import type { VerifyFlowValues } from '../..';
@@ -12,7 +12,7 @@ import parsePhoneNumber from 'libphonenumber-js';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
-function get_date_format(date) {
+function get_date_format(date: string | number | Date) {
   date = new Date(date);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
@@ -60,7 +60,7 @@ function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: 'Login.gov' })}</p>
       <Accordion header={t('idv.messages.review.intro')}>{pii_summary(value)}</Accordion>
-      <FormStepsContinueButton className="margin-bottom-0" />
+      <FormStepsButton.Continue className="margin-bottom-0" />
     </>
   );
 }
