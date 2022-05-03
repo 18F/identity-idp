@@ -10,7 +10,7 @@
   <%= label_tag(
         "two_factor_options_form_selection_#{option.type}",
         class: [
-          option.type === "phone" && flash[:phone_error] && 'checkbox__invalid',
+          option.type === 'phone' && flash[:phone_error] && 'checkbox__invalid',
           'usa-checkbox__label',
           'usa-checkbox__label--illustrated',
         ].select(&:present?).join(' '),
