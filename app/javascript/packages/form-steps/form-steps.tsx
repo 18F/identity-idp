@@ -13,7 +13,7 @@ export interface FormStepError<V> {
   /**
    * Name of field for which error occurred.
    */
-  field: keyof V;
+  field?: keyof V;
 
   /**
    * Error object.
@@ -34,6 +34,8 @@ export type RegisterFieldCallback = (
 ) => undefined | RefCallback<HTMLInputElement>;
 
 export type OnErrorCallback = (error: Error, options?: { field?: string | null }) => void;
+
+type FormValues = Record<string, any>;
 
 export interface FormStepComponentProps<V> {
   /**
@@ -72,7 +74,7 @@ export interface FormStepComponentProps<V> {
   toPreviousStep: () => void;
 }
 
-export interface FormStep {
+export interface FormStep<V extends FormValues = {}> {
   /**
    * Step name, used in history parameter.
    */
@@ -81,7 +83,12 @@ export interface FormStep {
   /**
    * Step form component.
    */
-  form: FC<FormStepComponentProps<Record<string, any>>>;
+  form: FC<FormStepComponentProps<V>>;
+
+  /**
+   * Optionally-asynchronous submission behavior, expected to throw any submission error.
+   */
+  submit?: (values: V) => void | Promise<void>;
 
   /**
    * Human-readable step label.
@@ -110,7 +117,7 @@ interface FormStepsProps {
   /**
    * Form steps.
    */
-  steps?: FormStep[];
+  steps?: FormStep<any>[];
 
   /**
    * Form values to populate initial state.
@@ -166,7 +173,7 @@ interface FormStepsProps {
  * @param step Current step.
  * @param titleFormat Format string for page title.
  */
-function useStepTitle(step?: FormStep, titleFormat?: string) {
+function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
   useEffect(() => {
     if (titleFormat && step?.title) {
       document.title = replaceVariables(titleFormat, { step: step.title });
@@ -183,7 +190,7 @@ function useStepTitle(step?: FormStep, titleFormat?: string) {
  *
  * @return Step index.
  */
-export function getStepIndexByName(steps: FormStep[], name?: string) {
+export function getStepIndexByName(steps: FormStep<any>[], name?: string) {
   return name ? steps.findIndex((step) => step.name === name) : -1;
 }
 
@@ -197,10 +204,10 @@ function getFieldActiveErrorFieldElement(
   errors: FormStepError<Record<string, Error>>[],
   fields: Record<string, FieldsRefEntry>,
 ) {
-  const error = errors.find(({ field }) => fields[field]?.element);
+  const error = errors.find(({ field }) => field && fields[field]?.element);
 
   if (error) {
-    return fields[error.field].element || undefined;
+    return fields[error.field!].element || undefined;
   }
 }
 
@@ -221,6 +228,7 @@ function FormSteps({
   const formRef = useRef(null as HTMLFormElement | null);
   const [stepName, setStepName] = useHistoryParam({ basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
@@ -303,15 +311,18 @@ function FormSteps({
     return null;
   }
 
-  const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
+  const unknownFieldErrors = activeErrors.filter(
+    ({ field }) => !field || !fields.current[field]?.element,
+  );
   const hasUnresolvedFieldErrors =
     activeErrors.length && activeErrors.length > unknownFieldErrors.length;
+  const { form: Form, submit, name } = step;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
    * step.
    */
-  const toNextStep: FormEventHandler = (event) => {
+  const toNextStep: FormEventHandler = async (event) => {
     event.preventDefault();
 
     // Don't proceed if field errors have yet to be resolved.
@@ -328,7 +339,20 @@ function FormSteps({
       return;
     }
 
+    if (submit) {
+      try {
+        setIsSubmitting(true);
+        await submit(values);
+        setIsSubmitting(false);
+      } catch (error) {
+        setActiveErrors([{ error }]);
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     onStepSubmit(step?.name);
+
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
@@ -345,7 +369,6 @@ function FormSteps({
     setStepName(nextStepName);
   };
 
-  const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
@@ -356,7 +379,7 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, onPageTransition }}>
+      <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
         <Form
           key={name}
           value={values}
@@ -364,7 +387,7 @@ function FormSteps({
           unknownFieldErrors={unknownFieldErrors}
           onChange={ifStillMounted((nextValuesPatch) => {
             setActiveErrors((prevActiveErrors) =>
-              prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
+              prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
             );
             setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
           })}
