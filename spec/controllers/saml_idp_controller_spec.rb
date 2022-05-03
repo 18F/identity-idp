@@ -109,7 +109,7 @@ describe SamlIdpController do
       stub_analytics
 
       result = { service_provider: nil, saml_request_valid: false }
-      expect(@analytics).to receive(:track_event).with(Analytics::REMOTE_LOGOUT_INITIATED, result)
+      expect(@analytics).to receive(:track_event).with('Remote Logout initiated', result)
 
       delete :remotelogout, params: { SAMLRequest: 'foo' }
     end
