@@ -173,7 +173,7 @@ interface FormStepsProps {
  * @param step Current step.
  * @param titleFormat Format string for page title.
  */
-function useStepTitle(step?: FormStep, titleFormat?: string) {
+function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
   useEffect(() => {
     if (titleFormat && step?.title) {
       document.title = replaceVariables(titleFormat, { step: step.title });
@@ -339,7 +339,20 @@ function FormSteps({
       return;
     }
 
+    if (submit) {
+      try {
+        setIsSubmitting(true);
+        await submit(values);
+        setIsSubmitting(false);
+      } catch (error) {
+        setActiveErrors([{ error }]);
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     onStepSubmit(step?.name);
+
     const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {

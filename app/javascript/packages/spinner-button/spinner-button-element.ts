@@ -4,25 +4,14 @@ interface SpinnerButtonElements {
   actionMessage: HTMLElement;
 }
 
-<<<<<<< HEAD
 /**
  * Default time after which to show action message, in milliseconds.
  */
 const DEFAULT_LONG_WAIT_DURATION_MS = 15000;
-=======
-interface SpinnerButtonOptions {
-  longWaitDurationMs: number;
-}
-
-const DEFAULT_OPTIONS: SpinnerButtonOptions = {
-  longWaitDurationMs: 15000,
-};
->>>>>>> 84f0706fb (Refactor SpinnerButton as ViewComponent, custom element (#6243))
 
 export class SpinnerButtonElement extends HTMLElement {
   elements: SpinnerButtonElements;
 
-<<<<<<< HEAD
   #longWaitTimeout?: number;
 
   get spinOnClick(): boolean {
@@ -35,11 +24,6 @@ export class SpinnerButtonElement extends HTMLElement {
   get longWaitDurationMs(): number {
     return Number(this.getAttribute('long-wait-duration-ms')) || DEFAULT_LONG_WAIT_DURATION_MS;
   }
-=======
-  options: SpinnerButtonOptions;
-
-  longWaitTimeout?: number;
->>>>>>> 84f0706fb (Refactor SpinnerButton as ViewComponent, custom element (#6243))
 
   connectedCallback() {
     this.elements = {
@@ -47,20 +31,9 @@ export class SpinnerButtonElement extends HTMLElement {
       actionMessage: this.querySelector('.spinner-button__action-message')!,
     };
 
-<<<<<<< HEAD
     if (this.spinOnClick) {
       this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
     }
-=======
-    this.options = {
-      ...DEFAULT_OPTIONS,
-      ...this.dataset,
-    };
-
-    this.options.longWaitDurationMs = Number(this.options.longWaitDurationMs);
-
-    this.elements.button.addEventListener('click', () => this.toggleSpinner(true));
->>>>>>> 84f0706fb (Refactor SpinnerButton as ViewComponent, custom element (#6243))
     this.addEventListener('spinner.start', () => this.toggleSpinner(true));
     this.addEventListener('spinner.stop', () => this.toggleSpinner(false));
   }
@@ -82,19 +55,11 @@ export class SpinnerButtonElement extends HTMLElement {
       actionMessage.textContent = isVisible ? (actionMessage.dataset.message as string) : '';
     }
 
-<<<<<<< HEAD
     window.clearTimeout(this.#longWaitTimeout);
     if (isVisible) {
       this.#longWaitTimeout = window.setTimeout(
         () => this.handleLongWait(),
         this.longWaitDurationMs,
-=======
-    window.clearTimeout(this.longWaitTimeout);
-    if (isVisible) {
-      this.longWaitTimeout = window.setTimeout(
-        () => this.handleLongWait(),
-        this.options.longWaitDurationMs,
->>>>>>> 84f0706fb (Refactor SpinnerButton as ViewComponent, custom element (#6243))
       );
     }
   }
@@ -113,8 +78,5 @@ declare global {
 if (!customElements.get('lg-spinner-button')) {
   customElements.define('lg-spinner-button', SpinnerButtonElement);
 }
-<<<<<<< HEAD
 
 export default SpinnerButtonElement;
-=======
->>>>>>> 84f0706fb (Refactor SpinnerButton as ViewComponent, custom element (#6243))
