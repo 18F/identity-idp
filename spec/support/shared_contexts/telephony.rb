@@ -14,6 +14,7 @@ def telephony_use_default_config!
       sms.secret_access_key = 'fake-pinpoint-secret-access-key-sms'
       sms.application_id = 'fake-pinpoint-application-id-sms'
       sms.shortcode = '123456'
+      sms.country_code_longcode_pool = { 'PR' => ['+19393334444'] }
     end
 
     c.pinpoint.add_voice_config do |voice|
