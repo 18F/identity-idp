@@ -1,5 +1,20 @@
 class MfaConfirmationController < ApplicationController
-  before_action :confirm_two_factor_authenticated
+  include MfaSetupConcern
+  before_action :confirm_two_factor_authenticated, except: [:show]
+
+  def show
+    @presenter = MfaConfirmationShowPresenter.new(
+      current_user: current_user,
+      next_path: next_path,
+      final_path: after_mfa_setup_path,
+    )
+  end
+
+  def skip
+    user_session.delete(:selected_mfa_options)
+    user_session.delete(:next_mfa_selection_choice)
+    redirect_to after_mfa_setup_path
+  end
 
   def new
     session[:password_attempts] ||= 0
@@ -17,6 +32,15 @@ class MfaConfirmationController < ApplicationController
 
   def password
     params.require(:user)[:password]
+  end
+
+  def next_mfa_selection_choice
+    params[:next_setup_choice] ||
+      user_session[:next_mfa_selection_choice]
+  end
+
+  def next_path
+    confirmation_path(next_mfa_selection_choice)
   end
 
   def handle_valid_password

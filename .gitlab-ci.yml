@@ -6,7 +6,7 @@
 variables:
   GITLAB_CI: 'true'
   ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-  IDP_CI_SHA: "sha256:8650f43d0e6d44729bff92657b59e511c874103ae6207b3c0781df042df6932f"
+  IDP_CI_SHA: "sha256:4deb511a90b86f4c6bcc76d73d0a169640243df9ade5ed054a2056e1730f611f"
 
 default:
   image: "${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}"
@@ -63,12 +63,14 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
-    - if: '$CI_COMMIT_BRANCH'
 
 check_changelog:
   stage: build
+  variables:
+    GIT_DEPTH: 100
   script:
     - echo "$CI_PIPELINE_SOURCE"
     - |
@@ -185,6 +187,8 @@ js_tests:
 
 coverage:
   stage: after_test
+  cache:
+    - <<: *ruby_cache
   script:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
@@ -199,7 +203,7 @@ coverage:
       - coverage/assets/
       - coverage/coverage.xml
 
-artifact:
+prepare_deploy:
   stage: after_test
   tags:
     - build-pool
@@ -211,3 +215,4 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'

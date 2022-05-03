@@ -35,16 +35,111 @@ describe Profile do
       it 'is the empty string' do
         expect(profile.proofing_components).to eq('')
       end
-
-      it 'does not blow up in #includes_liveness_check?' do
-        expect(profile.includes_liveness_check?).to be_falsey
-      end
     end
 
     context 'when the value is a JSON object' do
       let(:proofing_components) { { 'foo' => true } }
       it 'is the object' do
         expect(profile.proofing_components).to eq('foo' => true)
+      end
+    end
+  end
+
+  describe '#includes_liveness_check?' do
+    it 'returns true if a component for liveness is present' do
+      profile = create(:profile, proofing_components: { liveness_check: 'acuant' })
+
+      expect(profile.includes_liveness_check?).to eq(true)
+    end
+
+    it 'returns false if a component for liveness is not present' do
+      profile = create(:profile, proofing_components: { liveness_check: nil })
+
+      expect(profile.includes_liveness_check?).to eq(false)
+    end
+
+    it 'returns false if proofing_components is blank' do
+      profile = create(:profile, proofing_components: '')
+
+      expect(profile.includes_liveness_check?).to eq(false)
+    end
+  end
+
+  describe '#includes_phone_check?' do
+    it 'returns true if the address_check component is lexis_nexis_address' do
+      profile = create(:profile, proofing_components: { address_check: 'lexis_nexis_address' })
+
+      expect(profile.includes_phone_check?).to eq(true)
+    end
+
+    it 'returns false if the address_check componet is gpo_letter' do
+      profile = create(:profile, proofing_components: { address_check: 'gpo_letter' })
+
+      expect(profile.includes_phone_check?).to eq(false)
+    end
+
+    it 'returns false if proofing_components is blank' do
+      profile = create(:profile, proofing_components: '')
+
+      expect(profile.includes_phone_check?).to eq(false)
+    end
+  end
+
+  describe '#strict_ial2_proofed?' do
+    it 'returns false if the profile is not active' do
+      profile = create(:profile, active: false)
+
+      expect(profile.strict_ial2_proofed?).to eq(false)
+    end
+
+    it 'returns false if the profile does not have liveness' do
+      proofing_components = { liveness_check: nil, address_check: :lexis_nexis_address }
+      profile = create(:profile, :active, proofing_components: proofing_components)
+
+      expect(profile.strict_ial2_proofed?).to eq(false)
+    end
+
+    context 'the letter flow is allowed for strict IAL2' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :usps_upload_allowed_for_strict_ial2,
+        ).and_return(true)
+      end
+
+      it 'returns true for a profile with a phone' do
+        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+
+      it 'return true for a profile with a letter' do
+        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+    end
+
+    context 'the letter flow is not allowed for strict IAL2' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :usps_upload_allowed_for_strict_ial2,
+        ).and_return(false)
+      end
+
+      it 'returns true for a profile with a phone' do
+        proofing_components = { liveness_check: :acuant, address_check: :lexis_nexis_address }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(true)
+      end
+
+      it 'return false for a profile with a letter' do
+        proofing_components = { liveness_check: :acuant, address_check: :gpo_letter }
+        profile = create(:profile, :active, proofing_components: proofing_components)
+
+        expect(profile.strict_ial2_proofed?).to eq(false)
       end
     end
   end

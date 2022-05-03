@@ -25,7 +25,7 @@ module Users
     private
 
     def confirm_personal_key
-      return if reactivate_account_session.personal_key?
+      return if reactivate_account_session.validated_personal_key?
       redirect_to root_url
     end
 

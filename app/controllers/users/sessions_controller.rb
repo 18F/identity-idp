@@ -127,7 +127,6 @@ module Users
     def handle_valid_authentication
       sign_in(resource_name, resource)
       cache_active_profile(auth_params[:password])
-      add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
       EmailAddress.update_last_sign_in_at_on_user_id_and_email(
         user_id: current_user.id,

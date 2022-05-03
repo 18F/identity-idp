@@ -421,16 +421,6 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(
-      current_sp,
-      sp_session_ial,
-      token,
-      transaction_id: nil,
-      user: current_user,
-    )
-  end
-
   def mobile?
     BrowserCache.parse(request.user_agent).mobile?
   end

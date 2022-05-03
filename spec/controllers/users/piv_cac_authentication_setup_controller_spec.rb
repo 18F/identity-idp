@@ -120,11 +120,16 @@ describe Users::PivCacAuthenticationSetupController do
 
           context 'with additional MFAs leftover' do
             before do
-              subject.user_session[:selected_mfa_options] = ['voice']
+              subject.user_session[:selected_mfa_options] = ['piv_cac', 'voice']
+              allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
             end
-            it 'redirects to phone setup page' do
+            it 'redirects to Mfa Confirmation page' do
               get :new, params: { token: good_token }
-              expect(response).to redirect_to(phone_setup_url)
+              expect(response).to redirect_to(
+                auth_method_confirmation_url(
+                  next_setup_choice: 'voice',
+                ),
+              )
             end
 
             it 'sets the piv/cac session information' do

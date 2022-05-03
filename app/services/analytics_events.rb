@@ -503,12 +503,71 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name IdV: personal key visited
+  # User visited IDV personal key page
+  def idv_personal_key_visited
+    track_event('IdV: personal key visited')
+  end
+
+  # @identity.idp.event_name IdV: personal key submitted
+  # User submitted IDV personal key page
+  def idv_personal_key_submitted
+    track_event('IdV: personal key submitted')
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
     track_event('IdV: personal key downloaded')
+  end
+
+  # @identity.idp.event_name IdV: personal key confirm visited
+  # @identity.idp.previous_event_name IdV: show personal key modal
+  # User opened IDV personal key confirmation modal
+  def idv_personal_key_confirm_visited
+    track_event('IdV: personal key confirm visited')
+  end
+
+  # @identity.idp.event_name IdV: personal key confirm submitted
+  # User submitted IDV personal key confirmation modal
+  def idv_personal_key_confirm_submitted
+    track_event('IdV: personal key confirm submitted')
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation form
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user submitted their phone on the phone confirmation page
+  def idv_phone_confirmation_form_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation form',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation vendor
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The vendor finished the process of confirming the users phone
+  def idv_phone_confirmation_vendor_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation vendor',
+      success: success,
+      errors: errors,
+      **extra,
+    )
   end
 
   # @identity.idp.event_name IdV: phone confirmation otp submitted
