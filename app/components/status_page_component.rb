@@ -27,7 +27,7 @@ class StatusPageComponent < BaseComponent
   end
 
   def icon_src
-    image_path("status/#{[status, icon].compact.join('-')}")
+    image_path("status/#{[status, icon].compact.join('-')}.svg")
   end
 
   def icon_alt
