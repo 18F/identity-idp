@@ -20,12 +20,14 @@ function FormStepsButton({ className, children }: FormStepsButtonProps) {
   const { isSubmitting } = useContext(FormStepsContext);
   useEffect(() => ref.current?.toggleSpinner(isSubmitting), [isSubmitting]);
 
-  const classes = ['display-block', 'margin-y-5', className].filter(Boolean).join(' ');
+  const classes = ['margin-y-5', className].filter(Boolean).join(' ');
 
   return (
-    <SpinnerButton ref={ref} spinOnClick={false} type="submit" isBig isWide className={classes}>
-      {children}
-    </SpinnerButton>
+    <div className={classes}>
+      <SpinnerButton ref={ref} spinOnClick={false} type="submit" isBig isWide>
+        {children}
+      </SpinnerButton>
+    </div>
   );
 }
 
