@@ -2,7 +2,7 @@
   <%= check_box_tag(
         'two_factor_options_form[selection][]',
         option.type,
-        option.type === 'phone' && flash[:phone_error].present?,
+        option.type == 'phone' && flash[:phone_error].present?,
         disabled: option.disabled?,
         class: 'usa-checkbox__input usa-checkbox__input--tile',
         id: "two_factor_options_form_selection_#{option.type}",
