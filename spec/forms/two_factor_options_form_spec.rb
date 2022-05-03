@@ -31,7 +31,7 @@ describe TwoFactorOptionsForm do
     end
 
     context "when the selection is different from the user's otp_delivery_preference" do
-      it "updates the user's otp_delivery_preference as long as they have an alternate method selected" do
+      it "updates the user's otp_delivery_preference if they have an alternate method selected" do
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).
           to receive(:new).

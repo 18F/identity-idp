@@ -7,5 +7,4 @@ class MfaSelectionComponent < BaseComponent
     @form = form
     @option = option
     end
-
 end

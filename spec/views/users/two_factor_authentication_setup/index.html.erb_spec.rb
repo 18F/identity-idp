@@ -28,6 +28,7 @@ describe 'users/two_factor_authentication_setup/index.html.erb' do
         disabled: true,
       )
     end
+  end
 
   context 'single phone vendor outage' do
     before do

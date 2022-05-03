@@ -98,7 +98,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
     context 'when the selection is only phone' do
       before do
-         stub_sign_in_before_2fa
+        stub_sign_in_before_2fa
 
         patch :create, params: {
           two_factor_options_form: {
@@ -111,7 +111,9 @@ describe Users::TwoFactorAuthenticationSetupController do
         expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
       end
       it 'contains a flash message' do
-        expect(flash[:phone_error]).to eq(t('errors.two_factor_auth_setup.must_select_additional_option'))
+        expect(flash[:phone_error]).to eq(
+          t('errors.two_factor_auth_setup.must_select_additional_option'),
+        )
       end
     end
 
@@ -211,5 +213,4 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
   end
-
 end
