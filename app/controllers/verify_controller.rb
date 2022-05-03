@@ -1,12 +1,12 @@
 class VerifyController < ApplicationController
+  include RenderConditionConcern
   include IdvSession
+
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_vendor_session_started
   before_action :confirm_profile_has_been_created
 
-  include RenderConditionConcern
-
-  check_or_render_not_found -> { IdentityConfig.store.idv_api_enabled }, only: [:show]
+  check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
   def show
     @app_data = app_data
@@ -32,6 +32,7 @@ class VerifyController < ApplicationController
         'ssn' => '900-12-3456',
         'phone' => '2021234567',
       },
+      enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
     }
   end
 
