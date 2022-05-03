@@ -74,7 +74,9 @@ class AnalyticsEventsDocumenter
       error_prefix = "#{method_object.file}:#{method_object.line} #{method_object.name}"
       errors = []
 
-      errors << "#{error_prefix} event name not detected in track_event" if !extract_event_name(method_object)
+      if !extract_event_name(method_object)
+        errors << "#{error_prefix} event name not detected in track_event"
+      end
 
       missing_attributes.each do |attribute|
         next if attribute.start_with?('**')
