@@ -44,7 +44,7 @@ identify issues in your code as you write.
 
 ### At a Glance
 
-- Site should work if JS is off (and have enhanced features if JS is on).
+- The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
 - Uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/).
 - JS modules are installed & managed via `yarn` (see `package.json`).
 - JS is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/).
