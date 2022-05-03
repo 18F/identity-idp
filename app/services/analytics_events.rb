@@ -1,6 +1,5 @@
 # rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
-  # @identity.idp.event_name Account Reset: cancel
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [String, nil] message_id from AWS Pinpoint API
@@ -18,7 +17,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Account Reset: delete
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
   # @param [String] user_id
@@ -45,7 +43,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Account Reset: request
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
   # @param [Boolean] sms_phone does the user have a phone factor configured?
@@ -80,7 +77,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Account Reset: cancel token validation
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
@@ -94,7 +90,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Account Reset: granted token validation
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Hash] errors
@@ -108,7 +103,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Account Reset: notifications
   # @identity.idp.previous_event_name Account Reset
   # @param [Integer] count number of email notifications sent
   # Account reset was performed, logs the number of email notifications sent
@@ -116,39 +110,33 @@ module AnalyticsEvents
     track_event('Account Reset: notifications', count: count, **extra)
   end
 
-  # @identity.idp.event_name Account deletion and reset visited
   # User visited the account deletion and reset page
   def account_reset_visit
     track_event('Account deletion and reset visited')
   end
 
-  # @identity.idp.event_name Account Delete submitted
   # @param [Boolean] success
   # When a user submits a form to delete their account
   def account_delete_submitted(success:, **extra)
     track_event('Account Delete submitted', success: success, **extra)
   end
 
-  # @identity.idp.event_name Account Delete visited
   # When a user visits the page to delete their account
   def account_delete_visited
     track_event('Account Delete visited')
   end
 
-  # @identity.idp.event_name Account Deletion Requested
   # @param [String] request_came_from the controller/action the request came from
   # When a user deletes their account
   def account_deletion(request_came_from:, **extra)
     track_event('Account Deletion Requested', request_came_from: request_came_from, **extra)
   end
 
-  # @identity.idp.event_name Account deletion and reset visited
   # When a user views the account page
   def account_visit
     track_event('Account Page Visited')
   end
 
-  # @identity.idp.event_name Add Email: Email Confirmation
   # @param [Boolean] success
   # @param [String] user_id account the email is linked to
   # A user has clicked the confirmation link in an email
@@ -156,48 +144,41 @@ module AnalyticsEvents
     track_event('Add Email: Email Confirmation', user_id: user_id, success: success, **extra)
   end
 
-  # @identity.idp.event_name Authentication Confirmation
   # When a user views the "you are already signed in with the following email" screen
   def authentication_confirmation
     track_event('Authentication Confirmation')
   end
 
-  # @identity.idp.event_name Authentication Confirmation: Continue selected
   # When a user views the "you are already signed in with the following email" screen and
   # continues with their existing logged-in email
   def authentication_confirmation_continue
     track_event('Authentication Confirmation: Continue selected')
   end
 
-  # @identity.idp.event_name Authentication Confirmation: Reset selected
   # When a user views the "you are already signed in with the following email" screen and
   # signs out of their current logged in email to choose a different email
   def authentication_confirmation_reset
     track_event('Authentication Confirmation: Reset selected')
   end
 
-  # @identity.idp.event_name Banned User redirected
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
     track_event('Banned User redirected')
   end
 
-  # @identity.idp.event_name Banned User visited
   # A user that has been banned from an SP has authenticated, they have visited
   # a page showing them that they have been banned
   def banned_user_visited
     track_event('Banned User visited')
   end
 
-  # @identity.idp.event_name Broken Personal Key: Regenerated
   # A user that had a broken personal key was routed to a page to regenerate their personal key,
   # so that they no longer have a broken one
   def broken_personal_key_regenerated
     track_event('Broken Personal Key: Regenerated')
   end
 
-  # @identity.idp.event_name Doc Auth Async
   # @param [String, nil] error error message
   # @param [String, nil] uuid document capture session uuid
   # @param [String, nil] result_id document capture session result id
@@ -206,7 +187,6 @@ module AnalyticsEvents
     track_event('Doc Auth Async', error: error, uuid: uuid, result_id: result_id, **extra)
   end
 
-  # @identity.idp.event_name Doc Auth Warning
   # @param [String] message the warining
   # Logged when there is a non-user-facing error in the doc auth process, such as an unrecognized
   # field from a vendor
@@ -214,7 +194,6 @@ module AnalyticsEvents
     track_event('Doc Auth Warning', message: message, **extra)
   end
 
-  # @identity.idp.event_name Email and Password Authentication
   # @param [Boolean] success
   # @param [String] user_id
   # @param [Boolean] user_locked_out if the user is currently locked out of their second factor
@@ -243,7 +222,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Email Deletion Requested
   # @param [Boolean] success
   # @param [Hash] errors
   # Tracks request for deletion of email address
@@ -256,13 +234,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Email Language: Visited
   # Tracks if Email Language is visited
   def email_language_visited
     track_event('Email Language: Visited')
   end
 
-  # @identity.idp.event_name Email Language: Updated
   # @param [Boolean] success
   # @param [Hash] errors
   # Tracks if Email Language is updated
@@ -275,7 +251,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Event disavowal visited
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Time, nil] event_created_at timestamp for the event
@@ -313,7 +288,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Event disavowal password reset
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Time, nil] event_created_at timestamp for the event
@@ -351,7 +325,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Event disavowal token invalid
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Time, nil] event_created_at timestamp for the event
@@ -389,13 +362,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Events Page Visited
   # User visited the events page
   def events_visit
     track_event('Events Page Visited')
   end
 
-  # @identity.idp.event_name External Redirect
   # @param [String] redirect_url URL user was directed to
   # @param [String, nil] step which step
   # @param [String, nil] location which part of a step, if applicable
@@ -412,19 +383,16 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Forget All Browsers Submitted
   # The user chose to "forget all browsers"
   def forget_all_browsers_submitted
     track_event('Forget All Browsers Submitted')
   end
 
-  # @identity.idp.event_name Forget All Browsers Visited
   # The user visited the "forget all browsers" page
   def forget_all_browsers_visited
     track_event('Forget All Browsers Visited')
   end
 
-  # @identity.idp.event_name Idv address submitted
   # @param [Boolean] success
   # @param [Boolean] address_edited
   # @param [Hash] pii_like_keypaths
@@ -450,13 +418,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Idv Address Visit
   # User visited idv address page
   def idv_address_visit
     track_event('IdV: address visited')
   end
 
-  # @identity.idp.event_name IdV: cancellation visited
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [String] request_came_from the controller and action from the
   #   source such as "users/sessions#new"
@@ -470,27 +436,23 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: cancellation confirmed
   # @param [String] step the step that the user was on when they clicked cancel
   # The user confirmed their choice to cancel going through IDV
   def idv_cancellation_confirmed(step:, **extra)
     track_event('IdV: cancellation confirmed', step: step, **extra)
   end
 
-  # @identity.idp.event_name IdV: cancellation go back
   # @param [String] step the step that the user was on when they clicked cancel
   # The user chose to go back instead of cancel IDV
   def idv_cancellation_go_back(step:, **extra)
     track_event('IdV: cancellation go back', step: step, **extra)
   end
 
-  # @identity.idp.event_name IdV: come back later visited
   # The user visited the "come back later" page shown during the GPO mailing flow
   def idv_come_back_later_visit
     track_event('IdV: come back later visited')
   end
 
-  # @identity.idp.event_name IdV: doc auth exception visited
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
@@ -578,10 +540,10 @@ module AnalyticsEvents
   def idv_doc_auth_submitted_pii_validation(
     success:,
     errors:,
-    user_id:,
     remaining_attempts:,
     pii_like_keypaths:,
     flow_path:,
+    user_id: nil,
     **extra
   )
     track_event(
@@ -635,7 +597,6 @@ module AnalyticsEvents
     track_event('IdV: personal key visited')
   end
 
-  # @identity.idp.event_name IdV: personal key submitted
   # User submitted IDV personal key page
   def idv_personal_key_submitted
     track_event('IdV: personal key submitted')
@@ -643,26 +604,22 @@ module AnalyticsEvents
 
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
-  # @identity.idp.event_name IdV: personal key downloaded
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
     track_event('IdV: personal key downloaded')
   end
 
-  # @identity.idp.event_name IdV: personal key confirm visited
   # @identity.idp.previous_event_name IdV: show personal key modal
   # User opened IDV personal key confirmation modal
   def idv_personal_key_confirm_visited
     track_event('IdV: personal key confirm visited')
   end
 
-  # @identity.idp.event_name IdV: personal key confirm submitted
   # User submitted IDV personal key confirmation modal
   def idv_personal_key_confirm_submitted
     track_event('IdV: personal key confirm submitted')
   end
 
-  # @identity.idp.event_name IdV: phone confirmation form
   # @param [Boolean] success
   # @param [Hash] errors
   # The user submitted their phone on the phone confirmation page
@@ -679,7 +636,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: phone confirmation vendor
   # @param [Boolean] success
   # @param [Hash] errors
   # The vendor finished the process of confirming the users phone
@@ -696,7 +652,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] code_expired if the confirmation code expired
@@ -726,13 +681,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: phone confirmation otp visited
   # When a user visits the page to confirm posession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_visit
     track_event('IdV: phone confirmation otp visited')
   end
 
-  # @identity.idp.event_name IdV: phone error visited
   # @param ['warning','jobfail','failure'] type
   # @param [Time] throttle_expires_at when the throttle expires
   # @param [Integer] remaining_attempts number of attempts remaining
@@ -749,7 +702,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: Phone OTP Delivery Selection Submitted
   # @param ["sms", "voice"] otp_delivery_preference
   # @param [Boolean] success
   # @param [Hash] errors
@@ -773,20 +725,17 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Profile: Visited new personal key
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
   end
 
-  # @identity.idp.event_name Profile: Created new personal key
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
     track_event('Profile: Created new personal key')
   end
 
-  # @identity.idp.event_name Profile: Created new personal key notifications
   # @param [true] success this event always succeeds
   # @param [Integer] emails number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
@@ -803,7 +752,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Proofing Address Result Missing
   # @identity.idp.previous_event_name Proofing Address Timeout
   # The job for address verification (PhoneFinder) did not record a result in the expected
   # place during the expected time frame
@@ -811,7 +759,6 @@ module AnalyticsEvents
     track_event('Proofing Address Result Missing')
   end
 
-  # @identity.idp.event_name Proofing Document Result Missing
   # @identity.idp.previous_event_name Proofing Document Timeout
   # The job for document authentication did not record a result in the expected
   # place during the expected time frame
@@ -819,7 +766,6 @@ module AnalyticsEvents
     track_event('Proofing Document Result Missing')
   end
 
-  # @identity.idp.event_name Return to SP: Failed to proof
   # Tracks when a user is redirected back to the service provider after failing to proof.
   # @param [String] redirect_url the url of the service provider
   # @param [String] flow
@@ -836,13 +782,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Rules of Use Visited
   # Tracks when rules of use is visited
   def rules_of_use_visit
     track_event('Rules of Use Visited')
   end
 
-  # @identity.idp.event_name Rules of Use Submitted
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success
   # @param [Hash] errors
@@ -855,7 +799,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name RISC: Security event received
   # Tracks when security event is received
   # @param [Boolean] success
   # @param [String] error_code
@@ -884,7 +827,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name SP Revoke Consent: Revoked
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -895,7 +837,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name SP Revoke Consent: Visited
   # Tracks when the page to revoke consent (unlink from) a service provider visited
   # @param [String] issuer which issuer
   def sp_revoke_consent_visited(issuer:, **extra)
@@ -906,7 +847,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name SAML Auth Request
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
