@@ -503,6 +503,134 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.event_name Document authentication: Upload image from form
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Authentication document image uploaded by form
+
+  def idv_doc_auth_submitted_image_upload_form(
+    success:,
+    errors:,
+    **extra
+  )
+
+    track_event(
+      'IdV: doc auth image upload form submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Document authentication: Upload image from vendor
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] doc_auth_results
+  # @param [String] state
+  # @param [String] state_id_type
+  # @param [Boolean] async
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [Hash] client_image_metrics
+  # @param [String] flow_path
+  # Authentication document image uploaded by vendor
+
+  def idv_doc_auth_submitted_image_upload_vendor(
+    success:,
+    errors:,
+    exception:,
+    state:,
+    state_id_type:,
+    async:, attempts:,
+    remaining_attempts:,
+    client_image_metrics:,
+    flow_path:,
+    billed: nil,
+    doc_auth_result: nil,
+    **extra
+  )
+
+    track_event(
+      'IdV: doc auth image upload vendor submitted',
+      success: success,
+      errors: errors,
+      exception: exception,
+      billed: billed,
+      doc_auth_result: doc_auth_result,
+      state: state,
+      state_id_type: state_id_type,
+      async: async,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      client_image_metrics: client_image_metrics,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Document authentication: PII validation
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Integer] remaining attempts
+  # @param [Hash] pii_like_keypaths
+  # @param [String] flow_path
+  # Authentication document image uploaded by vendor - PII validation
+
+  def idv_doc_auth_submitted_pii_validation(
+    success:,
+    errors:,
+    user_id:,
+    remaining_attempts:,
+    pii_like_keypaths:,
+    flow_path:,
+    **extra
+  )
+
+    track_event(
+      'IdV: doc auth image upload vendor pii validation',
+      success: success,
+      errors: errors,
+      user_id: user_id,
+      remaining_attempts: remaining_attempts,
+      pii_like_keypaths: pii_like_keypaths,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name Document authentication: visited warning
+  # @param [String] step_name
+  # @param [Integer] remaining_attempts
+  # Authentication document visited warning
+
+  def idv_doc_auth_warning_visited(
+    step_name:,
+    remaining_attempts:
+  )
+
+    track_event(
+      'IdV: doc auth warning visited',
+      step_name: step_name,
+      remaining_attempts: remaining_attempts,
+    )
+  end
+
+  # @identity.idp.event_name Final step in IDV
+  # @param [Boolean] success
+  # Final step in DV
+
+  def idv_final(
+    success:
+  )
+
+    track_event(
+      'IdV: final resolution',
+      success: success,
+    )
+  end
+
   # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.event_name IdV: personal key downloaded

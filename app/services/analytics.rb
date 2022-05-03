@@ -138,11 +138,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'
-  IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'
-  IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'
-  IDV_DOC_AUTH_WARNING_VISITED = 'IdV: doc auth warning visited'
-  IDV_FINAL = 'IdV: final resolution'
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'
   IDV_INTRO_VISIT = 'IdV: intro visited'

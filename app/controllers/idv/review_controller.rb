@@ -46,7 +46,7 @@ module Idv
       user_session[:need_personal_key_confirmation] = true
       redirect_to next_step
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
-      analytics.track_event(Analytics::IDV_FINAL, success: true)
+      analytics.idv_final(success: true)
 
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
