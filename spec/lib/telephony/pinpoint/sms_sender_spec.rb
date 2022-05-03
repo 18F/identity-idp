@@ -167,62 +167,110 @@ describe Telephony::Pinpoint::SmsSender do
 
     before do
       Telephony.config.country_sender_ids = {
-        US: 'sender1',
-        CA: 'sender2',
+        PH: 'sender2',
       }
     end
 
-    it 'initializes a pinpoint client and uses that to send a message with a shortcode' do
-      mock_build_client
-      response = subject.send(
-        message: 'This is a test!',
-        to: '+1 (123) 456-7890',
-        country_code: country_code,
-      )
+    context 'in a country with sender_id' do
+      let(:country_code) { 'PH' }
 
-      expected_result = {
-        application_id: Telephony.config.pinpoint.sms_configs.first.application_id,
-        message_request: {
-          addresses: {
-            '+1 (123) 456-7890' => { channel_type: 'SMS' },
-          },
-          message_configuration: {
-            sms_message: {
-              body: 'This is a test!',
-              message_type: 'TRANSACTIONAL',
-              origination_number: '123456',
-              sender_id: 'sender1',
-            },
-          },
-        },
-      }
-
-      expect(Pinpoint::MockClient.last_request).to eq(expected_result)
-      expect(response.success?).to eq(true)
-      expect(response.error).to eq(nil)
-      expect(response.extra[:request_id]).to eq('fake-message-request-id')
-    end
-
-    context 'in a country with no sender ID' do
-      let(:country_code) { 'FR' }
-
-      it 'does not set a sender_id' do
+      it 'sends a message with a shortcode and sender_id' do
         mock_build_client
         response = subject.send(
           message: 'This is a test!',
-          to: '+1 (123) 456-7890',
+          to: '+1 (604) 456-7890',
           country_code: country_code,
         )
 
-        expect(
-          Pinpoint::MockClient.last_request.dig(
-            :message_request,
-            :message,
-            :sms_message,
-            :sender_id,
-          ),
-        ).to be_nil
+        expected_result = {
+          application_id: Telephony.config.pinpoint.sms_configs.first.application_id,
+          message_request: {
+            addresses: {
+              '+1 (604) 456-7890' => { channel_type: 'SMS' },
+            },
+            message_configuration: {
+              sms_message: {
+                body: 'This is a test!',
+                message_type: 'TRANSACTIONAL',
+                origination_number: '123456',
+                sender_id: 'sender2',
+              },
+            },
+          },
+        }
+
+        expect(Pinpoint::MockClient.last_request).to eq(expected_result)
         expect(response.success?).to eq(true)
+        expect(response.error).to eq(nil)
+        expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      end
+    end
+
+    context 'in the US' do
+      it 'sends a message with a shortcode and no sender_id' do
+        mock_build_client
+        response = subject.send(
+          message: 'This is a test!',
+          to: '+1 (414) 456-7890',
+          country_code: country_code,
+        )
+
+        expected_result = {
+          application_id: Telephony.config.pinpoint.sms_configs.first.application_id,
+          message_request: {
+            addresses: {
+              '+1 (414) 456-7890' => { channel_type: 'SMS' },
+            },
+            message_configuration: {
+              sms_message: {
+                body: 'This is a test!',
+                message_type: 'TRANSACTIONAL',
+                origination_number: '123456',
+                sender_id: nil,
+              },
+            },
+          },
+        }
+
+        expect(Pinpoint::MockClient.last_request).to eq(expected_result)
+        expect(response.success?).to eq(true)
+        expect(response.error).to eq(nil)
+        expect(response.extra[:request_id]).to eq('fake-message-request-id')
+      end
+    end
+
+    context 'in a non-sender_id country that has a configured long code pool' do
+      let(:country_code) { 'PR' }
+
+      it 'sends a message with a longcode and no sender_id' do
+        mock_build_client
+        response = subject.send(
+          message: 'This is a test!',
+          to: '+1 (939) 456-7890',
+          country_code: country_code,
+        )
+
+        expected_result = {
+          application_id: Telephony.config.pinpoint.sms_configs.first.application_id,
+          message_request: {
+            addresses: {
+              '+1 (939) 456-7890' => { channel_type: 'SMS' },
+            },
+            message_configuration: {
+              sms_message: {
+                body: 'This is a test!',
+                message_type: 'TRANSACTIONAL',
+                origination_number: '+19393334444',
+                sender_id: nil,
+              },
+            },
+          },
+        }
+
+        expect(Pinpoint::MockClient.last_request).to eq(expected_result)
+        expect(response.success?).to eq(true)
+        expect(response.error).to eq(nil)
+        expect(response.extra[:request_id]).to eq('fake-message-request-id')
       end
     end
 
