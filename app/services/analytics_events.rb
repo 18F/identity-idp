@@ -465,13 +465,11 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: personal key visited
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
   end
 
-  # @identity.idp.event_name IdV: personal key submitted
   # User submitted IDV personal key page
   def idv_personal_key_submitted
     track_event('IdV: personal key submitted')
@@ -484,20 +482,17 @@ module AnalyticsEvents
     track_event('IdV: personal key downloaded')
   end
 
-  # @identity.idp.event_name IdV: personal key confirm visited
   # @identity.idp.previous_event_name IdV: show personal key modal
   # User opened IDV personal key confirmation modal
   def idv_personal_key_confirm_visited
     track_event('IdV: personal key confirm visited')
   end
 
-  # @identity.idp.event_name IdV: personal key confirm submitted
   # User submitted IDV personal key confirmation modal
   def idv_personal_key_confirm_submitted
     track_event('IdV: personal key confirm submitted')
   end
 
-  # @identity.idp.event_name IdV: phone confirmation form
   # @param [Boolean] success
   # @param [Hash] errors
   # The user submitted their phone on the phone confirmation page
@@ -514,7 +509,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: phone confirmation vendor
   # @param [Boolean] success
   # @param [Hash] errors
   # The vendor finished the process of confirming the users phone
@@ -531,7 +525,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: phone confirmation otp submitted
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Boolean] code_expired if the confirmation code expired

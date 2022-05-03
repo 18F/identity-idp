@@ -142,8 +142,8 @@ RSpec.describe AnalyticsEventsDocumenter do
     context 'when a method has * as its only arg' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
-          # @identity.idp.event_name Some Event
           def some_event(*)
+            track_event('Some Event')
           end
         end
       RUBY
