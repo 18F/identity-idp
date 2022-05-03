@@ -394,11 +394,11 @@ class ApplicationController < ActionController::Base
 
   def render_not_found
     respond_to do |format|
-      format.html do
-        render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
-      end
       format.json do
         render json: { error: "The page you were looking for doesn't exist" }, status: :not_found
+      end
+      format.any do
+        render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
       end
     end
   end
