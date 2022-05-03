@@ -74,10 +74,21 @@ const logStepVisited = (stepName: string) =>
 const logStepSubmitted = (stepName: string) =>
   trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
 
-export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
+export function VerifyFlow({
+  initialValues = {},
+  enabledStepNames,
+  basePath,
+  appName,
+  onComplete,
+}: VerifyFlowProps) {
   useEffect(() => {
     logStepVisited(STEPS[0].name);
   }, []);
+
+  let steps = STEPS;
+  if (enabledStepNames) {
+    steps = steps.filter(({ name }) => enabledStepNames.includes(name));
+  }
 
   return (
     <>

@@ -31,7 +31,7 @@ describe Api::Verify::CompleteController do
   let(:jwt) { JWT.encode({ pii: pii, metadata: {} }, key, 'RS256', sub: user.uuid) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([:personal_key])
   end
 
   describe 'before_actions' do
@@ -73,11 +73,11 @@ describe Api::Verify::CompleteController do
 
     context 'when the idv api is not enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
       end
 
       it 'responds with not found' do
-        post :create, params: { password: 'iambatman', details: jwt }
+        post :create, params: { password: 'iambatman', details: jwt }, as: :json
         expect(response.status).to eq 404
         expect(JSON.parse(response.body)['error']).
           to eq "The page you were looking for doesn't exist"

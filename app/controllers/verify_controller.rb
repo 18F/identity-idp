@@ -1,9 +1,4 @@
 class VerifyController < ApplicationController
-  include IdvSession
-  before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_vendor_session_started
-  before_action :confirm_profile_has_been_created
-
   include RenderConditionConcern
   include IdvSession
 
@@ -30,9 +25,9 @@ class VerifyController < ApplicationController
         'lastName' => 'Wayne',
         'address1' => '1234 Batcave',
         'address2' => '',
-        'city'     => 'Batcavesville',
-        'state'    => 'NY',
-        'zipcode'  => '12345',
+        'city' => 'Batcavesville',
+        'state' => 'NY',
+        'zipcode' => '12345',
         'dob' => '1988-03-30',
         'ssn' => '900-12-3456',
         'phone' => '2021234567',

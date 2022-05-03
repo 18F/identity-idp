@@ -24,7 +24,7 @@ describe VerifyController do
       stub_idv_session
     end
 
-    context 'with idv_api_enabled feature disabled' do
+    context 'with step feature-disabled' do
       before do
         allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
       end
