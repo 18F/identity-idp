@@ -408,7 +408,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_timeout(exception)
-    analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
+    analytics.response_timed_out(**analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
       NewRelic::Agent.notice_error(exception)
     end

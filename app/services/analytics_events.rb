@@ -639,6 +639,68 @@ module AnalyticsEvents
     track_event('Proofing Document Result Missing')
   end
 
+  # User authenticated by a remembered device
+  def remembered_device_used_for_authentication
+    track_event('Remembered device used for authentication')
+  end
+
+  # User initiated remote logout
+  # @param [String] service_provider
+  # @param [Boolean] saml_request_valid
+  def remote_logout_initiated(
+    service_provider:,
+    saml_request_valid:,
+    **extra
+  )
+    track_event(
+      'Remote Logout initiated',
+      service_provider: service_provider,
+      saml_request_valid: saml_request_valid,
+      **extra,
+    )
+  end
+
+  # A response timed out
+  # @param [String] backtrace
+  # @param [String] exception_message
+  # @param [String] exception_class
+  def response_timed_out(
+    backtrace:,
+    exception_message:,
+    exception_class:,
+    **extra
+  )
+    track_event(
+      'Response Timed Out',
+      backtrace: backtrace,
+      exception_message: exception_message,
+      exception_class: exception_class,
+      **extra,
+    )
+  end
+
+  # User cancelled the process and returned to the sp
+  # @param [String] redirect_url the url of the service provider
+  # @param [String] flow
+  # @param [String] step
+  # @param [String] location
+  def return_to_sp_cancelled(
+    redirect_url:,
+    step: nil,
+    location: nil,
+    flow: nil,
+    **extra
+  )
+    track_event(
+      'Return to SP: Cancelled',
+      redirect_url: redirect_url,
+      step: step,
+      location: location,
+      flow: flow,
+      **extra,
+    )
+  end
+
   # Tracks when a user is redirected back to the service provider after failing to proof.
   # @param [String] redirect_url the url of the service provider
   # @param [String] flow
