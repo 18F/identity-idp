@@ -58,8 +58,8 @@ function pii_summary({ pii }) {
 
 function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
   const personalKey = value.personalKey!;
-  const firstName = value.firstName;
-  const lastName = value.lastName;
+  const firstName = value?.firstName;
+  const lastName = value?.lastName;
   return (
     <>
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>

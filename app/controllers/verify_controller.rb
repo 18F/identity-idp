@@ -32,21 +32,3 @@ class VerifyController < ApplicationController
     }
   end
 end
-# --- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-# first_name: FAKEY
-# middle_name:
-#   last_name: MCFAKERSON
-# address1: 1 FAKE RD
-# address2:
-#   city: GREAT FALLS
-# state: MT
-# zipcode: '59010'
-# dob: '1938-10-06'
-# state_id_number: '1111111111111'
-# state_id_jurisdiction: ND
-# state_id_type: drivers_license
-# state_id_expiration: '2099-12-31'
-# phone: '2015550123'
-# uuid: adc7d623-a274-404a-ac0b-e2428975fae4
-# uuid_prefix:
-#   ssn: 900-45-6789
