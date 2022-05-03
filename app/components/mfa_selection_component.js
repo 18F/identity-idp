@@ -15,7 +15,3 @@ document.addEventListener('DOMContentLoaded', () => {
     checkbox.onchange = clearPhoneSelectionError;
   });
 });
-
-document
-  .getElementsByClassName('usa-checkbox__label-description')[4]
-  .appendChild(document.createTextNode('<YOUR_CONTENT>'));
