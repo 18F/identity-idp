@@ -137,6 +137,20 @@ RSpec.describe AnalyticsEventsDocumenter do
         expect(documenter.missing_documentation.first).to include('some_event missing **extra')
       end
     end
+
+    context 'when a method has * as its only arg' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          # @identity.idp.event_name Some Event
+          def some_event(*)
+          end
+        end
+      RUBY
+
+      it 'errors' do
+        expect(documenter.missing_documentation.first).to include("don't use * as an argument")
+      end
+    end
   end
 
   describe '#as_json' do

@@ -44,7 +44,7 @@ describe Users::VerifyPasswordController do
 
     context 'with personal key flag set' do
       before do
-        allow(subject.reactivate_account_session).to receive(:personal_key?).
+        allow(subject.reactivate_account_session).to receive(:validated_personal_key?).
           and_return(personal_key)
       end
 
