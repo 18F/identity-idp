@@ -36,8 +36,8 @@ describe Redirect::ReturnToSpController do
         ).return_to_sp_url
         expect(response).to redirect_to(expected_redirect_uri)
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::RETURN_TO_SP_CANCEL,
-          redirect_url: expected_redirect_uri,
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: expected_redirect_uri),
         )
       end
     end
@@ -59,8 +59,8 @@ describe Redirect::ReturnToSpController do
         ).return_to_sp_url
         expect(response).to redirect_to(expected_redirect_uri)
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::RETURN_TO_SP_CANCEL,
-          redirect_url: expected_redirect_uri,
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: expected_redirect_uri),
         )
       end
     end
@@ -73,8 +73,8 @@ describe Redirect::ReturnToSpController do
 
         expect(response).to redirect_to('https://sp.gov/return_to_sp')
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::RETURN_TO_SP_CANCEL,
-          redirect_url: 'https://sp.gov/return_to_sp',
+          'Return to SP: Cancelled',
+          hash_including(redirect_url: 'https://sp.gov/return_to_sp'),
         )
       end
     end
