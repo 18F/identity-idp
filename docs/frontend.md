@@ -45,7 +45,8 @@ identify issues in your code as you write.
 ### At a Glance
 
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
-- Uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/).
+- Follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- Code styling is formatted automatically using [Prettier](https://prettier.io/).
 - JS modules are installed & managed via `yarn` (see `package.json`).
 - JS is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/).
 - Reusable code is organized using
