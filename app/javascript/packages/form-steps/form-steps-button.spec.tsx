@@ -2,25 +2,21 @@ import { render } from '@testing-library/react';
 import FormStepsButton from './form-steps-button';
 
 describe('FormStepsButton', () => {
-  it('renders button with class names', () => {
-    const { getByRole } = render(<FormStepsButton.Continue />);
+  it('renders wrapper with class names', () => {
+    const { container } = render(<FormStepsButton.Continue />);
 
-    const button = getByRole('button');
+    const wrapper = container.firstElementChild!;
 
-    expect(Array.from(button.classList.values())).to.include.members([
-      'display-block',
-      'margin-y-5',
-    ]);
+    expect(Array.from(wrapper.classList.values())).to.include.members(['margin-y-5']);
   });
 
   context('with className prop', () => {
     it('applies additional class names', () => {
-      const { getByRole } = render(<FormStepsButton.Continue className="my-custom-class" />);
+      const { container } = render(<FormStepsButton.Continue className="my-custom-class" />);
 
-      const button = getByRole('button');
+      const wrapper = container.firstElementChild!;
 
-      expect(Array.from(button.classList.values())).to.include.members([
-        'display-block',
+      expect(Array.from(wrapper.classList.values())).to.include.members([
         'margin-y-5',
         'my-custom-class',
       ]);
