@@ -507,13 +507,11 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # Authentication document image uploaded by form
-
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
     **extra
   )
-
     track_event(
       'IdV: doc auth image upload form submitted',
       success: success,
@@ -527,7 +525,7 @@ module AnalyticsEvents
   # @param [Hash] errors
   # @param [String] exception
   # @param [Boolean] billed
-  # @param [String] doc_auth_results
+  # @param [String] doc_auth_result
   # @param [String] state
   # @param [String] state_id_type
   # @param [Boolean] async
@@ -536,7 +534,6 @@ module AnalyticsEvents
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
   # Authentication document image uploaded by vendor
-
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
@@ -551,7 +548,6 @@ module AnalyticsEvents
     doc_auth_result: nil,
     **extra
   )
-
     track_event(
       'IdV: doc auth image upload vendor submitted',
       success: success,
@@ -573,7 +569,8 @@ module AnalyticsEvents
   # @identity.idp.event_name Document authentication: PII validation
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] remaining attempts
+  # @param [String] user_id
+  # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # Authentication document image uploaded by vendor - PII validation
@@ -587,7 +584,6 @@ module AnalyticsEvents
     flow_path:,
     **extra
   )
-
     track_event(
       'IdV: doc auth image upload vendor pii validation',
       success: success,
@@ -600,35 +596,49 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: visited warning
+  # @identity.idp.event_name Document authentication: warning visited
   # @param [String] step_name
   # @param [Integer] remaining_attempts
-  # Authentication document visited warning
+  # Authentication document warning visited
 
   def idv_doc_auth_warning_visited(
     step_name:,
-    remaining_attempts:
+    remaining_attempts:,
+    **extra
   )
-
     track_event(
       'IdV: doc auth warning visited',
       step_name: step_name,
       remaining_attempts: remaining_attempts,
+      **extra,
     )
   end
 
-  # @identity.idp.event_name Final step in IDV
+  # @identity.idp.event_name Final IdV: final resolution
   # @param [Boolean] success
-  # Final step in DV
+  # Final IdV: final resolution
 
   def idv_final(
-    success:
+    success:,
+    **extra
   )
-
     track_event(
       'IdV: final resolution',
       success: success,
+      **extra,
     )
+  end
+
+  # @identity.idp.event_name IdV: personal key visited
+  # User visited IDV personal key page
+  def idv_personal_key_visited
+    track_event('IdV: personal key visited')
+  end
+
+  # @identity.idp.event_name IdV: personal key submitted
+  # User submitted IDV personal key page
+  def idv_personal_key_submitted
+    track_event('IdV: personal key submitted')
   end
 
   # @deprecated
@@ -637,6 +647,53 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
     track_event('IdV: personal key downloaded')
+  end
+
+  # @identity.idp.event_name IdV: personal key confirm visited
+  # @identity.idp.previous_event_name IdV: show personal key modal
+  # User opened IDV personal key confirmation modal
+  def idv_personal_key_confirm_visited
+    track_event('IdV: personal key confirm visited')
+  end
+
+  # @identity.idp.event_name IdV: personal key confirm submitted
+  # User submitted IDV personal key confirmation modal
+  def idv_personal_key_confirm_submitted
+    track_event('IdV: personal key confirm submitted')
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation form
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user submitted their phone on the phone confirmation page
+  def idv_phone_confirmation_form_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation form',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @identity.idp.event_name IdV: phone confirmation vendor
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The vendor finished the process of confirming the users phone
+  def idv_phone_confirmation_vendor_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation vendor',
+      success: success,
+      errors: errors,
+      **extra,
+    )
   end
 
   # @identity.idp.event_name IdV: phone confirmation otp submitted

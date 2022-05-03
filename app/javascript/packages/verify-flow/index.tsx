@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { FormSteps } from '@18f/identity-form-steps';
 import { StepIndicator, StepIndicatorStep, StepStatus } from '@18f/identity-step-indicator';
 import { t } from '@18f/identity-i18n';
 import { Alert } from '@18f/identity-components';
+import { trackEvent } from '@18f/identity-analytics';
 import { STEPS } from './steps';
 
 export interface VerifyFlowValues {
@@ -19,7 +21,7 @@ interface VerifyFlowProps {
   /**
    * The path to which the current step is appended to create the current step URL.
    */
-  basePath: string;
+  basePath?: string;
 
   /**
    * Application name, used in generating page titles for current step.
@@ -32,7 +34,32 @@ interface VerifyFlowProps {
   onComplete: () => void;
 }
 
+/**
+ * Returns a step name normalized for event logging.
+ *
+ * @param stepName Original step name.
+ *
+ * @return Step name normalized for event logging.
+ */
+const getEventStepName = (stepName: string) => stepName.toLowerCase().replace(/[^a-z]/g, ' ');
+
+/**
+ * Logs step visited event.
+ */
+const logStepVisited = (stepName: string) =>
+  trackEvent(`IdV: ${getEventStepName(stepName)} visited`);
+
+/**
+ * Logs step submitted event.
+ */
+const logStepSubmitted = (stepName: string) =>
+  trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
+
 export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }: VerifyFlowProps) {
+  useEffect(() => {
+    logStepVisited(STEPS[0].name);
+  }, []);
+
   return (
     <>
       <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -51,6 +78,8 @@ export function VerifyFlow({ initialValues = {}, basePath, appName, onComplete }
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
+        onStepSubmit={logStepSubmitted}
+        onStepChange={logStepVisited}
         onComplete={onComplete}
       />
     </>
