@@ -13,8 +13,9 @@ describe TwoFactorOptionsForm do
       end
     end
 
-    it 'is unsuccessful if the selection is invalid' do
-      %w[phone].each do |selection|
+    it 'is unsuccessful if the selection is invalid for multi mfa' do
+      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      %w[phone sms voice !!!!].each do |selection|
         result = subject.submit(selection: selection)
 
         expect(result.success?).to eq false
@@ -22,7 +23,7 @@ describe TwoFactorOptionsForm do
     end
 
     it 'is unsuccessful if the selection is invalid' do
-      %w[phone sms voice !!!!].each do |selection|
+      %w[!!!!].each do |selection|
         result = subject.submit(selection: selection)
 
         expect(result.success?).to eq false

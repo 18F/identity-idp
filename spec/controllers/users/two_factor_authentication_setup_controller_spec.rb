@@ -96,8 +96,9 @@ describe Users::TwoFactorAuthenticationSetupController do
       }
     end
 
-    context 'when the selection is only phone' do
+    context 'when the selection is only phone and multi mfa is enabled' do
       before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
         stub_sign_in_before_2fa
 
         patch :create, params: {
