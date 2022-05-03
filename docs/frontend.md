@@ -44,6 +44,7 @@ identify issues in your code as you write.
 
 ### At a Glance
 
+- All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
 - Follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
 - Code styling is formatted automatically using [Prettier](https://prettier.io/).
