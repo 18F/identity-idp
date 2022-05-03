@@ -7,8 +7,9 @@ class FrontendLogController < ApplicationController
 
   EVENT_MAP = {
     'IdV: personal key visited' => :idv_personal_key_visited,
-    'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key submitted' => :idv_personal_key_submitted,
+    'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
+    'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
 
   def create

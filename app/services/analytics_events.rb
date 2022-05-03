@@ -491,6 +491,12 @@ module AnalyticsEvents
     track_event('IdV: personal key confirm visited')
   end
 
+  # @identity.idp.event_name IdV: personal key confirm submitted
+  # User submitted IDV personal key confirmation modal
+  def idv_personal_key_confirm_submitted
+    track_event('IdV: personal key confirm submitted')
+  end
+
   # @identity.idp.event_name IdV: phone confirmation form
   # @param [Boolean] success
   # @param [Hash] errors
