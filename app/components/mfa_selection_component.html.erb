@@ -9,7 +9,11 @@
       ) %>
   <%= label_tag(
         "two_factor_options_form_selection_#{option.type}",
-        class: "#{'checkbox__invalid' if option.type === "phone" && flash[:phone_error]} usa-checkbox__label usa-checkbox__label--illustrated",
+        class: [
+          option.type === "phone" && flash[:phone_error] && 'checkbox__invalid',
+          'usa-checkbox__label',
+          'usa-checkbox__label--illustrated',
+        ].select(&:present?).join(' '),
       ) do %>
             <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
             <div class="usa-checkbox__label--text"><%= option.label %>
