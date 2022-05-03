@@ -13,9 +13,5 @@ module Api
       return if user_fully_authenticated?
       render json: { error: 'user is not fully authenticated' }, status: :unauthorized
     end
-
-    def render_api_not_found
-      render json: { error: "The page you were looking for doesn't exist" }, status: :not_found
-    end
   end
 end

@@ -396,6 +396,10 @@ class ApplicationController < ActionController::Base
     render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
+  def render_json_not_found
+    render json: { error: "The page you were looking for doesn't exist" }, status: :not_found
+  end
+
   def render_not_acceptable
     render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
   end
