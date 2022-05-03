@@ -18,7 +18,7 @@ function get_date_format(date) {
   return date.toLocaleDateString('en-US', options);
 }
 
-function pii_summary({ pii }) {
+function pii_summary(pii) {
   const phoneNumber = parsePhoneNumber(`+1${pii?.phone}`);
 
   return (
@@ -29,12 +29,10 @@ function pii_summary({ pii }) {
       </div>
       <div className="margin-top-4 h6">{t('idv.review.mailing_address')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {pii?.address?.address1} <br />
-        {pii?.address?.address2 ? pii.address.address2 : ''}
+        {pii?.address1} <br />
+        {pii?.address2 ? pii?.address2 : ''}
         <br />
-        {pii?.address?.city && pii?.address?.state
-          ? `${pii?.address?.city}, ${pii?.address.state} ${pii?.address?.zipcode}`
-          : ''}
+        {pii?.city && pii?.state ? `${pii?.city}, ${pii?.state} ${pii?.zipcode}` : ''}
       </div>
       <div className="margin-top-4 h6">{t('idv.review.dob')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
@@ -57,9 +55,6 @@ function pii_summary({ pii }) {
 }
 
 function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
-  const personalKey = value.personalKey!;
-  const firstName = value?.firstName;
-  const lastName = value?.lastName;
   return (
     <>
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>

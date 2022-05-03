@@ -12,10 +12,6 @@ interface AccordionProps {
 function Accordion({ header, children }: AccordionProps) {
   const uniqueId = useInstanceId();
   const ref = useRef(null as HTMLDivElement | null);
-  // This  does not work it will force it to hidden over and over.
-  // useEffect(() => {
-  //   accordion.on(ref.current!);
-  // }, []);
 
   return (
     <div ref={ref}>
