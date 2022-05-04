@@ -521,6 +521,11 @@ module AnalyticsEvents
     track_event('Idv: Phone OTP rate limited user')
   end
 
+  # The user was rate limited for requesting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_sends
+    track_event('Idv: Phone OTP sends rate limited')
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # The vendor finished the process of confirming the users phone
