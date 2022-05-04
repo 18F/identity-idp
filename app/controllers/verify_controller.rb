@@ -1,12 +1,12 @@
 class VerifyController < ApplicationController
-  # include RenderConditionConcern
-  # include IdvSession
+  include RenderConditionConcern
+  include IdvSession
 
-  # before_action :confirm_two_factor_authenticated
-  # before_action :confirm_idv_vendor_session_started
-  # before_action :confirm_profile_has_been_created
+  before_action :confirm_two_factor_authenticated
+  before_action :confirm_idv_vendor_session_started
+  before_action :confirm_profile_has_been_created
 
-  #check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
+  check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
   def show
     @app_data = app_data
@@ -18,7 +18,7 @@ class VerifyController < ApplicationController
     {
       base_path: idv_app_root_path,
       app_name: APP_NAME,
-      #completion_url: completion_url,
+      completion_url: completion_url,
       initial_values: {
         'personalKey' => '0000-0000-0000-0000',
         'firstName' => 'Bruce',
