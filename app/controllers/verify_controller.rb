@@ -20,7 +20,7 @@ class VerifyController < ApplicationController
       app_name: APP_NAME,
       completion_url: completion_url,
       initial_values: {
-        'personalKey' => '0000-0000-0000-0000',
+        'personalKey' => personal_key,
         'firstName' => 'Bruce',
         'lastName' => 'Wayne',
         'address1' => '1234 Batcave',
