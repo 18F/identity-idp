@@ -8,13 +8,16 @@ import type { SinonSandboxConfig, SinonFakeTimers } from 'sinon';
 function useSandbox(config?: Partial<SinonSandboxConfig>) {
   const { useFakeTimers = false, ...remainingConfig } = config ?? {};
   const sandbox = sinon.createSandbox(remainingConfig);
-  const clock = {} as SinonFakeTimers;
+
+  let tick = (_ms: number) => {};
+  const clock = { tick: (ms: number) => tick(ms) } as unknown as SinonFakeTimers;
 
   beforeEach(() => {
     // useFakeTimers overrides global timer functions as soon as sandbox is created, thus leaking
     // across tests. Instead, wait until tests start to initialize.
     if (useFakeTimers) {
       Object.assign(clock, sandbox.useFakeTimers());
+      tick = clock.tick;
     }
   });
 
