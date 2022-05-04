@@ -148,7 +148,6 @@ class Analytics
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_LOCKED_OUT = 'Idv: Phone OTP rate limited user'
   IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'
   IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'

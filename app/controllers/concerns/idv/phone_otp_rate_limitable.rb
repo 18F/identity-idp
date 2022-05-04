@@ -10,7 +10,7 @@ module Idv
     def handle_locked_out_user
       reset_attempt_count_if_user_no_longer_locked_out
       return unless decorated_user.locked_out?
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_LOCKED_OUT)
+      analytics.idv_phone_confirmation_otp_rate_limit_locked_out
       handle_too_many_otp_attempts
       false
     end

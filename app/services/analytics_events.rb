@@ -516,6 +516,11 @@ module AnalyticsEvents
     track_event('Idv: Phone OTP attempts rate limited')
   end
 
+  # The user was locked out for hitting the phone OTP rate limit during IDV
+  def idv_phone_confirmation_otp_rate_limit_locked_out
+    track_event('Idv: Phone OTP rate limited user')
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # The vendor finished the process of confirming the users phone
