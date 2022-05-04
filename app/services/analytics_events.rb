@@ -465,10 +465,9 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: Upload image from form
   # @param [Boolean] success
   # @param [Hash] errors
-  # Authentication document image uploaded by form
+  # The document capture  image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
@@ -482,7 +481,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: Upload image from vendor
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
@@ -495,7 +493,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [Hash] client_image_metrics
   # @param [String] flow_path
-  # Authentication document image uploaded by vendor
+  # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
@@ -528,15 +526,13 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: PII validation
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
   # @param [Integer] remaining_attempts
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
-  # Authentication document image uploaded by vendor - PII validation
-
+  # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
     errors:,
@@ -558,11 +554,9 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: warning visited
   # @param [String] step_name
   # @param [Integer] remaining_attempts
-  # Authentication document warning visited
-
+  # The user was sent to a warning page during the IDV flow
   def idv_doc_auth_warning_visited(
     step_name:,
     remaining_attempts:,
@@ -576,10 +570,8 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Final IdV: final resolution
   # @param [Boolean] success
-  # Final IdV: final resolution
-
+  # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
     success:,
     **extra
@@ -591,7 +583,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: personal key visited
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
