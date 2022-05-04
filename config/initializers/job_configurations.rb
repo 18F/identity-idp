@@ -165,6 +165,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Upload list of verification errors to S3
+      verification_errors_report: {
+        class: 'Reports::VerificationErrorsReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Send Partner API reports to S3
       partner_api_reports: {
         class: 'Agreements::Reports::PartnerApiReport',
