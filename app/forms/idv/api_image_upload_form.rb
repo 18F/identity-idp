@@ -218,7 +218,6 @@ module Idv
         **client_response.to_h.merge(
           client_image_metrics: image_metadata,
           async: false,
-          flow_path: params[:flow_path],
         ),
       )
     end

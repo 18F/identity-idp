@@ -30,8 +30,7 @@ module Idv
           )
           redirect_to idv_session_errors_exception_url
         else
-          @flow.analytics.track_event(
-            'IdV: doc auth warning visited',
+          @flow.analytics.idv_doc_auth_warning_visited(
             step_name: self.class.name,
             remaining_attempts: throttle.remaining_count,
           )
