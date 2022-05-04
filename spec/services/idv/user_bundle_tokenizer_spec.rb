@@ -30,7 +30,7 @@ RSpec.describe Idv::UserBundleTokenizer do
 
   context 'when initialized with data' do
     it 'encodes a signed JWT' do
-      token = subject.call
+      token = subject.token
       decorator = Api::UserBundleDecorator.new(user_bundle: token, public_key: public_key)
 
       expect(decorator.pii).to eq user_session[:idv][:applicant]

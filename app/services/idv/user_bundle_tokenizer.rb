@@ -6,7 +6,7 @@ module Idv
       @service_provider = service_provider
     end
 
-    def call
+    def token
       JWT.encode(
         {
           # for now, load whatever pii is saved in the session

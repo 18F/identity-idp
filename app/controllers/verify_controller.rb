@@ -60,6 +60,6 @@ class VerifyController < ApplicationController
       user: current_user,
       idv_session: idv_session,
       service_provider: current_sp,
-    ).call
+    ).token
   end
 end
