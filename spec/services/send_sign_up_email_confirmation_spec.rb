@@ -66,27 +66,30 @@ describe SendSignUpEmailConfirmation do
     end
 
     context 'when the user already has a confirmation token' do
-      let(:user) do
-        create(:user, confirmation_token: 'old-token', confirmation_sent_at: 5.minutes.ago)
+      let(:email_address) do
+        invalid_confirmation_sent_at =
+          Time.zone.now - (IdentityConfig.store.add_email_link_valid_for_hours.hours.to_i + 1)
+
+        create(
+          :email_address,
+          confirmation_token: 'old-token',
+          confirmation_sent_at: invalid_confirmation_sent_at,
+          confirmed_at: nil,
+          user: build(:user, email: nil),
+        )
       end
+      let(:user) { email_address.user }
 
       it 'regenerates a token if the token is expired' do
-        user.update!(confirmation_sent_at: 10.days.ago)
-        email_address.update!(
-          confirmation_token: user.confirmation_token,
-          confirmation_sent_at: user.confirmation_sent_at,
-        )
-        user.reload
-
         mail = double
         expect(mail).to receive(:deliver_now_or_later)
+
         expect(UserMailer).to receive(:email_confirmation_instructions).with(
           user, email_address.email, confirmation_token, instance_of(Hash)
         ).and_return(mail)
 
         subject.call
 
-        email_address = user.email_addresses.first
         expect(email_address.reload.confirmation_token).to eq(confirmation_token)
         expect(email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
       end

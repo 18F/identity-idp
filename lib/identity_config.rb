@@ -215,6 +215,7 @@ class IdentityConfig
     config.add(:newrelic_browser_app_id, type: :string)
     config.add(:newrelic_browser_key, type: :string)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:new_sign_up_cancellation_url_enabled, type: :boolean)
     config.add(:mailer_domain_name)
     config.add(:max_auth_apps_per_account, type: :integer)
     config.add(:max_bad_passwords, type: :integer)

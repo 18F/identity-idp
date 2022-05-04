@@ -294,9 +294,9 @@ feature 'Sign Up' do
     it 'does not return an error and redirect to root after confirming and entering password' do
       email = 'test2@test.com'
       User.create!(
-        confirmation_token: 'foo', uuid: 'foo', email: email,
-        confirmation_sent_at: Time.zone.now
+        uuid: 'foo', email: email,
       )
+      EmailAddress.delete_all
       travel_to(1.year.from_now) do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
