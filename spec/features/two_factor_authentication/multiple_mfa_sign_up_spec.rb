@@ -87,7 +87,7 @@ feature 'Multi Two Factor Authentication' do
       expect(page).
       to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
       expect(
-        URI.parse(current_url).path + '#' + URI.parse(current_url).fragment
+        URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
       ).to eq two_factor_options_path(anchor: 'select_phone')
     end
 
