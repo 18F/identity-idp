@@ -42,7 +42,7 @@ module Reports
         end
       end
       data = csv.string
-      save_report(report_name, data, extension: 'csv')
+      save_report("#{REPORT_NAME}.#{report_name}", data, extension: 'csv')
       data
     end
 
