@@ -102,7 +102,7 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-/** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
+/** @type {import('@18f/identity-analytics').trackEvent} */
 function addPageAction(event, payload) {
   const { flowPath } = appRoot.dataset;
   return trackEvent(event, { ...payload, flow_path: flowPath });
