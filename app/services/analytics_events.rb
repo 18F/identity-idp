@@ -533,7 +533,6 @@ module AnalyticsEvents
   # @param [Hash] pii_like_keypaths
   # @param [String] flow_path
   # Authentication document image uploaded by vendor - PII validation
-
   def idv_doc_auth_submitted_pii_validation(
     success:,
     errors:,
@@ -558,7 +557,6 @@ module AnalyticsEvents
   # @param [String] step_name
   # @param [Integer] remaining_attempts
   # Authentication document warning visited
-
   def idv_doc_auth_warning_visited(
     step_name:,
     remaining_attempts:,
@@ -574,7 +572,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # Final IdV: final resolution
-
   def idv_final(
     success:,
     **extra
