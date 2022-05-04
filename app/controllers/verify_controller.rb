@@ -21,11 +21,12 @@ class VerifyController < ApplicationController
       base_path: idv_app_root_path,
       app_name: APP_NAME,
       completion_url: completion_url,
-      initial_values: { 'personalKey' => personal_key },
+      initial_values: {
+        'personalKey' => personal_key,
+        'userBundleToken' => user_bundle_token,
+      },
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: user_session[:idv_api_store_key],
-      user_bundle_token: user_bundle_token,
-      idv_public_key: IdentityConfig.store.idv_public_key,
     }
   end
 
