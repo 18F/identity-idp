@@ -1,12 +1,12 @@
-import sinon from 'sinon';
 import baseUserEvent from '@testing-library/user-event';
 import { getByRole, fireEvent, screen } from '@testing-library/dom';
+import { useSandbox } from '@18f/identity-test-helpers';
 import './spinner-button-element';
 import type { SpinnerButtonElement } from './spinner-button-element';
 
 describe('SpinnerButtonElement', () => {
-  let clock: sinon.SinonFakeTimers;
-  const userEvent = baseUserEvent.setup({ advanceTimers: (ms: number) => clock.tick(ms) });
+  const { clock } = useSandbox({ useFakeTimers: true });
+  const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
 
   const longWaitDurationMs = 1000;
 
@@ -44,14 +44,6 @@ describe('SpinnerButtonElement', () => {
 
     return document.body.firstElementChild as SpinnerButtonElement;
   }
-
-  beforeEach(() => {
-    clock = sinon.useFakeTimers();
-  });
-
-  afterEach(() => {
-    clock.restore();
-  });
 
   it('shows spinner on click', async () => {
     const wrapper = createWrapper();
