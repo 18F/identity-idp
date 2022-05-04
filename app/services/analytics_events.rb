@@ -465,7 +465,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: Upload image from form
   # @param [Boolean] success
   # @param [Hash] errors
   # Authentication document image uploaded by form
@@ -482,7 +481,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: Upload image from vendor
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] exception
@@ -528,7 +526,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: PII validation
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id
@@ -558,7 +555,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Document authentication: warning visited
   # @param [String] step_name
   # @param [Integer] remaining_attempts
   # Authentication document warning visited
@@ -576,7 +572,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name Final IdV: final resolution
   # @param [Boolean] success
   # Final IdV: final resolution
 
@@ -591,7 +586,6 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.event_name IdV: personal key visited
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
