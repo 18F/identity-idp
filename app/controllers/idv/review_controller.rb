@@ -123,7 +123,7 @@ module Idv
 
     def idv_api_personal_key_step_enabled?
       return false if idv_session.address_verification_mechanism == 'gpo'
-      IdentityConfig.store.idv_api_enabled_steps.include?(:personal_key)
+      IdentityConfig.store.idv_api_enabled_steps.include?('personal_key')
     end
   end
 end
