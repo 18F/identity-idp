@@ -33,7 +33,7 @@ module Idv
     end
 
     def handle_too_many_otp_attempts
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_ATTEMPTS)
+      analytics.idv_phone_confirmation_otp_rate_limit_attempts
       handle_max_attempts('otp_login_attempts')
     end
 

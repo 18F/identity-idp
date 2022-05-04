@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
@@ -507,6 +509,11 @@ module AnalyticsEvents
       errors: errors,
       **extra,
     )
+  end
+
+  # The user was rate limited for submitting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_attempts
+    track_event('Idv: Phone OTP attempts rate limited')
   end
 
   # @param [Boolean] success
