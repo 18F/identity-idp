@@ -1,4 +1,4 @@
-<lg-validated-field>
+<div class="mfa-selection">
   <%= check_box_tag(
         'two_factor_options_form[selection][]',
         option.type,
@@ -25,4 +25,4 @@
       <% if option.type === "phone" && flash[:phone_error] %>
           <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 margin-top-neg-1 checkbox__alert', message: flash[:phone_error]) %>
       <% end %>
-</lg-validated-field>
+</div>
