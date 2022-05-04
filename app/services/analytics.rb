@@ -148,7 +148,6 @@ class Analytics
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
   IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'
   IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'
