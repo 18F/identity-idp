@@ -1,24 +1,25 @@
 module MfaSetupConcern
   extend ActiveSupport::Concern
 
-  def user_next_authentication_setup_path(next_setup_choice = nil)
+  def user_next_authentication_setup_path
     if user_needs_confirmation_screen?
+
       auth_method_confirmation_url(next_setup_choice: next_setup_choice)
     else
-      user_session.delete(:selected_mfa_options)
+      user_session.delete(:mfa_selections)
       nil
     end
   end
 
   def determine_next_mfa_selection
-    return unless user_session[:selected_mfa_options]
-    current_session = user_session[:next_mfa_selection_choice]
-    current_index = user_session[:selected_mfa_options].find_index(current_session) || 0
+    return unless user_session[:mfa_selections]
+    current_setup_step = user_session[:next_mfa_setup]
+    current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
     current_index + 1
   end
 
   def confirmation_path(next_mfa_selection_choice)
-    user_session[:next_mfa_selection_choice] = next_mfa_selection_choice
+    user_session[:next_mfa_setup] = next_mfa_selection_choice
     case next_mfa_selection_choice
     when 'voice', 'sms', 'phone'
       phone_setup_url
@@ -43,9 +44,16 @@ module MfaSetupConcern
   end
 
   def user_needs_confirmation_screen?
-    (user_session.dig(:selected_mfa_options, determine_next_mfa_selection).present? ||
+    (next_setup_choice.present? ||
       user_session[:suggest_second_mfa]
     ) &&
       IdentityConfig.store.select_multiple_mfa_options
+  end
+
+  def next_setup_choice
+    user_session.dig(
+      :mfa_selections,
+      determine_next_mfa_selection,
+    )
   end
 end

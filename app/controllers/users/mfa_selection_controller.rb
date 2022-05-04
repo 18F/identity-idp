@@ -38,9 +38,9 @@ module Users
       end
 
       def process_valid_form
-        user_session[:selected_mfa_options] = @two_factor_options_form.selection
+        user_session[:mfa_selections] = @two_factor_options_form.selection
         user_session[:suggest_second_mfa] = false
-        redirect_to confirmation_path(user_session[:selected_mfa_options].first)
+        redirect_to confirmation_path(user_session[:next_mfa_setup].first)
       end
 
       def two_factor_options_form_params

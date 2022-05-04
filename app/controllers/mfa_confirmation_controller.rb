@@ -12,7 +12,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def skip
-    user_session.delete(:selected_mfa_options)
+    user_session.delete(:mfa_selections)
     user_session.delete(:next_mfa_selection_choice)
     redirect_to after_mfa_setup_path
   end
