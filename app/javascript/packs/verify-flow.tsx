@@ -27,6 +27,11 @@ interface AppRootValues {
    * URL to which user should be redirected after completing the form.
    */
   completionUrl: string;
+
+  /**
+   * Base64-encoded encryption key for secret session store.
+   */
+  storeKey: string;
 }
 
 interface AppRootElement extends HTMLElement {
@@ -40,9 +45,9 @@ const {
   basePath,
   appName,
   completionUrl: completionURL,
+  storeKey: storeKeyBase64,
 } = appRoot.dataset;
-const key = s2ab(atob(appRoot.dataset.storeKey!));
-
+const storeKey = s2ab(atob(storeKeyBase64));
 const initialValues = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
@@ -51,7 +56,7 @@ function onComplete() {
 }
 
 render(
-  <SecretsContextProvider storeKey={key}>
+  <SecretsContextProvider storeKey={storeKey}>
     <VerifyFlow
       initialValues={initialValues}
       enabledStepNames={enabledStepNames}
