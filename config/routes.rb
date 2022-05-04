@@ -221,7 +221,7 @@ Rails.application.routes.draw do
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/mfa_setup' => 'users/mfa_selection#index'
-    patch '/mfa_setup' => 'users/mfa_selection#create'
+    patch '/mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/aal3_required' => 'users/aal3#show'
