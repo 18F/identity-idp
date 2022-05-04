@@ -10,6 +10,8 @@ module TwoFactorAuthentication
           'two_factor_authentication.login_options.voice_info_html',
           phone: configuration.masked_phone,
         )
+      else
+        super
       end
     end
 
