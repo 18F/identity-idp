@@ -192,7 +192,6 @@ FactoryBot.define do
       signed_up
 
       after :build do |user|
-        user.save
         create(:profile, :active, :verified, :with_pii, user: user)
       end
     end
