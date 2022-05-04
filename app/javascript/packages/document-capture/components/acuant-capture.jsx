@@ -489,7 +489,6 @@ function AcuantCapture(
     });
 
     addPageAction({
-      key: 'documentCapture.acuantWebSDKResult',
       label: `IdV: ${name} image added`,
       payload: analyticsPayload,
     });

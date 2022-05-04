@@ -130,7 +130,6 @@ const withBackgroundEncryptedUpload = (Component) => {
             .then((response) => {
               const traceId = response.headers.get('X-Amzn-Trace-Id');
               addPageAction({
-                key: 'documentCapture.asyncUpload',
                 label: 'IdV: document capture async upload submitted',
                 payload: {
                   success: response.ok,
