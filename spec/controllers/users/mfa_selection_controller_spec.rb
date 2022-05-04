@@ -12,12 +12,11 @@ describe Users::MfaSelectionController do
   describe 'GET index' do
     context 'when fully authenticated but not MFA enabled' do
       it 'allows access' do
-  
         controller.user_session[:selected_mfa_options] = ['backup_code']
 
-      get :index
+        get :index
 
-      expect(response).to render_template(:index)
+        expect(response).to render_template(:index)
       end
     end
   end
