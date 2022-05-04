@@ -141,6 +141,7 @@ describe Idv::GpoController do
     pii = { first_name: 'Samuel', last_name: 'Sampson' }
     pii_cacher = instance_double(Pii::Cacher)
     allow(pii_cacher).to receive(:fetch).and_return(pii)
+    allow(pii_cacher).to receive(:exists_in_session?).and_return(true)
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
     service_provider = create(:service_provider, issuer: '123abc')
