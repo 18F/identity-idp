@@ -9,15 +9,24 @@ function useSandbox(config?: Partial<SinonSandboxConfig>) {
   const { useFakeTimers = false, ...remainingConfig } = config ?? {};
   const sandbox = sinon.createSandbox(remainingConfig);
 
-  let tick = (_ms: number) => {};
-  const clock = { tick: (ms: number) => tick(ms) } as unknown as SinonFakeTimers;
+  // To support destructuring the result of the sandbox while still waiting for `beforeEach` to
+  // initialize the fake timers, create a proxy to pass through to the underlying implementation.
+  const clockImpl = {};
+  if (useFakeTimers) {
+    sandbox.clock = Object.fromEntries(
+      Object.entries(sinon.useFakeTimers()).map(([key, value]) => [
+        key,
+        key === 'restore' ? value : (...args: any[]) => clockImpl[key](...args),
+      ]),
+    ) as SinonFakeTimers;
+    sandbox.clock.restore();
+  }
 
   beforeEach(() => {
     // useFakeTimers overrides global timer functions as soon as sandbox is created, thus leaking
     // across tests. Instead, wait until tests start to initialize.
     if (useFakeTimers) {
-      Object.assign(clock, sandbox.useFakeTimers());
-      tick = clock.tick;
+      Object.assign(clockImpl, sandbox.useFakeTimers());
     }
   });
 
@@ -30,7 +39,7 @@ function useSandbox(config?: Partial<SinonSandboxConfig>) {
     }
   });
 
-  return { ...sandbox, clock };
+  return sandbox;
 }
 
 export default useSandbox;
