@@ -23,7 +23,7 @@ RSpec.describe MfaSelectionComponent, type: :component do
   end
 
   it 'renders an lg-validated-field tag' do
-    expect(rendered).to have_css('lg-validated-field')
+    expect(rendered).to have_css('.mfa-selection')
   end
 
   context 'before selecting options' do
