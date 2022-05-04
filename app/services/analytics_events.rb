@@ -559,6 +559,36 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param [String] country_code country code of phone number
+  # @param [String] area_code area code of phone number
+  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [Hash] telephony_response response from Telephony gem
+  def idv_phone_confirmation_otp_sent(
+    success:,
+    errors:,
+    otp_delivery_preference:,
+    country_code:,
+    area_code:,
+    rate_limit_exceeded:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation otp sent',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      country_code: country_code,
+      area_code: area_code,
+      rate_limit_exceeded: rate_limit_exceeded,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
