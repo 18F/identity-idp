@@ -51,7 +51,7 @@ RSpec.describe 'proofing components' do
     end
   end
 
-  it 'clears the liveness enabled proofing component when a user re-proofs without liveness' do
+  it 'clears liveness enabled proofing component when user re-proofs without liveness', js: true do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
     user = user_with_2fa
     sign_in_and_2fa_user(user)
