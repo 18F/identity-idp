@@ -154,7 +154,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_continue
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
   end
 
