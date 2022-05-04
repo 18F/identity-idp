@@ -1,5 +1,5 @@
 import { TextEncoder } from 'util';
-import { useSandbox } from '../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 import * as WebAuthn from '../../../app/javascript/app/webauthn';
 
 describe('WebAuthn', () => {
