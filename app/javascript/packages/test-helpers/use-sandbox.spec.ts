@@ -1,6 +1,21 @@
 import useSandbox from './use-sandbox';
 
 describe('useSandbox', () => {
+  const sandbox = useSandbox();
+
+  const object = { fn: () => 0 };
+
+  afterEach(() => {
+    expect(object.fn()).to.equal(0);
+  });
+
+  it('cleans up after itself', () => {
+    sandbox.stub(object, 'fn').callsFake(() => 1);
+
+    expect(object.fn()).to.equal(1);
+    // See `afterEach` for clean-up assertions
+  });
+
   context('with fake timers', () => {
     const { clock } = useSandbox({ useFakeTimers: true });
 
