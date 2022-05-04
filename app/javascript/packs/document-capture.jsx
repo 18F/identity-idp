@@ -103,11 +103,9 @@ const device = {
 };
 
 /** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
-function addPageAction(action) {
+function addPageAction(event, payload) {
   const { flowPath } = appRoot.dataset;
-  const payload = { ...action.payload, flow_path: flowPath };
-
-  trackEvent(action.label, payload);
+  return trackEvent(event, { ...payload, flow_path: flowPath });
 }
 
 /** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */
