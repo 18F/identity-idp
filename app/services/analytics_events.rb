@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
@@ -505,6 +507,83 @@ module AnalyticsEvents
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # The user was rate limited for submitting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_attempts
+    track_event('Idv: Phone OTP attempts rate limited')
+  end
+
+  # The user was locked out for hitting the phone OTP rate limit during IDV
+  def idv_phone_confirmation_otp_rate_limit_locked_out
+    track_event('Idv: Phone OTP rate limited user')
+  end
+
+  # The user was rate limited for requesting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_sends
+    track_event('Idv: Phone OTP sends rate limited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param [String] country_code country code of phone number
+  # @param [String] area_code area code of phone number
+  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [Hash] telephony_response response from Telephony gem
+  # The user resent an OTP during the IDV phone step
+  def idv_phone_confirmation_otp_resent(
+    success:,
+    errors:,
+    otp_delivery_preference:,
+    country_code:,
+    area_code:,
+    rate_limit_exceeded:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation otp resent',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      country_code: country_code,
+      area_code: area_code,
+      rate_limit_exceeded: rate_limit_exceeded,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param [String] country_code country code of phone number
+  # @param [String] area_code area code of phone number
+  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [Hash] telephony_response response from Telephony gem
+  # The user requested an OTP to confirm their phone during the IDV phone step
+  def idv_phone_confirmation_otp_sent(
+    success:,
+    errors:,
+    otp_delivery_preference:,
+    country_code:,
+    area_code:,
+    rate_limit_exceeded:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation otp sent',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      country_code: country_code,
+      area_code: area_code,
+      rate_limit_exceeded: rate_limit_exceeded,
+      telephony_response: telephony_response,
       **extra,
     )
   end
