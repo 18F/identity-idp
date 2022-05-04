@@ -215,7 +215,7 @@ describe Idv::OtpDeliveryMethodController do
           'IdV: Phone OTP Delivery Selection Submitted', hash_including(success: true)
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT,
+          'IdV: phone confirmation otp sent',
           hash_including(
             success: false,
             telephony_response: telephony_response,

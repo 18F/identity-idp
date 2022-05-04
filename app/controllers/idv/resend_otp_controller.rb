@@ -10,7 +10,7 @@ module Idv
 
     def create
       result = send_phone_confirmation_otp
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT, result.to_h)
+      analytics.idv_phone_confirmation_otp_resent(**result.to_h)
       if result.success?
         redirect_to idv_otp_verification_url
       else
