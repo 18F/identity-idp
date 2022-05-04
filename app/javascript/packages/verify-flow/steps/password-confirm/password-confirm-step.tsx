@@ -1,11 +1,8 @@
 import { PageHeading } from '@18f/identity-components';
-import { ClipboardButton } from '@18f/identity-clipboard-button';
-import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsContinueButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import { getAssetPath } from '@18f/identity-assets';
 import type { VerifyFlowValues } from '../..';
 import { Accordion } from '@18f/identity-components';
 import parsePhoneNumber from 'libphonenumber-js';
