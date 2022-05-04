@@ -205,9 +205,9 @@ function AcuantContextProvider({
                 window
               ).AcuantCamera;
 
-              addPageAction({
-                label: 'IdV: Acuant SDK loaded',
-                payload: { success: true, isCameraSupported: nextIsCameraSupported },
+              addPageAction('IdV: Acuant SDK loaded', {
+                success: true,
+                isCameraSupported: nextIsCameraSupported,
               });
 
               setIsCameraSupported(nextIsCameraSupported);
@@ -216,13 +216,10 @@ function AcuantContextProvider({
             });
           },
           onFail(code, description) {
-            addPageAction({
-              label: 'IdV: Acuant SDK loaded',
-              payload: {
-                success: false,
-                code,
-                description,
-              },
+            addPageAction('IdV: Acuant SDK loaded', {
+              success: false,
+              code,
+              description,
             });
 
             setIsError(true);

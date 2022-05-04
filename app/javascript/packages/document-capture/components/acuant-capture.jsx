@@ -342,10 +342,7 @@ function AcuantCapture(
         size: nextValue.size,
       });
 
-      addPageAction({
-        label: `IdV: ${name} image added`,
-        payload: analyticsPayload,
-      });
+      addPageAction(`IdV: ${name} image added`, analyticsPayload);
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -366,10 +363,7 @@ function AcuantCapture(
     return (fn) =>
       (...args) => {
         if (!isSuppressingClickLogging.current) {
-          addPageAction({
-            label: `IdV: ${name} image clicked`,
-            payload: { source, ...metadata },
-          });
+          addPageAction(`IdV: ${name} image clicked`, { source, ...metadata });
         }
 
         return fn(...args);
@@ -488,11 +482,7 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
     });
 
-    addPageAction({
-      key: 'documentCapture.acuantWebSDKResult',
-      label: `IdV: ${name} image added`,
-      payload: analyticsPayload,
-    });
+    addPageAction(`IdV: ${name} image added`, analyticsPayload);
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
@@ -538,12 +528,9 @@ function AcuantCapture(
             }
 
             setIsCapturingEnvironment(false);
-            addPageAction({
-              label: 'IdV: Image capture failed',
-              payload: {
-                field: name,
-                error: getNormalizedAcuantCaptureFailureMessage(error, code),
-              },
+            addPageAction('IdV: Image capture failed', {
+              field: name,
+              error: getNormalizedAcuantCaptureFailureMessage(error, code),
             });
           }}
         >

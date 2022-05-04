@@ -33,10 +33,7 @@ function Warning({
   const { addPageAction } = useContext(AnalyticsContext);
   const { t } = useI18n();
   useEffect(() => {
-    addPageAction({
-      label: 'IdV: warning shown',
-      payload: { location, remaining_attempts: remainingAttempts },
-    });
+    addPageAction('IdV: warning shown', { location, remaining_attempts: remainingAttempts });
   }, []);
 
   return (
@@ -56,7 +53,7 @@ function Warning({
             type="button"
             className="usa-button usa-button--big usa-button--wide"
             onClick={() => {
-              addPageAction({ label: 'IdV: warning action triggered', payload: { location } });
+              addPageAction('IdV: warning action triggered', { location });
               actionOnClick();
             }}
           >
