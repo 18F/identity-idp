@@ -4,7 +4,7 @@ import type { VerifyFlowValues } from '../..';
 import form from './password-confirm-step';
 
 export default {
-  name: 'password-confirm',
+  name: 'password_confirm',
   title: t('titles.idv.session.review'),
   form,
 } as FormStep<VerifyFlowValues>;
