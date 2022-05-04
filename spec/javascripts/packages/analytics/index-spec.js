@@ -1,5 +1,5 @@
 import { trackEvent } from '@18f/identity-analytics';
-import { useSandbox } from '../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('trackEvent', () => {
   const sandbox = useSandbox();

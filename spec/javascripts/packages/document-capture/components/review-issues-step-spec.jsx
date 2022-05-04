@@ -7,8 +7,8 @@ import {
 } from '@18f/identity-document-capture';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
