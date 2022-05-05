@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { i18n } from '@18f/identity-i18n';
-import { usePropertyValue } from '@18f/identity-test-helpers';
+import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 import { CountdownElement } from './index';
 
 const DEFAULT_DATASET = {
@@ -10,7 +10,7 @@ const DEFAULT_DATASET = {
 };
 
 describe('CountdownElement', () => {
-  let clock: sinon.SinonFakeTimers;
+  const { clock } = useSandbox({ useFakeTimers: true });
 
   usePropertyValue(i18n, 'strings', {
     'datetime.dotiw.seconds': { one: 'one second', other: '%{count} seconds' },
@@ -22,12 +22,6 @@ describe('CountdownElement', () => {
     if (!customElements.get('lg-countdown')) {
       customElements.define('lg-countdown', CountdownElement);
     }
-
-    clock = sinon.useFakeTimers();
-  });
-
-  after(() => {
-    clock.restore();
   });
 
   function createElement(dataset = {}) {

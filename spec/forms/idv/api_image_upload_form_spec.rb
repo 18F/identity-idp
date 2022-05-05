@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
+  include AnalyticsEvents
+
   subject(:form) do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
@@ -103,21 +105,12 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
 
         expect(fake_analytics).to have_logged_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          exception: nil,
-          doc_auth_result: 'Passed',
-          billed: true,
           attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          state: 'MT',
-          state_id_type: 'drivers_license',
+          remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
-          client_image_metrics: {
-            front: JSON.parse(front_image_metadata, symbolize_names: true),
-            back: JSON.parse(back_image_metadata, symbolize_names: true),
-          },
         )
       end
     end
@@ -144,18 +137,12 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
 
         expect(fake_analytics).to have_logged_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          'IdV: doc auth image upload form submitted',
           success: true,
           errors: {},
-          exception: nil,
-          doc_auth_result: 'Passed',
-          billed: true,
           attempts: 1,
-          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          remaining_attempts: 3,
           user_id: document_capture_session.user.uuid,
-          client_image_metrics: {
-            front: JSON.parse(front_image_metadata, symbolize_names: true),
-          },
         )
       end
     end

@@ -1,21 +1,13 @@
-import sinon from 'sinon';
 import baseUserEvent from '@testing-library/user-event';
 import { render } from '@testing-library/react';
 import { createRef } from 'react';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { SpinnerButtonElement } from './spinner-button-element';
 import SpinnerButton from './spinner-button';
 
 describe('SpinnerButton', () => {
-  const sandbox = sinon.createSandbox();
-  const userEvent = baseUserEvent.setup({ advanceTimers: (ms: number) => sandbox.clock.tick(ms) });
-
-  beforeEach(() => {
-    sandbox.useFakeTimers();
-  });
-
-  afterEach(() => {
-    sandbox.restore();
-  });
+  const { clock } = useSandbox({ useFakeTimers: true });
+  const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
 
   it('renders a SpinnerButton', async () => {
     const { getByRole } = render(<SpinnerButton>Spin!</SpinnerButton>);
@@ -50,7 +42,7 @@ describe('SpinnerButton', () => {
     expect(status.textContent).not.to.be.empty();
     expect(status.classList.contains('usa-sr-only')).to.be.true();
 
-    sandbox.clock.tick(1);
+    clock.tick(1);
 
     expect(status.textContent).not.to.be.empty();
     expect(status.classList.contains('usa-sr-only')).to.be.false();
@@ -70,7 +62,7 @@ describe('SpinnerButton', () => {
     expect(spinner.classList.contains('spinner-button--spinner-active')).to.be.false();
 
     spinner.toggleSpinner(true);
-    sandbox.clock.tick(1);
+    clock.tick(1);
     expect(status.classList.contains('usa-sr-only')).to.be.false();
   });
 

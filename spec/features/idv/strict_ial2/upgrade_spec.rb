@@ -35,7 +35,7 @@ feature 'Strict IAL2 upgrade' do
   context 'strict IAL2 does not allow a phone check' do
     before do
       allow(IdentityConfig.store).to receive(
-        :usps_upload_allowed_for_strict_ial2,
+        :gpo_allowed_for_strict_ial2,
       ).and_return(false)
     end
 

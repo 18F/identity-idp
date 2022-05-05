@@ -73,7 +73,7 @@ module RememberDeviceConcern
   end
 
   def handle_valid_remember_device_analytics
-    analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
+    analytics.remembered_device_used_for_authentication
   end
 
   def remember_device_cookie_expiration

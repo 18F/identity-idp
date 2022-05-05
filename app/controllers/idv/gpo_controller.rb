@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
+    before_action :confirm_gpo_allowed_if_strict_ial2
     before_action :max_attempts_reached, only: [:update]
 
     def index
@@ -32,7 +33,9 @@ module Idv
       update_tracking
       idv_session.address_verification_mechanism = :gpo
 
-      if current_user.decorate.pending_profile_requires_verification?
+      if current_user.decorate.pending_profile_requires_verification? && pii_locked?
+        redirect_to capture_password_url
+      elsif current_user.decorate.pending_profile_requires_verification?
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -61,6 +64,12 @@ module Idv
 
     def failure
       redirect_to idv_gpo_url unless performed?
+    end
+
+    def confirm_gpo_allowed_if_strict_ial2
+      return unless sp_session[:ial2_strict]
+      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
+      redirect_to idv_phone_url
     end
 
     def pii(address_pii)
@@ -255,6 +264,10 @@ module Idv
       flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
       ProofingSessionAsyncResult.missing
+    end
+
+    def pii_locked?
+      !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
   end
 end

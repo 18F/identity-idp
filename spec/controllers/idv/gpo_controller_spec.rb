@@ -123,6 +123,17 @@ describe Idv::GpoController do
         allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
         expect_resend_letter_to_send_letter_and_redirect(otp: true)
       end
+
+      it 'redirects to capture password if pii is locked' do
+        pii_cacher = instance_double(Pii::Cacher)
+        allow(pii_cacher).to receive(:fetch).and_return(nil)
+        allow(pii_cacher).to receive(:exists_in_session?).and_return(false)
+        allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
+
+        put :create
+
+        expect(response).to redirect_to capture_password_path
+      end
     end
   end
 
@@ -130,6 +141,7 @@ describe Idv::GpoController do
     pii = { first_name: 'Samuel', last_name: 'Sampson' }
     pii_cacher = instance_double(Pii::Cacher)
     allow(pii_cacher).to receive(:fetch).and_return(pii)
+    allow(pii_cacher).to receive(:exists_in_session?).and_return(true)
     allow(Pii::Cacher).to receive(:new).and_return(pii_cacher)
 
     service_provider = create(:service_provider, issuer: '123abc')

@@ -3,8 +3,7 @@ module Encryption
     include Encodable
 
     def encrypt(plaintext, cek)
-      self.cipher = OpenSSL::Cipher.new 'aes-256-gcm'
-      cipher.encrypt
+      self.cipher = self.class.encryption_cipher
       # The key length for the AES-256-GCM cipher is fixed at 128 bits, or 32
       # characters. Starting with Ruby 2.4, an expection is thrown if you try to
       # set a key longer than 32 characters, which is what we have been doing
@@ -18,6 +17,10 @@ module Encryption
       cipher.decrypt
       cipher.key = cek[0..31]
       decipher(payload)
+    end
+
+    def self.encryption_cipher
+      OpenSSL::Cipher.new('aes-256-gcm').encrypt
     end
 
     private

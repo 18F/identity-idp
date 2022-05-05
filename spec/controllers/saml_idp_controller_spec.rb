@@ -109,7 +109,7 @@ describe SamlIdpController do
       stub_analytics
 
       result = { service_provider: nil, saml_request_valid: false }
-      expect(@analytics).to receive(:track_event).with(Analytics::REMOTE_LOGOUT_INITIATED, result)
+      expect(@analytics).to receive(:track_event).with('Remote Logout initiated', result)
 
       delete :remotelogout, params: { SAMLRequest: 'foo' }
     end
@@ -1753,6 +1753,8 @@ describe SamlIdpController do
                ial: 1)
 
         generate_saml_response(user)
+
+        expect_sp_authentication_cost
       end
     end
 
@@ -1787,6 +1789,8 @@ describe SamlIdpController do
                ial: 1)
 
         generate_saml_response(user)
+
+        expect_sp_authentication_cost
       end
     end
   end
@@ -1812,5 +1816,13 @@ describe SamlIdpController do
     it 'returns false for empty referer' do
       expect(subject.external_saml_request?).to eq false
     end
+  end
+
+  def expect_sp_authentication_cost
+    sp_cost = SpCost.where(
+      issuer: 'http://localhost:3000',
+      cost_type: 'authentication',
+    ).first
+    expect(sp_cost).to be_present
   end
 end
