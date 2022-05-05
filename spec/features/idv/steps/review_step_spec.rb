@@ -9,7 +9,7 @@ feature 'idv review step' do
     expect(current_path).to eq(root_path)
   end
 
-  it 'requires the user to enter the correct password to redirect to confirmation step' do
+  it 'requires the user to enter the correct password to redirect to confirmation step', js: true do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
