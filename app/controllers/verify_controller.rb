@@ -2,6 +2,12 @@ class VerifyController < ApplicationController
   include RenderConditionConcern
   include IdvSession
 
+  STEP_NAMES = %w[
+    personal_key
+    personal_key_confirm
+  ].to_set.freeze
+
+  before_action :validate_step
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_vendor_session_started
   before_action :confirm_profile_has_been_created
@@ -14,11 +20,15 @@ class VerifyController < ApplicationController
 
   private
 
+  def validate_step
+    render_not_found if !STEP_NAMES.include?(params[:step])
+  end
+
   def app_data
     user_session[:idv_api_store_key] ||= Base64.strict_encode64(random_encryption_key)
 
     {
-      base_path: idv_app_root_path,
+      base_path: idv_app_path,
       app_name: APP_NAME,
       completion_url: completion_url,
       initial_values: initial_values,

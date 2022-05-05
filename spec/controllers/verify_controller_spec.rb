@@ -17,8 +17,9 @@ describe VerifyController do
       }
     end
     let(:profile) { subject.idv_session.profile }
+    let(:step) { 'personal_key' }
 
-    subject(:response) { get :show }
+    subject(:response) { get :show, params: { step: step } }
 
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
@@ -31,45 +32,57 @@ describe VerifyController do
       expect(response).to be_not_found
     end
 
-    context 'with personal key step enabled' do
-      let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
+    context 'with idv api enabled' do
+      let(:idv_api_enabled_steps) { ['something'] }
 
-      it 'renders view' do
-        expect(response).to render_template(:show)
+      context 'invalid step' do
+        let(:step) { 'bad' }
+
+        it 'renders 404' do
+          expect(response).to be_not_found
+        end
       end
 
-      it 'sets app data' do
-        response
+      context 'with personal key step enabled' do
+        let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
 
-        expect(assigns[:app_data]).to include(
-          app_name: APP_NAME,
-          base_path: idv_app_root_path,
-          completion_url: idv_gpo_verify_url,
-          enabled_step_names: idv_api_enabled_steps,
-          initial_values: { 'personalKey' => kind_of(String) },
-          store_key: kind_of(String),
-        )
+        it 'renders view' do
+          expect(response).to render_template(:show)
+        end
+
+        it 'sets app data' do
+          response
+
+          expect(assigns[:app_data]).to include(
+            app_name: APP_NAME,
+            base_path: idv_app_path,
+            completion_url: idv_gpo_verify_url,
+            enabled_step_names: idv_api_enabled_steps,
+            initial_values: { 'personalKey' => kind_of(String) },
+            store_key: kind_of(String),
+          )
+        end
       end
-    end
 
-    context 'with password confirmation step enabled' do
-      let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
+      context 'with password confirmation step enabled' do
+        let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
 
-      it 'renders view' do
-        expect(response).to render_template(:show)
-      end
+        it 'renders view' do
+          expect(response).to render_template(:show)
+        end
 
-      it 'sets app data' do
-        response
+        it 'sets app data' do
+          response
 
-        expect(assigns[:app_data]).to include(
-          app_name: APP_NAME,
-          base_path: idv_app_root_path,
-          completion_url: idv_gpo_verify_url,
-          enabled_step_names: idv_api_enabled_steps,
-          initial_values: { 'userBundleToken' => kind_of(String) },
-          store_key: kind_of(String),
-        )
+          expect(assigns[:app_data]).to include(
+            app_name: APP_NAME,
+            base_path: idv_app_path,
+            completion_url: idv_gpo_verify_url,
+            enabled_step_names: idv_api_enabled_steps,
+            initial_values: { 'userBundleToken' => kind_of(String) },
+            store_key: kind_of(String),
+          )
+        end
       end
     end
 
