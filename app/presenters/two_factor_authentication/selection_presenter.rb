@@ -116,7 +116,7 @@ module TwoFactorAuthentication
       when 'backup_code'
         t('two_factor_authentication.two_factor_choice_options.backup_code_info')
       when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone_info')
+        t('two_factor_authentication.two_factor_choice_options.phone_info_html')
       when 'piv_cac'
         t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
       when 'sms'

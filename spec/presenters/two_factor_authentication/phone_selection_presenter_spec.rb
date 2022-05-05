@@ -17,7 +17,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
 
       it 'includes a note about choosing voice or sms' do
         expect(presenter.info).
-          to include(t('two_factor_authentication.two_factor_choice_options.phone_info'))
+          to include(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
       end
 
       it 'does not include a masked number' do
@@ -27,11 +27,6 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       context 'when VOIP numbers are blocked' do
         before do
           allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
-        end
-
-        it 'tells people to not use voip numbers' do
-          expect(presenter.info).
-            to include(t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip'))
         end
       end
     end
