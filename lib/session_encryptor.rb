@@ -1,5 +1,6 @@
 class SessionEncryptor
   class SensitiveKeyError < StandardError; end
+  NEW_CIPHERTEXT_HEADER = 'v2'
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
     'zip_code', 'dob', 'phone', 'phone_number', 'ssn', 'prev_address1', 'prev_address2',
@@ -33,7 +34,7 @@ class SessionEncryptor
     kms_encrypt_sensitive_paths!(value, SENSITIVE_PATHS)
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value, quirks_mode: true)
-    'v2:' + outer_encryptor.encrypt(plain)
+    NEW_CIPHERTEXT_HEADER + ':' + outer_encryptor.encrypt(plain)
   end
 
   def kms_encrypt(text)
@@ -119,7 +120,7 @@ class SessionEncryptor
   def should_use_legacy_encryptor_for_read?(value)
     ## Legacy ciphertexts will not include a colon and thus will have no header
     header = value.split(':').first
-    header != 'v2'
+    header != NEW_CIPHERTEXT_HEADER
   end
 
   def should_use_legacy_encryptor_for_write?
