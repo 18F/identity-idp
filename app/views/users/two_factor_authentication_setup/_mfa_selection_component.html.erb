@@ -23,8 +23,8 @@
             </div>
       <% end %>
       <% if option.type == "phone" && flash[:phone_error] %>
-          <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
-          <%= flash[:phone_error] %>
+        <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
+            <%= flash[:phone_error] %>
+        </div>
       <% end %>
-</div>
 <%= javascript_packs_tag_once('mfa_selection_component') %>
