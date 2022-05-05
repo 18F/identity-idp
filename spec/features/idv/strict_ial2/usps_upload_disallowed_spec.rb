@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Strict IAL2 with usps upload disallowed' do
+feature 'Strict IAL2 with usps upload disallowed', js: true do
   include IdvHelper
   include OidcAuthHelper
   include IdvHelper
