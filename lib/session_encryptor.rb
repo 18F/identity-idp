@@ -5,7 +5,7 @@ class SessionEncryptor
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
     'zip_code', 'dob', 'phone', 'phone_number', 'ssn', 'prev_address1', 'prev_address2',
     'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc', 'password', 'personal_key'
-  ]
+  ].to_set.freeze
 
   SENSITIVE_PATHS = [
     ['warden.user.user.session', 'idv/doc_auth'],
