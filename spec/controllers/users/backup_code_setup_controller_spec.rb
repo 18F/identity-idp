@@ -45,7 +45,7 @@ describe Users::BackupCodeSetupController do
       codes = BackupCodeGenerator.new(user).create
       controller.user_session[:backup_codes] = codes
 
-      controller.user_session[:selected_mfa_options] = ['backup_code', 'voice']
+      controller.user_session[:mfa_selections] = ['backup_code', 'voice']
       post :continue
 
       expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))

@@ -154,7 +154,7 @@ describe Users::WebauthnSetupController do
 
     context 'with multiple MFA methods chosen on account creation' do
       before do
-        controller.user_session[:selected_mfa_options] = ['webauthn_platform', 'voice']
+        controller.user_session[:mfa_selections] = ['webauthn_platform', 'voice']
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 

@@ -1,21 +1,13 @@
 module MfaSetupConcern
   extend ActiveSupport::Concern
 
-  def user_next_authentication_setup_path
+  def next_setup_path
     if user_needs_confirmation_screen?
-
       auth_method_confirmation_url(next_setup_choice: next_setup_choice)
     else
       user_session.delete(:mfa_selections)
       nil
     end
-  end
-
-  def determine_next_mfa_selection
-    return unless user_session[:mfa_selections]
-    current_setup_step = user_session[:next_mfa_setup]
-    current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
-    current_index + 1
   end
 
   def confirmation_path(next_mfa_selection_choice)
@@ -50,10 +42,19 @@ module MfaSetupConcern
       IdentityConfig.store.select_multiple_mfa_options
   end
 
+  private
+
+  def determine_next_mfa
+    return unless user_session[:mfa_selections]
+    current_setup_step = user_session[:next_mfa_setup]
+    current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
+    current_index + 1
+  end
+
   def next_setup_choice
     user_session.dig(
       :mfa_selections,
-      determine_next_mfa_selection,
+      determine_next_mfa,
     )
   end
 end

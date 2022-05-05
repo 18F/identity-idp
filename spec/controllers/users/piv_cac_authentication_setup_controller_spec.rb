@@ -120,7 +120,7 @@ describe Users::PivCacAuthenticationSetupController do
 
           context 'with additional MFAs leftover' do
             before do
-              subject.user_session[:selected_mfa_options] = ['piv_cac', 'voice']
+              subject.user_session[:mfa_selections] = ['piv_cac', 'voice']
               allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
             end
             it 'redirects to Mfa Confirmation page' do
