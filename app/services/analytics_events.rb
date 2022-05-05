@@ -473,11 +473,13 @@ module AnalyticsEvents
   # @param [Integer] remaining_attempts
   # @param [String] user_id
   # @param [String] flow_path
-  # The document capture  image uploaded was locally validated during the IDV process
+  # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
     errors:,
-    remaining_attempts:, flow_path:, attempts: nil,
+    remaining_attempts:,
+    flow_path:,
+    attempts: nil,
     user_id: nil,
     **extra
   )
