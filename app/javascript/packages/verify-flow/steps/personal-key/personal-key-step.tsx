@@ -3,11 +3,11 @@ import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { getAssetPath } from '@18f/identity-assets';
 import { trackEvent } from '@18f/identity-analytics';
-import type { VerifyFlowValues } from '../..';
+import type { VerifyFlowValues } from '../../verify-flow';
 import DownloadButton from './download-button';
 
 interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> {}
@@ -76,7 +76,7 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
         </p>
         <p>{t('instructions.personal_key.email_body')}</p>
       </div>
-      <FormStepsContinueButton className="margin-bottom-0" />
+      <FormStepsButton.Continue className="margin-bottom-0" />
     </>
   );
 }

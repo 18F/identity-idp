@@ -170,6 +170,11 @@ ActiveRecord::Schema.define(version: 2022_04_22_193820) do
     t.integer "agreement_view_count", default: 0
     t.string "state"
     t.boolean "aamva"
+    t.datetime "verify_submit_at"
+    t.datetime "verify_phone_submit_at"
+    t.integer "verify_phone_submit_count", default: 0
+    t.datetime "document_capture_submit_at"
+    t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end

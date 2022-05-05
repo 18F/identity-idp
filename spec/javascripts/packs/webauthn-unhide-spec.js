@@ -1,6 +1,5 @@
 import { screen } from '@testing-library/dom';
-import { useDefineProperty } from '@18f/identity-test-helpers';
-import { useSandbox } from '../support/sinon';
+import { useDefineProperty, useSandbox } from '@18f/identity-test-helpers';
 import { unhideWebauthn } from '../../../app/javascript/packs/webauthn-unhide';
 
 describe('webauthn-unhide', () => {

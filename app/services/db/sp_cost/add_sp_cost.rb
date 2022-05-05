@@ -9,9 +9,15 @@ module Db
         acuant_back_image
         acuant_result
         acuant_selfie
+        authentication
+        digest
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
+        phone_otp
+        sms
+        user_added
+        voice
       ].freeze
 
       def self.call(service_provider, ial, token, transaction_id: nil, user: nil)

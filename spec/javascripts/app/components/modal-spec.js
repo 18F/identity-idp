@@ -1,6 +1,6 @@
 import { waitFor } from '@testing-library/dom';
+import { useSandbox } from '@18f/identity-test-helpers';
 import BaseModal from '../../../../app/javascript/app/components/modal';
-import { useSandbox } from '../../support/sinon';
 
 describe('components/modal', () => {
   const sandbox = useSandbox();

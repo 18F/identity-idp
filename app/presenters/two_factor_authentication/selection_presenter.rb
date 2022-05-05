@@ -96,10 +96,6 @@ module TwoFactorAuthentication
         t('two_factor_authentication.login_options.personal_key_info')
       when 'piv_cac'
         t('two_factor_authentication.login_options.piv_cac_info')
-      when 'sms'
-        t('two_factor_authentication.login_options.sms_info_html')
-      when 'voice'
-        t('two_factor_authentication.login_options.voice_info_html')
       when 'webauthn'
         t('two_factor_authentication.login_options.webauthn_info')
       when 'webauthn_platform'

@@ -19,7 +19,7 @@ locals:
           text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
-        FeatureManagement.enable_gpo_verification? && {
+        @gpo_letter_available && {
           text: t('idv.troubleshooting.options.verify_by_mail'),
           url: idv_gpo_path,
         },

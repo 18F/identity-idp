@@ -21,6 +21,11 @@ module TwoFactorAuthentication
       else
         t('two_factor_authentication.two_factor_choice_options.phone_info_html')
       end
+
+      safe_join(
+        [t('two_factor_authentication.two_factor_choice_options.phone_info'), *voip_note],
+        ' ',
+      )
     end
 
     def security_level

@@ -10,6 +10,8 @@ module Funnel
         method = "#{token}_submit_count".to_sym
         return unless doc_auth_log.respond_to?(method)
         doc_auth_log[method] += 1
+        method = "#{token}_submit_at".to_sym
+        doc_auth_log[method] = Time.zone.now if doc_auth_log.respond_to?(method)
         doc_auth_log.issuer = issuer
         doc_auth_log.save
       end

@@ -57,10 +57,7 @@ module Idv
         extra: extra_attributes,
       )
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
-        response.to_h,
-      )
+      analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
 
       response
     end
@@ -88,10 +85,8 @@ module Idv
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
       response.extra.merge!(extra_attributes)
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-        response.to_h,
-      )
+      analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
+
       store_pii(client_response) if client_response.success? && response.success?
 
       response
@@ -219,9 +214,8 @@ module Idv
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(
+      analytics.idv_doc_auth_submitted_image_upload_vendor(
+        **client_response.to_h.merge(
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
