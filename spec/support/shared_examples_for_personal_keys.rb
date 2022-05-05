@@ -30,8 +30,7 @@ shared_examples_for 'personal key page' do
       click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
 
-      code = page.all('[data-personal-key]').map(&:text).join('-')
-      expect(copied_text).to eq(code)
+      expect(copied_text).to eq(scrape_personal_key)
     end
 
     it 'validates as case-insensitive, crockford-normalized, length-limited, dash-flexible' do
