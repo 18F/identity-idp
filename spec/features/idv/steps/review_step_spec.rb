@@ -13,6 +13,8 @@ feature 'idv review step' do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
+    click_on t('idv.messages.review.intro')
+
     expect(page).to have_content('FAKEY')
     expect(page).to have_content('MCFAKERSON')
     expect(page).to have_content('1 FAKE RD')
