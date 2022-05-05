@@ -47,6 +47,7 @@ module Idv
       analytics.idv_phone_error_visited(**attributes)
     end
 
+    # rubocop:disable Naming/MemoizedInstanceVariableName
     def set_gpo_letter_available
       return @gpo_letter_available if defined?(@gpo_letter_available)
       @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
@@ -54,5 +55,6 @@ module Idv
                                 !(sp_session[:ial2_strict] &&
                                   !IdentityConfig.store.gpo_allowed_for_strict_ial2)
     end
+    # rubocop:enable Naming/MemoizedInstanceVariableName
   end
 end
