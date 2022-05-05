@@ -25,7 +25,7 @@ feature 'Strict IAL2 upgrade', js: true do
     click_continue
     fill_in 'Password', with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
@@ -57,7 +57,7 @@ feature 'Strict IAL2 upgrade', js: true do
       click_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
