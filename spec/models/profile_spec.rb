@@ -102,7 +102,7 @@ describe Profile do
     context 'the letter flow is allowed for strict IAL2' do
       before do
         allow(IdentityConfig.store).to receive(
-          :usps_upload_allowed_for_strict_ial2,
+          :gpo_allowed_for_strict_ial2,
         ).and_return(true)
       end
 
@@ -124,7 +124,7 @@ describe Profile do
     context 'the letter flow is not allowed for strict IAL2' do
       before do
         allow(IdentityConfig.store).to receive(
-          :usps_upload_allowed_for_strict_ial2,
+          :gpo_allowed_for_strict_ial2,
         ).and_return(false)
       end
 

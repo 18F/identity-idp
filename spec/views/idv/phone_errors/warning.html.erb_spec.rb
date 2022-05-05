@@ -3,14 +3,12 @@ require 'rails_helper'
 describe 'idv/phone_errors/warning.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:remaining_attempts) { 5 }
-  let(:enable_gpo_verification) { false }
+  let(:gpo_letter_available) { false }
 
   before do
-    allow(FeatureManagement).to receive(:enable_gpo_verification?).
-      and_return(enable_gpo_verification)
-
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
+    assign(:gpo_letter_available, gpo_letter_available)
 
     assign(:remaining_attempts, remaining_attempts)
 
@@ -43,7 +41,7 @@ describe 'idv/phone_errors/warning.html.erb' do
   end
 
   context 'gpo verification enabled' do
-    let(:enable_gpo_verification) { true }
+    let(:gpo_letter_available) { true }
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
