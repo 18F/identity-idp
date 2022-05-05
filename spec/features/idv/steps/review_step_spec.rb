@@ -31,7 +31,7 @@ feature 'idv review step' do
     click_idv_continue
 
     expect(page).to have_content(t('headings.personal_key'))
-    expect(page).to have_current_path(idv_personal_key_path)
+    expect(current_path).to be_in([idv_personal_key_path, idv_app_root_path])
   end
 
   context 'choosing to confirm address with phone' do
