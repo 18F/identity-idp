@@ -43,9 +43,8 @@ module Idv
       def async_state_done(async_result)
         doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 
-        @flow.analytics.track_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-          doc_pii_form_result.to_h.merge(
+        @flow.analytics.idv_doc_auth_submitted_pii_validation(
+          **doc_pii_form_result.to_h.merge(
             remaining_attempts: remaining_attempts,
             flow_path: flow_path,
           ),

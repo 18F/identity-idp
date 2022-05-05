@@ -4,7 +4,8 @@ module Redirect
 
     def cancel
       redirect_url = sp_return_url_resolver.return_to_sp_url
-      redirect_to_and_log redirect_url, event: Analytics::RETURN_TO_SP_CANCEL
+      analytics.return_to_sp_cancelled(redirect_url: redirect_url, **location_params)
+      redirect_to(redirect_url)
     end
 
     def failure_to_proof

@@ -4,8 +4,8 @@ import { cleanup } from '@testing-library/react';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/selfie-capture', () => {

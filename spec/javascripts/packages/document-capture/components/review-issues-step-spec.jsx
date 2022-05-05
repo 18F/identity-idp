@@ -7,8 +7,8 @@ import {
 } from '@18f/identity-document-capture';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
@@ -23,22 +23,16 @@ describe('document-capture/components/review-issues-step', () => {
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: warning shown',
-      payload: {
-        location: 'doc_auth_review_issues',
-        remaining_attempts: 3,
-      },
+    expect(addPageAction).to.have.been.calledWith('IdV: warning shown', {
+      location: 'doc_auth_review_issues',
+      remaining_attempts: 3,
     });
 
     const button = getByRole('button');
     await userEvent.click(button);
 
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: warning action triggered',
-      payload: {
-        location: 'doc_auth_review_issues',
-      },
+    expect(addPageAction).to.have.been.calledWith('IdV: warning action triggered', {
+      location: 'doc_auth_review_issues',
     });
   });
 

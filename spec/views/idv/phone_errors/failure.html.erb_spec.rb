@@ -11,6 +11,7 @@ describe 'idv/phone_errors/failure.html.erb' do
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
+    assign(:gpo_letter_available, true)
     allow(IdentityConfig.store).to receive(:idv_attempt_window_in_hours).and_return(timeout_hours)
 
     @expires_at = Time.zone.now + timeout_hours.hours

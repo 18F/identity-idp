@@ -4,7 +4,7 @@ import UploadContext, {
   Provider as UploadContextProvider,
 } from '@18f/identity-document-capture/context/upload';
 import defaultUpload from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '../../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('document-capture/context/upload', () => {
   const sandbox = useSandbox();
