@@ -59,7 +59,7 @@ const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 const camelCase = (string: string) =>
   string.replace(/[^a-z]([a-z])/gi, (_match, nextLetter) => nextLetter.toUpperCase());
 
-const jwtData = JSON.parse(atob(initialValues.userBundleToken));
+const jwtData = JSON.parse(atob(initialValues.userBundleToken.split('.')[1]));
 const pii = Object.fromEntries(
   Object.entries(jwtData.pii).map(([key, value]) => [camelCase(key), value]),
 );
