@@ -154,13 +154,14 @@ describe Users::WebauthnSetupController do
 
     context 'with multiple MFA methods chosen on account creation' do
       before do
-        controller.user_session[:selected_mfa_options] = ['voice']
+        controller.user_session[:selected_mfa_options] = ['webauthn_platform', 'voice']
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
       it 'should direct user to phone page' do
         patch :confirm, params: params
 
-        expect(response).to redirect_to(phone_setup_url)
+        expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
       end
     end
 

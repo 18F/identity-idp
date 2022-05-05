@@ -8,7 +8,7 @@ class IdvController < ApplicationController
   def index
     if decorated_session.requested_more_recent_verification?
       verify_identity
-    elsif active_profile? && !liveness_upgrade_required?
+    elsif active_profile? && !strict_ial2_upgrade_required?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       analytics.track_event(
@@ -46,8 +46,8 @@ class IdvController < ApplicationController
     redirect_to reactivate_account_url
   end
 
-  def liveness_upgrade_required?
-    sp_session[:ial2_strict] && !current_user.active_profile&.includes_liveness_check?
+  def strict_ial2_upgrade_required?
+    sp_session[:ial2_strict] && !current_user.active_profile&.strict_ial2_proofed?
   end
 
   def active_profile?

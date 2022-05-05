@@ -88,7 +88,7 @@ module Idv
 
     def create_gpo_entry
       move_pii_to_user_session
-      self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
+      self.pii = Pii::Cacher.new(current_user, user_session).fetch if pii.is_a?(String)
       confirmation_maker = GpoConfirmationMaker.new(
         pii: pii, service_provider: service_provider,
         profile: profile
@@ -131,7 +131,8 @@ module Idv
 
     def move_pii_to_user_session
       return if session[:decrypted_pii].blank?
-      user_session[:decrypted_pii] = session.delete(:decrypted_pii)
+      decrypted_pii = session.delete(:decrypted_pii)
+      Pii::Cacher.new(current_user, user_session).save_decrypted_pii_json(decrypted_pii)
     end
 
     def session

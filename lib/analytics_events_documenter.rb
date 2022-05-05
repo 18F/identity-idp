@@ -8,7 +8,6 @@ require 'active_support/core_ext/object/blank'
 # Parses YARD output for AnalyticsEvents methods
 class AnalyticsEventsDocumenter
   DEFAULT_DATABASE_PATH = '.yardoc'
-  EVENT_NAME_TAG = :'identity.idp.event_name'
   PREVIOUS_EVENT_NAME_TAG = :'identity.idp.previous_event_name'
 
   DOCUMENTATION_OPTIONAL_PARAMS = %w[
@@ -75,7 +74,9 @@ class AnalyticsEventsDocumenter
       error_prefix = "#{method_object.file}:#{method_object.line} #{method_object.name}"
       errors = []
 
-      errors << "#{error_prefix} missing @#{EVENT_NAME_TAG}" if !method_object.tag(EVENT_NAME_TAG)
+      if !extract_event_name(method_object)
+        errors << "#{error_prefix} event name not detected in track_event"
+      end
 
       missing_attributes.each do |attribute|
         next if attribute.start_with?('**')
@@ -84,6 +85,10 @@ class AnalyticsEventsDocumenter
 
       if param_names.size > 0 && !param_names.last.start_with?('**')
         errors << "#{error_prefix} missing **extra"
+      end
+
+      if method_object.signature.end_with?('*)')
+        errors << "#{error_prefix} don't use * as an argument, remove all args or name args"
       end
 
       errors
@@ -102,7 +107,7 @@ class AnalyticsEventsDocumenter
       end.compact
 
       {
-        event_name: method_object.tag(EVENT_NAME_TAG)&.text,
+        event_name: extract_event_name(method_object),
         previous_event_names: method_object.tags(PREVIOUS_EVENT_NAME_TAG).map(&:text),
         description: method_object.docstring.presence,
         attributes: attributes,
@@ -113,6 +118,12 @@ class AnalyticsEventsDocumenter
   end
 
   private
+
+  # Naive attempt to pull tracked event string from source code
+  def extract_event_name(method_object)
+    m = /track_event\(\s*["'](?<event_name>[^"']+)["']/.match(method_object.source)
+    m && m[:event_name]
+  end
 
   def database
     @database ||= YARD::Serializers::YardocSerializer.new(database_path).deserialize('root')

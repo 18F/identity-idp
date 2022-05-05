@@ -33,7 +33,7 @@ module ApplicationHelper
   def liveness_checking_enabled?
     return false if !FeatureManagement.liveness_checking_enabled?
     return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
-    !!current_user&.decorate&.password_reset_profile&.includes_liveness_check?
+    !!current_user&.decorate&.password_reset_profile&.strict_ial2_proofed?
   end
 
   def cancel_link_text

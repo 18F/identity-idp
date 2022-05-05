@@ -12,10 +12,16 @@ module Pii
     end
 
     def save(user_password, profile = user.active_profile)
-      user_session[:decrypted_pii] = profile.decrypt_pii(user_password).to_json if profile
+      decrypted_pii = profile.decrypt_pii(user_password) if profile
+      save_decrypted_pii_json(decrypted_pii.to_json) if decrypted_pii
       rotate_fingerprints(profile) if stale_fingerprints?(profile)
       rotate_encrypted_attributes if stale_attributes?
       user_session[:decrypted_pii]
+    end
+
+    def save_decrypted_pii_json(decrypted_pii_json)
+      user_session[:decrypted_pii] = decrypted_pii_json
+      nil
     end
 
     def fetch
