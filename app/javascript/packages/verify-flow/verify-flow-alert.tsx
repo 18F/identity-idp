@@ -8,16 +8,21 @@ interface VerifyFlowAlertProps {
   currentStep: string;
 }
 
-function VerifyFlowAlert({ currentStep }: VerifyFlowAlertProps) {
-  let message;
-  switch (currentStep) {
-    case 'personal_key':
-    case 'personal_key_confirm':
-      message = t('idv.messages.confirm');
-      break;
+/**
+ * Returns the status message to show for a given step, if applicable.
+ *
+ * @param stepName Step name.
+ */
+function getStepMessage(stepName: string): string | undefined {
+  if (stepName === 'personal_key' || stepName === 'personal_key_confirm') {
+    return t('idv.messages.confirm');
+  }
+}
 
-    default:
-      return null;
+function VerifyFlowAlert({ currentStep }: VerifyFlowAlertProps) {
+  const message = getStepMessage(currentStep);
+  if (!message) {
+    return null;
   }
 
   return (
