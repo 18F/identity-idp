@@ -1,14 +1,29 @@
 import { createRef } from 'react';
 import { render } from '@testing-library/react';
 import Alert from './alert';
+import type { AlertType } from './alert';
 
-describe('identity-components/alert', () => {
-  it('should apply alert role', () => {
-    const { getByRole } = render(<Alert type="warning">Uh oh!</Alert>);
+describe('Alert', () => {
+  describe('role', () => {
+    (
+      [
+        ['success', 'status'],
+        ['warning', 'status'],
+        ['error', 'alert'],
+        ['info', 'status'],
+        ['other', 'status'],
+      ] as [AlertType, 'alert' | 'status'][]
+    ).forEach(([type, role]) => {
+      context(`with ${type} type`, () => {
+        it(`should apply ${role} role`, () => {
+          const { getByRole } = render(<Alert type={type} />);
 
-    const alert = getByRole('alert');
+          const alert = getByRole(role);
 
-    expect(alert).to.be.ok();
+          expect(alert).to.be.ok();
+        });
+      });
+    });
   });
 
   it('accepts additional class names', () => {
@@ -18,7 +33,7 @@ describe('identity-components/alert', () => {
       </Alert>,
     );
 
-    const alert = getByRole('alert');
+    const alert = getByRole('status');
 
     expect(alert.classList.contains('my-class')).to.be.true();
   });
@@ -26,7 +41,7 @@ describe('identity-components/alert', () => {
   it('is optionally focusable', () => {
     const { getByRole } = render(<Alert isFocusable />);
 
-    const alert = getByRole('alert');
+    const alert = getByRole('status');
     alert.focus();
 
     expect(document.activeElement).to.equal(alert);

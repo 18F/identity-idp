@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import type { ReactNode, ForwardedRef } from 'react';
 
-type AlertType = 'success' | 'warning' | 'error' | 'info' | 'other';
+export type AlertType = 'success' | 'warning' | 'error' | 'info' | 'other';
 
 interface AlertProps {
   /**
@@ -30,9 +30,10 @@ function Alert(
   ref: ForwardedRef<any>,
 ) {
   const classes = [`usa-alert usa-alert--${type}`, className].filter(Boolean).join(' ');
+  const role = type === 'error' ? 'alert' : 'status';
 
   return (
-    <div ref={ref} className={classes} role="alert" tabIndex={isFocusable ? -1 : undefined}>
+    <div ref={ref} className={classes} role={role} tabIndex={isFocusable ? -1 : undefined}>
       <div className="usa-alert__body">
         <p className="usa-alert__text">{children}</p>
       </div>
