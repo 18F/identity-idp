@@ -28,4 +28,15 @@ describe Encryption::AesCipher do
       expect { subject.decrypt(ciphertext, cek) }.to raise_error Encryption::EncryptionError
     end
   end
+
+  describe '.encryption_cipher' do
+    it 'returns an AES cipher for encryption operation' do
+      expect_any_instance_of(OpenSSL::Cipher).to receive(:encrypt).and_call_original
+
+      cipher = subject.class.encryption_cipher
+
+      expect(cipher).to be_kind_of(OpenSSL::Cipher)
+      expect(cipher.name).to eq 'id-aes256-GCM'
+    end
+  end
 end
