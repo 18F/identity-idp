@@ -14,6 +14,7 @@ module SamlIdp
     attr_accessor :attribute_service_location
     attr_accessor :single_service_post_location
     attr_accessor :single_logout_service_post_location
+    attr_accessor :remote_logout_service_post_location
     attr_accessor :attributes
     attr_accessor :service_provider
     attr_accessor :pkcs11

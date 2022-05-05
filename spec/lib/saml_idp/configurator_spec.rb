@@ -11,6 +11,7 @@ module SamlIdp
     it { is_expected.to respond_to :attribute_service_location }
     it { is_expected.to respond_to :single_service_post_location }
     it { is_expected.to respond_to :single_logout_service_post_location }
+    it { is_expected.to respond_to :remote_logout_service_post_location }
     it { is_expected.to respond_to :name_id }
     it { is_expected.to respond_to :attributes }
     it { is_expected.to respond_to :service_provider }

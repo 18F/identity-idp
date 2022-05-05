@@ -31,9 +31,23 @@ module SamlIdp
       expect(Saml::XML::Document.parse(subject.signed).valid_signature?(cloudhsm_idp_x509_cert_fingerprint)).to be_truthy
     end
 
-    it "includes logout element" do
+    it "includes logout elements" do
       subject.configurator.single_logout_service_post_location = 'https://example.com/saml/logout'
-      expect(subject.fresh).not_to include('SingleLogoutService')
+      subject.configurator.remote_logout_service_post_location = 'https://example.com/saml/remote_logout'
+      expect(subject.fresh.scan(/SingleLogoutService/).count).to eq(3)
+      expect(subject.fresh).to match(slo_regex('HTTP-POST', 'https://example.com/saml/logout'))
+      expect(subject.fresh).to match(slo_regex('HTTP-Redirect', 'https://example.com/saml/logout'))
+      expect(subject.fresh).to match(slo_regex('HTTP-POST', 'https://example.com/saml/remote_logout'))
+    end
+
+    it "skips remote logout if not present" do
+      subject.configurator.single_logout_service_post_location = 'https://example.com/saml/logout'
+      subject.configurator.remote_logout_service_post_location = nil
+      expect(subject.fresh.scan(/SingleLogoutService/).count).to eq(2)
+    end
+
+    def slo_regex(binding, location)
+      %r{<SingleLogoutService Binding=.+#{binding}.+ Location=.+#{location}.+/>}
     end
   end
 end
