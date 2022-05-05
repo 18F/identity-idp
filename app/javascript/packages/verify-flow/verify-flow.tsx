@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 import { FormSteps } from '@18f/identity-form-steps';
-import { t } from '@18f/identity-i18n';
-import { Alert } from '@18f/identity-components';
 import { trackEvent } from '@18f/identity-analytics';
-import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import { STEPS } from './steps';
+import VerifyFlowStepIndicator from './verify-flow-step-indicator';
+import VerifyFlowAlert from './verify-flow-alert';
 
 export interface VerifyFlowValues {
   personalKey?: string;
@@ -60,7 +59,7 @@ const logStepVisited = (stepName: string) =>
 const logStepSubmitted = (stepName: string) =>
   trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
 
-export function VerifyFlow({
+function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
@@ -68,7 +67,6 @@ export function VerifyFlow({
   onComplete,
 }: VerifyFlowProps) {
   const [currentStep, setCurrentStep] = useState(STEPS[0].name);
-
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);
@@ -81,9 +79,7 @@ export function VerifyFlow({
   return (
     <>
       <VerifyFlowStepIndicator currentStep={currentStep} />
-      <Alert type="success" className="margin-bottom-4">
-        {t('idv.messages.confirm')}
-      </Alert>
+      <VerifyFlowAlert currentStep={currentStep} />
       <FormSteps
         steps={steps}
         initialValues={initialValues}
@@ -97,3 +93,5 @@ export function VerifyFlow({
     </>
   );
 }
+
+export default VerifyFlow;
