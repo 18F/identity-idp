@@ -15,8 +15,7 @@ class VerifyController < ApplicationController
   private
 
   def app_data
-    cipher = Encryption::AesCipher.encryption_cipher
-    user_session[:idv_api_store_key] ||= Base64.strict_encode64(cipher.random_key)
+    user_session[:idv_api_store_key] ||= Base64.strict_encode64(random_encryption_key)
 
     {
       base_path: idv_app_root_path,
@@ -26,6 +25,10 @@ class VerifyController < ApplicationController
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: user_session[:idv_api_store_key],
     }
+  end
+
+  def random_encryption_key
+    Encryption::AesCipher.encryption_cipher.random_key
   end
 
   def confirm_profile_has_been_created
