@@ -3,6 +3,10 @@ module Users
       include UserAuthenticator
       include MfaSetupConcern
 
+      before_action :authenticate_user
+      before_action :confirm_user_authenticated_for_2fa_setup
+      before_action :multiple_factors_enabled?
+
       def index
         @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
         @presenter = two_factor_options_presenter
@@ -45,6 +49,10 @@ module Users
 
       def two_factor_options_form_params
         params.require(:two_factor_options_form).permit(:selection, selection: [])
+      end
+
+      def multiple_factors_enabled?
+        IdentityConfig.store.select_multiple_mfa_options
       end
     end
   end
