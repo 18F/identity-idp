@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Strict IAL2 upgrade' do
+feature 'Strict IAL2 upgrade', js: true do
   include IdvHelper
   include OidcAuthHelper
   include SamlAuthHelper
