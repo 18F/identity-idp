@@ -11,7 +11,7 @@ module VerifyProfileConcern
   def profile_needs_verification?
     return false if current_user.blank?
     return false if sp_session[:ial2_strict] &&
-                    !IdentityConfig.store.usps_upload_allowed_for_strict_ial2
+                    !IdentityConfig.store.gpo_allowed_for_strict_ial2
     current_user.decorate.pending_profile_requires_verification? ||
       user_needs_to_reactivate_account?
   end

@@ -9,7 +9,7 @@ feature 'Strict IAL2 with usps upload disallowed' do
   before do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(
-      :usps_upload_allowed_for_strict_ial2,
+      :gpo_allowed_for_strict_ial2,
     ).and_return(false)
   end
 

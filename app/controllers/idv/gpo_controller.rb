@@ -68,7 +68,7 @@ module Idv
 
     def confirm_gpo_allowed_if_strict_ial2
       return unless sp_session[:ial2_strict]
-      return if IdentityConfig.store.usps_upload_allowed_for_strict_ial2
+      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_phone_url
     end
 
