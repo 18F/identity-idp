@@ -1,7 +1,12 @@
 shared_examples_for 'personal key page' do
   include PersonalKeyHelper
+  include JavascriptDriverHelper
 
   context 'informational text' do
+    before do
+      click_continue if javascript_enabled?
+    end
+
     context 'modal content' do
       it 'displays the modal title' do
         expect(page).to have_content t('forms.personal_key.title')
