@@ -7,10 +7,17 @@ import { t } from '@18f/identity-i18n';
 // i18n-tasks-use t('step_indicator.flows.idv.verify_phone_or_address')
 // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
 
+type VerifyFlowStepIndicatorStep =
+  | 'getting_started'
+  | 'verify_id'
+  | 'verify_info'
+  | 'verify_phone_or_address'
+  | 'secure_account';
+
 /**
  * Mapping of flow form steps to corresponding step indicator step.
  */
-const FLOW_STEP_STEP_MAPPING: Record<string, string> = {
+const FLOW_STEP_STEP_MAPPING: Record<string, VerifyFlowStepIndicatorStep> = {
   personal_key: 'secure_account',
   personal_key_confirm: 'secure_account',
 };
@@ -18,7 +25,7 @@ const FLOW_STEP_STEP_MAPPING: Record<string, string> = {
 /**
  * Sequence of step indicator steps.
  */
-const STEP_INDICATOR_STEPS: string[] = [
+const STEP_INDICATOR_STEPS: VerifyFlowStepIndicatorStep[] = [
   'getting_started',
   'verify_id',
   'verify_info',
