@@ -25,7 +25,7 @@ RSpec.describe Idv::UserBundleTokenizer do
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: sp)
   end
   subject do
-    Idv::UserBundleTokenizer.new(user: user, idv_session: idv_session, service_provider: sp)
+    Idv::UserBundleTokenizer.new(user: user, idv_session: idv_session)
   end
 
   context 'when initialized with data' do

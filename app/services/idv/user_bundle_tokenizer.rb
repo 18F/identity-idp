@@ -1,9 +1,8 @@
 module Idv
   class UserBundleTokenizer
-    def initialize(user:, idv_session:, service_provider: nil)
+    def initialize(user:, idv_session:)
       @user = user
       @idv_session = idv_session
-      @service_provider = service_provider
     end
 
     def token
@@ -21,7 +20,7 @@ module Idv
 
     private
 
-    attr_reader :user, :idv_session, :service_provider
+    attr_reader :user, :idv_session
 
     def private_key
       OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_private_key))
@@ -34,8 +33,6 @@ module Idv
       data[:address_verification_mechanism] = idv_session.address_verification_mechanism
       data[:user_phone_confirmation] = idv_session.user_phone_confirmation
       data[:vendor_phone_confirmation] = idv_session.vendor_phone_confirmation
-
-      data[:issuer] = service_provider.issuer if service_provider
 
       data
     end

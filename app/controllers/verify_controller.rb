@@ -59,7 +59,6 @@ class VerifyController < ApplicationController
     Idv::UserBundleTokenizer.new(
       user: current_user,
       idv_session: idv_session,
-      service_provider: current_sp,
     ).token
   end
 end
