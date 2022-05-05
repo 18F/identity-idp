@@ -42,6 +42,7 @@ module Telephony
   PinpointSmsConfiguration = Struct.new(
     :application_id,
     :shortcode,
+    :country_code_longcode_pool,
     *PINPOINT_CONFIGURATION_NAMES,
     keyword_init: true,
   )

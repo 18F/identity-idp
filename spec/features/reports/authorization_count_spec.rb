@@ -38,8 +38,7 @@ describe 'authorization count' do
   include OidcAuthHelper
   include DocAuthHelper
 
-  let(:email) { 'test@test.com' }
-  let(:password) { RequestHelper::VALID_PASSWORD }
+  let(:user) { nil }
   let(:today) { Time.zone.today }
   let(:client_id_1) { 'urn:gov:gsa:openidconnect:sp:server' }
   let(:client_id_2) { 'urn:gov:gsa:openidconnect:sp:server_two' }
@@ -47,15 +46,16 @@ describe 'authorization count' do
   let(:issuer_2) { 'https://rp3.serviceprovider.com/auth/saml/metadata' }
 
   context 'an IAL1 user with an active session' do
+    let(:user) { create(:user, :signed_up) }
+
     before do
-      create_ial1_user_from_sp(email)
-      reset_monthly_auth_count_and_login
+      reset_monthly_auth_count_and_login(user)
     end
 
     context 'using oidc' do
       it 'does not count second IAL1 auth at same sp' do
         visit_idp_from_ial1_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial1_count_only(client_id_1)
 
         visit_idp_from_ial1_oidc_sp(client_id: client_id_1)
@@ -65,11 +65,14 @@ describe 'authorization count' do
 
       it 'counts step up from IAL1 to IAL2 after proofing' do
         visit_idp_from_ial1_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial1_count_only(client_id_1)
 
+        create(:profile, :active, :verified, :with_pii, user: user)
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
-        complete_proofing_steps
+        fill_in t('account.index.password'), with: user.password
+        click_submit_default
+        click_agree_and_continue
         expect_ial1_and_ial2_count(client_id_1)
       end
 
@@ -79,10 +82,12 @@ describe 'authorization count' do
         expect_ial1_count_only(client_id_1)
       end
 
-      it 'proofs user and counts IAL2 auth when ial2 strict is requested' do
+      it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
         visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
-        reproof_for_ial2_strict
+        fill_in t('account.index.password'), with: user.password
+        click_submit_default
         click_agree_and_continue
         expect_ial2_count_only(client_id_1)
       end
@@ -104,8 +109,11 @@ describe 'authorization count' do
         click_agree_and_continue
         expect_ial1_count_only(issuer_1)
 
+        create(:profile, :active, :verified, :with_pii, user: user)
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
-        complete_proofing_steps
+        fill_in t('account.index.password'), with: user.password
+        click_submit_default
+        click_agree_and_continue
         expect_ial1_and_ial2_count(issuer_1)
       end
 
@@ -130,6 +138,7 @@ describe 'authorization count' do
       end
 
       it 'counts IAL2 auth when ial2 strict is requested' do
+        create(:profile, :active, :verified, :with_pii, user: user)
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,
@@ -144,12 +153,15 @@ describe 'authorization count' do
             },
           },
         )
+        fill_in t('account.index.password'), with: user.password
+        click_submit_default
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
 
-      it 'proofs the user and counts IAL2 auth when ial2 strict is requested' do
+      it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        create(:profile, :active, :verified, :with_pii, :with_liveness, user: user)
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,
@@ -164,7 +176,8 @@ describe 'authorization count' do
             },
           },
         )
-        reproof_for_ial2_strict
+        fill_in t('account.index.password'), with: user.password
+        click_submit_default
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
@@ -173,15 +186,16 @@ describe 'authorization count' do
   end
 
   context 'an IAL2 user with an active session' do
+    let(:user) { create(:user, :proofed) }
+
     before do
-      create_ial2_user_from_sp(email)
-      reset_monthly_auth_count_and_login
+      reset_monthly_auth_count_and_login(user)
     end
 
     context 'using oidc' do
       it 'counts IAL1 auth at same sp' do
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial2_count_only(client_id_1)
 
         visit_idp_from_ial1_oidc_sp(client_id: client_id_1)
@@ -191,7 +205,7 @@ describe 'authorization count' do
 
       it 'does not count second IAL2 auth at same sp' do
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial2_count_only(client_id_1)
 
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
@@ -211,7 +225,7 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth at another sp' do
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial2_count_only(client_id_1)
 
         visit_idp_from_ial2_oidc_sp(client_id: client_id_2)
@@ -221,7 +235,7 @@ describe 'authorization count' do
 
       it 'counts IAL1 auth at another sp' do
         visit_idp_from_ial1_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial1_count_only(client_id_1)
 
         visit_idp_from_ial1_oidc_sp(client_id: client_id_2)
@@ -231,14 +245,14 @@ describe 'authorization count' do
 
       it 'counts IAL2 auth when ial max is requested' do
         visit_idp_from_ial_max_oidc_sp(client_id: client_id_1)
-        click_continue
+        click_agree_and_continue
         expect_ial2_count_only(client_id_1)
       end
 
-      it 're-proofs and counts IAL2 auth when ial2 strict is requested' do
+      it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
         visit_idp_from_ial2_strict_oidc_sp(client_id: client_id_1)
-        reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(client_id_1)
       end
@@ -315,8 +329,9 @@ describe 'authorization count' do
         expect_ial2_count_only(issuer_1)
       end
 
-      it 're-proofs and counts IAL2 auth when ial2 strict is requested' do
+      it 'counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+        user.active_profile.update(proofing_components: { liveness_check: 'vendor' })
         visit_saml_authn_request_url(
           overrides: {
             issuer: issuer_1,
@@ -331,7 +346,6 @@ describe 'authorization count' do
             },
           },
         )
-        reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
@@ -377,10 +391,10 @@ describe 'authorization count' do
     Db::MonthlySpAuthCount::SpMonthTotalAuthCounts.call(today, client_id, 1)
   end
 
-  def reset_monthly_auth_count_and_login
+  def reset_monthly_auth_count_and_login(user)
     MonthlySpAuthCount.delete_all
     SpReturnLog.delete_all
-    visit api_saml_logout2022_url
-    fill_in_credentials_and_submit(email, RequestHelper::VALID_PASSWORD)
+    visit api_saml_logout2022_path
+    sign_in_live_with_2fa(user)
   end
 end

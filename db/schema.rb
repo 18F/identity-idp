@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_28_141746) do
+ActiveRecord::Schema.define(version: 2022_04_22_193820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -170,6 +170,11 @@ ActiveRecord::Schema.define(version: 2022_04_28_141746) do
     t.integer "agreement_view_count", default: 0
     t.string "state"
     t.boolean "aamva"
+    t.datetime "verify_submit_at"
+    t.datetime "verify_phone_submit_at"
+    t.integer "verify_phone_submit_count", default: 0
+    t.datetime "document_capture_submit_at"
+    t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -509,6 +514,7 @@ ActiveRecord::Schema.define(version: 2022_04_28_141746) do
     t.boolean "allow_prompt_login", default: false
     t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
+    t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
     t.date "launch_date"
     t.string "iaa"
@@ -579,17 +585,12 @@ ActiveRecord::Schema.define(version: 2022_04_28_141746) do
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
     t.datetime "second_factor_locked_at"
-    t.datetime "locked_at"
-    t.integer "failed_attempts", default: 0
     t.datetime "phone_confirmed_at"
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
-    t.datetime "idv_attempted_at"
-    t.integer "idv_attempts", default: 0
     t.string "unique_session_id"
     t.string "email_fingerprint", default: "", null: false
     t.text "encrypted_email", default: "", null: false
-    t.string "attribute_cost"
     t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
     t.integer "totp_timestamp"

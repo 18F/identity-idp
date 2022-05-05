@@ -62,8 +62,7 @@ module SamlIdpLogoutConcern
   end
 
   def track_remote_logout_event
-    analytics.track_event(
-      Analytics::REMOTE_LOGOUT_INITIATED,
+    analytics.remote_logout_initiated(
       service_provider: saml_request&.issuer,
       saml_request_valid: valid_saml_request?,
     )

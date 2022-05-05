@@ -29,8 +29,6 @@ fr:
     edit_info:
       password: Changez votre mot de passe
       phone: Administrer les paramètres de votre téléphone
-    mfa_setup:
-      first_authentication_method: Vous avez ajouté votre première méthode d’authentification!
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer

@@ -278,9 +278,9 @@ describe('document-capture/components/acuant-capture', () => {
       await findByText('doc_auth.errors.camera.failed');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith({
-        label: 'IdV: Image capture failed',
-        payload: { field: 'test', error: 'Camera not supported' },
+      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'Camera not supported',
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -313,9 +313,9 @@ describe('document-capture/components/acuant-capture', () => {
       await findByText('doc_auth.errors.upload_error errors.messages.try_again');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith({
-        label: 'IdV: Image capture failed',
-        payload: { field: 'test', error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)' },
+      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'iOS 15 GPU Highwater failure (SEQUENCE_BREAK_CODE)',
       });
       await waitFor(() => document.activeElement === button);
 
@@ -355,9 +355,9 @@ describe('document-capture/components/acuant-capture', () => {
         expect(window.AcuantCameraUI.end).to.eventually.be.called(),
       ]);
       expect(container.querySelector('.full-screen')).to.be.null();
-      expect(addPageAction).to.have.been.calledWith({
-        label: 'IdV: Image capture failed',
-        payload: { field: 'test', error: 'User or system denied camera access' },
+      expect(addPageAction).to.have.been.calledWith('IdV: Image capture failed', {
+        field: 'test',
+        error: 'User or system denied camera access',
       });
       expect(document.activeElement).to.equal(button);
     });
@@ -573,27 +573,23 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('doc_auth.errors.glare.failed_short');
-      expect(addPageAction).to.have.been.calledWith({
-        key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: test image added',
-        payload: {
-          documentType: 'id',
-          mimeType: 'image/jpeg',
-          source: 'acuant',
-          dpi: 519,
-          moire: 99,
-          glare: 49,
-          height: 1104,
-          sharpnessScoreThreshold: sinon.match.number,
-          glareScoreThreshold: 50,
-          isAssessedAsBlurry: false,
-          isAssessedAsGlare: true,
-          assessment: 'glare',
-          sharpness: 100,
-          width: 1748,
-          attempt: sinon.match.number,
-          size: sinon.match.number,
-        },
+      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+        documentType: 'id',
+        mimeType: 'image/jpeg',
+        source: 'acuant',
+        dpi: 519,
+        moire: 99,
+        glare: 49,
+        height: 1104,
+        sharpnessScoreThreshold: sinon.match.number,
+        glareScoreThreshold: 50,
+        isAssessedAsBlurry: false,
+        isAssessedAsGlare: true,
+        assessment: 'glare',
+        sharpness: 100,
+        width: 1748,
+        attempt: sinon.match.number,
+        size: sinon.match.number,
       });
 
       expect(error).to.be.ok();
@@ -631,27 +627,23 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('doc_auth.errors.sharpness.failed_short');
-      expect(addPageAction).to.have.been.calledWith({
-        key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: test image added',
-        payload: {
-          documentType: 'id',
-          mimeType: 'image/jpeg',
-          source: 'acuant',
-          dpi: 519,
-          moire: 99,
-          glare: 100,
-          height: 1104,
-          sharpnessScoreThreshold: 50,
-          glareScoreThreshold: sinon.match.number,
-          isAssessedAsBlurry: true,
-          isAssessedAsGlare: false,
-          assessment: 'blurry',
-          sharpness: 49,
-          width: 1748,
-          attempt: sinon.match.number,
-          size: sinon.match.number,
-        },
+      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+        documentType: 'id',
+        mimeType: 'image/jpeg',
+        source: 'acuant',
+        dpi: 519,
+        moire: 99,
+        glare: 100,
+        height: 1104,
+        sharpnessScoreThreshold: 50,
+        glareScoreThreshold: sinon.match.number,
+        isAssessedAsBlurry: true,
+        isAssessedAsGlare: false,
+        assessment: 'blurry',
+        sharpness: 49,
+        width: 1748,
+        attempt: sinon.match.number,
+        size: sinon.match.number,
       });
 
       expect(error).to.be.ok();
@@ -742,27 +734,23 @@ describe('document-capture/components/acuant-capture', () => {
 
       fireEvent.click(button);
       await waitFor(() => !error.textContent);
-      expect(addPageAction).to.have.been.calledWith({
-        key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: test image added',
-        payload: {
-          documentType: 'id',
-          mimeType: 'image/jpeg',
-          source: 'acuant',
-          dpi: 519,
-          moire: 99,
-          glare: 100,
-          height: 1104,
-          sharpnessScoreThreshold: 50,
-          glareScoreThreshold: sinon.match.number,
-          isAssessedAsBlurry: true,
-          isAssessedAsGlare: false,
-          assessment: 'blurry',
-          sharpness: 49,
-          width: 1748,
-          attempt: sinon.match.number,
-          size: sinon.match.number,
-        },
+      expect(addPageAction).to.have.been.calledWith('IdV: test image added', {
+        documentType: 'id',
+        mimeType: 'image/jpeg',
+        source: 'acuant',
+        dpi: 519,
+        moire: 99,
+        glare: 100,
+        height: 1104,
+        sharpnessScoreThreshold: 50,
+        glareScoreThreshold: sinon.match.number,
+        isAssessedAsBlurry: true,
+        isAssessedAsGlare: false,
+        assessment: 'blurry',
+        sharpness: 49,
+        width: 1748,
+        attempt: sinon.match.number,
+        size: sinon.match.number,
       });
     });
 
@@ -1002,16 +990,13 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith({
-      label: 'IdV: test image added',
-      payload: {
-        height: sinon.match.number,
-        mimeType: 'image/jpeg',
-        source: 'upload',
-        width: sinon.match.number,
-        attempt: sinon.match.number,
-        size: sinon.match.number,
-      },
+    await expect(addPageAction).to.eventually.be.calledWith('IdV: test image added', {
+      height: sinon.match.number,
+      mimeType: 'image/jpeg',
+      source: 'upload',
+      width: sinon.match.number,
+      attempt: sinon.match.number,
+      size: sinon.match.number,
     });
   });
 
@@ -1045,26 +1030,17 @@ describe('document-capture/components/acuant-capture', () => {
     fireEvent.click(upload);
 
     expect(addPageAction).to.have.been.calledThrice();
-    expect(addPageAction.getCall(0)).to.have.been.calledWith({
-      label: 'IdV: test image clicked',
-      payload: {
-        source: 'placeholder',
-        isDrop: false,
-      },
+    expect(addPageAction.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+      source: 'placeholder',
+      isDrop: false,
     });
-    expect(addPageAction.getCall(1)).to.have.been.calledWith({
-      label: 'IdV: test image clicked',
-      payload: {
-        source: 'button',
-        isDrop: false,
-      },
+    expect(addPageAction.getCall(1)).to.have.been.calledWith('IdV: test image clicked', {
+      source: 'button',
+      isDrop: false,
     });
-    expect(addPageAction.getCall(2)).to.have.been.calledWith({
-      label: 'IdV: test image clicked',
-      payload: {
-        source: 'upload',
-        isDrop: false,
-      },
+    expect(addPageAction.getCall(2)).to.have.been.calledWith('IdV: test image clicked', {
+      source: 'upload',
+      isDrop: false,
     });
   });
 
@@ -1081,12 +1057,9 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.drop(input);
 
-    expect(addPageAction.getCall(0)).to.have.been.calledWith({
-      label: 'IdV: test image clicked',
-      payload: {
-        source: 'placeholder',
-        isDrop: true,
-      },
+    expect(addPageAction.getCall(0)).to.have.been.calledWith('IdV: test image clicked', {
+      source: 'placeholder',
+      isDrop: true,
     });
   });
 
@@ -1103,16 +1076,16 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith({
-      label: 'IdV: test image added',
-      payload: sinon.match({ attempt: 1 }),
-    });
+    await expect(addPageAction).to.eventually.be.calledWith(
+      'IdV: test image added',
+      sinon.match({ attempt: 1 }),
+    );
 
     uploadFile(input, validUpload);
 
-    await expect(addPageAction).to.eventually.be.calledWith({
-      label: 'IdV: test image added',
-      payload: sinon.match({ attempt: 2 }),
-    });
+    await expect(addPageAction).to.eventually.be.calledWith(
+      'IdV: test image added',
+      sinon.match({ attempt: 2 }),
+    );
   });
 });

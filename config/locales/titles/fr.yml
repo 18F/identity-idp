@@ -42,6 +42,7 @@ fr:
       review: Saisissez à nouveau votre mot de passe
     mfa_setup:
       first_authentication_method: Vous avez ajouté votre première méthode d’authentification!
+      multiple_authentication_methods_setup: Vous avez ajouté une %{method_count} méthode d’authentification!
     no_auth_option: Aucun message de connexion trouvé
     openid_connect:
       authorization: Autorisation OpenID Connect

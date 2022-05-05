@@ -1,5 +1,8 @@
 {
   "name": "@18f/identity-test-helpers",
   "private": true,
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "peerDependencies": {
+    "sinon": "^9.2.2"
+  }
 }

@@ -35,16 +35,20 @@ describe Users::BackupCodeSetupController do
   end
 
   context 'when user selects multiple mfas on account creation' do
-    it 'redirects to phone setup page' do
+    before do
+      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
+    end
+
+    it 'redirects to MFA confirmation page' do
       user = build(:user, :signed_up)
       stub_sign_in(user)
       codes = BackupCodeGenerator.new(user).create
       controller.user_session[:backup_codes] = codes
 
-      controller.user_session[:selected_mfa_options] = ['voice']
+      controller.user_session[:selected_mfa_options] = ['backup_code', 'voice']
       post :continue
 
-      expect(response).to redirect_to(phone_setup_url)
+      expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
     end
   end
 

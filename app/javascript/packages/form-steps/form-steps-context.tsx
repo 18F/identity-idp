@@ -7,6 +7,11 @@ interface FormStepsContextValue {
   isLastStep: boolean;
 
   /**
+   * Whether the current step is pending submission.
+   */
+  isSubmitting: boolean;
+
+  /**
    * Callback invoked when content is reset in a page transition.
    */
   onPageTransition: () => void;
@@ -14,6 +19,7 @@ interface FormStepsContextValue {
 
 const FormStepsContext = createContext({
   isLastStep: true,
+  isSubmitting: false,
   onPageTransition: () => {},
 } as FormStepsContextValue);
 

@@ -174,7 +174,7 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, result
+          'IdV: phone confirmation form', result
         )
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
@@ -204,7 +204,7 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, result
+          'IdV: phone confirmation form', result
         )
       end
 
@@ -313,10 +313,10 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+          'IdV: phone confirmation form', hash_including(:success)
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+          'IdV: phone confirmation vendor', result
         )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -365,13 +365,13 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+          'IdV: phone confirmation form', hash_including(:success)
         )
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+          'IdV: phone confirmation vendor', result
         )
         expect(response).to redirect_to idv_phone_path
 

@@ -89,17 +89,15 @@ describe('document-capture/context/capture-troubleshooting', () => {
     );
 
     expect(addPageAction).to.have.been.calledTwice();
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: Capture troubleshooting shown',
-      payload: { isAssessedAsGlare: false, isAssessedAsBlurry: false },
+    expect(addPageAction).to.have.been.calledWith('IdV: Capture troubleshooting shown', {
+      isAssessedAsGlare: false,
+      isAssessedAsBlurry: false,
     });
 
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
     await userEvent.click(tryAgainButton);
 
     expect(addPageAction.callCount).to.equal(4);
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: Capture troubleshooting dismissed',
-    });
+    expect(addPageAction).to.have.been.calledWith('IdV: Capture troubleshooting dismissed');
   });
 });

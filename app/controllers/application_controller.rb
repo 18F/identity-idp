@@ -393,7 +393,14 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_found
-    render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+    respond_to do |format|
+      format.json do
+        render json: { error: "The page you were looking for doesn't exist" }, status: :not_found
+      end
+      format.any do
+        render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+      end
+    end
   end
 
   def render_not_acceptable
@@ -401,7 +408,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_timeout(exception)
-    analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
+    analytics.response_timed_out(**analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
       NewRelic::Agent.notice_error(exception)
     end
@@ -419,6 +426,16 @@ class ApplicationController < ActionController::Base
       exception_message: exception.to_s,
       exception_class: exception.class.name,
     }
+  end
+
+  def add_sp_cost(token)
+    Db::SpCost::AddSpCost.call(
+      current_sp,
+      sp_session_ial,
+      token,
+      transaction_id: nil,
+      user: current_user,
+    )
   end
 
   def mobile?

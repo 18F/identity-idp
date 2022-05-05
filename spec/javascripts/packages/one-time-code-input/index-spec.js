@@ -2,7 +2,7 @@ import OneTimeCodeInput from '@18f/identity-one-time-code-input';
 import { waitFor, screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { expect } from 'chai';
-import { useSandbox } from '../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('OneTimeCodeInput', () => {
   const sandbox = useSandbox();

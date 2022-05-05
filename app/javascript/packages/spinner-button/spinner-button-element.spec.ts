@@ -1,16 +1,29 @@
-import sinon from 'sinon';
-import userEvent from '@testing-library/user-event';
-import { getByRole, fireEvent } from '@testing-library/dom';
-import { SpinnerButton } from '../../../app/javascript/packs/spinner-button';
+import baseUserEvent from '@testing-library/user-event';
+import { getByRole, fireEvent, screen } from '@testing-library/dom';
+import { useSandbox } from '@18f/identity-test-helpers';
+import './spinner-button-element';
+import type { SpinnerButtonElement } from './spinner-button-element';
 
-describe('SpinnerButton', () => {
-  let clock;
+describe('SpinnerButtonElement', () => {
+  const { clock } = useSandbox({ useFakeTimers: true });
+  const userEvent = baseUserEvent.setup({ advanceTimers: clock.tick });
 
   const longWaitDurationMs = 1000;
 
-  function createWrapper({ actionMessage, tagName = 'a' } = {}) {
+  interface WrapperOptions {
+    actionMessage?: string;
+
+    tagName?: string;
+
+    spinOnClick?: boolean;
+  }
+
+  function createWrapper({ actionMessage, tagName = 'a', spinOnClick }: WrapperOptions = {}) {
     document.body.innerHTML = `
-      <div class="spinner-button" data-long-wait-duration-ms="${longWaitDurationMs}">
+      <lg-spinner-button
+        long-wait-duration-ms="${longWaitDurationMs}"
+        ${spinOnClick === undefined ? '' : `spin-on-click="${spinOnClick}"`}
+      >
         <div class="spinner-button__content">
           ${tagName === 'a' ? '<a href="#">Click Me</a>' : '<input type="submit" value="Click Me">'}
           <span class="spinner-dots" aria-hidden="true">
@@ -20,32 +33,23 @@ describe('SpinnerButton', () => {
           </span>
         </div>
         ${
-          actionMessage &&
-          `<div
-            role="status"
-            data-message="${actionMessage}"
-            class="spinner-button__action-message usa-sr-only"></div>`
+          actionMessage
+            ? `<div
+                 role="status"
+                 data-message="${actionMessage}"
+                 class="spinner-button__action-message usa-sr-only"></div>`
+            : ''
         }
-      </div>`;
+      </lg-spinner-button>`;
 
-    return document.body.firstElementChild;
+    return document.body.firstElementChild as SpinnerButtonElement;
   }
-
-  beforeEach(() => {
-    clock = sinon.useFakeTimers();
-  });
-
-  afterEach(() => {
-    clock.restore();
-  });
 
   it('shows spinner on click', async () => {
     const wrapper = createWrapper();
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
-    await userEvent.click(button, { advanceTimers: clock.tick });
+    await userEvent.click(button);
 
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
   });
@@ -61,11 +65,9 @@ describe('SpinnerButton', () => {
     });
     document.body.appendChild(form);
     form.appendChild(wrapper);
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('button', { name: 'Click Me' });
 
-    await userEvent.type(button, '{Enter}', { advanceTimers: clock.tick });
+    await userEvent.type(button, '{Enter}');
     clock.tick(0);
 
     expect(submitted).to.be.true();
@@ -75,13 +77,11 @@ describe('SpinnerButton', () => {
   it('announces action message', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
-    await userEvent.click(button, { advanceTimers: clock.tick });
+    await userEvent.click(button);
 
     expect(status.textContent).to.equal('Verifying...');
     expect(status.classList.contains('usa-sr-only')).to.be.true();
@@ -90,13 +90,11 @@ describe('SpinnerButton', () => {
   it('shows action message visually after long delay', async () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
-    const { button } = spinnerButton.elements;
+    const button = screen.getByRole('link', { name: 'Click Me' });
 
     expect(status.textContent).to.be.empty();
 
-    await userEvent.click(button, { advanceTimers: clock.tick });
+    await userEvent.click(button);
     clock.tick(longWaitDurationMs - 1);
     expect(status.classList.contains('usa-sr-only')).to.be.true();
     clock.tick(1);
@@ -105,12 +103,19 @@ describe('SpinnerButton', () => {
 
   it('supports external dispatched events to control spinner', () => {
     const wrapper = createWrapper();
-    const spinnerButton = new SpinnerButton(wrapper);
-    spinnerButton.bind();
 
     fireEvent(wrapper, new window.CustomEvent('spinner.start'));
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
     fireEvent(wrapper, new window.CustomEvent('spinner.stop'));
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
+  });
+
+  it('supports disabling default spin on click behavior', async () => {
+    const wrapper = createWrapper({ spinOnClick: false });
+    const button = screen.getByRole('link', { name: 'Click Me' });
+
+    await userEvent.click(button);
+
     expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
   });
 });

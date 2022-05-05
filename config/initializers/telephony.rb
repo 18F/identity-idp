@@ -23,6 +23,7 @@ Telephony.config do |c|
       sms.application_id = sms_json_config['application_id']
       sms.region = sms_json_config['region']
       sms.shortcode = sms_json_config['shortcode']
+      sms.country_code_longcode_pool = sms_json_config['country_code_longcode_pool'] || {}
       sms.credential_role_arn = sms_json_config['credential_role_arn']
       if sms_json_config['credential_role_arn'].present?
         sms.credential_role_session_name = Socket.gethostname
