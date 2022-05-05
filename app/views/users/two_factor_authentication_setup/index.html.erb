@@ -32,10 +32,8 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <% if IdentityConfig.store.select_multiple_mfa_options %>
-            <%= render MfaSelectionComponent.new(
-                  form: f,
-                  option: option,
-                ) %>
+            <%= render partial: 'mfa_selection_component',
+                       locals: { form: f, option: option } %>
           <% else %>
             <%= radio_button_tag(
                   'two_factor_options_form[selection]',
@@ -67,3 +65,4 @@
 <%= render 'shared/cancel', link: destroy_user_session_path %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
+<%= javascript_packs_tag_once('mfa_selection_component') %>
