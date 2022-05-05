@@ -156,12 +156,9 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('logs', () => {
-          expect(addPageAction).to.have.been.calledWith({
-            label: 'IdV: Acuant SDK loaded',
-            payload: {
-              success: true,
-              isCameraSupported: true,
-            },
+          expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+            success: true,
+            isCameraSupported: true,
           });
         });
       });
@@ -179,12 +176,9 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('logs', () => {
-          expect(addPageAction).to.have.been.calledWith({
-            label: 'IdV: Acuant SDK loaded',
-            payload: {
-              success: true,
-              isCameraSupported: false,
-            },
+          expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+            success: true,
+            isCameraSupported: false,
           });
         });
       });
@@ -219,13 +213,10 @@ describe('document-capture/context/acuant', () => {
       });
 
       it('logs', () => {
-        expect(addPageAction).to.have.been.calledWith({
-          label: 'IdV: Acuant SDK loaded',
-          payload: {
-            success: false,
-            code: sinon.match.number,
-            description: sinon.match.string,
-          },
+        expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+          success: false,
+          code: sinon.match.number,
+          description: sinon.match.string,
         });
       });
     });

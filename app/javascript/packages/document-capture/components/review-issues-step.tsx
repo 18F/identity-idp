@@ -2,8 +2,9 @@ import { useContext, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
-import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsContext, FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
+import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
@@ -15,34 +16,47 @@ import StartOverOrCancel from './start-over-or-cancel';
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 
-/**
- * @typedef {'front'|'back'} DocumentSide
- */
+type DocumentSide = 'front' | 'back';
 
-/**
- * @typedef ReviewIssuesStepValue
- *
- * @prop {Blob|string|null|undefined} front Front image value.
- * @prop {Blob|string|null|undefined} back Back image value.
- * @prop {Blob|string|null|undefined} selfie Back image value.
- * @prop {string=} front_image_metadata Front image metadata.
- * @prop {string=} back_image_metadata Back image metadata.
- */
+interface ReviewIssuesStepValue {
+  /**
+   * Front image value.
+   */
+  front: Blob | string | null | undefined;
+
+  /**
+   * Back image value.
+   */
+  back: Blob | string | null | undefined;
+
+  /**
+   * Back image value.
+   */
+  selfie: Blob | string | null | undefined;
+
+  /**
+   * Front image metadata.
+   */
+  front_image_metadata?: string;
+
+  /**
+   * Back image metadata.
+   */
+  back_image_metadata?: string;
+}
+
+interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
+  remainingAttempts: number;
+  captureHints: boolean;
+}
 
 /**
  * Sides of document to present as file input.
- *
- * @type {DocumentSide[]}
  */
-const DOCUMENT_SIDES = ['front', 'back'];
+const DOCUMENT_SIDES: DocumentSide[] = ['front', 'back'];
+
 const DISPLAY_ATTEMPTS = 3;
 
-/**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<ReviewIssuesStepValue> & {
- *  remainingAttempts: number,
- *  captureHints: boolean,
- * }} props Props object.
- */
 function ReviewIssuesStep({
   value = {},
   onChange = () => {},
@@ -52,7 +66,7 @@ function ReviewIssuesStep({
   registerField = () => undefined,
   remainingAttempts,
   captureHints,
-}) {
+}: ReviewIssuesStepProps) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
@@ -63,7 +77,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   function onWarningPageDismissed() {
-    addPageAction({ label: 'IdV: Capture troubleshooting dismissed' });
+    addPageAction('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
   }
@@ -135,7 +149,7 @@ function ReviewIssuesStep({
           )}
         </>
       )}
-      <FormStepsContinueButton />
+      <FormStepsButton.Submit />
       <DocumentCaptureTroubleshootingOptions />
       <StartOverOrCancel />
     </>
@@ -155,7 +169,7 @@ function ReviewIssuesStep({
     >
       {!!unknownFieldErrors &&
         unknownFieldErrors
-          .filter((error) => !['front', 'back', 'selfie'].includes(error.field))
+          .filter((error) => !['front', 'back', 'selfie'].includes(error.field!))
           .map(({ error }) => <p key={error.message}>{error.message}</p>)}
 
       {remainingAttempts <= DISPLAY_ATTEMPTS && (

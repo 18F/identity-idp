@@ -28,16 +28,13 @@ function CaptureTroubleshooting({ children }) {
   const { isAssessedAsGlare, isAssessedAsBlurry } = lastAttemptMetadata;
 
   function onCaptureTipsShown() {
-    addPageAction({
-      label: 'IdV: Capture troubleshooting shown',
-      payload: lastAttemptMetadata,
-    });
+    addPageAction('IdV: Capture troubleshooting shown', lastAttemptMetadata);
 
     onPageTransition();
   }
 
   function onCaptureTipsDismissed() {
-    addPageAction({ label: 'IdV: Capture troubleshooting dismissed' });
+    addPageAction('IdV: Capture troubleshooting dismissed');
 
     setDidShowTroubleshooting(true);
   }

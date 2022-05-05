@@ -33,7 +33,9 @@ module Idv
       update_tracking
       idv_session.address_verification_mechanism = :gpo
 
-      if current_user.decorate.pending_profile_requires_verification?
+      if current_user.decorate.pending_profile_requires_verification? && pii_locked?
+        redirect_to capture_password_url
+      elsif current_user.decorate.pending_profile_requires_verification?
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -262,6 +264,10 @@ module Idv
       flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
       ProofingSessionAsyncResult.missing
+    end
+
+    def pii_locked?
+      !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
   end
 end

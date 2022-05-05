@@ -27,6 +27,18 @@ describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
+      context 'allowlisted analytics event' do
+        let(:event) { 'IdV: personal key visited' }
+
+        it 'succeeds' do
+          action
+
+          expect(fake_analytics).to have_logged_event('IdV: personal key visited')
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
+      end
+
       context 'empty payload' do
         let(:payload) { {} }
 

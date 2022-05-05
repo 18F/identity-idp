@@ -5,7 +5,7 @@ import {
   MAX_DOC_CAPTURE_POLL_ATTEMPTS,
   DOC_CAPTURE_POLL_INTERVAL,
 } from '@18f/identity-document-capture-polling';
-import { useSandbox } from '../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('DocumentCapturePolling', () => {
   const sandbox = useSandbox({ useFakeTimers: true });

@@ -31,7 +31,7 @@ module Idv
 
     def create
       result = idv_form.submit(step_params)
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
+      analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       flash[:error] = result.first_error_message if !result.success?
       return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
       submit_proofing_attempt
@@ -117,9 +117,8 @@ module Idv
     def async_state_done(async_state)
       form_result = step.async_state_done(async_state)
 
-      analytics.track_event(
-        Analytics::IDV_PHONE_CONFIRMATION_VENDOR,
-        form_result.to_h.merge(
+      analytics.idv_phone_confirmation_vendor_submitted(
+        **form_result.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],
             [:context, :stages, :address],

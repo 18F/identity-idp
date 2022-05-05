@@ -1,12 +1,13 @@
 import { Button } from '@18f/identity-components';
-import { FormStepsContext, FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import { t } from '@18f/identity-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { Modal } from '@18f/identity-modal';
 import { getAssetPath } from '@18f/identity-assets';
+import { trackEvent } from '@18f/identity-analytics';
 import PersonalKeyStep from '../personal-key/personal-key-step';
 import PersonalKeyInput from './personal-key-input';
-import type { VerifyFlowValues } from '../..';
+import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
@@ -14,12 +15,15 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   const { registerField, value, onChange, toPreviousStep } = stepProps;
   const personalKey = value.personalKey!;
 
+  const closeModalActions = () => {
+    trackEvent('IdV: hide personal key modal');
+    toPreviousStep();
+  };
+
   return (
     <>
-      <FormStepsContext.Provider value={{ isLastStep: false, onPageTransition() {} }}>
-        <PersonalKeyStep {...stepProps} />
-      </FormStepsContext.Provider>
-      <Modal onRequestClose={toPreviousStep}>
+      <PersonalKeyStep {...stepProps} />
+      <Modal onRequestClose={closeModalActions}>
         <div className="pin-top pin-x display-flex flex-column flex-align-center top-neg-3">
           <img alt="" height="60" width="60" src={getAssetPath('p-key.svg')} />
         </div>
@@ -37,15 +41,15 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
           />
           <div className="grid-row grid-gap margin-top-5">
             <div className="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 tablet:display-none">
-              <FormStepsContinueButton className="margin-y-0" />
+              <FormStepsButton.Continue className="margin-y-0" />
             </div>
             <div className="grid-col-12 tablet:grid-col-6">
-              <Button isBig isWide isOutline onClick={toPreviousStep}>
+              <Button isBig isWide isOutline onClick={closeModalActions}>
                 {t('forms.buttons.back')}
               </Button>
             </div>
             <div className="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 display-none tablet:display-block">
-              <FormStepsContinueButton className="margin-y-0" />
+              <FormStepsButton.Continue className="margin-y-0" />
             </div>
           </div>
         </form>

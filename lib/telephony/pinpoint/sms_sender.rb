@@ -38,7 +38,7 @@ module Telephony
                 sms_message: {
                   body: message,
                   message_type: 'TRANSACTIONAL',
-                  origination_number: sms_config.shortcode,
+                  origination_number: origination_number(country_code, sms_config),
                   sender_id: Telephony.config.country_sender_ids[country_code.to_s],
                 },
               },
@@ -133,6 +133,14 @@ module Telephony
           retry_limit: 0,
           credentials: credentials,
         )
+      end
+
+      def origination_number(country_code, sms_config)
+        if sms_config.country_code_longcode_pool&.dig(country_code).present?
+          sms_config.country_code_longcode_pool[country_code].sample
+        else
+          sms_config.shortcode
+        end
       end
 
       private

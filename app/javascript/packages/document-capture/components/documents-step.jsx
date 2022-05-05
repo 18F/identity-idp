@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
@@ -41,6 +41,7 @@ function DocumentsStep({
 }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
+  const { isLastStep } = useContext(FormStepsContext);
 
   return (
     <CaptureTroubleshooting>
@@ -64,7 +65,7 @@ function DocumentsStep({
           onError={onError}
         />
       ))}
-      <FormStepsContinueButton />
+      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
       <StartOverOrCancel />
     </CaptureTroubleshooting>

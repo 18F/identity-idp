@@ -1,9 +1,10 @@
 module Db
   module Identity
     class SpActiveUserCounts
-      def self.call(start)
+      def self.call(start, finish = Time.zone.now)
         params = {
           start: ActiveRecord::Base.connection.quote(start),
+          finish: ActiveRecord::Base.connection.quote(finish),
         }
         sql = format(<<~SQL, params)
           SELECT
@@ -17,7 +18,7 @@ module Db
               count(*) AS total_ial1_active,
               0 AS total_ial2_active
             FROM identities
-            WHERE %{start} <= last_ial1_authenticated_at
+            WHERE %{start} <= last_ial1_authenticated_at AND last_ial1_authenticated_at <= %{finish}
             GROUP BY issuer ORDER BY issuer)
             UNION
             (SELECT
@@ -25,7 +26,7 @@ module Db
               0 AS total_ial1_active,
               count(*) AS total_ial2_active
             FROM identities
-            WHERE %{start} <= last_ial2_authenticated_at
+            WHERE %{start} <= last_ial2_authenticated_at AND last_ial2_authenticated_at <= %{finish}
             GROUP BY issuer ORDER BY issuer)
           ) AS union_of_ial1_and_ial2_results, service_providers
           WHERE union_of_ial1_and_ial2_results.issuer = service_providers.issuer

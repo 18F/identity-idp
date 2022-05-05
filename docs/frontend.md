@@ -44,12 +44,12 @@ identify issues in your code as you write.
 
 ### At a Glance
 
-- Site should work if JS is off (and have enhanced features if JS is on).
-- Uses AirBnB's ESLint config, alongside [Prettier](https://prettier.io/).
-- JS modules are installed & managed via `yarn` (see `package.json`).
-- JS is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/).
-- Reusable code is organized using
-  [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
+- All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
+- The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
+- The code follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- Code styling is formatted automatically using [Prettier](https://prettier.io/)
+- Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
+- JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
 ### Prettier
 
