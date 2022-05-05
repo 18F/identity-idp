@@ -4,7 +4,7 @@ module Api
       def create
         result, personal_key = Api::ProfileCreationForm.new(
           password: verify_params[:password],
-          jwt: verify_params[:details],
+          jwt: verify_params[:user_bundle_token],
           user_session: user_session,
           service_provider: current_sp,
         ).submit
@@ -23,7 +23,7 @@ module Api
       private
 
       def verify_params
-        params.permit(:password, :details)
+        params.permit(:password, :user_bundle_token)
       end
 
       def add_proofing_component(user)

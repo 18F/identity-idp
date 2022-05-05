@@ -46,7 +46,7 @@ describe Api::Verify::CompleteController do
   describe '#create' do
     context 'when the user is not signed in and submits the password' do
       it 'does not create a profile or return a key' do
-        post :create, params: { password: 'iambatman', details: jwt }
+        post :create, params: { password: 'iambatman', user_bundle_token: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
         expect(response.status).to eq 401
         expect(JSON.parse(response.body)['error']).to eq 'user is not fully authenticated'
@@ -59,13 +59,13 @@ describe Api::Verify::CompleteController do
       end
 
       it 'creates a profile and returns a key' do
-        post :create, params: { password: 'iambatman', details: jwt }
+        post :create, params: { password: 'iambatman', user_bundle_token: jwt }
         expect(JSON.parse(response.body)['personal_key']).not_to be_nil
         expect(response.status).to eq 200
       end
 
       it 'does not create a profile and return a key when it has the wrong password' do
-        post :create, params: { password: 'iamnotbatman', details: jwt }
+        post :create, params: { password: 'iamnotbatman', user_bundle_token: jwt }
         expect(JSON.parse(response.body)['personal_key']).to be_nil
         expect(response.status).to eq 400
       end
@@ -77,7 +77,7 @@ describe Api::Verify::CompleteController do
       end
 
       it 'responds with not found' do
-        post :create, params: { password: 'iambatman', details: jwt }, as: :json
+        post :create, params: { password: 'iambatman', user_bundle_token: jwt }, as: :json
         expect(response.status).to eq 404
         expect(JSON.parse(response.body)['error']).
           to eq "The page you were looking for doesn't exist"

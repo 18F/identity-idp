@@ -10,6 +10,24 @@ export interface VerifyFlowValues {
   personalKey?: string;
 
   personalKeyConfirm?: string;
+
+  firstName?: string;
+
+  lastName?: string;
+
+  address1?: string;
+
+  address2?: string;
+
+  city?: string;
+
+  state?: string;
+
+  zipcode?: string;
+
+  phone?: string;
+
+  ssn?: string;
 }
 
 interface VerifyFlowProps {

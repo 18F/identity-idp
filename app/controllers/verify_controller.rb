@@ -21,7 +21,10 @@ class VerifyController < ApplicationController
       base_path: idv_app_root_path,
       app_name: APP_NAME,
       completion_url: completion_url,
-      initial_values: { 'personalKey' => personal_key },
+      initial_values: {
+        'personalKey' => personal_key,
+        'userBundleToken' => user_bundle_token,
+      },
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: user_session[:idv_api_store_key],
     }
@@ -50,5 +53,12 @@ class VerifyController < ApplicationController
     else
       after_sign_in_path_for(current_user)
     end
+  end
+
+  def user_bundle_token
+    Idv::UserBundleTokenizer.new(
+      user: current_user,
+      idv_session: idv_session,
+    ).token
   end
 end

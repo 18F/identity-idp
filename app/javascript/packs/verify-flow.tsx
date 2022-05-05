@@ -32,6 +32,11 @@ interface AppRootValues {
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
+
+  /**
+   * Signed JWT containing user data.
+   */
+  userBundleToken: string;
 }
 
 interface AppRootElement extends HTMLElement {
@@ -50,6 +55,15 @@ const {
 const storeKey = s2ab(atob(storeKeyBase64));
 const initialValues = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
+
+const camelCase = (string: string) =>
+  string.replace(/[^a-z]([a-z])/gi, (_match, nextLetter) => nextLetter.toUpperCase());
+
+const jwtData = JSON.parse(atob(initialValues.userBundleToken.split('.')[1]));
+const pii = Object.fromEntries(
+  Object.entries(jwtData.pii).map(([key, value]) => [camelCase(key), value]),
+);
+Object.assign(initialValues, pii);
 
 function onComplete() {
   window.location.href = completionURL;
