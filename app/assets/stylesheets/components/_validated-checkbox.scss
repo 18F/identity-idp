@@ -4,18 +4,4 @@
     border-color: color('secondary');
     border-width: 2px;
   }
-
-  .checkbox__alert {
-    color: color('secondary');
-    background: none;
-    font-weight: 700;
-
-    .usa-alert__body {
-      padding-left: 1.5rem;
-    }
-  }
-
-  .checkbox__alert:before {
-    left: 0;
-  }
 }

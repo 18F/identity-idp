@@ -10,7 +10,7 @@
   <%= label_tag(
         "two_factor_options_form_selection_#{option.type}",
         class: [
-          option.type === 'phone' && flash[:phone_error] && 'checkbox__invalid',
+          option.type == 'phone' && flash[:phone_error] && 'checkbox__invalid',
           'usa-checkbox__label',
           'usa-checkbox__label--illustrated',
         ].select(&:present?).join(' '),
@@ -22,7 +22,9 @@
               </span>
             </div>
       <% end %>
-      <% if option.type === "phone" && flash[:phone_error] %>
-          <%= render AlertComponent.new(type: :error, id: 'phone_error', class: 'margin-bottom-1 margin-top-neg-1 checkbox__alert', message: flash[:phone_error]) %>
+      <% if option.type == "phone" && flash[:phone_error] %>
+          <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
+          <%= flash[:phone_error] %>
       <% end %>
 </div>
+<%= javascript_packs_tag_once('mfa_selection_component') %>
