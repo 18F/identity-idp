@@ -9,7 +9,7 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
     end
 
-    def create
+    def update
       result = submit_form
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
 

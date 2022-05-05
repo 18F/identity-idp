@@ -1,17 +1,16 @@
 require 'rails_helper'
 
 describe Users::MfaSelectionController do
-  let(:current_sp) { create(:service_provider) }
-
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     user = build(:user, :signed_up)
     stub_sign_in(user)
   end
+  let(:current_sp) { create(:service_provider) }
 
   describe 'GET index' do
-    context 'when fully authenticated but not MFA enabled' do
-      it 'allows access' do
+    context 'when the user is using one authenticator option' do
+      it 'shows the mfa setup screen' do
         controller.user_session[:selected_mfa_options] = ['backup_code']
 
         get :index
@@ -21,7 +20,7 @@ describe Users::MfaSelectionController do
     end
   end
 
-  xdescribe 'PATCH create' do
+  describe 'Submitting the form' do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
       stub_sign_in_before_2fa(user)
@@ -41,14 +40,14 @@ describe Users::MfaSelectionController do
         and_return(response)
       expect(form).to receive(:selection).and_return(['voice'])
 
-      patch :create, params: voice_params
+      patch :update, params: voice_params
     end
 
     context 'when the selection is phone' do
       it 'redirects to phone setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'phone',
           },
@@ -61,7 +60,7 @@ describe Users::MfaSelectionController do
     context 'when multi selection with phone first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: ['phone', 'auth_app'],
           },
@@ -74,7 +73,7 @@ describe Users::MfaSelectionController do
     context 'when multi selection with auth app first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: ['auth_app', 'phone', 'webauthn'],
           },
@@ -88,7 +87,7 @@ describe Users::MfaSelectionController do
       it 'redirects to authentication app setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'auth_app',
           },
@@ -102,7 +101,7 @@ describe Users::MfaSelectionController do
       it 'redirects to webauthn setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'webauthn',
           },
@@ -116,7 +115,7 @@ describe Users::MfaSelectionController do
       it 'redirects to webauthn setup page with the platform param' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'webauthn_platform',
           },
@@ -130,7 +129,7 @@ describe Users::MfaSelectionController do
       it 'redirects to piv/cac setup page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'piv_cac',
           },
@@ -144,7 +143,7 @@ describe Users::MfaSelectionController do
       it 'renders index page' do
         stub_sign_in_before_2fa
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'foo',
           },
