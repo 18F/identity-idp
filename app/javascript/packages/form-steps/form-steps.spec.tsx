@@ -586,4 +586,10 @@ describe('FormSteps', () => {
 
     expect(getByText('First Title')).to.be.ok();
   });
+
+  it('supports starting at a specific step', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+
+    expect(getByText('Second Title')).to.be.ok();
+  });
 });

@@ -8,8 +8,8 @@ describe('useHistoryParam', () => {
   const sandbox = sinon.createSandbox();
   const defineProperty = useDefineProperty();
 
-  function TestComponent({ basePath }: { basePath?: string }) {
-    const [count = 0, setCount] = useHistoryParam({ basePath });
+  function TestComponent({ initialValue, basePath }: { initialValue?: string; basePath?: string }) {
+    const [count = 0, setCount] = useHistoryParam(initialValue, { basePath });
 
     return (
       <>
@@ -133,13 +133,20 @@ describe('useHistoryParam', () => {
             },
           });
 
-          sandbox.stub(window.history, 'pushState').callsFake((_data, _unused, url) => {
-            history.push(url as string);
-          });
-          sandbox.stub(window.history, 'back').callsFake(() => {
-            history.pop();
-            window.dispatchEvent(new CustomEvent('popstate'));
-          });
+          sandbox.stub(window, 'history').value(
+            Object.assign(history, {
+              pushState(_data, _unused, url: string) {
+                history.push(url as string);
+              },
+              replaceState(_data, _unused, url: string) {
+                history[history.length - 1] = url as string;
+              },
+              back() {
+                history.pop();
+                window.dispatchEvent(new CustomEvent('popstate'));
+              },
+            }),
+          );
         });
 
         it('returns undefined value', () => {
@@ -187,9 +194,26 @@ describe('useHistoryParam', () => {
           expect(await findByDisplayValue('0')).to.be.ok();
           expect(window.location.pathname).to.equal(basePath);
         });
+
+        context('with initial provided value', () => {
+          it('returns initial value', () => {
+            const { getByDisplayValue } = render(
+              <TestComponent initialValue="1" basePath={basePath} />,
+            );
+
+            expect(getByDisplayValue('1')).to.be.ok();
+          });
+
+          it('syncs to URL', () => {
+            render(<TestComponent initialValue="1" basePath={basePath} />);
+
+            expect(window.location.pathname).to.equal('/base/1');
+            expect(window.history.length).to.equal(1);
+          });
+        });
       });
 
-      context('with initial value', () => {
+      context('with initial URL value', () => {
         beforeEach(() => {
           defineProperty(window, 'location', {
             value: {
@@ -207,7 +231,7 @@ describe('useHistoryParam', () => {
         });
       });
 
-      context('with initial value, no trailing slash', () => {
+      context('with initial URL value, no trailing slash', () => {
         beforeEach(() => {
           defineProperty(window, 'location', {
             value: {

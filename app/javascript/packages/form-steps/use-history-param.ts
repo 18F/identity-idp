@@ -16,16 +16,16 @@ interface HistoryOptions {
  *
  * @return Tuple of current state, state setter.
  */
-function useHistoryParam({ basePath }: HistoryOptions = {}): [
-  string | undefined,
-  (nextParamValue?: string) => void,
-] {
+function useHistoryParam(
+  initialValue?: string,
+  { basePath }: HistoryOptions = {},
+): [string | undefined, (nextParamValue?: string) => void] {
   const getCurrentValue = () =>
     (typeof basePath === 'string'
       ? window.location.pathname.split(basePath)[1]?.replace(/^\/|\/$/g, '')
       : window.location.hash.slice(1)) || undefined;
 
-  const [value, setValue] = useState(getCurrentValue);
+  const [value, setValue] = useState(initialValue ?? getCurrentValue);
 
   function getValueURL(nextValue) {
     const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
@@ -46,6 +46,10 @@ function useHistoryParam({ basePath }: HistoryOptions = {}): [
   }
 
   useEffect(() => {
+    if (initialValue && initialValue !== getCurrentValue()) {
+      window.history.replaceState(null, '', getValueURL(initialValue));
+    }
+
     const syncValue = () => setValue(getCurrentValue());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
