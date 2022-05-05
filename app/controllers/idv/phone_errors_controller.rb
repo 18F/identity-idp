@@ -49,7 +49,7 @@ module Idv
 
     # rubocop:disable Naming/MemoizedInstanceVariableName
     def set_gpo_letter_available
-      @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+      @gpo_letter_available &&= FeatureManagement.enable_gpo_verification? &&
                                 !Idv::GpoMail.new(current_user).mail_spammed? &&
                                 !(sp_session[:ial2_strict] &&
                                   !IdentityConfig.store.gpo_allowed_for_strict_ial2)
