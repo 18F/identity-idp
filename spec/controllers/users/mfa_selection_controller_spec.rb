@@ -1,62 +1,29 @@
 require 'rails_helper'
 
 describe Users::MfaSelectionController do
+  before do
+    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+    user = build(:user, :signed_up)
+    stub_sign_in(user)
+  end
+  let(:current_sp) { create(:service_provider) }
+
   describe 'GET index' do
-    it 'tracks the visit in analytics' do
-      stub_sign_in
-      stub_analytics
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_2FA_ADDITIONAL_SETUP_VISIT)
-
-      get :index
-    end
-
-    context 'when signed out' do
-      it 'redirects to sign in page' do
-        get :index
-
-        expect(response).to redirect_to(new_user_session_url)
-      end
-    end
-
-    context 'when fully authenticated and MFA enabled' do
-      it 'loads the account page' do
-        user = build(:user, :signed_up)
-        stub_sign_in(user)
-
-        get :index
-
-        expect(response).to redirect_to(account_url)
-      end
-    end
-
-    context 'when fully authenticated but not MFA enabled' do
-      it 'allows access' do
-        stub_sign_in
+    context 'when the user is using one authenticator option' do
+      it 'shows the mfa setup screen' do
+        controller.user_session[:selected_mfa_options] = ['backup_code']
 
         get :index
 
         expect(response).to render_template(:index)
       end
     end
-
-    context 'already two factor enabled but not fully authenticated' do
-      it 'prompts for 2FA' do
-        user = build(:user, :signed_up)
-        stub_sign_in_before_2fa(user)
-
-        get :index
-
-        expect(response).to redirect_to(user_two_factor_authentication_url)
-      end
-    end
   end
 
-  describe 'PATCH create' do
+  describe 'Submitting the form' do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
-      stub_sign_in_before_2fa(user)
+      stub_sign_in(user)
 
       voice_params = {
         two_factor_options_form: {
@@ -73,34 +40,14 @@ describe Users::MfaSelectionController do
         and_return(response)
       expect(form).to receive(:selection).and_return(['voice'])
 
-      patch :create, params: voice_params
-    end
-
-    it 'tracks analytics event' do
-      stub_sign_in_before_2fa
-      stub_analytics
-
-      result = {
-        selection: ['voice'],
-        success: true,
-        errors: {},
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_2FA_SETUP, result)
-
-      patch :create, params: {
-        two_factor_options_form: {
-          selection: 'voice',
-        },
-      }
+      patch :update, params: voice_params
     end
 
     context 'when the selection is phone' do
       it 'redirects to phone setup page' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'phone',
           },
@@ -113,7 +60,7 @@ describe Users::MfaSelectionController do
     context 'when multi selection with phone first' do
       it 'redirects properly' do
         stub_sign_in_before_2fa
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: ['phone', 'auth_app'],
           },
@@ -125,8 +72,8 @@ describe Users::MfaSelectionController do
 
     context 'when multi selection with auth app first' do
       it 'redirects properly' do
-        stub_sign_in_before_2fa
-        patch :create, params: {
+        stub_sign_in
+        patch :update, params: {
           two_factor_options_form: {
             selection: ['auth_app', 'phone', 'webauthn'],
           },
@@ -138,9 +85,9 @@ describe Users::MfaSelectionController do
 
     context 'when the selection is auth_app' do
       it 'redirects to authentication app setup page' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'auth_app',
           },
@@ -152,9 +99,9 @@ describe Users::MfaSelectionController do
 
     context 'when the selection is webauthn' do
       it 'redirects to webauthn setup page' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'webauthn',
           },
@@ -166,9 +113,9 @@ describe Users::MfaSelectionController do
 
     context 'when the selection is webauthn platform authenticator' do
       it 'redirects to webauthn setup page with the platform param' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'webauthn_platform',
           },
@@ -180,9 +127,9 @@ describe Users::MfaSelectionController do
 
     context 'when the selection is piv_cac' do
       it 'redirects to piv/cac setup page' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'piv_cac',
           },
@@ -194,9 +141,9 @@ describe Users::MfaSelectionController do
 
     context 'when the selection is not valid' do
       it 'renders index page' do
-        stub_sign_in_before_2fa
+        stub_sign_in
 
-        patch :create, params: {
+        patch :update, params: {
           two_factor_options_form: {
             selection: 'foo',
           },

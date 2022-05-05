@@ -86,6 +86,10 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} missing **extra"
       end
 
+      if method_object.signature.end_with?('*)')
+        errors << "#{error_prefix} don't use * as an argument, remove all args or name args"
+      end
+
       errors
     end
   end

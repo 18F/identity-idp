@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsContinueButton } from '@18f/identity-form-steps';
+import { FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
@@ -58,7 +58,7 @@ function SelfieStep({
           errorMessage={error?.message}
         />
       )}
-      <FormStepsContinueButton />
+      <FormStepsButton.Submit />
       <StartOverOrCancel />
     </>
   );
