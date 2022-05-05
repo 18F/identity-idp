@@ -152,6 +152,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_proofing_steps
     complete_all_doc_auth_steps
     click_continue
+    expect(page).to have_current_path(idv_review_path, wait: 10)
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
     acknowledge_and_confirm_personal_key
