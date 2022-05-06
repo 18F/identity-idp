@@ -54,7 +54,7 @@ feature 'SP Costing', :email do
     fill_in_code_with_last_phone_otp
     click_submit_default
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key

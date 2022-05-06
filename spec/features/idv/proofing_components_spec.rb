@@ -21,8 +21,7 @@ RSpec.describe 'proofing components' do
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
       complete_all_doc_auth_steps
-      click_continue
-      expect(page).to have_current_path('/verify/review', wait: 5)
+      click_idv_continue
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
       acknowledge_and_confirm_personal_key

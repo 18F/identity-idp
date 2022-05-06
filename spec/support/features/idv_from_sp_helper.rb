@@ -11,7 +11,7 @@ module IdvFromSpHelper
     visit_idp_from_sp_with_ial2(:oidc, **options)
     register_user(email)
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key
@@ -20,7 +20,7 @@ module IdvFromSpHelper
 
   def reproof_for_ial2_strict
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key
