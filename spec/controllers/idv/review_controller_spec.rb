@@ -293,6 +293,27 @@ describe Idv::ReviewController do
         allow(@analytics).to receive(:track_event)
       end
 
+      it 'redirects to personal key path' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: final resolution',
+          success: true,
+        )
+        expect(response).to redirect_to idv_personal_key_path
+      end
+
+      it 'redirects to confirmation path after user presses the back button' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(subject.user_session[:need_personal_key_confirmation]).to eq(true)
+
+        allow_any_instance_of(User).to receive(:active_profile).and_return(true)
+        get :new
+        expect(response).to redirect_to idv_personal_key_path
+      end
+
       it 'creates Profile with applicant attributes' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
@@ -303,32 +324,6 @@ describe Idv::ReviewController do
 
         expect(idv_session.applicant[:first_name]).to eq 'José'
         expect(pii.first_name).to eq 'José'
-      end
-
-      context 'with idv app personal key step disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
-        end
-
-        it 'redirects to personal key path' do
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-          expect(@analytics).to have_received(:track_event).with(
-            'IdV: final resolution',
-            success: true,
-          )
-          expect(response).to redirect_to idv_personal_key_path
-        end
-
-        it 'redirects to confirmation path after user presses the back button' do
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-          expect(subject.user_session[:need_personal_key_confirmation]).to eq(true)
-
-          allow_any_instance_of(User).to receive(:active_profile).and_return(true)
-          get :new
-          expect(response).to redirect_to idv_personal_key_path
-        end
       end
 
       context 'user picked phone confirmation' do
@@ -354,14 +349,17 @@ describe Idv::ReviewController do
           expect(disavowal_event_count).to eq 1
         end
 
-        it 'redirects to idv app personal key path' do
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        context 'with idv app personal key step enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+              and_return(['personal_key'])
+          end
 
-          expect(@analytics).to have_received(:track_event).with(
-            'IdV: final resolution',
-            success: true,
-          )
-          expect(response).to redirect_to idv_app_root_url
+          it 'redirects to idv app personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_app_root_url
+          end
         end
       end
 
@@ -379,14 +377,17 @@ describe Idv::ReviewController do
           expect(profile).to_not be_active
         end
 
-        it 'redirects to personal key path' do
-          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        context 'with idv api personal key step enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+              and_return(['personal_key'])
+          end
 
-          expect(@analytics).to have_received(:track_event).with(
-            'IdV: final resolution',
-            success: true,
-          )
-          expect(response).to redirect_to idv_personal_key_path
+          it 'redirects to personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_personal_key_path
+          end
         end
       end
     end
