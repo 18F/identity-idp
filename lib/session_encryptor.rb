@@ -53,6 +53,7 @@ class SessionEncryptor
 
   private
 
+  # PII stored in decrypted_pii is managed by Pii::Cacher.
   def kms_encrypt_pii!(session)
     return unless session.dig('warden.user.user.session', 'decrypted_pii')
     decrypted_pii = session['warden.user.user.session'].delete('decrypted_pii')
@@ -61,6 +62,10 @@ class SessionEncryptor
     nil
   end
 
+  # This method extracts all of the sensitive paths that exist into a
+  # separate hash.  This separate hash is then encrypted and placed in the session.
+  # We use #reduce to build the nested empty hash if needed. If Hash#bury
+  # (https://bugs.ruby-lang.org/issues/11747) existed, we could use that instead.
   def kms_encrypt_sensitive_paths!(session, sensitive_paths)
     sensitive_data = {
     }
@@ -84,11 +89,15 @@ class SessionEncryptor
       end
     end
 
-    raise 'invalid session' if session['sensitive_data'].present?
+    raise "invalid session, 'sensitive_data' is reserved key" if session['sensitive_data'].present?
     return if sensitive_data.blank?
     session['sensitive_data'] = kms_encrypt(JSON.generate(sensitive_data))
   end
 
+  # This method reverses the steps taken in #kms_encrypt_sensitive_paths!
+  # The encrypted hash is decrypted and then deep merged into the session hash.
+  # The merge must be a deep merge to avoid collisions with existing hashes in the
+  # session.
   def kms_decrypt_sensitive_paths!(session)
     sensitive_data = session.delete('sensitive_data')
     return if sensitive_data.blank?
