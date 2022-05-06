@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'users/two_factor_authentication_setup/_mfa_selection_component.html.erb' do
   include SimpleForm::ActionViewExtensions::FormHelper
   include Devise::Test::ControllerHelpers
- 
+
   let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
   let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
   let(:form_object) { User.new }
@@ -11,18 +11,18 @@ describe 'users/two_factor_authentication_setup/_mfa_selection_component.html.er
   let(:form_builder) do
     SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
   end
- 
+
   subject(:rendered) do
     render partial: 'mfa_selection_component', locals: {
       form: form_builder,
       option: presenter.options[4],
     }
   end
- 
+
   it 'renders an lg-validated-field tag' do
     expect(rendered).to have_css('.mfa-selection')
   end
- 
+
   context 'before selecting options' do
     it 'does not display any errors' do
       expect(rendered).to_not have_css('.checkbox__invalid')
