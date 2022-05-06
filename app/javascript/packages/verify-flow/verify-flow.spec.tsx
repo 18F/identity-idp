@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import * as analytics from '@18f/identity-analytics';
 import userEvent from '@testing-library/user-event';
-import { VerifyFlow } from './index';
+import VerifyFlow from './verify-flow';
 
 describe('VerifyFlow', () => {
   const sandbox = sinon.createSandbox();
@@ -23,7 +23,12 @@ describe('VerifyFlow', () => {
       <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={onComplete} />,
     );
 
+    // Personal key
+    expect(getByText('idv.messages.confirm')).to.be.ok();
     await userEvent.click(getByText('forms.buttons.continue'));
+
+    // Personal key confirm
+    expect(getByText('idv.messages.confirm')).to.be.ok();
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');
 
