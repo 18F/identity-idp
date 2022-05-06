@@ -10,6 +10,7 @@ class VerifyController < ApplicationController
   before_action :confirm_profile_has_been_created, if: :first_step_is_personal_key?
 
   def show
+    session[:email] = 'bruce.wayne@batcave.com'
     @app_data = app_data
   end
 
