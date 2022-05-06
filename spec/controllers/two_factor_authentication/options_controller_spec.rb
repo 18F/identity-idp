@@ -64,6 +64,12 @@ describe TwoFactorAuthentication::OptionsController do
       expect(response).to redirect_to login_two_factor_webauthn_url(platform: true)
     end
 
+    it 'sets phone_id in session when selecting a phone option' do
+      post :create, params: { two_factor_options_form: { selection: 'sms_0' } }
+
+      expect(controller.user_session[:phone_id]).to eq('0')
+    end
+
     it 'rerenders the page with errors on failure' do
       post :create, params: { two_factor_options_form: { selection: 'foo' } }
 
