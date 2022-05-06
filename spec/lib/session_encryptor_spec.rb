@@ -38,7 +38,7 @@ RSpec.describe SessionEncryptor do
         allow(IdentityConfig.store).to receive(:session_encryptor_v2_enabled).and_return(true)
       end
 
-      it 'transparently encrypts/decrypts doc auth elements of the session' do
+      it 'transparently encrypts/decrypts sensitive elements of the session' do
         session = { 'warden.user.user.session' => {
           'idv' => { 'ssn' => '666-66-6666' },
           'idv/doc_auth' => { 'ssn' => '666-66-6666' },
@@ -114,27 +114,19 @@ RSpec.describe SessionEncryptor do
         ).to eq 42
       end
 
-      it 'KMS encrypts/decrypts doc auth elements of the session' do
-        session = { 'warden.user.user.session' => {
-          'idv' => { 'ssn' => '666-66-6666' },
-          'idv/doc_auth' => { 'ssn' => '666-66-6666' },
-          'other_value' => 42,
-        } }
+      it 'raises if reserved key is used' do
+        session = {
+          'sensitive_data' => 'test',
+          'warden.user.user.session' => {
+            'other_value' => 42,
+          },
+        }
 
-        ciphertext = subject.dump(session)
-
-        partially_decrypted = subject.outer_encryptor.decrypt(ciphertext.split(':').last)
-        partially_decrypted_json = JSON.parse(partially_decrypted)
-
-        expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil
-        expect(partially_decrypted_json.fetch('warden.user.user.session')['idv/doc_auth']).to eq nil
-        expect(
-          partially_decrypted_json.fetch('sensitive_data'),
-        ).to_not eq nil
-
-        expect(
-          partially_decrypted_json.fetch('warden.user.user.session')['other_value'],
-        ).to eq 42
+        expect {
+          subject.dump(session)
+        }.to raise_error(
+          RuntimeError, "invalid session, 'sensitive_data' is reserved key"
+        )
       end
 
       it 'raises if PII key appears outside of expected areas when alerting is disabled' do
