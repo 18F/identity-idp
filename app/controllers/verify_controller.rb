@@ -21,13 +21,22 @@ class VerifyController < ApplicationController
       base_path: idv_app_root_path,
       app_name: APP_NAME,
       completion_url: completion_url,
-      initial_values: {
-        'personalKey' => personal_key,
-        'userBundleToken' => user_bundle_token,
-      },
+      initial_values: initial_values,
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: user_session[:idv_api_store_key],
     }
+  end
+
+  def initial_values
+    if step_enabled?('password_confirm')
+      { 'userBundleToken' => user_bundle_token }
+    elsif step_enabled?('personal_key')
+      { 'personalKey' => personal_key }
+    end
+  end
+
+  def step_enabled?(step)
+    IdentityConfig.store.idv_api_enabled_steps.include?(step)
   end
 
   def random_encryption_key

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe VerifyController do
   describe '#show' do
+    let(:idv_api_enabled_steps) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
     let(:applicant) do
@@ -20,28 +21,55 @@ describe VerifyController do
     subject(:response) { get :show }
 
     before do
+      allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+        and_return(idv_api_enabled_steps)
       stub_sign_in
       stub_idv_session
     end
 
-    context 'with step feature-disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
-      end
+    it 'renders 404' do
+      expect(response).to be_not_found
     end
 
-    context 'with step feature-enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-          and_return(['personal_key', 'personal_key_confirm'])
-      end
+    context 'with personal key step enabled' do
+      let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
 
       it 'renders view' do
         expect(response).to render_template(:show)
+      end
+
+      it 'sets app data' do
+        response
+
+        expect(assigns[:app_data]).to include(
+          app_name: APP_NAME,
+          base_path: idv_app_root_path,
+          completion_url: idv_gpo_verify_url,
+          enabled_step_names: idv_api_enabled_steps,
+          initial_values: { 'personalKey' => kind_of(String) },
+          store_key: kind_of(String),
+        )
+      end
+    end
+
+    context 'with password confirmation step enabled' do
+      let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
+
+      it 'renders view' do
+        expect(response).to render_template(:show)
+      end
+
+      it 'sets app data' do
+        response
+
+        expect(assigns[:app_data]).to include(
+          app_name: APP_NAME,
+          base_path: idv_app_root_path,
+          completion_url: idv_gpo_verify_url,
+          enabled_step_names: idv_api_enabled_steps,
+          initial_values: { 'userBundleToken' => kind_of(String) },
+          store_key: kind_of(String),
+        )
       end
     end
 
