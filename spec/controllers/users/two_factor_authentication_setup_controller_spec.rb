@@ -57,6 +57,7 @@ describe Users::TwoFactorAuthenticationSetupController do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
       stub_sign_in_before_2fa(user)
+      stub_analytics
 
       voice_params = {
         two_factor_options_form: {
@@ -74,6 +75,8 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(form).to receive(:selection).and_return(['voice'])
 
       patch :create, params: voice_params
+
+      expect(@analytics).to have_logged_event(Analytics::USER_REGISTRATION_2FA_SETUP, response.to_h)
     end
 
     it 'tracks analytics event' do

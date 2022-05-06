@@ -36,6 +36,10 @@ describe Users::MfaSelectionController do
 
       form = instance_double(TwoFactorOptionsForm)
       allow(TwoFactorOptionsForm).to receive(:new).with(user).and_return(form)
+      expect(form).to receive(:submit).
+        with(params.require(:two_factor_options_form).permit(:selection)).
+        and_return(response)
+      expect(form).to receive(:selection).and_return(['voice'])
 
       patch :update, params: voice_params
     end
