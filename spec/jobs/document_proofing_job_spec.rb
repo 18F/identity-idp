@@ -138,7 +138,7 @@ RSpec.describe DocumentProofingJob, type: :job do
           )
 
           expect(job_analytics).to have_logged_event(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            'IdV: doc auth image upload vendor submitted',
             success: true,
             errors: {},
             exception: nil,
@@ -192,7 +192,7 @@ RSpec.describe DocumentProofingJob, type: :job do
           )
 
           expect(job_analytics).to have_logged_event(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            'IdV: doc auth image upload vendor submitted',
             success: true,
             errors: {},
             exception: nil,

@@ -4,7 +4,7 @@ import upload, {
   toFormData,
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '../../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('document-capture/services/upload', () => {
   const sandbox = useSandbox();

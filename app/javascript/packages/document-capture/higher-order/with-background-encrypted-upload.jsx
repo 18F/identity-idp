@@ -102,24 +102,14 @@ const withBackgroundEncryptedUpload = (Component) => {
             value,
           )
             .catch((error) => {
-              addPageAction({
-                label: 'IdV: document capture async upload encryption',
-                payload: {
-                  success: false,
-                },
-              });
+              addPageAction('IdV: document capture async upload encryption', { success: false });
               noticeError(error);
 
               // Rethrow error to skip upload and proceed from next `catch` block.
               throw error;
             })
             .then((encryptedValue) => {
-              addPageAction({
-                label: 'IdV: document capture async upload encryption',
-                payload: {
-                  success: true,
-                },
-              });
+              addPageAction('IdV: document capture async upload encryption', { success: true });
 
               return window.fetch(url, {
                 method: 'PUT',
@@ -129,14 +119,10 @@ const withBackgroundEncryptedUpload = (Component) => {
             })
             .then((response) => {
               const traceId = response.headers.get('X-Amzn-Trace-Id');
-              addPageAction({
-                key: 'documentCapture.asyncUpload',
-                label: 'IdV: document capture async upload submitted',
-                payload: {
-                  success: response.ok,
-                  trace_id: traceId,
-                  status_code: response.status,
-                },
+              addPageAction('IdV: document capture async upload submitted', {
+                success: response.ok,
+                trace_id: traceId,
+                status_code: response.status,
               });
 
               if (!response.ok) {

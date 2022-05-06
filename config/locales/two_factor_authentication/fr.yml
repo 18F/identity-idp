@@ -39,8 +39,6 @@ fr:
       personal_key: Clé personnelle
       personal_key_info: Utilisez la clé personnelle de 16 caractères que vous avez
         utilisée lors de la création du compte.
-      phone_info_html: Obtenez votre code de sécurité par SMS ou Obtenez votre code de
-        sécurité par SMS à <strong>%{phone}</strong>.
       piv_cac: Employés du gouvernement
       piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
       sms: SMS

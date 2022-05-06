@@ -42,7 +42,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         subject.call
 
         expect(analytics).to have_logged_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+          'IdV: doc auth image upload vendor pii validation',
           success: true,
           errors: {},
         )

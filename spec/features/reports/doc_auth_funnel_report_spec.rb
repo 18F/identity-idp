@@ -90,6 +90,10 @@ feature 'Doc Auth Funnel report' do
       'welcome_view_percent' => 100.0,
       'agreement_view_count_average' => 1.0,
       'agreement_view_percent' => 100.0,
+      'verify_phone_submit_count_average' => 0.0,
+      'verify_phone_submit_percent' => 0.0,
+      'document_capture_submit_percent' => 100.0,
+      'verify_submit_percent' => 100.0,
     }
   end
 

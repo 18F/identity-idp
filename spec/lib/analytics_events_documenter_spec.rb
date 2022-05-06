@@ -8,7 +8,6 @@ RSpec.describe AnalyticsEventsDocumenter do
       @database_dir = database_dir
 
       YARD::Registry.clear
-      YARD::Tags::Library.define_tag('Event Name', AnalyticsEventsDocumenter::EVENT_NAME_TAG)
       YARD::Tags::Library.define_tag(
         'Previous Event Name', AnalyticsEventsDocumenter::PREVIOUS_EVENT_NAME_TAG
       )
@@ -24,9 +23,9 @@ RSpec.describe AnalyticsEventsDocumenter do
   describe '.run' do
     let(:source_code) { <<~RUBY }
       class AnalyticsEvents
-        # @identity.idp.event_name Some Event
         # @param [Boolean] success
         def some_event(success:, **extra)
+          track_event('Some Event')
         end
       end
     RUBY
@@ -71,9 +70,9 @@ RSpec.describe AnalyticsEventsDocumenter do
     context 'when all methods have all documentation' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
-          # @identity.idp.event_name Some Event
           # @param [Boolean] success
           def some_event(success:, **extra)
+            track_event('Some Event')
           end
         end
       RUBY
@@ -83,7 +82,7 @@ RSpec.describe AnalyticsEventsDocumenter do
       end
     end
 
-    context 'when a method is missing the event_name tag' do
+    context 'when a method is missing an event name' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
           def some_event; end
@@ -92,15 +91,16 @@ RSpec.describe AnalyticsEventsDocumenter do
 
       it 'reports the missing tag' do
         expect(documenter.missing_documentation.first).
-          to include('some_event missing @identity.idp.event_name')
+          to include('some_event event name not detected')
       end
     end
 
     context 'when a method is missing documentation for a param' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
-          # @identity.idp.event_name Some Event
-          def some_event(success:); end
+          def some_event(success:)
+            track_event('Some Event')
+          end
         end
       RUBY
 
@@ -113,8 +113,9 @@ RSpec.describe AnalyticsEventsDocumenter do
     context 'when a method skips documenting an param, such as pii_like_keypaths' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
-          # @identity.idp.event_name Some Event
-          def some_event(pii_like_keypaths:, **extra); end
+          def some_event(pii_like_keypaths:, **extra)
+            track_event('Some Event')
+          end
         end
       RUBY
 
@@ -126,9 +127,9 @@ RSpec.describe AnalyticsEventsDocumenter do
     context 'when a method does not have a **extra param' do
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
-          # @identity.idp.event_name Some Event
           # @param [Boolean] success
           def some_event(success:)
+            track_event('Some Event')
           end
         end
       RUBY
@@ -137,21 +138,37 @@ RSpec.describe AnalyticsEventsDocumenter do
         expect(documenter.missing_documentation.first).to include('some_event missing **extra')
       end
     end
+
+    context 'when a method has * as its only arg' do
+      let(:source_code) { <<~RUBY }
+        class AnalyticsEvents
+          def some_event(*)
+            track_event('Some Event')
+          end
+        end
+      RUBY
+
+      it 'errors' do
+        expect(documenter.missing_documentation.first).to include("don't use * as an argument")
+      end
+    end
   end
 
   describe '#as_json' do
     let(:source_code) { <<~RUBY }
       class AnalyticsEvents
-        # @identity.idp.event_name Some Event
         # @param [Boolean] success
         # @param [Integer] count number of attempts
         # The event that does something with stuff
-        def some_event(success:, count:); end
+        def some_event(success:, count:)
+          track_event('Some Event')
+        end
 
-        # @identity.idp.event_name Other Event
         # @identity.idp.previous_event_name The Old Other Event
         # @identity.idp.previous_event_name Even Older Other Event
-        def other_event; end
+        def other_event
+          track_event('Other Event')
+        end
       end
     RUBY
 

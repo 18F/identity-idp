@@ -198,7 +198,6 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 
 .yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
-		--type-tag identity.idp.event_name:"Event Name" \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
 		--no-output \
 		--db $@ \

@@ -13,16 +13,17 @@ module TwoFactorAuthentication
     end
 
     def info
-      if configuration.present?
-        t(
-          'two_factor_authentication.login_options.phone_info_html',
-          phone: configuration.masked_phone,
-        )
-      else
-          IdentityConfig.store.select_multiple_mfa_options ?
+      phone_info = IdentityConfig.store.select_multiple_mfa_options ?
           t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
           t('two_factor_authentication.two_factor_choice_options.phone_info')
+      voip_note = if IdentityConfig.store.voip_block
+        t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
       end
+
+      safe_join(
+        [phone_info, *voip_note],
+        ' ',
+      )
     end
 
     def security_level

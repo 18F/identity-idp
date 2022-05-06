@@ -293,11 +293,14 @@ describe Idv::ReviewController do
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'redirects to confirmation path' do
+      it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, success: true)
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: final resolution',
+          success: true,
+        )
         expect(response).to redirect_to idv_personal_key_path
       end
 
@@ -345,6 +348,19 @@ describe Idv::ReviewController do
             where.not(disavowal_token_fingerprint: nil).count
           expect(disavowal_event_count).to eq 1
         end
+
+        context 'with idv app personal key step enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+              and_return([:personal_key])
+          end
+
+          it 'redirects to idv app personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_app_root_url
+          end
+        end
       end
 
       context 'user picked GPO confirmation' do
@@ -359,6 +375,19 @@ describe Idv::ReviewController do
           profile.reload
 
           expect(profile).to_not be_active
+        end
+
+        context 'with idv api personal key step enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+              and_return([:personal_key])
+          end
+
+          it 'redirects to personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_personal_key_path
+          end
         end
       end
     end
