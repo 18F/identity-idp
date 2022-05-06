@@ -83,7 +83,13 @@ class SessionEncryptor
     sensitive_paths.each do |path|
       all_but_last_key = path[0..-2]
       last_key = path.last
-      value = session.dig(*all_but_last_key)&.delete(last_key)
+
+      if all_but_last_key.blank?
+        value = session.delete(last_key)
+      else
+        value = session.dig(*all_but_last_key)&.delete(last_key)
+      end
+
       if value
         all_but_last_key.reduce(sensitive_data) do |hash, key|
           hash[key] ||= {}

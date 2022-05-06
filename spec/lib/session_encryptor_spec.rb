@@ -184,4 +184,34 @@ RSpec.describe SessionEncryptor do
       end
     end
   end
+
+  describe '#kms_encrypt_sensitive_paths!' do
+    it 'encrypts/decrypts transparently' do
+      sensitive_paths = [
+        ['a'],
+        ['1', '2', '3'],
+      ]
+
+      original_session = {
+        'unencrypted' => 0,
+        'a' => 414,
+        '1' => {
+          '2' => {
+            '3' => 34,
+          },
+        },
+      }
+
+      session = original_session.deep_dup
+      SessionEncryptor.new.send(:kms_encrypt_sensitive_paths!, session, sensitive_paths)
+
+      expect(session['unencrypted']).to eq 0
+      expect(session.key?('a')).to eq false
+      expect(session.dig('1', '2').key?('3')).to eq false
+
+      SessionEncryptor.new.send(:kms_decrypt_sensitive_paths!, session)
+
+      expect(session).to eq original_session
+    end
+  end
 end
