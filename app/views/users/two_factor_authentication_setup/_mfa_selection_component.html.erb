@@ -15,17 +15,17 @@
           'usa-checkbox__label--illustrated',
         ].select(&:present?).join(' '),
       ) do %>
-            <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-            <div class="usa-checkbox__label--text"><%= option.label %>
-              <span class="usa-checkbox__label-description">
-                <%= option.info %>
-              </span>
-            </div>
-      <% end %>
-      <% if option.type == "phone" && flash[:phone_error] %>
-        <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
-            <%= flash[:phone_error] %>
-        </div>
-      <% end %>
+    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
+    <div class="usa-checkbox__label--text"><%= option.label %>
+      <span class="usa-checkbox__label-description">
+        <%= option.info %>
+      </span>
     </div>
+  <% end %>
+  <% if option.type == "phone" && flash[:phone_error] %>
+    <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
+        <%= flash[:phone_error] %>
+    </div>
+  <% end %>
+</div>
 <%= javascript_packs_tag_once('mfa_selection_component') %>
