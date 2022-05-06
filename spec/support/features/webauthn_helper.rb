@@ -1,4 +1,6 @@
 module WebAuthnHelper
+  include JavascriptDriverHelper
+
   def mock_webauthn_setup_challenge
     allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
       instance_double(
@@ -35,7 +37,12 @@ module WebAuthnHelper
     set_hidden_field('attestation_object', attestation_object)
     set_hidden_field('client_data_json', setup_client_data_json)
 
-    first('#submit-button', visible: false).click
+    button = first('#submit-button', visible: false)
+    if javascript_enabled?
+      button.execute_script('this.click()')
+    else
+      button.click
+    end
   end
 
   def mock_press_button_on_hardware_key_on_verification
@@ -50,7 +57,12 @@ module WebAuthnHelper
   end
 
   def set_hidden_field(id, value)
-    first("input##{id}", visible: false).set(value)
+    input = first("input##{id}", visible: false)
+    if javascript_enabled?
+      input.execute_script("this.value = #{value.to_json}")
+    else
+      input.set(value)
+    end
   end
 
   def protocol

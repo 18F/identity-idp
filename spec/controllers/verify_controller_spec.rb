@@ -37,7 +37,7 @@ describe VerifyController do
     context 'with step feature-enabled' do
       before do
         allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-          and_return([:personal_key, :personal_key_confirm])
+          and_return(['personal_key', 'personal_key_confirm'])
       end
 
       it 'renders view' do

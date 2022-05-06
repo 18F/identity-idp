@@ -364,7 +364,7 @@ describe 'FeatureManagement', type: :feature do
 
     context 'with steps enabled' do
       it 'returns true' do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([:example])
+        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['example'])
 
         expect(FeatureManagement.idv_api_enabled?).to eq(true)
       end
