@@ -3,14 +3,15 @@ class VerifyController < ApplicationController
   include IdvSession
 
   STEP_NAMES = %w[
+    password_confirm
     personal_key
     personal_key_confirm
-  ].to_set.freeze
+  ].freeze
 
   before_action :validate_step
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_vendor_session_started
-  before_action :confirm_profile_has_been_created
+  before_action :confirm_profile_has_been_created, if: :first_step_is_personal_key?
 
   check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
@@ -38,11 +39,20 @@ class VerifyController < ApplicationController
   end
 
   def initial_values
-    if step_enabled?('password_confirm')
+    case first_step
+    when 'password_confirm'
       { 'userBundleToken' => user_bundle_token }
-    elsif step_enabled?('personal_key')
+    when 'personal_key'
       { 'personalKey' => personal_key }
     end
+  end
+
+  def first_step
+    STEP_NAMES.detect { |step| step_enabled?(step) }
+  end
+
+  def first_step_is_personal_key?
+    first_step == 'personal_key'
   end
 
   def step_enabled?(step)

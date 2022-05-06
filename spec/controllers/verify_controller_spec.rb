@@ -24,7 +24,7 @@ describe VerifyController do
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
         and_return(idv_api_enabled_steps)
-      stub_sign_in
+      stub_sign_in(user)
       stub_idv_session
     end
 
@@ -45,6 +45,18 @@ describe VerifyController do
 
       context 'with personal key step enabled' do
         let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
+
+        before do
+          profile_maker = Idv::ProfileMaker.new(
+            applicant: applicant,
+            user: user,
+            user_password: password,
+          )
+          profile = profile_maker.save_profile
+          controller.idv_session.pii = profile_maker.pii_attributes
+          controller.idv_session.profile_id = profile.id
+          controller.idv_session.personal_key = profile.personal_key
+        end
 
         it 'renders view' do
           expect(response).to render_template(:show)
@@ -77,7 +89,7 @@ describe VerifyController do
           expect(assigns[:app_data]).to include(
             app_name: APP_NAME,
             base_path: idv_app_path,
-            completion_url: idv_gpo_verify_url,
+            completion_url: account_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'userBundleToken' => kind_of(String) },
             store_key: kind_of(String),
@@ -87,7 +99,6 @@ describe VerifyController do
     end
 
     def stub_idv_session
-      stub_sign_in(user)
       idv_session = Idv::Session.new(
         user_session: controller.user_session,
         current_user: user,
@@ -95,15 +106,6 @@ describe VerifyController do
       )
       idv_session.applicant = applicant
       idv_session.resolution_successful = true
-      profile_maker = Idv::ProfileMaker.new(
-        applicant: applicant,
-        user: user,
-        user_password: password,
-      )
-      profile = profile_maker.save_profile
-      idv_session.pii = profile_maker.pii_attributes
-      idv_session.profile_id = profile.id
-      idv_session.personal_key = profile.personal_key
       allow(controller).to receive(:idv_session).and_return(idv_session)
     end
   end
