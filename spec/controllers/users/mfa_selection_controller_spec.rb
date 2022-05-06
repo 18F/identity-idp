@@ -8,7 +8,7 @@ describe Users::MfaSelectionController do
   end
   let(:current_sp) { create(:service_provider) }
 
-  describe 'GET index' do
+  describe '#index' do
     context 'when the user is using one authenticator option' do
       it 'shows the mfa setup screen' do
         controller.user_session[:selected_mfa_options] = ['backup_code']
@@ -20,7 +20,7 @@ describe Users::MfaSelectionController do
     end
   end
 
-  describe 'Submitting the form' do
+  describe '#update' do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
       stub_sign_in_before_2fa(user)
