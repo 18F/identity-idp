@@ -148,8 +148,7 @@ fr:
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
       phone: Message texte ou vocal
-      phone_info: Recevoir un code de sécurité par texto (SMS) ou appel
-        téléphonique.
+      phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
       phone_info_html: Recevoir un code de sécurité par texto (SMS) ou appel
         téléphonique. <strong>Vous devez sélectionner une autre méthode en plus
         de celle-ci.</strong>
