@@ -7,6 +7,9 @@ class SessionEncryptor
     'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc', 'password', 'personal_key'
   ].to_set.freeze
 
+  # 'idv/doc_auth' and 'idv' are used during the proofing process and can contain PII
+  # personal keys are generated and stored in the session between requests, but are used
+  # to decrypt PII bundles, so we treat them similarly to the PII itself.
   SENSITIVE_PATHS = [
     ['warden.user.user.session', 'idv/doc_auth'],
     ['warden.user.user.session', 'idv'],
@@ -53,7 +56,14 @@ class SessionEncryptor
 
   private
 
-  # PII stored in decrypted_pii is managed by Pii::Cacher.
+  # The PII bundle is stored in the user session in the 'decrypted_pii' key.
+  # The PII is decrypted with the user's password when they successfully submit it and then
+  # stored in the session.  Before saving the session, this method encrypts the PII with KMS and
+  # stores it in the 'encrypted_pii' key.
+  #
+  # The PII is not frequently needed in its KMS-decrypted state. To reduce the
+  # risks around holding plaintext PII in memory during requests, this PII is KMS-decrypted
+  # on-demand by the Pii::Cacher.
   def kms_encrypt_pii!(session)
     return unless session.dig('warden.user.user.session', 'decrypted_pii')
     decrypted_pii = session['warden.user.user.session'].delete('decrypted_pii')

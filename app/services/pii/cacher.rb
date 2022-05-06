@@ -31,6 +31,11 @@ module Pii
       Pii::Attributes.new_from_json(pii_string)
     end
 
+    # Between requests, the decrypted PII bundle is encrypted with KMS and moved to the
+    # 'encrypted_pii' key by the SessionEncryptor.
+    #
+    # The PII is decrypted on-demand by this method and moved into the 'decrypted_pii' key.
+    # See SessionEncryptor#kms_encrypt_pii! for more detail.
     def fetch_string
       return unless user_session[:decrypted_pii] || user_session[:encrypted_pii]
       if user_session[:decrypted_pii]
