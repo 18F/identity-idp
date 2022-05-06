@@ -19,7 +19,9 @@ module TwoFactorAuthentication
           phone: configuration.masked_phone,
         )
       else
-        t('two_factor_authentication.two_factor_choice_options.phone_info_html')
+          IdentityConfig.store.select_multiple_mfa_options ?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
+          t('two_factor_authentication.two_factor_choice_options.phone_info')
       end
     end
 

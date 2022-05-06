@@ -6,6 +6,9 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
   describe '#info' do
     context 'when a user has a phone configuration' do
       let(:phone) { build(:phone_configuration, phone: '+1 888 867-5309') }
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(false)
+      end
 
       it 'includes the masked the number' do
         expect(presenter.info).to include('(***) ***-5309')
@@ -14,10 +17,13 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
 
     context 'when a user does not have a phone configuration (first time)' do
       let(:phone) { nil }
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(false)
+      end
 
       it 'includes a note about choosing voice or sms' do
         expect(presenter.info).
-          to include(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
+          to include(t('two_factor_authentication.two_factor_choice_options.phone_info'))
       end
 
       it 'does not include a masked number' do
