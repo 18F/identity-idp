@@ -1,15 +1,32 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FormSteps } from '@18f/identity-form-steps';
-import { StepIndicator, StepIndicatorStep, StepStatus } from '@18f/identity-step-indicator';
-import { t } from '@18f/identity-i18n';
-import { Alert } from '@18f/identity-components';
 import { trackEvent } from '@18f/identity-analytics';
 import { STEPS } from './steps';
+import VerifyFlowStepIndicator from './verify-flow-step-indicator';
+import VerifyFlowAlert from './verify-flow-alert';
 
 export interface VerifyFlowValues {
   personalKey?: string;
 
   personalKeyConfirm?: string;
+
+  firstName?: string;
+
+  lastName?: string;
+
+  address1?: string;
+
+  address2?: string;
+
+  city?: string;
+
+  state?: string;
+
+  zipcode?: string;
+
+  phone?: string;
+
+  ssn?: string;
 }
 
 interface VerifyFlowProps {
@@ -60,16 +77,17 @@ const logStepVisited = (stepName: string) =>
 const logStepSubmitted = (stepName: string) =>
   trackEvent(`IdV: ${getEventStepName(stepName)} submitted`);
 
-export function VerifyFlow({
+function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
   appName,
   onComplete,
 }: VerifyFlowProps) {
+  const [currentStep, setCurrentStep] = useState(STEPS[0].name);
   useEffect(() => {
-    logStepVisited(STEPS[0].name);
-  }, []);
+    logStepVisited(currentStep);
+  }, [currentStep]);
 
   let steps = STEPS;
   if (enabledStepNames) {
@@ -78,16 +96,8 @@ export function VerifyFlow({
 
   return (
     <>
-      <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
-        <StepIndicatorStep title="Getting Started" status={StepStatus.COMPLETE} />
-        <StepIndicatorStep title="Verify your ID" status={StepStatus.COMPLETE} />
-        <StepIndicatorStep title="Verify your personal details" status={StepStatus.COMPLETE} />
-        <StepIndicatorStep title="Verify phone or address" status={StepStatus.COMPLETE} />
-        <StepIndicatorStep title="Secure your account" status={StepStatus.CURRENT} />
-      </StepIndicator>
-      <Alert type="success" className="margin-bottom-4">
-        {t('idv.messages.confirm')}
-      </Alert>
+      <VerifyFlowStepIndicator currentStep={currentStep} />
+      <VerifyFlowAlert currentStep={currentStep} />
       <FormSteps
         steps={steps}
         initialValues={initialValues}
@@ -95,9 +105,11 @@ export function VerifyFlow({
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
         onStepSubmit={logStepSubmitted}
-        onStepChange={logStepVisited}
+        onStepChange={setCurrentStep}
         onComplete={onComplete}
       />
     </>
   );
 }
+
+export default VerifyFlow;
