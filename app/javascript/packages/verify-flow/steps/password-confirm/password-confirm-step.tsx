@@ -10,11 +10,16 @@ function PasswordConfirmStep({ registerField, onChange }: PasswordConfirmStepSte
   const [path, setPath] = useHistoryParam(undefined, { basePath: '/verify/v2/password_confirm' });
 
   function goToForgotPassword() {
+    console.log('path', path);
     setPath('forgot_password');
   }
 
+  function goBack() {
+    setPath('password_confirm');
+  }
+
   if (path === 'forgot_password') {
-    return <ForgotPassword></ForgotPassword>;
+    return <ForgotPassword goBack={goBack}></ForgotPassword>;
   }
 
   return (
