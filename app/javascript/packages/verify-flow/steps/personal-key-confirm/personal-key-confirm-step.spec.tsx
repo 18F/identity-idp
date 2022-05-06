@@ -1,9 +1,10 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FormSteps } from '@18f/identity-form-steps';
+import { FormStep, FormSteps } from '@18f/identity-form-steps';
 import * as analytics from '@18f/identity-analytics';
 import PersonalKeyConfirmStep from './personal-key-confirm-step';
+import { VerifyFlowValues } from '../../verify-flow';
 
 describe('PersonalKeyConfirmStep', () => {
   const DEFAULT_PROPS = {
@@ -62,7 +63,12 @@ describe('PersonalKeyConfirmStep', () => {
     const onComplete = sinon.spy();
     const { getByLabelText, getAllByText, container } = render(
       <FormSteps
-        steps={[{ name: 'personal_key_confirm', form: PersonalKeyConfirmStep }]}
+        steps={[
+          {
+            name: 'personal_key_confirm',
+            form: PersonalKeyConfirmStep,
+          } as FormStep<VerifyFlowValues>,
+        ]}
         initialValues={{ personalKey: '0000-0000-0000-0000' }}
         onComplete={onComplete}
       />,

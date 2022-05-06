@@ -8,12 +8,15 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { getAssetPath } from '@18f/identity-assets';
 import { trackEvent } from '@18f/identity-analytics';
 import type { VerifyFlowValues } from '../../verify-flow';
+import withPresenceValidation from '../../higher-order/with-presence-validation';
 import DownloadButton from './download-button';
 
-interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> {}
+interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> {
+  value: Partial<VerifyFlowValues> & { personalKey: string };
+}
 
 function PersonalKeyStep({ value }: PersonalKeyStepProps) {
-  const personalKey = value.personalKey!;
+  const { personalKey } = value;
 
   return (
     <>
@@ -81,4 +84,4 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
   );
 }
 
-export default PersonalKeyStep;
+export default withPresenceValidation(PersonalKeyStep, 'personalKey');

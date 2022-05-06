@@ -5,15 +5,18 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { Modal } from '@18f/identity-modal';
 import { getAssetPath } from '@18f/identity-assets';
 import { trackEvent } from '@18f/identity-analytics';
+import withPresenceValidation from '../../higher-order/with-presence-validation';
 import PersonalKeyStep from '../personal-key/personal-key-step';
 import PersonalKeyInput from './personal-key-input';
 import type { VerifyFlowValues } from '../../verify-flow';
 
-interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
+interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {
+  value: Partial<VerifyFlowValues> & { personalKey: string };
+}
 
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   const { registerField, value, onChange, toPreviousStep } = stepProps;
-  const personalKey = value.personalKey!;
+  const { personalKey } = value;
 
   const closeModalActions = () => {
     trackEvent('IdV: hide personal key modal');
@@ -58,4 +61,4 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   );
 }
 
-export default PersonalKeyConfirmStep;
+export default withPresenceValidation(PersonalKeyConfirmStep, 'personalKey');
