@@ -5,6 +5,7 @@ module Users
 
     before_action :check_remember_device_preference
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
+    before_action :redirect_if_blank_phone, only: [:send_code]
 
     def show
       service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
@@ -125,6 +126,13 @@ module Users
         otp_delivery_preference: phone_configuration.delivery_preference,
         reauthn: reauthn?,
       )
+    end
+
+    def redirect_if_blank_phone
+      return if phone_to_deliver_to.present?
+
+      flash[:error] = t('errors.messages.phone_required')
+      redirect_to login_two_factor_options_path
     end
 
     def redirect_to_vendor_outage_if_phone_only
