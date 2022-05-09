@@ -176,6 +176,19 @@ describe('FormSteps', () => {
     expect(getByText('Second Title')).to.be.ok();
   });
 
+  it('uses submit implementation return value as patch to form values', async () => {
+    const steps = [
+      { ...STEPS[0], submit: () => Promise.resolve({ secondInputOne: 'received' }) },
+      STEPS[1],
+    ];
+    const { getByText, findByDisplayValue } = render(<FormSteps steps={steps} />);
+
+    const continueButton = getByText('forms.buttons.continue');
+    await userEvent.click(continueButton);
+
+    expect(await findByDisplayValue('received')).to.be.ok();
+  });
+
   it('does not proceed if step submit implementation throws an error', async () => {
     sandbox.useFakeTimers();
     const steps = [
@@ -223,6 +236,18 @@ describe('FormSteps', () => {
     await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(onStepChange.callCount).to.equal(1);
+  });
+
+  it('calls onChange with updated form values', async () => {
+    const onChange = sinon.spy();
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} onChange={onChange} />);
+
+    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+
+    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'o' });
+    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'on' });
+    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'one' });
   });
 
   it('submits with form values', async () => {
