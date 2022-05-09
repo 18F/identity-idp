@@ -265,6 +265,19 @@ describe Idv::ReviewController do
         expect(flash.now[:success]).to be_nil
       end
     end
+
+    context 'idv app password confirm step is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+          and_return(['password_confirm'])
+      end
+
+      it 'redirects to idv app' do
+        get :new
+
+        expect(response).to redirect_to idv_app_path
+      end
+    end
   end
 
   describe '#create' do

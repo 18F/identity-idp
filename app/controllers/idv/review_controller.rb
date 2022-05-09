@@ -5,6 +5,7 @@ module Idv
     include IdvStepConcern
     include PhoneConfirmation
 
+    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
     before_action :confirm_current_password, only: [:create]
@@ -53,6 +54,11 @@ module Idv
     end
 
     private
+
+    def redirect_to_idv_app_if_enabled
+      return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
+      redirect_to idv_app_path
+    end
 
     def step_indicator_steps
       steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
