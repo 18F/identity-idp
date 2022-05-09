@@ -1,6 +1,6 @@
 module Api
   module Verify
-    class CompleteController < Api::BaseController
+    class PasswordConfirmController < Api::BaseController
       def create
         result, personal_key = Api::ProfileCreationForm.new(
           password: verify_params[:password],
