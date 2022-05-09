@@ -2,11 +2,6 @@ class VerifyController < ApplicationController
   include RenderConditionConcern
   include IdvSession
 
-  STEP_NAMES = %w[
-    personal_key
-    personal_key_confirm
-  ].freeze
-
   before_action :validate_step
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_vendor_session_started
@@ -21,7 +16,7 @@ class VerifyController < ApplicationController
   private
 
   def validate_step
-    render_not_found if params[:step].present? && !STEP_NAMES.include?(params[:step])
+    render_not_found if params[:step].present? && !enabled_steps.include?(params[:step])
   end
 
   def app_data
@@ -47,15 +42,19 @@ class VerifyController < ApplicationController
   end
 
   def first_step
-    STEP_NAMES.detect { |step| step_enabled?(step) }
+    enabled_steps.detect { |step| step_enabled?(step) }
   end
 
   def first_step_is_personal_key?
     first_step == 'personal_key'
   end
 
+  def enabled_steps
+    IdentityConfig.store.idv_api_enabled_steps
+  end
+
   def step_enabled?(step)
-    IdentityConfig.store.idv_api_enabled_steps.include?(step)
+    enabled_steps.include?(step)
   end
 
   def random_encryption_key
