@@ -57,8 +57,7 @@ module Telephony
             channel: :sms,
             extra: response.extra,
           )
-        rescue Aws::Pinpoint::Errors::InternalServerErrorException,
-               Aws::Pinpoint::Errors::TooManyRequestsException,
+        rescue Aws::Pinpoint::Errors::ServiceError,
                Seahorse::Client::NetworkingError => e
           finish = Time.zone.now
           response = handle_pinpoint_error(e)

@@ -60,7 +60,7 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as IAL2 with personal key' do |sp|
-  it 'does not present personal key as an MFA option', :email do
+  it 'does not present personal key as an MFA option', :email, js: true do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
 
     Capybara.reset_sessions!
@@ -75,19 +75,19 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
 end
 
 shared_examples 'signing in as IAL2 with piv/cac' do |sp|
-  it 'redirects to the SP after authenticating and getting the password', :email do
+  it 'redirects to the SP after authenticating and getting the password', :email, js: true do
     ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 
   if sp == :saml
     context 'no authn_context specified' do
-      it 'redirects to the SP after authenticating and getting the password', :email do
+      it 'redirects to the SP after authenticating and getting the password', :email, js: true do
         no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
       end
     end
   end
 
-  it 'gets bad password error', :email do
+  it 'gets bad password error', :email, js: true do
     ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
 end
@@ -119,7 +119,7 @@ shared_examples 'signing in as IAL1 with personal key after resetting password' 
 end
 
 shared_examples 'signing in as IAL2 with personal key after resetting password' do |sp|
-  xit 'redirects to SP after reactivating account', :email do
+  xit 'redirects to SP after reactivating account', :email, js: true do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     visit_idp_from_sp_with_ial2(sp)
     trigger_reset_password_and_click_email_link(user.email)
@@ -133,7 +133,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
     expect(current_path).to eq manage_personal_key_path
 
     new_personal_key = scrape_personal_key
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     expect(current_path).to eq reactivate_account_path
 
@@ -141,7 +141,7 @@ shared_examples 'signing in as IAL2 with personal key after resetting password' 
 
     expect(current_path).to eq manage_personal_key_path
 
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
     if sp == :oidc
@@ -205,7 +205,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
   end
 
   context "protocol: #{protocol}, ial: #{sp_ial}" do
-    it 'prompts the user to get a new personal key when signing in with email/password' do
+    it 'prompts the user to get a new personal key when signing in with email/password', js: true do
       user = user_with_broken_personal_key(protocol)
 
       case sp_ial
@@ -220,14 +220,14 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       fill_in_credentials_and_submit(user.email, user.password)
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('[data-personal-key]').map(&:text).join(' ')
-      click_acknowledge_personal_key
+      code = page.all('.separator-text__code').map(&:text).join(' ')
+      acknowledge_and_confirm_personal_key
 
       expect(user.reload.valid_personal_key?(code)).to eq(true)
       expect(user.active_profile.reload.recover_pii(code)).to be_present
     end
 
-    it 'prompts for password when signing in via PIV/CAC' do
+    it 'prompts for password when signing in via PIV/CAC', js: true do
       user = user_with_broken_personal_key(protocol)
 
       create(:piv_cac_configuration, user: user)
@@ -243,8 +243,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('[data-personal-key]').map(&:text).join(' ')
-      click_acknowledge_personal_key
+      code = page.all('.separator-text__code').map(&:text).join(' ')
+      acknowledge_and_confirm_personal_key
 
       expect(user.reload.valid_personal_key?(code)).to eq(true)
       expect(user.active_profile.reload.recover_pii(code)).to be_present
@@ -310,15 +310,14 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   # capture password before redirecting to SP
   expect(current_url).to eq capture_password_url
 
-  if sp == :oidc
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('form-action \'self\' http://localhost:7654'))
-  end
-
   fill_in_password_and_submit(user.password)
 
   if sp == :saml
-    expect(current_url).to eq @saml_authn_request
+    if javascript_enabled?
+      expect(current_path).to eq(test_saml_decode_assertion_path)
+    else
+      expect(current_url).to include(@saml_authn_request)
+    end
   elsif sp == :oidc
     redirect_uri = URI(current_url)
 
@@ -347,7 +346,11 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 
   fill_in_password_and_submit(user.password)
 
-  expect(current_url).to eq @saml_authn_request
+  if javascript_enabled?
+    expect(current_path).to eq(test_saml_decode_assertion_path)
+  else
+    expect(current_url).to eq @saml_authn_request
+  end
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)

@@ -31,6 +31,15 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(assigns(:code_value)).to be_nil
         end
       end
+
+      context 'when the user has an invalid phone number in the session' do
+        it 'redirects to homepage' do
+          controller.user_session[:phone_id] = 0
+
+          get :show, params: { otp_delivery_preference: 'sms' }
+          expect(response).to redirect_to new_user_session_path
+        end
+      end
     end
 
     it 'tracks the page visit and context' do
