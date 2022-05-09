@@ -326,13 +326,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    scope '/verify/v2' do
-      get '/' => 'verify#show', as: :idv_app_root
-      %w[
-        /personal_key
-        /personal_key_confirm
-      ].each { |step_path| get step_path => 'verify#show' }
-    end
+    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
 
     namespace :api do
       post '/verify/complete' => 'verify/complete#create'
