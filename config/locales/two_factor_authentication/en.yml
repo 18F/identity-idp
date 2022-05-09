@@ -133,7 +133,9 @@ en:
       less_secure_label: Less secure
       more_secure_label: More Secure
       phone: Text or Voice Message
-      phone_info: Receive a secure code by (SMS) text or phone call to your device.
+      phone_info: Receive a secure code by (SMS) text or phone call.
+      phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>You
+        need to select another method in addition to this one.</strong>
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
         (toll) phone numbers.
       piv_cac: Government Employee ID
