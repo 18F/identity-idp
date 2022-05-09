@@ -79,9 +79,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'renders first step' do
-            expect(response).to render_template(:show)
-            expect(assigns[:app_data][:initial_values]).to include('personalKey')
+          it 'redirects to first step' do
+            expect(response).to redirect_to idv_app_path(step: 'personal_key')
           end
         end
       end
@@ -110,9 +109,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'renders first step' do
-            expect(response).to render_template(:show)
-            expect(assigns[:app_data][:initial_values]).to include('userBundleToken')
+          it 'redirects to first step' do
+            expect(response).to redirect_to idv_app_path(step: 'password_confirm')
           end
         end
       end

@@ -2,12 +2,13 @@ class VerifyController < ApplicationController
   include RenderConditionConcern
   include IdvSession
 
+  check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
+
+  before_action :redirect_root_path_to_first_step
   before_action :validate_step
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_vendor_session_started
   before_action :confirm_profile_has_been_created, if: :first_step_is_personal_key?
-
-  check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
   def show
     @app_data = app_data
@@ -15,8 +16,12 @@ class VerifyController < ApplicationController
 
   private
 
+  def redirect_root_path_to_first_step
+    redirect_to idv_app_path(step: first_step) if params[:step].blank?
+  end
+
   def validate_step
-    render_not_found if params[:step].present? && !enabled_steps.include?(params[:step])
+    render_not_found if !enabled_steps.include?(params[:step])
   end
 
   def app_data
