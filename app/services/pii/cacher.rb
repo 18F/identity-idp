@@ -38,16 +38,14 @@ module Pii
     # See SessionEncryptor#kms_encrypt_pii! for more detail.
     def fetch_string
       return unless user_session[:decrypted_pii] || user_session[:encrypted_pii]
-      if user_session[:decrypted_pii]
-        user_session[:decrypted_pii]
-      elsif user_session[:encrypted_pii]
-        decrypted = SessionEncryptor.new.kms_decrypt(
-          user_session[:encrypted_pii],
-        )
-        user_session[:decrypted_pii] = decrypted
+      return user_session[:decrypted_pii] if user_session[:decrypted_pii].present?
 
-        decrypted
-      end
+      decrypted = SessionEncryptor.new.kms_decrypt(
+        user_session[:encrypted_pii],
+      )
+      user_session[:decrypted_pii] = decrypted
+
+      decrypted
     end
 
     def exists_in_session?
