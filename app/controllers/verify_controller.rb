@@ -3,7 +3,6 @@ class VerifyController < ApplicationController
   include IdvSession
 
   STEP_NAMES = %w[
-    password_confirm
     personal_key
     personal_key_confirm
   ].freeze
