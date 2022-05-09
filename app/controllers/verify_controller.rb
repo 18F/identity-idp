@@ -22,7 +22,7 @@ class VerifyController < ApplicationController
   private
 
   def validate_step
-    render_not_found if !STEP_NAMES.include?(params[:step])
+    render_not_found if params[:step].present? && !STEP_NAMES.include?(params[:step])
   end
 
   def app_data

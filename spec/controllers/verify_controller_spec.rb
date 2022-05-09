@@ -17,7 +17,7 @@ describe VerifyController do
       }
     end
     let(:profile) { subject.idv_session.profile }
-    let(:step) { 'personal_key' }
+    let(:step) { '' }
 
     subject(:response) { get :show, params: { step: step } }
 
@@ -45,6 +45,7 @@ describe VerifyController do
 
       context 'with personal key step enabled' do
         let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
+        let(:step) { 'personal_key' }
 
         before do
           profile_maker = Idv::ProfileMaker.new(
@@ -74,10 +75,20 @@ describe VerifyController do
             store_key: kind_of(String),
           )
         end
+
+        context 'empty step' do
+          let(:step) { nil }
+
+          it 'renders first step' do
+            expect(response).to render_template(:show)
+            expect(assigns[:app_data][:initial_values]).to include('personalKey')
+          end
+        end
       end
 
       context 'with password confirmation step enabled' do
         let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
+        let(:step) { 'password_confirm' }
 
         it 'renders view' do
           expect(response).to render_template(:show)
@@ -94,6 +105,15 @@ describe VerifyController do
             initial_values: { 'userBundleToken' => kind_of(String) },
             store_key: kind_of(String),
           )
+        end
+
+        context 'empty step' do
+          let(:step) { nil }
+
+          it 'renders first step' do
+            expect(response).to render_template(:show)
+            expect(assigns[:app_data][:initial_values]).to include('userBundleToken')
+          end
         end
       end
     end
