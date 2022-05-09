@@ -115,7 +115,7 @@ module Idv
 
     def next_step
       if idv_api_personal_key_step_enabled?
-        idv_app_root_url
+        idv_app_url
       else
         idv_personal_key_url
       end

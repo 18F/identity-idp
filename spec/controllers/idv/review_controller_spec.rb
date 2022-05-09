@@ -358,7 +358,7 @@ describe Idv::ReviewController do
           it 'redirects to idv app personal key path' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-            expect(response).to redirect_to idv_app_root_url
+            expect(response).to redirect_to idv_app_url
           end
         end
       end

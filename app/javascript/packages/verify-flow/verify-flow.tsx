@@ -6,6 +6,8 @@ import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import VerifyFlowAlert from './verify-flow-alert';
 
 export interface VerifyFlowValues {
+  userBundleToken?: string;
+
   personalKey?: string;
 
   personalKeyConfirm?: string;
