@@ -13,14 +13,9 @@ module TwoFactorAuthentication
     end
 
     def info
-      voip_note = if IdentityConfig.store.voip_block
-        t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
-      end
-
-      safe_join(
-        [t('two_factor_authentication.two_factor_choice_options.phone_info'), *voip_note],
-        ' ',
-      )
+      IdentityConfig.store.select_multiple_mfa_options ?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
+          t('two_factor_authentication.two_factor_choice_options.phone_info')
     end
 
     def security_level

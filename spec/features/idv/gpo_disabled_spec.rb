@@ -17,7 +17,7 @@ feature 'disabling GPO address verification' do
       Rails.application.reload_routes!
     end
 
-    it 'allows verification without the option to confirm address with usps' do
+    it 'allows verification without the option to confirm address with usps', js: true do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
@@ -36,7 +36,7 @@ feature 'disabling GPO address verification' do
       click_submit_default
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
 
       expect(page).to have_current_path(sign_up_completed_path)
     end

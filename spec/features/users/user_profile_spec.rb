@@ -144,7 +144,7 @@ feature 'User profile' do
         expect(page).to have_content(t('idv.messages.personal_key'))
       end
 
-      it 'allows the user reactivate their profile by reverifying' do
+      it 'allows the user reactivate their profile by reverifying', js: true do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 
@@ -158,7 +158,7 @@ feature 'User profile' do
         click_idv_continue
         fill_in 'Password', with: user_password
         click_idv_continue
-        click_acknowledge_personal_key
+        acknowledge_and_confirm_personal_key
 
         expect(current_path).to eq(sign_up_completed_path)
 

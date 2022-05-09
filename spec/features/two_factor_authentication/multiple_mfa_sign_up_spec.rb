@@ -76,6 +76,34 @@ feature 'Multi Two Factor Authentication' do
     end
   end
 
+  describe 'user attempts to submit with only the phone MFA method selected', js: true do
+    before do
+      sign_in_before_2fa
+      click_2fa_option('phone')
+      click_on t('forms.buttons.continue')
+    end
+
+    scenario 'redirects to the two_factor path with an error and phone option selected' do
+      expect(page).
+      to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+      expect(
+        URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
+      ).to eq two_factor_options_path(anchor: 'select_phone')
+    end
+
+    scenario 'clears the error when another mfa method is selected' do
+     click_2fa_option('backup_code')
+     expect(page).
+        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+    end
+
+    scenario 'clears the error when phone mfa method is unselected' do
+     click_2fa_option('phone')
+     expect(page).
+       to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+    end
+  end
+
   def click_2fa_option(option)
     find("label[for='two_factor_options_form_selection_#{option}']").click
   end

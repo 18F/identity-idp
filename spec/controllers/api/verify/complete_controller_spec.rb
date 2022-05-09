@@ -31,7 +31,7 @@ describe Api::Verify::CompleteController do
   let(:jwt) { JWT.encode({ pii: pii, metadata: {} }, key, 'RS256', sub: user.uuid) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([:personal_key])
+    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['personal_key'])
   end
 
   describe 'before_actions' do

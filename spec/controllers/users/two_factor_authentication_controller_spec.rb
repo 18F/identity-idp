@@ -440,6 +440,23 @@ describe Users::TwoFactorAuthenticationController do
                                          otp_make_default_number: nil },
         }
       end
+
+      context 'when selecting specific phone configuration' do
+        before do
+          user = create(:user, :signed_up)
+          sign_in_before_2fa(user)
+        end
+      end
+
+      it 'redirects to two factor options path with invalid id' do
+        controller.user_session[:phone_id] = 0
+
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+        }
+
+        expect(response).to redirect_to(login_two_factor_options_path)
+      end
     end
 
     context 'phone is not confirmed' do
