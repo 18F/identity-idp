@@ -47,6 +47,11 @@ interface VerifyFlowProps {
   enabledStepNames?: string[];
 
   /**
+   *  URL for reset password page in rails used for redirect
+   */
+  resetPasswordUrl?: string;
+
+  /**
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;
@@ -86,6 +91,7 @@ const logStepSubmitted = (stepName: string) =>
 function VerifyFlow({
   initialValues = {},
   enabledStepNames,
+  resetPasswordUrl,
   basePath,
   appName,
   onComplete,
@@ -115,6 +121,7 @@ function VerifyFlow({
         steps={steps}
         initialValues={syncedValues}
         initialStep={initialStep}
+        resetPasswordUrl={resetPasswordUrl}
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}

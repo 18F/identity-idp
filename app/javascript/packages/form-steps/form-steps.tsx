@@ -172,6 +172,11 @@ interface FormStepsProps {
   basePath?: string;
 
   /**
+   * URL for reset password page in rails used for redirect
+   */
+  resetPasswordUrl?: string;
+
+  /**
    * Format string for page title, interpolated with step title as `%{step}` parameter.
    */
   titleFormat?: string;
@@ -230,6 +235,7 @@ function FormSteps({
   initialStep,
   initialValues = {},
   initialActiveErrors = [],
+  resetPasswordUrl,
   autoFocus,
   promptOnNavigate = true,
   basePath,
@@ -397,7 +403,9 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
+      <FormStepsContext.Provider
+        value={{ isLastStep, isSubmitting, onPageTransition, resetPasswordUrl }}
+      >
         <Form
           key={name}
           value={values}

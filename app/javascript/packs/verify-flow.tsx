@@ -51,6 +51,7 @@ const {
   basePath,
   appName,
   completionUrl: completionURL,
+  resetPasswordUrl: resetPasswordUrl,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -92,6 +93,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
       <VerifyFlow
         initialValues={initialValues}
         enabledStepNames={enabledStepNames}
+        resetPasswordUrl={resetPasswordUrl}
         basePath={basePath}
         appName={appName}
         onComplete={onComplete}

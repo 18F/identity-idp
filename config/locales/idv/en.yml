@@ -69,9 +69,9 @@ en:
       reset_password: Reset password
       try_again: Try again
       warnings:
-        warning_1: If you forgot your password, you’ll need to reset it and fill out the
+        - If you forgot your password, you’ll need to reset it and fill out the
           form again.
-        warning_2: You’ll have to re-enter your personal information, like your name,
+        - You’ll have to re-enter your personal information, like your name,
           state-issued ID, etc.
     form:
       address1: Address

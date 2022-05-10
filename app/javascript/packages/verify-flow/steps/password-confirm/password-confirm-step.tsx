@@ -2,6 +2,7 @@ import type { ChangeEvent } from 'react';
 import { t } from '@18f/identity-i18n';
 import { FormStepsButton, useHistoryParam } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
+import { ForgotPassword } from './forgot-password';
 import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
@@ -10,7 +11,6 @@ function PasswordConfirmStep({ registerField, onChange }: PasswordConfirmStepSte
   const [path, setPath] = useHistoryParam(undefined, { basePath: '/verify/v2/password_confirm' });
 
   function goToForgotPassword() {
-    console.log('path', path);
     setPath('forgot_password');
   }
 
