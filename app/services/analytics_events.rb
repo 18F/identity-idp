@@ -1009,7 +1009,8 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash] result
+  # @param [Boolean] success
+  # @param [Hash] errors
   # Tracks when the the user has selected and submitted additional MFA methods on user registration
   def user_registration_2fa_additional_setup(success:, errors: nil, **extra)
     track_event(
@@ -1027,7 +1028,8 @@ module AnalyticsEvents
     track_event('User Registration: Additional 2FA Setup visited')
   end
 
-  # @param [Hash] result
+  # @param [Boolean] success
+  # @param [Hash] errors
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(success:, errors: nil, **extra)
     track_event(

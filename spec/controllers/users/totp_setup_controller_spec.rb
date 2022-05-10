@@ -227,7 +227,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       context 'when user presents correct code' do
-        let(:mfa_selections) { nil }
+        let(:mfa_selections) { ['auth_app'] }
         before do
           secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
@@ -239,9 +239,10 @@ describe Users::TotpSetupController, devise: true do
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
+
         context 'when user selected only one method on account creation' do
           it 'redirects to account_path with a success message' do
-            expect(response).to redirect_to(account_path)
+            expect(response).to redirect_to(auth_method_confirmation_path)
             expect(subject.user_session[:new_totp_secret]).to be_nil
 
             result = {

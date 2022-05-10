@@ -2,10 +2,12 @@ require 'rails_helper'
 
 describe Users::MfaSelectionController do
   let(:current_sp) { create(:service_provider) }
+  before do
+    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+  end
 
   describe '#index' do
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
       user = build(:user, :signed_up)
       stub_sign_in(user)
     end
@@ -45,8 +47,15 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the selection is phone' do
+      let(:user) do
+        create(
+          :user, :with_phone,
+          with: { phone: '7035550000', confirmed_at: Time.zone.now }
+        )
+      end
+
       it 'redirects to phone setup page' do
-        stub_sign_in
+        stub_sign_in(user)
 
         patch :update, params: {
           two_factor_options_form: {
