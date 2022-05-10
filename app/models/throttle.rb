@@ -98,13 +98,13 @@ class Throttle < ApplicationRecord
   def increment
     return attempts if maxed?
     update(attempts: self.read_attribute(:attempts) + 1, attempted_at: Time.zone.now)
-    increment_redis
+    redis_throttle.increment!
     attempts
   end
 
   def attempts
     if IdentityConfig.store.redis_throttle_enabled
-      @redis_attempts.to_i
+      redis_throttle.attempts
     else
       self.read_attribute(:attempts)
     end
@@ -112,7 +112,7 @@ class Throttle < ApplicationRecord
 
   def throttled?
     if IdentityConfig.store.redis_throttle_enabled
-      attempts >= Throttle.max_attempts(throttle_type)
+      redis_throttle.attempts >= Throttle.max_attempts(throttle_type)
     else
       !expired? && maxed?
     end
@@ -122,32 +122,35 @@ class Throttle < ApplicationRecord
     if throttled?
       true
     else
-      update(attempts: self.read_attribute(:attempts) + 1, attempted_at: Time.zone.now)
-      increment_redis
+      update(attempts: attempts + 1, attempted_at: Time.zone.now)
+      redis_throttle.increment!
       false
     end
   end
 
   def reset
     update(attempts: 0)
-    reset_redis
+    redis_throttle.reset!
     self
   end
 
   def remaining_count
     return 0 if throttled?
 
-    Throttle.max_attempts(throttle_type) - attempts
+    if IdentityConfig.store.redis_throttle_enabled
+      Throttle.max_attempts(throttle_type) - redis_throttle.attempts
+    else
+      Throttle.max_attempts(throttle_type) - attempts
+    end
   end
 
   def expires_at
     if IdentityConfig.store.redis_throttle_enabled
-      return Time.zone.now if @redis_attempted_at.blank?
-      @redis_attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
+      return Time.zone.now if redis_throttle.attempted_at.blank?
+      redis_throttle.attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
     else
-      db_attempted_at = self.read_attribute(:attempted_at)
-      return Time.zone.now if db_attempted_at.blank?
-      db_attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
+      return Time.zone.now if attempted_at.blank?
+      attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
     end
   end
 
@@ -157,83 +160,27 @@ class Throttle < ApplicationRecord
 
   def maxed?
     if IdentityConfig.store.redis_throttle_enabled
-      @redis_attempts && @redis_attempts >= Throttle.max_attempts(throttle_type)
+      redis_throttle.attempts && redis_throttle.attempts >= Throttle.max_attempts(throttle_type)
     else
       attempts >= Throttle.max_attempts(throttle_type)
     end
   end
 
-  def key
-    if target
-      "target:#{target}:#{throttle_type}"
-    elsif user_id
-      "user:#{user_id}:#{throttle_type}"
-    end
-  end
-
   def redis_attempts
-    return @redis_attempts if defined?(@redis_attempts)
-
-    fetch_redis_state!
-
-    @redis_attempts
-  end
-
-  def redis_attempted_at
-    return @redis_attempted_at if defined?(@redis_attempted_at)
-
-    fetch_redis_state!
-
-    @redis_attempted_at
-  end
-
-  def increment_redis
-    value = nil
-    REDIS_THROTTLE_POOL.with do |client|
-      value, _success = client.multi do |multi|
-        multi.incr(key)
-        multi.expire(key, Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i)
-      end
-    end
-
-    @redis_attempts = value.to_i
-    @redis_attempted_at = Time.zone.now
-  end
-
-  def fetch_redis_state!
-    value = nil
-    ttl = nil
-    REDIS_THROTTLE_POOL.with do |client|
-      value, ttl = client.multi do |multi|
-        multi.get(key)
-        multi.ttl(key)
-      end
-    end
-
-    @redis_attempts = value.to_i
-
-    if ttl < 0
-      @redis_attempted_at = nil
-    else
-      @redis_attempted_at = Time.zone.now +
-                            Throttle.attempt_window_in_minutes(throttle_type).minutes - ttl.seconds
-    end
-
-    nil
-  end
-
-  def reset_redis
-    REDIS_THROTTLE_POOL.with do |client|
-      client.del(key)
-    end
-
-    @redis_attempts = 0
-    @redis_attempted_at = nil
+    redis_throttle.attempts
   end
 
   # @api private
   def reset_if_expired_and_maxed
     return unless expired? && maxed?
     update(attempts: 0, throttled_count: throttled_count.to_i + 1)
+  end
+
+  def redis_throttle
+    return @redis_throttle if defined?(@redis_throttle)
+    redis_throttle_target = target || self.user_id
+    @redis_throttle = RedisThrottle.new(throttle_type: throttle_type, target: redis_throttle_target)
+
+    @redis_throttle
   end
 end
