@@ -3,6 +3,9 @@ module Users
     include UserAuthenticator
     include MfaSetupConcern
 
+    before_action :authenticate_user
+    before_action :confirm_user_authenticated_for_2fa_setup
+
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
