@@ -103,6 +103,7 @@ RSpec.configure do |config|
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
+    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
   end
 
   config.before(:each) do

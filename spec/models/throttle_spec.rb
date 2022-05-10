@@ -14,12 +14,6 @@ RSpec.describe Throttle do
     )
   end
 
-  around do |ex|
-    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
-    ex.run
-    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
-  end
-
   shared_examples 'throttle' do
     describe '.for' do
       context 'when target is a user' do
