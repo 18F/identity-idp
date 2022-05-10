@@ -1,6 +1,5 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
-import { accordion } from 'identity-style-guide';
 import { useInstanceId } from '@18f/identity-react-hooks';
 
 interface AccordionProps {
