@@ -2,6 +2,8 @@ import sinon from 'sinon';
 import { JSDOM, ResourceLoader } from 'jsdom';
 import matchMediaPolyfill from 'mq-polyfill';
 
+const TEST_URL = 'http://example.test';
+
 /**
  * Returns an instance of a JSDOM DOM instance configured for the test environment.
  *
@@ -9,7 +11,7 @@ import matchMediaPolyfill from 'mq-polyfill';
  */
 export function createDOM() {
   const dom = new JSDOM('<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>', {
-    url: 'http://example.test',
+    url: TEST_URL,
     resources: new (class extends ResourceLoader {
       /**
        * @param {string} url
@@ -91,6 +93,8 @@ export function useCleanDOM(dom) {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
+    window.history.replaceState(null, '', TEST_URL);
+    window.location.pathname = '';
     window.location.hash = '';
     dom.cookieJar.removeAllCookiesSync();
   });
