@@ -1,6 +1,6 @@
 class VerifyController < ApplicationController
-   include RenderConditionConcern
-   include IdvSession
+  include RenderConditionConcern
+  include IdvSession
 
   check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
