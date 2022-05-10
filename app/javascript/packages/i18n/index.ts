@@ -43,7 +43,7 @@ const getEntry = (strings: Entries, key: string): Entry =>
  * @return Whether entry is a pluralization entry.
  */
 const isPluralizedEntry = (entry: Entry): entry is PluralizedEntry =>
-  typeof entry === 'object' && 'one' in (entry as PluralizedEntry);
+  typeof entry === 'object' && 'one' in entry;
 
 /**
  * Returns true if the given entry is a string entry, or false otherwise.
