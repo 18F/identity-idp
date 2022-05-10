@@ -8,7 +8,6 @@
     "clipboard-polyfill": "^3.0.3",
     "core-js": "^3.21.1",
     "custom-event-polyfill": "^1.0.7",
-    "requestidlecallback-polyfill": "^1.0.2",
     "webcrypto-shim": "^0.1.7",
     "whatwg-fetch": "^3.4.0"
   }

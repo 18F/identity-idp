@@ -35,6 +35,17 @@ const pick = (obj: object, keys: string[]) =>
 const isStorageEqual = (values: object, nextValues: object) =>
   Object.keys(nextValues).every((key) => values[key] === nextValues[key]);
 
+function useIdleCallbackEffect(callback: () => void, deps: any[]) {
+  useEffect(() => {
+    if (typeof globalThis.requestIdleCallback === 'function') {
+      const callbackId = window.requestIdleCallback(callback);
+      return () => window.cancelIdleCallback(callbackId);
+    }
+
+    callback();
+  }, deps);
+}
+
 export function SecretsContextProvider({ storage, children }: SecretsContextProviderProps) {
   const [value, setValue] = useState({
     storage,
@@ -53,14 +64,11 @@ export function useSyncedSecretValues(
   const { storage, setItems } = useContext(SecretsContext);
   const [values, setValues] = useState({ ...storage.getItems(), ...initialValues });
 
-  useEffect(() => {
-    const callbackId = window.requestIdleCallback(() => {
-      const nextSecretValues: SecretValues = pick(values, SYNCED_SECRET_VALUES);
-      if (!isStorageEqual(storage.getItems(), nextSecretValues)) {
-        setItems(nextSecretValues);
-      }
-    });
-    return () => window.cancelIdleCallback(callbackId);
+  useIdleCallbackEffect(() => {
+    const nextSecretValues: SecretValues = pick(values, SYNCED_SECRET_VALUES);
+    if (!isStorageEqual(storage.getItems(), nextSecretValues)) {
+      setItems(nextSecretValues);
+    }
   }, [values]);
 
   return [values, setValues];
