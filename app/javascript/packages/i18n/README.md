@@ -2,13 +2,13 @@
 
 JavaScript implementation of a Rails-like localization utility.
 
-Paired with [`@18f/identity-rails-i18n-webpack-plugin`](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/rails-i18n-webpack-plugin), provides a seamless localization experience to retrieve locale data from [Rails locale data](https://github.com/18F/identity-idp/tree/main/config/locales).
+When paired with [`@18f/identity-rails-i18n-webpack-plugin`](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/rails-i18n-webpack-plugin), it provides a seamless localization experience to retrieve locale data from [Rails locale data](https://github.com/18F/identity-idp/tree/main/config/locales).
 
 ## Usage
 
-Most usage assumes a behavior similar to [Rails Internationalization](https://guides.rubyonrails.org/i18n.html), where a given key would be expected to match locale data based on the folder structure found in `config/locales`.
+Usage should provide a behavior similar to [Rails Internationalization](https://guides.rubyonrails.org/i18n.html), where a given key would be expected to match locale data based on the folder structure found in `config/locales`.
 
-For example, a key of `foo.bar.baz`, would match the file at `config/locales/foo/en.yml`, whose content includes...
+For example, a key of `foo.bar.baz`, would match the file at `config/locales/foo/en.yml` (for English locales), whose content includes...
 
 ```yml
 en:
@@ -37,7 +37,7 @@ t('messages.greeting');
 
 ### Interpolation
 
-Include an object of variables to interpolate those in the matched entry.
+Include an object of variables to interpolate those values in the matched entry.
 
 ```yml
 # config/locales/messages/en.yml
