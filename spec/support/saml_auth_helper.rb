@@ -310,6 +310,19 @@ module SamlAuthHelper
     )
   end
 
+  def visit_idp_from_saml_sp_with_ialmax
+    visit_saml_authn_request_url(
+      overrides: {
+        issuer: 'saml_sp_ial2',
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}ssn",
+        ],
+        authn_context_comparison: 'minimum',
+      },
+    )
+  end
+
   def visit_idp_from_oidc_sp_with_ialmax
     state = SecureRandom.hex
     client_id = 'urn:gov:gsa:openidconnect:sp:server'

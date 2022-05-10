@@ -441,6 +441,15 @@ describe SamlIdpController do
         },
       )
     end
+    let(:ialmax_settings) do
+      saml_settings(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          authn_context_comparison: 'minimum',
+        },
+      )
+    end
 
     shared_examples 'a verified identity' do |authn_context, ial|
       let(:ial2_settings) do
@@ -601,6 +610,117 @@ describe SamlIdpController do
         generate_saml_response(user, saml_settings)
 
         expect(response).to_not be_redirect
+      end
+    end
+
+    context 'with IALMAX and the identity is already verified' do
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:pii) do
+        Pii::Attributes.new_from_hash(
+          first_name: 'Some',
+          last_name: 'One',
+          ssn: '666666666',
+          zipcode: '12345',
+        )
+      end
+      let(:this_authn_request) do
+        ialmax_authnrequest = saml_authn_request_url(
+          overrides: {
+            issuer: sp1_issuer,
+            authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            authn_context_comparison: 'minimum',
+          },
+        )
+        raw_req = CGI.unescape ialmax_authnrequest.split('SAMLRequest').last
+        SamlIdp::Request.from_deflated_request(raw_req)
+      end
+      let(:asserter) do
+        AttributeAsserter.new(
+          user: user,
+          service_provider: ServiceProvider.find_by(issuer: sp1_issuer),
+          authn_request: this_authn_request,
+          name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          decrypted_pii: pii,
+          user_session: {},
+        )
+      end
+
+      before do
+        stub_sign_in(user)
+        IdentityLinker.new(user, ServiceProvider.find_by(issuer: sp1_issuer)).link_identity(ial: 2)
+        user.identities.last.update!(
+          verified_attributes: %w[email given_name family_name social_security_number address],
+        )
+        allow(subject).to receive(:attribute_asserter) { asserter }
+
+        controller.user_session[:decrypted_pii] = pii
+      end
+
+      it 'calls AttributeAsserter#build' do
+        expect(asserter).to receive(:build).at_least(:once).and_call_original
+
+        saml_get_auth(ialmax_settings)
+      end
+
+      it 'sets identity ial to 0' do
+        saml_get_auth(ialmax_settings)
+        expect(user.identities.last.ial).to eq(0)
+      end
+
+      it 'does not redirect the user to the IdV URL' do
+        saml_get_auth(ialmax_settings)
+
+        expect(response).to_not be_redirect
+      end
+
+      it 'contains verified attributes' do
+        saml_get_auth(ialmax_settings)
+
+        expect(xmldoc.attribute_node_for('address1')).to be_nil
+
+        %w[first_name last_name ssn zipcode].each do |attr|
+          node_value = xmldoc.attribute_value_for(attr)
+          expect(node_value).to eq(pii[attr])
+        end
+
+        expect(xmldoc.attribute_value_for('verified_at')).to eq(
+          user.active_profile.verified_at.iso8601,
+        )
+      end
+
+      it 'tracks IAL2 authentication events' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with('SAML Auth Request',
+               requested_ial: 'ialmax',
+               service_provider: sp1_issuer)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SAML_AUTH,
+               success: true,
+               errors: {},
+               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+               authn_context: ['http://idmanagement.gov/ns/assurance/ial/1'],
+               authn_context_comparison: 'minimum',
+               requested_ial: 'ialmax',
+               service_provider: sp1_issuer,
+               endpoint: '/api/saml/auth2022',
+               idv: false,
+               finish_profile: false)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SP_REDIRECT_INITIATED,
+               ial: 0)
+
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+        saml_get_auth(ialmax_settings)
+      end
+
+      context 'profile is not in session' do
+        let(:pii) { nil }
+
+        it 'redirects to password capture if profile is verified but not in session' do
+          saml_get_auth(ialmax_settings)
+          expect(response).to redirect_to capture_password_url
+        end
       end
     end
 
