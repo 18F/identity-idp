@@ -29,7 +29,7 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.send')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_link t('idv.buttons.continue_plain')
   end
 
@@ -48,7 +48,7 @@ feature 'IAL2 Single Sign On' do
     click_on t('idv.buttons.mail.resend')
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_link t('idv.buttons.continue_plain')
   end
 
@@ -90,7 +90,7 @@ feature 'IAL2 Single Sign On' do
       )
     end
 
-    context 'having previously selected USPS verification' do
+    context 'having previously selected USPS verification', js: true do
       let(:phone_confirmed) { false }
 
       context 'provides an option to send another letter' do

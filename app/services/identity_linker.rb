@@ -45,7 +45,6 @@ class IdentityLinker
   def find_or_create_identity_with_costing
     identity_record = identity_relation.first
     return identity_record if identity_record
-    Db::SpCost::AddSpCost.call(service_provider, @ial, :user_added)
     user.identities.create(service_provider: service_provider.issuer)
   end
 

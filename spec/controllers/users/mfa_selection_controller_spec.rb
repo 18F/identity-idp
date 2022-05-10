@@ -1,14 +1,15 @@
 require 'rails_helper'
 
 describe Users::MfaSelectionController do
-  before do
-    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-    user = build(:user, :signed_up)
-    stub_sign_in(user)
-  end
   let(:current_sp) { create(:service_provider) }
 
-  describe 'GET index' do
+  describe '#index' do
+    before do
+      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      user = build(:user, :signed_up)
+      stub_sign_in(user)
+    end
+
     context 'when the user is using one authenticator option' do
       it 'shows the mfa setup screen' do
         controller.user_session[:selected_mfa_options] = ['backup_code']
@@ -20,7 +21,7 @@ describe Users::MfaSelectionController do
     end
   end
 
-  describe 'Submitting the form' do
+  describe '#update' do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
       stub_sign_in(user)

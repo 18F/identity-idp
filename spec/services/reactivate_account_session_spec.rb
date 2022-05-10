@@ -63,9 +63,8 @@ describe ReactivateAccountSession do
       pii = Pii::Attributes.new(first_name: 'Test')
       @reactivate_account_session.store_decrypted_pii(pii)
       account_reactivation_obj = user_session[:reactivate_account]
-      expect(account_reactivation_obj[:personal_key]).to be(true)
       expect(account_reactivation_obj[:validated_personal_key]).to be(true)
-      expect(account_reactivation_obj[:pii]).to eq(pii.to_json)
+      expect(user_session[:decrypted_pii]).to eq(pii.to_json)
     end
   end
 

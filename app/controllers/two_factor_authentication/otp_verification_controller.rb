@@ -5,6 +5,7 @@ module TwoFactorAuthentication
 
     before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
+    before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
     def show
@@ -26,6 +27,13 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def redirect_if_blank_phone
+      return if phone.present?
+
+      flash[:error] = t('errors.messages.phone_required')
+      redirect_to new_user_session_path
+    end
 
     def confirm_multiple_factors_enabled
       return if UserSessionContext.confirmation_context?(context) || phone_enabled?

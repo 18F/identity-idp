@@ -17,11 +17,7 @@ class SamlResponseDoc
   end
 
   def xml_response
-    Base64.decode64(
-      Capybara.current_session.find(
-        "//input[@id='#{input_id}']", visible: false
-      ).value,
-    )
+    Base64.decode64(Capybara.current_session.find("##{input_id}", visible: false).value)
   end
 
   def html_response

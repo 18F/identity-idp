@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe VerifyController do
   describe '#show' do
+    let(:idv_api_enabled_steps) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
     let(:applicant) do
@@ -16,37 +17,106 @@ describe VerifyController do
       }
     end
     let(:profile) { subject.idv_session.profile }
+    let(:step) { '' }
 
-    subject(:response) { get :show }
+    subject(:response) { get :show, params: { step: step } }
 
     before do
-      stub_sign_in
+      allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+        and_return(idv_api_enabled_steps)
+      stub_sign_in(user)
       stub_idv_session
     end
 
-    context 'with step feature-disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return([])
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
-      end
+    it 'renders 404' do
+      expect(response).to be_not_found
     end
 
-    context 'with step feature-enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-          and_return([:personal_key, :personal_key_confirm])
+    context 'with idv api enabled' do
+      let(:idv_api_enabled_steps) { ['something'] }
+
+      context 'invalid step' do
+        let(:step) { 'bad' }
+
+        it 'renders 404' do
+          expect(response).to be_not_found
+        end
       end
 
-      it 'renders view' do
-        expect(response).to render_template(:show)
+      context 'with personal key step enabled' do
+        let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
+        let(:step) { 'personal_key' }
+
+        before do
+          profile_maker = Idv::ProfileMaker.new(
+            applicant: applicant,
+            user: user,
+            user_password: password,
+          )
+          profile = profile_maker.save_profile
+          controller.idv_session.pii = profile_maker.pii_attributes
+          controller.idv_session.profile_id = profile.id
+          controller.idv_session.personal_key = profile.personal_key
+        end
+
+        it 'renders view' do
+          expect(response).to render_template(:show)
+        end
+
+        it 'sets app data' do
+          response
+
+          expect(assigns[:app_data]).to include(
+            app_name: APP_NAME,
+            base_path: idv_app_path,
+            completion_url: idv_gpo_verify_url,
+            enabled_step_names: idv_api_enabled_steps,
+            initial_values: { 'personalKey' => kind_of(String) },
+            store_key: kind_of(String),
+          )
+        end
+
+        context 'empty step' do
+          let(:step) { nil }
+
+          it 'redirects to first step' do
+            expect(response).to redirect_to idv_app_path(step: 'personal_key')
+          end
+        end
+      end
+
+      context 'with password confirmation step enabled' do
+        let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
+        let(:step) { 'password_confirm' }
+
+        it 'renders view' do
+          expect(response).to render_template(:show)
+        end
+
+        it 'sets app data' do
+          response
+
+          expect(assigns[:app_data]).to include(
+            app_name: APP_NAME,
+            base_path: idv_app_path,
+            completion_url: account_url,
+            enabled_step_names: idv_api_enabled_steps,
+            initial_values: { 'userBundleToken' => kind_of(String) },
+            store_key: kind_of(String),
+          )
+        end
+
+        context 'empty step' do
+          let(:step) { nil }
+
+          it 'redirects to first step' do
+            expect(response).to redirect_to idv_app_path(step: 'password_confirm')
+          end
+        end
       end
     end
 
     def stub_idv_session
-      stub_sign_in(user)
       idv_session = Idv::Session.new(
         user_session: controller.user_session,
         current_user: user,
@@ -54,15 +124,6 @@ describe VerifyController do
       )
       idv_session.applicant = applicant
       idv_session.resolution_successful = true
-      profile_maker = Idv::ProfileMaker.new(
-        applicant: applicant,
-        user: user,
-        user_password: password,
-      )
-      profile = profile_maker.save_profile
-      idv_session.pii = profile_maker.pii_attributes
-      idv_session.profile_id = profile.id
-      idv_session.personal_key = profile.personal_key
       allow(controller).to receive(:idv_session).and_return(idv_session)
     end
   end

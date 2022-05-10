@@ -9,9 +9,11 @@ feature 'idv review step' do
     expect(current_path).to eq(root_path)
   end
 
-  it 'requires the user to enter the correct password to redirect to confirmation step' do
+  it 'requires the user to enter the correct password to redirect to confirmation step', js: true do
     start_idv_from_sp
     complete_idv_steps_before_review_step
+
+    click_on t('idv.messages.review.intro')
 
     expect(page).to have_content('FAKEY')
     expect(page).to have_content('MCFAKERSON')
@@ -31,7 +33,7 @@ feature 'idv review step' do
     click_idv_continue
 
     expect(page).to have_content(t('headings.personal_key'))
-    expect(page).to have_current_path(idv_personal_key_path)
+    expect(current_path).to be_in([idv_personal_key_path, idv_app_path])
   end
 
   context 'choosing to confirm address with phone' do

@@ -25,16 +25,29 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f82bd9cd1682d1645abe98e1fe5e6261f53a8279
-  tag: 0.16.0-18f
+  revision: f10c8ba1b4e10ba983a79b1d0fd39cadca95a728
+  tag: 0.17.0-18f
   specs:
-    saml_idp (0.16.0.pre.18f)
+    saml_idp (0.17.0.pre.18f)
       activesupport
       builder
       faraday
       nokogiri (>= 1.10.2)
       pkcs11
       uuid
+
+GIT
+  remote: https://github.com/hashrocket/capybara-webmock.git
+  revision: 63d790a0b6c779b9700634bfc153e25ccdeb3688
+  ref: 63d790a0
+  specs:
+    capybara-webmock (0.6.0)
+      capybara (>= 2.4, < 4)
+      rack (>= 1.4)
+      rack-proxy (>= 0.6.0)
+      rexml (>= 3.2)
+      selenium-webdriver (>= 4.0)
+      webrick (>= 1.7)
 
 GEM
   remote: https://rubygems.org/
@@ -408,7 +421,7 @@ GEM
     pg_query (2.1.3)
       google-protobuf (>= 3.19.2)
     phonelib (0.6.54)
-    pkcs11 (0.3.3)
+    pkcs11 (0.3.4)
     premailer (1.15.0)
       addressable
       css_parser (>= 1.6.0)
@@ -442,6 +455,8 @@ GEM
     rack-headers_filter (0.0.1)
     rack-mini-profiler (2.3.3)
       rack (>= 1.2.0)
+    rack-proxy (0.7.2)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.6.0)
@@ -700,6 +715,7 @@ DEPENDENCIES
   bullet (>= 6.0.2)
   bundler-audit
   capybara-selenium (>= 0.0.6)
+  capybara-webmock!
   connection_pool
   cssbundling-rails
   data_uri
