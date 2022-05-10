@@ -1,11 +1,11 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import * as analytics from '@18f/identity-analytics';
 import userEvent from '@testing-library/user-event';
+import * as analytics from '@18f/identity-analytics';
+import { useSandbox } from '@18f/identity-test-helpers';
 import VerifyFlow from './verify-flow';
 
 describe('VerifyFlow', () => {
-  const sandbox = sinon.createSandbox();
+  const sandbox = useSandbox();
   const personalKey = '0000-0000-0000-0000';
 
   beforeEach(() => {
@@ -15,15 +15,16 @@ describe('VerifyFlow', () => {
     } as Response);
   });
 
-  afterEach(() => {
-    sandbox.restore();
-  });
-
   it('advances through flow to completion', async () => {
-    const onComplete = sinon.spy();
+    const onComplete = sandbox.spy();
 
     const { getByText, findByText, getByLabelText } = render(
-      <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={onComplete} />,
+      <VerifyFlow
+        appName="Example App"
+        initialValues={{ personalKey }}
+        onComplete={onComplete}
+        basePath="/"
+      />,
     );
 
     // Password confirm
@@ -35,11 +36,13 @@ describe('VerifyFlow', () => {
     // Personal key
     await findByText('idv.messages.confirm');
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
+    expect(window.location.pathname).to.equal('/personal_key');
     await userEvent.click(getByText('forms.buttons.continue'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key submitted');
 
     // Personal key confirm
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key confirm visited');
+    expect(window.location.pathname).to.equal('/personal_key_confirm');
     expect(getByText('idv.messages.confirm')).to.be.ok();
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');

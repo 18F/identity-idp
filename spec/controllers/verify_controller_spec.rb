@@ -79,8 +79,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'redirects to first step' do
-            expect(response).to redirect_to idv_app_path(step: 'personal_key')
+          it 'renders view' do
+            expect(response).to render_template(:show)
           end
         end
       end
@@ -109,8 +109,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'redirects to first step' do
-            expect(response).to redirect_to idv_app_path(step: 'password_confirm')
+          it 'renders view' do
+            expect(response).to render_template(:show)
           end
         end
       end
