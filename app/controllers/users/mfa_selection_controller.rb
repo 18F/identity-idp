@@ -51,7 +51,8 @@ module Users
     end
 
     def multiple_factors_enabled?
-      IdentityConfig.store.select_multiple_mfa_options
+      return if IdentityConfig.store.select_multiple_mfa_options
+      redirect_to after_mfa_setup_path
     end
   end
 end

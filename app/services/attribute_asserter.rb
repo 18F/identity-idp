@@ -52,7 +52,12 @@ class AttributeAsserter
                 :user_session
 
   def ial_context
-    @ial_context ||= IalContext.new(ial: authn_context, service_provider: service_provider)
+    @ial_context ||= IalContext.new(
+      ial: authn_context,
+      service_provider: service_provider,
+      user: user,
+      authn_context_comparison: authn_request&.requested_authn_context_comparison,
+    )
   end
 
   def default_attrs
@@ -120,9 +125,17 @@ class AttributeAsserter
   end
 
   def add_ial(attrs)
-    context = authn_request.requested_ial_authn_context
-    context ||= Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[service_provider.ial]
+    requested_context = authn_request.requested_ial_authn_context
+    context = if ial_context.ialmax_requested? && ial_context.ial2_requested?
+                sp_ial # IAL2 since IALMAX only works for IAL2 SPs
+              else
+                requested_context.presence || sp_ial
+              end
     attrs[:ial] = { getter: ial_getter_function(context) } if context
+  end
+
+  def sp_ial
+    Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[service_provider.ial]
   end
 
   def add_x509(attrs)
