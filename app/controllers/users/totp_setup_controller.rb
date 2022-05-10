@@ -79,8 +79,7 @@ module Users
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
-      redirect_to next_setup_path ||
-                  after_mfa_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def handle_remember_device

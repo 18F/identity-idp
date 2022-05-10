@@ -1008,5 +1008,13 @@ module AnalyticsEvents
       }.compact,
     )
   end
+
+  def user_registration_2fa_additional_setup
+    track_event( 'User Registration: Additional 2fa setup')
+  end
+
+  def user_registration_2fa_additional_setup_visit(result)
+    track_event('User Registration: Additional 2fa setup visited', result)
+  end
 end
 # rubocop:enable Metrics/ModuleLength

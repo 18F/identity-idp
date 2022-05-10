@@ -36,9 +36,7 @@ module MfaSetupConcern
   end
 
   def user_needs_confirmation_screen?
-    (next_setup_choice.present? ||
-      user_session[:suggest_second_mfa]
-    ) &&
+    (next_setup_choice.present? || user_session[:suggest_second_mfa]) &&
       IdentityConfig.store.select_multiple_mfa_options
   end
 

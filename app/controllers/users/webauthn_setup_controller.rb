@@ -138,8 +138,7 @@ module Users
         flash[:success] = t('notices.webauthn_configured')
       end
       user_session[:auth_method] = 'webauthn'
-      redirect_to next_setup_path ||
-                  after_mfa_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def handle_remember_device

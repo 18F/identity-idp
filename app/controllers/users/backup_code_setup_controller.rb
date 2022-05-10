@@ -25,8 +25,7 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
-      redirect_to next_setup_path ||
-                  after_mfa_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def download
