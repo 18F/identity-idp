@@ -43,9 +43,12 @@ module MfaSetupConcern
   private
 
   def suggest_second_mfa?
-    total_count = (MfaContext.new(user).enabled_mfa_methods_count +
-      user_session[:mfa_selections].count)
+    total_count = MfaContext.new(current_user).enabled_mfa_methods_count + mfa_count
     total_count == 1
+  end
+
+  def mfa_count
+    user_session[:mfa_selections]&.count || 0
   end
 
   def determine_next_mfa
