@@ -17,8 +17,8 @@
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
-            <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                       locals: { form: f, option: option } %>
+        <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                   locals: { form: f, option: option } %>
         </div>
       <% end %>
     </fieldset>

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/two_factor_authentication_setup/_mfa_selection_component.html.erb' do
+describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
   include SimpleForm::ActionViewExtensions::FormHelper
   include Devise::Test::ControllerHelpers
 
@@ -13,7 +13,7 @@ describe 'users/two_factor_authentication_setup/_mfa_selection_component.html.er
   end
 
   subject(:rendered) do
-    render partial: 'mfa_selection_component', locals: {
+    render partial: 'mfa_selection', locals: {
       form: form_builder,
       option: presenter.options[4],
     }
