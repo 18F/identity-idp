@@ -1009,12 +1009,26 @@ module AnalyticsEvents
     )
   end
 
-  def user_registration_2fa_additional_setup
-    track_event('User Registration: Additional 2fa setup')
+  # @param [Hash] result
+  # Tracks when the the user has selected and submitted additional two factor auth methods on user registration 
+  def user_registration_2fa_additional_setup(result)
+    track_event('User Registration: Additional 2FA setup', result)
   end
 
-  def user_registration_2fa_additional_setup_visit(result)
-    track_event('User Registration: Additional 2fa setup visited', result)
+  # Tracks when user visits additional MFA selection page
+  def user_registration_2fa_additional_setup_visit
+    track_event('User Registration: Additional 2FA setup visited')
+  end
+
+  # @param [Hash] result
+  # Tracks when the the user has selected and submitted MFA auth methods on user registration 
+  def user_registration_2fa_setup(result)
+    track_event('User Registration: 2FA Setup', result)
+  end
+
+  # Tracks when user visits MFA selection page
+  def user_registration_2fa_setup_visit
+    track_event('User Registration: 2FA setup visited')
   end
 end
 # rubocop:enable Metrics/ModuleLength

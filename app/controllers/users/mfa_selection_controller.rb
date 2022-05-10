@@ -10,7 +10,7 @@ module Users
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
-      analytics.user_registration_2fa_additional_setup
+      analytics.user_registration_2fa_additional_setup_visit
     end
 
     def update
@@ -43,7 +43,6 @@ module Users
 
     def process_valid_form
       user_session[:mfa_selections] = @two_factor_options_form.selection
-      user_session[:suggest_second_mfa] = false
       redirect_to confirmation_path(user_session[:mfa_selections].first)
     end
 
