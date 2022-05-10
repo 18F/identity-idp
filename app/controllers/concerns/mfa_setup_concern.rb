@@ -11,7 +11,7 @@ module MfaSetupConcern
   end
 
   def confirmation_path(next_mfa_selection_choice)
-    user_session[:next_mfa_setup] = next_mfa_selection_choice
+    user_session[:next_mfa_selection_choice] = next_mfa_selection_choice
     case next_mfa_selection_choice
     when 'voice', 'sms', 'phone'
       phone_setup_url
@@ -44,7 +44,7 @@ module MfaSetupConcern
 
   def determine_next_mfa
     return unless user_session[:mfa_selections]
-    current_setup_step = user_session[:next_mfa_setup]
+    current_setup_step = user_session[:next_mfa_selection_choice]
     current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
     current_index + 1
   end
