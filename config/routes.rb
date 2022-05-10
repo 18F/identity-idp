@@ -220,6 +220,8 @@ Rails.application.routes.draw do
     get '/otp/send' => 'users/two_factor_authentication#send_code'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    get '/mfa_setup' => 'users/mfa_selection#index'
+    patch '/mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/aal3_required' => 'users/aal3#show'
@@ -324,14 +326,7 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    scope '/verify/v2' do
-      get '/' => 'verify#show', as: :idv_app_root
-      %w[
-        /password_confirm
-        /personal_key
-        /personal_key_confirm
-      ].each { |step_path| get step_path => 'verify#show' }
-    end
+    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
 
     namespace :api do
       post '/verify/complete' => 'verify/complete#create'

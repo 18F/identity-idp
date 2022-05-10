@@ -1,6 +1,7 @@
 import { render } from 'react-dom';
 import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
 import { s2ab } from '@18f/identity-secret-session-storage';
+import type { VerifyFlowValues } from '@18f/identity-verify-flow';
 
 interface AppRootValues {
   /**
@@ -53,17 +54,19 @@ const {
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
-const initialValues = JSON.parse(initialValuesJSON);
+const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
 const camelCase = (string: string) =>
   string.replace(/[^a-z]([a-z])/gi, (_match, nextLetter) => nextLetter.toUpperCase());
 
-const jwtData = JSON.parse(atob(initialValues.userBundleToken.split('.')[1]));
-const pii = Object.fromEntries(
-  Object.entries(jwtData.pii).map(([key, value]) => [camelCase(key), value]),
-);
-Object.assign(initialValues, pii);
+if (initialValues.userBundleToken) {
+  const jwtData = JSON.parse(atob(initialValues.userBundleToken.split('.')[1]));
+  const pii = Object.fromEntries(
+    Object.entries(jwtData.pii).map(([key, value]) => [camelCase(key), value]),
+  );
+  Object.assign(initialValues, pii);
+}
 
 function onComplete() {
   window.location.href = completionURL;

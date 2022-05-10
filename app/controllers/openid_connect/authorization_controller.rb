@@ -58,6 +58,10 @@ module OpenidConnect
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
     end
 
+    def ial_context
+      @authorize_form.ial_context
+    end
+
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)

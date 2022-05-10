@@ -346,6 +346,11 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
 
   fill_in_password_and_submit(user.password)
 
+  # needed because the SP default attribute bundle includes the zip_code
+  # attribute which wasn't originally requested, so consent is required
+  expect(page).to have_current_path(sign_up_completed_path)
+  click_agree_and_continue
+
   if javascript_enabled?
     expect(current_path).to eq(test_saml_decode_assertion_path)
   else
