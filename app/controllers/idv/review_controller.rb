@@ -5,9 +5,9 @@ module Idv
     include IdvStepConcern
     include PhoneConfirmation
 
-    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
+    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
