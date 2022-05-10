@@ -39,10 +39,10 @@ function PersonalInfoSummary(pii) {
       <div className="h4 text-bold ico-absolute ico-absolute-success">{pii?.ssn}</div>
       {pii?.phone && (
         <>
-            <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
-            <div className="h4 text-bold ico-absolute ico-absolute-success">
-                {phoneNumber?.formatNational()}
-            </div>
+          <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
+          <div className="h4 text-bold ico-absolute ico-absolute-success">
+            {phoneNumber?.formatNational()}
+          </div>
         </>
       )}
     </div>
