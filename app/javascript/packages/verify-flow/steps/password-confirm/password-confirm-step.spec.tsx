@@ -56,7 +56,7 @@ describe('PasswordConfirm', () => {
     expect(button.getAttribute('aria-expanded')).to.eq('true');
   });
 
-  it('it displays user iformation when the accordion is clicked on', async () => {
+  it('it displays user information when the accordion is clicked on', async () => {
     const toPreviousStep = sinon.spy();
     const getById = queryByAttribute.bind(null, 'id');
 
