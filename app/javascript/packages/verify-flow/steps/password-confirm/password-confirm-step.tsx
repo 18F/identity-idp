@@ -9,13 +9,13 @@ import parsePhoneNumber from 'libphonenumber-js';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
-function get_date_format(date: string | number | Date) {
+function getDateFormat(date: string | number | Date) {
   date = new Date(date);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 }
 
-function pii_summary(pii) {
+function PersonalInfoSummary(pii) {
   const phoneNumber = parsePhoneNumber(`+1${pii?.phone}`);
 
   return (
@@ -33,19 +33,17 @@ function pii_summary(pii) {
       </div>
       <div className="margin-top-4 h6">{t('idv.review.dob')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {get_date_format(pii?.dob)}
+        {getDateFormat(pii?.dob)}
       </div>
       <div className="margin-top-4 h6">{t('idv.review.ssn')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">{pii?.ssn}</div>
-      {pii?.phone ? (
+      {pii?.phone && (
         <>
-          <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
-          <div className="h4 text-bold ico-absolute ico-absolute-success">
-            {phoneNumber?.formatNational()}
-          </div>
+            <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
+            <div className="h4 text-bold ico-absolute ico-absolute-success">
+                {phoneNumber?.formatNational()}
+            </div>
         </>
-      ) : (
-        ''
       )}
     </div>
   );
@@ -56,7 +54,7 @@ function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
     <>
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: 'Login.gov' })}</p>
-      <Accordion header={t('idv.messages.review.intro')}>{pii_summary(value)}</Accordion>
+      <Accordion header={t('idv.messages.review.intro')}>{PersonalInfoSummary(value)}</Accordion>
       <FormStepsButton.Continue className="margin-bottom-0" />
     </>
   );
