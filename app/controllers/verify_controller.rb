@@ -4,13 +4,24 @@ class VerifyController < ApplicationController
 
   check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
-  before_action :redirect_root_path_to_first_step
-  before_action :validate_step
-  before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_vendor_session_started
-  before_action :confirm_profile_has_been_created, if: :first_step_is_personal_key?
+  # before_action :redirect_root_path_to_first_step
+  # before_action :validate_step
+  # before_action :confirm_two_factor_authenticated
+  # before_action :confirm_idv_vendor_session_started
+  # before_action :confirm_profile_has_been_created, if: :first_step_is_personal_key?
 
   def show
+    user_session[:idv][:applicant] =
+      { 'firstName' => 'Bruce',
+        'lastName' => 'Wayne',
+        'address1' => '1234 Batcave',
+        'address2' => '',
+        'city' => 'Batcavesville',
+        'state' => 'NY',
+        'zipcode' => '12345',
+        'dob' => '1988-03-30',
+        'ssn' => '900-12-3456',
+        'phone' => '2021234567'}
     @app_data = app_data
   end
 
@@ -25,6 +36,7 @@ class VerifyController < ApplicationController
   end
 
   def app_data
+
     user_session[:idv_api_store_key] ||= Base64.strict_encode64(random_encryption_key)
 
     {
