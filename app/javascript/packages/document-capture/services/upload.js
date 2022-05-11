@@ -7,15 +7,6 @@ import { FormError } from '@18f/identity-form-steps';
 export class UploadFormEntryError extends FormError {
   /** @type {string} */
   field = '';
-
-  /**
-   * @param {string} message
-   */
-  constructor(message) {
-    super();
-
-    this.message = message;
-  }
 }
 
 export class UploadFormEntriesError extends FormError {
