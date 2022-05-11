@@ -2,7 +2,34 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useDefineProperty } from '@18f/identity-test-helpers';
-import useHistoryParam from './use-history-param';
+import useHistoryParam, { getStepParam } from './use-history-param';
+
+describe('getStepParam', () => {
+  it('returns step', () => {
+    const path = 'step';
+    const result = getStepParam(path);
+
+    expect(result).to.equal('step');
+  });
+
+  context('with subpath', () => {
+    it('returns step', () => {
+      const path = 'step/subpath';
+      const result = getStepParam(path);
+
+      expect(result).to.equal('step');
+    });
+  });
+
+  context('with trailing or leading slashes', () => {
+    it('returns step', () => {
+      const path = '/step/';
+      const result = getStepParam(path);
+
+      expect(result).to.equal('step');
+    });
+  });
+});
 
 describe('useHistoryParam', () => {
   const sandbox = sinon.createSandbox();

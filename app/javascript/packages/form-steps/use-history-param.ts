@@ -5,6 +5,15 @@ interface HistoryOptions {
 }
 
 /**
+ * Returns the step name from a given path, ignoring any subpaths or leading or trailing slashes.
+ *
+ * @param path Path from which to extract step.
+ *
+ * @return Step name.
+ */
+export const getStepParam = (path: string): string => path.split('/').filter(Boolean)[0];
+
+/**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
  * Returns a `useState`-like tuple of the current value and a setter to assign the next parameter
  * value.
@@ -20,10 +29,16 @@ function useHistoryParam(
   initialValue?: string,
   { basePath }: HistoryOptions = {},
 ): [string | undefined, (nextParamValue?: string) => void] {
-  const getCurrentValue = () =>
-    (typeof basePath === 'string'
-      ? window.location.pathname.split(basePath)[1]?.replace(/^\/|\/$/g, '')
-      : window.location.hash.slice(1)) || undefined;
+  function getCurrentValue(): string | undefined {
+    const path =
+      typeof basePath === 'string'
+        ? window.location.pathname.split(basePath)[1]
+        : window.location.hash.slice(1);
+
+    if (path) {
+      return getStepParam(path);
+    }
+  }
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
 

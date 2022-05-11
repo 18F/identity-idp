@@ -4,6 +4,7 @@ export { default as RequiredValueMissingError } from './required-value-missing-e
 export { default as FormStepsContext } from './form-steps-context';
 export { default as FormStepsButton } from './form-steps-button';
 export { default as PromptOnNavigate } from './prompt-on-navigate';
+export { default as useHistoryParam, getStepParam } from './use-history-param';
 
 export type {
   FormStepError,

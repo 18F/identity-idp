@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { Dispatch } from 'react';
-import { FormStep } from '@18f/identity-form-steps';
+import { FormStep, getStepParam } from '@18f/identity-form-steps';
 import useSessionStorage from './use-session-storage';
 
 /**
@@ -28,7 +28,7 @@ const getStepIndex = (stepName: string, steps: FormStep[]) =>
 function useInitialStepValidation(basePath: string, steps: FormStep[]): [string, Dispatch<string>] {
   const [completedStep, setCompletedStep] = useSessionStorage('completedStep');
   const initialStep = useMemo(() => {
-    const pathStep = window.location.pathname.split(basePath)[1]?.replace(/\W/g, '');
+    const pathStep = getStepParam(window.location.pathname.split(basePath)[1]);
     const completedStepIndex = completedStep ? getStepIndex(completedStep, steps) : -1;
     const pathStepIndex = getStepIndex(pathStep, steps);
     const firstStepIndex = 0;
