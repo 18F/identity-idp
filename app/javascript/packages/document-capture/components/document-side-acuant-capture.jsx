@@ -62,7 +62,7 @@ function DocumentSideAcuantCapture({
       }
       onCameraAccessDeclined={() => {
         onError(new CameraAccessDeclinedError(), { field: side });
-        onError(new CameraAccessDeclinedError({ isDetail: true }));
+        onError(new CameraAccessDeclinedError(undefined, { isDetail: true }));
       }}
       errorMessage={error ? error.message : undefined}
       name={side}
