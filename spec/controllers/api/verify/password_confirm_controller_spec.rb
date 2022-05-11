@@ -68,7 +68,7 @@ describe Api::Verify::PasswordConfirmController do
         post :create, params: { password: 'iamnotbatman', user_bundle_token: jwt }
         response_json = JSON.parse(response.body)
         expect(response_json['personal_key']).to be_nil
-        expect(response_json['error']['password']).to eq(['invalid password'])
+        expect(response_json['error']['password']).to eq([I18n.t('idv.errors.incorrect_password')])
         expect(response.status).to eq 400
       end
     end
