@@ -29,15 +29,11 @@ class PhoneInputComponent < BaseComponent
   end
 
   def translated_country_code_names
-    pairs = {}
-    return pairs if I18n.locale == :en
+    return {} if I18n.locale == :en
 
-    supported_country_codes.each do |code|
-      code = code.downcase
-      pairs[code] = I18n.t("countries.#{code}")
-    end
-
-    pairs
+    supported_country_codes.map do |code|
+      [code.downcase, I18n.t("countries.#{code}")]
+    end.to_h
   end
 
   def international_phone_codes
