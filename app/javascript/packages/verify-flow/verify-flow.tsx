@@ -4,6 +4,7 @@ import { trackEvent } from '@18f/identity-analytics';
 import { STEPS } from './steps';
 import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import VerifyFlowAlert from './verify-flow-alert';
+import { useSyncedSecretValues } from './context/secrets-context';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -29,6 +30,8 @@ export interface VerifyFlowValues {
   phone?: string;
 
   ssn?: string;
+
+  password?: string;
 }
 
 interface VerifyFlowProps {
@@ -86,6 +89,7 @@ function VerifyFlow({
   appName,
   onComplete,
 }: VerifyFlowProps) {
+  const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
   const [currentStep, setCurrentStep] = useState(STEPS[0].name);
   useEffect(() => {
     logStepVisited(currentStep);
@@ -102,10 +106,11 @@ function VerifyFlow({
       <VerifyFlowAlert currentStep={currentStep} />
       <FormSteps
         steps={steps}
-        initialValues={initialValues}
+        initialValues={syncedValues}
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
+        onChange={setSyncedValues}
         onStepSubmit={logStepSubmitted}
         onStepChange={setCurrentStep}
         onComplete={onComplete}

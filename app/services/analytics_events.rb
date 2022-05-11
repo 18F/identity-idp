@@ -807,6 +807,36 @@ module AnalyticsEvents
     )
   end
 
+  # User visited idv phone of record
+  def idv_phone_of_record_visited
+    track_event('IdV: phone of record visited')
+  end
+
+  # User visited idv phone OTP delivery selection
+  def idv_phone_otp_delivery_selection_visit
+    track_event('IdV: Phone OTP delivery Selection Visited')
+  end
+
+  # @param [String] step the step the user was on when they clicked use a different phone number
+  # User decided to use a different phone number in idv
+  def idv_phone_use_different(step:, **extra)
+    track_event(
+      'IdV: use different phone number',
+      step: step,
+      **extra,
+    )
+  end
+
+  # User completed idv
+  def idv_review_complete
+    track_event('IdV: review complete')
+  end
+
+  # User visited idv phone of record
+  def idv_review_info_visited
+    track_event('IdV: review info visited')
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')

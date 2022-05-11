@@ -10,7 +10,7 @@ module Idv
     before_action :set_idv_phone
 
     def new
-      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+      analytics.idv_phone_otp_delivery_selection_visit
       render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 

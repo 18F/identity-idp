@@ -6,6 +6,7 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import type { VerifyFlowValues } from '../..';
 import { Accordion } from '@18f/identity-components';
 import parsePhoneNumber from 'libphonenumber-js';
+import type { ChangeEvent } from 'react';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
@@ -49,7 +50,7 @@ function PersonalInfoSummary(pii) {
   );
 }
 
-function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
+function PasswordConfirmStep({ registerField, onChange, value }: PasswordConfirmStepProps) {
   return (
     <>
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
@@ -57,7 +58,15 @@ function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
       <Accordion header={t('idv.messages.review.intro')}>
         <PersonalInfoSummary pii={value} />
       </Accordion>
-      <FormStepsButton.Continue className="margin-bottom-0" />
+      <input
+        ref={registerField('password')}
+        aria-label={t('idv.form.password')}
+        type="password"
+        onInput={(event: ChangeEvent<HTMLInputElement>) => {
+          onChange({ password: event.target.value });
+        }}
+      />
+      <FormStepsButton.Continue />
     </>
   );
 }

@@ -8,15 +8,13 @@ module Idv
     before_action :set_idv_form
 
     def new
-      if params[:step]
-        analytics.track_event(Analytics::IDV_PHONE_USE_DIFFERENT, step: params[:step])
-      end
+      analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 
       redirect_to failure_url(:fail) and return if throttle.throttled?
 
       async_state = step.async_state
       if async_state.none?
-        analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
+        analytics.idv_phone_of_record_visited
         render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
         render :wait

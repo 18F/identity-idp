@@ -329,7 +329,7 @@ Rails.application.routes.draw do
     get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
 
     namespace :api do
-      post '/verify/complete' => 'verify/complete#create'
+      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
