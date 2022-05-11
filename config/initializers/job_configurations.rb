@@ -58,6 +58,12 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
+      # Send Credential Reuse Report to S3
+      credential_reuse_report: {
+        class: 'Reports::CredentialReuseReport',
+        cron: cron_24h,
+        args: -> { [Time.zone.today] },
+      },
       # Send Sp User Quotas Report to S3
       sp_user_quotas: {
         class: 'Reports::SpUserQuotasReport',
