@@ -54,7 +54,9 @@ function PasswordConfirmStep({ value }: PasswordConfirmStepProps) {
     <>
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: 'Login.gov' })}</p>
-      <Accordion header={t('idv.messages.review.intro')}>{PersonalInfoSummary(value)}</Accordion>
+      <Accordion header={t('idv.messages.review.intro')}>
+        <PersonalInfoSummary pii={value} />
+      </Accordion>
       <FormStepsButton.Continue className="margin-bottom-0" />
     </>
   );

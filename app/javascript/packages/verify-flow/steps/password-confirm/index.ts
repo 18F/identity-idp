@@ -5,6 +5,6 @@ import form from './password-confirm-step';
 
 export default {
   name: 'password_confirm',
-  title: t('titles.idv.session.review'),
+  title: t('idv.titles.idv.session.review'),
   form,
 } as FormStep<VerifyFlowValues>;
