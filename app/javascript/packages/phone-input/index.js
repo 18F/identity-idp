@@ -53,13 +53,13 @@ export class PhoneInput extends HTMLElement {
 
     try {
       this.countryCodePairs = JSON.parse(
-        this.querySelector('#country_codes').dataset.translatedCountryCodeNames
+        this.querySelector('#country_codes').dataset.translatedCountryCodeNames,
       );
-    } catch { }
+    } catch {}
 
     try {
       this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
-    } catch { }
+    } catch {}
 
     if (!this.textInput || !this.codeInput) {
       return;
@@ -92,7 +92,7 @@ export class PhoneInput extends HTMLElement {
     if (codeInput && codeInput.dataset.countries) {
       try {
         return JSON.parse(codeInput.dataset.countries);
-      } catch { }
+      } catch {}
     }
 
     return undefined;
