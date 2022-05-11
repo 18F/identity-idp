@@ -1,7 +1,7 @@
 require 'identity/hostdata'
 
 module Reports
-  class CredentialReuseReport < BaseReport
+  class IdentityReuseReport < BaseReport
     REPORT_NAME = 'credential-reuse-report'.freeze
 
     include GoodJob::ActiveJobExtensions::Concurrency

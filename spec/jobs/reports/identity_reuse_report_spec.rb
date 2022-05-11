@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::CredentialReuseReport do
+describe Reports::IdentityReuseReport do
   subject { described_class.new }
 
   let(:issuer) { 'foo' }

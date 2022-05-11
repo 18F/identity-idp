@@ -60,7 +60,7 @@ else
       },
       # Send Credential Reuse Report to S3
       credential_reuse_report: {
-        class: 'Reports::CredentialReuseReport',
+        class: 'Reports::IdentityReuseReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },
