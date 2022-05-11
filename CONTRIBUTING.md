@@ -26,10 +26,10 @@ pull request is about.
 - If the pull request is in response to a Jira ticket, include the ticket ID in
 the commit title (e.g. "LG-1234 Add the stuff to the thing")
 
-- Include a changelog message which should describe the changes in human-
-readable terms. These messages are included in release notes, so they should be
-easy to understand for our partners and users. In the rare case that a change
-should not be included in release notes, add `[skip changelog]` to the commit.
+- Include a changelog message which describes the changes in human-readable
+terms. These messages are included in release notes, so they should be easy to
+understand for our partners and users. In the rare case that a change should
+not be included in release notes, add `[skip changelog]` to the commit.
 
 Example:
 
