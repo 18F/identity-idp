@@ -218,8 +218,16 @@ Rails.application.routes.draw do
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
-    get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
-    patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    
+    if IdentityConfig.store.select_multiple_mfa_options
+      get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
+      patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
+      get '/two_factor_options', to: redirect('/authentication_methods_setup')
+      patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    else
+      get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
+      patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    end
     get '/mfa_setup' => 'users/mfa_selection#index'
     patch '/mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
