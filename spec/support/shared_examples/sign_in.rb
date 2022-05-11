@@ -212,6 +212,8 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
     else
       raise "unknown scenario #{scenario}"
     end
+
+    user
   end
 
 
