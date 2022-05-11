@@ -227,7 +227,7 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
   ].each do |description, scenario|
     context description do
       context "protocol: #{protocol}, ial: #{sp_ial}" do
-        it 'prompts the user to get a new personal key when signing in with email/password', js: true do
+        it 'prompts the user to get a new personal key when using email/password', js: true do
           user = user_with_broken_personal_key(protocol, scenario)
 
           case sp_ial
