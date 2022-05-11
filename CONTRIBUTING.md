@@ -50,7 +50,10 @@ Database Cleaner to ignore those static tables.
 changelog: Internal, Automated Testing, Improve performance of test suite
 ```
 
-Refer to the [changelog check script](https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb) for a complete list of acceptable changelog categories.
+Refer to the [changelog check script] for a complete list of acceptable
+changelog categories.
+
+[changelog check script]: https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb
 
 ### Style, Readability, and OO
 - Rubocop or Reek offenses are not disabled unless they are false positives.
