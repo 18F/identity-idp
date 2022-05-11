@@ -29,7 +29,7 @@ module Api
 
       response = FormResponse.new(
         success: form_valid?,
-        errors: errors.to_hash,
+        errors: errors,
         extra: extra_attributes,
       )
       [response, personal_key]
@@ -106,19 +106,19 @@ module Api
     def valid_jwt
       @user_bundle = Api::UserBundleDecorator.new(user_bundle: jwt, public_key: public_key)
     rescue JWT::DecodeError => err
-      errors.add(:jwt, "decode error: #{err.message}", type: :invalid)
+      errors.add(:jwt, "decode error: #{err.message}", type: :decode_error)
     rescue ::Api::UserBundleError => err
-      errors.add(:jwt, "malformed user bundle: #{err.message}", type: :invalid)
+      errors.add(:jwt, "malformed user bundle: #{err.message}", type: :malfored_user_bundle)
     end
 
     def valid_user
       return if user
-      errors.add(:user, 'user not found', type: :invalid)
+      errors.add(:user, 'user not found', type: :invalid_user)
     end
 
     def valid_password
       return if user&.valid_password?(password)
-      errors.add(:password, 'invalid password', type: :invalid)
+      errors.add(:password, 'invalid password', type: :invalid_password)
     end
 
     def form_valid?
