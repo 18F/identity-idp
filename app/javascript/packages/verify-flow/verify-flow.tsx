@@ -90,17 +90,17 @@ function VerifyFlow({
   appName,
   onComplete,
 }: VerifyFlowProps) {
-  const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
-  const [currentStep, setCurrentStep] = useState(STEPS[0].name);
-  const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, STEPS);
-  useEffect(() => {
-    logStepVisited(currentStep);
-  }, [currentStep]);
-
   let steps = STEPS;
   if (enabledStepNames) {
     steps = steps.filter(({ name }) => enabledStepNames.includes(name));
   }
+
+  const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
+  const [currentStep, setCurrentStep] = useState(steps[0].name);
+  const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
+  useEffect(() => {
+    logStepVisited(currentStep);
+  }, [currentStep]);
 
   function onStepSubmit(stepName: string) {
     logStepSubmitted(stepName);
