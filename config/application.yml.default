@@ -102,6 +102,7 @@ idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 in_person_proofing_enabled: true
+include_slo_in_saml_metadata: false
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
