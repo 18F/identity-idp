@@ -4,12 +4,10 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
-import * as analytics from '@18f/identity-analytics';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
-import FormStepsButton from './form-steps-button';
-import type { FormStep } from './form-steps';
+import FormStepsContinueButton from './form-steps-continue-button';
 
 interface StepValues {
   secondInputOne?: string;
@@ -19,33 +17,23 @@ interface StepValues {
   changed?: boolean;
 }
 
-const sleep = (ms: number) => () => new Promise<void>((resolve) => setTimeout(resolve, ms));
-
 describe('FormSteps', () => {
   const sandbox = sinon.createSandbox();
 
-  beforeEach(() => {
-    sandbox.spy(analytics, 'trackEvent');
-  });
-
   afterEach(() => {
     sandbox.restore();
-    if (sandbox.clock) {
-      sandbox.clock.restore();
-    }
   });
 
-  const STEPS: FormStep[] = [
+  const STEPS = [
     {
       name: 'first',
       title: 'First Title',
-      form: ({ errors }) => (
+      form: () => (
         <>
           <PageHeading>First Title</PageHeading>
           <span>First</span>
-          <FormStepsButton.Continue />
+          <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
-          <span>Errors: {errors.map(({ error }) => error.message).join(',')}</span>
         </>
       ),
     },
@@ -91,7 +79,7 @@ describe('FormSteps', () => {
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
-          <FormStepsButton.Continue />
+          <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
@@ -102,7 +90,7 @@ describe('FormSteps', () => {
         <>
           <PageHeading>Last Title</PageHeading>
           <span>Last</span>
-          <FormStepsButton.Submit />
+          <FormStepsContinueButton />
           <span data-testid="context-value">{JSON.stringify(useContext(FormStepsContext))}</span>
         </>
       ),
@@ -157,75 +145,20 @@ describe('FormSteps', () => {
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
-  it('proceeds after resolving step submit implementation, if provided', async () => {
-    sandbox.useFakeTimers();
-    const steps = [{ ...STEPS[0], submit: sleep(1000) }, STEPS[1]];
-    const { getByText } = render(<FormSteps steps={steps} />);
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton, { advanceTimers: sandbox.clock.tick });
-
-    expect(getByText('First Title')).to.be.ok();
-    expect(
-      continueButton
-        .closest('lg-spinner-button')!
-        .classList.contains('spinner-button--spinner-active'),
-    ).to.be.true();
-    await sandbox.clock.tickAsync(1000);
-
-    expect(getByText('Second Title')).to.be.ok();
-  });
-
-  it('uses submit implementation return value as patch to form values', async () => {
-    const steps = [
-      { ...STEPS[0], submit: () => Promise.resolve({ secondInputOne: 'received' }) },
-      STEPS[1],
-    ];
-    const { getByText, findByDisplayValue } = render(<FormSteps steps={steps} />);
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton);
-
-    expect(await findByDisplayValue('received')).to.be.ok();
-  });
-
-  it('does not proceed if step submit implementation throws an error', async () => {
-    sandbox.useFakeTimers();
-    const steps = [
-      {
-        ...STEPS[0],
-        submit: () =>
-          sleep(1000)().then(() => {
-            throw new Error('oops');
-          }),
-      },
-      STEPS[1],
-    ];
-    const { getByText } = render(<FormSteps steps={steps} />);
-
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton, { advanceTimers: sandbox.clock.tick });
-
-    await sandbox.clock.tickAsync(1000);
-
-    expect(getByText('Errors: oops')).to.be.ok();
-  });
-
   it('renders the active step', async () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
-    const continueButton = getByText('forms.buttons.continue');
-    await userEvent.click(continueButton, { advanceTimers: sandbox.clock.tick });
-
-    expect(getByText('First Title')).to.be.ok();
-    expect(
-      continueButton
-        .closest('lg-spinner-button')!
-        .classList.contains('spinner-button--spinner-active'),
-    ).to.be.true();
-    await sandbox.clock.tickAsync(1000);
+    await userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('Second Title')).to.be.ok();
+  });
+
+  it('renders continue button until at last step', async () => {
+    const { getByText } = render(<FormSteps steps={STEPS} />);
+
+    await userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
   it('calls onStepChange callback on step change', async () => {
@@ -247,16 +180,15 @@ describe('FormSteps', () => {
     expect(onStepChange.callCount).to.equal(1);
   });
 
-  it('calls onChange with updated form values', async () => {
-    const onChange = sinon.spy();
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} onChange={onChange} />);
+  it('renders submit button at last step', async () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     await userEvent.click(getByText('forms.buttons.continue'));
     await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
+    await userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'o' });
-    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'on' });
-    expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'one' });
+    expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
 
   it('submits with form values', async () => {
@@ -481,7 +413,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Attempting to submit without adjusting field value does not submit and shows error.
-    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputOne));
 
@@ -491,7 +423,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.true();
 
     // Default required validation should still happen and take the place of any unknown errors.
-    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.called).to.be.false();
     await waitFor(() => expect(document.activeElement).to.equal(inputTwo));
     expect(inputOne.matches('[data-is-error]')).to.be.false();
@@ -504,7 +436,7 @@ describe('FormSteps', () => {
     expect(inputTwo.matches('[data-is-error]')).to.be.false();
 
     // The user can submit once all errors have been resolved.
-    await userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.calledOnce).to.be.true();
   });
 
@@ -534,7 +466,6 @@ describe('FormSteps', () => {
 
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
-      isSubmitting: false,
     });
 
     await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
@@ -545,7 +476,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: false,
-      isSubmitting: false,
     });
 
     await userEvent.type(getByLabelText('Second Input One'), 'one');
@@ -555,7 +485,6 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#last');
     expect(JSON.parse(getByTestId('context-value').textContent!)).to.deep.equal({
       isLastStep: true,
-      isSubmitting: false,
     });
   });
 
