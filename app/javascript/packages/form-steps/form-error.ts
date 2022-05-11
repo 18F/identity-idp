@@ -17,11 +17,7 @@ class FormError extends Error {
   isDetail: boolean;
 
   constructor(message?: string, options?: FormErrorOptions) {
-    super();
-
-    if (message) {
-      this.message = message;
-    }
+    super(message);
 
     this.isDetail = Boolean(options?.isDetail);
     this.field = options?.field;

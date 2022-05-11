@@ -24,4 +24,16 @@ describe('FormError', () => {
     expect(error.isDetail).to.be.false();
     expect(error.field).to.equal('field');
   });
+
+  it('supports message on subclass property initializer', () => {
+    class ExampleFormError extends FormError {
+      message = 'message';
+    }
+
+    const error = new ExampleFormError();
+
+    expect(error.message).to.equal('message');
+    expect(error.isDetail).to.be.false();
+    expect(error.field).to.be.undefined();
+  });
 });
