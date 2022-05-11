@@ -37,7 +37,7 @@ describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
+        RedisThrottle.new(throttle_type: :verify_personal_key, user: user).set_as_throttled!
 
         get :new
 
@@ -49,7 +49,7 @@ describe Users::VerifyPersonalKeyController do
       let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
 
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
+        RedisThrottle.new(throttle_type: :verify_personal_key, user: user).set_as_throttled!
       end
 
       it 'renders throttled page' do
@@ -143,7 +143,7 @@ describe Users::VerifyPersonalKeyController do
           throttle_type: :verify_personal_key,
         ).once
 
-        max_attempts = Throttle.max_attempts(:verify_personal_key)
+        max_attempts = RedisThrottle.max_attempts(:verify_personal_key)
         (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
 
         expect(response).to render_template(:throttled)

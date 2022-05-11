@@ -83,12 +83,10 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when throttled from submission' do
       before do
-        create(
-          :throttle,
-          :with_throttled,
-          user: document_capture_session.user,
+        RedisThrottle.new(
           throttle_type: :idv_doc_auth,
-        )
+          user: document_capture_session.user,
+        ).set_as_throttled!
         form.submit
       end
 

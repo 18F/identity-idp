@@ -121,7 +121,7 @@ feature 'Sign Up' do
       end
 
       timeout = distance_of_time_in_words(
-        Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
+        RedisThrottle.attempt_window_in_minutes(:phone_confirmation).minutes,
       )
 
       expect(current_path).to eq(two_factor_options_path)

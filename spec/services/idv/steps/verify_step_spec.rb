@@ -105,7 +105,7 @@ describe Idv::Steps::VerifyStep do
 
       before do
         stub_const(
-          'Throttle::THROTTLE_CONFIG',
+          'RedisThrottle::THROTTLE_CONFIG',
           {
             proof_ssn: {
               max_attempts: 2,

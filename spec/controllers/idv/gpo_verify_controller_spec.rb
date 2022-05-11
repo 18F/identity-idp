@@ -36,7 +36,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       it 'shows throttled page is user is throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        RedisThrottle.new(throttle_type: :verify_gpo_key, user: user).set_as_throttled!
 
         action
 
@@ -56,7 +56,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'with throttle reached' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        RedisThrottle.new(throttle_type: :verify_gpo_key, user: user).set_as_throttled!
       end
 
       it 'renders throttled page' do

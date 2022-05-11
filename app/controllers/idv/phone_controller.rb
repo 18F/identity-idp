@@ -39,7 +39,7 @@ module Idv
     private
 
     def throttle
-      @throttle ||= Throttle.for(user: current_user, throttle_type: :proof_address)
+      @throttle ||= RedisThrottle.new(user: current_user, throttle_type: :proof_address)
     end
 
     def max_attempts_reached

@@ -69,7 +69,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
+        RedisThrottle.new(throttle_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -90,7 +90,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
+        RedisThrottle.new(throttle_type: :proof_address, user: user).set_as_throttled!
       end
 
       it 'assigns expiration time' do
@@ -116,12 +116,10 @@ describe Idv::SessionErrorsController do
 
       before do
         stub_sign_in
-        create(
-          :throttle,
-          :with_throttled,
-          target: Pii::Fingerprinter.fingerprint(ssn),
+        RedisThrottle.new(
           throttle_type: :proof_ssn,
-        )
+          target: Pii::Fingerprinter.fingerprint(ssn),
+        ).set_as_throttled!
         controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
       end
 
@@ -143,7 +141,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_doc_auth)
+        RedisThrottle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
       end
 
       it 'assigns expiration time' do

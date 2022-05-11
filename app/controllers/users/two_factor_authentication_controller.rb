@@ -206,7 +206,7 @@ module Users
     end
 
     def phone_confirmation_throttle
-      @phone_confirmation_throttle ||= Throttle.for(
+      @phone_confirmation_throttle ||= RedisThrottle.new(
         user: current_user,
         throttle_type: :phone_confirmation,
       )
