@@ -42,8 +42,9 @@ es:
       review: Vuelve a ingresar tu contraseña
     mfa_setup:
       first_authentication_method: ¡Has agregado tu primer método de autenticación!
-      suggest_second_mfa: ¡Has agregado tu primer método de autenticación! Agrega un segundo método como respaldo.
       multiple_authentication_methods_setup: ¡Se ha agregado un %{method_count} código de autenticación!
+      suggest_second_mfa: ¡Has agregado tu primer método de autenticación! Agrega un
+        segundo método como respaldo.
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:
       authorization: Autorización de OpenID Connect

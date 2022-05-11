@@ -151,25 +151,42 @@ describe Users::WebauthnSetupController do
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
+    context ' Multiple MFA options turned on' do
+      let(:mfa_selections) { ['webauthn_platform', 'voice'] }
+      let(:suggest_second_mfa) { false }
 
-    context 'with multiple MFA methods chosen on account creation' do
       before do
-        controller.user_session[:mfa_selections] = ['webauthn_platform', 'voice']
+        controller.user_session[:mfa_selections] = mfa_selections
+        controller.user_session[:suggest_second_mfa] = suggest_second_mfa
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
-      it 'should direct user to phone page' do
-        patch :confirm, params: params
+      context 'with multiple MFA methods chosen on account creation' do
+        it 'should direct user to next method confirmation page' do
+          patch :confirm, params: params
 
-        expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+          expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+        end
+      end
+
+      context 'with a single MFA method chosen on account creation' do
+        let(:mfa_selections) { ['webauthn_platform'] }
+        let(:suggest_second_mfa) { true }
+        it 'should direct user to second mfa suggestion page' do
+          patch :confirm, params: params
+
+          expect(response).to redirect_to(auth_method_confirmation_url)
+        end
       end
     end
 
-    context 'with a single MFA method chosen on account creation' do
-      it 'should direct user to account page' do
-        patch :confirm, params: params
+    context 'Multiple MFA options turned off' do
+      context 'with a single MFA method chosen' do
+        it 'should direct user to second mfa suggestion page' do
+          patch :confirm, params: params
 
-        expect(response).to redirect_to(account_url)
+          expect(response).to redirect_to(account_url)
+        end
       end
     end
   end
