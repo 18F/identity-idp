@@ -49,32 +49,36 @@ class TwoFactorOptionsPresenter
   private
 
   def piv_cac_option
-    return [] unless current_device_is_desktop?
+    return [] unless current_device_is_desktop? || mfa_context.piv_cac_configurations.any?
     [TwoFactorAuthentication::PivCacSelectionPresenter.new]
   end
 
   def webauthn_option
-    return [] if piv_cac_required?
+    return [] if piv_cac_required? || mfa_context.webauthn_roaming_configurations.any?
     [TwoFactorAuthentication::WebauthnSelectionPresenter.new]
   end
 
   def webauthn_platform_option
-    return [] if piv_cac_required? || !IdentityConfig.store.platform_authentication_enabled
+    return [] if (piv_cac_required? ||
+        !IdentityConfig.store.platform_authentication_enabled ||
+        mfa_context.webauthn_platform_configurations.any?)
     [TwoFactorAuthentication::WebauthnPlatformSelectionPresenter.new]
   end
 
   def phone_options
-    return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
+    return [] if (piv_cac_required? || aal3_only? ||
+      IdentityConfig.store.hide_phone_mfa_signup ||
+      mfa_context.phone_configurations.any?)
     [TwoFactorAuthentication::PhoneSelectionPresenter.new]
   end
 
   def totp_option
-    return [] if piv_cac_required? || aal3_only?
+    return [] if piv_cac_required? || aal3_only? || mfa_context.auth_app_configurations.any?
     [TwoFactorAuthentication::AuthAppSelectionPresenter.new]
   end
 
   def backup_code_option
-    return [] if piv_cac_required? || aal3_only?
+    return [] if piv_cac_required? || aal3_only? || mfa_context.backup_code_configurations.any?
     [TwoFactorAuthentication::BackupCodeSelectionPresenter.new]
   end
 
@@ -92,5 +96,9 @@ class TwoFactorOptionsPresenter
 
   def mfa_policy
     @mfa_policy ||= MfaPolicy.new(@user)
+  end
+
+  def mfa_context
+    @mfa_context ||= MfaContext.new(@user)
   end
 end
