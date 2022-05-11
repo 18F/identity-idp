@@ -37,11 +37,13 @@ const isStorageEqual = (values: object, nextValues: object) =>
 
 function useIdleCallbackEffect(callback: () => void, deps: any[]) {
   useEffect(() => {
+    // Idle callback is implemented as a progressive enhancement in supported environments...
     if (typeof requestIdleCallback === 'function') {
       const callbackId = requestIdleCallback(callback);
       return () => cancelIdleCallback(callbackId);
     }
 
+    // ...where the fallback behavior is to invoke the callback synchronously.
     callback();
   }, deps);
 }
