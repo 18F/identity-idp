@@ -88,7 +88,7 @@ export interface FormStep<V extends FormValues = {}> {
   /**
    * Optionally-asynchronous submission behavior, expected to throw any submission error.
    */
-  submit?: (values: V) => void | Promise<void>;
+  submit?: (values: V) => void | Record<string, any> | Promise<void | Record<string, any>>;
 
   /**
    * Human-readable step label.
@@ -135,9 +135,14 @@ interface FormStepsProps {
   autoFocus?: boolean;
 
   /**
+   * Form values change callback.
+   */
+  onChange?: (values: FormValues) => void;
+
+  /**
    * Form completion callback.
    */
-  onComplete?: (values: Record<string, any>) => void;
+  onComplete?: (values: FormValues) => void;
 
   /**
    * Callback triggered on step change.
@@ -213,6 +218,7 @@ function getFieldActiveErrorFieldElement(
 
 function FormSteps({
   steps = [],
+  onChange = () => {},
   onComplete = () => {},
   onStepChange = () => {},
   onStepSubmit = () => {},
@@ -265,6 +271,7 @@ function FormSteps({
   useStepTitle(step, titleFormat);
   useDidUpdateEffect(() => onStepChange(stepName!), [step]);
   useDidUpdateEffect(onPageTransition, [step]);
+  useDidUpdateEffect(() => onChange(values), [values]);
 
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
@@ -311,6 +318,8 @@ function FormSteps({
     return null;
   }
 
+  const setPatchValues = (patch: Partial<FormValues>) =>
+    setValues((prevValues) => ({ ...prevValues, ...patch }));
   const unknownFieldErrors = activeErrors.filter(
     ({ field }) => !field || !fields.current[field]?.element,
   );
@@ -342,7 +351,10 @@ function FormSteps({
     if (submit) {
       try {
         setIsSubmitting(true);
-        await submit(values);
+        const patchValues = await submit(values);
+        if (patchValues) {
+          setPatchValues(patchValues);
+        }
         setIsSubmitting(false);
       } catch (error) {
         setActiveErrors([{ error }]);
@@ -389,7 +401,7 @@ function FormSteps({
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
             );
-            setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+            setPatchValues(nextValuesPatch);
           })}
           onError={ifStillMounted((error, { field } = {}) => {
             if (field) {

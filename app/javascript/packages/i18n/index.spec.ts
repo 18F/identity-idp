@@ -20,12 +20,17 @@ describe('I18n', () => {
     strings: {
       known: 'translation',
       messages: { one: 'one message', other: '%{count} messages' },
+      list: ['one', 'two'],
     },
   });
 
   describe('#t', () => {
     it('returns localized key value', () => {
       expect(t('known')).to.equal('translation');
+    });
+
+    it('returns multiple localized key values', () => {
+      expect(t(['known', 'known'])).to.deep.equal(['translation', 'translation']);
     });
 
     it('falls back to key value', () => {
@@ -43,6 +48,22 @@ describe('I18n', () => {
 
       it('returns other count, with variables replaced', () => {
         expect(t('messages', { count: 2 })).to.equal('2 messages');
+      });
+    });
+
+    describe('array entry', () => {
+      context('with a singular key', () => {
+        it('returns array of strings', () => {
+          expect(t('list')).to.deep.equal(['one', 'two']);
+        });
+      });
+
+      context('with an array of the key', () => {
+        it('returns array of strings', () => {
+          const list = t(['list']).map((value) => value);
+
+          expect(list).to.deep.equal(['one', 'two']);
+        });
       });
     });
   });

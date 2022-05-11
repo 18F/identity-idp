@@ -18,6 +18,7 @@ type VerifyFlowStepIndicatorStep =
  * Mapping of flow form steps to corresponding step indicator step.
  */
 const FLOW_STEP_STEP_MAPPING: Record<string, VerifyFlowStepIndicatorStep> = {
+  password_confirm: 'secure_account',
   personal_key: 'secure_account',
   personal_key_confirm: 'secure_account',
 };

@@ -10,6 +10,9 @@ describe('VerifyFlow', () => {
 
   beforeEach(() => {
     sandbox.spy(analytics, 'trackEvent');
+    sandbox.stub(window, 'fetch').resolves({
+      json: () => Promise.resolve({ personal_key: personalKey }),
+    } as Response);
   });
 
   afterEach(() => {
@@ -19,33 +22,28 @@ describe('VerifyFlow', () => {
   it('advances through flow to completion', async () => {
     const onComplete = sinon.spy();
 
-    const { getByText, getByLabelText } = render(
+    const { getByText, findByText, getByLabelText } = render(
       <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={onComplete} />,
     );
 
-    // Personal key
-    expect(getByText('idv.messages.confirm')).to.be.ok();
+    // Password confirm
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm visited');
+    await userEvent.type(getByLabelText('idv.form.password'), 'password');
     await userEvent.click(getByText('forms.buttons.continue'));
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm submitted');
+
+    // Personal key
+    await findByText('idv.messages.confirm');
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
+    await userEvent.click(getByText('forms.buttons.continue'));
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key submitted');
 
     // Personal key confirm
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key confirm visited');
     expect(getByText('idv.messages.confirm')).to.be.ok();
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');
 
     expect(onComplete).to.have.been.called();
-  });
-
-  it('calls trackEvents for personal key steps', async () => {
-    const { getByLabelText, getByText, getAllByText } = render(
-      <VerifyFlow appName="Example App" initialValues={{ personalKey }} onComplete={() => {}} />,
-    );
-    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
-
-    await userEvent.click(getByText('forms.buttons.continue'));
-    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key confirm visited');
-    await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
-    await userEvent.click(getAllByText('forms.buttons.continue')[1]);
-
-    expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key submitted');
   });
 });
