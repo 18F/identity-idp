@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::Verify::CompleteController do
+describe Api::Verify::PasswordConfirmController do
   include PersonalKeyValidator
   include SamlAuthHelper
 
