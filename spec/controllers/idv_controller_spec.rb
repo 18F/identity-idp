@@ -28,7 +28,7 @@ describe IdvController do
         :profile,
         user: user,
       )
-      RedisThrottle.new(throttle_type: :idv_resolution, user: user).set_as_throttled!
+      Throttle.new(throttle_type: :idv_resolution, user: user).set_as_throttled!
 
       stub_sign_in(profile.user)
 

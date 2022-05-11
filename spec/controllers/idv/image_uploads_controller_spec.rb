@@ -149,7 +149,7 @@ describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        RedisThrottle.new(throttle_type: :idv_doc_auth, user: user).increment!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment!
 
         action
 
@@ -158,13 +158,13 @@ describe Idv::ImageUploadsController do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: RedisThrottle.max_attempts(:idv_doc_auth) - 2,
+            remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
           },
         )
       end
 
       it 'returns an error when throttled' do
-        RedisThrottle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
 
         action
 
@@ -180,7 +180,7 @@ describe Idv::ImageUploadsController do
       end
 
       it 'tracks analytics' do
-        RedisThrottle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
 
         stub_analytics
 

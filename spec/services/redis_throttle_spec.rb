@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe RedisThrottle do
+RSpec.describe Throttle do
   let(:throttle_type) { :idv_doc_auth }
   let(:max_attempts) { 3 }
   let(:attempt_window) { 10 }
 
   before do
     stub_const(
-      'RedisThrottle::THROTTLE_CONFIG',
+      'Throttle::THROTTLE_CONFIG',
       {
         throttle_type => { max_attempts: max_attempts, attempt_window: attempt_window },
       }.with_indifferent_access.freeze,
@@ -17,34 +17,34 @@ RSpec.describe RedisThrottle do
   shared_examples 'throttle' do
     describe '.new' do
       context 'when target is a string' do
-        subject(:for_target) { RedisThrottle.new(target: target, throttle_type: throttle_type) }
+        subject(:for_target) { Throttle.new(target: target, throttle_type: throttle_type) }
 
         context 'target is not a string' do
           it 'raises an error' do
-            expect { RedisThrottle.new(target: 3, throttle_type: throttle_type) }.
+            expect { Throttle.new(target: 3, throttle_type: throttle_type) }.
               to raise_error(ArgumentError)
           end
         end
       end
 
       it 'throws an error when neither user nor target are provided' do
-        expect { RedisThrottle.new(throttle_type: throttle_type) }.
+        expect { Throttle.new(throttle_type: throttle_type) }.
           to raise_error(
             ArgumentError,
-            'RedisThrottle must have a user or a target, but neither were provided',
+            'Throttle must have a user or a target, but neither were provided',
           )
       end
 
       it 'throws an error when both user and target are provided' do
-        expect { RedisThrottle.new(throttle_type: throttle_type) }.
+        expect { Throttle.new(throttle_type: throttle_type) }.
           to raise_error(
             ArgumentError,
-            'RedisThrottle must have a user or a target, but neither were provided',
+            'Throttle must have a user or a target, but neither were provided',
           )
       end
 
       it 'throws an error for an invalid throttle_type' do
-        expect { RedisThrottle.new(throttle_type: :abc_123, target: '1') }.
+        expect { Throttle.new(throttle_type: :abc_123, target: '1') }.
           to raise_error(
             ArgumentError,
             'throttle_type is not valid',
@@ -54,26 +54,26 @@ RSpec.describe RedisThrottle do
 
     describe '.attempt_window_in_minutes' do
       it 'returns configured attempt window for throttle type' do
-        expect(RedisThrottle.attempt_window_in_minutes(throttle_type)).to eq(attempt_window)
+        expect(Throttle.attempt_window_in_minutes(throttle_type)).to eq(attempt_window)
       end
 
       it 'is indifferent to throttle type stringiness' do
-        expect(RedisThrottle.attempt_window_in_minutes(throttle_type.to_s)).to eq(attempt_window)
+        expect(Throttle.attempt_window_in_minutes(throttle_type.to_s)).to eq(attempt_window)
       end
     end
 
     describe '.max_attempts' do
       it 'returns configured attempt window for throttle type' do
-        expect(RedisThrottle.max_attempts(throttle_type)).to eq(max_attempts)
+        expect(Throttle.max_attempts(throttle_type)).to eq(max_attempts)
       end
 
       it 'is indifferent to throttle type stringiness' do
-        expect(RedisThrottle.max_attempts(throttle_type.to_s)).to eq(max_attempts)
+        expect(Throttle.max_attempts(throttle_type.to_s)).to eq(max_attempts)
       end
     end
 
     describe '#increment!' do
-      subject(:throttle) { RedisThrottle.new(target: 'aaa', throttle_type: :idv_doc_auth) }
+      subject(:throttle) { Throttle.new(target: 'aaa', throttle_type: :idv_doc_auth) }
 
       it 'increments db and redis attempts' do
         expect(throttle.attempts).to eq 0
@@ -88,7 +88,7 @@ RSpec.describe RedisThrottle do
       let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
       let(:attempt_window_in_minutes) { IdentityConfig.store.doc_auth_attempt_window_in_minutes }
 
-      subject(:throttle) { RedisThrottle.new(target: '1', throttle_type: throttle_type) }
+      subject(:throttle) { Throttle.new(target: '1', throttle_type: throttle_type) }
 
       it 'returns true if throttled' do
         max_attempts.times do
@@ -119,7 +119,7 @@ RSpec.describe RedisThrottle do
     end
 
     describe '#throttled_else_increment?' do
-      subject(:throttle) { RedisThrottle.new(target: 'aaaa', throttle_type: :idv_doc_auth) }
+      subject(:throttle) { Throttle.new(target: 'aaaa', throttle_type: :idv_doc_auth) }
 
       context 'throttle has hit limit' do
         before do
@@ -146,7 +146,7 @@ RSpec.describe RedisThrottle do
 
     describe '#expires_at' do
       let(:attempted_at) { nil }
-      let(:throttle) { RedisThrottle.new(target: '1', throttle_type: throttle_type) }
+      let(:throttle) { Throttle.new(target: '1', throttle_type: throttle_type) }
 
       context 'without having attempted' do
         it 'returns current time' do
@@ -182,7 +182,7 @@ RSpec.describe RedisThrottle do
       let(:target) { '1' }
       let(:subject) { described_class }
 
-      subject(:throttle) { RedisThrottle.new(target: target, throttle_type: throttle_type) }
+      subject(:throttle) { Throttle.new(target: target, throttle_type: throttle_type) }
 
       it 'resets attempt count to 0' do
         throttle.increment!

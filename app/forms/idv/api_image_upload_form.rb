@@ -271,7 +271,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= RedisThrottle.new(
+      @throttle ||= Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )

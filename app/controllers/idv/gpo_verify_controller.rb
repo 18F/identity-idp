@@ -48,7 +48,7 @@ module Idv
     private
 
     def throttle
-      @throttle ||= RedisThrottle.new(
+      @throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :verify_gpo_key,
       )

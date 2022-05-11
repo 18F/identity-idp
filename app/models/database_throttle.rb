@@ -1,9 +1,10 @@
-class Throttle < ApplicationRecord
+class DatabaseThrottle < ApplicationRecord
+  self.table_name = 'throttles'
   belongs_to :user
   validates :user_id, presence: true, unless: :target?
   validates :target, presence: true, unless: :user_id?
 
-  # DEPRECATED, see RedisThrottle
+  # DEPRECATED, see Throttle
   enum throttle_type: {
     idv_doc_auth: 1,
     reg_unconfirmed_email: 2,
@@ -68,12 +69,12 @@ class Throttle < ApplicationRecord
   def remaining_count
     return 0 if throttled?
 
-    RedisThrottle.max_attempts(throttle_type) - attempts
+    Throttle.max_attempts(throttle_type) - attempts
   end
 
   def expires_at
     return Time.zone.now if attempted_at.blank?
-    attempted_at + RedisThrottle.attempt_window_in_minutes(throttle_type).minutes
+    attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
   end
 
   def expired?
@@ -81,7 +82,7 @@ class Throttle < ApplicationRecord
   end
 
   def maxed?
-    attempts >= RedisThrottle.max_attempts(throttle_type)
+    attempts >= Throttle.max_attempts(throttle_type)
   end
 
   # @api private

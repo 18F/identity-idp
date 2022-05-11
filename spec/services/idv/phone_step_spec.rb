@@ -40,7 +40,7 @@ describe Idv::PhoneStep do
   }
 
   describe '#submit' do
-    let(:throttle) { RedisThrottle.new(throttle_type: :proof_address, user: user) }
+    let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
 
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
@@ -169,7 +169,7 @@ describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        RedisThrottle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
 
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true

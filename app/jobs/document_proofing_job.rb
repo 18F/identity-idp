@@ -70,7 +70,7 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    throttle = RedisThrottle.new(user: user, throttle_type: :idv_doc_auth)
+    throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
 
     analytics.idv_doc_auth_submitted_image_upload_vendor(
       **proofer_result.to_h.merge(

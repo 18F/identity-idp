@@ -64,7 +64,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RedisThrottle.new(throttle_type: :proof_address, user: user).increment!
+        Throttle.new(throttle_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -94,7 +94,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RedisThrottle.new(throttle_type: :proof_address, user: user).increment!
+        Throttle.new(throttle_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -115,7 +115,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        RedisThrottle.new(throttle_type: :proof_address, user: user).increment!
+        Throttle.new(throttle_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
@@ -149,7 +149,7 @@ describe Idv::PhoneErrorsController do
       end
 
       before do
-        RedisThrottle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
       end
 
       it 'assigns expiration time' do
@@ -160,7 +160,7 @@ describe Idv::PhoneErrorsController do
 
       it 'logs an event' do
         freeze_time do
-          throttle_window = RedisThrottle.attempt_window_in_minutes(:proof_address).minutes
+          throttle_window = Throttle.attempt_window_in_minutes(:proof_address).minutes
           logged_attributes = {
             type: action,
             throttle_expires_at: attempted_at + throttle_window,

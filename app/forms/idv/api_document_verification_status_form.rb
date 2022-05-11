@@ -23,7 +23,7 @@ module Idv
 
     def remaining_attempts
       return unless @document_capture_session
-      RedisThrottle.new(
+      Throttle.new(
         user: @document_capture_session.user,
         throttle_type: :idv_doc_auth,
       ).remaining_count

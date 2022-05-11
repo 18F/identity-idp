@@ -8,7 +8,7 @@ module Idv
       private
 
       def throttle
-        @throttle ||= RedisThrottle.new(
+        @throttle ||= Throttle.new(
           user: current_user,
           throttle_type: :idv_resolution,
         )
@@ -93,7 +93,7 @@ module Idv
       end
 
       def throttled_else_increment
-        RedisThrottle.new(
+        Throttle.new(
           user: effective_user,
           throttle_type: :idv_doc_auth,
         ).throttled_else_increment?

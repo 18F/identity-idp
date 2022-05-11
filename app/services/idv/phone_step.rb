@@ -95,7 +95,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= RedisThrottle.new(user: idv_session.current_user, throttle_type: :proof_address)
+      @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
     end
 
     def failed_due_to_timeout_or_exception?

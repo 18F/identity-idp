@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe Throttle do
+RSpec.describe DatabaseThrottle do
   let(:throttle_type) { :idv_doc_auth }
   let(:max_attempts) { 3 }
   let(:attempt_window) { 10 }
 
   before do
     stub_const(
-      'RedisThrottle::THROTTLE_CONFIG',
+      'Throttle::THROTTLE_CONFIG',
       {
         throttle_type => { max_attempts: max_attempts, attempt_window: attempt_window },
       }.with_indifferent_access.freeze,
@@ -17,19 +17,19 @@ RSpec.describe Throttle do
   describe '.for' do
     context 'when target is a user' do
       let(:user) { create(:user) }
-      subject(:for_target) { Throttle.for(user: user, throttle_type: throttle_type) }
+      subject(:for_target) { DatabaseThrottle.for(user: user, throttle_type: throttle_type) }
 
       context 'throttle does not exist yet' do
         it 'creates a new throttle row' do
-          expect { for_target }.to change { Throttle.count }.by(1)
+          expect { for_target }.to change { DatabaseThrottle.count }.by(1)
         end
       end
 
       context 'throttle already exists' do
-        let!(:existing) { create(:throttle, user: user, throttle_type: throttle_type) }
+        let!(:existing) { create(:database_throttle, user: user, throttle_type: throttle_type) }
 
         it 'does not create a new throttle row' do
-          expect { for_target }.to_not change { Throttle.count }
+          expect { for_target }.to_not change { DatabaseThrottle.count }
 
           expect(for_target).to eq(existing)
         end
@@ -38,19 +38,19 @@ RSpec.describe Throttle do
 
     context 'when target is a string' do
       let(:target) { Digest::SHA256.hexdigest(SecureRandom.hex) }
-      subject(:for_target) { Throttle.for(target: target, throttle_type: throttle_type) }
+      subject(:for_target) { DatabaseThrottle.for(target: target, throttle_type: throttle_type) }
 
       context 'throttle does not exist yet' do
         it 'creates a new throttle row' do
-          expect { for_target }.to change { Throttle.count }.by(1)
+          expect { for_target }.to change { DatabaseThrottle.count }.by(1)
         end
       end
 
       context 'throttle already exists' do
-        let!(:existing) { create(:throttle, target: target, throttle_type: throttle_type) }
+        let!(:existing) { create(:database_throttle, target: target, throttle_type: throttle_type) }
 
         it 'does not create a new throttle row' do
-          expect { for_target }.to_not change { Throttle.count }
+          expect { for_target }.to_not change { DatabaseThrottle.count }
 
           expect(for_target).to eq(existing)
         end
@@ -67,14 +67,14 @@ RSpec.describe Throttle do
 
     context 'when target and user are missing' do
       it 'throws an error' do
-        expect { Throttle.for(throttle_type: throttle_type) }.
+        expect { DatabaseThrottle.for(throttle_type: throttle_type) }.
           to raise_error(/Throttle must have a user or a target/)
       end
     end
   end
 
   describe '#increment' do
-    subject(:throttle) { Throttle.for(target: 'aaa', throttle_type: :idv_doc_auth) }
+    subject(:throttle) { DatabaseThrottle.for(target: 'aaa', throttle_type: :idv_doc_auth) }
 
     it 'increments attempts' do
       expect { throttle.increment }.to change { throttle.reload.attempts }.by(1)
@@ -84,15 +84,15 @@ RSpec.describe Throttle do
   describe '#throttled?' do
     let(:user) { create(:user) }
     let(:throttle_type) { :idv_doc_auth }
-    let(:throttle) { Throttle.all.first }
+    let(:throttle) { DatabaseThrottle.all.first }
     let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
     let(:attempt_window_in_minutes) { IdentityConfig.store.doc_auth_attempt_window_in_minutes }
 
-    subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
+    subject(:throttle) { DatabaseThrottle.for(user: user, throttle_type: throttle_type) }
 
     it 'returns true if throttled' do
       create(
-        :throttle,
+        :database_throttle,
         user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,
@@ -104,7 +104,7 @@ RSpec.describe Throttle do
 
     it 'returns false if the attempts < max_attempts' do
       create(
-        :throttle,
+        :database_throttle,
         user: user,
         throttle_type: throttle_type,
         attempts: max_attempts - 1,
@@ -116,7 +116,7 @@ RSpec.describe Throttle do
 
     it 'returns false if the attempts <= max_attempts but the window is expired' do
       create(
-        :throttle,
+        :database_throttle,
         user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,
@@ -128,7 +128,7 @@ RSpec.describe Throttle do
   end
 
   describe '#throttled_else_increment?' do
-    subject(:throttle) { Throttle.for(target: 'aaaa', throttle_type: :idv_doc_auth) }
+    subject(:throttle) { DatabaseThrottle.for(target: 'aaaa', throttle_type: :idv_doc_auth) }
 
     context 'throttle has hit limit' do
       before do
@@ -160,7 +160,7 @@ RSpec.describe Throttle do
     end
 
     let(:attempted_at) { nil }
-    let(:throttle) { create(:throttle, user: create(:user), throttle_type: throttle_type) }
+    let(:throttle) { create(:database_throttle, user: create(:user), throttle_type: throttle_type) }
 
     subject(:expires_at) { throttle.tap { |t| t.update(attempted_at: attempted_at) }.expires_at }
 
@@ -193,11 +193,11 @@ RSpec.describe Throttle do
     let(:user) { create(:user) }
     let(:subject) { described_class }
 
-    subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
+    subject(:throttle) { DatabaseThrottle.for(user: user, throttle_type: throttle_type) }
 
     it 'resets attempt count to 0' do
       create(
-        :throttle,
+        :database_throttle,
         user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,

@@ -61,7 +61,7 @@ describe Idv::CaptureDocStatusController do
 
     context 'when the user is throttled' do
       before do
-        RedisThrottle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
       end
 
       it 'returns throttled with redirect' do

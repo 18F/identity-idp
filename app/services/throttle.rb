@@ -1,7 +1,7 @@
 # This class is similar to RedisRateLimiter, but differs in that
 # the throttle period begins once the maximum number of allowed
 # attempts has been reached.
-class RedisThrottle
+class Throttle
   attr_reader :throttle_type
 
   VALID_THROTTLE_TYPES = %i[
@@ -65,11 +65,11 @@ class RedisThrottle
             'throttle_type is not valid'
     end
     if @user.blank? && @target.blank?
-      raise ArgumentError, 'RedisThrottle must have a user or a target, but neither were provided'
+      raise ArgumentError, 'Throttle must have a user or a target, but neither were provided'
     end
 
     if @user.present? && @target.present?
-      raise ArgumentError, 'RedisThrottle must have a user or a target, but both were provided'
+      raise ArgumentError, 'Throttle must have a user or a target, but both were provided'
     end
 
     if target && !target.is_a?(String)
@@ -80,7 +80,7 @@ class RedisThrottle
 
   def attempts
     if IdentityConfig.store.redis_throttle_enabled
-      @redis_attempts.to_i
+      redis_attempts.to_i
     else
       postgres_throttle.attempts
     end
@@ -114,7 +114,7 @@ class RedisThrottle
   def expires_at
     if IdentityConfig.store.redis_throttle_enabled
       return Time.zone.now if redis_attempted_at.blank?
-      redis_attempted_at + RedisThrottle.attempt_window_in_minutes(throttle_type).minutes
+      redis_attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
     else
       postgres_throttle.expires_at
     end
@@ -124,7 +124,7 @@ class RedisThrottle
     return 0 if throttled?
 
     if IdentityConfig.store.redis_throttle_enabled
-      RedisThrottle.max_attempts(throttle_type) - attempts
+      Throttle.max_attempts(throttle_type) - attempts
     else
       postgres_throttle.remaining_count
     end
@@ -151,7 +151,7 @@ class RedisThrottle
   end
 
   def maxed?
-    @redis_attempts && @redis_attempts >= RedisThrottle.max_attempts(throttle_type)
+    redis_attempts && redis_attempts >= Throttle.max_attempts(throttle_type)
   end
 
   def increment!
@@ -161,7 +161,7 @@ class RedisThrottle
         multi.incr(key)
         multi.expire(
           key,
-          RedisThrottle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+          Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
         )
       end
     end
@@ -191,7 +191,7 @@ class RedisThrottle
     else
       @redis_attempted_at =
         Time.zone.now +
-        RedisThrottle.attempt_window_in_minutes(throttle_type).minutes - ttl.seconds
+        Throttle.attempt_window_in_minutes(throttle_type).minutes - ttl.seconds
     end
 
     self
@@ -212,10 +212,10 @@ class RedisThrottle
     value = nil
     REDIS_THROTTLE_POOL.with do |client|
       value, _success = client.multi do |multi|
-        multi.set(key, RedisThrottle.max_attempts(throttle_type))
+        multi.set(key, Throttle.max_attempts(throttle_type))
         multi.expire(
           key,
-          RedisThrottle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+          Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
         )
       end
     end
@@ -224,7 +224,7 @@ class RedisThrottle
     @redis_attempted_at = Time.zone.now
 
     postgres_throttle.update(
-      attempts: RedisThrottle.max_attempts(throttle_type),
+      attempts: Throttle.max_attempts(throttle_type),
       attempted_at: Time.zone.now,
     )
 
@@ -232,8 +232,8 @@ class RedisThrottle
   end
 
   def key
-    if @user_id
-      "throttle:#{@user_id}:#{throttle_type}"
+    if @user
+      "throttle:#{@user.id}:#{throttle_type}"
     else
       "throttle:#{@target}:#{throttle_type}"
     end
@@ -242,7 +242,11 @@ class RedisThrottle
   def postgres_throttle
     return @postgres_throttle if @postgres_throttle
 
-    @postgres_throttle ||= Throttle.for(throttle_type: throttle_type, user: @user, target: @target)
+    @postgres_throttle ||= DatabaseThrottle.for(
+      throttle_type: throttle_type,
+      user: @user,
+      target: @target,
+    )
   end
 
   def self.attempt_window_in_minutes(throttle_type)

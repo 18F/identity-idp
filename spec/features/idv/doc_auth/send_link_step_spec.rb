@@ -84,7 +84,7 @@ feature 'doc auth send link step' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
     timeout = distance_of_time_in_words(
-      RedisThrottle.attempt_window_in_minutes(:idv_send_link).minutes,
+      Throttle.attempt_window_in_minutes(:idv_send_link).minutes,
     )
     freeze_time do
       idv_send_link_max_attempts.times do
