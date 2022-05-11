@@ -195,7 +195,6 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       and_return(window_end)
   end
 
-
   def user_with_broken_personal_key(protocol, scenario)
     user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
 
@@ -215,7 +214,6 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
 
     user
   end
-
 
   [
     [
