@@ -12,9 +12,11 @@
         },
         false,
       ) %>
-  <%= tag.div id: 'country_codes', data: {
-    translated_country_code_names: translated_country_code_names.to_json,
-  } %>
+  <%= tag.div id: 'country_codes',
+              data: {
+                translated_country_code_names: translated_country_code_names.to_json,
+              }
+  %>
   <div class="phone-input__international-code-wrapper">
     <%= f.label(
           :international_code,
