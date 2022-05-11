@@ -3,7 +3,7 @@ interface PluralizedEntry {
   other: string;
 }
 
-type Entry = string | PluralizedEntry;
+type Entry = string | string[] | PluralizedEntry;
 type Entries = Record<string, Entry>;
 type Variables = Record<string, any>;
 
@@ -36,6 +36,25 @@ const getEntry = (strings: Entries, key: string): Entry =>
   hasOwn(strings, key) ? strings[key] : key;
 
 /**
+ * Returns true if the given entry is a pluralization entry, or false otherwise.
+ *
+ * @param entry Entry to test.
+ *
+ * @return Whether entry is a pluralization entry.
+ */
+const isPluralizedEntry = (entry: Entry): entry is PluralizedEntry =>
+  typeof entry === 'object' && 'one' in entry;
+
+/**
+ * Returns true if the given entry is a string entry, or false otherwise.
+ *
+ * @param entry Entry to test.
+ *
+ * @return Whether entry is a string entry.
+ */
+const isStringEntry = (entry: Entry): entry is string => typeof entry === 'string';
+
+/**
  * Returns the resulting string from the given entry, incorporating pluralization if necessary.
  *
  * @param entry Entry string or object.
@@ -43,8 +62,8 @@ const getEntry = (strings: Entries, key: string): Entry =>
  *
  * @return Entry string.
  */
-function getString(entry: Entry, count?: number): string {
-  if (typeof entry === 'object') {
+function getString(entry: Entry, count?: number): string | string[] {
+  if (isPluralizedEntry(entry)) {
     if (typeof count !== 'number') {
       throw new TypeError('Expected count for PluralizedEntry');
     }
@@ -77,15 +96,22 @@ class I18n {
   /**
    * Returns the translated string by the given key.
    *
-   * @param key Key to retrieve.
+   * @param keyOrKeys Key or keys to retrieve.
    * @param variables Variables to substitute in string.
    *
    * @return Translated string.
    */
-  t(key: string, variables: Variables = {}): string {
-    const entry = getEntry(this.strings, key);
-    const string = getString(entry, variables.count);
-    return replaceVariables(string, variables);
+  t(keyOrKeys: string, variables?: Variables): string;
+  t(keyOrKeys: string[], variables?: Variables): string[];
+  t(keyOrKeys: string | string[], variables: Variables = {}): string | string[] {
+    const isSingular = !Array.isArray(keyOrKeys);
+    const keys: string[] = isSingular ? [keyOrKeys] : keyOrKeys;
+    const entries = keys.map((key) => getEntry(this.strings, key));
+    const strings = entries
+      .map((entry) => (isPluralizedEntry(entry) ? getString(entry, variables?.count) : entry))
+      .map((entry) => (isStringEntry(entry) ? replaceVariables(entry, variables) : entry));
+
+    return isSingular ? strings[0] : strings.flat();
   }
 }
 
