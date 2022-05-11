@@ -91,7 +91,7 @@ describe Idv::PhoneController do
         get :new, params: params
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_USE_DIFFERENT, step: step)
+          with('IdV: use different phone number', step: step)
       end
     end
 

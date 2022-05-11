@@ -296,7 +296,7 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
+        expect(@analytics).to have_received(:track_event).with('IdV: review complete')
         expect(@analytics).to have_received(:track_event).with(
           'IdV: final resolution',
           success: true,
