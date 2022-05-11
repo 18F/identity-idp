@@ -29,10 +29,9 @@ class PhoneInputComponent < BaseComponent
   end
 
   def translated_country_code_names
-    return {} if I18n.locale == :en
-
     supported_country_codes.map do |code|
-      [code.downcase, I18n.t("countries.#{code}")]
+      code = code.downcase
+      [code, I18n.t("countries.#{code}")]
     end.to_h
   end
 

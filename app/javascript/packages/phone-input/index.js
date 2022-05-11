@@ -42,6 +42,9 @@ export class PhoneInput extends HTMLElement {
   /** @type {string[]} */
   deliveryMethods = [];
 
+  /** @type {Object.<string,*>} */
+  countryCodePairs = {};
+
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.textInput = this.querySelector('.phone-input__number');
@@ -49,16 +52,10 @@ export class PhoneInput extends HTMLElement {
     this.codeInput = this.querySelector('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
     this.exampleText = this.querySelector('.phone-input__example');
-    this.countryCodePairs = {};
-
-    try {
-      this.countryCodePairs = JSON.parse(
-        this.querySelector('#country_codes').dataset.translatedCountryCodeNames,
-      );
-    } catch {}
 
     try {
       this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
+      this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
     } catch {}
 
     if (!this.textInput || !this.codeInput) {
