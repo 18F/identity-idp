@@ -31,7 +31,7 @@ module Idv
     def new
       @applicant = idv_session.applicant
       @step_indicator_steps = step_indicator_steps
-      analytics.track_event(Analytics::IDV_REVIEW_VISIT)
+      analytics.idv_review_info_visited
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -46,7 +46,7 @@ module Idv
       init_profile
       user_session[:need_personal_key_confirmation] = true
       redirect_to next_step
-      analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
+      analytics.idv_review_complete
       analytics.idv_final(success: true)
 
       return unless FeatureManagement.reveal_gpo_code?
