@@ -37,9 +37,9 @@ const isStorageEqual = (values: object, nextValues: object) =>
 
 function useIdleCallbackEffect(callback: () => void, deps: any[]) {
   useEffect(() => {
-    if (typeof globalThis.requestIdleCallback === 'function') {
-      const callbackId = window.requestIdleCallback(callback);
-      return () => window.cancelIdleCallback(callbackId);
+    if (typeof requestIdleCallback === 'function') {
+      const callbackId = requestIdleCallback(callback);
+      return () => cancelIdleCallback(callbackId);
     }
 
     callback();
