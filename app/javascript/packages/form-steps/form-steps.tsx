@@ -120,6 +120,11 @@ interface FormStepsProps {
   steps?: FormStep<any>[];
 
   /**
+   * Step at which to start form.
+   */
+  initialStep?: string;
+
+  /**
    * Form values to populate initial state.
    */
   initialValues?: Record<string, any>;
@@ -222,6 +227,7 @@ function FormSteps({
   onComplete = () => {},
   onStepChange = () => {},
   onStepSubmit = () => {},
+  initialStep,
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
@@ -232,7 +238,7 @@ function FormSteps({
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam({ basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
