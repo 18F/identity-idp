@@ -138,21 +138,11 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'
-  IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'
-  IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'
-  IDV_DOC_AUTH_WARNING_VISITED = 'IdV: doc auth warning visited'
-  IDV_FINAL = 'IdV: final resolution'
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
   IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_ATTEMPTS = 'Idv: Phone OTP attempts rate limited'
-  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_LOCKED_OUT = 'Idv: Phone OTP rate limited user'
-  IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS = 'Idv: Phone OTP sends rate limited'
-  IDV_PHONE_CONFIRMATION_OTP_RESENT = 'IdV: phone confirmation otp resent'
-  IDV_PHONE_CONFIRMATION_OTP_SENT = 'IdV: phone confirmation otp sent'
   IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT = 'IdV: Phone OTP delivery Selection Visited'
   IDV_PHONE_USE_DIFFERENT = 'IdV: use different phone number'
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'

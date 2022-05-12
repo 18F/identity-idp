@@ -7,7 +7,7 @@ import { getAssetPath } from '@18f/identity-assets';
 import { trackEvent } from '@18f/identity-analytics';
 import PersonalKeyStep from '../personal-key/personal-key-step';
 import PersonalKeyInput from './personal-key-input';
-import type { VerifyFlowValues } from '../..';
+import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 

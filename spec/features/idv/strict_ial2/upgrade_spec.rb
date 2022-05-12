@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Strict IAL2 upgrade' do
+feature 'Strict IAL2 upgrade', js: true do
   include IdvHelper
   include OidcAuthHelper
   include SamlAuthHelper
@@ -22,10 +22,10 @@ feature 'Strict IAL2 upgrade' do
     expect(page.current_path).to eq(idv_doc_auth_welcome_step)
 
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')
@@ -35,7 +35,7 @@ feature 'Strict IAL2 upgrade' do
   context 'strict IAL2 does not allow a phone check' do
     before do
       allow(IdentityConfig.store).to receive(
-        :usps_upload_allowed_for_strict_ial2,
+        :gpo_allowed_for_strict_ial2,
       ).and_return(false)
     end
 
@@ -54,10 +54,10 @@ feature 'Strict IAL2 upgrade' do
       expect(page.current_path).to eq(idv_doc_auth_welcome_step)
 
       complete_all_doc_auth_steps
-      click_continue
+      click_idv_continue
       fill_in 'Password', with: user.password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')

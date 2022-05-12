@@ -93,7 +93,7 @@ class Profile < ApplicationRecord
   def strict_ial2_proofed?
     return false unless active
     return false unless includes_liveness_check?
-    return true if IdentityConfig.store.usps_upload_allowed_for_strict_ial2
+    return true if IdentityConfig.store.gpo_allowed_for_strict_ial2
     includes_phone_check?
   end
 

@@ -5,8 +5,8 @@ import SubmissionComplete, {
   RetrySubmissionError,
 } from '@18f/identity-document-capture/components/submission-complete';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render, useDocumentCaptureForm } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/submission-complete-step', () => {
   const onSubmit = useDocumentCaptureForm();

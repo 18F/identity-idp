@@ -7,7 +7,7 @@ import { FormStepsButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { getAssetPath } from '@18f/identity-assets';
 import { trackEvent } from '@18f/identity-analytics';
-import type { VerifyFlowValues } from '../..';
+import type { VerifyFlowValues } from '../../verify-flow';
 import DownloadButton from './download-button';
 
 interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> {}

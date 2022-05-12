@@ -1,5 +1,4 @@
-import { useDefineProperty } from '@18f/identity-test-helpers';
-import { useSandbox } from '../support/sinon';
+import { useDefineProperty, useSandbox } from '@18f/identity-test-helpers';
 import { reloadWithError } from '../../../app/javascript/packs/webauthn-setup';
 
 describe('webauthn-setup', () => {

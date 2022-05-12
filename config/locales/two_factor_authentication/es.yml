@@ -37,8 +37,6 @@ es:
       personal_key: Clave personal
       personal_key_info: Use la clave personal de 16 caracteres que usó en la creación
         de la cuenta.
-      phone_info_html: Obtenga su código de seguridad a través de mensajes de texto /
-        SMS o de una llamada telefónica a <strong>%{phone}</strong>.
       piv_cac: Empleados del Gobierno
       piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
       sms: Mensaje de texto / SMS
@@ -146,8 +144,11 @@ es:
       less_secure_label: Menos seguro
       more_secure_label: Más seguro
       phone: Mensaje de texto o de voz
-      phone_info: Reciba un código de seguridad a través de un mensaje de texto (SMS)
-        o una llamada telefónica a su dispositivo.
+      phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
+        una llamada telefónica.
+      phone_info_html: Recibir un código seguro por medio de un mensaje de texto (SMS)
+        o una llamada telefónica. <strong>Tienes que elegir otro método además
+        de este.</strong>
       phone_info_no_voip: Se prohíbe el uso de servicios telefónicos basados en la web
         (VOIP) o de números de teléfono de tarificación adicional (de pago).
       piv_cac: Identificación de empleado gubernamental

@@ -77,7 +77,7 @@ function ReviewIssuesStep({
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   function onWarningPageDismissed() {
-    addPageAction({ label: 'IdV: Capture troubleshooting dismissed' });
+    addPageAction('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
   }

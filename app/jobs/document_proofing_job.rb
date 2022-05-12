@@ -72,9 +72,8 @@ class DocumentProofingJob < ApplicationJob
 
     throttle = Throttle.for(user: user, throttle_type: :idv_doc_auth)
 
-    analytics.track_event(
-      Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-      proofer_result.to_h.merge(
+    analytics.idv_doc_auth_submitted_image_upload_vendor(
+      **proofer_result.to_h.merge(
         state: proofer_result.pii_from_doc[:state],
         state_id_type: proofer_result.pii_from_doc[:state_id_type],
         async: true,

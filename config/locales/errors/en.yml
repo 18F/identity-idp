@@ -107,6 +107,7 @@ en:
     sign_in:
       bad_password_limit: You have exceeeded the maximum sign in attempts.
     two_factor_auth_setup:
+      must_select_additional_option: Select an additional authentication method.
       must_select_option: Select an authentication method.
     verify_personal_key:
       throttled: You tried too many times, please try again in %{timeout}.

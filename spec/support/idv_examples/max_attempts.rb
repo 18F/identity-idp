@@ -32,7 +32,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       expect_user_to_fail_at_phone_step
     end
 
-    scenario 'after 24 hours the user can retry and complete idv' do
+    scenario 'after 24 hours the user can retry and complete idv', js: true do
       visit account_path
       first(:link, t('links.sign_out')).click
       reattempt_interval = (IdentityConfig.store.idv_attempt_window_in_hours + 1).hours
@@ -48,7 +48,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       click_idv_continue
       fill_in 'Password', with: user.password
       click_idv_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       click_agree_and_continue
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
@@ -465,6 +467,136 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [String] user_id
+  # @param [String] flow_path
+  # The document capture image uploaded was locally validated during the IDV process
+  def idv_doc_auth_submitted_image_upload_form(
+    success:,
+    errors:,
+    remaining_attempts:,
+    flow_path:,
+    attempts: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth image upload form submitted',
+      success: success,
+      errors: errors,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      user_id: user_id,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] exception
+  # @param [Boolean] billed
+  # @param [String] doc_auth_result
+  # @param [String] state
+  # @param [String] state_id_type
+  # @param [Boolean] async
+  # @param [Integer] attempts
+  # @param [Integer] remaining_attempts
+  # @param [Hash] client_image_metrics
+  # @param [String] flow_path
+  # The document capture image was uploaded to vendor during the IDV process
+  def idv_doc_auth_submitted_image_upload_vendor(
+    success:,
+    errors:,
+    exception:,
+    state:,
+    state_id_type:,
+    async:, attempts:,
+    remaining_attempts:,
+    client_image_metrics:,
+    flow_path:,
+    billed: nil,
+    doc_auth_result: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth image upload vendor submitted',
+      success: success,
+      errors: errors,
+      exception: exception,
+      billed: billed,
+      doc_auth_result: doc_auth_result,
+      state: state,
+      state_id_type: state_id_type,
+      async: async,
+      attempts: attempts,
+      remaining_attempts: remaining_attempts,
+      client_image_metrics: client_image_metrics,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] user_id
+  # @param [Integer] remaining_attempts
+  # @param [Hash] pii_like_keypaths
+  # @param [String] flow_path
+  # The PII that came back from the document capture vendor was validated
+  def idv_doc_auth_submitted_pii_validation(
+    success:,
+    errors:,
+    remaining_attempts:,
+    pii_like_keypaths:,
+    flow_path:,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth image upload vendor pii validation',
+      success: success,
+      errors: errors,
+      user_id: user_id,
+      remaining_attempts: remaining_attempts,
+      pii_like_keypaths: pii_like_keypaths,
+      flow_path: flow_path,
+      **extra,
+    )
+  end
+
+  # @param [String] step_name
+  # @param [Integer] remaining_attempts
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_warning_visited(
+    step_name:,
+    remaining_attempts:,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth warning visited',
+      step_name: step_name,
+      remaining_attempts: remaining_attempts,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # Tracks the last step of IDV, indicates the user successfully prooved
+  def idv_final(
+    success:,
+    **extra
+  )
+    track_event(
+      'IdV: final resolution',
+      success: success,
+      **extra,
+    )
+  end
+
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -505,6 +637,83 @@ module AnalyticsEvents
       'IdV: phone confirmation form',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # The user was rate limited for submitting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_attempts
+    track_event('Idv: Phone OTP attempts rate limited')
+  end
+
+  # The user was locked out for hitting the phone OTP rate limit during IDV
+  def idv_phone_confirmation_otp_rate_limit_locked_out
+    track_event('Idv: Phone OTP rate limited user')
+  end
+
+  # The user was rate limited for requesting too many OTPs during the IDV phone step
+  def idv_phone_confirmation_otp_rate_limit_sends
+    track_event('Idv: Phone OTP sends rate limited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param [String] country_code country code of phone number
+  # @param [String] area_code area code of phone number
+  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [Hash] telephony_response response from Telephony gem
+  # The user resent an OTP during the IDV phone step
+  def idv_phone_confirmation_otp_resent(
+    success:,
+    errors:,
+    otp_delivery_preference:,
+    country_code:,
+    area_code:,
+    rate_limit_exceeded:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation otp resent',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      country_code: country_code,
+      area_code: area_code,
+      rate_limit_exceeded: rate_limit_exceeded,
+      telephony_response: telephony_response,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param ["sms","voice"] otp_delivery_preference which chaennel the OTP was delivered by
+  # @param [String] country_code country code of phone number
+  # @param [String] area_code area code of phone number
+  # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [Hash] telephony_response response from Telephony gem
+  # The user requested an OTP to confirm their phone during the IDV phone step
+  def idv_phone_confirmation_otp_sent(
+    success:,
+    errors:,
+    otp_delivery_preference:,
+    country_code:,
+    area_code:,
+    rate_limit_exceeded:,
+    telephony_response:,
+    **extra
+  )
+    track_event(
+      'IdV: phone confirmation otp sent',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      country_code: country_code,
+      area_code: area_code,
+      rate_limit_exceeded: rate_limit_exceeded,
+      telephony_response: telephony_response,
       **extra,
     )
   end

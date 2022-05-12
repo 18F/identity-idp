@@ -27,23 +27,21 @@ class ReactivateAccountSession
   # Stores PII as a string in the session
   # @param [Pii::Attributes]
   def store_decrypted_pii(pii)
-    reactivate_account_session[:personal_key] = true
     reactivate_account_session[:validated_personal_key] = true
     pii_json = pii.to_json
-    reactivate_account_session[:pii] = pii_json
     Pii::Cacher.new(@user, session).save_decrypted_pii_json(pii_json)
     nil
   end
 
   def validated_personal_key?
-    reactivate_account_session[:personal_key]
+    reactivate_account_session[:validated_personal_key]
   end
 
   # Parses string into PII struct
   # @return [Pii::Attributes, nil]
   def decrypted_pii
-    json_str = reactivate_account_session[:pii]
-    Pii::Attributes.new_from_json(json_str) if json_str
+    return unless validated_personal_key?
+    Pii::Cacher.new(@user, session).fetch
   end
 
   private
@@ -53,9 +51,7 @@ class ReactivateAccountSession
   def generate_session
     {
       active: false,
-      personal_key: false,
       validated_personal_key: false,
-      pii: nil,
       x509: nil,
     }
   end

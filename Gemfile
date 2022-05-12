@@ -54,7 +54,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: '0.16.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: '0.17.0-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -87,6 +87,7 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
+  gem 'capybara-webmock', git: 'https://github.com/hashrocket/capybara-webmock.git', ref: '63d790a0'
   gem 'data_uri', require: false
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'

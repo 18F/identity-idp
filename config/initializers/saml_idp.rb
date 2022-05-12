@@ -19,6 +19,7 @@ SamlIdp.configure do |config|
   config.attribute_service_location = "#{api_base}/saml/attributes"
   config.single_service_post_location = "#{api_base}/saml/auth"
   config.single_logout_service_post_location = "#{api_base}/saml/logout"
+  config.remote_logout_service_post_location = "#{api_base}/saml/remotelogout"
 
   # Name ID
   config.name_id.formats =

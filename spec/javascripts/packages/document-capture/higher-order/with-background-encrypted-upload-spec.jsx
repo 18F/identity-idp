@@ -6,7 +6,7 @@ import withBackgroundEncryptedUpload, {
   blobToArrayBuffer,
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
-import { useSandbox } from '../../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
 
 /**
@@ -189,15 +189,14 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
 
           await onChange.getCall(0).args[0].foo_image_url;
           expect(addPageAction).to.have.been.calledTwice();
-          expect(addPageAction).to.have.been.calledWith({
-            label: 'IdV: document capture async upload encryption',
-            payload: { success: true },
-          });
-          expect(addPageAction).to.have.been.calledWith({
-            key: 'documentCapture.asyncUpload',
-            label: 'IdV: document capture async upload submitted',
-            payload: { success: true, trace_id: null, status_code: 200 },
-          });
+          expect(addPageAction).to.have.been.calledWith(
+            'IdV: document capture async upload encryption',
+            { success: true },
+          );
+          expect(addPageAction).to.have.been.calledWith(
+            'IdV: document capture async upload submitted',
+            { success: true, trace_id: null, status_code: 200 },
+          );
         });
       });
 
@@ -248,10 +247,10 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
             { field: 'foo' },
           );
-          expect(addPageAction).to.have.been.calledWith({
-            label: 'IdV: document capture async upload encryption',
-            payload: { success: false },
-          });
+          expect(addPageAction).to.have.been.calledWith(
+            'IdV: document capture async upload encryption',
+            { success: false },
+          );
           expect(noticeError).to.have.been.calledWith(error);
           expect(window.fetch).not.to.have.been.called();
         });
@@ -272,19 +271,18 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
 
           await onChange.getCall(0).args[0].foo_image_url.catch(() => {});
           expect(addPageAction).to.have.been.calledTwice();
-          expect(addPageAction).to.have.been.calledWith({
-            label: 'IdV: document capture async upload encryption',
-            payload: { success: true },
-          });
-          expect(addPageAction).to.have.been.calledWith({
-            key: 'documentCapture.asyncUpload',
-            label: 'IdV: document capture async upload submitted',
-            payload: {
+          expect(addPageAction).to.have.been.calledWith(
+            'IdV: document capture async upload encryption',
+            { success: true },
+          );
+          expect(addPageAction).to.have.been.calledWith(
+            'IdV: document capture async upload submitted',
+            {
               success: false,
               trace_id: '1-67891233-abcdef012345678912345678',
               status_code: 403,
             },
-          });
+          );
         });
       });
     });
