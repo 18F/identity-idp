@@ -6,7 +6,7 @@ module Idv
     before_action :confirm_idv_needed
 
     def new
-      analytics.track_event(Analytics::IDV_FORGOT_PASSWORD)
+      analytics.idv_forgot_password
     end
 
     def update

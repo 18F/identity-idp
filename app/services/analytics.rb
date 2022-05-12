@@ -138,7 +138,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'
   IDV_INTRO_VISIT = 'IdV: intro visited'
   IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
