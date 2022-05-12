@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText } from '@testing-library/dom';
-import { PasswordToggleElement } from './index';
+import PasswordToggleElement from './password-toggle-element';
 
 describe('PasswordToggleElement', () => {
   let idCounter = 0;
