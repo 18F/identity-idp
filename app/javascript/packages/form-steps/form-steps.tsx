@@ -100,7 +100,7 @@ interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLInputElement>;
+  refCallback: RefCallback<HTMLElement>;
 
   /**
    * Whether field is required.
@@ -110,7 +110,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLInputElement | null;
+  element: HTMLElement | null;
 }
 
 interface FormStepsProps {
@@ -243,7 +243,9 @@ function FormSteps({
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
       if (activeErrorFieldElement) {
-        activeErrorFieldElement.reportValidity();
+        if (activeErrorFieldElement instanceof HTMLInputElement) {
+          activeErrorFieldElement.reportValidity();
+        }
         activeErrorFieldElement.focus();
       }
     }
@@ -296,10 +298,12 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        element.checkValidity();
+        if (element instanceof HTMLInputElement) {
+          element.checkValidity();
+        }
 
-        if (element.validationMessage) {
-          error = new Error(element.validationMessage);
+        if ((element as HTMLInputElement).validationMessage) {
+          error = new Error((element as HTMLInputElement).validationMessage);
         } else if (isRequired && !values[key]) {
           error = new RequiredValueMissingError();
         }
