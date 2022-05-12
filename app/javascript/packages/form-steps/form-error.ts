@@ -6,7 +6,7 @@ export interface FormErrorOptions {
   isDetail?: boolean;
 
   /**
-   * Field associated with the erorr.
+   * Field associated with the error.
    */
   field?: string;
 }
