@@ -95,17 +95,17 @@ describe Users::PivCacAuthenticationSetupController do
 
         context 'when redirected with a good token' do
           context 'with multiple MFA options feature toggle on' do
+            let(:user) do
+              create(:user)
+            end
             let(:mfa_selections) { ['piv_cac', 'voice'] }
-            let(:suggest_second_mfa) { false }
             before do
               subject.user_session[:mfa_selections] = mfa_selections
-              subject.user_session[:suggest_second_mfa] = suggest_second_mfa
               allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
             end
 
             context 'with no additional MFAs chosen on setup' do
               let(:mfa_selections) { ['piv_cac'] }
-              let(:suggest_second_mfa) { true }
               it 'redirects to suggest 2nd MFA page' do
                 get :new, params: { token: good_token }
                 expect(response).to redirect_to(auth_method_confirmation_url)

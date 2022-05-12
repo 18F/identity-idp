@@ -36,12 +36,10 @@ describe Users::BackupCodeSetupController do
 
   context 'with multiple MFA selection on' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
-    let(:suggest_second_mfa) { false }
     before do
-      @user = build(:user, :signed_up)
+      @user = build(:user)
       stub_sign_in(@user)
       controller.user_session[:mfa_selections] = mfa_selections
-      controller.user_session[:suggest_second_mfa] = suggest_second_mfa
       allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
     end
 
@@ -57,9 +55,7 @@ describe Users::BackupCodeSetupController do
 
     context 'when user only selects backup code on account creation' do
       let(:mfa_selections) { ['backup_code'] }
-      let(:suggest_second_mfa) { true }
-
-      it 'redirects to account page' do
+      it 'redirects to Suggest 2nd MFA page' do
         codes = BackupCodeGenerator.new(@user).create
         controller.user_session[:backup_codes] = codes
         post :continue

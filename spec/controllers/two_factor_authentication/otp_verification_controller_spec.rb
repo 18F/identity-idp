@@ -437,10 +437,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         context 'Feature flag #select_multiple_mfa_options is true' do
           let(:mfa_selections) { ['sms', 'backup_code'] }
-          let(:suggest_second_mfa) { false }
           before do
             subject.user_session[:mfa_selections] = mfa_selections
-            subject.user_session[:suggest_second_mfa] = suggest_second_mfa
             allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
 
             post(
@@ -453,7 +451,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           context 'multiple MFA options selected' do
-            it 'redirects to backup code page' do
+            it 'redirects to auth method confirmation with backup code next' do
               expect(response).to redirect_to(
                 auth_method_confirmation_url(
                   next_setup_choice: 'backup_code',
@@ -464,15 +462,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
           context 'one MFA option selected' do
             let(:mfa_selections) { ['sms'] }
-            let(:suggest_second_mfa) { true }
 
             it 'redirects to auth_confirmation page' do
               expect(response).to redirect_to(auth_method_confirmation_url)
             end
           end
-        end
-
-        context 'Feature flag #select_multiple_mfa_options is false' do
         end
       end
 

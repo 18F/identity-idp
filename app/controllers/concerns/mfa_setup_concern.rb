@@ -36,11 +36,19 @@ module MfaSetupConcern
   end
 
   def user_needs_confirmation_screen?
-    (next_setup_choice.present? || user_session[:suggest_second_mfa]) &&
+    (next_setup_choice.present? || suggest_second_mfa?) &&
       IdentityConfig.store.select_multiple_mfa_options
   end
 
+  def suggest_second_mfa?
+    MfaContext.new(current_user).enabled_mfa_methods_count < 2
+  end
+
   private
+
+  def current_mfa_selection_count
+    user_session[:mfa_selections]&.count || 0
+  end
 
   def determine_next_mfa
     return unless user_session[:mfa_selections]

@@ -136,7 +136,7 @@ describe Users::WebauthnSetupController do
   end
 
   describe 'when signed in and account creation' do
-    let(:user) { create(:user, :signed_up) }
+    let(:user) { create(:user) }
     let(:params) do
       {
         attestation_object: attestation_object,
@@ -153,11 +153,9 @@ describe Users::WebauthnSetupController do
     end
     context ' Multiple MFA options turned on' do
       let(:mfa_selections) { ['webauthn_platform', 'voice'] }
-      let(:suggest_second_mfa) { false }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
-        controller.user_session[:suggest_second_mfa] = suggest_second_mfa
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
       end
 
@@ -171,7 +169,6 @@ describe Users::WebauthnSetupController do
 
       context 'with a single MFA method chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
-        let(:suggest_second_mfa) { true }
         it 'should direct user to second mfa suggestion page' do
           patch :confirm, params: params
 

@@ -228,7 +228,6 @@ describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         let(:mfa_selections) { ['auth_app'] }
-        let(:suggest_second_mfa) { true }
         before do
           secret = ROTP::Base32.random_base32
           stub_sign_in_before_2fa
@@ -236,7 +235,6 @@ describe Users::TotpSetupController, devise: true do
           allow(@analytics).to receive(:track_event)
           subject.user_session[:new_totp_secret] = secret
           subject.user_session[:mfa_selections] = mfa_selections
-          subject.user_session[:suggest_second_mfa] = suggest_second_mfa
           allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
 
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
@@ -262,7 +260,6 @@ describe Users::TotpSetupController, devise: true do
 
         context 'when user has multiple MFA methods left in user session' do
           let(:mfa_selections) { ['auth_app', 'voice'] }
-          let(:suggest_second_mfa) { false }
 
           it 'redirects to mfa confirmation path with a success message and still logs analytics' do
             expect(response).to redirect_to(
