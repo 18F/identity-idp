@@ -7,7 +7,7 @@ class MfaConfirmationController < ApplicationController
       current_user: current_user,
       next_path: next_path,
       final_path: after_mfa_setup_path,
-      suggest_second_mfa: suggest_second_mfa?,
+      suggest_second_mfa: check_if_select_mfa_needed?,
     )
   end
 
@@ -41,8 +41,12 @@ class MfaConfirmationController < ApplicationController
   end
 
   def next_path
-    return second_mfa_setup_path if suggest_second_mfa?
+    return second_mfa_setup_path if check_if_select_mfa_needed?
     confirmation_path(next_mfa_selection_choice)
+  end
+
+  def check_if_select_mfa_needed?
+    suggest_second_mfa? && current_mfa_selection_count == 1
   end
 
   def handle_valid_password

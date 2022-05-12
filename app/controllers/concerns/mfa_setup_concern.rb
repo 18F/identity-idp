@@ -44,11 +44,11 @@ module MfaSetupConcern
     MfaContext.new(current_user).enabled_mfa_methods_count < 2
   end
 
-  private
-
   def current_mfa_selection_count
     user_session[:mfa_selections]&.count || 0
   end
+
+  private
 
   def determine_next_mfa
     return unless user_session[:mfa_selections]
