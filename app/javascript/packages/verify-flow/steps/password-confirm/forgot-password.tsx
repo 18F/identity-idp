@@ -30,23 +30,20 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
           <li key={warning}>{warning}</li>
         ))}
       </ul>
-      <p>
+      <div className="margin-top-4">
         <Button
-          className="margin-top-4"
           isBig
           isWide
-          onClick={() => {
-            goBack();
-          }}
+          onClick={goBack}
         >
           {t('idv.forgot_password.try_again')}
         </Button>
-      </p>
-      <p>
-        <Button isBig isOutline isWide onClick={() => goToResetPassword()}>
+      </div>
+      <div className="margin-top-2">
+        <Button isBig isOutline isWide onClick={goToResetPassword}>
           {t('idv.forgot_password.reset_password')}
         </Button>
-      </p>
+      </div>
     </>
   );
 }
