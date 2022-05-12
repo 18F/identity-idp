@@ -20,7 +20,7 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
       <img
         src={getAssetPath('status/info-question.svg')}
         width="50"
-        alt=""
+        alt={t('components.status_page.icons.question')}
         height="50"
         className="margin-bottom-4"
       />
