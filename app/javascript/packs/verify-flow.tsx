@@ -51,7 +51,7 @@ const {
   basePath,
   appName,
   completionUrl: completionURL,
-  resetPasswordUrl: resetPasswordUrl,
+  resetPasswordUrl,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));

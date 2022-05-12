@@ -1,5 +1,6 @@
 import type { ChangeEvent } from 'react';
 import { t } from '@18f/identity-i18n';
+import { Button } from '@18f/identity-components';
 import { FormStepsButton, useHistoryParam } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
@@ -19,7 +20,7 @@ function PasswordConfirmStep({ registerField, onChange }: PasswordConfirmStepSte
   }
 
   if (path === 'forgot_password') {
-    return <ForgotPassword goBack={goBack}></ForgotPassword>;
+    return <ForgotPassword goBack={goBack} />;
   }
 
   return (
