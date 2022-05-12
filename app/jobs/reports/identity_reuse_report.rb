@@ -26,25 +26,25 @@ module Reports
 
     def ial1_identity_counts
       transaction_with_timeout do
-        return Db::Identity::TotalIdentitiesPerIalCount.call(1)
+        Db::Identity::TotalIdentitiesPerIalCount.call(1)
       end
     end
 
     def ial2_identity_counts
       transaction_with_timeout do
-        return Db::Identity::TotalIdentitiesPerIalCount.call(2)
+        Db::Identity::TotalIdentitiesPerIalCount.call(2)
       end
     end
 
     def unique_ial1_identity_counts
       transaction_with_timeout do
-        return Db::Identity::UniqueIdentitiesPerIalCount.call(1)
+        Db::Identity::UniqueIdentitiesPerIalCount.call(1)
       end
     end
 
     def unique_ial2_identity_counts
       transaction_with_timeout do
-        return Db::Identity::UniqueIdentitiesPerIalCount.call(2)
+        Db::Identity::UniqueIdentitiesPerIalCount.call(2)
       end
     end
   end
