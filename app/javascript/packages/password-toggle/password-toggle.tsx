@@ -47,8 +47,11 @@ function PasswordToggle(
   const inputId = `password-toggle-input-${instanceId}`;
   const toggleId = `password-toggle-${instanceId}`;
 
+  const classes =
+    togglePosition === 'top' ? 'password-toggle--toggle-top' : 'password-toggle--toggle-bottom';
+
   return (
-    <lg-password-toggle class={`password-toggle--toggle-${togglePosition}`}>
+    <lg-password-toggle class={classes}>
       <TextInput
         ref={ref}
         {...textInputProps}
