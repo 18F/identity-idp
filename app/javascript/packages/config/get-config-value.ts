@@ -16,7 +16,12 @@ export interface Config {
 /**
  * Cached configuration.
  */
-let config: Config;
+let cache: Partial<Config>;
+
+/**
+ * Whether configuration should be cached in this environment.
+ */
+const isCacheEnvironment = process.env.NODE_ENV !== 'test';
 
 /**
  * Returns the value associated as initialized through page configuration, if available.
@@ -25,12 +30,16 @@ let config: Config;
  *
  * @return Value, if exists.
  */
-function getConfigValue<K extends keyof Config>(key: K): Config[K] {
-  if (config === undefined) {
-    config = JSON.parse(document.querySelector('[data-config]')?.textContent || '');
+function getConfigValue<K extends keyof Config>(key: K): Config[K] | undefined {
+  if (cache === undefined || !isCacheEnvironment) {
+    try {
+      cache = JSON.parse(document.querySelector('[data-config]')?.textContent || '');
+    } catch {
+      cache = {};
+    }
   }
 
-  return config[key];
+  return cache[key];
 }
 
 export default getConfigValue;

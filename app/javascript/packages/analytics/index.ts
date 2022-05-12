@@ -10,9 +10,11 @@ import { getConfigValue } from '@18f/identity-config';
  */
 export async function trackEvent(event: string, payload: object = {}): Promise<void> {
   const endpoint = getConfigValue('analyticsEndpoint');
-  await window.fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event, payload }),
-  });
+  if (endpoint) {
+    await window.fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event, payload }),
+    });
+  }
 }
