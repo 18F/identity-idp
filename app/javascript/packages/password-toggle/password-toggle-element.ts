@@ -31,4 +31,14 @@ class PasswordToggleElement extends HTMLElement {
   }
 }
 
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-password-toggle': PasswordToggleElement;
+  }
+}
+
+if (!customElements.get('lg-password-toggle')) {
+  customElements.define('lg-password-toggle', PasswordToggleElement);
+}
+
 export default PasswordToggleElement;

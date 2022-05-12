@@ -1,1 +1,1 @@
-export { default as PasswordToggleElement } from './password-toggle-element';
+import './password-toggle-element';
