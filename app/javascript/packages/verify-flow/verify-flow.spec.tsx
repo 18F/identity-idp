@@ -32,7 +32,7 @@ describe('VerifyFlow', () => {
     expect(document.title).to.equal('idv.titles.session.review - Example App');
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm visited');
     expect(window.location.pathname).to.equal('/password_confirm');
-    await userEvent.type(getByLabelText('idv.form.password'), 'password');
+    await userEvent.type(getByLabelText('components.password_toggle.label'), 'password');
     await userEvent.click(getByText('forms.buttons.continue'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm submitted');
 

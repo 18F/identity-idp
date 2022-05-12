@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { t } from '@18f/identity-i18n';
+import { PasswordToggle } from '@18f/identity-password-toggle';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { Alert } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -15,9 +15,8 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
           {error.message}
         </Alert>
       ))}
-      <input
+      <PasswordToggle
         ref={registerField('password')}
-        aria-label={t('idv.form.password')}
         type="password"
         onInput={(event: ChangeEvent<HTMLInputElement>) => {
           onChange({ password: event.target.value });
