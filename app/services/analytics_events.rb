@@ -589,6 +589,11 @@ module AnalyticsEvents
     track_event('IdV: forgot password visited')
   end
 
+  # User confirmed forgot password
+  def idv_forgot_password_confirmed
+    track_event('IdV: forgot password confirmed')
+  end
+
   # @param [Boolean] success
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(

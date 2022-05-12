@@ -10,7 +10,7 @@ module Idv
     end
 
     def update
-      analytics.track_event(Analytics::IDV_FORGOT_PASSWORD_CONFIRMED)
+      analytics.idv_forgot_password_confirmed
       request_id = sp_session[:request_id]
       email = current_user.email
       reset_password(email, request_id)
