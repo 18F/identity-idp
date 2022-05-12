@@ -1,8 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { cleanup } from '@testing-library/react';
-import { render as baseRender, fireEvent } from '@testing-library/react';
+import { render as baseRender, fireEvent, cleanup } from '@testing-library/react';
 import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
