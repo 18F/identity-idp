@@ -83,6 +83,8 @@ module Deploy
         target = File.join(logos_dir, name)
         link = File.join(root, 'app/assets/images/sp-logos', name)
         symlink_verbose(target, link, force: true)
+        link = File.join(root, 'public/assets/sp-logos', name)
+        symlink_verbose(target, link, force: true)
       end
     end
 
