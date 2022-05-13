@@ -20,11 +20,6 @@ interface AppRootValues {
   basePath: string;
 
   /**
-   * Application name.
-   */
-  appName: string;
-
-  /**
    * URL to which user should be redirected after completing the form.
    */
   completionUrl: string;
@@ -49,7 +44,6 @@ const {
   initialValues: initialValuesJSON,
   enabledStepNames: enabledStepNamesJSON,
   basePath,
-  appName,
   completionUrl: completionURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
@@ -93,7 +87,6 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         initialValues={initialValues}
         enabledStepNames={enabledStepNames}
         basePath={basePath}
-        appName={appName}
         onComplete={onComplete}
       />
     </SecretsContextProvider>,
