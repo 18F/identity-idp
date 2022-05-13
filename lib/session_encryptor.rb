@@ -23,9 +23,16 @@ class SessionEncryptor
     ['email'],
   ]
 
-  # rubocop:disable Layout/LineLength
-  SENSITIVE_REGEX = %r{FAKEY|MIDDLEFAKER|MCFAKERSON|1111111111111|GREAT FALLS|1938-10-06|2099-12-31|314-555-1212}
-  # rubocop:enable Layout/LineLength
+  SENSITIVE_DEFAULT_FIELDS = Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.slice(
+    :first_name,
+    :last_name,
+    :address1,
+    :city,
+    :dob,
+    :state_id_number,
+    :state_id_expiration,
+  ).values
+  SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
 
   def load(value)
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)

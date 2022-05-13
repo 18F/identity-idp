@@ -20,7 +20,7 @@ class FakeAnalytics
         ERROR
       end
 
-      DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.slice(
+      Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.slice(
         :first_name,
         :last_name,
         :address1,
