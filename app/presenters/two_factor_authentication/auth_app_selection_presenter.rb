@@ -8,5 +8,17 @@ module TwoFactorAuthentication
     def security_level
       I18n.t('two_factor_authentication.two_factor_choice_options.secure_label')
     end
+
+    def disabled?
+      user.auth_app_configurations.any?
+    end
+
+    def mfa_configuration
+      return '' if !disabled?
+      t(
+        'two_factor_authentication.two_factor_choice_options.configurations_added',
+        count: user.auth_app_configurations.count,
+      )
+    end
   end
 end

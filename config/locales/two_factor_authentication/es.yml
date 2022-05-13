@@ -140,6 +140,7 @@ es:
         dispositivo. Generaremos una nueva lista cuando haya usado el último
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
+      configurations_added: '(%{count} added)'
       least_secure_label: Lo menos seguro
       less_secure_label: Menos seguro
       more_secure_label: Más seguro

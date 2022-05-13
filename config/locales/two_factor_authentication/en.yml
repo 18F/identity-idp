@@ -129,6 +129,7 @@ en:
       backup_code_info: A list of 10 codes you can print or save to your device. When
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
+      configurations_added: '(%{count} added)'
       least_secure_label: Least secure
       less_secure_label: Less secure
       more_secure_label: More Secure

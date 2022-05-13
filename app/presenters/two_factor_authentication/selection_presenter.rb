@@ -2,10 +2,11 @@ module TwoFactorAuthentication
   class SelectionPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :configuration
+    attr_reader :configuration, :user
 
-    def initialize(configuration = nil)
+    def initialize(configuration = nil, user = nil)
       @configuration = configuration
+      @user = user
     end
 
     def type
@@ -27,6 +28,8 @@ module TwoFactorAuthentication
         setup_info(method.to_s)
       end
     end
+
+    def mfa_configuration; end
 
     def security_level; end
 

@@ -144,6 +144,7 @@ fr:
         sur votre appareil. Lorsque vous utilisez le dernier code, nous
         générerons une nouvelle liste. Gardez à l’esprit que les codes de
         sauvegarde sont faciles à perdre.
+      configurations_added: '(%{count} added)'
       least_secure_label: Le moins sécurisé
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
