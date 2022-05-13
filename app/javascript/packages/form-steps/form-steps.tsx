@@ -302,8 +302,8 @@ function FormSteps({
           element.checkValidity();
         }
 
-        if ((element as HTMLInputElement).validationMessage) {
-          error = new Error((element as HTMLInputElement).validationMessage);
+        if (element instanceof HTMLInputElement && element.validationMessage) {
+          error = new Error(element.validationMessage);
         } else if (isRequired && !values[key]) {
           error = new RequiredValueMissingError();
         }
