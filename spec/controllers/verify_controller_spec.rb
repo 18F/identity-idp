@@ -67,7 +67,6 @@ describe VerifyController do
           response
 
           expect(assigns[:app_data]).to include(
-            app_name: APP_NAME,
             base_path: idv_app_path,
             completion_url: idv_gpo_verify_url,
             enabled_step_names: idv_api_enabled_steps,
@@ -97,7 +96,6 @@ describe VerifyController do
           response
 
           expect(assigns[:app_data]).to include(
-            app_name: APP_NAME,
             base_path: idv_app_path,
             completion_url: account_url,
             enabled_step_names: idv_api_enabled_steps,

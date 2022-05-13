@@ -14,18 +14,14 @@ describe('VerifyFlow', () => {
     sandbox.stub(window, 'fetch').resolves({
       json: () => Promise.resolve({ personal_key: personalKey }),
     } as Response);
+    document.body.innerHTML = `<script type="application/json" data-config>{"appName":"Example App"}</script>`;
   });
 
   it('advances through flow to completion', async () => {
     const onComplete = sandbox.spy();
 
     const { getByText, findByText, getByLabelText } = render(
-      <VerifyFlow
-        appName="Example App"
-        initialValues={{ personalKey }}
-        onComplete={onComplete}
-        basePath="/"
-      />,
+      <VerifyFlow initialValues={{ personalKey }} onComplete={onComplete} basePath="/" />,
     );
 
     // Password confirm
@@ -59,7 +55,6 @@ describe('VerifyFlow', () => {
     it('sets details according to the first enabled steps', () => {
       render(
         <VerifyFlow
-          appName="Example App"
           initialValues={{ personalKey }}
           onComplete={() => {}}
           enabledStepNames={[STEPS[1].name]}
