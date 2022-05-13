@@ -244,7 +244,7 @@ feature 'Password Recovery' do
     expect(current_path).to eq new_user_password_path
   end
 
-  it 'throttles reset passwords requests and resumes after wait period' do
+  it 'throttles reset passwords requests' do
     user = create(:user, :signed_up)
     email = user.email
 
@@ -257,12 +257,6 @@ feature 'Password Recovery' do
     expect(unread_emails_for(email).size).to eq(max_attempts)
     submit_email_for_password_reset(email)
     expect(unread_emails_for(email).size).to eq(max_attempts)
-
-    window_in_minutes = IdentityConfig.store.reset_password_email_window_in_minutes + 1
-    travel_to(Time.zone.now + window_in_minutes.minutes) do
-      submit_email_for_password_reset(email)
-      expect(unread_emails_for(email).size).to eq(max_attempts + 1)
-    end
   end
 
   def submit_email_for_password_reset(email)

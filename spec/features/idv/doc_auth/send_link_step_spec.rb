@@ -108,12 +108,6 @@ feature 'doc auth send link step' do
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_send_link,
     )
-
-    travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes + 1) do
-      fill_in :doc_auth_phone, with: '415-555-0199'
-      click_idv_continue
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
-    end
   end
 
   it 'includes expected URL parameters' do
