@@ -68,6 +68,8 @@ describe VerifyController do
 
           expect(assigns[:app_data]).to include(
             base_path: idv_app_path,
+            start_over_url: idv_session_path,
+            cancel_url: idv_cancel_path,
             completion_url: idv_gpo_verify_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'personalKey' => kind_of(String) },
@@ -97,6 +99,8 @@ describe VerifyController do
 
           expect(assigns[:app_data]).to include(
             base_path: idv_app_path,
+            start_over_url: idv_session_path,
+            cancel_url: idv_cancel_path,
             completion_url: account_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'userBundleToken' => kind_of(String) },
