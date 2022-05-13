@@ -1,5 +1,5 @@
 import { render } from 'react-dom';
-import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
+import { VerifyFlow, SecretsContextProvider, VerifyFlowContext } from '@18f/identity-verify-flow';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
 import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
 
@@ -33,6 +33,11 @@ interface AppRootValues {
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
+
+  /**
+   * URL for reset password page in rails used for redirect
+   */
+  resetPasswordUrl: string;
 
   /**
    * Signed JWT containing user data.
@@ -90,14 +95,15 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
 
   render(
     <SecretsContextProvider storage={storage}>
-      <VerifyFlow
-        initialValues={initialValues}
-        enabledStepNames={enabledStepNames}
-        resetPasswordUrl={resetPasswordUrl}
-        basePath={basePath}
-        appName={appName}
-        onComplete={onComplete}
-      />
+      <VerifyFlowContext.Provider value={{ resetPasswordUrl, basePath }}>
+        <VerifyFlow
+          initialValues={initialValues}
+          enabledStepNames={enabledStepNames}
+          basePath={basePath}
+          appName={appName}
+          onComplete={onComplete}
+        />
+      </VerifyFlowContext.Provider>
     </SecretsContextProvider>,
     appRoot,
   );

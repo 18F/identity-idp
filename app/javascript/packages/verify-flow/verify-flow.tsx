@@ -91,7 +91,6 @@ const logStepSubmitted = (stepName: string) =>
 function VerifyFlow({
   initialValues = {},
   enabledStepNames,
-  resetPasswordUrl,
   basePath,
   appName,
   onComplete,
@@ -121,7 +120,6 @@ function VerifyFlow({
         steps={steps}
         initialValues={syncedValues}
         initialStep={initialStep}
-        resetPasswordUrl={resetPasswordUrl}
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
