@@ -14,25 +14,21 @@ describe('VerifyFlow', () => {
     sandbox.stub(window, 'fetch').resolves({
       json: () => Promise.resolve({ personal_key: personalKey }),
     } as Response);
+    document.body.innerHTML = `<script type="application/json" data-config>{"appName":"Example App"}</script>`;
   });
 
   it('advances through flow to completion', async () => {
     const onComplete = sandbox.spy();
 
     const { getByText, findByText, getByLabelText } = render(
-      <VerifyFlow
-        appName="Example App"
-        initialValues={{ personalKey }}
-        onComplete={onComplete}
-        basePath="/"
-      />,
+      <VerifyFlow initialValues={{ personalKey }} onComplete={onComplete} basePath="/" />,
     );
 
     // Password confirm
     expect(document.title).to.equal('idv.titles.session.review - Example App');
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm visited');
     expect(window.location.pathname).to.equal('/password_confirm');
-    await userEvent.type(getByLabelText('idv.form.password'), 'password');
+    await userEvent.type(getByLabelText('components.password_toggle.label'), 'password');
     await userEvent.click(getByText('forms.buttons.continue'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm submitted');
 
@@ -59,7 +55,6 @@ describe('VerifyFlow', () => {
     it('sets details according to the first enabled steps', () => {
       render(
         <VerifyFlow
-          appName="Example App"
           initialValues={{ personalKey }}
           onComplete={() => {}}
           enabledStepNames={[STEPS[1].name]}

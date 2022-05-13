@@ -20,11 +20,6 @@ interface AppRootValues {
   basePath: string;
 
   /**
-   * Application name.
-   */
-  appName: string;
-
-  /**
    * URL to which user should be redirected after completing the form.
    */
   completionUrl: string;
@@ -54,7 +49,6 @@ const {
   initialValues: initialValuesJSON,
   enabledStepNames: enabledStepNamesJSON,
   basePath,
-  appName,
   completionUrl: completionURL,
   resetPasswordUrl,
   storeKey: storeKeyBase64,
@@ -96,14 +90,12 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   render(
     <SecretsContextProvider storage={storage}>
       <VerifyFlowContext.Provider value={{ resetPasswordUrl, basePath }}>
-        <VerifyFlow
-          initialValues={initialValues}
-          enabledStepNames={enabledStepNames}
-          basePath={basePath}
-          appName={appName}
-          onComplete={onComplete}
-        />
-      </VerifyFlowContext.Provider>
+      <VerifyFlow
+        initialValues={initialValues}
+        enabledStepNames={enabledStepNames}
+        basePath={basePath}
+        onComplete={onComplete}
+      />
     </SecretsContextProvider>,
     appRoot,
   );

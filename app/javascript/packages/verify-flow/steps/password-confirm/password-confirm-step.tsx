@@ -3,6 +3,8 @@ import { useContext } from 'react';
 import { t } from '@18f/identity-i18n';
 import { Button } from '@18f/identity-components';
 import { FormStepsButton, useHistoryParam } from '@18f/identity-form-steps';
+import { PasswordToggle } from '@18f/identity-password-toggle';
+import { Alert } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import { VerifyFlowContext } from '@18f//identity-verify-flow';
@@ -10,7 +12,7 @@ import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
-function PasswordConfirmStep({ registerField, onChange }: PasswordConfirmStepStepProps) {
+function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
   const { basePath } = useContext(VerifyFlowContext);
   const [path, setPath] = useHistoryParam(basePath);
 
@@ -25,12 +27,16 @@ function PasswordConfirmStep({ registerField, onChange }: PasswordConfirmStepSte
   if (path === 'forgot_password') {
     return <ForgotPassword goBack={goBack} />;
   }
-
+  
   return (
     <>
-      <input
+      {errors.map(({ error }) => (
+        <Alert key={error.message} type="error" className="margin-bottom-4">
+          {error.message}
+        </Alert>
+      ))}
+      <PasswordToggle
         ref={registerField('password')}
-        aria-label={t('idv.form.password')}
         type="password"
         onInput={(event: ChangeEvent<HTMLInputElement>) => {
           onChange({ password: event.target.value });

@@ -25,7 +25,6 @@ class VerifyController < ApplicationController
 
     {
       base_path: idv_app_path,
-      app_name: APP_NAME,
       completion_url: completion_url,
       initial_values: initial_values,
       reset_password_url: "#{root_url}/forgot_password",

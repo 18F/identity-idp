@@ -427,6 +427,31 @@ describe('FormSteps', () => {
     expect(document.activeElement).to.equal(inputOne);
   });
 
+  it('supports ref assignment to arbitrary (non-input) elements', async () => {
+    const onComplete = sandbox.stub();
+    const { getByRole } = render(
+      <FormSteps
+        onComplete={onComplete}
+        steps={[
+          {
+            name: 'first',
+            form({ registerField }) {
+              return (
+                <div ref={registerField('element')}>
+                  <FormStepsButton.Submit />
+                </div>
+              );
+            },
+          },
+        ]}
+      />,
+    );
+
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.submit.default' }));
+
+    expect(onComplete).to.have.been.called();
+  });
+
   it('distinguishes empty errors from progressive error removal', async () => {
     const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 

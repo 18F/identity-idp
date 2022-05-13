@@ -12,7 +12,7 @@ interface PasswordToggleElements {
   input: HTMLInputElement;
 }
 
-export class PasswordToggleElement extends HTMLElement {
+class PasswordToggleElement extends HTMLElement {
   connectedCallback() {
     this.elements.toggle.addEventListener('change', () => this.setInputType());
     this.setInputType();
@@ -30,3 +30,15 @@ export class PasswordToggleElement extends HTMLElement {
     this.elements.input.type = this.elements.toggle.checked ? 'text' : 'password';
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-password-toggle': PasswordToggleElement;
+  }
+}
+
+if (!customElements.get('lg-password-toggle')) {
+  customElements.define('lg-password-toggle', PasswordToggleElement);
+}
+
+export default PasswordToggleElement;

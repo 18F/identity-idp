@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FormSteps } from '@18f/identity-form-steps';
 import { trackEvent } from '@18f/identity-analytics';
+import { getConfigValue } from '@18f/identity-config';
 import { STEPS } from './steps';
 import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import VerifyFlowAlert from './verify-flow-alert';
@@ -57,11 +58,6 @@ interface VerifyFlowProps {
   basePath: string;
 
   /**
-   * Application name, used in generating page titles for current step.
-   */
-  appName: string;
-
-  /**
    * Callback invoked after completing the form.
    */
   onComplete: () => void;
@@ -92,7 +88,6 @@ function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
-  appName,
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
@@ -122,7 +117,7 @@ function VerifyFlow({
         initialStep={initialStep}
         promptOnNavigate={false}
         basePath={basePath}
-        titleFormat={`%{step} - ${appName}`}
+        titleFormat={`%{step} - ${getConfigValue('appName')}`}
         onChange={setSyncedValues}
         onStepSubmit={onStepSubmit}
         onStepChange={setCurrentStep}
