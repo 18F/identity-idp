@@ -9,6 +9,7 @@ SimpleForm.setup do |config|
   config.wrapper_mappings = {
     boolean: :uswds_checkbox,
     radio_buttons: :uswds_radio_buttons,
+    hidden: :unwrapped,
   }
 
   config.wrappers :base do |b|
@@ -29,6 +30,10 @@ SimpleForm.setup do |config|
     b.use :hint,  wrap_with: { tag: 'div', class: 'usa-hint' }
     b.use :input, class: 'display-block width-full field', error_class: 'usa-input--error'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+  end
+
+  config.wrappers :unwrapped, wrapper: false do |b|
+    b.use :input
   end
 
   config.wrappers :uswds_checkbox do |b|
