@@ -6,7 +6,6 @@ module Users
     before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :confirm_user_needs_2fa_setup
-    before_action :handle_empty_selection, only: :create
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -20,10 +19,16 @@ module Users
 
       if result.success?
         process_valid_form
+      elsif result.errors[:selection].include? 'phone'
+        flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_to two_factor_options_path(anchor: 'select_phone')
       else
         @presenter = two_factor_options_presenter
         render :index
       end
+    rescue ActionController::ParameterMissing
+      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
+      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end
 
     private
@@ -47,16 +52,8 @@ module Users
       redirect_to confirmation_path(user_session[:selected_mfa_options].first)
     end
 
-    def handle_empty_selection
-      return if params[:two_factor_options_form].present?
-
-      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
-      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
-    end
-
     def confirm_user_needs_2fa_setup
       return unless mfa_policy.two_factor_enabled?
-      return if params.has_key?(:multiple_mfa_setup)
       return if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
       redirect_to after_mfa_setup_path
     end

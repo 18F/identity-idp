@@ -1,0 +1,13 @@
+{
+  "name": "@18f/identity-password-toggle",
+  "private": true,
+  "version": "1.0.0",
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  }
+}

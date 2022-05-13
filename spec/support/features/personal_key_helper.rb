@@ -28,6 +28,6 @@ module PersonalKeyHelper
   end
 
   def scrape_personal_key
-    page.all(:css, '.separator-text__code').map(&:text).join('-')
+    page.all('.separator-text__code').map(&:text).join('-')
   end
 end

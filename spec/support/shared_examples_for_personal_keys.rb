@@ -1,7 +1,12 @@
 shared_examples_for 'personal key page' do
   include PersonalKeyHelper
+  include JavascriptDriverHelper
 
   context 'informational text' do
+    before do
+      click_continue if javascript_enabled?
+    end
+
     context 'modal content' do
       it 'displays the modal title' do
         expect(page).to have_content t('forms.personal_key.title')
@@ -30,8 +35,7 @@ shared_examples_for 'personal key page' do
       click_on t('components.clipboard_button.label')
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
 
-      code = page.all('[data-personal-key]').map(&:text).join('-')
-      expect(copied_text).to eq(code)
+      expect(copied_text).to eq(scrape_personal_key)
     end
 
     it 'validates as case-insensitive, crockford-normalized, length-limited, dash-flexible' do

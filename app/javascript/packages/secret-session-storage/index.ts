@@ -61,12 +61,29 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
   }
 
   /**
+   * Sets a patch of values into storage.
+   *
+   * @param values Storage object values.
+   */
+  async setItems(values: Partial<S>) {
+    Object.assign(this.storage, values);
+    await this.#writeStorage();
+  }
+
+  /**
    * Gets a value from the in-memory storage.
    *
    * @param key Storage object key.
    */
   getItem(key: keyof S) {
     return this.storage[key];
+  }
+
+  /**
+   * Returns values from in-memory storage.
+   */
+  getItems() {
+    return this.storage;
   }
 
   /**

@@ -5,6 +5,7 @@ module Users
 
     before_action :check_remember_device_preference
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
+    before_action :redirect_if_blank_phone, only: [:send_code]
 
     def show
       service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
@@ -127,6 +128,13 @@ module Users
       )
     end
 
+    def redirect_if_blank_phone
+      return if phone_to_deliver_to.present?
+
+      flash[:error] = t('errors.messages.phone_required')
+      redirect_to login_two_factor_options_path
+    end
+
     def redirect_to_vendor_outage_if_phone_only
       return unless VendorStatus.new.all_phone_vendor_outage? &&
                     phone_enabled? &&
@@ -172,7 +180,7 @@ module Users
     end
 
     def handle_telephony_result(method:, default:)
-      track_events(method)
+      track_events
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
@@ -189,9 +197,8 @@ module Users
       end
     end
 
-    def track_events(method)
+    def track_events
       analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
-      add_sp_cost(method) if @telephony_result.success?
     end
 
     def exceeded_otp_send_limit?

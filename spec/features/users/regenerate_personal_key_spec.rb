@@ -31,7 +31,7 @@ feature 'View personal key' do
     end
 
     context 'regenerating new code after canceling edit password action' do
-      scenario 'displays new code' do
+      scenario 'displays new code', js: true do
         sign_in_and_2fa_user(user)
         old_digest = user.encrypted_recovery_code_digest
 
@@ -53,7 +53,7 @@ feature 'View personal key' do
         click_continue
 
         expect(page).to have_content(t('headings.personal_key'))
-        click_acknowledge_personal_key
+        acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
@@ -140,8 +140,7 @@ def sign_up_and_view_personal_key
 end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-  expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
-  expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
+  expect(page.find(':focus')).to eq page.find_field(t('forms.personal_key.confirmation_label'))
 end
 
 def click_back_button
@@ -158,14 +157,14 @@ def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
 end
 
 def submit_form_without_entering_the_code
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-  expect(page).to have_selector('.validation-message')
-  expect(page).not_to have_selector('#personal-key-alert')
+  within('[role=dialog]') { click_continue }
+  expect(page).to have_content(t('simple_form.required.text'))
+  expect(page).not_to have_content(t('users.personal_key.confirmation_error'))
 end
 
 def submit_form_with_the_wrong_code
   fill_in 'personal_key', with: 'hellohellohello'
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  within('[role=dialog]') { click_continue }
   expect(page).to have_content(t('users.personal_key.confirmation_error'))
-  expect(page).not_to have_selector('.validation-message')
+  expect(page).not_to have_content(t('simple_form.required.text'))
 end

@@ -88,7 +88,7 @@ export interface FormStep<V extends FormValues = {}> {
   /**
    * Optionally-asynchronous submission behavior, expected to throw any submission error.
    */
-  submit?: (values: V) => void | Promise<void>;
+  submit?: (values: V) => void | Record<string, any> | Promise<void | Record<string, any>>;
 
   /**
    * Human-readable step label.
@@ -100,7 +100,7 @@ interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLInputElement>;
+  refCallback: RefCallback<HTMLElement>;
 
   /**
    * Whether field is required.
@@ -110,7 +110,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLInputElement | null;
+  element: HTMLElement | null;
 }
 
 interface FormStepsProps {
@@ -118,6 +118,11 @@ interface FormStepsProps {
    * Form steps.
    */
   steps?: FormStep<any>[];
+
+  /**
+   * Step at which to start form.
+   */
+  initialStep?: string;
 
   /**
    * Form values to populate initial state.
@@ -135,9 +140,14 @@ interface FormStepsProps {
   autoFocus?: boolean;
 
   /**
+   * Form values change callback.
+   */
+  onChange?: (values: FormValues) => void;
+
+  /**
    * Form completion callback.
    */
-  onComplete?: (values: Record<string, any>) => void;
+  onComplete?: (values: FormValues) => void;
 
   /**
    * Callback triggered on step change.
@@ -213,9 +223,11 @@ function getFieldActiveErrorFieldElement(
 
 function FormSteps({
   steps = [],
+  onChange = () => {},
   onComplete = () => {},
   onStepChange = () => {},
   onStepSubmit = () => {},
+  initialStep,
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
@@ -226,7 +238,7 @@ function FormSteps({
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam({ basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
@@ -237,7 +249,9 @@ function FormSteps({
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
       if (activeErrorFieldElement) {
-        activeErrorFieldElement.reportValidity();
+        if (activeErrorFieldElement instanceof HTMLInputElement) {
+          activeErrorFieldElement.reportValidity();
+        }
         activeErrorFieldElement.focus();
       }
     }
@@ -265,6 +279,7 @@ function FormSteps({
   useStepTitle(step, titleFormat);
   useDidUpdateEffect(() => onStepChange(stepName!), [step]);
   useDidUpdateEffect(onPageTransition, [step]);
+  useDidUpdateEffect(() => onChange(values), [values]);
 
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
@@ -289,9 +304,11 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        element.checkValidity();
+        if (element instanceof HTMLInputElement) {
+          element.checkValidity();
+        }
 
-        if (element.validationMessage) {
+        if (element instanceof HTMLInputElement && element.validationMessage) {
           error = new Error(element.validationMessage);
         } else if (isRequired && !values[key]) {
           error = new RequiredValueMissingError();
@@ -311,6 +328,8 @@ function FormSteps({
     return null;
   }
 
+  const setPatchValues = (patch: Partial<FormValues>) =>
+    setValues((prevValues) => ({ ...prevValues, ...patch }));
   const unknownFieldErrors = activeErrors.filter(
     ({ field }) => !field || !fields.current[field]?.element,
   );
@@ -342,7 +361,10 @@ function FormSteps({
     if (submit) {
       try {
         setIsSubmitting(true);
-        await submit(values);
+        const patchValues = await submit(values);
+        if (patchValues) {
+          setPatchValues(patchValues);
+        }
         setIsSubmitting(false);
       } catch (error) {
         setActiveErrors([{ error }]);
@@ -389,7 +411,7 @@ function FormSteps({
             setActiveErrors((prevActiveErrors) =>
               prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
             );
-            setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+            setPatchValues(nextValuesPatch);
           })}
           onError={ifStillMounted((error, { field } = {}) => {
             if (field) {

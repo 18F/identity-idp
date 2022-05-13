@@ -491,5 +491,23 @@ RSpec.describe User do
         it { expect(user.broken_personal_key?).to eq(false) }
       end
     end
+
+    context 'for a user that has encrypted profile data that is suspiciously too short' do
+      let(:user) { create(:user) }
+      let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
+
+      before do
+        create(
+          :profile,
+          user: user,
+          active: true,
+          verified_at: Time.zone.now,
+          encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
+            encrypt('null', user_uuid: user.uuid),
+        )
+      end
+
+      it { expect(user.broken_personal_key?).to eq(true) }
+    end
   end
 end

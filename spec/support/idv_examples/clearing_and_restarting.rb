@@ -1,5 +1,5 @@
 shared_examples 'clearing and restarting idv' do
-  it 'allows the user to retry verification with phone' do
+  it 'allows the user to retry verification with phone', js: true do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.pending_profile?).to eq(false)
@@ -8,13 +8,13 @@ shared_examples 'clearing and restarting idv' do
     click_idv_continue
     fill_in 'Password', with: user.password
     click_idv_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     expect(page).to have_current_path(sign_up_completed_path)
     expect(user.reload.decorate.identity_verified?).to eq(true)
   end
 
-  it 'allows the user to retry verification with gpo' do
+  it 'allows the user to retry verification with gpo', js: true do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.pending_profile?).to eq(false)
@@ -28,7 +28,7 @@ shared_examples 'clearing and restarting idv' do
     end
     fill_in 'Password', with: user.password
     click_idv_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
 
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
