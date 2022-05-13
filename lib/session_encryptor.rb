@@ -3,9 +3,9 @@ class SessionEncryptor
   NEW_CIPHERTEXT_HEADER = 'v2'
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
-    'zip_code', 'dob', 'phone', 'phone_number', 'ssn', 'prev_address1', 'prev_address2',
+    'zip_code', 'dob', 'phone_number', 'phone', 'ssn', 'prev_address1', 'prev_address2',
     'prev_city', 'prev_state', 'prev_zipcode', 'pii', 'pii_from_doc', 'password', 'personal_key',
-    'email', 'email_address'
+    'email', 'email_address', 'unconfirmed_phone'
   ].to_set.freeze
 
   # 'idv/doc_auth' and 'idv' are used during the proofing process and can contain PII
@@ -15,6 +15,7 @@ class SessionEncryptor
     ['warden.user.user.session', 'idv/doc_auth'],
     ['warden.user.user.session', 'idv'],
     ['warden.user.user.session', 'personal_key'],
+    ['warden.user.user.session', 'unconfirmed_phone'],
     ['flash', 'flashes', 'personal_key'],
     ['flash', 'flashes', 'email'],
     ['email'],
