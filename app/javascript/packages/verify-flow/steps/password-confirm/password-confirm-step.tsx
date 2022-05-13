@@ -15,7 +15,8 @@ interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlow
 
 function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
   const { basePath } = useContext(VerifyFlowContext);
-  const [path, setPath] = useHistoryParam(undefined, { basePath });
+  const stepPath = `${basePath}/password_confirm`;
+  const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
 
   function goToForgotPassword() {
     setPath('forgot_password');
