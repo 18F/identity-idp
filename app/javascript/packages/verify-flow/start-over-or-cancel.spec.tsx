@@ -23,7 +23,11 @@ describe('StartOverOrCancel', () => {
     it('renders links with current step', () => {
       const { getByText, baseElement } = render(
         <FlowContext.Provider
-          value={{ startOverURL: '/start-over', cancelURL: '/cancel', currentStep: 'one' }}
+          value={{
+            startOverURL: 'http://example.test/start-over',
+            cancelURL: 'http://example.test/cancel',
+            currentStep: 'one',
+          }}
         >
           <StartOverOrCancel />
         </FlowContext.Provider>,
@@ -32,8 +36,10 @@ describe('StartOverOrCancel', () => {
       const startOverForm = baseElement.querySelector('form')!;
       const cancelLink = getByText('links.cancel') as HTMLAnchorElement;
 
-      expect(startOverForm.getAttribute('action')).to.equal('/start-over?step=one');
-      expect(cancelLink.getAttribute('href')).to.equal('/cancel?step=one');
+      expect(startOverForm.getAttribute('action')).to.equal(
+        'http://example.test/start-over?step=one',
+      );
+      expect(cancelLink.getAttribute('href')).to.equal('http://example.test/cancel?step=one');
     });
   });
 });
