@@ -90,12 +90,13 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   render(
     <SecretsContextProvider storage={storage}>
       <VerifyFlowContext.Provider value={{ resetPasswordUrl, basePath }}>
-      <VerifyFlow
-        initialValues={initialValues}
-        enabledStepNames={enabledStepNames}
-        basePath={basePath}
-        onComplete={onComplete}
-      />
+        <VerifyFlow
+          initialValues={initialValues}
+          enabledStepNames={enabledStepNames}
+          basePath={basePath}
+          onComplete={onComplete}
+        />
+      </VerifyFlowContext.Provider>
     </SecretsContextProvider>,
     appRoot,
   );

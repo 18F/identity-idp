@@ -8,13 +8,14 @@ import { Alert } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import { VerifyFlowContext } from '@18f//identity-verify-flow';
+import { formatHTML } from '@18f/identity-react-i18n';
 import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
 function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
   const { basePath } = useContext(VerifyFlowContext);
-  const [path, setPath] = useHistoryParam(basePath);
+  const [path, setPath] = useHistoryParam(undefined, { basePath });
 
   function goToForgotPassword() {
     setPath('forgot_password');
@@ -27,7 +28,7 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
   if (path === 'forgot_password') {
     return <ForgotPassword goBack={goBack} />;
   }
-  
+
   return (
     <>
       {errors.map(({ error }) => (
@@ -42,14 +43,20 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
           onChange({ password: event.target.value });
         }}
       />
-      <Button
-        isUnstyled
-        onClick={() => {
-          goToForgotPassword();
-        }}
-      >
-        Forgot password?
-      </Button>
+
+      {formatHTML(
+        t('idv.forgot_password.link_html', {
+          link: `<button>${t('idv.forgot_password.link_text')}</button>`,
+        }),
+        {
+          button: ({ children }) => (
+            <Button isUnstyled onClick={() => goToForgotPassword()}>
+              {children}
+            </Button>
+          ),
+        },
+      )}
+
       <FormStepsButton.Continue />
     </>
   );
