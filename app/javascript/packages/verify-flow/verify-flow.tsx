@@ -56,12 +56,12 @@ interface VerifyFlowProps {
   /**
    * URL to path for session restart.
    */
-  startOverURL: string;
+  startOverURL?: string;
 
   /**
    * URL to path for session cancel.
    */
-  cancelURL: string;
+  cancelURL?: string;
 
   /**
    * Callback invoked after completing the form.
@@ -94,8 +94,8 @@ function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
-  startOverURL,
-  cancelURL,
+  startOverURL = '',
+  cancelURL = '',
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
