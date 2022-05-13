@@ -48,11 +48,6 @@ interface VerifyFlowProps {
   enabledStepNames?: string[];
 
   /**
-   *  URL for reset password page in rails used for redirect
-   */
-  resetPasswordUrl?: string;
-
-  /**
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;

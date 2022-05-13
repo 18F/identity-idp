@@ -2,14 +2,13 @@ import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
-import { Button } from '@18f/identity-components';
 import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identity-form-steps';
-import { PasswordToggle } from '@18f/identity-password-toggle';
-import { Alert } from '@18f/identity-components';
+import PasswordToggle from '@18f/identity-password-toggle';
+import { Alert, Button } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import { ForgotPassword } from './forgot-password';
-import { VerifyFlowContext } from '@18f//identity-verify-flow';
+import { VerifyFlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
+import { ForgotPassword } from './forgot-password';
 import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
