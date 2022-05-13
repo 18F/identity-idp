@@ -168,6 +168,18 @@ RSpec.describe SessionEncryptor do
 
         subject.dump(session)
       end
+
+      it 'raises if sensitive value is not KMS encrypted' do
+        session = {
+          'new_key' => 'FAKEY',
+        }
+
+        expect {
+          subject.dump(session)
+        }.to raise_error(
+          SessionEncryptor::SensitiveValueError,
+        )
+      end
     end
 
     context 'without version 2 encryption enabled' do

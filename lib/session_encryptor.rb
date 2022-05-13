@@ -1,5 +1,7 @@
 class SessionEncryptor
   class SensitiveKeyError < StandardError; end
+
+  class SensitiveValueError < StandardError; end
   NEW_CIPHERTEXT_HEADER = 'v2'
   SENSITIVE_KEYS = [
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
@@ -21,6 +23,10 @@ class SessionEncryptor
     ['email'],
   ]
 
+  # rubocop:disable Layout/LineLength
+  SENSITIVE_REGEX = %r{FAKEY|MIDDLEFAKER|MCFAKERSON|1111111111111|GREAT FALLS|1938-10-06|2099-12-31|314-555-1212}
+  # rubocop:enable Layout/LineLength
+
   def load(value)
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
 
@@ -41,6 +47,7 @@ class SessionEncryptor
     kms_encrypt_sensitive_paths!(value, SENSITIVE_PATHS)
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value, quirks_mode: true)
+    alert_or_raise_if_contains_sensitive_value!(plain, value)
     NEW_CIPHERTEXT_HEADER + ':' + outer_encryptor.encrypt(plain)
   end
 
@@ -127,6 +134,21 @@ class SessionEncryptor
     )
 
     session.deep_merge!(sensitive_data)
+  end
+
+  def alert_or_raise_if_contains_sensitive_value!(string, hash)
+    if SENSITIVE_REGEX.match?(string)
+      exception = SensitiveValueError.new
+      if IdentityConfig.store.session_encryptor_alert_enabled
+        NewRelic::Agent.notice_error(
+          exception, custom_params: {
+            session_structure: hash.deep_transform_values { |v| nil },
+          }
+        )
+      else
+        raise exception
+      end
+    end
   end
 
   def alert_or_raise_if_contains_sensitive_keys!(hash)
