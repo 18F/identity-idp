@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
-    post "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout'
+    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post]
     # JS-driven POST redirect route to preserve existing session
     post "/api/saml/auth#{suffix}" => 'saml_post#auth'
     # actual SAML handling POST route
@@ -332,7 +332,7 @@ Rails.application.routes.draw do
     get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
 
     namespace :api do
-      post '/verify/complete' => 'verify/complete#create'
+      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

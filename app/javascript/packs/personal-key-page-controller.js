@@ -125,9 +125,14 @@ function downloadForIE(event) {
   window.navigator.msSaveBlob(blob, filename);
 }
 
+function trackDownload() {
+  trackEvent('IdV: download personal key');
+}
+
 modalTrigger.addEventListener('click', show);
 modalDismiss.addEventListener('click', hide);
 formEl.addEventListener('submit', handleSubmit);
+downloadLink.addEventListener('click', trackDownload);
 
 if (window.navigator.msSaveBlob) {
   downloadLink.addEventListener('click', downloadForIE);

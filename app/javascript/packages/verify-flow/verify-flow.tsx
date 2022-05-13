@@ -4,6 +4,8 @@ import { trackEvent } from '@18f/identity-analytics';
 import { STEPS } from './steps';
 import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import VerifyFlowAlert from './verify-flow-alert';
+import { useSyncedSecretValues } from './context/secrets-context';
+import useInitialStepValidation from './hooks/use-initial-step-validation';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -29,6 +31,8 @@ export interface VerifyFlowValues {
   phone?: string;
 
   ssn?: string;
+
+  password?: string;
 }
 
 interface VerifyFlowProps {
@@ -45,7 +49,7 @@ interface VerifyFlowProps {
   /**
    * The path to which the current step is appended to create the current step URL.
    */
-  basePath?: string;
+  basePath: string;
 
   /**
    * Application name, used in generating page titles for current step.
@@ -86,14 +90,21 @@ function VerifyFlow({
   appName,
   onComplete,
 }: VerifyFlowProps) {
-  const [currentStep, setCurrentStep] = useState(STEPS[0].name);
+  let steps = STEPS;
+  if (enabledStepNames) {
+    steps = steps.filter(({ name }) => enabledStepNames.includes(name));
+  }
+
+  const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
+  const [currentStep, setCurrentStep] = useState(steps[0].name);
+  const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);
 
-  let steps = STEPS;
-  if (enabledStepNames) {
-    steps = steps.filter(({ name }) => enabledStepNames.includes(name));
+  function onStepSubmit(stepName: string) {
+    logStepSubmitted(stepName);
+    setCompletedStep(stepName);
   }
 
   return (
@@ -102,11 +113,13 @@ function VerifyFlow({
       <VerifyFlowAlert currentStep={currentStep} />
       <FormSteps
         steps={steps}
-        initialValues={initialValues}
+        initialValues={syncedValues}
+        initialStep={initialStep}
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${appName}`}
-        onStepSubmit={logStepSubmitted}
+        onChange={setSyncedValues}
+        onStepSubmit={onStepSubmit}
         onStepChange={setCurrentStep}
         onComplete={onComplete}
       />

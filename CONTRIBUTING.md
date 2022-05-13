@@ -26,6 +26,11 @@ pull request is about.
 - If the pull request is in response to a Jira ticket, include the ticket ID in
 the commit title (e.g. "LG-1234 Add the stuff to the thing")
 
+- Include a changelog message which describes the changes in human-readable
+terms. These messages are included in release notes, so they should be easy to
+understand for our partners and users. In the rare case that a change should
+not be included in release notes, add `[skip changelog]` to the commit.
+
 Example:
 
 ```
@@ -41,7 +46,14 @@ and making development less efficient.
 meant to change, and so that only one database call is made.
 - To prevent the data from being wiped out after each spec, configure
 Database Cleaner to ignore those static tables.
+
+changelog: Internal, Automated Testing, Improve performance of test suite
 ```
+
+Refer to the [changelog check script] for a complete list of acceptable
+changelog categories.
+
+[changelog check script]: https://github.com/18F/identity-idp/blob/main/scripts/changelog_check.rb
 
 ### Style, Readability, and OO
 - Rubocop or Reek offenses are not disabled unless they are false positives.
