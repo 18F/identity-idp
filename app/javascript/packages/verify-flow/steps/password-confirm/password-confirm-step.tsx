@@ -1,8 +1,9 @@
 import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import { Button } from '@18f/identity-components';
-import { FormStepsButton, useHistoryParam } from '@18f/identity-form-steps';
+import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identity-form-steps';
 import { PasswordToggle } from '@18f/identity-password-toggle';
 import { Alert } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -15,8 +16,10 @@ interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlow
 
 function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
   const { basePath } = useContext(VerifyFlowContext);
+  const { onPageTransition } = useContext(FormStepsContext);
   const stepPath = `${basePath}/password_confirm`;
   const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
+  useDidUpdateEffect(onPageTransition, [path]);
 
   function goToForgotPassword() {
     setPath('forgot_password');
