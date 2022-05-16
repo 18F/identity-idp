@@ -350,7 +350,7 @@ describe Users::SessionsController, devise: true do
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+        with('Invalid Authenticity Token', analytics_hash)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 

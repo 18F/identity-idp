@@ -119,7 +119,7 @@ RSpec.describe Users::PersonalKeysController do
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+        with('Invalid Authenticity Token', analytics_hash)
 
       post :update
 

@@ -21,7 +21,7 @@ module PersonalKeyConcern
   def redirect_to_signin
     controller_info = "#{controller_path}##{action_name}"
     analytics.track_event(
-      Analytics::INVALID_AUTHENTICITY_TOKEN,
+      'Invalid Authenticity Token',
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )

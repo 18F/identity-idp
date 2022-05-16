@@ -926,6 +926,22 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] controller
+  # @param [Boolean] user_signed_in
+  # Authenticity token is invalid
+  def invalid_authenticity_token(
+    controller:,
+    user_signed_in:,
+    **extra
+  )
+    track_event(
+      'Invalid Authenticity Token',
+      controller: controller,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')

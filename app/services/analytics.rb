@@ -138,7 +138,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
   LOGOUT_INITIATED = 'Logout Initiated'
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'

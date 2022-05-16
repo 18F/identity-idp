@@ -247,7 +247,7 @@ class ApplicationController < ActionController::Base
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
     analytics.track_event(
-      Analytics::INVALID_AUTHENTICITY_TOKEN,
+      'Invalid Authenticity Token',
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
