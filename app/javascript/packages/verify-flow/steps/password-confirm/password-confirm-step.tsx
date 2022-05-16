@@ -1,12 +1,12 @@
-import { PageHeading, Accordion } from '@18f/identity-components';
+import { PageHeading, Accordion, Alert } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
-import PersonalInfoSummary from './personal-info-summary';
 import { PasswordToggle } from '@18f/identity-password-toggle';
-import { Alert } from '@18f/identity-components';
-import StartOverOrCancel from '../../start-over-or-cancel';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import type { ChangeEvent } from 'react';
+import { getConfigValue } from '@18f/identity-config';
+import PersonalInfoSummary from './personal-info-summary';
+import StartOverOrCancel from '../../start-over-or-cancel';
 import type { VerifyFlowValues } from '../..';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
@@ -19,8 +19,10 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           {error.message}
         </Alert>
       ))}
-      <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
-      <p>{t('idv.messages.sessions.review_message', { app_name: 'Login.gov' })}</p>
+      return{' '}
+      <PageHeading>
+        {t('idv.titles.session.review', { app_name: getConfigValue('appName') })}
+      </PageHeading>
       <div className="margin-top-6 margin-bottom-4">
         <PasswordToggle
           ref={registerField('password')}

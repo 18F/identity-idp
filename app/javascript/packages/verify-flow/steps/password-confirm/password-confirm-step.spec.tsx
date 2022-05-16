@@ -6,7 +6,7 @@ import { t } from '@18f/identity-i18n';
 import { accordion } from 'identity-style-guide';
 import PasswordConfirmStep from './password-confirm-step';
 
-describe('PasswordConfirm', () => {
+describe('PasswordConfirmStep', () => {
   before(() => {
     accordion.on();
   });
@@ -34,17 +34,14 @@ describe('PasswordConfirm', () => {
     sandbox.restore();
   });
 
-  it('it has a collapsed accordion by default', () => {
-    const toPreviousStep = sinon.spy();
-    const { getByText } = render(
-      <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
-    );
+  it('has a collapsed accordion by default', () => {
+    const { getByText } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
     const button = getByText(t('idv.messages.review.intro'));
     expect(button.getAttribute('aria-expanded')).to.eq('false');
   });
 
-  it('it expands accordion when the accordion is clicked on', async () => {
+  it('expands accordion when the accordion is clicked on', async () => {
     const toPreviousStep = sinon.spy();
     const { getByText } = render(
       <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
@@ -55,7 +52,7 @@ describe('PasswordConfirm', () => {
     expect(button.getAttribute('aria-expanded')).to.eq('true');
   });
 
-  it('it displays user information when the accordion is clicked on', async () => {
+  it('displays user information when the accordion is clicked on', async () => {
     const toPreviousStep = sinon.spy();
     const { getByText } = render(
       <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,

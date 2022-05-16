@@ -14,7 +14,7 @@ function Accordion({ header, children }: AccordionProps) {
 
   return (
     <div ref={ref}>
-      <div className="usa-accordion">
+      <div className="usa-accordion usa-accordion--bordered">
         <div className="usa-accordion__heading">
           <button
             type="button"
@@ -26,7 +26,7 @@ function Accordion({ header, children }: AccordionProps) {
           </button>
         </div>
         <div id={`accordion-${uniqueId}`} className="usa-accordion__content usa-prose" hidden>
-          <div className="usa-accordion__content usa-prose">{children}</div>
+          {children}
         </div>
       </div>
     </div>
