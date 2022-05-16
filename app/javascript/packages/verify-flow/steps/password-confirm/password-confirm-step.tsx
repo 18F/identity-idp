@@ -47,20 +47,20 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
           onChange({ password: event.target.value });
         }}
       />
-
-      {formatHTML(
-        t('idv.forgot_password.link_html', {
-          link: `<button>${t('idv.forgot_password.link_text')}</button>`,
-        }),
-        {
-          button: ({ children }) => (
-            <Button isUnstyled onClick={() => goToForgotPassword()}>
-              {children}
-            </Button>
-          ),
-        },
-      )}
-
+      <div className="text-right margin-top-2 margin-bottom-4">
+        {formatHTML(
+          t('idv.forgot_password.link_html', {
+            link: `<button>${t('idv.forgot_password.link_text')}</button>`,
+          }),
+          {
+            button: ({ children }) => (
+              <Button isUnstyled onClick={() => goToForgotPassword()}>
+                {children}
+              </Button>
+            ),
+          },
+        )}
+      </div>
       <FormStepsButton.Continue />
       <StartOverOrCancel />
     </>
