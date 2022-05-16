@@ -1,5 +1,13 @@
 module IrsAttemptsApi
-  Event = Struct.new(:jti, :iat, :event_type, :encrypted_event_data, keyword_init: true) do
+  class Event
+    attr_reader :jti, :iat, :event_type, :encrypted_event_data
+
+    def initialize(jti:, iat:, event_type:, encrypted_event_data:)
+      @jti = jti
+      @iat = iat
+      @event_type = event_type
+      @encrypted_event_data = encrypted_event_data
+    end
 
     def self.build(event_type:, session_id:, occurred_at:, event_metadata:)
       jti = SecureRandom.uuid()
@@ -31,6 +39,34 @@ module IrsAttemptsApi
         'RS256',
         typ: 'secevent+jwt',
       )
+    end
+
+    def to_json
+      {
+        jti: jti,
+        iat: iat,
+        event_type: event_type,
+        encrypted_event_data: encrypted_event_data,
+      }.to_json
+    end
+
+    def self.from_json(json)
+      parsed = JSON.parse(json)
+      self.new(
+        jti: parsed['jti'],
+        iat: parsed['iat'],
+        event_type: parsed['event_type'],
+        encrypted_event_data: parsed['encrypted_event_data'],
+      )
+    end
+
+    def ==(other)
+      return false unless other.is_a? self.class
+
+      other.jti == jti &&
+        other.iat == iat &&
+        other.event_type == event_type &&
+        other.encrypted_event_data == encrypted_event_data
     end
 
     private

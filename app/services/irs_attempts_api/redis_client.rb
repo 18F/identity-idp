@@ -26,10 +26,9 @@ module IrsAttemptsApi
     def read_events(count = 1000)
       redis_pool.with do |client|
         keys = client.scan(0, count: count).last
-        client.mapped_mget(*keys).transform_values do |stringified_event_data|
-          next unless stringified_event_data.present?
-          event_data = JSON.parse(stringified_event_data)
-          IrsAttemptsApi::Event.new(event_data)
+        client.mapped_mget(*keys).transform_values do |event_data|
+          next unless event_data.present?
+          IrsAttemptsApi::Event.from_json(event_data)
         end.values.compact
       end
     end

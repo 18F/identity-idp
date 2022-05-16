@@ -19,7 +19,7 @@ describe IrsAttemptsApi::RedisClient do
       result = subject.redis_pool.with do |client|
         JSON.parse(client.get(event.jti))
       end
-      expect(result).to eq(event.to_h.stringify_keys)
+      expect(result).to eq(JSON.parse(event.to_json))
     end
   end
 
