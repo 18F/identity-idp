@@ -22,9 +22,9 @@
 <%= validated_form_for @resend_email_confirmation_form,
                        html: { class: 'margin-bottom-2' },
                        url: sign_up_register_path do |f| %>
-  <%= f.input :email, as: :hidden, wrapper: false %>
-  <%= f.input :resend, as: :hidden, wrapper: false %>
-  <%= f.input :request_id, as: :hidden, wrapper: false %>
+  <%= f.input :email, as: :hidden %>
+  <%= f.input :resend, as: :hidden %>
+  <%= f.input :request_id, as: :hidden %>
   <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>
 

@@ -9,6 +9,7 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { VerifyFlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { ForgotPassword } from './forgot-password';
+import StartOverOrCancel from '../../start-over-or-cancel';
 import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
@@ -61,6 +62,7 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
       )}
 
       <FormStepsButton.Continue />
+      <StartOverOrCancel />
     </>
   );
 }

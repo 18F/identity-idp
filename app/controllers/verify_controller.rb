@@ -25,6 +25,8 @@ class VerifyController < ApplicationController
 
     {
       base_path: idv_app_path,
+      start_over_url: idv_session_path,
+      cancel_url: idv_cancel_path,
       completion_url: completion_url,
       initial_values: initial_values,
       reset_password_url: forgot_password_url,
