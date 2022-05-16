@@ -6,10 +6,10 @@ Custom element and React implementation for a print button component.
 
 ### Custom Element
 
-Importing the package will register the `<lg-print-button>` custom element:
+Importing the element will register the `<lg-print-button>` custom element:
 
 ```ts
-import '@18f/identity-print-button';
+import '@18f/identity-print-button/print-button-element';
 ```
 
 The custom element will implement the behavior to show a print dialog upon click, but all markup must already exist, rendered server-side or by the included React component.
