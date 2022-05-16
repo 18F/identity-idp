@@ -648,6 +648,11 @@ module AnalyticsEvents
     )
   end
 
+  # GPO verification visited
+  def idv_gpo_verification_visited
+    track_event('IdV: GPO verification visited')
+  end
+
   # User visits IdV
   def idv_intro_visit
     track_event('IdV: intro visited')

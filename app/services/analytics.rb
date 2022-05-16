@@ -138,7 +138,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited' # Previously: "Account verification visited"
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
   LOGOUT_INITIATED = 'Logout Initiated'
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'

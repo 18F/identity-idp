@@ -6,7 +6,7 @@ module Idv
     before_action :confirm_verification_needed
 
     def index
-      analytics.track_event(Analytics::IDV_GPO_VERIFICATION_VISITED)
+      analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
       @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user)

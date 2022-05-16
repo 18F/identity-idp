@@ -28,7 +28,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'user has pending profile' do
       it 'renders page' do
-        expect(@analytics).to receive(:track_event).with(Analytics::IDV_GPO_VERIFICATION_VISITED)
+        expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
 
         action
 
@@ -62,7 +62,7 @@ RSpec.describe Idv::GpoVerifyController do
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_VISITED,
+          'IdV: GPO verification visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
