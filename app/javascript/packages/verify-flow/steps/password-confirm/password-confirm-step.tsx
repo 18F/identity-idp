@@ -1,45 +1,40 @@
-import { PageHeading } from '@18f/identity-components';
+import { PageHeading, Accordion } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
-import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import type { VerifyFlowValues } from '../..';
-import { Accordion } from '@18f/identity-components';
 import parsePhoneNumber from 'libphonenumber-js';
 import type { ChangeEvent } from 'react';
+import type { VerifyFlowValues } from '../..';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
-function getDateFormat(date: string | number | Date) {
+function getDateFormat(date) {
   date = new Date(date);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-US', options);
 }
 
-function PersonalInfoSummary(value) {
-    const pii = value.pii;
-
-    const phoneNumber = parsePhoneNumber(`+1${pii?.phone}`);
+function PersonalInfoSummary({ pii }) {
+  const { firstName, lastName, dob, address1, address2, city, state, zipcode, ssn, phone } = pii;
+  const phoneNumber = parsePhoneNumber(`+1${phone}`);
   return (
     <div className="padding-x-4">
       <div className="h6">{t('idv.review.full_name')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {pii?.firstName} {pii?.lastName}
+        {firstName} {lastName}
       </div>
       <div className="margin-top-4 h6">{t('idv.review.mailing_address')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {pii?.address1} <br />
-        {pii?.address2 ? pii?.address2 : ''}
+        {address1} <br />
+        {address2 || ''}
         <br />
-        {pii?.city && pii?.state ? `${pii?.city}, ${pii?.state} ${pii?.zipcode}` : ''}
+        {city && state ? `${city}, ${state} ${zipcode}` : ''}
       </div>
       <div className="margin-top-4 h6">{t('idv.review.dob')}</div>
-      <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {getDateFormat(pii?.dob)}
-      </div>
+      <div className="h4 text-bold ico-absolute ico-absolute-success">{getDateFormat(dob)}</div>
       <div className="margin-top-4 h6">{t('idv.review.ssn')}</div>
-      <div className="h4 text-bold ico-absolute ico-absolute-success">{pii?.ssn}</div>
-      {pii?.phone && (
+      <div className="h4 text-bold ico-absolute ico-absolute-success">{ssn}</div>
+      {phone && (
         <>
           <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
           <div className="h4 text-bold ico-absolute ico-absolute-success">

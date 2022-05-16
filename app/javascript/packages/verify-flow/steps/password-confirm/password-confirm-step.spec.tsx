@@ -1,10 +1,10 @@
 import sinon from 'sinon';
 import * as analytics from '@18f/identity-analytics';
-import { render, screen, queryByAttribute } from '@testing-library/react';
-import PasswordConfirmStep from './password-confirm-step';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { t } from '@18f/identity-i18n';
 import { accordion } from 'identity-style-guide';
+import PasswordConfirmStep from './password-confirm-step';
 
 describe('PasswordConfirm', () => {
   before(() => {
@@ -23,7 +23,7 @@ describe('PasswordConfirm', () => {
     toPreviousStep() {},
     registerField: () => () => {},
     unknownFieldErrors: [],
-    value: { passwordConfirm: '' },
+    value: {},
   };
 
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('PasswordConfirm', () => {
     sandbox.restore();
   });
 
-  it('it has a collapsed accordion by default', async () => {
+  it('it has a collapsed accordion by default', () => {
     const toPreviousStep = sinon.spy();
     const { getByText } = render(
       <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
@@ -57,8 +57,6 @@ describe('PasswordConfirm', () => {
 
   it('it displays user information when the accordion is clicked on', async () => {
     const toPreviousStep = sinon.spy();
-    const getById = queryByAttribute.bind(null, 'id');
-
     const { getByText } = render(
       <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
     );
