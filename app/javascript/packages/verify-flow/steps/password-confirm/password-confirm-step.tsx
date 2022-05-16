@@ -6,7 +6,7 @@ import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identit
 import { PasswordToggle } from '@18f/identity-password-toggle';
 import { Alert, Button } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
-import { VerifyFlowContext } from '@18f/identity-verify-flow';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { ForgotPassword } from './forgot-password';
 import StartOverOrCancel from '../../start-over-or-cancel';
@@ -15,7 +15,7 @@ import type { VerifyFlowValues } from '../../verify-flow';
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
 function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
-  const { basePath } = useContext(VerifyFlowContext);
+  const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
   const stepPath = `${basePath}/password_confirm`;
   const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
