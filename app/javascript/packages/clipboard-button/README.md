@@ -6,10 +6,10 @@ Custom element and React implementation for a clipboard button component.
 
 ### Custom Element
 
-Importing the package will register the `<lg-clipboard-button>` custom element:
+Importing the element will register the `<lg-clipboard-button>` custom element:
 
 ```ts
-import '@18f/identity-clipboard-button';
+import '@18f/identity-clipboard-button/clipboard-button-element';
 ```
 
 The custom element will implement the copying behavior, but all markup must already exist, rendered server-side or by the included React component.
