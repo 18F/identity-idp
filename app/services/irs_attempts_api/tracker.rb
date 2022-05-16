@@ -9,13 +9,13 @@ module IrsAttemptsApi
     def track_event(event_type, metadata = {})
       return unless IdentityConfig.store.irs_attempt_api_enabled
 
-      event = IrsAttemptsApi::Event.build(
+      jti, jwe = IrsAttemptsApi::EncryptedEventTokenBuilder.new(
         event_type: event_type,
         session_id: session_id,
         occurred_at: Time.zone.now,
         event_metadata: metadata,
-      )
-      redis_client.write_event(event)
+      ).build_event_token
+      redis_client.write_event(jti, jwe)
     end
 
     private

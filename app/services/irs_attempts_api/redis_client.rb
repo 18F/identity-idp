@@ -9,11 +9,10 @@ module IrsAttemptsApi
       end
     end
 
-    def write_event(event_data)
-      key = event_data.jti
+    def write_event(jti, jwe)
       redis_pool.with do |client|
-        client.set(key, event_data.to_json)
-        client.expire(key, IdentityConfig.store.irs_attempt_api_event_ttl_seconds)
+        client.set(jti, jwe)
+        client.expire(jti, IdentityConfig.store.irs_attempt_api_event_ttl_seconds)
       end
     end
 
@@ -26,10 +25,7 @@ module IrsAttemptsApi
     def read_events(count = 1000)
       redis_pool.with do |client|
         keys = client.scan(0, count: count).last
-        client.mapped_mget(*keys).transform_values do |event_data|
-          next unless event_data.present?
-          IrsAttemptsApi::Event.from_json(event_data)
-        end.values.compact
+        client.mapped_mget(*keys)
       end
     end
 

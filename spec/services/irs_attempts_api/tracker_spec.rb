@@ -14,14 +14,9 @@ RSpec.describe IrsAttemptsApi::Tracker do
     it 'records the event in redis' do
       subject.track_event(:test_event, foo: :bar)
 
-      raw_events = IrsAttemptsApi::RedisClient.new.read_events
+      events = IrsAttemptsApi::RedisClient.new.read_events
 
-      expect(raw_events.length).to eq(1)
-      raw_event = raw_events.first
-      expect(raw_event.jti).to be_a(String)
-      expect(Time.zone.at(raw_event.iat)).to be_within(1.second).of(Time.zone.now)
-      expect(raw_event.event_type).to eq('test_event')
-      expect(raw_event.encrypted_event_data).to be_a(String)
+      expect(events.values.length).to eq(1)
     end
   end
 end
