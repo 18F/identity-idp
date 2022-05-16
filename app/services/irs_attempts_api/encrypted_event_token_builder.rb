@@ -38,7 +38,7 @@ module IrsAttemptsApi
         aud: IdentityConfig.store.irs_attempt_api_audience,
         events: {
           long_event_type => event_data,
-        }
+        },
       }
     end
 
