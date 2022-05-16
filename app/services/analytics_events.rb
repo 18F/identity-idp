@@ -942,6 +942,39 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # Logout Initiated
+  def logout_initiated(
+    success:,
+    client_id:,
+    sp_initiated:,
+    oidc:,
+    saml_request_valid:,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'Logout Initiated',
+      success: success,
+      client_id: client_id,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')

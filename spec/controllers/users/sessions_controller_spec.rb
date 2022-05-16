@@ -119,7 +119,7 @@ describe Users::SessionsController, devise: true do
     it 'tracks a logout event' do
       stub_analytics
       expect(@analytics).to receive(:track_event).with(
-        Analytics::LOGOUT_INITIATED,
+        'Logout Initiated',
         sp_initiated: false,
         oidc: false,
       )

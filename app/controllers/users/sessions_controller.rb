@@ -40,7 +40,7 @@ module Users
     end
 
     def destroy
-      analytics.track_event(Analytics::LOGOUT_INITIATED, sp_initiated: false, oidc: false)
+      analytics.track_event('Logout Initiated', sp_initiated: false, oidc: false)
       super
     end
 
