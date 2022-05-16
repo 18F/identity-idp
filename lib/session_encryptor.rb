@@ -29,7 +29,6 @@ class SessionEncryptor
     :address1,
     :city,
     :dob,
-    :state_id_number,
     :state_id_expiration,
   ).values
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
