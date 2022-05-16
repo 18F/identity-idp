@@ -21,7 +21,12 @@ describe('VerifyFlow', () => {
     const onComplete = sandbox.spy();
 
     const { getByText, findByText, getByLabelText } = render(
-      <VerifyFlow initialValues={{ personalKey }} onComplete={onComplete} basePath="/" />,
+      <VerifyFlow
+        initialValues={{ personalKey }}
+        onComplete={onComplete}
+        basePath="/"
+        resetPasswordUrl=""
+      />,
     );
 
     // Password confirm
@@ -59,6 +64,7 @@ describe('VerifyFlow', () => {
           onComplete={() => {}}
           enabledStepNames={[STEPS[1].name]}
           basePath="/"
+          resetPasswordUrl=""
         />,
       );
 
