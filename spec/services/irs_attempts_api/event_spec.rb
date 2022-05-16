@@ -14,6 +14,7 @@ RSpec.describe IrsAttemptsApi::Event do
   let(:session_id) { 'test-session-id' }
   let(:occurred_at) { 1.hour.ago }
   let(:event_metadata) { { 'test_key' => 'test_value' } }
+  let(:now) { Time.zone.now }
 
   subject do
     described_class.build(
@@ -21,6 +22,7 @@ RSpec.describe IrsAttemptsApi::Event do
       session_id: 'test-session-id',
       occurred_at: occurred_at,
       event_metadata: event_metadata,
+      now: now,
     )
   end
 
@@ -30,7 +32,7 @@ RSpec.describe IrsAttemptsApi::Event do
 
       expect(token['iss']).to eq('http://www.example.com/')
       expect(token['jti']).to be_a(String)
-      expect(Time.at(token['iat'])).to be_within(1.second).of(Time.now)
+      expect(token['iat']).to eq(now.to_i)
       expect(token['aud']).to eq('https://irs.gov')
 
       event_key = 'https://schemas.login.gov/secevent/irs-attempts-api/event-type/test-event'

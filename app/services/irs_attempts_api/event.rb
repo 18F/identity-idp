@@ -9,9 +9,9 @@ module IrsAttemptsApi
       @encrypted_event_data = encrypted_event_data
     end
 
-    def self.build(event_type:, session_id:, occurred_at:, event_metadata:)
-      jti = SecureRandom.uuid()
-      iat = Time.now.to_i
+    def self.build(event_type:, session_id:, occurred_at:, event_metadata:, now: Time.zone.now)
+      jti = SecureRandom.uuid
+      iat = now.to_i
       encrypted_event_data = encrypt_event_data(
         session_id: session_id,
         occurred_at: occurred_at,
