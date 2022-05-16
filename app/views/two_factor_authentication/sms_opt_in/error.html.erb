@@ -31,6 +31,6 @@
       ].select(&:present?),
     ) %>
 
-<div class="margin-top-4 padding-top-1 border-top border-primary-light">
+<%= render PageFooterComponent.new do %>
   <%= link_to cancel_link_text, @cancel_url %>
-</div>
+<% end %>

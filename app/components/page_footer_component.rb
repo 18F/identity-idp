@@ -10,6 +10,6 @@ class PageFooterComponent < BaseComponent
   end
 
   def css_class
-    ['margin-top-4 padding-top-1 border-top border-primary-light', *tag_options[:class]]
+    ['margin-top-4 padding-top-2 border-top border-primary-light', *tag_options[:class]]
   end
 end
