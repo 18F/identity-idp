@@ -18,7 +18,7 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
       self.new(
-        jti: jti, iat: iat, event_type: event_type, encrypted_event_data: encrypted_event_data
+        jti: jti, iat: iat, event_type: event_type, encrypted_event_data: encrypted_event_data,
       )
     end
 
@@ -69,16 +69,6 @@ module IrsAttemptsApi
         other.encrypted_event_data == encrypted_event_data
     end
 
-    private
-
-    def events
-      { long_event_type => encrypted_event_data }
-    end
-
-    def long_event_type
-      "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{event_type.to_s.dasherize}"
-    end
-
     def self.encrypt_event_data(session_id:, occurred_at:, event_metadata:)
       event_data = {
         'subject' => {
@@ -89,13 +79,23 @@ module IrsAttemptsApi
       }.merge(event_metadata || {})
 
       Base64.strict_encode64(
-        event_data_encryption_key.public_encrypt(event_data.to_json)
+        event_data_encryption_key.public_encrypt(event_data.to_json),
       )
     end
 
     def self.event_data_encryption_key
       decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
       OpenSSL::PKey::RSA.new(decoded_key_der)
+    end
+
+    private
+
+    def events
+      { long_event_type => encrypted_event_data }
+    end
+
+    def long_event_type
+      "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{event_type.to_s.dasherize}"
     end
   end
 end

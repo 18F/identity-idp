@@ -11,7 +11,7 @@ describe IrsAttemptsApi::RedisClient do
         event_type: 'test_event',
         session_id: 'test-session-id',
         occurred_at: Time.zone.now,
-        event_metadata: { 'foo' => 'bar' }
+        event_metadata: { 'foo' => 'bar' },
       )
 
       subject.write_event(event)
@@ -31,7 +31,7 @@ describe IrsAttemptsApi::RedisClient do
           event_type: 'test_event',
           session_id: 'test-session-id',
           occurred_at: Time.zone.now,
-          event_metadata: { 'foo' => 'bar' }
+          event_metadata: { 'foo' => 'bar' },
         )
         events.push(event)
       end
@@ -52,7 +52,7 @@ describe IrsAttemptsApi::RedisClient do
           event_type: 'test_event',
           session_id: 'test-session-id',
           occurred_at: Time.zone.now,
-          event_metadata: { 'foo' => 'bar' }
+          event_metadata: { 'foo' => 'bar' },
         )
         events.push(event)
       end

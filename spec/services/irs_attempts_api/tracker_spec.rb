@@ -19,7 +19,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
       expect(raw_events.length).to eq(1)
       raw_event = raw_events.first
       expect(raw_event.jti).to be_a(String)
-      expect(Time.at(raw_event.iat)).to be_within(1.second).of(Time.zone.now)
+      expect(Time.zone.at(raw_event.iat)).to be_within(1.second).of(Time.zone.now)
       expect(raw_event.event_type).to eq('test_event')
       expect(raw_event.encrypted_event_data).to be_a(String)
     end

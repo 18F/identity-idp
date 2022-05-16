@@ -43,10 +43,10 @@ RSpec.describe IrsAttemptsApi::Event do
       event_data = JSON.parse(decrypted_event_data)
 
       expect(event_data['subject']).to eq(
-        'subject_type' => 'session', 'session_id' => 'test-session-id'
+        'subject_type' => 'session', 'session_id' => 'test-session-id',
       )
       expect(event_data['test_key']).to eq('test_value')
-      expect(Time.at(event_data['occurred_at'])).to be_within(1.second).of(occurred_at)
+      expect(Time.zone.at(event_data['occurred_at'])).to be_within(1.second).of(occurred_at)
       expect(event_data['test_key']).to eq('test_value')
     end
   end
@@ -63,7 +63,7 @@ RSpec.describe IrsAttemptsApi::Event do
       )
 
       expect(jwt_payload).to eq(subject.security_event_token_data)
-      expect(jwt_headers).to eq('typ'=>'secevent+jwt', 'alg'=>'RS256')
+      expect(jwt_headers).to eq('typ' => 'secevent+jwt', 'alg' => 'RS256')
     end
   end
 end
