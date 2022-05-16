@@ -151,6 +151,7 @@ es:
     titles:
       activated: Ya se verificó tu identidad.
       come_back_later: Vuelve pronto
+      personal_key: Clave personal
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'

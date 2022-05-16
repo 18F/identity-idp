@@ -144,6 +144,7 @@ en:
     titles:
       activated: Your identity has already been verified
       come_back_later: Come back soon
+      personal_key: Personal key
       mail:
         resend: Want another letter?
         verify: Want a letter?

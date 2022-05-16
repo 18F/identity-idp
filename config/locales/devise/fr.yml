@@ -61,14 +61,19 @@ fr:
         ancien numéro de téléphone.
       start:
         accordion: Vous aurez aussi besoin
+        bullet_1_img: Courriel
         bullet_1_html: Une <strong>adresse e-mail</strong>.
+        bullet_2_img: Dispositif
         bullet_2_html: Activez <strong>l’authentification à deux facteurs</strong>.
+        bullet_3_img: Profil informatif
         bullet_3_html: Pour fournir des <strong>informations de base</strong>, telles
           que votre nom, adresse et numéro de téléphone.
         bullet_4_html: Votre <strong>numéro de Sécurité Sociale</strong>.
+        bullet_5_img: Vérifiez votre adresse
         bullet_5_html: Pour vérifier votre adresse en fournissant un <strong>numéro de
           téléphone ou adresse postale où vous recevez du courrier
           électronique</strong>.
+        bullet_6_img: Clé personnelle
         bullet_6_html: Lorsque vous avez terminé ce processus, nous allons vous donner
           un <strong>clé personnelle</strong>. Ecrivez-le et rangez-le dans un
           endroit sûr. C’est important. La clé personnelle vous sera demandée

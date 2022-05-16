@@ -163,6 +163,7 @@ fr:
     titles:
       activated: Votre identité a déjà été vérifiée
       come_back_later: Revenez vite
+      personal_key: Clé personnelle
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?

@@ -50,13 +50,18 @@ en:
         it. Please follow the instructions below.
       start:
         accordion: You will also need
+        bullet_1_img: Email
         bullet_1_html: An <strong>email address</strong>.
+        bullet_2_img: Device
         bullet_2_html: Enable <strong>two-step authentication</strong>.
+        bullet_3_img: Informational profile
         bullet_3_html: To provide <strong>basic information</strong>, such as your name,
           address and phone number.
         bullet_4_html: Your <strong>Social Security number</strong>.
+        bullet_5_img: Verify your address
         bullet_5_html: To verify your address by providing a <strong>phone number or
           mailing address where you receive mail</strong>.
+        bullet_6_img: Personal key
         bullet_6_html: When you are finished with this process we’ll give you a
           <strong>personal key</strong>. Write it down and store it in a safe
           place; it’s important. You’ll be asked for the personal key every time
