@@ -19,9 +19,9 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
     <>
       <img
         src={getAssetPath('status/info-question.svg')}
-        width="50"
+        width="54"
+        height="54"
         alt={t('components.status_page.icons.question')}
-        height="50"
         className="margin-bottom-4"
       />
       <PageHeading>{t('idv.forgot_password.modal_header')}</PageHeading>
