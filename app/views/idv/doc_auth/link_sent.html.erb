@@ -37,7 +37,7 @@
 </div>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= content_tag 'script', '', data: { doc_capture_status_endpoint: idv_capture_doc_status_url } %>
+  <%= content_tag 'script', '', data: { status_endpoint: idv_capture_doc_status_url } %>
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>
 

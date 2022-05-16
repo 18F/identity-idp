@@ -20,8 +20,6 @@ describe('document-capture/context/upload', () => {
       'backgroundUploadURLs',
       'backgroundUploadEncryptKey',
       'flowPath',
-      'startOverURL',
-      'cancelURL',
       'csrf',
     ]);
     expect(result.current.upload).to.equal(defaultUpload);

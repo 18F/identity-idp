@@ -100,7 +100,7 @@ interface FieldsRefEntry {
   /**
    * Ref callback.
    */
-  refCallback: RefCallback<HTMLInputElement>;
+  refCallback: RefCallback<HTMLElement>;
 
   /**
    * Whether field is required.
@@ -110,7 +110,7 @@ interface FieldsRefEntry {
   /**
    * Element assigned by ref callback.
    */
-  element: HTMLInputElement | null;
+  element: HTMLElement | null;
 }
 
 interface FormStepsProps {
@@ -118,6 +118,11 @@ interface FormStepsProps {
    * Form steps.
    */
   steps?: FormStep<any>[];
+
+  /**
+   * Step at which to start form.
+   */
+  initialStep?: string;
 
   /**
    * Form values to populate initial state.
@@ -222,6 +227,7 @@ function FormSteps({
   onComplete = () => {},
   onStepChange = () => {},
   onStepSubmit = () => {},
+  initialStep,
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
@@ -232,7 +238,7 @@ function FormSteps({
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(null as HTMLFormElement | null);
-  const [stepName, setStepName] = useHistoryParam({ basePath });
+  const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
@@ -243,7 +249,9 @@ function FormSteps({
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
       if (activeErrorFieldElement) {
-        activeErrorFieldElement.reportValidity();
+        if (activeErrorFieldElement instanceof HTMLInputElement) {
+          activeErrorFieldElement.reportValidity();
+        }
         activeErrorFieldElement.focus();
       }
     }
@@ -296,9 +304,11 @@ function FormSteps({
 
       let error: Error | undefined;
       if (isActive) {
-        element.checkValidity();
+        if (element instanceof HTMLInputElement) {
+          element.checkValidity();
+        }
 
-        if (element.validationMessage) {
+        if (element instanceof HTMLInputElement && element.validationMessage) {
           error = new Error(element.validationMessage);
         } else if (isRequired && !values[key]) {
           error = new RequiredValueMissingError();

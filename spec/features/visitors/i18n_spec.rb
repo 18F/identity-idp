@@ -22,10 +22,9 @@ feature 'Internationalization' do
       end
 
       it 'initializes front-end logger with default locale' do
-        expect(page).to have_selector(
-          "[data-analytics-endpoint='#{api_logger_path(locale: nil)}']",
-          visible: :all,
-        )
+        config = JSON.parse(page.find('[data-config]', visible: :all).text(:all))
+
+        expect(config['analyticsEndpoint']).to eq api_logger_path(locale: nil)
       end
     end
 
@@ -37,10 +36,9 @@ feature 'Internationalization' do
       end
 
       it 'initializes front-end logger with locale parameter' do
-        expect(page).to have_selector(
-          "[data-analytics-endpoint='#{api_logger_path(locale: 'es')}']",
-          visible: :all,
-        )
+        config = JSON.parse(page.find('[data-config]', visible: :all).text(:all))
+
+        expect(config['analyticsEndpoint']).to eq api_logger_path(locale: 'es')
       end
     end
 

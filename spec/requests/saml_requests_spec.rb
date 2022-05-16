@@ -21,7 +21,7 @@ RSpec.describe 'SAML requests', type: :request do
       saml_settings.idp_slo_target_url.gsub('logout', 'remotelogout')
     end
 
-    it 'does not accept GET requests' do
+    xit 'does not accept GET requests' do
       get remote_slo_url
       expect(response.status).to eq(404)
     end
