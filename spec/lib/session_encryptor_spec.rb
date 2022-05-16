@@ -161,7 +161,7 @@ RSpec.describe SessionEncryptor do
           SessionEncryptor::SensitiveKeyError.new('ssn unexpectedly appeared in session'),
           custom_params: {
             session_structure: { 'warden.user.user.session' => {
-              'idv_new' => { 'nested' => { 'ssn' => nil } },
+              'idv_new' => { 'nested' => { 'ssn' => '' } },
             } },
           },
         )
