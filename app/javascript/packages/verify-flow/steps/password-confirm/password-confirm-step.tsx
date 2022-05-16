@@ -1,12 +1,10 @@
-import { PageHeading } from '@18f/identity-components';
+import type { ChangeEvent } from 'react';
+import { Accordion, PageHeading } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
-import { formatHTML } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
+import { parse, format } from 'libphonenumber-js';
 import type { VerifyFlowValues } from '../..';
-import { Accordion } from '@18f/identity-components';
-import parsePhoneNumber from 'libphonenumber-js';
-import type { ChangeEvent } from 'react';
 
 interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
@@ -17,7 +15,8 @@ function getDateFormat(date: string | number | Date) {
 }
 
 function PersonalInfoSummary(pii) {
-  const phoneNumber = parsePhoneNumber(`+1${pii?.phone}`);
+  const phoneNumber = parse(`+1${pii?.phone}`);
+  const formatted = format(phoneNumber, 'NATIONAL');
 
   return (
     <div className="padding-x-4">
@@ -41,9 +40,7 @@ function PersonalInfoSummary(pii) {
       {pii?.phone && (
         <>
           <div className="h6 margin-top-4"> {t('idv.messages.phone.phone_of_record')}</div>
-          <div className="h4 text-bold ico-absolute ico-absolute-success">
-            {phoneNumber?.formatNational()}
-          </div>
+          <div className="h4 text-bold ico-absolute ico-absolute-success">{formatted}</div>
         </>
       )}
     </div>

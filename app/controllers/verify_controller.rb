@@ -17,3 +17,4 @@ class VerifyController < ApplicationController
     }
   end
 end
+ß
