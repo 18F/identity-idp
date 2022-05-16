@@ -83,6 +83,7 @@ en:
       zipcode: ZIP Code
     index:
       id:
+        state_issue: State-issued ID
         need_html: If you’re creating an account, you’ll need a <strong>current
           state-issued ID</strong>.
     messages:

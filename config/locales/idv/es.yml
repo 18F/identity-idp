@@ -89,6 +89,7 @@ es:
       zipcode: Código postal
     index:
       id:
+        state_issue: Documento de identidad emitido por el Estado
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
     messages:

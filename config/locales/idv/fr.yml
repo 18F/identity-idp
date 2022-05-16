@@ -93,6 +93,7 @@ fr:
       zipcode: Code ZIP
     index:
       id:
+        state_issue: Carte d'identité délivrée par l'État
         need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
           actuel émis par l’état</strong>.
     messages:
