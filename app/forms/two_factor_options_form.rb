@@ -7,7 +7,7 @@ class TwoFactorOptionsForm
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
-  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations? 
+  validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?
 
   def initialize(user)
     self.user = user
@@ -49,6 +49,11 @@ class TwoFactorOptionsForm
 
   def phone_only_mfa_method?
     MfaContext.new(user).enabled_mfa_methods_count == 0
+  end
+  
+  def phone_validations?
+    (IdentityConfig.store.select_multiple_mfa_options && phone_selected?) &&
+      !phone_alternative_enabled?
   end
 
   def phone_alternative_enabled?
