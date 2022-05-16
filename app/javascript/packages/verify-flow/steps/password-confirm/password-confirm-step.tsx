@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identity-form-steps';
-import PasswordToggle from '@18f/identity-password-toggle';
+import { PasswordToggle } from '@18f/identity-password-toggle';
 import { Alert, Button } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { VerifyFlowContext } from '@18f/identity-verify-flow';
