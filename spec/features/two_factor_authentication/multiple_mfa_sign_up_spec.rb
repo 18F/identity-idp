@@ -9,7 +9,7 @@ feature 'Multi Two Factor Authentication' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
 
       click_2fa_option('phone')
       click_2fa_option('backup_code')
@@ -48,7 +48,7 @@ feature 'Multi Two Factor Authentication' do
     scenario 'user can select 2 MFA methods and complete 1 and skip one' do
       sign_in_before_2fa
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
 
       click_2fa_option('phone')
       click_2fa_option('backup_code')
@@ -88,7 +88,7 @@ feature 'Multi Two Factor Authentication' do
       to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
       expect(
         URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
-      ).to eq two_factor_options_path(anchor: 'select_phone')
+      ).to eq authentication_methods_setup_path(anchor: 'select_phone')
     end
 
     scenario 'clears the error when another mfa method is selected' do

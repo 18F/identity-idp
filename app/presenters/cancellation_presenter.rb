@@ -9,7 +9,7 @@ class CancellationPresenter
   end
 
   def go_back_path
-    referer_path || two_factor_options_path
+    referer_path || authentication_methods_setup_path
   end
 
   def url_options

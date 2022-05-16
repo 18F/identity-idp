@@ -930,7 +930,7 @@ feature 'Sign in' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
       select_2fa_option('piv_cac')
 
       expect(page).to have_current_path setup_piv_cac_path

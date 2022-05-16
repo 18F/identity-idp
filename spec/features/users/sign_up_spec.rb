@@ -322,7 +322,7 @@ feature 'Sign Up' do
 
   it 'redirects back with an error if the user does not select 2FA option' do
     sign_in_user
-    visit two_factor_options_path
+    visit authentication_methods_setup_path
     click_on 'Continue'
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))

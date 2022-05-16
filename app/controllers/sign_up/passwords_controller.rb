@@ -75,7 +75,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to two_factor_options_url
+      redirect_to authentication_methods_setup_url
     end
   end
 end

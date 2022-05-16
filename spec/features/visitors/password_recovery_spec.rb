@@ -54,7 +54,7 @@ feature 'Password Recovery' do
 
       fill_in_credentials_and_submit(user.email, 'NewVal!dPassw0rd')
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
     end
   end
 
@@ -91,7 +91,7 @@ feature 'Password Recovery' do
     it 'prompts user to set up their 2FA options after signing back in' do
       reset_password_and_sign_back_in(@user)
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
     end
   end
 

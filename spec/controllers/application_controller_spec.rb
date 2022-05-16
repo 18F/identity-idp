@@ -184,7 +184,7 @@ describe ApplicationController do
 
         get :index
 
-        expect(response).to redirect_to two_factor_options_url
+        expect(response).to redirect_to authentication_methods_setup_url
       end
     end
 

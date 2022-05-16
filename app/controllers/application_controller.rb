@@ -186,7 +186,7 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? authentication_methods_setup_url : nil
   end
 
   def fix_broken_personal_key_url
@@ -313,7 +313,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_setup_mfa
-    redirect_to two_factor_options_url
+    redirect_to authentication_methods_setup_url
   end
 
   def prompt_to_verify_mfa

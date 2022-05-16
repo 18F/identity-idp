@@ -549,7 +549,7 @@ module Features
 
     def register_user_with_piv_cac(email = 'test@test.com')
       confirm_email_and_password(email)
-      expect(page).to have_current_path two_factor_options_path
+      expect(page).to have_current_path authentication_methods_setup_path
       expect(page).to have_content(
         t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
