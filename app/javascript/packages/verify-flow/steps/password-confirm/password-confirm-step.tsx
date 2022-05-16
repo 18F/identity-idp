@@ -21,17 +21,9 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
       ))}
       <PageHeading>{t('idv.titles.session.review', { app_name: 'Login.gov' })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: 'Login.gov' })}</p>
-      <div className="margin-bottom-4">
+      <div className="margin-top-6 margin-bottom-4">
         <PasswordToggle
           ref={registerField('password')}
-          type="password"
-          onInput={(event: ChangeEvent<HTMLInputElement>) => {
-            onChange({ password: event.target.value });
-          }}
-        />
-        <input
-          ref={registerField('password')}
-          aria-label={t('idv.form.password')}
           type="password"
           onInput={(event: ChangeEvent<HTMLInputElement>) => {
             onChange({ password: event.target.value });
