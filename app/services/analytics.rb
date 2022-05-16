@@ -138,16 +138,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'
-  IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'
-  IDV_INTRO_VISIT = 'IdV: intro visited'
-  IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'
-  IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'
-  IDV_START_OVER = 'IdV: start over'
-  IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'
-  IDV_GPO_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'
-  IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'
-  IDV_GPO_VERIFICATION_SUBMITTED = 'IdV: GPO verification submitted' # Previously: "Account verification submitted"
   IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited' # Previously: "Account verification visited"
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
   LOGOUT_INITIATED = 'Logout Initiated'

@@ -160,7 +160,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
+    pii_with_no_name = Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.dup
     pii_with_no_name[:last_name] = nil
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,

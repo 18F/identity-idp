@@ -29,6 +29,8 @@ const SecretsContext = createContext({
   setItems: (async () => {}) as SetItems,
 });
 
+SecretsContext.displayName = 'SecretsContext';
+
 const pick = (obj: object, keys: string[]) =>
   Object.fromEntries(keys.map((key) => [key, obj[key]]));
 

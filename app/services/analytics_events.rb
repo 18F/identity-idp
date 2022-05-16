@@ -584,6 +584,75 @@ module AnalyticsEvents
     )
   end
 
+  # User visited forgot password page
+  def idv_forgot_password
+    track_event('IdV: forgot password visited')
+  end
+
+  # User confirmed forgot password
+  def idv_forgot_password_confirmed
+    track_event('IdV: forgot password confirmed')
+  end
+
+  # GPO address letter requested
+  def idv_gpo_address_letter_requested
+    track_event('IdV: USPS address letter requested')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # GPO address submitted
+  def idv_gpo_address_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: USPS address submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO address visited
+  def idv_gpo_address_visited(
+    letter_already_sent:,
+    **extra
+  )
+  track_event(
+    'IdV: USPS address visited',
+    letter_already_sent: letter_already_sent,
+    **extra,
+  )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # GPO verification submitted
+  def idv_gpo_verification_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # User visits IdV
+  def idv_intro_visit
+    track_event('IdV: intro visited')
+  end
+
   # @param [Boolean] success
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
@@ -607,7 +676,6 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
-  # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
@@ -835,6 +903,22 @@ module AnalyticsEvents
   # User visited idv phone of record
   def idv_review_info_visited
     track_event('IdV: review info visited')
+  end
+
+  # @param [String] step
+  # @param [String] location
+  # User started over idv
+  def idv_start_over(
+    step:,
+    location:,
+    **extra
+  )
+    track_event(
+      'IdV: start over',
+      step: step,
+      location: location,
+      **extra,
+    )
   end
 
   # User has visited the page that lets them confirm if they want a new personal key

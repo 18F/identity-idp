@@ -306,6 +306,8 @@ class IdentityConfig
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
     config.add(:session_encryption_key, type: :string)
+    config.add(:session_encryptor_alert_enabled, type: :boolean)
+    config.add(:session_encryptor_v2_enabled, type: :boolean)
     config.add(:session_timeout_in_minutes, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)

@@ -1,4 +1,5 @@
 require 'session_encryptor'
+require 'legacy_session_encryptor'
 require 'session_encryptor_error_handler'
 
 Rails.application.config.session_store(

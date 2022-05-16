@@ -119,7 +119,7 @@ RSpec.describe Api::ProfileCreationForm do
 
         expect(response.success?).to be false
         expect(personal_key).to be_nil
-        expect(response.errors[:password]).to eq ['invalid password']
+        expect(response.errors[:password]).to eq [I18n.t('idv.errors.incorrect_password')]
       end
     end
 
@@ -131,7 +131,7 @@ RSpec.describe Api::ProfileCreationForm do
 
         expect(response.success?).to be false
         expect(personal_key).to be_nil
-        expect(response.errors[:user]).to eq ['user not found']
+        expect(response.errors[:user]).to eq [I18n.t('devise.failure.unauthenticated')]
       end
     end
 
@@ -143,7 +143,7 @@ RSpec.describe Api::ProfileCreationForm do
 
         expect(response.success?).to be false
         expect(personal_key).to be_nil
-        expect(response.errors[:jwt]).to eq ['decode error: Signature has expired']
+        expect(response.errors[:jwt]).to eq [I18n.t('idv.failure.exceptions.internal_error')]
       end
     end
   end
@@ -183,7 +183,8 @@ RSpec.describe Api::ProfileCreationForm do
 
       it 'is an invalid form' do
         expect(subject.valid?).to be false
-        expect(subject.errors.to_a.join(' ')).to match(%r{decode error})
+        expect(subject.errors[:jwt]).to eq [I18n.t('idv.failure.exceptions.internal_error')]
+        expect(subject.errors).to include { |error| error.options[:type] == :decode_error }
       end
     end
 
@@ -199,7 +200,8 @@ RSpec.describe Api::ProfileCreationForm do
 
       it 'is an invalid form' do
         expect(subject.valid?).to be false
-        expect(subject.errors.to_a.join(' ')).to match(%r{pii is missing})
+        expect(subject.errors[:jwt]).to eq [I18n.t('idv.failure.exceptions.internal_error')]
+        expect(subject.errors).to include { |error| error.options[:type] == :user_bundle_error }
       end
     end
 
@@ -215,7 +217,8 @@ RSpec.describe Api::ProfileCreationForm do
 
       it 'is an invalid form' do
         expect(subject.valid?).to be false
-        expect(subject.errors.to_a.join(' ')).to match(%r{metadata is missing})
+        expect(subject.errors[:jwt]).to eq [I18n.t('idv.failure.exceptions.internal_error')]
+        expect(subject.errors).to include { |error| error.options[:type] == :user_bundle_error }
       end
     end
   end

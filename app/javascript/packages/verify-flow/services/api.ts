@@ -1,3 +1,7 @@
+export interface ErrorResponse<Field extends string> {
+  error: Record<Field, [string, ...string[]]>;
+}
+
 interface PostOptions {
   /**
    * Whether to send the request as a JSON request.
@@ -41,3 +45,7 @@ export async function post<Response = any>(
 
   return options.json ? response.json() : response.text();
 }
+
+export const isErrorResponse = <F extends string>(
+  response: object | ErrorResponse<F>,
+): response is ErrorResponse<F> => 'error' in response;
