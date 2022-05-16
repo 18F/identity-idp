@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      user.webauthn_configurations.where(platform_authenticator: true).any?
+      !user.nil? && user.webauthn_configurations.where(platform_authenticator: true).any?
     end
 
     def security_level
@@ -18,8 +18,11 @@ module TwoFactorAuthentication
 
     def mfa_configuration
       return '' if !disabled?
-      t(
-        'two_factor_authentication.two_factor_choice_options.configurations_added',
+      text = user.webauthn_configurations.where(platform_authenticator: true).count == 1 ?
+        'two_factor_authentication.two_factor_choice_options.configurations_added' :
+        'two_factor_authentication.two_factor_choice_options.configurations_added_plural'
+      return t(
+        text,
         count: user.webauthn_configurations.where(platform_authenticator: true).count,
       )
     end

@@ -20,8 +20,11 @@ module TwoFactorAuthentication
 
     def mfa_configuration
       return '' if !disabled?
-      t(
-        'two_factor_authentication.two_factor_choice_options.configurations_added',
+      text = user.phone_configurations.count == 1 ?
+        'two_factor_authentication.two_factor_choice_options.configurations_added' :
+        'two_factor_authentication.two_factor_choice_options.configurations_added_plural'
+      return t(
+        text,
         count: user.phone_configurations.count,
       )
     end
@@ -31,7 +34,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      VendorStatus.new.all_phone_vendor_outage? || user.phone_configurations.any?
+      VendorStatus.new.all_phone_vendor_outage? || (!user.nil? && user.phone_configurations.any?)
     end
   end
 end
