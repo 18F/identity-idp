@@ -3,6 +3,7 @@ import { PasswordToggle } from '@18f/identity-password-toggle';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { Alert } from '@18f/identity-components';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
+import StartOverOrCancel from '../../start-over-or-cancel';
 import type { VerifyFlowValues } from '../../verify-flow';
 
 interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
@@ -23,6 +24,7 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
         }}
       />
       <FormStepsButton.Continue />
+      <StartOverOrCancel />
     </>
   );
 }
