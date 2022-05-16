@@ -1,23 +1,6 @@
 module DocAuth
   module Mock
     class ResultResponseBuilder
-      DEFAULT_PII_FROM_DOC = {
-        first_name: 'FAKEY',
-        middle_name: nil,
-        last_name: 'MCFAKERSON',
-        address1: '1 FAKE RD',
-        address2: nil,
-        city: 'GREAT FALLS',
-        state: 'MT',
-        zipcode: '59010',
-        dob: '1938-10-06',
-        state_id_number: '1111111111111',
-        state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
-        state_id_expiration: '2099-12-31',
-        phone: nil,
-      }.freeze
-
       attr_reader :uploaded_file, :config, :liveness_enabled
 
       def initialize(uploaded_file, config, liveness_enabled)
@@ -117,7 +100,7 @@ module DocAuth
           raw_pii = parsed_data_from_uploaded_file['document']
           raw_pii&.symbolize_keys || {}
         else
-          DEFAULT_PII_FROM_DOC
+          Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC
         end
       end
 
