@@ -330,6 +330,7 @@ Rails.application.routes.draw do
     end
 
     get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
+    get '/verify/v2/password_confirm/forgot_password' => 'verify#show'
 
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
