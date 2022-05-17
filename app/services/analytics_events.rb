@@ -940,6 +940,11 @@ module AnalyticsEvents
     )
   end
 
+  # User visited the page to enter a TOTP as their mfa
+  def multi_factor_auth_enter_totp_visit
+    track_event('Multi-Factor Authentication: enter TOTP visited')
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
