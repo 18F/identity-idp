@@ -9,7 +9,7 @@ function PersonalInfoSummary({ pii }) {
   function getDateFormat(date) {
     date = new Date(date);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString(document.documentElement.lang, options);
   }
 
   return (
