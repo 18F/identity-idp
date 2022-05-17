@@ -11,15 +11,3 @@ en:
           still active and can be used to access other participating government
           websites.'
         instructions2: Please visit the agency’s website to contact them for more information.
-    help_text:
-      default:
-        forgot_password: Your old %{sp_name} username and password won’t work. Please <a
-          href=%{sp_create_link}>create a %{app_name} account</a> using the same
-          email address you use for %{sp_name}. <p><a
-          href="https://login.gov/help/">Learn more</a>
-        sign_in: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
-          and password won’t work. Please <a href=%{sp_create_link}>create a
-          %{app_name} account</a> using the same email address you use for
-          %{sp_name}. <p><a href="https://login.gov/help/">Learn more</a>
-        sign_up: Please create a %{app_name} account using the same email address you
-          use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>

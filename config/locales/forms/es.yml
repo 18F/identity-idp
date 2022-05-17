@@ -113,8 +113,6 @@ es:
       code: Código de un solo uso
       personal_key: Clave personal
       try_again: Use otro número de teléfono.
-    two_factor_choice:
-      legend: Seleccione una opción para proteger su cuenta
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:

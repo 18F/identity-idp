@@ -106,8 +106,6 @@ en:
       code: One-time code
       personal_key: Personal key
       try_again: Use another phone number
-    two_factor_choice:
-      legend: Select an option to secure your account
     validation:
       required_checkbox: Please check this box to continue
     verify_profile:
