@@ -952,11 +952,11 @@ module AnalyticsEvents
   # @param [Boolean] saml_request_valid
   # Logout Initiated
   def logout_initiated(
-    success:,
-    client_id:,
-    sp_initiated:,
-    oidc:,
-    saml_request_valid:,
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    saml_request_valid: nil,
     errors: nil,
     error_details: nil,
     method: nil,
@@ -977,8 +977,15 @@ module AnalyticsEvents
   end
 
   # Multi-Factor Authentication
-  def multi_factor_auth
-    track_event('Multi-Factor Authentication')
+  def multi_factor_auth(
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication',
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
   end
 
   # @param [String] context:
