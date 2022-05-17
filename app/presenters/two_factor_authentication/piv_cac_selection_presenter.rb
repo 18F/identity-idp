@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      !user.nil? && user.piv_cac_configurations.any?
+      user&.piv_cac_configurations&.any?
     end
 
     def mfa_configuration_count
