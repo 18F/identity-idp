@@ -922,6 +922,26 @@ module AnalyticsEvents
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a backup code as their MFA
+  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter backup code visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a personal key as their mfa (legacy flow)
+  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter personal key visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
   # User used a PIV/CAC as their mfa
@@ -943,26 +963,6 @@ module AnalyticsEvents
   # User visited the page to enter a TOTP as their mfa
   def multi_factor_auth_enter_totp_visit
     track_event('Multi-Factor Authentication: enter TOTP visited')
-  end
-
-  # User visited the page to enter a personal key as their mfa (legacy flow)
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
-    track_event(
-      'Multi-Factor Authentication: enter personal key visited',
-      context: context,
-      **extra,
-    )
-  end
-
-  # User visited the page to enter a backup code as their MFA
-  # @param ["authentication","reauthentication","confirmation"] context user session context
-  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
-    track_event(
-      'Multi-Factor Authentication: enter backup code visited',
-      context: context,
-      **extra,
-    )
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
