@@ -10,6 +10,7 @@ class TwoFactorOptionsForm
   validates :selection, length: { minimum: 2, message: 'phone' }, if: [
     :multiple_mfa_options_enabled?,
     :phone_selected?,
+    :phone_only_mfa_method?,
   ]
 
   def initialize(user)
@@ -52,5 +53,9 @@ class TwoFactorOptionsForm
 
   def phone_selected?
     selection.include?('phone') || selection.include?('voice') || selection.include?('sms')
+  end
+
+  def phone_only_mfa_method?
+    MfaContext.new(user).enabled_mfa_methods_count == 0
   end
 end

@@ -3,15 +3,19 @@ module Users
     include UserAuthenticator
     include MfaSetupConcern
 
+    before_action :authenticate_user
+    before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :multiple_factors_enabled?
+
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
-      analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
+      analytics.user_registration_2fa_additional_setup_visit
     end
 
     def update
       result = submit_form
-      analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP, result.to_h)
+      analytics.user_registration_2fa_additional_setup(**result.to_h)
 
       if result.success?
         process_valid_form
@@ -38,12 +42,18 @@ module Users
     end
 
     def process_valid_form
-      user_session[:selected_mfa_options] = @two_factor_options_form.selection
-      redirect_to confirmation_path(user_session[:selected_mfa_options].first)
+      user_session[:mfa_selections] = @two_factor_options_form.selection
+      user_session[:suggest_second_mfa] = false
+      redirect_to confirmation_path(user_session[:mfa_selections].first)
     end
 
     def two_factor_options_form_params
       params.require(:two_factor_options_form).permit(:selection, selection: [])
+    end
+
+    def multiple_factors_enabled?
+      return if IdentityConfig.store.select_multiple_mfa_options
+      redirect_to after_mfa_setup_path
     end
   end
 end
