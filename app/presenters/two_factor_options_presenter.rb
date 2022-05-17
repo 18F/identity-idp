@@ -89,4 +89,8 @@ class TwoFactorOptionsPresenter
   def aal3_only?
     @aal3_required && !mfa_policy.aal3_mfa_enabled?
   end
+
+  def mfa_policy
+    @mfa_policy ||= MfaPolicy.new(@user)
+  end
 end
