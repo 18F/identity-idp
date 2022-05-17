@@ -143,7 +143,6 @@ class Analytics
   LOGOUT_INITIATED = 'Logout Initiated'
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'
-  MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT = 'Multi-Factor Authentication: enter personal key visited'
   MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT = 'Multi-Factor Authentication: enter backup code visited'
   MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT = 'Multi-Factor Authentication: enter webAuthn authentication visited'
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'
