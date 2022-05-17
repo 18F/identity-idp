@@ -648,6 +648,7 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Account verification visited
   # GPO verification visited
   def idv_gpo_verification_visited
     track_event('IdV: GPO verification visited')
@@ -928,7 +929,7 @@ module AnalyticsEvents
 
   # @param [String] controller
   # @param [Boolean] user_signed_in
-  # Authenticity token is invalid
+  # Authenticity token (CSRF) is invalid
   def invalid_authenticity_token(
     controller:,
     user_signed_in:,
@@ -980,10 +981,10 @@ module AnalyticsEvents
     track_event('Multi-Factor Authentication')
   end
 
-  # @param [String] context:,
-  # @param [String] multi_factor_auth_method:,
-  # @param [Boolean]confirmation_for_add_phone:,
-  # @param [Integer] phone_configuration_id:,
+  # @param [String] context:
+  # @param [String] multi_factor_auth_method:
+  # @param [Boolean] confirmation_for_add_phone:
+  # @param [Integer] phone_configuration_id:
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
