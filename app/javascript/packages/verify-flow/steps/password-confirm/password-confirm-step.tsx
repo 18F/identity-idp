@@ -1,37 +1,39 @@
-import type { ChangeEvent } from 'react';
 import { useContext } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identity-form-steps';
 import { PasswordToggle } from '@18f/identity-password-toggle';
-import { Alert, Button } from '@18f/identity-components';
-import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { ForgotPassword } from './forgot-password';
+import { PageHeading, Accordion, Alert, Button } from '@18f/identity-components';
+import { getConfigValue } from '@18f/identity-config';
+import PersonalInfoSummary from './personal-info-summary';
 import StartOverOrCancel from '../../start-over-or-cancel';
-import type { VerifyFlowValues } from '../../verify-flow';
+import type { VerifyFlowValues } from '../..';
+import type { ChangeEvent } from 'react';
+import type { FormStepComponentProps } from '@18f/identity-form-steps';
 
-interface PasswordConfirmStepStepProps extends FormStepComponentProps<VerifyFlowValues> {}
+interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValues> {}
 
-function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfirmStepStepProps) {
-  const { basePath } = useContext(FlowContext);
-  const { onPageTransition } = useContext(FormStepsContext);
-  const stepPath = `${basePath}/password_confirm`;
-  const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
-  useDidUpdateEffect(onPageTransition, [path]);
+function PasswordConfirmStep({ errors, registerField, onChange, value }: PasswordConfirmStepProps) {
+    const { basePath } = useContext(FlowContext);
+    const { onPageTransition } = useContext(FormStepsContext);
+    const stepPath = `${basePath}/password_confirm`;
+    const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
+    useDidUpdateEffect(onPageTransition, [path]);
 
-  function goToForgotPassword() {
-    setPath('forgot_password');
-  }
+    function goToForgotPassword() {
+      setPath('forgot_password');
+    }
 
-  function goBack() {
-    setPath('password_confirm');
-  }
+    function goBack() {
+      setPath('password_confirm');
+    }
 
-  if (path === 'forgot_password') {
-    return <ForgotPassword goBack={goBack} />;
-  }
+    if (path === 'forgot_password') {
+      return <ForgotPassword goBack={goBack} />;
+    }
 
   return (
     <>
@@ -40,13 +42,18 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
           {error.message}
         </Alert>
       ))}
-      <PasswordToggle
-        ref={registerField('password')}
-        type="password"
-        onInput={(event: ChangeEvent<HTMLInputElement>) => {
-          onChange({ password: event.target.value });
-        }}
-      />
+      <PageHeading>
+        {t('idv.titles.session.review', { app_name: getConfigValue('appName') })}
+      </PageHeading>
+      <div className="margin-top-6">
+        <PasswordToggle
+          ref={registerField('password')}
+          type="password"
+          onInput={(event: ChangeEvent<HTMLInputElement>) => {
+            onChange({ password: event.target.value });
+          }}
+        />
+      </div>
       <div className="text-right margin-top-2 margin-bottom-4">
         {formatHTML(
           t('idv.forgot_password.link_html', {
@@ -61,6 +68,9 @@ function PasswordConfirmStep({ errors, registerField, onChange }: PasswordConfir
           },
         )}
       </div>
+      <Accordion header={t('idv.messages.review.intro')}>
+        <PersonalInfoSummary pii={value} />
+      </Accordion>
       <FormStepsButton.Continue />
       <StartOverOrCancel />
     </>

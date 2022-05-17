@@ -6,7 +6,7 @@ shared_examples 'sp requesting attributes' do |sp|
   let(:good_ssn) { DocAuthHelper::GOOD_SSN }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
   let(:saved_pii) do
-    DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+    Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
       ssn: good_ssn,
       phone: '+1 (555) 555-1234',
     )
