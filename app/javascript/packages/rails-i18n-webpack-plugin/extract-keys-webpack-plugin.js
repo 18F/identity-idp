@@ -43,7 +43,7 @@ function getAdditionalAssetFilename(filename, locale) {
  */
 const getTranslationKeys = (source) =>
   Array.from(source.matchAll(TRANSLATE_CALL)).flatMap(([, keys]) =>
-    keys.split(',').map((key) => key.replace(/[ '"\[\]]/g, '')),
+    keys.split(',').map((key) => key.replace(/[ '"[\]]/g, '')),
   );
 
 /**
