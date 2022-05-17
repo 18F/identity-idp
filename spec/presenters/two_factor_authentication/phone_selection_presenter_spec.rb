@@ -50,11 +50,11 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     end
     it 'returns an empty string when user has not configured this authenticator' do
-      expect(presenter_without_mfa.mfa_configuration).to eq('')
+      expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end
     it 'returns an # added when user has configured this authenticator' do
       puts user_with_mfa.phone_configurations.first
-      expect(presenter_with_mfa.mfa_configuration).to eq(
+      expect(presenter_with_mfa.mfa_configuration_description).to eq(
         t(
           'two_factor_authentication.two_factor_choice_options.configurations_added',
           count: 1,

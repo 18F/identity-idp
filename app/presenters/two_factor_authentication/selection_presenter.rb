@@ -4,7 +4,7 @@ module TwoFactorAuthentication
 
     attr_reader :configuration, :user
 
-    def initialize(configuration = nil, user = nil)
+    def initialize(configuration: nil, user: nil)
       @configuration = configuration
       @user = user
     end

@@ -13,7 +13,7 @@ class AuthAppConfiguration < ApplicationRecord
 
   def selection_presenters
     if mfa_enabled?
-      [TwoFactorAuthentication::AuthAppSelectionPresenter.new(self)]
+      [TwoFactorAuthentication::AuthAppSelectionPresenter.new(configuration: self)]
     else
       []
     end
