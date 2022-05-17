@@ -960,9 +960,10 @@ module AnalyticsEvents
     )
   end
 
+  # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a TOTP as their mfa
-  def multi_factor_auth_enter_totp_visit
-    track_event('Multi-Factor Authentication: enter TOTP visited')
+  def multi_factor_auth_enter_totp_visit(context:, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
