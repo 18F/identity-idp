@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      !user.nil? && user.webauthn_configurations.where(platform_authenticator: true).any?
+      user&.webauthn_configurations&.where(platform_authenticator: true)&.any?
     end
 
     def security_level
