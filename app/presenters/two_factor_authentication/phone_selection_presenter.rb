@@ -18,15 +18,8 @@ module TwoFactorAuthentication
           t('two_factor_authentication.two_factor_choice_options.phone_info')
     end
 
-    def mfa_configuration
-      return '' if !disabled?
-      text = user.phone_configurations.count == 1 ?
-        'two_factor_authentication.two_factor_choice_options.configurations_added' :
-        'two_factor_authentication.two_factor_choice_options.configurations_added_plural'
-      return t(
-        text,
-        count: user.phone_configurations.count,
-      )
+    def mfa_configuration_count
+      user.phone_configurations.count
     end
 
     def security_level

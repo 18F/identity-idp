@@ -15,13 +15,21 @@ module TwoFactorAuthentication
 
     def mfa_configuration
       return '' if !disabled?
-      text = user.backup_code_configurations.unused.count == 1 ?
-        'two_factor_authentication.two_factor_choice_options.unused_backup_code' :
-        'two_factor_authentication.two_factor_choice_options.unused_backup_code_plural'
-      return t(
-        text,
-        count: user.backup_code_configurations.unused.count,
-      )
+      if user.backup_code_configurations.unused.count == 1
+        return t(
+          'two_factor_authentication.two_factor_choice_options.unused_backup_code',
+          count: mfa_configuration_count,
+        )
+      else
+        return t(
+          'two_factor_authentication.two_factor_choice_options.unused_backup_code_plural',
+          count: mfa_configuration_count,
+        )
+      end
+    end
+
+    def mfa_configuration_count
+      user.backup_code_configurations.unused.count
     end
   end
 end

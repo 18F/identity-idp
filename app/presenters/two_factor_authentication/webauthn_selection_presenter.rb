@@ -17,15 +17,8 @@ module TwoFactorAuthentication
       !user.nil? && user.webauthn_configurations.where(platform_authenticator: [false, nil]).any?
     end
 
-    def mfa_configuration
-      return '' if !disabled?
-      text = user.webauthn_configurations.where(platform_authenticator: [false, nil]).count == 1 ?
-        'two_factor_authentication.two_factor_choice_options.configurations_added' :
-        'two_factor_authentication.two_factor_choice_options.configurations_added_plural'
-      return t(
-        text,
-        count: user.webauthn_configurations.where(platform_authenticator: [false, nil]).count,
-      )
+    def mfa_configuration_count
+      user.webauthn_configurations.where(platform_authenticator: [false, nil]).count
     end
   end
 end

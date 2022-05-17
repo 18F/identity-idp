@@ -29,7 +29,22 @@ module TwoFactorAuthentication
       end
     end
 
-    def mfa_configuration; end
+    def mfa_configuration_count; end
+
+    def mfa_configuration
+      return '' if !disabled?
+      if mfa_configuration_count == 1
+        return t(
+          'two_factor_authentication.two_factor_choice_options.configurations_added',
+          count: mfa_configuration_count,
+        )
+      else
+        return t(
+          'two_factor_authentication.two_factor_choice_options.configurations_added_plural',
+          count: mfa_configuration_count,
+        )
+      end
+    end
 
     def security_level; end
 
