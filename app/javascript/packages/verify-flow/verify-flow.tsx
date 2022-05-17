@@ -111,6 +111,7 @@ function VerifyFlow({
 
   const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
   const [currentStep, setCurrentStep] = useState(steps[0].name);
+  const [values, setValues] = useState(syncedValues);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
   const context = useMemo(
     () => ({ startOverURL, cancelURL, currentStep, basePath, resetPasswordUrl }),
@@ -125,10 +126,15 @@ function VerifyFlow({
     setCompletedStep(stepName);
   }
 
+  function onChange(nextValues: Partial<VerifyFlowValues>) {
+    setValues(nextValues);
+    setSyncedValues(nextValues);
+  }
+
   return (
     <FlowContext.Provider value={context}>
       <VerifyFlowStepIndicator currentStep={currentStep} />
-      <VerifyFlowAlert currentStep={currentStep} />
+      <VerifyFlowAlert currentStep={currentStep} values={values} />
       <FormSteps
         steps={steps}
         initialValues={syncedValues}
@@ -136,7 +142,7 @@ function VerifyFlow({
         promptOnNavigate={false}
         basePath={basePath}
         titleFormat={`%{step} - ${getConfigValue('appName')}`}
-        onChange={setSyncedValues}
+        onChange={onChange}
         onStepSubmit={onStepSubmit}
         onStepChange={setCurrentStep}
         onComplete={onComplete}
