@@ -55,7 +55,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_hash)
+        with('Multi-Factor Authentication: enter OTP visited', analytics_hash)
 
       get :show, params: { otp_delivery_preference: 'sms' }
     end

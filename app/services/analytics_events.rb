@@ -975,6 +975,33 @@ module AnalyticsEvents
     )
   end
 
+  # Multi-Factor Authentication
+  def multi_factor_auth
+    track_event('Multi-Factor Authentication')
+  end
+
+  # @param [String] context:,
+  # @param [String] multi_factor_auth_method:,
+  # @param [Boolean]confirmation_for_add_phone:,
+  # @param [Integer] phone_configuration_id:,
+  # Multi-Factor Authentication enter OTP visited
+  def multi_factor_auth_enter_otp_visit(
+    context:,
+    multi_factor_auth_method:,
+    confirmation_for_add_phone:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter OTP visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      confirmation_for_add_phone: confirmation_for_add_phone,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
