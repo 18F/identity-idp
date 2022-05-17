@@ -74,12 +74,6 @@ en:
       regenerate_personal_key: Reset
     login:
       piv_cac: Sign in with your government employee ID
-      piv_cac_info:
-        ial1: If you have added your PIV/CAC card to your account, you may use it
-          instead of your email and password.
-        ial2: If you have added your PIV/CAC card to your account, you may use it
-          instead of your email. You will need to provide your password to
-          unlock your profile.
     navigation:
       access_services: Access your government benefits and services from your
         %{app_name} account.
