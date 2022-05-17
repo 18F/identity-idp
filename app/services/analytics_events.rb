@@ -955,6 +955,16 @@ module AnalyticsEvents
     )
   end
 
+  # User visited the page to enter a backup code as their MFA
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter backup code visited',
+      context: context,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')

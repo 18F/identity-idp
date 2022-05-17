@@ -11,7 +11,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       analytics_hash = { context: 'authentication' }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, analytics_hash)
+        with('Multi-Factor Authentication: enter backup code visited', analytics_hash)
 
       get :show
     end
