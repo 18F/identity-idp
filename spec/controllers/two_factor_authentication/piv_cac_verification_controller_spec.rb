@@ -98,7 +98,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+          with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
 
         submit_attributes = {
           success: true,
@@ -181,7 +181,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_ENTER_PIV_CAC, attributes)
+          with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
 
         submit_attributes = {
           success: false,
