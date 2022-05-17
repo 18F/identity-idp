@@ -649,6 +649,7 @@ module AnalyticsEvents
   end
 
   # @identity.idp.previous_event_name Account verification visited
+  # @identity.idp.previous_event_name Account verification visited
   # GPO verification visited
   def idv_gpo_verification_visited
     track_event('IdV: GPO verification visited')
