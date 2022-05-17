@@ -19,7 +19,6 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           {error.message}
         </Alert>
       ))}
-      return{' '}
       <PageHeading>
         {t('idv.titles.session.review', { app_name: getConfigValue('appName') })}
       </PageHeading>
