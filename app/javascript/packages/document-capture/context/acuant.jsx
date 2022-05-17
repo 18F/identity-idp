@@ -1,7 +1,7 @@
-import { createContext, useContext, useMemo, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
-import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
