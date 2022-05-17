@@ -976,13 +976,43 @@ module AnalyticsEvents
     )
   end
 
+  # @params [Boolean] success
+  # @params [Hash] errors
+  # @params [String] context
+  # @params [String] multi_factor_auth_method
+  # @params [Integer] auth_app_configuration_id
+  # @params [Integer] piv_cac_configuration_id
+  # @params [Integer] key_id
+  # @params [Integer] webauthn_configuration_id
+  # @params [Integer] phone_configuration_id
+  # @params [Boolean] confirmation_for_add_phone
   # Multi-Factor Authentication
   def multi_factor_auth(
-    pii_like_keypaths:,
+    success: nil,
+    errors: nil,
+    context: nil,
+    multi_factor_auth_method: nil,
+    auth_app_configuration_id: nil,
+    piv_cac_configuration_id: nil,
+    key_id: nil,
+    webauthn_configuration_id: nil,
+    confirmation_for_add_phone: nil,
+    phone_configuration_id: nil,
+    pii_like_keypaths: nil,
     **extra
   )
     track_event(
       'Multi-Factor Authentication',
+      success: success,
+      errors: errors,
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      auth_app_configuration_id: auth_app_configuration_id,
+      piv_cac_configuration_id: piv_cac_configuration_id,
+      key_id: key_id,
+      webauthn_configuration_id: webauthn_configuration_id,
+      confirmation_for_add_phone: confirmation_for_add_phone,
+      phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
       **extra,
     )
