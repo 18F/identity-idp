@@ -966,23 +966,23 @@ module AnalyticsEvents
   end
 
   # @param ["authentication","reauthentication","confirmation"] context user session context
-  # @param ["webauthn", "webauthn_platform"] multi_factor_auth_method which webauthn method was used, webauthn
-  #  means a roaming authenticator like a yubikey, webauthn_platform means a platform authenticator
-  #  like face or touch ID
+  # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
+  #  webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+  #  authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
-    **extra,
+    **extra
   )
     track_event(
       'Multi-Factor Authentication: enter webAuthn authentication visited',
-       context:  context,
-       multi_factor_auth_method:  multi_factor_auth_method,
-       webauthn_configuration_id:  webauthn_configuration_id,
-       **extra,
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
     )
   end
 
