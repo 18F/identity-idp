@@ -25,10 +25,13 @@ describe('getTranslationKeys', () => {
     /**
      * i18n-tasks-use t('item.3')
      */
-    Array.from({ length: 3 }, (_, i) => t(\`item.$\{i + 1}\`));
+    Array.from({ length: 3 }, (_, i) => t(\`item.\${i + 1}\`));
     // Emulate Babel template literal transpilation
-    // See: https://babeljs.io/repl#?browsers=ie%2011&code_lz=C4CgBglsCmC2B0ASA3hABAajQRgL5gEog
+    // 1. https://babeljs.io/repl#?browsers=ie%2011&code_lz=C4CgBglsCmC2B0ASA3hABAajQRgL5gEog
     Array.from({ length: 3 }, (_, i) => t('item.'.concat(i + 1)));
+    // 2. https://babeljs.io/repl#?browsers=ie%2011&code_lz=C4CgBgZg9gTgtgZwHQBIDeBrApgTwL5JQB2WYAlEA
+    t("forms.".concat(key, ".one"));
+    t(["forms.".concat(key, ".one")]);
   `;
 
   it('returns keys', () => {

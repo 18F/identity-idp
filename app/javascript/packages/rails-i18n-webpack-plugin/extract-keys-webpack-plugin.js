@@ -17,7 +17,7 @@ const PLUGIN = 'ExtractKeysWebpackPlugin';
  *
  * @type {RegExp}
  */
-const TRANSLATE_CALL = /(?:^|[^\w'-])t\)?\((\[.+?]|['"].+?['"])[, )]/g;
+const TRANSLATE_CALL = /(?:^|[^\w'-])t\)?\(\[?(['"][a-z\d\s_.,'"]+['"])]?[,\s)]/g;
 
 /**
  * Given an original file name and locale, returns a modified file name with the locale injected
@@ -43,7 +43,7 @@ function getAdditionalAssetFilename(filename, locale) {
  */
 const getTranslationKeys = (source) =>
   Array.from(source.matchAll(TRANSLATE_CALL)).flatMap(([, keys]) =>
-    keys.split(',').map((key) => key.replace(/[ '"[\]]/g, '')),
+    keys.split(',').map((key) => key.replace(/[ '"]/g, '')),
   );
 
 /**
