@@ -48,7 +48,7 @@ function SpinnerButton(
     >
       <div className="spinner-button__content">
         <Button {...buttonProps} />
-        <span className="spinner-dots spinner-dots--centered text-white" aria-hidden="true">
+        <span className="spinner-dots spinner-dots--centered" aria-hidden="true">
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />

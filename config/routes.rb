@@ -334,6 +334,7 @@ Rails.application.routes.draw do
 
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
+      post '/verify/v2/password_reset' => 'verify/password_reset#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify
