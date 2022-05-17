@@ -14,7 +14,7 @@ describe IrsAttemptsApi::RedisClient do
         event_metadata: { 'foo' => 'bar' },
       ).build_event_token
 
-      subject.write_event(jti, jwe)
+      subject.write_event(jti: jti, jwe: jwe)
 
       result = subject.redis_pool.with do |client|
         client.get(jti)
@@ -36,7 +36,7 @@ describe IrsAttemptsApi::RedisClient do
         events[jti] = jwe
       end
       events.each do |jti, jwe|
-        subject.write_event(jti, jwe)
+        subject.write_event(jti: jti, jwe: jwe)
       end
 
       result = subject.read_events
@@ -58,7 +58,7 @@ describe IrsAttemptsApi::RedisClient do
         events[jti] = jwe
       end
       events.each do |jti, jwe|
-        subject.write_event(jti, jwe)
+        subject.write_event(jti: jti, jwe: jwe)
       end
 
       subject.redis_pool.with do |client|

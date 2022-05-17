@@ -15,7 +15,7 @@ module IrsAttemptsApi
         occurred_at: Time.zone.now,
         event_metadata: metadata,
       ).build_event_token
-      redis_client.write_event(jti, jwe)
+      redis_client.write_event(jti: jti, jwe: jwe)
     end
 
     private
