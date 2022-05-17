@@ -118,11 +118,11 @@ specs:
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
     DOCKER_DB_HOST: postgres
-    POSTGRES_DB: upaya_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
     POSTGRES_HOST_AUTH_METHOD: trust
     RAILS_ENV: test
+    TEST_ENV_NUMBER: $CI_JOB_ID
   services:
     - name: postgres:13.4
       alias: db-postgres
