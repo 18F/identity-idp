@@ -120,8 +120,10 @@ describe Users::SessionsController, devise: true do
       stub_analytics
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
-        sp_initiated: false,
-        oidc: false,
+        hash_including(
+          sp_initiated: false,
+          oidc: false,
+        ),
       )
 
       sign_in_as_user
@@ -346,7 +348,7 @@ describe Users::SessionsController, devise: true do
     it 'tracks CSRF errors' do
       user = create(:user, :signed_up)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create' }
+      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       expect(@analytics).to receive(:track_event).

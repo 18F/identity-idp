@@ -932,7 +932,7 @@ module AnalyticsEvents
   # Authenticity token (CSRF) is invalid
   def invalid_authenticity_token(
     controller:,
-    user_signed_in:,
+    user_signed_in: nil,
     **extra
   )
     track_event(
@@ -976,19 +976,19 @@ module AnalyticsEvents
     )
   end
 
-  # @params [Boolean] success
-  # @params [Hash] errors
-  # @params [String] context
-  # @params [String] multi_factor_auth_method
-  # @params [Integer] auth_app_configuration_id
-  # @params [Integer] piv_cac_configuration_id
-  # @params [Integer] key_id
-  # @params [Integer] webauthn_configuration_id
-  # @params [Integer] phone_configuration_id
-  # @params [Boolean] confirmation_for_add_phone
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] context
+  # @param [String] multi_factor_auth_method
+  # @param [Integer] auth_app_configuration_id
+  # @param [Integer] piv_cac_configuration_id
+  # @param [Integer] key_id
+  # @param [Integer] webauthn_configuration_id
+  # @param [Integer] phone_configuration_id
+  # @param [Boolean] confirmation_for_add_phone
   # Multi-Factor Authentication
   def multi_factor_auth(
-    success: nil,
+    success:,
     errors: nil,
     context: nil,
     multi_factor_auth_method: nil,
@@ -996,7 +996,7 @@ module AnalyticsEvents
     piv_cac_configuration_id: nil,
     key_id: nil,
     webauthn_configuration_id: nil,
-    confirmation_for_add_phone: nil,
+    confirmation_for_add_phone:,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
     **extra

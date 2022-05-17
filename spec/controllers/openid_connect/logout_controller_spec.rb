@@ -56,11 +56,13 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(@analytics).to receive(:track_event).
             with(
               'Logout Initiated',
-              success: true,
-              client_id: service_provider,
-              errors: {},
-              sp_initiated: true,
-              oidc: true,
+              hash_including(
+                success: true,
+                client_id: service_provider,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
             )
 
           action
