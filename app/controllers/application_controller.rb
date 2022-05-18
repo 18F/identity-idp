@@ -186,7 +186,8 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? authentication_methods_setup_url : nil
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
+      authentication_methods_setup_url : nil
   end
 
   def fix_broken_personal_key_url

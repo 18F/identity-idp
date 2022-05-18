@@ -143,7 +143,7 @@ feature 'Sign in' do
     submit_form_with_valid_email(email)
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
-    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_current_path(authentication_methods_setup_path)
 
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
