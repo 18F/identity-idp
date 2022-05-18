@@ -1,21 +1,24 @@
+import type { ReactNode } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 
-/** @typedef {import('react').ReactNode} ReactNode */
+interface BlockLinkProps {
+  /**
+   * Link destination.
+   */
+  url: string;
 
-/**
- * @typedef BlockLinkProps
- *
- * @prop {string} url Link destination.
- * @prop {boolean=} isNewTab Whether link should open in a new tab. Defaults to false. Use best
- * judgment to reserve new tabs to when absolutely necessary, such as when form data may otherwise
- * be lost.
- * @prop {ReactNode} children Child elements.
- */
+  /**
+   * Whether link should open in a new tab. Defaults to false. Use best judgment to reserve new tabs to when absolutely necessary, such as when form data may otherwise be lost.
+   */
+  isNewTab?: boolean;
 
-/**
- * @param {BlockLinkProps} props
- */
-function BlockLink({ url, children, isNewTab = false }) {
+  /**
+   * Child elements.
+   */
+  children: ReactNode;
+}
+
+function BlockLink({ url, children, isNewTab = false }: BlockLinkProps) {
   const { t } = useI18n();
 
   const classes = ['usa-link', 'block-link', isNewTab && 'usa-link--external']
