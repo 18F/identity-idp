@@ -4,12 +4,12 @@ describe TwoFactorAuthentication::WebauthnSelectionPresenter do
   let(:user_without_mfa) { create(:user) }
   let(:user_with_mfa) { create(:user) }
   let(:configuration) {}
-  let(:presenter_without_mfa) {
- described_class.new(configuration: configuration, user: user_without_mfa)
-  }
-  let(:presenter_with_mfa) {
- described_class.new(configuration: configuration, user: user_with_mfa)
-  }
+  let(:presenter_without_mfa) do
+    described_class.new(configuration: configuration, user: user_without_mfa)
+  end
+  let(:presenter_with_mfa) do
+    described_class.new(configuration: configuration, user: user_with_mfa)
+  end
 
   describe '#type' do
     it 'returns webauthn' do
