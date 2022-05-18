@@ -2,8 +2,19 @@ module Idv
   module Flows
     class InPersonFlow < Flow::BaseFlow
       STEPS = {
-        welcome: Idv::Steps::Ipp::WelcomeStep,
-        ssn: Idv::Steps::SsnStep,
+        location: Idv::Steps::Ipp::LocationStep,
+        welcome: Idv::Steps::Ipp::WelcomeStep,  # instructions
+        address: Idv::Steps::Ipp::AddressStep,  # entering the address
+        state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
+        ssn: Idv::Steps::SsnStep,               # enter SSN (reused, may need to make our own)
+        # verify: Idv::Steps::Ipp::Verify,        # verify entered info
+        # phone: Idv::Steps::Ipp::Phone,          # phone finder
+        # password_confirm: Idv::Steps::Ipp::PasswordConfirm,
+        # personal_key: Idv::Steps::Ipp::PersonalKey,
+        barcode: Idv::Steps::Ipp::Barcode,
+      }.freeze
+
+      ACTIONS = {
       }.freeze
 
       def initialize(controller, session, name)

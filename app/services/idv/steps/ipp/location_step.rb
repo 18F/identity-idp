@@ -1,7 +1,7 @@
 module Idv
   module Steps
     module Ipp
-      class WelcomeStep < DocAuthBaseStep
+      class LocationStep < DocAuthBaseStep
         def call; end
       end
     end
