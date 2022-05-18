@@ -26,7 +26,7 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
       />
       <PageHeading>{t('idv.forgot_password.modal_header')}</PageHeading>
       <ul className="usa-list">
-        {(t('idv.forgot_password.warnings') as unknown as string[]).map((warning) => (
+        {t(['idv.forgot_password.warnings']).map((warning) => (
           <li key={warning}>{warning}</li>
         ))}
       </ul>
