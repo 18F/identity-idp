@@ -584,6 +584,21 @@ module AnalyticsEvents
     )
   end
 
+  # User visited forgot password page
+  def idv_forgot_password
+    track_event('IdV: forgot password visited')
+  end
+
+  # User confirmed forgot password
+  def idv_forgot_password_confirmed
+    track_event('IdV: forgot password confirmed')
+  end
+
+  # User visits IdV
+  def idv_intro_visit
+    track_event('IdV: intro visited')
+  end
+
   # @param [Boolean] success
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
@@ -607,7 +622,6 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
-  # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded

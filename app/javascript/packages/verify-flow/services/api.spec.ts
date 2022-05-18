@@ -1,6 +1,6 @@
 import type { SinonStub } from 'sinon';
 import { useSandbox } from '@18f/identity-test-helpers';
-import { post } from './api';
+import { isErrorResponse, post } from './api';
 
 describe('post', () => {
   const sandbox = useSandbox();
@@ -71,5 +71,21 @@ describe('post', () => {
         }),
       );
     });
+  });
+});
+
+describe('isErrorResponse', () => {
+  it('returns false if object is not an error response', () => {
+    const response = {};
+    const result = isErrorResponse(response);
+
+    expect(result).to.be.false();
+  });
+
+  it('returns true if object is an error response', () => {
+    const response = { error: { field: ['message'] } };
+    const result = isErrorResponse(response);
+
+    expect(result).to.be.true();
   });
 });

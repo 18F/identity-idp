@@ -195,59 +195,83 @@ shared_examples 'signing in as proofed account with broken personal key' do |pro
       and_return(window_end)
   end
 
-  def user_with_broken_personal_key(protocol)
+  def user_with_broken_personal_key(protocol, scenario)
     user = create_ial2_account_go_back_to_sp_and_sign_out(protocol)
 
-    user.active_profile.update(verified_at: window_start + 1.hour)
-    user.update(encrypted_recovery_code_digest_generated_at: nil)
+    case scenario
+    when :broken_personal_key_window
+      user.active_profile.update(verified_at: window_start + 1.hour)
+      user.update(encrypted_recovery_code_digest_generated_at: nil)
+    when :encrypted_data_too_short
+      personal_key = RandomPhrase.new(num_words: 4).to_s
+      user.active_profile.update(
+        encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
+          encrypt('null', user_uuid: user.uuid),
+      )
+    else
+      raise "unknown scenario #{scenario}"
+    end
 
     user
   end
 
-  context "protocol: #{protocol}, ial: #{sp_ial}" do
-    it 'prompts the user to get a new personal key when signing in with email/password', js: true do
-      user = user_with_broken_personal_key(protocol)
+  [
+    [
+      'with a personal key during generated during the broken window',
+      :broken_personal_key_window,
+    ],
+    [
+      'with encrypted recovery PII that is too short to be actual data',
+      :encrypted_data_too_short,
+    ],
+  ].each do |description, scenario|
+    context description do
+      context "protocol: #{protocol}, ial: #{sp_ial}" do
+        it 'prompts the user to get a new personal key when using email/password', js: true do
+          user = user_with_broken_personal_key(protocol, scenario)
 
-      case sp_ial
-      when 1
-        visit_idp_from_sp_with_ial2(protocol)
-      when 2
-        visit_idp_from_sp_with_ial1(protocol)
-      else
-        raise "unknown sp_ial=#{sp_ial}"
+          case sp_ial
+          when 1
+            visit_idp_from_sp_with_ial2(protocol)
+          when 2
+            visit_idp_from_sp_with_ial1(protocol)
+          else
+            raise "unknown sp_ial=#{sp_ial}"
+          end
+
+          fill_in_credentials_and_submit(user.email, user.password)
+
+          expect(page).to have_content(t('account.personal_key.needs_new'))
+          code = page.all('.separator-text__code').map(&:text).join(' ')
+          acknowledge_and_confirm_personal_key
+
+          expect(user.reload.valid_personal_key?(code)).to eq(true)
+          expect(user.active_profile.reload.recover_pii(code)).to be_present
+        end
+
+        it 'prompts for password when signing in via PIV/CAC', js: true do
+          user = user_with_broken_personal_key(protocol, scenario)
+
+          create(:piv_cac_configuration, user: user)
+
+          visit_idp_from_sp_with_ial1(protocol)
+          click_on t('account.login.piv_cac')
+          fill_in_piv_cac_credentials_and_submit(user)
+
+          expect(page).to have_content(t('account.personal_key.needs_new'))
+          expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
+
+          fill_in t('forms.password'), with: user.password
+          click_button t('forms.buttons.submit.default')
+
+          expect(page).to have_content(t('account.personal_key.needs_new'))
+          code = page.all('.separator-text__code').map(&:text).join(' ')
+          acknowledge_and_confirm_personal_key
+
+          expect(user.reload.valid_personal_key?(code)).to eq(true)
+          expect(user.active_profile.reload.recover_pii(code)).to be_present
+        end
       end
-
-      fill_in_credentials_and_submit(user.email, user.password)
-
-      expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('.separator-text__code').map(&:text).join(' ')
-      acknowledge_and_confirm_personal_key
-
-      expect(user.reload.valid_personal_key?(code)).to eq(true)
-      expect(user.active_profile.reload.recover_pii(code)).to be_present
-    end
-
-    it 'prompts for password when signing in via PIV/CAC', js: true do
-      user = user_with_broken_personal_key(protocol)
-
-      create(:piv_cac_configuration, user: user)
-
-      visit_idp_from_sp_with_ial1(protocol)
-      click_on t('account.login.piv_cac')
-      fill_in_piv_cac_credentials_and_submit(user)
-
-      expect(page).to have_content(t('account.personal_key.needs_new'))
-      expect(page).to have_content(t('headings.passwords.confirm_for_personal_key'))
-
-      fill_in t('forms.password'), with: user.password
-      click_button t('forms.buttons.submit.default')
-
-      expect(page).to have_content(t('account.personal_key.needs_new'))
-      code = page.all('.separator-text__code').map(&:text).join(' ')
-      acknowledge_and_confirm_personal_key
-
-      expect(user.reload.valid_personal_key?(code)).to eq(true)
-      expect(user.active_profile.reload.recover_pii(code)).to be_present
     end
   end
 end

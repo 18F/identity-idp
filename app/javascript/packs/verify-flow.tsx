@@ -20,9 +20,14 @@ interface AppRootValues {
   basePath: string;
 
   /**
-   * Application name.
+   * URL to path for session restart.
    */
-  appName: string;
+  startOverUrl: string;
+
+  /**
+   * URL to path for session cancel.
+   */
+  cancelUrl: string;
 
   /**
    * URL to which user should be redirected after completing the form.
@@ -49,7 +54,8 @@ const {
   initialValues: initialValuesJSON,
   enabledStepNames: enabledStepNamesJSON,
   basePath,
-  appName,
+  startOverUrl: startOverURL,
+  cancelUrl: cancelURL,
   completionUrl: completionURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
@@ -92,8 +98,9 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
       <VerifyFlow
         initialValues={initialValues}
         enabledStepNames={enabledStepNames}
+        startOverURL={startOverURL}
+        cancelURL={cancelURL}
         basePath={basePath}
-        appName={appName}
         onComplete={onComplete}
       />
     </SecretsContextProvider>,

@@ -12,6 +12,7 @@ import {
   HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent } from '@18f/identity-analytics';
 
 /** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
@@ -182,8 +183,16 @@ const noticeError = (error) =>
         backgroundUploadEncryptKey,
         formData,
         flowPath,
-        startOverURL,
-        cancelURL,
+      },
+    ],
+    [
+      FlowContext.Provider,
+      {
+        value: {
+          startOverURL,
+          cancelURL,
+          currentStep: 'document_capture',
+        },
       },
     ],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],

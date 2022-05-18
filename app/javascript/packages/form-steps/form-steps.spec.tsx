@@ -427,6 +427,31 @@ describe('FormSteps', () => {
     expect(document.activeElement).to.equal(inputOne);
   });
 
+  it('supports ref assignment to arbitrary (non-input) elements', async () => {
+    const onComplete = sandbox.stub();
+    const { getByRole } = render(
+      <FormSteps
+        onComplete={onComplete}
+        steps={[
+          {
+            name: 'first',
+            form({ registerField }) {
+              return (
+                <div ref={registerField('element')}>
+                  <FormStepsButton.Submit />
+                </div>
+              );
+            },
+          },
+        ]}
+      />,
+    );
+
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.submit.default' }));
+
+    expect(onComplete).to.have.been.called();
+  });
+
   it('distinguishes empty errors from progressive error removal', async () => {
     const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 
@@ -585,5 +610,11 @@ describe('FormSteps', () => {
     await userEvent.click(getByText('Back'));
 
     expect(getByText('First Title')).to.be.ok();
+  });
+
+  it('supports starting at a specific step', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+
+    expect(getByText('Second Title')).to.be.ok();
   });
 });
