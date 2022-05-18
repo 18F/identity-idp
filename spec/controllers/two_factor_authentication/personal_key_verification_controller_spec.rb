@@ -22,7 +22,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       analytics_hash = { context: 'authentication' }
 
       expect(@analytics).to receive(:track_event).
-        with('Multi-Factor Authentication: enter TOTP visited', analytics_hash)
+        with('Multi-Factor Authentication: enter personal key visited', analytics_hash)
 
       get :show
     end
