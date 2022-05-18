@@ -114,8 +114,6 @@ fr:
       code: Code à usage unique
       personal_key: Clé personnelle
       try_again: Utilisez un autre numéro de téléphone
-    two_factor_choice:
-      legend: Sélectionnez une option pour sécuriser votre compte
     validation:
       required_checkbox: Veuillez cocher cette case pour continuer
     verify_profile:

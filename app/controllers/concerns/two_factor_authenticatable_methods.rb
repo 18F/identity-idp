@@ -2,6 +2,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   extend ActiveSupport::Concern
   include RememberDeviceConcern
   include SecureHeadersConcern
+  include MfaSetupConcern
 
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
@@ -152,6 +153,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     user_session[:authn_at] = Time.zone.now
     Funnel::Registration::AddMfa.call(current_user.id, 'phone')
     assign_phone
+    @next_mfa_setup_path = next_setup_path
     flash[:success] = t('notices.phone_confirmed')
   end
 
@@ -212,6 +214,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def after_otp_verification_confirmation_url
+    return @next_mfa_setup_path if @next_mfa_setup_path
     return account_url if @updating_existing_number
     after_sign_in_path_for(current_user)
   end

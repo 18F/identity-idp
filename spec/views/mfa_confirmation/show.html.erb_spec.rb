@@ -12,6 +12,7 @@ describe 'mfa_confirmation/show.html.erb' do
         current_user: user,
         next_path: phone_setup_url,
         final_path: account_url,
+        suggest_second_mfa: false,
       ),
     )
   end

@@ -15,6 +15,16 @@ const FlowContext = createContext({
    * Current step name.
    */
   currentStep: '',
+
+  /**
+   * The path to which the current step is appended to create the current step URL.
+   */
+  basePath: '',
+
+  /**
+   * URL for reset password page in rails used for redirect
+   */
+  resetPasswordUrl: '',
 });
 
 FlowContext.displayName = 'FlowContext';

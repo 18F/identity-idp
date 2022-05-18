@@ -240,6 +240,9 @@ Rails.application.routes.draw do
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
 
+    get '/second_mfa_setup' => 'users/mfa_selection#index'
+    patch '/second_mfa_setup' => 'users/mfa_selection#create'
+
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
     get '/profile/verify', to: redirect('/account/verify')
@@ -327,6 +330,7 @@ Rails.application.routes.draw do
     end
 
     get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
+    get '/verify/v2/password_confirm/forgot_password' => 'verify#show'
 
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
