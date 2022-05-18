@@ -207,13 +207,12 @@ class Throttle
   def set_as_throttled!
     value = nil
     REDIS_THROTTLE_POOL.with do |client|
-      value, _success = client.multi do |multi|
-        multi.set(key, Throttle.max_attempts(throttle_type))
-        multi.expire(
-          key,
-          Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
-        )
-      end
+      value = Throttle.max_attempts(throttle_type)
+      client.setex(
+        key,
+        Throttle.attempt_window_in_minutes(throttle_type).minutes.seconds.to_i,
+        value,
+      )
     end
 
     @redis_attempts = value.to_i
