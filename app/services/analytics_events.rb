@@ -921,6 +921,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [String] set_errors JSON encoded representation of SET errors from the client
+  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
+  # new set of events
+  def irs_attempts_api_events(acknowledged_event_count:, rendered_event_count:, set_errors:)
+    track_event(
+      'IRS Attempt API: Events submitted',
+      acknowledged_event_count: acknowledged_event_count,
+      rendered_event_count: rendered_event_count,
+      set_errors: set_errors,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
