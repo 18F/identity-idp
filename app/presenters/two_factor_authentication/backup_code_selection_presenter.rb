@@ -10,7 +10,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      !user.nil? && user.backup_code_configurations.any?
+      user&.backup_code_configurations&.any?
     end
 
     def mfa_configuration_description
