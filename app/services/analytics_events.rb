@@ -996,7 +996,7 @@ module AnalyticsEvents
     piv_cac_configuration_id: nil,
     key_id: nil,
     webauthn_configuration_id: nil,
-    confirmation_for_add_phone:,
+    confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
     **extra
