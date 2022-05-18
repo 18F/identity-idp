@@ -63,29 +63,17 @@ describe TwoFactorOptionsForm do
       end
     end
 
-    context 'when phone is selected' do
+    context 'when phone is selected as their first authentication method' do
       it 'does not submit the phone when selected as the first single option' do
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
         %w[phone].each do |selection|
           result = subject.submit(selection: selection)
-  
+
           expect(result.success?).to eq false
         end
       end
 
-      it 'submits the form when phone is selected as an additional method' do
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
-          %w[auth_app].each do |selection|
-            result = subject.submit(selection: selection)
-    
-            expect(result.success?).to eq true
-          end
-
-          %w[phone].each do |selection|
-            result = subject.submit(selection: selection)
-    
-            expect(result.success?).to eq true
-        end
+      context 'when phone is selected as an additional authentication methd' do
       end
     end
   end
