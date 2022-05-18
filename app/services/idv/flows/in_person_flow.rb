@@ -3,6 +3,7 @@ module Idv
     class InPersonFlow < Flow::BaseFlow
       STEPS = {
         welcome: Idv::Steps::Ipp::WelcomeStep,
+        ssn: Idv::Steps::SsnStep,
       }.freeze
 
       def initialize(controller, session, name)
@@ -13,6 +14,10 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
       end
+
+      # def flow_session
+      #   {}
+      # end
     end
   end
 end
