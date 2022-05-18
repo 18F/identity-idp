@@ -215,6 +215,8 @@ def main(args)
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}
 
         Include "[skip changelog]" in a commit message to bypass this check.
+
+        Note: the changelog message must be separated from any other commit message by a blank line.
       ERROR
     )
 
