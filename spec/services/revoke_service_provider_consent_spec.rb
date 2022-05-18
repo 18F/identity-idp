@@ -6,7 +6,9 @@ RSpec.describe RevokeServiceProviderConsent do
   subject(:service) { RevokeServiceProviderConsent.new(identity, now: now) }
 
   describe '#call' do
-    let!(:identity) { create(:service_provider_identity, deleted_at: nil, verified_attributes: ['email']) }
+    let!(:identity) do
+      create(:service_provider_identity, deleted_at: nil, verified_attributes: ['email'])
+    end
 
     it 'sets the deleted_at' do
       expect { service.call }.
