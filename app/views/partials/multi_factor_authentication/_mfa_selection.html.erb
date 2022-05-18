@@ -4,6 +4,7 @@
         option.type,
         option.type == 'phone' && flash[:phone_error].present?,
         disabled: option.disabled?,
+        checked: option.disabled?,
         class: 'usa-checkbox__input usa-checkbox__input--tile',
         id: "two_factor_options_form_selection_#{option.type}",
       ) %>
@@ -16,7 +17,7 @@
         ].select(&:present?).join(' '),
       ) do %>
     <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-    <div class="usa-checkbox__label--text"><%= option.label %>
+    <div class="usa-checkbox__label--text"><%= option.label %> <%= option.mfa_configuration_description %>
       <span class="usa-checkbox__label-description">
         <%= option.info %>
       </span>

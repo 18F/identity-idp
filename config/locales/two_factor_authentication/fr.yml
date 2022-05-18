@@ -144,6 +144,9 @@ fr:
         sur votre appareil. Lorsque vous utilisez le dernier code, nous
         générerons une nouvelle liste. Gardez à l’esprit que les codes de
         sauvegarde sont faciles à perdre.
+      configurations_added:
+        one: '(%{count} ajouté)'
+        other: '(%{count} ajoutés)'
       least_secure_label: Le moins sécurisé
       less_secure_label: Moins sécurisé
       more_secure_label: Plus sécurisé
@@ -160,6 +163,9 @@ fr:
       secure_label: Sécurisé
       sms: SMS
       sms_info: Obtenez votre code de sécurité par SMS.
+      unused_backup_code:
+        one: '(%{count} code non utilisé)'
+        other: '(%{count} codes non utilisés)'
       voice: Appel téléphonique
       voice_info: Obtenez votre code de sécurité par appel téléphonique.
       webauthn: Clef de sécurité
