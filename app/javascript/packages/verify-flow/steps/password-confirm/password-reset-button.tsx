@@ -20,12 +20,21 @@ interface PasswordResetSuccessResponse {
  */
 type PasswordResetResponse = PasswordResetSuccessResponse | ErrorResponse;
 
-function PasswordResetButton() {
+/**
+ * Navigates user to the given URL.
+ *
+ * @param url Destination URL.
+ */
+function navigate(url) {
+  window.location.href = url;
+}
+
+function PasswordResetButton({ onNavigate = navigate }) {
   async function requestReset() {
     const json = await post<PasswordResetResponse>(API_ENDPOINT, {}, { csrf: true, json: true });
     if (!isErrorResponse(json)) {
       const { redirect_url: redirectURL } = json;
-      window.location.href = redirectURL;
+      onNavigate(redirectURL);
     }
   }
 
