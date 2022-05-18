@@ -1,7 +1,8 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { FormSteps } from '@18f/identity-form-steps';
 import { trackEvent } from '@18f/identity-analytics';
 import { getConfigValue } from '@18f/identity-config';
+import { useObjectMemo } from '@18f/identity-react-hooks';
 import { STEPS } from './steps';
 import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import VerifyFlowAlert from './verify-flow-alert';
@@ -113,10 +114,13 @@ function VerifyFlow({
   const [currentStep, setCurrentStep] = useState(steps[0].name);
   const [values, setValues] = useState(syncedValues);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
-  const context = useMemo(
-    () => ({ startOverURL, cancelURL, currentStep, basePath, resetPasswordUrl }),
-    [startOverURL, cancelURL, currentStep, basePath, resetPasswordUrl],
-  );
+  const context = useObjectMemo({
+    startOverURL,
+    cancelURL,
+    currentStep,
+    basePath,
+    resetPasswordUrl,
+  });
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);
