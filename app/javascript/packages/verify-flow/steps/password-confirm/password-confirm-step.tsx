@@ -5,7 +5,7 @@ import { FormStepsButton, useHistoryParam, FormStepsContext } from '@18f/identit
 import { PasswordToggle } from '@18f/identity-password-toggle';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { PageHeading, Accordion, Alert, Button } from '@18f/identity-components';
+import { PageHeading, Accordion, Alert, Button, Link } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import type { ChangeEvent } from 'react';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -35,6 +35,8 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
     return <ForgotPassword goBack={goBack} />;
   }
 
+  const appName = getConfigValue('appName');
+
   return (
     <>
       {errors.map(({ error }) => (
@@ -42,18 +44,21 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           {error.message}
         </Alert>
       ))}
-      <PageHeading>
-        {t('idv.titles.session.review', { app_name: getConfigValue('appName') })}
-      </PageHeading>
-      <div className="margin-top-6">
-        <PasswordToggle
-          ref={registerField('password')}
-          type="password"
-          onInput={(event: ChangeEvent<HTMLInputElement>) => {
-            onChange({ password: event.target.value });
-          }}
-        />
-      </div>
+      <PageHeading>{t('idv.titles.session.review', { app_name: appName })}</PageHeading>
+      <p>{t('idv.messages.sessions.review_message', { app_name: appName })}</p>
+      <p>
+        <Link href="https://login.gov/security/">
+          {t('idv.messages.sessions.read_more_encrypt', { app_name: appName })}
+        </Link>
+      </p>
+      <PasswordToggle
+        ref={registerField('password')}
+        type="password"
+        onInput={(event: ChangeEvent<HTMLInputElement>) => {
+          onChange({ password: event.target.value });
+        }}
+        className="margin-top-6"
+      />
       <div className="text-right margin-top-2 margin-bottom-4">
         {formatHTML(
           t('idv.forgot_password.link_html', {
