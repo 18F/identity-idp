@@ -1,39 +1,18 @@
-import type { ReactNode } from 'react';
-import { useI18n } from '@18f/identity-react-i18n';
+import Link, { LinkProps } from './link';
 
-interface BlockLinkProps {
+interface BlockLinkProps extends LinkProps {
   /**
    * Link destination.
    */
-  url: string;
-
-  /**
-   * Whether link should open in a new tab. Defaults to false. Use best judgment to reserve new tabs to when absolutely necessary, such as when form data may otherwise be lost.
-   */
-  isNewTab?: boolean;
-
-  /**
-   * Child elements.
-   */
-  children: ReactNode;
+  href: string;
 }
 
-function BlockLink({ url, children, isNewTab = false }: BlockLinkProps) {
-  const { t } = useI18n();
-
-  const classes = ['usa-link', 'block-link', isNewTab && 'usa-link--external']
-    .filter(Boolean)
-    .join(' ');
-
-  let newTabProps;
-  if (isNewTab) {
-    newTabProps = { target: '_blank', rel: 'noreferrer' };
-  }
+function BlockLink({ href, children, className, ...linkProps }: BlockLinkProps) {
+  const classes = ['block-link', className].filter(Boolean).join(' ');
 
   return (
-    <a href={url} className={classes} {...newTabProps}>
+    <Link href={href} {...linkProps} className={classes}>
       {children}
-      {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 5.2 8.91"
@@ -46,7 +25,7 @@ function BlockLink({ url, children, isNewTab = false }: BlockLinkProps) {
           fill="currentColor"
         />
       </svg>
-    </a>
+    </Link>
   );
 }
 
