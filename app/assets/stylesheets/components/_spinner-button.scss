@@ -20,14 +20,19 @@ lg-spinner-button {
     [type='button'] {
       color: transparent;
       opacity: 1;
+    }
+  }
 
-      &:not(.usa-button--outline) {
-        background-color: color('primary-darker');
+  &:not(.spinner-button--outline) .spinner-button__content {
+    a,
+    button:not([type]),
+    [type='submit'],
+    [type='button'] {
+      background-color: color('primary-darker');
+    }
 
-        + .spinner-dots {
-          color: color('white');
-        }
-      }
+    .spinner-dots {
+      color: color('white');
     }
   }
 }
