@@ -4,10 +4,6 @@
 class Throttle
   attr_reader :throttle_type
 
-  VALID_THROTTLE_TYPES = %i[
-    idv_doc_auth reg_unconfirmed_email reg_confirmed_email reset_password_email idv_resolution
-    idv_send_link verify_personal_key verify_gpo_key proof_ssn proof_address phone_confirmation
-  ]
   THROTTLE_CONFIG = {
     idv_doc_auth: {
       max_attempts: IdentityConfig.store.doc_auth_max_attempts,
@@ -60,7 +56,7 @@ class Throttle
     @user = user
     @target = target
 
-    unless VALID_THROTTLE_TYPES.include?(throttle_type)
+    unless THROTTLE_CONFIG.key?(throttle_type)
       raise ArgumentError,
             'throttle_type is not valid'
     end
