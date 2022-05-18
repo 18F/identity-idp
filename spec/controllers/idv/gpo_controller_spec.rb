@@ -30,7 +30,7 @@ describe Idv::GpoController do
 
       expect(response).to be_ok
       expect(@analytics).to have_logged_event(
-        Analytics::IDV_GPO_ADDRESS_VISITED,
+        'IdV: USPS address visited',
         letter_already_sent: false,
       )
     end
@@ -82,7 +82,7 @@ describe Idv::GpoController do
         get :index
 
         expect(@analytics).to have_logged_event(
-          Analytics::IDV_GPO_ADDRESS_VISITED,
+          'IdV: USPS address visited',
           letter_already_sent: true,
         )
       end

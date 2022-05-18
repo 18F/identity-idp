@@ -54,16 +54,21 @@ es:
       start:
         accordion: También necesitarás
         bullet_1_html: Una <strong>dirección de correo electrónico</strong>.
+        bullet_1_img: Correo electrónico
         bullet_2_html: Permita <strong>la autenticación de dos factores</strong>.
+        bullet_2_img: Dispositivo
         bullet_3_html: Para proporcionar <strong>información básica</strong>, como su
           nombre, dirección y número de teléfono.
+        bullet_3_img: Perfil informativo
         bullet_4_html: Su <strong>número de Seguridad Social</strong>.
         bullet_5_html: para verificar su dirección, proporcione un <strong>número de
           teléfono o dirección postal donde recibe el correo</strong>.
+        bullet_5_img: Verifique su dirección
         bullet_6_html: Cuando haya terminado con este proceso, le daremos <strong>una
           clave personal</strong>. Escríbala y guárdela en un lugar seguro; es
           importante. Se le pedirá la clave personal cada vez que realice
           cambios en su cuenta.
+        bullet_6_img: Clave personal
         learn_more: Obtenga más información sobre la verificación de su identidad.
     sessions:
       signed_in: ''

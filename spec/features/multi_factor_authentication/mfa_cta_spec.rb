@@ -28,6 +28,7 @@ feature 'mfa cta banner' do
       select_2fa_option('backup_code')
       click_continue
 
+      click_button t('mfa.skip')
       expect(page).to have_current_path(sign_up_completed_path)
       expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq false
       expect(page).to have_content(t('mfa.second_method_warning.text'))
@@ -60,8 +61,9 @@ feature 'mfa cta banner' do
       click_continue
 
       set_up_mfa_with_backup_codes
+      click_button t('mfa.skip')
       click_link(t('mfa.second_method_warning.link'))
-      expect(page).to have_current_path(mfa_setup_path)
+      expect(page).to have_current_path(second_mfa_setup_path)
     end
   end
 end

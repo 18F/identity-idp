@@ -75,12 +75,6 @@ es:
       regenerate_personal_key: Restablecer
     login:
       piv_cac: Inicie sesión con su identificación de empleado del gobierno
-      piv_cac_info:
-        ial1: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar de
-          su correo electrónico y contraseña.
-        ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar de
-          su correo electrónico. Deberá proporcionar su contraseña para
-          desbloquear su perfil.
     navigation:
       access_services: Acceda a los beneficios y servicios de su gobierno desde su
         cuenta %{app_name}.

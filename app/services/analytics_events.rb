@@ -594,6 +594,60 @@ module AnalyticsEvents
     track_event('IdV: forgot password confirmed')
   end
 
+  # GPO address letter requested
+  def idv_gpo_address_letter_requested
+    track_event('IdV: USPS address letter requested')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # GPO address submitted
+  def idv_gpo_address_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: USPS address submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO address visited
+  def idv_gpo_address_visited(
+    letter_already_sent:,
+    **extra
+  )
+  track_event(
+    'IdV: USPS address visited',
+    letter_already_sent: letter_already_sent,
+    **extra,
+  )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # GPO verification submitted
+  def idv_gpo_verification_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
   # User visits IdV
   def idv_intro_visit
     track_event('IdV: intro visited')
@@ -851,6 +905,22 @@ module AnalyticsEvents
     track_event('IdV: review info visited')
   end
 
+  # @param [String] step
+  # @param [String] location
+  # User started over idv
+  def idv_start_over(
+    step:,
+    location:,
+    **extra
+  )
+    track_event(
+      'IdV: start over',
+      step: step,
+      location: location,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
@@ -1051,6 +1121,44 @@ module AnalyticsEvents
         **extra,
       }.compact,
     )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted additional MFA methods on user registration
+  def user_registration_2fa_additional_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: Additional 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits additional MFA selection page
+  def user_registration_2fa_additional_setup_visit
+    track_event('User Registration: Additional 2FA Setup visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted MFA auth methods on user registration
+  def user_registration_2fa_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits MFA selection page
+  def user_registration_2fa_setup_visit
+    track_event('User Registration: 2FA Setup visited')
   end
 end
 # rubocop:enable Metrics/ModuleLength

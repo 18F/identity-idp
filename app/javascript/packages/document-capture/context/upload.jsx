@@ -1,4 +1,5 @@
-import { createContext, useMemo } from 'react';
+import { createContext } from 'react';
+import { useObjectMemo } from '@18f/identity-react-hooks';
 import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
@@ -102,28 +103,16 @@ function UploadContextProvider({
       ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
       : Promise.reject();
 
-  const value = useMemo(
-    () => ({
-      upload: uploadWithCSRF,
-      getStatus,
-      statusPollInterval,
-      backgroundUploadURLs,
-      backgroundUploadEncryptKey,
-      isMockClient,
-      flowPath,
-      csrf,
-    }),
-    [
-      upload,
-      getStatus,
-      statusPollInterval,
-      backgroundUploadURLs,
-      backgroundUploadEncryptKey,
-      isMockClient,
-      flowPath,
-      csrf,
-    ],
-  );
+  const value = useObjectMemo({
+    upload: uploadWithCSRF,
+    getStatus,
+    statusPollInterval,
+    backgroundUploadURLs,
+    backgroundUploadEncryptKey,
+    isMockClient,
+    flowPath,
+    csrf,
+  });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
 }
