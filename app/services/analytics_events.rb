@@ -945,11 +945,12 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [String] client_id
-  # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
   # Logout Initiated
   def logout_initiated(
     success: nil,
@@ -1018,10 +1019,10 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] context:
-  # @param [String] multi_factor_auth_method:
-  # @param [Boolean] confirmation_for_add_phone:
-  # @param [Integer] phone_configuration_id:
+  # @param [String] context
+  # @param [String] multi_factor_auth_method
+  # @param [Boolean] confirmation_for_add_phone
+  # @param [Integer] phone_configuration_id
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,

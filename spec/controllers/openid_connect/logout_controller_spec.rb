@@ -99,6 +99,8 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: hash_including(*errors.keys),
               sp_initiated: true,
               oidc: true,
+              method: nil,
+              saml_request_valid: nil,
             )
 
           action
@@ -120,6 +122,8 @@ RSpec.describe OpenidConnect::LogoutController do
               error_details: hash_including(*errors_keys),
               sp_initiated: true,
               oidc: true,
+              method: nil,
+              saml_request_valid: nil,
             )
 
           action
