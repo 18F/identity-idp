@@ -921,6 +921,72 @@ module AnalyticsEvents
     )
   end
 
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a backup code as their MFA
+  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter backup code visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a personal key as their mfa (legacy flow)
+  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter personal key visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["piv_cac"] multi_factor_auth_method
+  # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
+  # User used a PIV/CAC as their mfa
+  def multi_factor_auth_enter_piv_cac(
+    context:,
+    multi_factor_auth_method:,
+    piv_cac_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter PIV CAC visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      piv_cac_configuration_id: piv_cac_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a TOTP as their mfa
+  def multi_factor_auth_enter_totp_visit(context:, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
+  # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+  # authenticator like face or touch ID
+  # @param [Integer, nil] webauthn_configuration_id webauthn database ID
+  # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
+  def multi_factor_auth_enter_webauthn_visit(
+    context:,
+    multi_factor_auth_method:,
+    webauthn_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter webAuthn authentication visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')

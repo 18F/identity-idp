@@ -6,9 +6,7 @@ module TwoFactorAuthentication
     before_action :check_sp_required_mfa_bypass
 
     def show
-      analytics.track_event(
-        Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context
-      )
+      analytics.multi_factor_auth_enter_backup_code_visit(context: context)
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
         data: { current_user: current_user },
