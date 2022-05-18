@@ -28,7 +28,7 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
   }
 
   function goBack() {
-    setPath('password_confirm');
+    setPath(undefined);
   }
 
   if (path === 'forgot_password') {
