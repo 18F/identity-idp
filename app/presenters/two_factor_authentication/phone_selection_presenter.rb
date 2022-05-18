@@ -27,7 +27,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      VendorStatus.new.all_phone_vendor_outage? || (!user.nil? && user.phone_configurations.any?)
+      VendorStatus.new.all_phone_vendor_outage? || user&.phone_configurations&.any?
     end
   end
 end
