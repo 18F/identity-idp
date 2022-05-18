@@ -20,7 +20,7 @@ describe('document-capture/components/warning', () => {
           troubleshootingOptions={
             <TroubleshootingOptions
               heading="Having trouble?"
-              options={[{ text: 'Get help', url: 'https://example.com/' }]}
+              options={[{ text: 'Get help', url: '/' }]}
             />
           }
           location="example"
@@ -46,6 +46,6 @@ describe('document-capture/components/warning', () => {
     });
     expect(getByText('Something went wrong')).to.exist();
     expect(getByRole('heading', { name: 'Having trouble?' })).to.exist();
-    expect(getByRole('link', { name: 'Get help' }).href).to.equal('https://example.com/');
+    expect(getByRole('link', { name: 'Get help' }).getAttribute('href')).to.equal('/');
   });
 });
