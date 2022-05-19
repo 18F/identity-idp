@@ -11,6 +11,30 @@ describe EmailAddress do
   let(:email_address) { create(:email_address, email: email) }
   let(:valid_for_hours) { IdentityConfig.store.add_email_link_valid_for_hours.hours }
 
+  describe '.find_with_email' do
+    it 'finds by email' do
+      create(:email_address, email: email)
+
+      expect(EmailAddress.find_with_email(email)).to be
+
+      expect(EmailAddress.find_with_email('does-not-exist@example.com')).to be_nil
+    end
+
+    context 'when email is fingerprinted with an old key' do
+      before do
+        create(
+          :email_address,
+          email: email,
+          email_fingerprint: Pii::Fingerprinter.previous_fingerprints(email).first,
+        )
+      end
+
+      it 'looks up by older fingerprints too' do
+        expect(EmailAddress.find_with_email(email)).to be
+      end
+    end
+  end
+
   describe 'creation' do
     it 'stores an encrypted form of the email address' do
       expect(email_address.encrypted_email).to_not be_blank
