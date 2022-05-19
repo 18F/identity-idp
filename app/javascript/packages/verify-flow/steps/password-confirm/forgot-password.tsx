@@ -1,20 +1,13 @@
-import { useContext } from 'react';
 import { PageHeading, Button } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import { getAssetPath } from '@18f/identity-assets';
-import { FlowContext } from '@18f/identity-verify-flow';
+import PasswordResetButton from './password-reset-button';
 
 interface ForgotPasswordProps {
   goBack: () => void;
 }
 
 export function ForgotPassword({ goBack }: ForgotPasswordProps) {
-  const { resetPasswordUrl } = useContext(FlowContext);
-
-  function goToResetPassword() {
-    window.location.href = resetPasswordUrl!;
-  }
-
   return (
     <>
       <img
@@ -36,9 +29,7 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
         </Button>
       </div>
       <div className="margin-top-2">
-        <Button isBig isOutline isWide onClick={goToResetPassword}>
-          {t('idv.forgot_password.reset_password')}
-        </Button>
+        <PasswordResetButton />
       </div>
     </>
   );

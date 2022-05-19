@@ -68,11 +68,6 @@ interface VerifyFlowProps {
    * Callback invoked after completing the form.
    */
   onComplete: () => void;
-
-  /**
-   * URL for reset password page in rails used for redirect
-   */
-  resetPasswordUrl: string;
 }
 
 /**
@@ -102,7 +97,6 @@ function VerifyFlow({
   basePath,
   startOverURL = '',
   cancelURL = '',
-  resetPasswordUrl,
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
@@ -114,13 +108,7 @@ function VerifyFlow({
   const [currentStep, setCurrentStep] = useState(steps[0].name);
   const [values, setValues] = useState(syncedValues);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
-  const context = useObjectMemo({
-    startOverURL,
-    cancelURL,
-    currentStep,
-    basePath,
-    resetPasswordUrl,
-  });
+  const context = useObjectMemo({ startOverURL, cancelURL, currentStep, basePath });
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);
