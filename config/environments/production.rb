@@ -3,6 +3,7 @@ Rails.application.configure do
   config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url }
   config.eager_load = true
   config.consider_all_requests_local = false
+  config.action_controller.asset_host = IdentityConfig.store.mailer_domain_name
   config.action_controller.perform_caching = true
   config.force_ssl = true
 
