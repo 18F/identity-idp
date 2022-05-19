@@ -1,5 +1,6 @@
 require 'identity/hostdata'
 require 'csv'
+require 'fugit'
 
 module Reports
   class VerificationFailuresReport < BaseReport
@@ -65,11 +66,13 @@ module Reports
     end
 
     def submit_failed?(welcome_at, submit_at, next_step_at)
-      allow_recent_by_hours = 18 # this is tied to job frequency which is currently 24 hours
+      good_job_cron = Rails.application.config.good_job.cron
+      cron_entry = good_job_cron.values.find { |c| c[:class] == self.class.name }&.[](:cron)
+      interval = cron_entry ? (Fugit.parse(cron_entry).rough_frequency - 3600).seconds : 23.hours
       return unless submit_at # need a submit
-      return unless (submit_at + allow_recent_by_hours.hours) >= welcome_at # need to be in range
+      return unless (submit_at + interval) >= welcome_at # need to be in range
       return true unless next_step_at # submit must have failed if we did not get to next step
-      (submit_at + allow_recent_by_hours.hours) >= next_step_at
+      (submit_at + interval) > next_step_at
     end
   end
 end
