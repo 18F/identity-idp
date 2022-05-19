@@ -4,10 +4,7 @@ class MfaConfirmationController < ApplicationController
 
   def show
     @presenter = MfaConfirmationShowPresenter.new(
-      current_user: current_user,
-      next_path: next_path,
-      final_path: after_mfa_setup_path,
-      suggest_second_mfa: check_if_select_mfa_needed?,
+      next_path: second_mfa_setup_path,
     )
   end
 
