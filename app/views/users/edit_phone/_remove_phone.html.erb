@@ -1,4 +1,4 @@
-<% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
+<% if MfaPolicy.new(current_user).multiple_factors_enabled? || IdentityConfig.store.select_multiple_mfa_options %>
   <%= button_to t('forms.phone.buttons.delete'), manage_phone_path(id: @phone_configuration.id),
                 class: 'usa-button usa-button--big usa-button--danger usa-button--wide margin-top-2',
                 method: :delete %>
