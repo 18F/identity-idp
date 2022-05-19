@@ -32,6 +32,11 @@ type PasswordToggleProps = Partial<TextInputProps> & {
    * Placement of toggle relative to the input.
    */
   togglePosition?: TogglePosition;
+
+  /**
+   * Additional classes to apply to wrapper.
+   */
+  className?: string;
 };
 
 function PasswordToggle(
@@ -39,6 +44,7 @@ function PasswordToggle(
     label = t('components.password_toggle.label'),
     toggleLabel = t('components.password_toggle.toggle_label'),
     togglePosition = 'top',
+    className,
     ...textInputProps
   }: PasswordToggleProps,
   ref: ForwardedRef<HTMLInputElement>,
@@ -47,8 +53,13 @@ function PasswordToggle(
   const inputId = `password-toggle-input-${instanceId}`;
   const toggleId = `password-toggle-${instanceId}`;
 
-  const classes =
-    togglePosition === 'top' ? 'password-toggle--toggle-top' : 'password-toggle--toggle-bottom';
+  const classes = [
+    className,
+    togglePosition === 'top' && 'password-toggle--toggle-top',
+    togglePosition === 'bottom' && 'password-toggle--toggle-bottom',
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <lg-password-toggle class={classes}>
