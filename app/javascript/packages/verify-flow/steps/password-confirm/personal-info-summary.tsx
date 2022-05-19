@@ -28,9 +28,14 @@ function PersonalInfoSummary({ pii }: PersonalInfoSummaryProps) {
       </div>
       <div className="margin-top-4 h6">{t('idv.review.mailing_address')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {address1} <br />
-        {address2 || ''}
+        {address1}
         <br />
+        {address2 && (
+          <>
+            {address2}
+            <br />
+          </>
+        )}
         {city && state ? `${city}, ${state} ${zipcode}` : ''}
       </div>
       {dob && (
