@@ -149,7 +149,7 @@ describe Idv::PhoneErrorsController do
       end
 
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'assigns expiration time' do

@@ -28,7 +28,7 @@ describe IdvController do
         :profile,
         user: user,
       )
-      Throttle.new(throttle_type: :idv_resolution, user: user).set_as_throttled!
+      Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
 
       stub_sign_in(profile.user)
 

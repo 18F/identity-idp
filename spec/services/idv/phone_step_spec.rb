@@ -169,7 +169,7 @@ describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
 
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true

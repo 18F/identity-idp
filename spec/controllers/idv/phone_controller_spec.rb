@@ -68,7 +68,7 @@ describe Idv::PhoneController do
 
     context 'when the user is throttled' do
       before do
-        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'redirects to fail' do

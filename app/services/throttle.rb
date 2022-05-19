@@ -211,7 +211,7 @@ class Throttle
     @redis_attempted_at = nil
   end
 
-  def set_as_throttled!
+  def increment_to_throttled!
     value = nil
     REDIS_THROTTLE_POOL.with do |client|
       value = Throttle.max_attempts(throttle_type)

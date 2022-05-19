@@ -90,7 +90,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        Throttle.new(throttle_type: :proof_address, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'assigns expiration time' do
@@ -119,7 +119,7 @@ describe Idv::SessionErrorsController do
         Throttle.new(
           throttle_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
-        ).set_as_throttled!
+        ).increment_to_throttled!
         controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
       end
 
@@ -141,7 +141,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
       end
 
       it 'assigns expiration time' do

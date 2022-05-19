@@ -37,7 +37,7 @@ describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
 
         get :new
 
@@ -49,7 +49,7 @@ describe Users::VerifyPersonalKeyController do
       let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
 
       before do
-        Throttle.new(throttle_type: :verify_personal_key, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do

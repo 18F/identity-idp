@@ -164,7 +164,7 @@ describe Idv::ImageUploadsController do
       end
 
       it 'returns an error when throttled' do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         action
 
@@ -180,7 +180,7 @@ describe Idv::ImageUploadsController do
       end
 
       it 'tracks analytics' do
-        Throttle.new(throttle_type: :idv_doc_auth, user: user).set_as_throttled!
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         stub_analytics
 
