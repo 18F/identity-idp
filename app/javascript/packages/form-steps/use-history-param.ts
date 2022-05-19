@@ -15,6 +15,17 @@ interface HistoryOptions {
  */
 export const getStepParam = (path: string): string => path.split('/').filter(Boolean)[0];
 
+export function getParamURL(value, { basePath }: HistoryOptions): string {
+  let prefix = typeof basePath === 'string' ? basePath.replace(/\/$/, '') : '#';
+  if (value && basePath) {
+    prefix += '/';
+  }
+
+  return [prefix, value].filter(Boolean).join('');
+}
+
+const subscribers: Array<(nextValue: ParamValue) => void> = [];
+
 /**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
  * Returns a `useState`-like tuple of the current value and a setter to assign the next parameter
@@ -44,17 +55,12 @@ function useHistoryParam(
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
 
-  function getValueURL(nextValue: ParamValue) {
-    const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
-    return [prefix, nextValue].filter(Boolean).join('');
-  }
-
   function setParamValue(nextValue: ParamValue) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
-      window.history.pushState(null, '', getValueURL(nextValue));
-      setValue(nextValue);
+      window.history.pushState(null, '', getParamURL(nextValue, { basePath }));
+      subscribers.forEach((subscriberSetValue) => subscriberSetValue(nextValue));
     }
 
     if (window.scrollY > 0) {
@@ -64,13 +70,20 @@ function useHistoryParam(
 
   useEffect(() => {
     if (initialValue && initialValue !== getCurrentValue()) {
-      window.history.replaceState(null, '', getValueURL(initialValue));
+      window.history.replaceState(null, '', getParamURL(initialValue, { basePath }));
     }
 
     const syncValue = () => setValue(getCurrentValue());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
   }, []);
+
+  useEffect(() => {
+    subscribers.push(setValue);
+    return () => {
+      subscribers.splice(subscribers.indexOf(setValue), 1);
+    };
+  }, [setValue]);
 
   return [value, setParamValue];
 }
