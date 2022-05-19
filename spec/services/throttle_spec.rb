@@ -190,6 +190,22 @@ RSpec.describe Throttle do
         expect { throttle.reset! }.to change { throttle.attempts }.to(0)
       end
     end
+
+    describe '#remaining_count' do
+      let(:target) { '1' }
+      let(:subject) { described_class }
+
+      subject(:throttle) { Throttle.new(target: target, throttle_type: throttle_type) }
+
+      it 'returns maximium remaining attempts with zero attempts' do
+        expect(throttle.remaining_count).to eq(Throttle.max_attempts(throttle_type))
+      end
+
+      it 'returns zero when throttle limit is reached' do
+        throttle.increment_to_throttled!
+        expect(throttle.remaining_count).to eq(0)
+      end
+    end
   end
 
   context 'using Redis as throttle data store' do
