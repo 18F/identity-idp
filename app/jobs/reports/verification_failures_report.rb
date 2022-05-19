@@ -3,7 +3,7 @@ require 'csv'
 
 module Reports
   class VerificationFailuresReport < BaseReport
-    REPORT_NAME = 'verification-errors-report'.freeze
+    REPORT_NAME = 'verification-failures-report'.freeze
 
     include GoodJob::ActiveJobExtensions::Concurrency
 
