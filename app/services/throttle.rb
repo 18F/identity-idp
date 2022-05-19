@@ -170,6 +170,13 @@ class Throttle
     attempts
   end
 
+  # Retrieve the current state of the throttle from Redis
+  # We use TTL to calculate when the action was last attempted.
+  # This approach is introduces some skew since time passes
+  # between "now" and when we fetch the TTL, but it should be low
+  # relative to the overall length of the throttle window.
+  #
+  # When we upgrade to Redis 7, we can use the EXPIRETIME command instead.
   def fetch_state!
     value = nil
     ttl = nil
