@@ -216,6 +216,8 @@ select_multiple_mfa_options: false
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
+session_encryptor_alert_enabled: false
+session_encryptor_v2_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
@@ -362,6 +364,8 @@ production:
   password_pepper:
   piv_cac_verify_token_secret:
   platform_authentication_enabled: false
+  session_encryptor_alert_enabled: true
+  session_encryptor_v2_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379

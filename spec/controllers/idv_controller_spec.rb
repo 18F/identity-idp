@@ -6,7 +6,7 @@ describe IdvController do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::IDV_INTRO_VISIT)
+      expect(@analytics).to receive(:track_event).with('IdV: intro visited')
 
       get :index
     end
@@ -17,7 +17,7 @@ describe IdvController do
       stub_sign_in(profile.user)
       stub_analytics
 
-      expect(@analytics).to_not receive(:track_event).with(Analytics::IDV_INTRO_VISIT)
+      expect(@analytics).to_not receive(:track_event).with('IdV: intro visited')
 
       get :index
     end

@@ -1,7 +1,7 @@
 import { render } from 'react-dom';
 import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
-import { s2ab } from '@18f/identity-secret-session-storage';
-import type { VerifyFlowValues } from '@18f/identity-verify-flow';
+import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
+import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
 
 interface AppRootValues {
   /**
@@ -20,9 +20,14 @@ interface AppRootValues {
   basePath: string;
 
   /**
-   * Application name.
+   * URL to path for session restart.
    */
-  appName: string;
+  startOverUrl: string;
+
+  /**
+   * URL to path for session cancel.
+   */
+  cancelUrl: string;
 
   /**
    * URL to which user should be redirected after completing the form.
@@ -49,7 +54,8 @@ const {
   initialValues: initialValuesJSON,
   enabledStepNames: enabledStepNamesJSON,
   basePath,
-  appName,
+  startOverUrl: startOverURL,
+  cancelUrl: cancelURL,
   completionUrl: completionURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
@@ -60,27 +66,44 @@ const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 const camelCase = (string: string) =>
   string.replace(/[^a-z]([a-z])/gi, (_match, nextLetter) => nextLetter.toUpperCase());
 
-if (initialValues.userBundleToken) {
-  const jwtData = JSON.parse(atob(initialValues.userBundleToken.split('.')[1]));
-  const pii = Object.fromEntries(
-    Object.entries(jwtData.pii).map(([key, value]) => [camelCase(key), value]),
-  );
-  Object.assign(initialValues, pii);
-}
+const mapKeys = (object: object, mapKey: (key: string) => string) =>
+  Object.entries(object).map(([key, value]) => [mapKey(key), value]);
 
 function onComplete() {
   window.location.href = completionURL;
 }
 
-render(
-  <SecretsContextProvider storeKey={storeKey}>
-    <VerifyFlow
-      initialValues={initialValues}
-      enabledStepNames={enabledStepNames}
-      basePath={basePath}
-      appName={appName}
-      onComplete={onComplete}
-    />
-  </SecretsContextProvider>,
-  appRoot,
-);
+const storage = new SecretSessionStorage<SecretValues>('verify');
+
+(async () => {
+  const cryptoKey = await crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
+    'encrypt',
+    'decrypt',
+  ]);
+  storage.key = cryptoKey;
+  await storage.load();
+  if (initialValues.userBundleToken) {
+    await storage.setItem('userBundleToken', initialValues.userBundleToken);
+  }
+
+  const userBundleToken = storage.getItem('userBundleToken');
+  if (userBundleToken) {
+    const jwtData = JSON.parse(atob(userBundleToken.split('.')[1]));
+    const pii = Object.fromEntries(mapKeys(jwtData.pii, camelCase));
+    Object.assign(initialValues, pii);
+  }
+
+  render(
+    <SecretsContextProvider storage={storage}>
+      <VerifyFlow
+        initialValues={initialValues}
+        enabledStepNames={enabledStepNames}
+        startOverURL={startOverURL}
+        cancelURL={cancelURL}
+        basePath={basePath}
+        onComplete={onComplete}
+      />
+    </SecretsContextProvider>,
+    appRoot,
+  );
+})();

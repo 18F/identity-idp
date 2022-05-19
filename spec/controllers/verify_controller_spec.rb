@@ -67,8 +67,9 @@ describe VerifyController do
           response
 
           expect(assigns[:app_data]).to include(
-            app_name: APP_NAME,
             base_path: idv_app_path,
+            start_over_url: idv_session_path,
+            cancel_url: idv_cancel_path,
             completion_url: idv_gpo_verify_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'personalKey' => kind_of(String) },
@@ -79,8 +80,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'redirects to first step' do
-            expect(response).to redirect_to idv_app_path(step: 'personal_key')
+          it 'renders view' do
+            expect(response).to render_template(:show)
           end
         end
       end
@@ -97,8 +98,9 @@ describe VerifyController do
           response
 
           expect(assigns[:app_data]).to include(
-            app_name: APP_NAME,
             base_path: idv_app_path,
+            start_over_url: idv_session_path,
+            cancel_url: idv_cancel_path,
             completion_url: account_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'userBundleToken' => kind_of(String) },
@@ -109,8 +111,8 @@ describe VerifyController do
         context 'empty step' do
           let(:step) { nil }
 
-          it 'redirects to first step' do
-            expect(response).to redirect_to idv_app_path(step: 'password_confirm')
+          it 'renders view' do
+            expect(response).to render_template(:show)
           end
         end
       end

@@ -1,15 +1,10 @@
 import userEvent from '@testing-library/user-event';
 import { getByLabelText } from '@testing-library/dom';
-import { PasswordToggleElement } from './index';
+import './password-toggle-element';
+import type PasswordToggleElement from './password-toggle-element';
 
 describe('PasswordToggleElement', () => {
   let idCounter = 0;
-
-  before(() => {
-    if (!customElements.get('lg-password-toggle')) {
-      customElements.define('lg-password-toggle', PasswordToggleElement);
-    }
-  });
 
   function createElement() {
     const element = document.createElement('lg-password-toggle') as PasswordToggleElement;

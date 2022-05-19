@@ -219,6 +219,19 @@ describe Idv::ReviewController do
           hash_including(name: :verify_phone_or_address, status: :pending),
         )
       end
+
+      context 'idv app password confirm step is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
+            and_return(['password_confirm'])
+        end
+
+        it 'redirects to idv app' do
+          get :new
+
+          expect(response).to redirect_to idv_app_path
+        end
+      end
     end
 
     context 'user chooses address verification' do
@@ -296,7 +309,7 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
+        expect(@analytics).to have_received(:track_event).with('IdV: review complete')
         expect(@analytics).to have_received(:track_event).with(
           'IdV: final resolution',
           success: true,

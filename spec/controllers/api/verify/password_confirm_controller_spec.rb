@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::Verify::CompleteController do
+describe Api::Verify::PasswordConfirmController do
   include PersonalKeyValidator
   include SamlAuthHelper
 
@@ -66,7 +66,9 @@ describe Api::Verify::CompleteController do
 
       it 'does not create a profile and return a key when it has the wrong password' do
         post :create, params: { password: 'iamnotbatman', user_bundle_token: jwt }
-        expect(JSON.parse(response.body)['personal_key']).to be_nil
+        response_json = JSON.parse(response.body)
+        expect(response_json['personal_key']).to be_nil
+        expect(response_json['error']['password']).to eq([I18n.t('idv.errors.incorrect_password')])
         expect(response.status).to eq 400
       end
     end
