@@ -33,6 +33,22 @@ describe EmailAddress do
         expect(EmailAddress.find_with_email(email)).to be
       end
     end
+
+    describe '.update_last_sign_in_at_on_user_id_and_email' do
+      let(:user) { create(:user) }
+      it 'updates attributes and can look up by previous fingerprints' do
+        record = create(
+          :email_address,
+          email: email,
+          user_id: user.id,
+          email_fingerprint: Pii::Fingerprinter.previous_fingerprints(email).first,
+        )
+
+        expect do
+          EmailAddress.update_last_sign_in_at_on_user_id_and_email(user_id: user.id, email: email)
+        end.to(change { record.reload.last_sign_in_at })
+      end
+    end
   end
 
   describe 'creation' do
