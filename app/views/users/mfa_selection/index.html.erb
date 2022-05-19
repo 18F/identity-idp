@@ -11,7 +11,7 @@
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
-                       url: mfa_setup_path do |f| %>
+                       url: second_mfa_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
