@@ -36,6 +36,8 @@ export interface VerifyFlowValues {
   ssn?: string;
 
   password?: string;
+
+  dob?: string;
 }
 
 interface VerifyFlowProps {
