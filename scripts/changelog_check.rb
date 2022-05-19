@@ -8,7 +8,7 @@ CATEGORIES = [
   'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
 ]
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
-DEPENDABOT_COMMIT = 'Signed-off-by: dependabot[bot] <support@github.com>'
+DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
 SECURITY_CHANGELOG = {
   category: 'Internal',
   subcategory: 'Dependencies',
@@ -21,7 +21,7 @@ ChangelogEntry = Struct.new(:category, :subcategory, :change, :pr_number, keywor
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 def build_changelog(line)
-  if line == DEPENDABOT_COMMIT
+  if line == DEPENDABOT_COMMIT_MESSAGE
     SECURITY_CHANGELOG
   else
     CHANGELOG_REGEX.match(line)
