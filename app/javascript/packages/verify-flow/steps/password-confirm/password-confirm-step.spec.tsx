@@ -1,21 +1,13 @@
-import sinon from 'sinon';
-import * as analytics from '@18f/identity-analytics';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { t } from '@18f/identity-i18n';
 import { accordion } from 'identity-style-guide';
+import * as analytics from '@18f/identity-analytics';
+import { useSandbox, usePropertyValue } from '@18f/identity-test-helpers';
+import { t, i18n } from '@18f/identity-i18n';
 import PasswordConfirmStep from './password-confirm-step';
 
 describe('PasswordConfirmStep', () => {
-  before(() => {
-    accordion.on();
-  });
-
-  after(() => {
-    accordion.off();
-  });
-
-  const sandbox = sinon.createSandbox();
+  const sandbox = useSandbox();
   const DEFAULT_PROPS = {
     onChange() {},
     onError() {},
@@ -26,12 +18,16 @@ describe('PasswordConfirmStep', () => {
     value: {},
   };
 
+  before(() => {
+    accordion.on();
+  });
+
   beforeEach(() => {
     sandbox.spy(analytics, 'trackEvent');
   });
 
-  afterEach(() => {
-    sandbox.restore();
+  after(() => {
+    accordion.off();
   });
 
   it('has a collapsed accordion by default', () => {
@@ -42,10 +38,7 @@ describe('PasswordConfirmStep', () => {
   });
 
   it('expands accordion when the accordion is clicked on', async () => {
-    const toPreviousStep = sinon.spy();
-    const { getByText } = render(
-      <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
-    );
+    const { getByText } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
     const button = getByText(t('idv.messages.review.intro'));
     await userEvent.click(button);
@@ -53,15 +46,36 @@ describe('PasswordConfirmStep', () => {
   });
 
   it('displays user information when the accordion is clicked on', async () => {
-    const toPreviousStep = sinon.spy();
-    const { getByText } = render(
-      <PasswordConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
-    );
+    const { getByText } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
     const button = getByText(t('idv.messages.review.intro'));
     await userEvent.click(button);
 
     expect(getByText('idv.review.full_name')).to.exist();
     expect(getByText('idv.review.mailing_address')).to.exist();
+  });
+
+  describe('forgot password', () => {
+    usePropertyValue(i18n, 'strings', {
+      'idv.forgot_password.link_html': 'Forgot password? %{link}',
+      'idv.forgot_password.warnings': [],
+    });
+
+    it('navigates to forgot password subpage', async () => {
+      const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+
+      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.link_text' }));
+
+      expect(window.location.pathname).to.equal('/password_confirm/forgot_password');
+    });
+
+    it('navigates back from forgot password subpage', async () => {
+      const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+
+      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.link_text' }));
+      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.try_again' }));
+
+      expect(window.location.pathname).to.equal('/password_confirm/');
+    });
   });
 });

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+type ParamValue = string | undefined;
+
 interface HistoryOptions {
   basePath?: string;
 }
@@ -28,8 +30,8 @@ export const getStepParam = (path: string): string => path.split('/').filter(Boo
 function useHistoryParam(
   initialValue?: string,
   { basePath }: HistoryOptions = {},
-): [string | undefined, (nextParamValue?: string) => void] {
-  function getCurrentValue(): string | undefined {
+): [string | undefined, (nextParamValue: ParamValue) => void] {
+  function getCurrentValue(): ParamValue {
     const path =
       typeof basePath === 'string'
         ? window.location.pathname.split(basePath)[1]
@@ -42,12 +44,12 @@ function useHistoryParam(
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
 
-  function getValueURL(nextValue) {
+  function getValueURL(nextValue: ParamValue) {
     const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
-    return nextValue ? `${prefix}${nextValue}` : window.location.pathname + window.location.search;
+    return [prefix, nextValue].filter(Boolean).join('');
   }
 
-  function setParamValue(nextValue) {
+  function setParamValue(nextValue: ParamValue) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
