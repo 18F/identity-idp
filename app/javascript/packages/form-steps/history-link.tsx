@@ -10,6 +10,14 @@ type HistoryLinkProps = Partial<LinkProps> & {
   step: string;
 };
 
+/**
+ * Renders a link to the given step. Enhances a Link to perform client-side routing using
+ * useHistoryParam hook.
+ *
+ * @param props Props object.
+ *
+ * @return Link element.
+ */
 function HistoryLink({ basePath, step, ...linkProps }: HistoryLinkProps) {
   const [, setPath] = useHistoryParam(undefined, { basePath });
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>(
