@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type ParamValue = string | undefined;
+export type ParamValue = string | undefined;
 
 interface HistoryOptions {
   basePath?: string;

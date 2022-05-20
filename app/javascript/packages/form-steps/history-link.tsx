@@ -3,11 +3,12 @@ import type { MouseEventHandler } from 'react';
 import { Link } from '@18f/identity-components';
 import type { LinkProps } from '@18f/identity-components';
 import useHistoryParam, { getParamURL } from './use-history-param';
+import type { ParamValue } from './use-history-param';
 
 type HistoryLinkProps = Partial<LinkProps> & {
   basePath?: string;
 
-  step: string;
+  step: ParamValue;
 };
 
 /**
