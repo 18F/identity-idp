@@ -18,4 +18,18 @@ describe('PersonalInfoSummary', () => {
 
     expect(getByText('October 6, 1938')).to.exist();
   });
+
+  it('renders address', () => {
+    const { getByText, rerender } = render(<PersonalInfoSummary pii={DEFAULT_PII} />);
+
+    let address = getByText('1 FAKE RDGREAT FALLS, MT 59010');
+
+    expect([...address.childNodes].filter((node) => node.nodeName === 'BR')).to.have.lengthOf(1);
+
+    rerender(<PersonalInfoSummary pii={{ ...DEFAULT_PII, address2: 'PO BOX 1' }} />);
+
+    address = getByText('1 FAKE RDPO BOX 1GREAT FALLS, MT 59010');
+
+    expect([...address.childNodes].filter((node) => node.nodeName === 'BR')).to.have.lengthOf(2);
+  });
 });
