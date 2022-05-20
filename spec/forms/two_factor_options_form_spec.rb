@@ -69,11 +69,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'does not submit the phone when selected as the first single option' do
-        %w[phone].each do |selection|
-          result = subject.submit(selection: selection)
+          result = subject.submit(selection: ['phone'])
 
           expect(result.success?).to eq false
-        end
       end
     end
 
@@ -84,11 +82,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'submits the form' do
-        %w[phone].each do |selection|
           result = subject.submit(selection: ['phone'])
 
           expect(result.success?).to eq true
-        end
       end
     end
   end
