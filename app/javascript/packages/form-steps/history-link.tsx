@@ -5,7 +5,7 @@ import type { LinkProps } from '@18f/identity-components';
 import useHistoryParam, { getParamURL } from './use-history-param';
 import type { ParamValue } from './use-history-param';
 
-type HistoryLinkProps = Partial<LinkProps> & {
+type HistoryLinkProps = Partial<Exclude<LinkProps, 'href'>> & {
   basePath?: string;
 
   step: ParamValue;
