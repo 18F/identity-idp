@@ -38,6 +38,14 @@ describe('Link', () => {
     expect([...link.classList.values()]).to.have.all.members(['usa-link']);
   });
 
+  it('forwards extra props to underlying anchor element', () => {
+    const { getByRole } = render(<Link data-foo="bar" href="/" />);
+
+    const link = getByRole('link');
+
+    expect(link.getAttribute('data-foo')).to.equal('bar');
+  });
+
   context('with custom css class', () => {
     it('renders link with class', () => {
       const { getByRole } = render(<Link href="/" className="my-custom-class" />);

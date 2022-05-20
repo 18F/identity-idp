@@ -1,7 +1,7 @@
 import type { ReactNode, AnchorHTMLAttributes } from 'react';
 import { t } from '@18f/identity-i18n';
 
-export interface LinkProps {
+export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   /**
    * Link destination.
    */
@@ -42,6 +42,7 @@ function Link({
   isNewTab = isExternal,
   className,
   children,
+  ...anchorProps
 }: LinkProps) {
   const classes = ['usa-link', className, isExternal && 'usa-link--external']
     .filter(Boolean)
@@ -53,7 +54,7 @@ function Link({
   }
 
   return (
-    <a href={href} {...newTabProps} className={classes}>
+    <a href={href} {...newTabProps} {...anchorProps} className={classes}>
       {children}
       {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
     </a>

@@ -1,13 +1,14 @@
-import { PageHeading, Button } from '@18f/identity-components';
+import { PageHeading } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import { getAssetPath } from '@18f/identity-assets';
+import { HistoryLink } from '@18f/identity-form-steps';
 import PasswordResetButton from './password-reset-button';
 
 interface ForgotPasswordProps {
-  goBack: () => void;
+  stepPath: string;
 }
 
-export function ForgotPassword({ goBack }: ForgotPasswordProps) {
+export function ForgotPassword({ stepPath }: ForgotPasswordProps) {
   return (
     <>
       <img
@@ -24,9 +25,9 @@ export function ForgotPassword({ goBack }: ForgotPasswordProps) {
         ))}
       </ul>
       <div className="margin-top-4">
-        <Button isBig isWide onClick={goBack}>
+        <HistoryLink basePath={stepPath} step={undefined} isVisualButton isBig isWide>
           {t('idv.forgot_password.try_again')}
-        </Button>
+        </HistoryLink>
       </div>
       <div className="margin-top-2">
         <PasswordResetButton />
