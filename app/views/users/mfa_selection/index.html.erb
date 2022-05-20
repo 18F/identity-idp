@@ -2,12 +2,6 @@
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.two_factor_choice')) %>
 
-<% if IdentityConfig.store.select_multiple_mfa_options %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('mfa.info') %>
-  <% end %>
-<% end %>
-
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
