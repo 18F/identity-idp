@@ -59,7 +59,7 @@ feature 'forgot password step' do
       click_button t('idv.forgot_password.link_text')
       click_button t('idv.forgot_password.try_again')
 
-      expect(page.current_path).to eq "#{idv_app_path(step: :password_confirm)}/"
+      expect(page.current_path).to eq idv_app_path(step: :password_confirm)
     end
 
     it 'allows the user to reset their password' do
