@@ -100,11 +100,11 @@ public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Bu
 	yarn build
 
 test: export RAILS_ENV := test
-test: $(CONFIG) public/packs/manifest.json ## Runs RSpec and yarn tests
+test: $(CONFIG) ## Runs RSpec and yarn tests
 	bundle exec rake parallel:spec && yarn test
 
 fast_test: export RAILS_ENV := test
-fast_test: public/packs/manifest.json ## Abbreviated test run, runs RSpec tests without accessibility specs
+fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt: ## Self-signed cert for local HTTPS development
