@@ -39,6 +39,16 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
 
   return (
     <>
+      {value.phone && !errors.length && (
+        <Alert type="success" className="margin-bottom-4">
+          {formatHTML(
+            t('idv.messages.review.info_verified_html', {
+              phone_message: `<strong>${t('idv.messages.phone.phone_of_record')}</strong>`,
+            }),
+            { strong: 'strong' },
+          )}
+        </Alert>
+      )}
       {errors.map(({ error }) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           {error.message}

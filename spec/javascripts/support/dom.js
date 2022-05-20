@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { JSDOM, ResourceLoader } from 'jsdom';
 import matchMediaPolyfill from 'mq-polyfill';
+import * as clipboard from 'clipboard-polyfill'; // See: https://github.com/jsdom/jsdom/issues/1568
 
 const TEST_URL = 'http://example.test';
 
@@ -52,6 +53,8 @@ export function createDOM() {
       outerHeight: height,
     }).dispatchEvent(new this.Event('resize'));
   };
+
+  dom.window.navigator.clipboard = clipboard;
 
   // See: https://github.com/jsdom/jsdom/issues/1695
   dom.window.Element.prototype.scrollIntoView = () => {};
