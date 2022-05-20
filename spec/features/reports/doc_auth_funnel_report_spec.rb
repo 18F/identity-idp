@@ -94,6 +94,9 @@ feature 'Doc Auth Funnel report' do
       'verify_phone_submit_percent' => 0.0,
       'document_capture_submit_percent' => 100.0,
       'verify_submit_percent' => 100.0,
+      'back_image_submit_percent' => 0.0,
+      'capture_mobile_back_image_submit_percent' => 0.0,
+      'mobile_back_image_submit_percent' => 0.0,
     }
   end
 
