@@ -47,7 +47,7 @@ feature 'forgot password step' do
       start_idv_from_sp
       complete_idv_steps_before_review_step
 
-      click_button t('idv.forgot_password.link_text')
+      click_link t('idv.forgot_password.link_text')
 
       expect(page.current_path).to eq(idv_app_forgot_password_path)
     end
@@ -56,8 +56,8 @@ feature 'forgot password step' do
       start_idv_from_sp
       complete_idv_steps_before_review_step
 
-      click_button t('idv.forgot_password.link_text')
-      click_button t('idv.forgot_password.try_again')
+      click_link t('idv.forgot_password.link_text')
+      click_link t('idv.forgot_password.try_again')
 
       expect(page.current_path).to eq idv_app_path(step: :password_confirm)
     end
@@ -66,7 +66,7 @@ feature 'forgot password step' do
       start_idv_from_sp
       complete_idv_steps_before_review_step
 
-      click_button t('idv.forgot_password.link_text')
+      click_link t('idv.forgot_password.link_text')
       click_button t('idv.forgot_password.reset_password')
 
       expect(page).to have_current_path(forgot_password_path, ignore_query: true, wait: 10)
