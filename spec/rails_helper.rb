@@ -114,6 +114,8 @@ RSpec.configure do |config|
     descendants.each(&:disable_test_adapter)
   end
 
+  WebMock.allow_net_connect!(net_http_connect_on_start: true)
+
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
     Capybara::Webmock.start
