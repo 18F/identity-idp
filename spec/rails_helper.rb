@@ -66,6 +66,13 @@ RSpec.configure do |config|
     end
   end
 
+  if !ENV['CI']
+    config.before(:all, js: true) do
+      puts 'Bundling JavaScript...'
+      system 'make public/packs/manifest.json'
+    end
+  end
+
   config.before(:each) do
     I18n.locale = :en
   end
