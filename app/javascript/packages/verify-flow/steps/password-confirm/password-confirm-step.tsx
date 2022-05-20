@@ -27,11 +27,11 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
   const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
   const stepPath = `${basePath}/password_confirm`;
-  const [path, setPath] = useHistoryParam(undefined, { basePath: stepPath });
+  const [path] = useHistoryParam(undefined, { basePath: stepPath });
   useDidUpdateEffect(onPageTransition, [path]);
 
   if (path === FORGOT_PASSWORD_PATH) {
-    return <ForgotPassword goBack={() => setPath(undefined)} />;
+    return <ForgotPassword stepPath={stepPath} />;
   }
 
   const appName = getConfigValue('appName');
