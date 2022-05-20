@@ -16,9 +16,6 @@ fr:
       - sixième
       - septième
       - huitième
-    info: Nous vous recommandons de sélectionner au moins (2) deux méthodes
-      différentes afin d’avoir une sauvegarde si vous perdez l’un de vos
-      dispositifs d’authentification choisis.
     second_method_warning:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
