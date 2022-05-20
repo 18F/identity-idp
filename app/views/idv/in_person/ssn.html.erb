@@ -1,5 +1,15 @@
-<% if flow_session.dig('pii_from_doc', 'ssn') %>
-  <%= render 'idv/doc_auth/ssn_update', flow_session: flow_session %>
-<% else %>
-  <%= render 'idv/doc_auth/ssn_init', flow_session: flow_session %>
+<% title t('titles.doc_auth.verify') %>
+
+<h1 class="h3 margin-y-0">
+  <%= t('in_person_proofing.headings.ssn') %>
+</h1>
+
+<%= validated_form_for :doc_auth,
+                       url: url_for,
+                       method: 'put',
+                       html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
+  <%= f.button :button,
+               t('doc_auth.buttons.continue'),
+               type: :submit,
+               class: 'usa-button--big usa-button--wide' %>
 <% end %>
