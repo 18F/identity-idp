@@ -24,7 +24,7 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deletes backup codes' do
-    user = build(:user, :signed_up)
+    user = build(:user, :signed_up, :with_authentication_app)
     stub_sign_in(user)
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
