@@ -163,7 +163,7 @@ describe Users::WebauthnSetupController do
         it 'should direct user to next method confirmation page' do
           patch :confirm, params: params
 
-          expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+          expect(response).to redirect_to(phone_setup_url)
         end
       end
 
