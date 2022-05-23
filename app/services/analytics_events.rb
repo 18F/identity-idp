@@ -1001,6 +1001,11 @@ module AnalyticsEvents
     track_event('Password Creation', success: success, errors: errors, **extra)
   end
 
+  # The user got their password incorrect the max number of times, their session was terminated
+  def password_max_attempts
+    track_event('Password Max Attempts Reached')
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
