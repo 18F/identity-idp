@@ -43,12 +43,6 @@ RSpec.describe Api::IrsAttemptsApiController do
     end
 
     it 'allows events to be acknowledged' do
-      expect(@analytics).to receive(:irs_attempts_api_events).with(
-        acknowledged_event_count: 3,
-        rendered_event_count: 0,
-        set_errors: nil,
-      )
-
       post :create, params: { ack: existing_event_jtis }
 
       expect(response).to be_ok
@@ -57,17 +51,16 @@ RSpec.describe Api::IrsAttemptsApiController do
         'sets' => {},
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
-
       expect(IrsAttemptsApi::RedisClient.new.read_events).to be_empty
+      expect(@analytics).to have_logged_event(
+        'IRS Attempt API: Events submitted',
+        acknowledged_event_count: 3,
+        rendered_event_count: 0,
+        set_errors: nil,
+      )
     end
 
     it 'renders new events' do
-      expect(@analytics).to receive(:irs_attempts_api_events).with(
-        acknowledged_event_count: 0,
-        rendered_event_count: 3,
-        set_errors: nil,
-      )
-
       post :create, params: {}
 
       expect(response).to be_ok
@@ -76,20 +69,26 @@ RSpec.describe Api::IrsAttemptsApiController do
         'sets' => existing_events.to_h,
       }
       expect(JSON.parse(response.body)).to eq(expected_response)
+      expect(@analytics).to have_logged_event(
+        'IRS Attempt API: Events submitted',
+        acknowledged_event_count: 0,
+        rendered_event_count: 3,
+        set_errors: nil,
+      )
     end
 
     it 'logs errors from the client' do
       set_errors = { abc123: { description: 'it is b0rken' } }
 
-      expect(@analytics).to receive(:irs_attempts_api_events).with(
+      post :create, params: { setErrs: set_errors }
+
+      expect(response).to be_ok
+      expect(@analytics).to have_logged_event(
+        'IRS Attempt API: Events submitted',
         acknowledged_event_count: 0,
         rendered_event_count: 3,
         set_errors: set_errors.to_json,
       )
-
-      post :create, params: { setErrs: set_errors }
-
-      expect(response).to be_ok
     end
 
     it 'respects the maxEvents param' do
