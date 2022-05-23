@@ -1,3 +1,9 @@
+##
+# This controller implements the Poll-based delivery method for Security Event
+# Tokens as described RFC 8936
+#
+# ref: https://datatracker.ietf.org/doc/html/rfc8936
+#
 module Api
   class IrsAttemptsApiController < ApplicationController
     before_action :authenticate_client
