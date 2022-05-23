@@ -23,7 +23,7 @@
       </span>
     </div>
   <% end %>
-  <% if option.type == "phone" && flash[:phone_error] %>
+  <% if option.type == "phone" && flash[:phone_error] && !IdentityConfig.store.katara_required %>
     <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
         <%= flash[:phone_error] %>
     </div>
