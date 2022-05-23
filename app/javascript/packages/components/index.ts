@@ -13,4 +13,5 @@ export { default as TroubleshootingOptions } from './troubleshooting-options';
 
 export type { ButtonProps } from './button';
 export type { FullScreenRefHandle } from './full-screen';
+export type { LinkProps } from './link';
 export type { TextInputProps } from './text-input';

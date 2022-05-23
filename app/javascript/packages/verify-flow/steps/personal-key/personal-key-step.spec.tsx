@@ -48,4 +48,12 @@ describe('PersonalKeyStep', () => {
     await userEvent.click(getByText('components.print_button.label'));
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: print personal key');
   });
+
+  it('renders success alert', () => {
+    const { getByRole } = render(<PersonalKeyStep {...DEFAULT_PROPS} />);
+
+    const status = getByRole('status');
+
+    expect(status.textContent).to.equal('idv.messages.confirm');
+  });
 });

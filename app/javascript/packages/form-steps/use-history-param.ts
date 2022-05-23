@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-type ParamValue = string | undefined;
+export type ParamValue = string | undefined;
 
 interface HistoryOptions {
   basePath?: string;
@@ -13,7 +13,18 @@ interface HistoryOptions {
  *
  * @return Step name.
  */
-export const getStepParam = (path: string): string => path.split('/').filter(Boolean)[0];
+export const getStepParam = (path: string): string =>
+  decodeURIComponent(path.split('/').filter(Boolean)[0]);
+
+export function getParamURL(value: ParamValue, { basePath }: HistoryOptions): string {
+  let prefix = typeof basePath === 'string' ? basePath.replace(/\/$/, '') : '#';
+  if (value && basePath) {
+    prefix += '/';
+  }
+
+  return [prefix, encodeURIComponent(value || '')].filter(Boolean).join('');
+}
+const subscribers: Array<() => void> = [];
 
 /**
  * Returns a hook which syncs a querystring parameter by the given name using History pushState.
@@ -43,18 +54,14 @@ function useHistoryParam(
   }
 
   const [value, setValue] = useState(initialValue ?? getCurrentValue);
-
-  function getValueURL(nextValue: ParamValue) {
-    const prefix = typeof basePath === 'string' ? `${basePath.replace(/\/$/, '')}/` : '#';
-    return [prefix, nextValue].filter(Boolean).join('');
-  }
+  const syncValue = useCallback(() => setValue(getCurrentValue), [setValue]);
 
   function setParamValue(nextValue: ParamValue) {
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
-      window.history.pushState(null, '', getValueURL(nextValue));
-      setValue(nextValue);
+      window.history.pushState(null, '', getParamURL(nextValue, { basePath }));
+      subscribers.forEach((sync) => sync());
     }
 
     if (window.scrollY > 0) {
@@ -64,12 +71,18 @@ function useHistoryParam(
 
   useEffect(() => {
     if (initialValue && initialValue !== getCurrentValue()) {
-      window.history.replaceState(null, '', getValueURL(initialValue));
+      window.history.replaceState(null, '', getParamURL(initialValue, { basePath }));
     }
 
-    const syncValue = () => setValue(getCurrentValue());
     window.addEventListener('popstate', syncValue);
     return () => window.removeEventListener('popstate', syncValue);
+  }, []);
+
+  useEffect(() => {
+    subscribers.push(syncValue);
+    return () => {
+      subscribers.splice(subscribers.indexOf(syncValue), 1);
+    };
   }, []);
 
   return [value, setParamValue];

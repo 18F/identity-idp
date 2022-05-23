@@ -30,9 +30,14 @@ describe('PhoneInput', () => {
     isSingleOption = false,
     isNonUSSingleOption = false,
     deliveryMethods = ['sms', 'voice'],
+    translatedCountryCodeNames = {},
   } = {}) {
     const element = document.createElement('lg-phone-input');
     element.setAttribute('data-delivery-methods', JSON.stringify(deliveryMethods));
+    element.setAttribute(
+      'data-translated-country-code-names',
+      JSON.stringify(translatedCountryCodeNames),
+    );
     element.innerHTML = `
       <script type="application/json" class="phone-input__strings">
         {
@@ -163,6 +168,16 @@ describe('PhoneInput', () => {
       expect(phoneNumber.validationMessage).to.equal(
         'We are unable to verify phone numbers from Canada',
       );
+    });
+  });
+
+  context('with translated country code names', () => {
+    it('renders the translated label', () => {
+      createAndConnectElement({ translatedCountryCodeNames: { us: 'Custom USA' } });
+
+      const itiOptionName = document.querySelector('[data-country-code="us"] .iti__country-name');
+
+      expect(itiOptionName.textContent).to.equal('Custom USA');
     });
   });
 });

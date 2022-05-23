@@ -64,7 +64,7 @@ describe('PasswordConfirmStep', () => {
     it('navigates to forgot password subpage', async () => {
       const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
-      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.link_text' }));
+      await userEvent.click(getByRole('link', { name: 'idv.forgot_password.link_text' }));
 
       expect(window.location.pathname).to.equal('/password_confirm/forgot_password');
     });
@@ -72,10 +72,60 @@ describe('PasswordConfirmStep', () => {
     it('navigates back from forgot password subpage', async () => {
       const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
-      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.link_text' }));
-      await userEvent.click(getByRole('button', { name: 'idv.forgot_password.try_again' }));
+      await userEvent.click(getByRole('link', { name: 'idv.forgot_password.link_text' }));
+      await userEvent.click(getByRole('link', { name: 'idv.forgot_password.try_again' }));
 
-      expect(window.location.pathname).to.equal('/password_confirm/');
+      expect(window.location.pathname).to.equal('/password_confirm');
+    });
+  });
+
+  describe('alert', () => {
+    context('without phone value', () => {
+      it('does not render success alert', () => {
+        const { queryByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+
+        expect(queryByRole('status')).to.not.exist();
+      });
+    });
+
+    context('with phone value', () => {
+      it('renders success alert', () => {
+        const { queryByRole } = render(
+          <PasswordConfirmStep {...DEFAULT_PROPS} value={{ phone: '5135551234' }} />,
+        );
+
+        const status = queryByRole('status')!;
+
+        expect(status).to.exist();
+        expect(status.textContent).to.equal('idv.messages.review.info_verified_html');
+      });
+
+      context('with other errors', () => {
+        it('does not render success alert', () => {
+          const { queryByRole } = render(
+            <PasswordConfirmStep
+              {...DEFAULT_PROPS}
+              value={{ phone: '5135551234' }}
+              errors={[{ error: new Error() }]}
+            />,
+          );
+
+          expect(queryByRole('status')).to.not.exist();
+        });
+      });
+    });
+
+    context('with errors', () => {
+      it('renders error messages', () => {
+        const { queryByRole } = render(
+          <PasswordConfirmStep {...DEFAULT_PROPS} errors={[{ error: new Error('Uh oh!') }]} />,
+        );
+
+        const alert = queryByRole('alert')!;
+
+        expect(alert).to.exist();
+        expect(alert.textContent).to.equal('Uh oh!');
+      });
     });
   });
 });
