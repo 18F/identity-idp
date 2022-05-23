@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IrsAttemptsApiController do
+RSpec.describe Api::IrsAttemptsApiController do
   before do
     stub_analytics
 
