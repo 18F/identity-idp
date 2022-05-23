@@ -181,6 +181,7 @@ class IdentityConfig
     config.add(:irs_attempt_api_enabled, type: :boolean)
     config.add(:irs_attempt_api_event_ttl_seconds, type: :integer)
     config.add(:irs_attempt_api_public_key)
+    config.add(:kantara_required, type: :boolean)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
