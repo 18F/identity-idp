@@ -22,8 +22,7 @@
         content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
       ) %>
 
-
-  <%= backwards_compatible_javascript_tag do %>
+  <%= javascript_tag(nonce: true) do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   <% end %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>

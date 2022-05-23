@@ -1,8 +1,4 @@
 module SecureHeadersHelper
-  def backwards_compatible_javascript_tag(*args, **opts, &block)
-    javascript_tag(*args, opts.merge(nonce: true), &block)
-  end
-
   def add_document_capture_image_urls_to_csp(request, urls)
     cleaned_urls = urls.compact.map do |url|
       URI(url).tap { |uri| uri.query = nil }.to_s
