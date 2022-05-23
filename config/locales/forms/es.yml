@@ -3,15 +3,14 @@ es:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Los códigos de respaldo no son muy seguros</strong> porque se
-          pueden perder o robar fácilmente. <strong>Si peude, elija otra
-          opción</strong>, (usar un teléfono, descargar una aplicación de
-          autenticación o usar una clave de seguridad).
-        - <strong>Si continúa con los códigos de copia de seguridad, manténgalos
-          seguros</strong>. Le daremos 10 códigos que puede descargar, imprimir,
-          copiar o escribir. Más tarde, deberás ingresar un codigo cada vez que
-          inicies sesión.
-      are_you_sure_title: '¿Estás seguro? Le daremos códigos de respaldo para guardar y usar.'
+        - <strong>Los códigos de respaldo son el método de autenticación menos
+          utilizado,</strong> ya que se pueden perder con facilidad. Le
+          recomendamos explorar otras opciones de autenticación, como el
+          desbloqueo facial o táctil, una aplicación de autenticación o una
+          clave de seguridad.
+        - Le otorgaremos 10 códigos que puede descargar, imprimir, copiar o
+          escribir. Ingresará un código cada vez que inicie sesión.
+      are_you_sure_title: '¿Está seguro de que desea usar códigos de respaldo?'
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
       confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
