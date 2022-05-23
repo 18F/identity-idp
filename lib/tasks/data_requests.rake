@@ -7,9 +7,8 @@ namespace :data_requests do
     uuids = ENV.fetch('UUIDS', '').split(',')
     users = uuids.map { |uuid| DataRequests::LookupUserByUuid.new(uuid).call }.compact
 
-    result = DataRequests::LookupSharedDeviceUsers.new(users).call
-    puts JSON.pretty_generate(result)
-    puts "UUIDS: #{result.values.flatten.uniq.join(',')}"
+    users = DataRequests::LookupSharedDeviceUsers.new(users).call
+    puts "UUIDS: #{users.map(&:uuid).join(',')}"
   end
 
   # UUIDS=123abc,456def REQUESTING_ISSUER=sample:app:issuer rake data_requests:create_users_report
