@@ -322,7 +322,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+          with('Password Reset: Email Submitted', analytics_hash)
 
         analytics_hash = {
           success: true,
@@ -354,7 +354,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+          with('Password Reset: Email Submitted', analytics_hash)
 
         expect do
           put :create, params: { password_reset_email_form: { email: 'Test@example.com' } }
@@ -379,7 +379,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+          with('Password Reset: Email Submitted', analytics_hash)
 
         params = { password_reset_email_form: { email: user.email } }
         expect { put :create, params: params }.
@@ -408,7 +408,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+          with('Password Reset: Email Submitted', analytics_hash)
 
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
@@ -429,7 +429,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+          with('Password Reset: Email Submitted', analytics_hash)
 
         params = { password_reset_email_form: { email: 'foo' } }
         expect { put :create, params: params }.

@@ -9,7 +9,7 @@ module Users
       @password_reset_email_form = PasswordResetEmailForm.new(email)
       result = @password_reset_email_form.submit
 
-      analytics.track_event(Analytics::PASSWORD_RESET_EMAIL, result.to_h)
+      analytics.password_reset_email(result.to_h)
 
       if result.success?
         handle_valid_email

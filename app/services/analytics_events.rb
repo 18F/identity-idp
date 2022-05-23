@@ -1006,6 +1006,24 @@ module AnalyticsEvents
     track_event('Password Max Attempts Reached')
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
+  # confirmed email
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  # active proofed profile
+  # The user entered an email address to request a password reset
+  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
+    track_event(
+      'Password Reset: Email Submitted',
+      success: success,
+      errors: errors,
+      confirmed: confirmed,
+      active_profile: active_profile,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
