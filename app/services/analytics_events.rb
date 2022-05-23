@@ -987,6 +987,13 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user updated their password
+  def password_changed(success:, errors:, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra)
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
