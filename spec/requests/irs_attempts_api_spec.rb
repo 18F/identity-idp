@@ -33,7 +33,7 @@ RSpec.describe 'IRS attempts API' do
   end
 
   it 'allows events to be acknowledged and renders new events' do
-    auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.split(',').first
+    auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.first
     request_body = {
       ack: events_to_acknowledge.map(&:first),
     }

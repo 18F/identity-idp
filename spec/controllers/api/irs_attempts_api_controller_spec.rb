@@ -11,7 +11,7 @@ RSpec.describe Api::IrsAttemptsApiController do
   end
 
   let(:auth_token) do
-    IdentityConfig.store.irs_attempt_api_auth_tokens.split(',').first
+    IdentityConfig.store.irs_attempt_api_auth_tokens.first
   end
   let(:existing_events) do
     3.times.map do

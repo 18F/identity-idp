@@ -57,7 +57,7 @@ module Api
     end
 
     def valid_auth_tokens
-      IdentityConfig.store.irs_attempt_api_auth_tokens.split(',')
+      IdentityConfig.store.irs_attempt_api_auth_tokens
     end
 
     def analytics_properties
