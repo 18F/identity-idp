@@ -996,7 +996,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # The user added a password after verifying their email for account creatoin
+  # The user added a password after verifying their email for account creation
   def password_creation(success:, errors:, **extra)
     track_event('Password Creation', success: success, errors: errors, **extra)
   end
