@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe Users::ResetPasswordsController, devise: true do
-  let(:password_error_message) {
+  let(:password_error_message) do
     "This password is too short (minimum is #{Devise.password_length.first} characters)"
-  }
+  end
   describe '#edit' do
     context 'no user matches token' do
       it 'redirects to page where user enters email for password reset token' do
@@ -302,9 +302,7 @@ describe Users::ResetPasswordsController, devise: true do
   describe '#create' do
     context 'no user matches email' do
       it 'send an email to tell the user they do not have an account yet' do
-        analytics = instance_double(Analytics)
-        allow(Analytics).to receive(:new).and_return(analytics)
-        allow(analytics).to receive(:track_event)
+        stub_analytics
         email = 'nonexistent@example.com'
 
         expect do
@@ -321,8 +319,7 @@ describe Users::ResetPasswordsController, devise: true do
           active_profile: false,
         }
 
-        expect(analytics).to have_received(:track_event).
-          with('Password Reset: Email Submitted', analytics_hash)
+        expect(@analytics).to have_logged_event('Password Reset: Email Submitted', analytics_hash)
 
         analytics_hash = {
           success: true,
@@ -332,8 +329,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: User.find_with_email(email).uuid,
           domain_name: 'example.com',
         }
-        expect(analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+        expect(@analytics).to have_logged_event(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
         expect(response).to redirect_to forgot_password_path
       end
