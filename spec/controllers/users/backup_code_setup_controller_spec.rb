@@ -65,14 +65,14 @@ describe Users::BackupCodeSetupController do
   end
 
   context 'with multiple MFA selection turned off' do
-      it 'redirects to account page' do
-        user = build(:user, :signed_up)
-        stub_sign_in(user)
-        codes = BackupCodeGenerator.new(user).create
-        controller.user_session[:backup_codes] = codes
-        post :continue
-        expect(response).to redirect_to(account_url)
-      end
+    it 'redirects to account page' do
+      user = build(:user, :signed_up)
+      stub_sign_in(user)
+      codes = BackupCodeGenerator.new(user).create
+      controller.user_session[:backup_codes] = codes
+      post :continue
+      expect(response).to redirect_to(account_url)
+    end
   end
 
   describe '#refreshed' do

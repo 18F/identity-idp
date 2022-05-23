@@ -187,9 +187,8 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def resolution_proofer
-    @resolution_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      Proofing::Mock::ResolutionMockClient.new
-    else
+    @resolution_proofer ||= IdentityConfig.store.proofer_mock_fallback ?
+      Proofing::Mock::ResolutionMockClient.new :
       Proofing::LexisNexis::InstantVerify::Proofer.new(
         instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
         account_id: IdentityConfig.store.lexisnexis_account_id,
@@ -198,13 +197,11 @@ class ResolutionProofingJob < ApplicationJob
         password: IdentityConfig.store.lexisnexis_password,
         request_mode: IdentityConfig.store.lexisnexis_request_mode,
       )
-    end
   end
 
   def state_id_proofer
-    @state_id_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      Proofing::Mock::StateIdMockClient.new
-    else
+    @state_id_proofer ||= IdentityConfig.store.proofer_mock_fallback ?
+      Proofing::Mock::StateIdMockClient.new :
       Proofing::Aamva::Proofer.new(
         auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
         auth_url: IdentityConfig.store.aamva_auth_url,
@@ -214,6 +211,5 @@ class ResolutionProofingJob < ApplicationJob
         verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
         verification_url: IdentityConfig.store.aamva_verification_url,
       )
-    end
   end
 end

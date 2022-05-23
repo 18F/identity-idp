@@ -180,10 +180,10 @@ module Telephony
         delivery_status = message_response_result.delivery_status
         exception_message = "Pinpoint Error: #{delivery_status} - #{status_code}"
         exception_class = if permanent_failure_opt_out?(message_response_result)
-          OptOutError
-        else
-          ERROR_HASH[delivery_status] || TelephonyError
-        end
+                            OptOutError
+                          else
+                            ERROR_HASH[delivery_status] || TelephonyError
+                          end
         exception_class.new(exception_message)
       end
 

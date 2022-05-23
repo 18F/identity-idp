@@ -82,9 +82,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'submits the form' do
-          result = subject.submit(selection: ['phone'])
+        result = subject.submit(selection: ['phone'])
 
-          expect(result.success?).to eq true
+        expect(result.success?).to eq true
       end
     end
   end

@@ -621,11 +621,11 @@ module AnalyticsEvents
     letter_already_sent:,
     **extra
   )
-  track_event(
-    'IdV: USPS address visited',
-    letter_already_sent: letter_already_sent,
-    **extra,
-  )
+    track_event(
+      'IdV: USPS address visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name Account verification submitted

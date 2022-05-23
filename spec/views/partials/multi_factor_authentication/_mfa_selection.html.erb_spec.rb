@@ -48,11 +48,11 @@ describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
     end
 
     it 'shows a checked checkbox for the configuration already created' do
-       expect(rendered).to have_field(
-         'two_factor_options_form[selection][]',
-         disabled: true,
-         checked: true,
-       )
+      expect(rendered).to have_field(
+        'two_factor_options_form[selection][]',
+        disabled: true,
+        checked: true,
+      )
     end
 
     it 'the checkbox for the configuration created communicates it is already created' do
