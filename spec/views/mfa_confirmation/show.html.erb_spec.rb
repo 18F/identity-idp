@@ -6,15 +6,6 @@ describe 'mfa_confirmation/show.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    assign(
-      :presenter,
-      MfaConfirmationShowPresenter.new(
-        current_user: user,
-        next_path: phone_setup_url,
-        final_path: account_url,
-        suggest_second_mfa: false,
-      ),
-    )
   end
 
   it 'has a localized title' do
@@ -34,7 +25,7 @@ describe 'mfa_confirmation/show.html.erb' do
 
     expect(rendered).to have_selector(
       'p',
-      text: t('mfa.account_info', count: 1),
+      text: t('mfa.account_info'),
     )
   end
 

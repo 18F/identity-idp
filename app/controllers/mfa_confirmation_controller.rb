@@ -3,9 +3,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated, except: [:show]
 
   def show
-    @presenter = MfaConfirmationShowPresenter.new(
-      next_path: second_mfa_setup_path,
-    )
+    @next_path = second_mfa_setup_path
   end
 
   def skip
@@ -30,20 +28,6 @@ class MfaConfirmationController < ApplicationController
 
   def password
     params.require(:user)[:password]
-  end
-
-  def next_mfa_selection_choice
-    params[:next_setup_choice] ||
-      user_session[:next_mfa_selection_choice]
-  end
-
-  def next_path
-    return second_mfa_setup_path if check_if_select_mfa_needed?
-    confirmation_path(next_mfa_selection_choice)
-  end
-
-  def check_if_select_mfa_needed?
-    suggest_second_mfa? && current_mfa_selection_count == 1
   end
 
   def handle_valid_password
