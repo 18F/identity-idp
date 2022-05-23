@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'IRS attempts API' do
   before do
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
     IrsAttemptsApi::RedisClient.clear_attempts!
     events_to_acknowledge
     events_to_render

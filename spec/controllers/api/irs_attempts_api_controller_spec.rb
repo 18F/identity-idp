@@ -4,6 +4,8 @@ RSpec.describe Api::IrsAttemptsApiController do
   before do
     stub_analytics
 
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(true)
+
     IrsAttemptsApi::RedisClient.clear_attempts!
     existing_events
 
@@ -28,6 +30,14 @@ RSpec.describe Api::IrsAttemptsApiController do
   let(:existing_event_jtis) { existing_events.map(&:first) }
 
   describe '#create' do
+    it 'renders a 404 if disabled' do
+      allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(false)
+
+      post :create, params: {}
+
+      expect(response.status).to eq(404)
+    end
+
     it 'authenticates the client' do
       request.headers['Authorization'] = auth_token # Missing Bearer prefix
 
