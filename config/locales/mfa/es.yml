@@ -1,8 +1,8 @@
 ---
 es:
   mfa:
-    account_info: Agregar otro método de autenticación evita que se le bloquee el acceso a su
-        cuenta si pierde uno de sus métodos.
+    account_info: Agregar otro método de autenticación evita que se le bloquee el
+      acceso a su cuenta si pierde uno de sus métodos.
     add: Agregar otro método
     info: Le recomendamos que seleccione al menos (2) dos métodos diferentes para
       tener una copia de seguridad si pierde uno de los dispositivos de
