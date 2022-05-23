@@ -114,7 +114,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+          with('Password Reset: Password Submitted', analytics_hash)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -147,7 +147,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+          with('Password Reset: Password Submitted', analytics_hash)
 
         put :update, params: { reset_password_form: form_params }
 
@@ -210,7 +210,7 @@ describe Users::ResetPasswordsController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+            with('Password Reset: Password Submitted', analytics_hash)
 
           expect(user.events.password_changed.size).to be 1
 
@@ -251,7 +251,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+          with('Password Reset: Password Submitted', analytics_hash)
 
         expect(user.active_profile.present?).to eq false
 
@@ -290,7 +290,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+          with('Password Reset: Password Submitted', analytics_hash)
 
         expect(user.reload.confirmed?).to eq true
 

@@ -1024,6 +1024,21 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
+  # (the user will need to use their personal key to reactivate their profile)
+  # The user changed the password for their account via the paswword reset flow
+  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
+    track_event(
+      'Password Reset: Password Submitted',
+      success: success,
+      errors: errors,
+      profile_deactivated: profile_deactivated,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
