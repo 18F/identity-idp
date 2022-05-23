@@ -14,15 +14,15 @@ module DataRequests
     def initialize(initial_users, depth = 3)
       @initial_users = initial_users
       @depth = depth
-      @user_ids = initial_users.map(&:id)
-      @device_cookie_uuids = []
+      @user_ids = initial_users.map(&:id).to_set
+      @device_cookie_uuids = Set.new
     end
 
     def call
       depth.times do |i|
         warn "Searching at depth #{i}"
-        self.device_cookie_uuids = Device.where(user_id: user_ids).map(&:cookie_uuid).uniq
-        self.user_ids = Device.where(cookie_uuid: device_cookie_uuids).map(&:user_id).uniq
+        self.device_cookie_uuids += Device.where(user_id: user_ids).pluck(:cookie_uuid)
+        self.user_ids += Device.where(cookie_uuid: device_cookie_uuids).pluck(:user_id)
       end
       User.where(id: user_ids).all
     end
