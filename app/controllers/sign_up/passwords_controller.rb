@@ -13,7 +13,7 @@ module SignUp
 
     def create
       result = password_form.submit(permitted_params)
-      analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
+      analytics.password_creation(**result.to_h)
       store_sp_metadata_in_session unless sp_request_id.empty?
 
       if result.success?

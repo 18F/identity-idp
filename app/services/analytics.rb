@@ -153,7 +153,6 @@ class Analytics
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'
-  PASSWORD_CREATION = 'Password Creation'
   PASSWORD_MAX_ATTEMPTS = 'Password Max Attempts Reached'
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'
