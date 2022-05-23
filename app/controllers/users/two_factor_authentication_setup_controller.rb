@@ -19,7 +19,7 @@ module Users
 
       if result.success?
         process_valid_form
-      elsif result.errors[:selection].include? 'phone'
+      elsif result.errors[:selection].include? 'phone' && IdentityConfig.store.kantara_required
         flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
         redirect_to two_factor_options_path(anchor: 'select_phone')
       else
