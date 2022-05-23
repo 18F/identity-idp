@@ -9,7 +9,7 @@ module Users
     before_action :ensure_backup_codes_in_session, only: %i[continue download refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
-    before_action :can_delete_backup_codes?, only: [:delete]
+    before_action :authorize_backup_code_disable, only: [:delete]
 
     def index; end
 
@@ -92,7 +92,7 @@ module Users
       @generator ||= BackupCodeGenerator.new(current_user)
     end
 
-    def can_delete_backup_codes?
+    def authorize_backup_code_disable
       return if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
       redirect_to account_two_factor_authentication_path
     end
