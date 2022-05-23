@@ -69,7 +69,7 @@ RSpec.configure do |config|
   if !ENV['CI']
     config.before(:all, js: true) do
       puts 'Bundling JavaScript...'
-      system 'make public/packs/manifest.json'
+      system 'WEBPACK_PORT= yarn build'
     end
   end
 
