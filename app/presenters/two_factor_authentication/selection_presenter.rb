@@ -2,10 +2,11 @@ module TwoFactorAuthentication
   class SelectionPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :configuration
+    attr_reader :configuration, :user
 
-    def initialize(configuration = nil)
+    def initialize(configuration: nil, user: nil)
       @configuration = configuration
+      @user = user
     end
 
     def type
@@ -26,6 +27,16 @@ module TwoFactorAuthentication
       else
         setup_info(method.to_s)
       end
+    end
+
+    def mfa_configuration_count; end
+
+    def mfa_configuration_description
+      return '' if !disabled?
+      t(
+        'two_factor_authentication.two_factor_choice_options.configurations_added',
+        count: mfa_configuration_count,
+      )
     end
 
     def security_level; end
@@ -112,7 +123,9 @@ module TwoFactorAuthentication
       when 'backup_code'
         t('two_factor_authentication.two_factor_choice_options.backup_code_info')
       when 'phone'
-        t('two_factor_authentication.two_factor_choice_options.phone_info')
+        IdentityConfig.store.select_multiple_mfa_options ?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
+          t('two_factor_authentication.two_factor_choice_options.phone_info')
       when 'piv_cac'
         t('two_factor_authentication.two_factor_choice_options.piv_cac_info')
       when 'sms'

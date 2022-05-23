@@ -71,6 +71,18 @@ describe AttributeAsserter do
     )
     CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
   end
+  let(:raw_ialmax_authn_request) do
+    ialmax_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        ],
+        authn_context_comparison: 'minimum',
+      },
+    )
+    CGI.unescape ialmax_authnrequest.split('SAMLRequest').last
+  end
   let(:sp1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_sp1_authn_request)
   end
@@ -85,6 +97,9 @@ describe AttributeAsserter do
   end
   let(:ial1_aal3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
+  end
+  let(:ialmax_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_ialmax_authn_request)
   end
   let(:decrypted_pii) do
     Pii::Attributes.new_from_hash(
@@ -498,6 +513,66 @@ describe AttributeAsserter do
         it 'creates a getter function for aal attribute' do
           expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
           expect(user.asserted_attributes[:aal][:getter].call(user)).to eq expected_aal
+        end
+      end
+    end
+
+    context 'IALMAX' do
+      context 'service provider requests IALMAX with IAL1 user' do
+        let(:service_provider_ial) { 2 }
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: ialmax_authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+
+        before do
+          user.profiles.delete_all
+          subject.build
+        end
+
+        it 'includes ial' do
+          expect(user.asserted_attributes.keys).to include(:ial)
+        end
+
+        it 'creates a getter function for ial attribute' do
+          expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+          expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
+        end
+      end
+
+      context 'service provider requests IALMAX with IAL2 user' do
+        let(:service_provider_ial) { 2 }
+        let(:subject) do
+          described_class.new(
+            user: user,
+            name_id_format: name_id_format,
+            service_provider: service_provider,
+            authn_request: ialmax_authn_request,
+            decrypted_pii: decrypted_pii,
+            user_session: user_session,
+          )
+        end
+
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name])
+          subject.build
+        end
+
+        it 'includes ial' do
+          expect(user.asserted_attributes.keys).to include(:ial)
+        end
+
+        it 'creates a getter function for ial attribute' do
+          expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+          expect(user.asserted_attributes[:ial][:getter].call(user)).to eq expected_ial
         end
       end
     end

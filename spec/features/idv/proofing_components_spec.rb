@@ -21,11 +21,10 @@ RSpec.describe 'proofing components' do
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)
 
       complete_all_doc_auth_steps
-      click_continue
-      expect(page).to have_current_path('/verify/review', wait: 5)
+      click_idv_continue
       fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
     end
 
     context 'async proofing', js: true do
@@ -51,7 +50,7 @@ RSpec.describe 'proofing components' do
     end
   end
 
-  it 'clears the liveness enabled proofing component when a user re-proofs without liveness' do
+  it 'clears liveness enabled proofing component when user re-proofs without liveness', js: true do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
     user = user_with_2fa
     sign_in_and_2fa_user(user)

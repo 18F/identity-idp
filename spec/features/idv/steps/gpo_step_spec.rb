@@ -24,7 +24,7 @@ feature 'idv gpo step' do
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to resend a letter and redirects to the come back later step' do
+    it 'allows the user to resend a letter and redirects to the come back later step', js: true do
       complete_idv_and_return_to_gpo_step
 
       expect { click_on t('idv.buttons.mail.resend') }.
@@ -34,7 +34,7 @@ feature 'idv gpo step' do
       expect(page).to have_current_path(idv_come_back_later_path)
     end
 
-    it 'allows the user to return to gpo otp confirmation' do
+    it 'allows the user to return to gpo otp confirmation', js: true do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
 
@@ -49,7 +49,7 @@ feature 'idv gpo step' do
       click_on t('idv.buttons.mail.send')
       fill_in 'Password', with: user_password
       click_continue
-      click_acknowledge_personal_key
+      acknowledge_and_confirm_personal_key
       visit root_path
       click_on t('idv.buttons.cancel')
       first(:link, t('links.sign_out')).click

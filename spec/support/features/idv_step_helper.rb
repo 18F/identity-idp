@@ -47,7 +47,7 @@ module IdvStepHelper
     complete_idv_steps_with_phone_before_review_step(user)
     password = user.password || user_password
     fill_in 'Password', with: password
-    click_continue
+    click_idv_continue
   end
 
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step

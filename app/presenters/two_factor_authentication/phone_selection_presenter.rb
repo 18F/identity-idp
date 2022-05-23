@@ -13,14 +13,13 @@ module TwoFactorAuthentication
     end
 
     def info
-      voip_note = if IdentityConfig.store.voip_block
-        t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
-      end
+      IdentityConfig.store.select_multiple_mfa_options ?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
+          t('two_factor_authentication.two_factor_choice_options.phone_info')
+    end
 
-      safe_join(
-        [t('two_factor_authentication.two_factor_choice_options.phone_info'), *voip_note],
-        ' ',
-      )
+    def mfa_configuration_count
+      user.phone_configurations.count
     end
 
     def security_level
@@ -28,7 +27,7 @@ module TwoFactorAuthentication
     end
 
     def disabled?
-      VendorStatus.new.all_phone_vendor_outage?
+      VendorStatus.new.all_phone_vendor_outage? || user&.phone_configurations&.any?
     end
   end
 end

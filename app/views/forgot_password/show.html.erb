@@ -20,8 +20,8 @@
                        html: { autocomplete: 'off', method: :post, class: 'margin-bottom-2' },
                        url: user_password_path do |f| %>
 
-  <%= f.input :email, as: :hidden, wrapper: false %>
-  <%= f.input :resend, as: :hidden, wrapper: false %>
+  <%= f.input :email, as: :hidden %>
+  <%= f.input :resend, as: :hidden %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
   <%= f.button :button, t('links.resend'), class: 'usa-button--unstyled margin-left-05' %></p>

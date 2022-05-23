@@ -26,7 +26,7 @@ module Idv
         render_throttled
       else
         result = @gpo_verify_form.submit
-        analytics.track_event(Analytics::IDV_GPO_VERIFICATION_SUBMITTED, result.to_h)
+        analytics.idv_gpo_verification_submitted(**result.to_h)
 
         if result.success?
           event = create_user_event_with_disavowal(:account_verified)

@@ -14,8 +14,6 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
-<%# If it is decided that there will be an info banner on this page for MFA setup, the text will need Gengo translations %>
-
 <% if IdentityConfig.store.select_multiple_mfa_options %>
   <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
     <%= t('mfa.info') %>
@@ -32,25 +30,8 @@
       <% @presenter.options.each do |option| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <% if IdentityConfig.store.select_multiple_mfa_options %>
-            <%= check_box_tag(
-                  'two_factor_options_form[selection][]',
-                  option.type,
-                  false,
-                  disabled: option.disabled?,
-                  class: 'usa-checkbox__input usa-checkbox__input--tile',
-                  id: "two_factor_options_form_selection_#{option.type}",
-                ) %>
-            <%= label_tag(
-                  "two_factor_options_form_selection_#{option.type}",
-                  class: 'usa-checkbox__label usa-checkbox__label--illustrated',
-                ) do %>
-                    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
-                    <div class="usa-checkbox__label--text"><%= option.label %>
-                      <span class="usa-checkbox__label-description">
-                        <%= option.info %>
-                      </span>
-                    </div>
-                  <% end %>
+            <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                       locals: { form: f, option: option } %>
           <% else %>
             <%= radio_button_tag(
                   'two_factor_options_form[selection]',
@@ -82,3 +63,4 @@
 <%= render 'shared/cancel', link: destroy_user_session_path %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
+

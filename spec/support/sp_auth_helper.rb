@@ -22,7 +22,7 @@ module SpAuthHelper
     click_idv_continue
     fill_in t('idv.form.password'), with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     expect(page).to have_current_path(sign_up_completed_path)
     click_agree_and_continue
     visit sign_out_url

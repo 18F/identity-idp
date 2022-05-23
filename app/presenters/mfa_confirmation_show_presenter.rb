@@ -1,10 +1,11 @@
 class MfaConfirmationShowPresenter
   include ActionView::Helpers::TranslationHelper
-  attr_reader :mfa_context, :final_path, :next_path
-  def initialize(current_user:, next_path:, final_path:)
+  attr_reader :mfa_context, :final_path, :next_path, :suggest_second_mfa
+  def initialize(current_user:, next_path:, final_path:, suggest_second_mfa: false)
     @mfa_context = MfaContext.new(current_user)
     @final_path = final_path
     @next_path = next_path
+    @suggest_second_mfa = suggest_second_mfa
   end
 
   def title
@@ -13,6 +14,8 @@ class MfaConfirmationShowPresenter
         'titles.mfa_setup.multiple_authentication_methods_setup',
         method_count: method_count_text,
       )
+    elsif suggest_second_mfa
+      t('titles.mfa_setup.suggest_second_mfa')
     else
       t('titles.mfa_setup.first_authentication_method')
     end

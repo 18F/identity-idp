@@ -22,8 +22,7 @@
         content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
       ) %>
 
-
-  <%= backwards_compatible_javascript_tag do %>
+  <%= javascript_tag(nonce: true) do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
   <% end %>
   <%= preload_link_tag font_url('public-sans/PublicSans-Bold.woff2') %>
@@ -84,7 +83,15 @@
                } %>
   <% end %>
 
-  <%= content_tag 'script', '', data: { analytics_endpoint: api_logger_path } %>
+  <%= content_tag(
+        :script,
+        {
+          'appName' => APP_NAME,
+          'analyticsEndpoint' => api_logger_path,
+        }.to_json,
+        { type: 'application/json', data: { config: '' } },
+        false,
+      ) %>
   <%= javascript_packs_tag_once('application', prepend: true) %>
   <%= render_javascript_pack_once_tags %>
 

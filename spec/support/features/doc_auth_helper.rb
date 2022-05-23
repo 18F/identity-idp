@@ -152,14 +152,15 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_proofing_steps
     complete_all_doc_auth_steps
     click_continue
+    expect(page).to have_current_path(idv_review_path, wait: 10)
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
   end
 
   def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
+    pii_with_no_name = Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.dup
     pii_with_no_name[:last_name] = nil
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,

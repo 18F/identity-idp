@@ -81,17 +81,45 @@ describe 'multiple saml endpoints' do
       expect(cert_base64).to eq(Base64.strict_encode64(endpoint_cert.to_der))
     end
 
-    it 'includes the correct auth url, and no SingleLogoutService urls' do
+    it 'includes the correct auth url' do
       visit endpoint_metadata_path
       document = REXML::Document.new(page.html)
       auth_node = REXML::XPath.first(document, '//SingleSignOnService')
-      logout_node = REXML::XPath.first(document, '//SingleLogoutService')
 
       expect(auth_node.attributes['Location']).to include(
         ['/api/saml/auth', endpoint_suffix].join(''),
       )
+    end
 
-      expect(logout_node).to be_nil
+    it 'does not include logout urls if configured' do
+      allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
+        and_return(false)
+      document = REXML::Document.new(page.html)
+      logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
+      expect(logout_nodes.count).to be_zero
+    end
+
+    context 'when configured to include logout endpoints' do
+      before do
+        allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
+          and_return(true)
+      end
+
+      it 'includes the front-channel logout url' do
+        visit endpoint_metadata_path
+        document = REXML::Document.new(page.html)
+        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
+        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/logout\d{4}}) }).
+          to eq(2)
+      end
+
+      it 'includes the remote logout url' do
+        visit endpoint_metadata_path
+        document = REXML::Document.new(page.html)
+        logout_nodes = REXML::XPath.match(document, '//SingleLogoutService')
+        expect(logout_nodes.count { |n| n['Location'].match?(%r{/api/saml/remotelogout\d{4}}) }).
+          to eq(1)
+      end
     end
   end
 end

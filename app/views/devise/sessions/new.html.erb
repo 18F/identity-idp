@@ -53,12 +53,12 @@
 
 <%= render PageFooterComponent.new do %>
   <% if decorated_session.sp_name %>
-    <div class="margin-y-1">
+    <div class="margin-bottom-1">
       <%= render 'devise/sessions/return_to_service_provider' %>
     </div>
   <% end %>
 
-  <div class="margin-y-1">
+  <div class="margin-bottom-1">
     <%= link_to(
           t('links.passwords.forgot'),
           new_user_password_url(request_id: @request_id),

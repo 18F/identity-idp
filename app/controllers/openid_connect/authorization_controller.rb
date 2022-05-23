@@ -58,6 +58,10 @@ module OpenidConnect
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
     end
 
+    def ial_context
+      @authorize_form.ial_context
+    end
+
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
@@ -143,7 +147,17 @@ module OpenidConnect
     end
 
     def track_events
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
+      event_ial_context = IalContext.new(
+        ial: @authorize_form.ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
+
+      analytics.track_event(
+        Analytics::SP_REDIRECT_INITIATED,
+        ial: event_ial_context.ial,
+        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+      )
       track_billing_events
     end
   end

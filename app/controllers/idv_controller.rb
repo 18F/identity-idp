@@ -36,7 +36,7 @@ class IdvController < ApplicationController
   end
 
   def verify_identity
-    analytics.track_event(Analytics::IDV_INTRO_VISIT)
+    analytics.idv_intro_visit
     redirect_to idv_doc_auth_url
   end
 

@@ -93,27 +93,12 @@ ignore_missing:
 ## not, and if we didn't ignore them, the spec that makes sure that we don't have
 ## any unused translations would fail erroneously.
 ignore_unused:
-  - 'account.login.piv_cac_info.*'
-  - 'countries.*'
   - 'devise.failure.*'
-  - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
-  - 'errors.messages.*'
-  - 'forms.two_factor_choice.legend'
-  - 'forms.two_factor_recovery_choice.legend'
-  - 'jobs.sms_otp_sender_job.login_message'
-  - 'jobs.sms_otp_sender_job.verify_message'
-  - 'service_providers.*'
-  - 'simple_form.*'
-  - 'step_indicator.flows.*'
-  - 'time.*'
-  - 'user_mailer.email_confirmation_instructions.subject'
-  - 'valid_email.validations.email.invalid'
   - 'errors.attributes.*'
-# - 'simple_form.{yes,no}'
-# - 'simple_form.{placeholders,hints,labels}.*'
-# - 'simple_form.{error_notification,required}.:'
-
+  - 'errors.messages.*'
+  - 'simple_form.*'
+  - 'time.*'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:

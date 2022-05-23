@@ -7,6 +7,6 @@ class RevokeServiceProviderConsent
   end
 
   def call
-    identity.update!(deleted_at: now)
+    identity.update!(deleted_at: now, verified_attributes: nil)
   end
 end

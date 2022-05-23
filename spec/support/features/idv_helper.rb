@@ -61,9 +61,11 @@ module IdvHelper
         },
       }
       if javascript_enabled?
-        idp_domain_name = "#{page.server.host}:#{page.server.port}"
-        saml_overrides[:idp_sso_target_url] = "http://#{idp_domain_name}/api/saml/auth"
-        saml_overrides[:idp_slo_target_url] = "http://#{idp_domain_name}/api/saml/logout"
+        service_provider = ServiceProvider.find_by(issuer: sp1_issuer)
+        acs_url = URI.parse(service_provider.acs_url)
+        acs_url.host = page.server.host
+        acs_url.port = page.server.port
+        service_provider.update(acs_url: acs_url.to_s)
       end
       visit_saml_authn_request_url(overrides: saml_overrides)
     elsif sp == :oidc

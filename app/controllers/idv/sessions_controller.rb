@@ -6,7 +6,10 @@ module Idv
 
     def destroy
       cancel_verification_attempt_if_pending_profile
-      analytics.track_event(Analytics::IDV_START_OVER, **location_params)
+      analytics.idv_start_over(
+        step: location_params[:step],
+        location: location_params[:location],
+      )
       user_session['idv/doc_auth'] = {}
       idv_session.clear
       Pii::Cacher.new(current_user, user_session).delete

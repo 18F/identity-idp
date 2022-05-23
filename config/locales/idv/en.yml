@@ -85,6 +85,7 @@ en:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
           state-issued ID</strong>.
+        state_issue: State-issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
@@ -148,6 +149,7 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How would you like to receive a code?
+      personal_key: Personal key
       review: Review and submit
       session:
         phone: Enter a phone number with your name on the plan

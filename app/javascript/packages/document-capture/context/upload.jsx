@@ -1,4 +1,5 @@
-import { createContext, useMemo } from 'react';
+import { createContext } from 'react';
+import { useObjectMemo } from '@18f/identity-react-hooks';
 import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
@@ -9,8 +10,6 @@ const UploadContext = createContext({
   backgroundUploadURLs: /** @type {Record<string,string>} */ ({}),
   backgroundUploadEncryptKey: /** @type {CryptoKey=} */ (undefined),
   flowPath: /** @type {FlowPath} */ ('standard'),
-  startOverURL: /** @type {string} */ (''),
-  cancelURL: /** @type {string} */ (''),
   csrf: /** @type {string?} */ (null),
 });
 
@@ -76,8 +75,6 @@ UploadContext.displayName = 'UploadContext';
  * @prop {string?} csrf CSRF token to send as parameter to upload implementation.
  * @prop {Record<string,any>=} formData Extra form data to merge into the payload before uploading
  * @prop {FlowPath} flowPath The user's session flow path, one of "standard" or "hybrid".
- * @prop {string} startOverURL URL to application DELETE path for session restart.
- * @prop {string} cancelURL URL to application path for session cancel.
  * @prop {ReactNode} children Child elements.
  */
 
@@ -96,8 +93,6 @@ function UploadContextProvider({
   csrf,
   formData,
   flowPath,
-  startOverURL,
-  cancelURL,
   children,
 }) {
   const uploadWithCSRF = (payload) =>
@@ -108,32 +103,16 @@ function UploadContextProvider({
       ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
       : Promise.reject();
 
-  const value = useMemo(
-    () => ({
-      upload: uploadWithCSRF,
-      getStatus,
-      statusPollInterval,
-      backgroundUploadURLs,
-      backgroundUploadEncryptKey,
-      isMockClient,
-      flowPath,
-      startOverURL,
-      cancelURL,
-      csrf,
-    }),
-    [
-      upload,
-      getStatus,
-      statusPollInterval,
-      backgroundUploadURLs,
-      backgroundUploadEncryptKey,
-      isMockClient,
-      flowPath,
-      startOverURL,
-      cancelURL,
-      csrf,
-    ],
-  );
+  const value = useObjectMemo({
+    upload: uploadWithCSRF,
+    getStatus,
+    statusPollInterval,
+    backgroundUploadURLs,
+    backgroundUploadEncryptKey,
+    isMockClient,
+    flowPath,
+    csrf,
+  });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
 }

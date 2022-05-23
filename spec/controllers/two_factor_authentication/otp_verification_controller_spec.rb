@@ -31,6 +31,15 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(assigns(:code_value)).to be_nil
         end
       end
+
+      context 'when the user has an invalid phone number in the session' do
+        it 'redirects to homepage' do
+          controller.user_session[:phone_id] = 0
+
+          get :show, params: { otp_delivery_preference: 'sms' }
+          expect(response).to redirect_to new_user_session_path
+        end
+      end
     end
 
     it 'tracks the page visit and context' do
@@ -423,6 +432,40 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
           it 'resets context to authentication' do
             expect(subject.user_session[:context]).to eq 'authentication'
+          end
+        end
+
+        context 'Feature flag #select_multiple_mfa_options is true' do
+          let(:mfa_selections) { ['sms', 'backup_code'] }
+          before do
+            subject.user_session[:mfa_selections] = mfa_selections
+            allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
+
+            post(
+              :create,
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+              },
+            )
+          end
+
+          context 'multiple MFA options selected' do
+            it 'redirects to auth method confirmation with backup code next' do
+              expect(response).to redirect_to(
+                auth_method_confirmation_url(
+                  next_setup_choice: 'backup_code',
+                ),
+              )
+            end
+          end
+
+          context 'one MFA option selected' do
+            let(:mfa_selections) { ['sms'] }
+
+            it 'redirects to auth_confirmation page' do
+              expect(response).to redirect_to(auth_method_confirmation_url)
+            end
           end
         end
       end

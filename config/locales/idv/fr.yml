@@ -95,6 +95,7 @@ fr:
       id:
         need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
           actuel émis par l’état</strong>.
+        state_issue: Carte d’identité délivrée par l’État
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
@@ -167,6 +168,7 @@ fr:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
+      personal_key: Clé personnelle
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité

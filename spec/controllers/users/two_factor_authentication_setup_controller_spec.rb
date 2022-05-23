@@ -57,6 +57,7 @@ describe Users::TwoFactorAuthenticationSetupController do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
       stub_sign_in_before_2fa(user)
+      stub_analytics
 
       voice_params = {
         two_factor_options_form: {
@@ -74,6 +75,8 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(form).to receive(:selection).and_return(['voice'])
 
       patch :create, params: voice_params
+
+      expect(@analytics).to have_logged_event(Analytics::USER_REGISTRATION_2FA_SETUP, response.to_h)
     end
 
     it 'tracks analytics event' do
@@ -81,7 +84,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       result = {
-        selection: ['voice'],
+        selection: ['voice', 'auth_app'],
         success: true,
         errors: {},
       }
@@ -91,13 +94,14 @@ describe Users::TwoFactorAuthenticationSetupController do
 
       patch :create, params: {
         two_factor_options_form: {
-          selection: 'voice',
+          selection: ['voice', 'auth_app'],
         },
       }
     end
 
-    context 'when the selection is phone' do
-      it 'redirects to phone setup page' do
+    context 'when the selection is only phone and multi mfa is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
         stub_sign_in_before_2fa
 
         patch :create, params: {
@@ -105,8 +109,15 @@ describe Users::TwoFactorAuthenticationSetupController do
             selection: 'phone',
           },
         }
+      end
 
-        expect(response).to redirect_to phone_setup_url
+      it 'the redirect to the form page with an anchor' do
+        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
+      end
+      it 'contains a flash message' do
+        expect(flash[:phone_error]).to eq(
+          t('errors.two_factor_auth_setup.must_select_additional_option'),
+        )
       end
     end
 

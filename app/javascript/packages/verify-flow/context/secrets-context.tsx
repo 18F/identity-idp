@@ -1,18 +1,17 @@
-import { createContext, useContext, useEffect, useCallback, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode, Dispatch } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
-import { useIfStillMounted } from '@18f/identity-react-hooks';
-import { VerifyFlowValues } from '../verify-flow';
+import type { VerifyFlowValues } from '../verify-flow';
 
-type SecretValues = Partial<VerifyFlowValues>;
+export type SecretValues = Pick<VerifyFlowValues, 'userBundleToken' | 'personalKey'>;
 
-type SetItem = typeof SecretSessionStorage.prototype.setItem;
+type SetItems = typeof SecretSessionStorage.prototype.setItems;
 
 interface SecretsContextProviderProps {
   /**
-   * Encryption key.
+   * Secrets storage.
    */
-  storeKey: Uint8Array;
+  storage: SecretSessionStorage<SecretValues>;
 
   /**
    * Context provider children.
@@ -21,49 +20,62 @@ interface SecretsContextProviderProps {
 }
 
 /**
- * Web storage key.
+ * Minimal set of flow values to be synced to secret session storage.
  */
-const STORAGE_KEY = 'verify';
+const SYNCED_SECRET_VALUES = ['userBundleToken', 'personalKey'];
 
 const SecretsContext = createContext({
-  storage: new SecretSessionStorage<SecretValues>(STORAGE_KEY),
-  setItem: (async () => {}) as SetItem,
+  storage: new SecretSessionStorage<SecretValues>(''),
+  setItems: (async () => {}) as SetItems,
 });
 
-export function SecretsContextProvider({ storeKey, children }: SecretsContextProviderProps) {
-  const ifStillMounted = useIfStillMounted();
-  const storage = useMemo(() => new SecretSessionStorage<SecretValues>(STORAGE_KEY), []);
-  const [value, setValue] = useState({ storage, setItem: storage.setItem });
-  const onChange = useCallback(() => {
-    setValue({
-      storage,
-      async setItem(...args) {
-        await storage.setItem(...args);
-        onChange();
-      },
-    });
-  }, []);
+SecretsContext.displayName = 'SecretsContext';
 
+const pick = (obj: object, keys: string[]) =>
+  Object.fromEntries(keys.map((key) => [key, obj[key]]));
+
+const isStorageEqual = (values: object, nextValues: object) =>
+  Object.keys(nextValues).every((key) => values[key] === nextValues[key]);
+
+function useIdleCallbackEffect(callback: () => void, deps: any[]) {
   useEffect(() => {
-    crypto.subtle
-      .importKey('raw', storeKey, 'AES-GCM', true, ['encrypt', 'decrypt'])
-      .then((cryptoKey) => {
-        storage.key = cryptoKey;
-        storage.load().then(ifStillMounted(onChange));
-      });
-  }, []);
+    // Idle callback is implemented as a progressive enhancement in supported environments...
+    if (typeof requestIdleCallback === 'function') {
+      const callbackId = requestIdleCallback(callback);
+      return () => cancelIdleCallback(callbackId);
+    }
+
+    // ...where the fallback behavior is to invoke the callback synchronously.
+    callback();
+  }, deps);
+}
+
+export function SecretsContextProvider({ storage, children }: SecretsContextProviderProps) {
+  const [value, setValue] = useState({
+    storage,
+    async setItems(nextValues: SecretValues) {
+      await storage.setItems(nextValues);
+      setValue({ ...value });
+    },
+  });
 
   return <SecretsContext.Provider value={value}>{children}</SecretsContext.Provider>;
 }
 
-export function useSecretValue<K extends keyof SecretValues>(
-  key: K,
-): [SecretValues[K], (nextValue: SecretValues[K]) => void] {
-  const { storage, setItem } = useContext(SecretsContext);
+export function useSyncedSecretValues(
+  initialValues?: SecretValues,
+): [SecretValues, Dispatch<SecretValues>] {
+  const { storage, setItems } = useContext(SecretsContext);
+  const [values, setValues] = useState({ ...storage.getItems(), ...initialValues });
 
-  const setValue = (nextValue: SecretValues[K]) => setItem(key, nextValue);
+  useIdleCallbackEffect(() => {
+    const nextSecretValues: SecretValues = pick(values, SYNCED_SECRET_VALUES);
+    if (!isStorageEqual(storage.getItems(), nextSecretValues)) {
+      setItems(nextSecretValues);
+    }
+  }, [values]);
 
-  return [storage.getItem(key), setValue];
+  return [values, setValues];
 }
 
 export default SecretsContext;

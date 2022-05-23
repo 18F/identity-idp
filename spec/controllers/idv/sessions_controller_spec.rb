@@ -33,7 +33,7 @@ describe Idv::SessionsController do
       delete :destroy, params: { step: 'first', location: 'get_help' }
 
       expect(@analytics).to have_logged_event(
-        Analytics::IDV_START_OVER,
+        'IdV: start over',
         step: 'first',
         location: 'get_help',
       )
@@ -59,9 +59,8 @@ describe Idv::SessionsController do
         expect(cancel).to receive(:call)
 
         delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
-
         expect(@analytics).to have_logged_event(
-          Analytics::IDV_START_OVER,
+          'IdV: start over',
           step: 'gpo_verify',
           location: 'clear_and_start_over',
         )

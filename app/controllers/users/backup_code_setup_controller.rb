@@ -9,6 +9,7 @@ module Users
     before_action :ensure_backup_codes_in_session, only: %i[continue download refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
+    before_action :authorize_backup_code_disable, only: [:delete]
 
     def index; end
 
@@ -25,12 +26,7 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
-      next_mfa_setup_for_user = user_session.dig(
-        :selected_mfa_options,
-        determine_next_mfa_selection,
-      )
-      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
-                  after_mfa_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def download
@@ -94,6 +90,11 @@ module Users
 
     def generator
       @generator ||= BackupCodeGenerator.new(current_user)
+    end
+
+    def authorize_backup_code_disable
+      return if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      redirect_to account_two_factor_authentication_path
     end
   end
 end

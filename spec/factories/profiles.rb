@@ -25,7 +25,16 @@ FactoryBot.define do
 
     trait :with_pii do
       pii do
-        DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+        Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
+          ssn: DocAuthHelper::GOOD_SSN,
+          phone: '+1 (555) 555-1234',
+        )
+      end
+    end
+
+    trait :with_pii do
+      pii do
+        Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
           ssn: DocAuthHelper::GOOD_SSN,
           phone: '+1 (555) 555-1234',
         )

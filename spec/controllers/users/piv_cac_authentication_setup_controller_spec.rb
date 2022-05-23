@@ -94,59 +94,93 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         context 'when redirected with a good token' do
-          context 'with no additional MFAs chosen on setup' do
-            it 'redirects to account page' do
-              get :new, params: { token: good_token }
-              expect(response).to redirect_to(account_url)
+          context 'with multiple MFA options feature toggle on' do
+            let(:user) do
+              create(:user)
+            end
+            let(:mfa_selections) { ['piv_cac', 'voice'] }
+            before do
+              subject.user_session[:mfa_selections] = mfa_selections
+              allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
             end
 
-            it 'sets the piv/cac session information' do
-              get :new, params: { token: good_token }
-              json = {
-                'subject' => 'some dn',
-                'issuer' => nil,
-                'presented' => true,
-              }.to_json
+            context 'with no additional MFAs chosen on setup' do
+              let(:mfa_selections) { ['piv_cac'] }
+              it 'redirects to suggest 2nd MFA page' do
+                get :new, params: { token: good_token }
+                expect(response).to redirect_to(auth_method_confirmation_url)
+              end
 
-              expect(subject.user_session[:decrypted_x509]).to eq json
+              it 'sets the piv/cac session information' do
+                get :new, params: { token: good_token }
+                json = {
+                  'subject' => 'some dn',
+                  'issuer' => nil,
+                  'presented' => true,
+                }.to_json
+
+                expect(subject.user_session[:decrypted_x509]).to eq json
+              end
+
+              it 'sets the session to not require piv setup upon sign-in' do
+                get :new, params: { token: good_token }
+
+                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+              end
             end
 
-            it 'sets the session to not require piv setup upon sign-in' do
-              get :new, params: { token: good_token }
+            context 'with additional MFAs leftover' do
+              it 'redirects to Mfa Confirmation page' do
+                get :new, params: { token: good_token }
+                expect(response).to redirect_to(
+                  auth_method_confirmation_url(
+                    next_setup_choice: 'voice',
+                  ),
+                )
+              end
 
-              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+              it 'sets the piv/cac session information' do
+                get :new, params: { token: good_token }
+                json = {
+                  'subject' => 'some dn',
+                  'issuer' => nil,
+                  'presented' => true,
+                }.to_json
+
+                expect(subject.user_session[:decrypted_x509]).to eq json
+              end
+
+              it 'sets the session to not require piv setup upon sign-in' do
+                get :new, params: { token: good_token }
+
+                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+              end
             end
           end
 
-          context 'with additional MFAs leftover' do
-            before do
-              subject.user_session[:selected_mfa_options] = ['piv_cac', 'voice']
-              allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
-            end
-            it 'redirects to Mfa Confirmation page' do
-              get :new, params: { token: good_token }
-              expect(response).to redirect_to(
-                auth_method_confirmation_url(
-                  next_setup_choice: 'voice',
-                ),
-              )
-            end
+          context 'with multiple MFA options feature toggle off' do
+            context 'with no additional MFAs chosen on setup' do
+              it 'redirects to suggest account page' do
+                get :new, params: { token: good_token }
+                expect(response).to redirect_to(account_url)
+              end
 
-            it 'sets the piv/cac session information' do
-              get :new, params: { token: good_token }
-              json = {
-                'subject' => 'some dn',
-                'issuer' => nil,
-                'presented' => true,
-              }.to_json
+              it 'sets the piv/cac session information' do
+                get :new, params: { token: good_token }
+                json = {
+                  'subject' => 'some dn',
+                  'issuer' => nil,
+                  'presented' => true,
+                }.to_json
 
-              expect(subject.user_session[:decrypted_x509]).to eq json
-            end
+                expect(subject.user_session[:decrypted_x509]).to eq json
+              end
 
-            it 'sets the session to not require piv setup upon sign-in' do
-              get :new, params: { token: good_token }
+              it 'sets the session to not require piv setup upon sign-in' do
+                get :new, params: { token: good_token }
 
-              expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+                expect(subject.session[:needs_to_setup_piv_cac_after_sign_in]).to eq false
+              end
             end
           end
         end

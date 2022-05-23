@@ -91,6 +91,7 @@ es:
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
+        state_issue: Documento de identidad emitido por el Estado
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la
         información verificada, por favor, %{link}.
@@ -155,6 +156,7 @@ es:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
+      personal_key: Clave personal
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad

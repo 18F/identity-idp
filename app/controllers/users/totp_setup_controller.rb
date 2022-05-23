@@ -32,8 +32,9 @@ module Users
     end
 
     def disable
-      process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
-
+      if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+        process_successful_disable
+      end
       redirect_to account_two_factor_authentication_path
     end
 
@@ -79,12 +80,7 @@ module Users
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
-      next_mfa_setup_for_user = user_session.dig(
-        :selected_mfa_options,
-        determine_next_mfa_selection,
-      )
-      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
-                  after_mfa_setup_path
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def handle_remember_device

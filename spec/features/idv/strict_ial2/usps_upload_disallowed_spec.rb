@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Strict IAL2 with usps upload disallowed' do
+feature 'Strict IAL2 with usps upload disallowed', js: true do
   include IdvHelper
   include OidcAuthHelper
   include IdvHelper
@@ -64,10 +64,10 @@ feature 'Strict IAL2 with usps upload disallowed' do
     expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
 
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: user.password
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
 
     expect(current_url).to start_with('http://localhost:7654/auth/result')

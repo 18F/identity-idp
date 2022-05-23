@@ -104,12 +104,7 @@ module Users
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       final_path = after_sign_in_path_for(current_user)
-      next_mfa_setup_for_user = user_session.dig(
-        :selected_mfa_options,
-        determine_next_mfa_selection,
-      )
-      redirect_to user_next_authentication_setup_path(next_mfa_setup_for_user) ||
-                  final_path
+      redirect_to next_setup_path || final_path
     end
 
     def piv_cac_enabled?
@@ -127,7 +122,9 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      return if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
+      if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+        return
+      end
       redirect_to account_two_factor_authentication_path
     end
 

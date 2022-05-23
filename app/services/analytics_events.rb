@@ -584,6 +584,75 @@ module AnalyticsEvents
     )
   end
 
+  # User visited forgot password page
+  def idv_forgot_password
+    track_event('IdV: forgot password visited')
+  end
+
+  # User confirmed forgot password
+  def idv_forgot_password_confirmed
+    track_event('IdV: forgot password confirmed')
+  end
+
+  # GPO address letter requested
+  def idv_gpo_address_letter_requested
+    track_event('IdV: USPS address letter requested')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # GPO address submitted
+  def idv_gpo_address_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: USPS address submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO address visited
+  def idv_gpo_address_visited(
+    letter_already_sent:,
+    **extra
+  )
+  track_event(
+    'IdV: USPS address visited',
+    letter_already_sent: letter_already_sent,
+    **extra,
+  )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # GPO verification submitted
+  def idv_gpo_verification_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # User visits IdV
+  def idv_intro_visit
+    track_event('IdV: intro visited')
+  end
+
   # @param [Boolean] success
   # Tracks the last step of IDV, indicates the user successfully prooved
   def idv_final(
@@ -607,7 +676,6 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
-  # @deprecated
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
@@ -804,6 +872,118 @@ module AnalyticsEvents
         otp_delivery_preference: otp_delivery_preference,
         **extra,
       }.compact,
+    )
+  end
+
+  # User visited idv phone of record
+  def idv_phone_of_record_visited
+    track_event('IdV: phone of record visited')
+  end
+
+  # User visited idv phone OTP delivery selection
+  def idv_phone_otp_delivery_selection_visit
+    track_event('IdV: Phone OTP delivery Selection Visited')
+  end
+
+  # @param [String] step the step the user was on when they clicked use a different phone number
+  # User decided to use a different phone number in idv
+  def idv_phone_use_different(step:, **extra)
+    track_event(
+      'IdV: use different phone number',
+      step: step,
+      **extra,
+    )
+  end
+
+  # User completed idv
+  def idv_review_complete
+    track_event('IdV: review complete')
+  end
+
+  # User visited idv phone of record
+  def idv_review_info_visited
+    track_event('IdV: review info visited')
+  end
+
+  # @param [String] step
+  # @param [String] location
+  # User started over idv
+  def idv_start_over(
+    step:,
+    location:,
+    **extra
+  )
+    track_event(
+      'IdV: start over',
+      step: step,
+      location: location,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a backup code as their MFA
+  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter backup code visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a personal key as their mfa (legacy flow)
+  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter personal key visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["piv_cac"] multi_factor_auth_method
+  # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
+  # User used a PIV/CAC as their mfa
+  def multi_factor_auth_enter_piv_cac(
+    context:,
+    multi_factor_auth_method:,
+    piv_cac_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter PIV CAC visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      piv_cac_configuration_id: piv_cac_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a TOTP as their mfa
+  def multi_factor_auth_enter_totp_visit(context:, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
+  # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+  # authenticator like face or touch ID
+  # @param [Integer, nil] webauthn_configuration_id webauthn database ID
+  # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
+  def multi_factor_auth_enter_webauthn_visit(
+    context:,
+    multi_factor_auth_method:,
+    webauthn_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter webAuthn authentication visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
     )
   end
 
@@ -1007,6 +1187,44 @@ module AnalyticsEvents
         **extra,
       }.compact,
     )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted additional MFA methods on user registration
+  def user_registration_2fa_additional_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: Additional 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits additional MFA selection page
+  def user_registration_2fa_additional_setup_visit
+    track_event('User Registration: Additional 2FA Setup visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted MFA auth methods on user registration
+  def user_registration_2fa_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits MFA selection page
+  def user_registration_2fa_setup_visit
+    track_event('User Registration: 2FA Setup visited')
   end
 end
 # rubocop:enable Metrics/ModuleLength

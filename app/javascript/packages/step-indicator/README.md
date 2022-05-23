@@ -6,10 +6,10 @@ Custom element and React implementation for a step indicator UI component.
 
 ### Custom Element
 
-Importing the package will register the `<lg-step-indicator>` custom element:
+Importing the element will register the `<lg-step-indicator>` custom element:
 
 ```ts
-import '@18f/identity-step-indicator';
+import '@18f/identity-step-indicator/step-indicator-element';
 ```
 
 The custom element will implement the small viewport scroll behavior, but all markup must already exist, rendered server-side or by the included React component.

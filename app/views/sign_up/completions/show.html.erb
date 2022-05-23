@@ -28,7 +28,7 @@
   <%= render(AlertComponent.new(type: :warning, class: 'margin-bottom-4')) do %>
     <%= link_to(
           t('mfa.second_method_warning.link'),
-          two_factor_options_url(multiple_mfa_setup: ''),
+          second_mfa_setup_path,
         ) %>
     <%= t('mfa.second_method_warning.text') %>
   <% end %>
