@@ -31,9 +31,12 @@ module Idv
       end
 
       def enqueue_job
-        verify_document_capture_session = hybrid_flow_mobile? ?
-          document_capture_session :
-          create_document_capture_session(verify_document_capture_session_uuid_key)
+        verify_document_capture_session =
+          if hybrid_flow_mobile?
+            document_capture_session
+          else
+            create_document_capture_session(verify_document_capture_session_uuid_key)
+          end
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
 
