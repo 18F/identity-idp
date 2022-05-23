@@ -69,9 +69,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'does not submit the phone when selected as the first single option' do
-          result = subject.submit(selection: ['phone'])
+        result = subject.submit(selection: ['phone'])
 
-          expect(result.success?).to eq false
+        expect(result.success?).to eq false
       end
     end
 
