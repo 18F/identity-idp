@@ -3,7 +3,7 @@ en:
   in_person_proofing:
     headings:
       address: Enter your current address
-      barcode: You're ready to verify your identity in person
+      barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
       password_confirm: Re-enter your Login.gov password to protect your data
       personal_key: Save your personal key
