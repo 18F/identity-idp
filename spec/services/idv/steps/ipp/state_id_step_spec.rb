@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Idv::Steps::Ipp::StateIdStep do
-  include Rails.application.routes.url_helpers
-
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do
