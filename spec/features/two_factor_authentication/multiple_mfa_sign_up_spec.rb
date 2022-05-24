@@ -68,8 +68,6 @@ feature 'Multi Two Factor Authentication' do
     end
   end
 
-<<<<<<< HEAD
-=======
   describe 'user attempts to submit with only the phone MFA method selected', js: true do
     before do
       sign_in_before_2fa
@@ -98,7 +96,6 @@ feature 'Multi Two Factor Authentication' do
     end
   end
 
->>>>>>> origin/main
   def click_2fa_option(option)
     find("label[for='two_factor_options_form_selection_#{option}']").click
   end
