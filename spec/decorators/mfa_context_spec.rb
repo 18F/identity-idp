@@ -386,11 +386,11 @@ describe MfaContext do
 
     context 'with a phone and a personal key' do
       it 'returns 1' do
-         allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(false)
-         user = create(:user, :with_phone, :with_personal_key)
-         subject = described_class.new(user.reload)
+        allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(false)
+        user = create(:user, :with_phone, :with_personal_key)
+        subject = described_class.new(user.reload)
 
-         expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
+        expect(subject.enabled_non_restricted_mfa_methods_count).to eq(1)
       end
     end
 
