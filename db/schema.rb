@@ -177,6 +177,7 @@ ActiveRecord::Schema.define(version: 2022_05_17_103312) do
     t.datetime "back_image_submit_at"
     t.datetime "capture_mobile_back_image_submit_at"
     t.datetime "mobile_back_image_submit_at"
+    t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
