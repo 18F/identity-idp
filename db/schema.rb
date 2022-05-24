@@ -516,7 +516,6 @@ ActiveRecord::Schema.define(version: 2022_05_17_103312) do
     t.boolean "allow_prompt_login", default: false
     t.integer "ial2_quota"
     t.boolean "signed_response_message_requested", default: false
-    t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
     t.date "launch_date"
     t.string "iaa"
