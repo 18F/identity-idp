@@ -18,12 +18,16 @@ module TwoFactorAuthentication
           t('two_factor_authentication.two_factor_choice_options.phone_info')
     end
 
+    def mfa_configuration_count
+      user.phone_configurations.count
+    end
+
     def security_level
       t('two_factor_authentication.two_factor_choice_options.less_secure_label')
     end
 
     def disabled?
-      VendorStatus.new.all_phone_vendor_outage?
+      VendorStatus.new.all_phone_vendor_outage? || user&.phone_configurations&.any?
     end
   end
 end

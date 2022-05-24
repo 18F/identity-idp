@@ -218,10 +218,12 @@ Rails.application.routes.draw do
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
+    get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
+    patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
     get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
-    get '/mfa_setup' => 'users/mfa_selection#index'
-    patch '/mfa_setup' => 'users/mfa_selection#update'
+    get '/second_mfa_setup' => 'users/mfa_selection#index'
+    patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/aal3_required' => 'users/aal3#show'
@@ -239,9 +241,6 @@ Rails.application.routes.draw do
 
     get '/piv_cac_delete' => 'users/piv_cac_setup#confirm_delete'
     get '/auth_app_delete' => 'users/totp_setup#confirm_delete'
-
-    get '/second_mfa_setup' => 'users/mfa_selection#index'
-    patch '/second_mfa_setup' => 'users/mfa_selection#create'
 
     get '/profile', to: redirect('/account')
     get '/profile/reactivate', to: redirect('/account/reactivate')
@@ -330,10 +329,11 @@ Rails.application.routes.draw do
     end
 
     get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
-    get '/verify/v2/password_confirm/forgot_password' => 'verify#show'
+    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
 
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
+      post '/verify/v2/password_reset' => 'verify/password_reset#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

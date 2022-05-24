@@ -123,6 +123,7 @@ module SamlIdpAuthConcern
       ial: requested_ial_authn_context,
       service_provider: saml_request_service_provider,
       authn_context_comparison: saml_request.requested_authn_context_comparison,
+      user: current_user,
     )
   end
 

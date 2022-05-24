@@ -62,5 +62,30 @@ describe TwoFactorOptionsForm do
         subject.submit(selection: 'auth_app')
       end
     end
+
+    context 'when phone is selected as their first authentication method' do
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      end
+
+      it 'does not submit the phone when selected as the first single option' do
+          result = subject.submit(selection: ['phone'])
+
+          expect(result.success?).to eq false
+      end
+    end
+
+    context 'when a user wants to select phone as their second authentication method' do
+      let(:user) { create(:user, :with_authentication_app) }
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      end
+
+      it 'submits the form' do
+          result = subject.submit(selection: ['phone'])
+
+          expect(result.success?).to eq true
+      end
+    end
   end
 end

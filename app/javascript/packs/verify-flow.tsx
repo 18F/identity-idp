@@ -40,11 +40,6 @@ interface AppRootValues {
   storeKey: string;
 
   /**
-   * URL for reset password page in rails used for redirect
-   */
-  resetPasswordUrl: string;
-
-  /**
    * Signed JWT containing user data.
    */
   userBundleToken: string;
@@ -62,7 +57,6 @@ const {
   startOverUrl: startOverURL,
   cancelUrl: cancelURL,
   completionUrl: completionURL,
-  resetPasswordUrl,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -106,7 +100,6 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         enabledStepNames={enabledStepNames}
         startOverURL={startOverURL}
         cancelURL={cancelURL}
-        resetPasswordUrl={resetPasswordUrl}
         basePath={basePath}
         onComplete={onComplete}
       />

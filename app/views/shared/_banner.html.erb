@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="usa-banner__content usa-accordion__content" id="gov-banner">
-        <%= backwards_compatible_javascript_tag do %>
+        <%= javascript_tag(nonce: true) do %>
           document.getElementById('gov-banner').setAttribute('hidden', '');
         <% end %>
         <div class="grid-row grid-gap-lg">

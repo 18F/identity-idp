@@ -25,11 +25,11 @@ class PhoneConfiguration < ApplicationRecord
     capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
 
     if capabilities.supports_sms?
-      options << TwoFactorAuthentication::SmsSelectionPresenter.new(self)
+      options << TwoFactorAuthentication::SmsSelectionPresenter.new(configuration: self)
     end
 
     if capabilities.supports_voice?
-      options << TwoFactorAuthentication::VoiceSelectionPresenter.new(self)
+      options << TwoFactorAuthentication::VoiceSelectionPresenter.new(configuration: self)
     end
 
     options

@@ -1,4 +1,3 @@
-import 'clipboard-polyfill/overwrite-globals'; // See: https://github.com/jsdom/jsdom/issues/1568
 import sinon from 'sinon';
 import { getByRole } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';

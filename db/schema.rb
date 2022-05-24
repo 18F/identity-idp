@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_22_193820) do
+ActiveRecord::Schema.define(version: 2022_05_17_103312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -174,7 +174,9 @@ ActiveRecord::Schema.define(version: 2022_04_22_193820) do
     t.integer "verify_phone_submit_count", default: 0
     t.datetime "verify_phone_submit_at"
     t.datetime "document_capture_submit_at"
-    t.index ["issuer"], name: "index_doc_auth_logs_on_issuer"
+    t.datetime "back_image_submit_at"
+    t.datetime "capture_mobile_back_image_submit_at"
+    t.datetime "mobile_back_image_submit_at"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end

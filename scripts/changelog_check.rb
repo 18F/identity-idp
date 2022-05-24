@@ -8,6 +8,12 @@ CATEGORIES = [
   'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
 ]
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
+DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
+SECURITY_CHANGELOG = {
+  category: 'Internal',
+  subcategory: 'Dependencies',
+  change: 'Update dependencies to resolve security advisories',
+}.freeze
 
 SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
 ChangelogEntry = Struct.new(:category, :subcategory, :change, :pr_number, keyword_init: true)
@@ -15,12 +21,18 @@ ChangelogEntry = Struct.new(:category, :subcategory, :change, :pr_number, keywor
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 def build_changelog(line)
-  CHANGELOG_REGEX.match(line)
+  if line == DEPENDABOT_COMMIT_MESSAGE
+    SECURITY_CHANGELOG
+  else
+    CHANGELOG_REGEX.match(line)
+  end
 end
 
 def build_changelog_from_commit(commit)
-  commit.commit_messages.reverse.map { |message| build_changelog(message) }.compact.first ||
-    build_changelog(commit.title)
+  [*commit.commit_messages, commit.title].
+    lazy.
+    map { |message| build_changelog(message) }.
+    find(&:itself)
 end
 
 def get_git_log(base_branch, source_branch)
@@ -215,6 +227,8 @@ def main(args)
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}
 
         Include "[skip changelog]" in a commit message to bypass this check.
+
+        Note: the changelog message must be separated from any other commit message by a blank line.
       ERROR
     )
 
