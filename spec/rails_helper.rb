@@ -67,9 +67,14 @@ RSpec.configure do |config|
   end
 
   if !ENV['CI']
-    config.before(:all, js: true) do
-      puts 'Bundling JavaScript...'
-      system 'make public/packs/manifest.json'
+    config.before(js: true) do
+      # rubocop:disable Style/GlobalVars
+      next if defined?($ran_asset_build)
+      $ran_asset_build = true
+      # rubocop:enable Style/GlobalVars
+      puts 'Bundling JavaScript and stylesheets...'
+      system 'WEBPACK_PORT= yarn build'
+      system 'yarn build:css'
     end
   end
 

@@ -60,12 +60,12 @@ def build_structured_git_log(git_log)
       commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
     end
   }.map do |title_and_commit_messages|
-      title = title_and_commit_messages.first.first.delete_prefix('title: ')
-      messages = title_and_commit_messages[1]
-      SquashedCommit.new(
-        title: title,
-        commit_messages: messages,
-      )
+    title = title_and_commit_messages.first.first.delete_prefix('title: ')
+    messages = title_and_commit_messages[1]
+    SquashedCommit.new(
+      title: title,
+      commit_messages: messages,
+    )
   end
 end
 
