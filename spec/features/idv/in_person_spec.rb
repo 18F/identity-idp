@@ -4,7 +4,7 @@ RSpec.describe 'In Person Proofing' do
   include DocAuthHelper
   include IdvHelper
 
-  it 'works for a happy path', js: true do
+  it 'works for a happy path', js: true, allow_browser_log: true do
     sign_in_and_2fa_user
 
     # welcome step
@@ -76,7 +76,8 @@ RSpec.describe 'In Person Proofing' do
       yml_file.rewind
       yml_file.puts <<~YAML
         failed_alerts:
-        - name: Some Made Up Error
+          - name: Document Classification
+            result: Attention
       YAML
       yml_file.close
 
