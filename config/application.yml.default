@@ -109,7 +109,6 @@ irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
-kantara_currently_required: false
 kantara_2fa_phone_restricted: false
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
