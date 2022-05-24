@@ -140,12 +140,12 @@ describe 'accounts/show.html.erb' do
     end
 
     it 'renders the link to continue to the SP' do
-        render
+      render
 
-        expect(rendered).to have_link(
-          t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
-          href: sp.return_to_sp_url,
-        )
+      expect(rendered).to have_link(
+        t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
+        href: sp.return_to_sp_url,
+      )
     end
   end
 end
