@@ -8,13 +8,13 @@ module Idv
         state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
         ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
         verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
-        # TODO: add the failure branch for verify step
-        # TODO: add the verify by mail flow
+        # WILLFIX: add the failure branch for verify step
+        # WILLFIX: add the verify by mail flow
         phone: Idv::Steps::Ipp::PhoneStep, # phone finder
-        # TODO: add the failure branch for phone step
-        # TODO: re-use existing password confirm step
+        # WILLFIX: add the failure branch for phone step
+        # WILLFIX: re-use existing password confirm step
         password_confirm: Idv::Steps::Ipp::PasswordConfirmStep,
-        # TODO: re-use existing personal key step
+        # WILLFIX: re-use existing personal key step
         personal_key: Idv::Steps::Ipp::PersonalKeyStep,
         barcode: Idv::Steps::Ipp::BarcodeStep,
       }.freeze

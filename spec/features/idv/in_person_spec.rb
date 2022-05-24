@@ -22,8 +22,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('idv.troubleshooting.options.verify_in_person'), wait: 60)
 
     # start the IPP flow
-    # TODO: temporarily block the "Leave site?" pop-up from appearing; this can be removed
-    #       when LG-6406 is resolved.
+    # WILLFIX: temporarily block the "Leave site?" pop-up from appearing; this can be removed
+    #          when LG-6406 is resolved.
     execute_script 'window.onbeforeunload = undefined;'
     click_link t('idv.troubleshooting.options.verify_in_person')
 
