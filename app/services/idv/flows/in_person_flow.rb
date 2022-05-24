@@ -38,10 +38,6 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
       end
-
-      # def flow_session
-      #   {}
-      # end
     end
   end
 end
