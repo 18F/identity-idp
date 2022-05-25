@@ -54,12 +54,12 @@ describe Users::BackupCodeSetupController do
     end
 
     context 'when user selects multiple mfas on account creation' do
-      it 'redirects to MFA confirmation page' do
+      it 'redirects to Phone Url Page after page' do
         codes = BackupCodeGenerator.new(@user).create
         controller.user_session[:backup_codes] = codes
         post :continue
 
-        expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+        expect(response).to redirect_to(phone_setup_url)
       end
     end
 

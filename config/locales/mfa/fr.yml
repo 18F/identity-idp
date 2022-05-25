@@ -1,21 +1,9 @@
 ---
 fr:
   mfa:
-    account_info:
-      one: L’ajout d’une autre méthode d’authentification vous empêche d’être bloqué
-        sur votre compte si vous perdez l’une de vos méthodes.
-      other: Félicitations! Vous faites très bien d’assurer la sécurité de votre
-        compte. Ajoutez de nouveaux appareils pour rester à jour.
+    account_info: L’ajout d’une autre méthode d’authentification vous empêche d’être
+      bloqué sur votre compte si vous perdez l’une de vos méthodes.
     add: Agregar otro método
-    current_method_count:
-      - premiere
-      - deuxième
-      - troisième
-      - quatrième
-      - cinquième
-      - sixième
-      - septième
-      - huitième
     info: Nous vous recommandons de sélectionner au moins (2) deux méthodes
       différentes afin d’avoir une sauvegarde si vous perdez l’un de vos
       dispositifs d’authentification choisis.

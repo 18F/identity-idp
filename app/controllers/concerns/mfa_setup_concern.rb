@@ -3,16 +3,18 @@ module MfaSetupConcern
 
   def next_setup_path
     if user_needs_confirmation_screen?
-      auth_method_confirmation_url(next_setup_choice: next_setup_choice)
+      auth_method_confirmation_url
+    elsif next_setup_choice
+      confirmation_path
     else
       user_session.delete(:mfa_selections)
       nil
     end
   end
 
-  def confirmation_path(next_mfa_selection_choice)
-    user_session[:next_mfa_selection_choice] = next_mfa_selection_choice
-    case next_mfa_selection_choice
+  def confirmation_path(next_mfa_selection_choice = nil)
+    user_session[:next_mfa_selection_choice] = next_mfa_selection_choice || next_setup_choice
+    case user_session[:next_mfa_selection_choice]
     when 'voice', 'sms', 'phone'
       phone_setup_url
     when 'auth_app'
@@ -36,12 +38,12 @@ module MfaSetupConcern
   end
 
   def user_needs_confirmation_screen?
-    (next_setup_choice.present? || suggest_second_mfa?) &&
+    suggest_second_mfa? &&
       IdentityConfig.store.select_multiple_mfa_options
   end
 
   def suggest_second_mfa?
-    MfaContext.new(current_user).enabled_mfa_methods_count < 2
+    current_mfa_selection_count < 2 && MfaContext.new(current_user).enabled_mfa_methods_count < 2
   end
 
   def current_mfa_selection_count
