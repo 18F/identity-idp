@@ -14,7 +14,7 @@ module TwoFactorAuthentication
 
     def info
       IdentityConfig.store.select_multiple_mfa_options &&
-      MfaContext.new(user).enabled_mfa_methods_count == 0 ?
+        MfaContext.new(user).enabled_mfa_methods_count == 0 ?
           t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
           t('two_factor_authentication.two_factor_choice_options.phone_info')
     end
