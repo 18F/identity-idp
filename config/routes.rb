@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 
-  get '/no_js/css' => 'no_js#css'
+  get '/no_js/track.css' => 'no_js#index', as: :no_js_track_session_css
 
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
