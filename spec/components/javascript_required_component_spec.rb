@@ -47,5 +47,13 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
     it 'renders alert confirming successful enabling of JS' do
       expect(rendered).to have_content(t('components.javascript_required.enabled_alert'))
     end
+
+    it 'only renders the alert once' do
+      rendered
+
+      second_rendered = render_inline described_class.new(header: header)
+
+      expect(second_rendered).not_to have_content(t('components.javascript_required.enabled_alert'))
+    end
   end
 end
