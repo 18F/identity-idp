@@ -56,7 +56,7 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # password confirm page
-    expect(page).to have_content(t('in_person_proofing.headings.password_confirm'))
+    expect(page).to have_content(t('in_person_proofing.headings.password_confirm', app_name: APP_NAME))
     click_idv_continue
 
     # personal key page
