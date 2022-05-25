@@ -4,9 +4,9 @@ es:
     account_info: Agregar otro método de autenticación evita que se le bloquee el
       acceso a su cuenta si pierde uno de sus métodos.
     add: Agregar otro método
-    info: Le recomendamos que seleccione al menos (2) dos métodos diferentes para
-      tener una copia de seguridad si pierde uno de los dispositivos de
-      autenticación elegidos.
+    info: Agregue otro nivel de seguridad seleccionando un método de autentificación
+      de varios factores. Le recomendamos seleccionar al menos dos opciones
+      diferentes en caso de que pierda uno de los métodos.
     second_method_warning:
       link: Agregue un segundo método de autenticación.
       text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
