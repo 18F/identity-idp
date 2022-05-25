@@ -135,7 +135,7 @@ en:
       least_secure_label: Least secure
       less_secure_label: Less secure
       more_secure_label: More Secure
-      phone: Text or Voice Message
+      phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>You
         need to select another method in addition to this one.</strong>
