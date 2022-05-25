@@ -51,6 +51,10 @@ class TwoFactorOptionsForm
     MfaContext.new(user).enabled_mfa_methods_count == 0
   end
 
+  def kantara_2fa_phone_restricted?
+    IdentityConfig.store.kantara_2fa_phone_restricted
+  end
+
   def phone_alternative_enabled?
     count = MfaContext.new(user).enabled_mfa_methods_count
     count >= 2 || (count == 1 && MfaContext.new(user).phone_configurations.none?)
@@ -59,6 +63,6 @@ class TwoFactorOptionsForm
   def phone_validations?
     IdentityConfig.store.select_multiple_mfa_options &&
       phone_selected? && phone_only_mfa_method? &&
-      !phone_alternative_enabled?
+      !phone_alternative_enabled? && kantara_2fa_phone_restricted?
   end
 end
