@@ -117,14 +117,14 @@ en:
         your %{app_name} account.
       confirm: Are you sure you want to remove your security key?
     webauthn_platform_delete:
-      caution: If you remove Face or Touch Unlock you won’t be able to use it to
+      caution: If you remove face or touch unlock you won’t be able to use it to
         access your %{app_name} account.
-      confirm: Are you sure you want to remove Face or Touch Unlock?
+      confirm: Are you sure you want to remove face or touch unlock?
     webauthn_platform_setup:
       continue: Continue
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
-      intro: Enable Face or Touch Unlock as an authentication method on this device.
+      intro: Enable face or touch unlock as an authentication method on this device.
         You’ll need this device to use this method in the future. Start by
         giving your device a nickname.
       login_text: 'When you are ready, press the button:'
