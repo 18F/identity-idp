@@ -349,5 +349,18 @@ RSpec.describe DocumentProofingJob, type: :job do
         perform
       end
     end
+
+    context 'with jpg file body' do
+      let(:body) { DocAuthImageFixtures.document_front_image }
+
+      it 'decrypts the image correctly' do
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).
+          with(hash_including(front_image: DocAuthImageFixtures.document_front_image.b)).
+          and_call_original
+
+        perform
+      end
+    end
   end
 end
