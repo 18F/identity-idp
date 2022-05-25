@@ -3,14 +3,13 @@ en:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Backup codes are not very safe</strong> because they can
-          easily be lost or stolen. <strong>If you can, choose a different
-          method</strong> (use a phone, download an authentication application,
-          or use a security key).
-        - <strong>If you continue with backup codes, keep them safe</strong>.
-          We’ll give you 10 codes that you can download, print, copy or write
-          down. Later, you’ll have to enter one every time you sign in.
-      are_you_sure_title: Are you sure?  We’ll give you backup codes to save and use.
+        - <strong>Backup codes are the least preferred authentication
+          method</strong> because the codes can easily be lost. We encourage you
+          to explore other authentication options such as face or touch unlock,
+          an authentication application, or a security key.
+        - We’ll give you 10 codes that you can download, print, copy or write
+          down. You’ll enter one code every time you sign in.
+      are_you_sure_title: Are you sure you want to use backup codes?
       caution_delete: If you delete your backup codes you will no longer be able to
         use them to sign in.
       confirm_delete: Are you sure you want to delete your backup codes?

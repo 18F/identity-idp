@@ -167,7 +167,7 @@ else
       },
       # Upload list of verification errors to S3
       verification_errors_report: {
-        class: 'Reports::VerificationErrorsReport',
+        class: 'Reports::VerificationFailuresReport',
         cron: cron_24h,
         args: -> { [Time.zone.today] },
       },

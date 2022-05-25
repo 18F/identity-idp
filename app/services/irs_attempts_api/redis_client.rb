@@ -23,7 +23,8 @@ module IrsAttemptsApi
 
     def read_events(count = 1000)
       redis_pool.with do |client|
-        keys = client.scan(0, count: count).last
+        keys = client.scan(0, count: count).last.first(count)
+        next {} if keys.empty?
         client.mapped_mget(*keys)
       end
     end

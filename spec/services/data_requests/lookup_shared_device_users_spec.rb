@@ -21,9 +21,7 @@ describe DataRequests::LookupSharedDeviceUsers do
 
       result = subject.call
 
-      expect(result.keys.length).to eq(2)
-      expect(result[cookie_uuid1]).to match_array([user1, user2].map(&:uuid))
-      expect(result[cookie_uuid2]).to match_array([user2, user3].map(&:uuid))
+      expect(result).to match_array([user1, user2, user3])
     end
   end
 end

@@ -34,6 +34,12 @@ describe('PasswordToggle', () => {
     expect(container.querySelector('.password-toggle--toggle-bottom')).to.exist();
   });
 
+  it('applies custom class to wrapper element', () => {
+    const { container } = render(<PasswordToggle label="Input" className="my-custom-class" />);
+
+    expect(container.querySelector('lg-password-toggle.my-custom-class')).to.exist();
+  });
+
   it('passes additional props to underlying text input', () => {
     const type = 'password';
     const { getByLabelText } = render(<PasswordToggle label="Input" type={type} />);

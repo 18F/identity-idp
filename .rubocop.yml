@@ -188,7 +188,10 @@ Layout/IndentationConsistency:
 
 Layout/IndentationStyle:
   Enabled: true
-  IndentationWidth: null
+
+Layout/IndentationWidth:
+  Enabled: true
+
 Layout/InitialIndentation:
   Enabled: true
 
@@ -595,9 +598,6 @@ Lint/UriRegexp:
   Enabled: true
 
 Lint/UselessAssignment:
-  Enabled: true
-
-Lint/UselessElseWithoutRescue:
   Enabled: true
 
 Lint/UselessSetterCall:

@@ -17,6 +17,12 @@ class MfaPolicy
     mfa_user.enabled_mfa_methods_count > 1
   end
 
+  def multiple_non_restricted_factors_enabled?
+    IdentityConfig.store.select_multiple_mfa_options ?
+      mfa_user.enabled_non_restricted_mfa_methods_count > 1 :
+      multiple_factors_enabled?
+  end
+
   def unphishable?
     mfa_user.phishable_configuration_count.zero? &&
       mfa_user.unphishable_configuration_count.positive?

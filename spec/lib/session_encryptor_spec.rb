@@ -100,7 +100,7 @@ RSpec.describe SessionEncryptor do
 
         ciphertext = subject.dump(session)
 
-        partially_decrypted = subject.outer_encryptor.decrypt(ciphertext.split(':').last)
+        partially_decrypted = subject.outer_decrypt(ciphertext.split(':').last)
         partially_decrypted_json = JSON.parse(partially_decrypted)
 
         expect(partially_decrypted_json.fetch('warden.user.user.session')['idv']).to eq nil

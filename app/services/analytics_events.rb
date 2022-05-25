@@ -621,11 +621,11 @@ module AnalyticsEvents
     letter_already_sent:,
     **extra
   )
-  track_event(
-    'IdV: USPS address visited',
-    letter_already_sent: letter_already_sent,
-    **extra,
-  )
+    track_event(
+      'IdV: USPS address visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name Account verification submitted
@@ -921,6 +921,26 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [String] set_errors JSON encoded representation of SET errors from the client
+  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
+  # new set of events
+  def irs_attempts_api_events(
+    acknowledged_event_count:,
+    rendered_event_count:,
+    set_errors:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Events submitted',
+      acknowledged_event_count: acknowledged_event_count,
+      rendered_event_count: rendered_event_count,
+      set_errors: set_errors,
+      **extra,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
@@ -983,6 +1003,58 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user updated their password
+  def password_changed(success:, errors:, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra)
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user added a password after verifying their email for account creation
+  def password_creation(success:, errors:, **extra)
+    track_event('Password Creation', success: success, errors: errors, **extra)
+  end
+
+  # The user got their password incorrect the max number of times, their session was terminated
+  def password_max_attempts
+    track_event('Password Max Attempts Reached')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
+  # confirmed email
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  # active proofed profile
+  # The user entered an email address to request a password reset
+  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
+    track_event(
+      'Password Reset: Email Submitted',
+      success: success,
+      errors: errors,
+      confirmed: confirmed,
+      active_profile: active_profile,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
+  # (the user will need to use their personal key to reactivate their profile)
+  # The user changed the password for their account via the paswword reset flow
+  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
+    track_event(
+      'Password Reset: Password Submitted',
+      success: success,
+      errors: errors,
+      profile_deactivated: profile_deactivated,
       **extra,
     )
   end

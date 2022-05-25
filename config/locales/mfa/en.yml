@@ -1,11 +1,8 @@
 ---
 en:
   mfa:
-    account_info:
-      one: Adding another authentication method prevents you from getting locked out
-        of your account if you lose one of your methods.
-      other: Congratulations! You are doing very well to keep your account secure. Add
-        new devices to stay up to date.
+    account_info: Adding another authentication method prevents you from getting
+      locked out of your account if you lose one of your methods.
     add: Add another method
     current_method_count:
       - first

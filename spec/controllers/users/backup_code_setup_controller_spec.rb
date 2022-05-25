@@ -24,14 +24,24 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deletes backup codes' do
-    user = build(:user, :signed_up)
+    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
-    expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+    expect(user.backup_code_configurations.length).to eq 10
+
     post :delete
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
     expect(user.backup_code_configurations.length).to eq 0
+  end
+
+  it 'does not deletes backup codes if they are the only mfa' do
+    user = build(:user, :with_backup_code)
+    stub_sign_in(user)
+
+    post :delete
+
+    expect(response).to redirect_to(account_two_factor_authentication_path)
+    expect(user.backup_code_configurations.length).to eq 10
   end
 
   context 'with multiple MFA selection on' do
@@ -44,12 +54,12 @@ describe Users::BackupCodeSetupController do
     end
 
     context 'when user selects multiple mfas on account creation' do
-      it 'redirects to MFA confirmation page' do
+      it 'redirects to Phone Url Page after page' do
         codes = BackupCodeGenerator.new(@user).create
         controller.user_session[:backup_codes] = codes
         post :continue
 
-        expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+        expect(response).to redirect_to(phone_setup_url)
       end
     end
 
@@ -65,14 +75,14 @@ describe Users::BackupCodeSetupController do
   end
 
   context 'with multiple MFA selection turned off' do
-      it 'redirects to account page' do
-        user = build(:user, :signed_up)
-        stub_sign_in(user)
-        codes = BackupCodeGenerator.new(user).create
-        controller.user_session[:backup_codes] = codes
-        post :continue
-        expect(response).to redirect_to(account_url)
-      end
+    it 'redirects to account page' do
+      user = build(:user, :signed_up)
+      stub_sign_in(user)
+      codes = BackupCodeGenerator.new(user).create
+      controller.user_session[:backup_codes] = codes
+      post :continue
+      expect(response).to redirect_to(account_url)
+    end
   end
 
   describe '#refreshed' do

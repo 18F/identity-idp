@@ -451,12 +451,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           context 'multiple MFA options selected' do
-            it 'redirects to auth method confirmation with backup code next' do
-              expect(response).to redirect_to(
-                auth_method_confirmation_url(
-                  next_setup_choice: 'backup_code',
-                ),
-              )
+            it 'redirects to next mfa method with backup code next' do
+              expect(response).to redirect_to(backup_code_setup_url)
             end
           end
 

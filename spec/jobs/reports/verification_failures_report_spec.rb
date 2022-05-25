@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Reports::VerificationErrorsReport do
+describe Reports::VerificationFailuresReport do
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:sinatra' }
   let(:email) { 'foo@bar.com' }
   let(:name) { 'An SP' }
@@ -64,6 +64,54 @@ describe Reports::VerificationErrorsReport do
     expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
   end
 
+  it 'sends out a document error if the user submits desktop back image and fails' do
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      back_image_submit_at: now + 1.second,
+      issuer: issuer,
+    )
+
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
+  end
+
+  it 'sends out a document error if the user submits hybrid back image and fails' do
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      capture_mobile_back_image_submit_at: now + 1.second,
+      issuer: issuer,
+    )
+
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
+  end
+
+  it 'sends out a document error if the user submits mobile back image and fails' do
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      mobile_back_image_submit_at: now + 1.second,
+      issuer: issuer,
+    )
+
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
+  end
+
   it 'sends out a verify error if the user submits PII but does not progress forward' do
     DocAuthLog.create(
       user_id: user.id,
@@ -115,6 +163,38 @@ describe Reports::VerificationErrorsReport do
     expect(csv[2]).to eq([uuid2, now.to_time.utc.iso8601, 'ABANDON'])
   end
 
+  it 'allows submit to be recent and not just after welcome' do
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      mobile_back_image_submit_at: now - 12.hours,
+      issuer: issuer,
+    )
+
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'DOCUMENT_FAIL'])
+  end
+
+  it 'does not consider old submits as fails' do
+    DocAuthLog.create(
+      user_id: user.id,
+      welcome_view_at: now,
+      document_capture_submit_at: now - 24.hours,
+      issuer: issuer,
+    )
+
+    reports = run_reports
+    expect(reports.length).to eq(1)
+    csv = CSV.parse(reports[0])
+    expect(csv.length).to eq(2)
+    expect(csv.first).to eq(['uuid', 'welcome_view_at', 'error_code'])
+    expect(csv[1]).to eq([uuid, now.to_time.utc.iso8601, 'ABANDON'])
+  end
+
   describe '#good_job_concurrency_key' do
     let(:date) { Time.zone.today }
 
@@ -133,6 +213,6 @@ describe Reports::VerificationErrorsReport do
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }],
     )
 
-    Reports::VerificationErrorsReport.new.perform(Time.zone.today)
+    Reports::VerificationFailuresReport.new.perform(Time.zone.today)
   end
 end
