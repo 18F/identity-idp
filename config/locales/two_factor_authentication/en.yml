@@ -125,7 +125,7 @@ en:
       auth_app: Authentication application
       auth_app_info: Download or use an authentication app of your choice to generate
         secure codes.
-      backup_code: Backup Codes
+      backup_code: Backup codes
       backup_code_info: A list of 10 codes you can print or save to your device. When
         you use the last code, we will generate a new list. Keep in mind backup
         codes are easy to lose.
