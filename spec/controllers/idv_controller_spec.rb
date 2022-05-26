@@ -28,7 +28,7 @@ describe IdvController do
         :profile,
         user: user,
       )
-      Throttle.create(throttle_type: 5, user_id: user.id, attempts: 5, attempted_at: Time.zone.now)
+      Throttle.new(throttle_type: :idv_resolution, user: user).increment_to_throttled!
 
       stub_sign_in(profile.user)
 

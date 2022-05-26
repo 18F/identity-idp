@@ -50,7 +50,7 @@ module Idv
     end
 
     def throttled?
-      Throttle.for(
+      Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       ).throttled?
