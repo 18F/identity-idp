@@ -33,8 +33,8 @@ describe('TroubleshootingOptions', () => {
       <TroubleshootingOptions
         heading=""
         options={[
-          { text: <>Option 1</>, url: 'https://example.com/1', isExternal: true },
-          { text: 'Option 2', url: 'https://example.com/2' },
+          { text: <>Option 1</>, url: `/1`, isExternal: true },
+          { text: 'Option 2', url: `/2` },
         ]}
       />,
     );
@@ -43,10 +43,10 @@ describe('TroubleshootingOptions', () => {
 
     expect(links).to.have.lengthOf(2);
     expect(links[0].textContent).to.equal('Option 1 links.new_window');
-    expect(links[0].href).to.equal('https://example.com/1');
+    expect(links[0].getAttribute('href')).to.equal(`/1`);
     expect(links[0].target).to.equal('_blank');
     expect(links[1].textContent).to.equal('Option 2');
-    expect(links[1].href).to.equal('https://example.com/2');
+    expect(links[1].getAttribute('href')).to.equal(`/2`);
     expect(links[1].target).to.be.empty();
   });
 

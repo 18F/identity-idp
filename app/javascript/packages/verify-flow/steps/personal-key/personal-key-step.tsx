@@ -1,4 +1,4 @@
-import { PageHeading } from '@18f/identity-components';
+import { Alert, PageHeading } from '@18f/identity-components';
 import { ClipboardButton } from '@18f/identity-clipboard-button';
 import { PrintButton } from '@18f/identity-print-button';
 import { t } from '@18f/identity-i18n';
@@ -17,6 +17,9 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
 
   return (
     <>
+      <Alert type="success" className="margin-bottom-4">
+        {t('idv.messages.confirm')}
+      </Alert>
       <PageHeading>{t('headings.personal_key')}</PageHeading>
       <p>{t('instructions.personal_key.info')}</p>
       <div className="full-width-box margin-y-5">

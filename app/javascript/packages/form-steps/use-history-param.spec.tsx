@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
 import { useDefineProperty } from '@18f/identity-test-helpers';
 import useHistoryParam, { getStepParam } from './use-history-param';
@@ -138,10 +139,23 @@ describe('useHistoryParam', () => {
     const { getByDisplayValue } = render(<TestComponent />);
 
     const input = getByDisplayValue('0');
-    await userEvent.clear(input);
-    await userEvent.type(input, 'one hundred');
+    await userEvent.type(input, ' 1');
 
-    expect(window.location.hash).to.equal('#one%20hundred');
+    expect(window.location.hash).to.equal('#0%201');
+  });
+
+  it('syncs across instances', () => {
+    const inst1 = renderHook(() => useHistoryParam());
+    const inst2 = renderHook(() => useHistoryParam());
+    const inst3 = renderHook(() => useHistoryParam(undefined, { basePath: '/base' }));
+
+    const [, setPath1] = inst1.result.current;
+    setPath1('root');
+
+    const [path2] = inst2.result.current;
+    const [path3] = inst3.result.current;
+    expect(path2).to.equal('root');
+    expect(path3).to.be.undefined();
   });
 
   Object.entries({

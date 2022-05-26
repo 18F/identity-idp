@@ -26,4 +26,12 @@ RSpec.describe SpinnerButtonComponent, type: :component do
       expect(rendered).to have_css('.spinner-button__action-message[data-message="Verifying..."]')
     end
   end
+
+  context 'with outline button' do
+    it 'renders with additional css class' do
+      rendered = render_inline SpinnerButtonComponent.new(outline: true).with_content('')
+
+      expect(rendered).to have_css('lg-spinner-button.spinner-button--outline')
+    end
+  end
 end

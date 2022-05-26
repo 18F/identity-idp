@@ -9,7 +9,7 @@ declare global {
   namespace JSX {
     interface IntrinsicElements {
       'lg-spinner-button': HTMLAttributes<SpinnerButtonElement> &
-        RefAttributes<SpinnerButtonElement>;
+        RefAttributes<SpinnerButtonElement> & { class?: string };
     }
   }
 }
@@ -34,21 +34,30 @@ interface SpinnerButtonProps extends ButtonProps {
 export type SpinnerButtonRefHandle = SpinnerButtonElement;
 
 function SpinnerButton(
-  { spinOnClick = true, actionMessage, longWaitDurationMs, ...buttonProps }: SpinnerButtonProps,
+  {
+    spinOnClick = true,
+    actionMessage,
+    longWaitDurationMs,
+    isOutline,
+    ...buttonProps
+  }: SpinnerButtonProps,
   ref: ForwardedRef<SpinnerButtonElement | null>,
 ) {
   const elementRef = useRef<SpinnerButtonRefHandle>(null);
   useImperativeHandle(ref, () => elementRef.current!);
+
+  const classes = isOutline ? 'spinner-button--outline' : undefined;
 
   return (
     <lg-spinner-button
       spin-on-click={spinOnClick}
       long-wait-duration-ms={longWaitDurationMs}
       ref={elementRef}
+      class={classes}
     >
       <div className="spinner-button__content">
-        <Button {...buttonProps} />
-        <span className="spinner-dots spinner-dots--centered text-white" aria-hidden="true">
+        <Button isOutline={isOutline} {...buttonProps} />
+        <span className="spinner-dots spinner-dots--centered" aria-hidden="true">
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />
           <span className="spinner-dots__dot" />

@@ -66,6 +66,18 @@ RSpec.configure do |config|
     end
   end
 
+  if !ENV['CI']
+    config.before(js: true) do
+      # rubocop:disable Style/GlobalVars
+      next if defined?($ran_asset_build)
+      $ran_asset_build = true
+      # rubocop:enable Style/GlobalVars
+      puts 'Bundling JavaScript and stylesheets...'
+      system 'WEBPACK_PORT= yarn build'
+      system 'yarn build:css'
+    end
+  end
+
   config.before(:each) do
     I18n.locale = :en
   end

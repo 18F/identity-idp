@@ -6,19 +6,10 @@ describe 'mfa_confirmation/show.html.erb' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    assign(
-      :presenter,
-      MfaConfirmationShowPresenter.new(
-        current_user: user,
-        next_path: phone_setup_url,
-        final_path: account_url,
-        suggest_second_mfa: false,
-      ),
-    )
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.mfa_setup.first_authentication_method'))
+    expect(view).to receive(:title).with(t('titles.mfa_setup.suggest_second_mfa'))
 
     render
   end
@@ -26,7 +17,7 @@ describe 'mfa_confirmation/show.html.erb' do
   it 'has a localized header' do
     render
 
-    expect(rendered).to have_content(t('titles.mfa_setup.first_authentication_method'))
+    expect(rendered).to have_content(t('titles.mfa_setup.suggest_second_mfa'))
   end
 
   it 'provides a call to action to add another MFA method' do
@@ -34,7 +25,7 @@ describe 'mfa_confirmation/show.html.erb' do
 
     expect(rendered).to have_selector(
       'p',
-      text: t('mfa.account_info', count: 1),
+      text: t('mfa.account_info'),
     )
   end
 

@@ -3,12 +3,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated, except: [:show]
 
   def show
-    @presenter = MfaConfirmationShowPresenter.new(
-      current_user: current_user,
-      next_path: next_path,
-      final_path: after_mfa_setup_path,
-      suggest_second_mfa: check_if_select_mfa_needed?,
-    )
+    @next_path = second_mfa_setup_path
   end
 
   def skip
@@ -35,20 +30,6 @@ class MfaConfirmationController < ApplicationController
     params.require(:user)[:password]
   end
 
-  def next_mfa_selection_choice
-    params[:next_setup_choice] ||
-      user_session[:next_mfa_selection_choice]
-  end
-
-  def next_path
-    return second_mfa_setup_path if check_if_select_mfa_needed?
-    confirmation_path(next_mfa_selection_choice)
-  end
-
-  def check_if_select_mfa_needed?
-    suggest_second_mfa? && current_mfa_selection_count == 1
-  end
-
   def handle_valid_password
     if current_user.auth_app_configurations.any?
       redirect_to login_two_factor_authenticator_url(reauthn: true)
@@ -71,7 +52,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_max_password_attempts_reached
-    analytics.track_event(Analytics::PASSWORD_MAX_ATTEMPTS)
+    analytics.password_max_attempts
     sign_out
     redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end

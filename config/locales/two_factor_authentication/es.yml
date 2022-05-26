@@ -140,6 +140,9 @@ es:
         dispositivo. Generaremos una nueva lista cuando haya usado el último
         código. Tenga presente que los códigos de seguridad pueden perderse con
         facilidad.
+      configurations_added:
+        one: '(%{count} añadido)'
+        other: '(%{count} añadido)'
       least_secure_label: Lo menos seguro
       less_secure_label: Menos seguro
       more_secure_label: Más seguro
@@ -157,6 +160,9 @@ es:
       secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+      unused_backup_code:
+        one: '(%{count} código sin usar)'
+        other: '(%{count} códigos sin usar)'
       voice: Llamada telefónica
       voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
       webauthn: Clave de seguridad

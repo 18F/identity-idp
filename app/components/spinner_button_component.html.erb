@@ -1,7 +1,7 @@
-<lg-spinner-button>
+<%= content_tag(:'lg-spinner-button', class: css_class) do %>
   <div class="spinner-button__content">
     <%= render ButtonComponent.new(type: :button, **button_options).with_content(content) %>
-    <span class="spinner-dots spinner-dots--centered text-white" aria-hidden="true">
+    <span class="spinner-dots spinner-dots--centered" aria-hidden="true">
       <span class="spinner-dots__dot"></span>
       <span class="spinner-dots__dot"></span>
       <span class="spinner-dots__dot"></span>
@@ -13,4 +13,4 @@
                 data: { message: action_message },
                 class: 'spinner-button__action-message usa-sr-only' %>
   <% end %>
-</lg-spinner-button>
+<% end %>

@@ -553,8 +553,11 @@ describe SamlIdpController do
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: ial)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: ial,
+            billed_ial: [ial, 2].min,
+          )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
@@ -707,8 +710,11 @@ describe SamlIdpController do
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 0)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 0,
+            billed_ial: 2,
+          )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ialmax_settings)
@@ -1869,8 +1875,11 @@ describe SamlIdpController do
                service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 1)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 1,
+            billed_ial: 1,
+          )
 
         generate_saml_response(user)
       end
@@ -1903,8 +1912,11 @@ describe SamlIdpController do
                service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 1)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 1,
+            billed_ial: 1,
+          )
 
         generate_saml_response(user)
       end

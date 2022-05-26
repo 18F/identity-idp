@@ -233,7 +233,7 @@ module Idv
         to_h.
         transform_values do |str|
           JSON.parse(str)
-      rescue JSON::ParserError
+        rescue JSON::ParserError
           nil
         end.
         compact.
