@@ -7,7 +7,7 @@ feature 'Analytics Regression', js: true do
   let(:fake_analytics) { FakeAnalytics.new }
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
-    {
+    common_events = {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1 },
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1 },
@@ -19,7 +19,7 @@ feature 'Analytics Regression', js: true do
       'Frontend: IdV: front image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard' },
       'Frontend: IdV: document capture async upload encryption' => { 'success' => true, 'flow_path' => 'standard' }, # { 'success' => true, 'flow_path' => 'standard' },
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard' },
-      'Frontend: IdV: document capture async upload submitted' => { 'success' => true, 'trace_id' => nil, 'status_code' => 200, 'flow_path' => 'standard' }, #{ 'success' => true, 'trace_id' => nil, 'status_code' => 200, 'flow_path' => 'standard' },
+      'Frontend: IdV: document capture async upload submitted' => { 'success' => true, 'trace_id' => nil, 'status_code' => 200, 'flow_path' => 'standard' },
       'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: nil, remaining_attempts: 3, user_id: nil, flow_path: 'standard' },
       'IdV: doc auth verify_document submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document', step_count: 1 },
       'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: nil, remaining_attempts: 3, flow_path: 'standard' },
@@ -38,8 +38,16 @@ feature 'Analytics Regression', js: true do
       'IdV: review complete' => {},
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
-      'Frontend: IdV: show personal key modal' => {},
       'IdV: personal key submitted' => {},
+    }
+    {
+      FSMv1: common_events.merge(
+        'Frontend: IdV: show personal key modal' => {},
+      ),
+      FSMv2: common_events.merge(
+        'IdV: personal key confirm visited' => {},
+        'IdV: personal key confirm submitted' => {},
+      ),
     }
   end
   # rubocop:enable Layout/LineLength
@@ -50,7 +58,7 @@ feature 'Analytics Regression', js: true do
 
   {
     FSMv1: [],
-    # FSMv2: %w[personal_key, personal_key_confirm],
+    FSMv2: %w[personal_key personal_key_confirm],
   }.each do |flow_version, steps_enabled|
     context flow_version do
       before do
@@ -79,7 +87,7 @@ feature 'Analytics Regression', js: true do
         end
 
         it 'records all of the events' do
-          happy_path_events.each do |event, _attributes|
+          happy_path_events[flow_version].each do |event, _attributes|
             expect(fake_analytics).to have_logged_event(event)
           end
         end

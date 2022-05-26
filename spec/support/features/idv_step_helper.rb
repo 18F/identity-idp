@@ -55,7 +55,7 @@ module IdvStepHelper
 
   def complete_idv_steps_with_phone_before_confirmation_step(user = user_with_2fa)
     complete_idv_steps_with_phone_before_review_step(user)
-    complete_review_step
+    complete_review_step(user)
   end
 
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
