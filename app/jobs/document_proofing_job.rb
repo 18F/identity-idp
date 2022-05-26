@@ -129,7 +129,7 @@ class DocumentProofingJob < ApplicationJob
 
     data_url_image = Idv::DataUrlImage.new(file_or_data_url)
     data_url_image.read
-  rescue URI::InvalidURIError
+  rescue Idv::DataUrlImage:: InvalidUrlFormatError
     file_or_data_url
   end
 
