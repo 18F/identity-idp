@@ -1,12 +1,11 @@
 module Idv
   class DataUrlImage
+    class InvalidUrlFormatError < StandardError; end
+
     def initialize(data_url)
       header_and_data = data_url.delete_prefix('data:')
-      if (header_and_data == data_url)
-        header, data = '', ''
-      else
-        header, data = header_and_data.split(',', 2)
-      end
+      raise InvalidUrlFormatError.new if header_and_data == data_url
+      header, data = header_and_data.split(',', 2)
       @header = header
       @data = data
     end
