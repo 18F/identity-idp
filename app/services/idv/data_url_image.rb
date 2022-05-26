@@ -12,7 +12,7 @@ module Idv
 
     # @return [String]
     def content_type
-      @header.split(';', 2).first.to_s
+      @header.split(';', 2).first || 'text/plain'
     end
 
     # @return [String]

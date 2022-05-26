@@ -27,6 +27,14 @@ describe Idv::DataUrlImage do
         expect(data_url_image.content_type).to eq('text/plain')
       end
     end
+
+    context 'with default inferred content type' do
+      let(:data_url) { 'data:,Hello%2C%20World%21' }
+
+      it 'returns just the content type' do
+        expect(data_url_image.content_type).to eq('text/plain')
+      end
+    end
   end
 
   describe '#read' do
