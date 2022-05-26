@@ -39,6 +39,8 @@ class TwoFactorOptionsPresenter
       t('two_factor_authentication.two_factor_hspd12_choice_intro')
     elsif aal3_only?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
+    elsif IdentityConfig.store.select_multiple_mfa_options
+      t('mfa.info')
     else
       t('two_factor_authentication.two_factor_choice_intro')
     end

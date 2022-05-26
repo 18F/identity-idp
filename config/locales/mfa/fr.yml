@@ -4,9 +4,10 @@ fr:
     account_info: L’ajout d’une autre méthode d’authentification vous empêche d’être
       bloqué sur votre compte si vous perdez l’une de vos méthodes.
     add: Agregar otro método
-    info: Nous vous recommandons de sélectionner au moins (2) deux méthodes
-      différentes afin d’avoir une sauvegarde si vous perdez l’un de vos
-      dispositifs d’authentification choisis.
+    info: Ajoutez une autre couche de sécurité en sélectionnant une méthode
+      d’authentification multi-facteurs. Nous vous recommandons de sélectionner
+      au moins deux options différentes au cas où vous perdriez l’une de vos
+      méthodes.
     second_method_warning:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre

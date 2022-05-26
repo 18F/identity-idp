@@ -33,7 +33,7 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      throttle.increment unless failed_due_to_timeout_or_exception?
+      throttle.increment! unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
@@ -95,7 +95,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= Throttle.for(user: idv_session.current_user, throttle_type: :proof_address)
+      @throttle ||= Throttle.new(user: idv_session.current_user, throttle_type: :proof_address)
     end
 
     def failed_due_to_timeout_or_exception?

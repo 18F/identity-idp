@@ -106,7 +106,7 @@ describe ApplicationController do
       stub_analytics
       event_properties = { controller: 'anonymous#index', user_signed_in: true }
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, event_properties)
+        with('Invalid Authenticity Token', event_properties)
 
       get :index
 

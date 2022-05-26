@@ -7,19 +7,22 @@ module Idv
     before_action :confirm_idv_session_step_needed
 
     def warning
-      @remaining_attempts = Throttle.for(
+      @remaining_attempts = Throttle.new(
         user: effective_user,
         throttle_type: :idv_resolution,
       ).remaining_count
     end
 
     def failure
-      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_resolution).expires_at
+      @expires_at = Throttle.new(
+        user: effective_user,
+        throttle_type: :idv_resolution,
+      ).expires_at
     end
 
     def ssn_failure
       if ssn_from_doc
-        @expires_at = Throttle.for(
+        @expires_at = Throttle.new(
           target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
           throttle_type: :proof_ssn,
         ).expires_at
@@ -29,7 +32,7 @@ module Idv
     end
 
     def throttled
-      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_doc_auth).expires_at
+      @expires_at = Throttle.new(user: effective_user, throttle_type: :idv_doc_auth).expires_at
     end
 
     private
