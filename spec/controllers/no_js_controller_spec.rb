@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe NoJsController do
-  describe '#css' do
-    subject(:response) { get :css }
+  describe '#index' do
+    subject(:response) { get :index }
 
     it 'returns empty css' do
       expect(response.content_type.split(';').first).to eq('text/css')
