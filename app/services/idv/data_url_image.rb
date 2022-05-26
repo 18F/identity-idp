@@ -20,7 +20,7 @@ module Idv
       if base64_encoded?
         Base64.decode64(@data)
       else
-        ''
+        Addressable::URI.unencode(@data)
       end
     end
 

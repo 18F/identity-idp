@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Idv::DataUrlImage do
-  let(:data) { 'abcdef' }
-  let(:data_url) { "data:image/jpeg;base64,#{Base64.encode64(data)}" }
+  let(:data) { 'abc def' }
+  let(:data_url) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
   subject(:data_url_image) { described_class.new(data_url) }
 
   describe '#initialize' do
@@ -32,6 +32,14 @@ describe Idv::DataUrlImage do
   describe '#read' do
     it 'returns the data associated with the image' do
       expect(data_url_image.read).to eq(data)
+    end
+
+    context 'with base64-encoded content' do
+      let(:data_url) { "data:image/jpeg;base64,#{Base64.encode64(data)}" }
+
+      it 'returns the data associated with the image' do
+        expect(data_url_image.read).to eq(data)
+      end
     end
   end
 end
