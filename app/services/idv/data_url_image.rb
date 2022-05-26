@@ -1,17 +1,19 @@
 module Idv
   class DataUrlImage
     def initialize(data_url)
-      header, data = URI(data_url.chomp).opaque.to_s.split(',', 2)
-      @header = header.to_s
-      @data = data.to_s
+      header_and_data = data_url.delete_prefix('data:')
+      if (header_and_data == data_url)
+        header, data = '', ''
+      else
+        header, data = header_and_data.split(',', 2)
+      end
+      @header = header
+      @data = data
     end
-
-    BASE64_CONTENT_TYPE = /;base64$/.freeze
 
     # @return [String]
     def content_type
-      content_type, *_rest = @header.split(';')
-      content_type.to_s
+      @header.split(';', 2).first.to_s
     end
 
     # @return [String]
@@ -26,7 +28,7 @@ module Idv
     private
 
     def base64_encoded?
-      @header.match?(BASE64_CONTENT_TYPE)
+      @header.end_with?(';base64')
     end
   end
 end
