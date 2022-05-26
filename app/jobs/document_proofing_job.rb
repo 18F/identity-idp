@@ -152,8 +152,11 @@ class DocumentProofingJob < ApplicationJob
         end.body.b
       end
     end
-    timer.time("decrypt.#{name}") do
-      normalize_image_file(encryption_helper.decrypt(data: encrypted_image, iv: iv, key: key))
+    decrypted = timer.time("decrypt.#{name}") do
+      encryption_helper.decrypt(data: encrypted_image, iv: iv, key: key)
+    end
+    timer.time("decode.#{name}") do
+      normalize_image_file(decrypted)
     end
   end
 
