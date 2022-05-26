@@ -53,13 +53,22 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end
     it 'returns an # added when user has configured this authenticator' do
-      puts user_with_mfa.phone_configurations.first
       expect(presenter_with_mfa.mfa_configuration_description).to eq(
         t(
           'two_factor_authentication.two_factor_choice_options.configurations_added',
           count: 1,
         ),
       )
+    end
+
+    it 'includes a note to select an additional mfa method on first setup' do
+      expect(presenter_without_mfa.info).
+          to eq(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
+    end
+
+    it 'does not include a note to select an additional mfa on additional setup' do
+      expect(presenter_with_mfa.info).
+          to eq(t('two_factor_authentication.two_factor_choice_options.phone_info'))
     end
   end
 end
