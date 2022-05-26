@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import type { FormEventHandler, RefCallback, FC } from 'react';
 import { Alert } from '@18f/identity-components';
 import { replaceVariables } from '@18f/identity-i18n';
@@ -94,6 +94,12 @@ export interface FormStep<V extends FormValues = {}> {
    * Human-readable step label.
    */
   title?: string;
+
+  /**
+   * Callback invoked when the step should preload any dynamically-imported content in anticipation
+   * that the step will be reached imminently.
+   */
+  preload?: () => any;
 }
 
 interface FieldsRefEntry {
@@ -191,6 +197,15 @@ function useStepTitle(step?: FormStep<any>, titleFormat?: string) {
   }, [step]);
 }
 
+function usePreloadedNextStep(currentStepIndex: number, steps: FormStep<any>[]) {
+  const nextStep = steps[currentStepIndex + 1] as FormStep | undefined;
+  useEffect(() => {
+    if (nextStep && nextStep.preload) {
+      nextStep.preload();
+    }
+  }, [nextStep]);
+}
+
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
  * no step found by that name.
@@ -280,6 +295,7 @@ function FormSteps({
   useDidUpdateEffect(() => onStepChange(stepName!), [step]);
   useDidUpdateEffect(onPageTransition, [step]);
   useDidUpdateEffect(() => onChange(values), [values]);
+  usePreloadedNextStep(stepIndex, steps);
 
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
@@ -402,43 +418,45 @@ function FormSteps({
         </Alert>
       ))}
       <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
-        <Form
-          key={name}
-          value={values}
-          errors={activeErrors}
-          unknownFieldErrors={unknownFieldErrors}
-          onChange={ifStillMounted((nextValuesPatch) => {
-            setActiveErrors((prevActiveErrors) =>
-              prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
-            );
-            setPatchValues(nextValuesPatch);
-          })}
-          onError={ifStillMounted((error, { field } = {}) => {
-            if (field) {
-              setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
-            } else {
-              setStepErrors([error]);
-            }
-          })}
-          registerField={(field, options = {}) => {
-            if (!fields.current[field]) {
-              fields.current[field] = {
-                refCallback(fieldNode) {
-                  fields.current[field].element = fieldNode;
+        <Suspense fallback="">
+          <Form
+            key={name}
+            value={values}
+            errors={activeErrors}
+            unknownFieldErrors={unknownFieldErrors}
+            onChange={ifStillMounted((nextValuesPatch) => {
+              setActiveErrors((prevActiveErrors) =>
+                prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
+              );
+              setPatchValues(nextValuesPatch);
+            })}
+            onError={ifStillMounted((error, { field } = {}) => {
+              if (field) {
+                setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
+              } else {
+                setStepErrors([error]);
+              }
+            })}
+            registerField={(field, options = {}) => {
+              if (!fields.current[field]) {
+                fields.current[field] = {
+                  refCallback(fieldNode) {
+                    fields.current[field].element = fieldNode;
 
-                  if (activeErrors.length) {
-                    forceRender();
-                  }
-                },
-                element: null,
-                isRequired: !!options.isRequired,
-              };
-            }
+                    if (activeErrors.length) {
+                      forceRender();
+                    }
+                  },
+                  element: null,
+                  isRequired: !!options.isRequired,
+                };
+              }
 
-            return fields.current[field].refCallback;
-          }}
-          toPreviousStep={toPreviousStep}
-        />
+              return fields.current[field].refCallback;
+            }}
+            toPreviousStep={toPreviousStep}
+          />
+        </Suspense>
       </FormStepsContext.Provider>
     </form>
   );
