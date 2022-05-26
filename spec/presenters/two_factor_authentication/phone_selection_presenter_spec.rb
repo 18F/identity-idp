@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
     context 'when a user does not have a phone configuration (first time)' do
       let(:phone) { nil }
       before do
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(false)
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(false)
       end
 
       it 'includes a note about choosing voice or sms' do
@@ -44,10 +44,10 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
     end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     let(:phone) { nil }
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
     end
     it 'returns an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')

@@ -11,28 +11,32 @@ RSpec.describe RemoveOldThrottlesJob do
     subject(:perform) { job.perform(now, limit: limit, total_limit: total_limit) }
 
     it 'deletes throttles that are older than WINDOW' do
-      _old_throttle = create(:throttle, target: SecureRandom.hex, updated_at: now - 45.days)
-      new_throttle = create(:throttle, target: SecureRandom.hex, updated_at: now)
+      _old_throttle = create(
+        :database_throttle,
+        target: SecureRandom.hex,
+        updated_at: now - 45.days,
+      )
+      new_throttle = create(:database_throttle, target: SecureRandom.hex, updated_at: now)
 
       perform
 
-      expect(Throttle.all.map(&:id)).to match_array([new_throttle.id])
+      expect(DatabaseThrottle.all.map(&:id)).to match_array([new_throttle.id])
     end
 
     it 'deletes legacy rows with updated_at: nil' do
-      legacy_throttle = create(:throttle, target: SecureRandom.hex)
+      legacy_throttle = create(:database_throttle, target: SecureRandom.hex)
       legacy_throttle.update(updated_at: nil)
       expect(legacy_throttle.reload.updated_at).to be_nil
 
-      expect { perform }.to(change { Throttle.count }.to(0))
+      expect { perform }.to(change { DatabaseThrottle.count }.to(0))
     end
 
     it 'stops after total_limit jobs' do
       (total_limit + 1).times do
-        create(:throttle, target: SecureRandom.hex, updated_at: now - 45.days)
+        create(:database_throttle, target: SecureRandom.hex, updated_at: now - 45.days)
       end
 
-      expect { perform }.to(change { Throttle.count }.to(1))
+      expect { perform }.to(change { DatabaseThrottle.count }.to(1))
     end
   end
 

@@ -4,8 +4,9 @@ en:
     account_info: Adding another authentication method prevents you from getting
       locked out of your account if you lose one of your methods.
     add: Add another method
-    info: We recommend you select at least (2) two different methods so you have a
-      backup if you lose one of your chosen authentication devices.
+    info: Add another layer of security by selecting a multi-factor authentication
+      method. We recommend you select at least (2) two different options in case
+      you lose one of your methods.
     second_method_warning:
       link: Add a second authentication method.
       text: You will have to delete your account and start over if you lose your only

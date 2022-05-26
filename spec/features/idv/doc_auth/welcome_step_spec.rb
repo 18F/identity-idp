@@ -64,13 +64,6 @@ feature 'doc auth welcome step' do
     )
   end
 
-  context 'skipping upload step', :js, driver: :headless_chrome_mobile do
-    it 'progresses to the agreement screen' do
-      click_continue
-      expect(page).to have_current_path(idv_doc_auth_agreement_step)
-    end
-  end
-
   context 'cancelling' do
     let(:sp_name) { 'Test SP' }
     before do
