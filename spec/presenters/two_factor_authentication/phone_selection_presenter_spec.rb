@@ -61,5 +61,15 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
         ),
       )
     end
+
+    it 'includes a note to select an additional mfa method on first setup' do
+      expect(presenter_without_mfa.info).
+          to include(t('two_factor_authentication.two_factor_choice_options.phone_info'))
+    end
+
+    it 'does not include a note to select an additional mfa on additional setup' do
+      expect(presenter_without_mfa.info).
+          to include(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
+    end
   end
 end
