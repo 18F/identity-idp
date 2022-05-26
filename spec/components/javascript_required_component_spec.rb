@@ -26,7 +26,7 @@ RSpec.describe JavascriptRequiredComponent, type: :component do
 
   it 'loads css resource for setting session key in JavaScript-disabled environments' do
     expect(rendered).to have_css('noscript link') do |node|
-      node[:href] == no_js_track_session_css_path
+      node[:href] == no_js_detect_css_path
     end
   end
 
