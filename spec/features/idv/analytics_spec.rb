@@ -55,6 +55,12 @@ feature 'Analytics Regression', js: true do
     context flow_version do
       before do
         allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(steps_enabled)
+        WebMock.allow_net_connect!(net_http_connect_on_start: true)
+      end
+
+      after do
+        webmock_allow_list = WebMock::Config.instance.allow
+        WebMock.disallow_net_connect!(net_http_connect_on_start: nil, allow: webmock_allow_list)
       end
 
       context 'Happy path' do
