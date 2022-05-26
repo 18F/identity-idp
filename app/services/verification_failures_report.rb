@@ -1,9 +1,12 @@
-class VerificationErrorsReport
+class VerificationFailuresReport
   def self.call(service_provider, start_time, end_time)
     report_sql = <<~SQL
       SELECT 
         agency_identities.uuid,
         document_capture_submit_at,
+        back_image_submit_at,
+        capture_mobile_back_image_submit_at,
+        mobile_back_image_submit_at,
         encrypt_view_at,
         enter_info_view_at,
         ssn_view_at,

@@ -93,7 +93,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
@@ -113,7 +113,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           error_details: { otp: [:confirmation_code_incorrect] },
@@ -139,7 +139,7 @@ RSpec.describe Idv::GpoVerifyController do
         max_attempts = IdentityConfig.store.verify_gpo_key_max_attempts
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           error_details: { otp: [:confirmation_code_incorrect] },

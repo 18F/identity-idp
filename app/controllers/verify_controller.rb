@@ -28,6 +28,7 @@ class VerifyController < ApplicationController
       cancel_url: idv_cancel_path,
       completion_url: completion_url,
       initial_values: initial_values,
+      reset_password_url: forgot_password_url,
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
       store_key: user_session[:idv_api_store_key],
     }

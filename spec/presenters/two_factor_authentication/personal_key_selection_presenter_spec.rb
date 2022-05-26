@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeySelectionPresenter do
-  let(:subject) { described_class.new(configuration) }
+  let(:subject) { described_class.new(configuration: configuration) }
   let(:configuration) {}
 
   describe '#type' do

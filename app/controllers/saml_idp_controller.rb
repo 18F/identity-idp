@@ -162,7 +162,11 @@ class SamlIdpController < ApplicationController
   end
 
   def track_events
-    analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: ial_context.ial)
+    analytics.track_event(
+      Analytics::SP_REDIRECT_INITIATED,
+      ial: ial_context.ial,
+      billed_ial: ial_context.bill_for_ial_1_or_2,
+    )
     track_billing_events
   end
 end

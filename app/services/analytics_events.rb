@@ -594,6 +594,60 @@ module AnalyticsEvents
     track_event('IdV: forgot password confirmed')
   end
 
+  # GPO address letter requested
+  def idv_gpo_address_letter_requested
+    track_event('IdV: USPS address letter requested')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # GPO address submitted
+  def idv_gpo_address_submitted(
+    success:,
+    errors:,
+    **extra
+  )
+    track_event(
+      'IdV: USPS address submitted',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] letter_already_sent
+  # GPO address visited
+  def idv_gpo_address_visited(
+    letter_already_sent:,
+    **extra
+  )
+    track_event(
+      'IdV: USPS address visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
+  end
+
+  # @identity.idp.previous_event_name Account verification submitted
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # GPO verification submitted
+  def idv_gpo_verification_submitted(
+    success:,
+    errors:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'IdV: GPO verification submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
   # User visits IdV
   def idv_intro_visit
     track_event('IdV: intro visited')
@@ -851,6 +905,160 @@ module AnalyticsEvents
     track_event('IdV: review info visited')
   end
 
+  # @param [String] step
+  # @param [String] location
+  # User started over idv
+  def idv_start_over(
+    step:,
+    location:,
+    **extra
+  )
+    track_event(
+      'IdV: start over',
+      step: step,
+      location: location,
+      **extra,
+    )
+  end
+
+  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [String] set_errors JSON encoded representation of SET errors from the client
+  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
+  # new set of events
+  def irs_attempts_api_events(
+    acknowledged_event_count:,
+    rendered_event_count:,
+    set_errors:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Events submitted',
+      acknowledged_event_count: acknowledged_event_count,
+      rendered_event_count: rendered_event_count,
+      set_errors: set_errors,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a backup code as their MFA
+  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter backup code visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a personal key as their mfa (legacy flow)
+  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter personal key visited',
+      context: context,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["piv_cac"] multi_factor_auth_method
+  # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
+  # User used a PIV/CAC as their mfa
+  def multi_factor_auth_enter_piv_cac(
+    context:,
+    multi_factor_auth_method:,
+    piv_cac_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter PIV CAC visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      piv_cac_configuration_id: piv_cac_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # User visited the page to enter a TOTP as their mfa
+  def multi_factor_auth_enter_totp_visit(context:, **extra)
+    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+  end
+
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param ["webauthn","webauthn_platform"] multi_factor_auth_method which webauthn method was used,
+  # webauthn means a roaming authenticator like a yubikey, webauthn_platform means a platform
+  # authenticator like face or touch ID
+  # @param [Integer, nil] webauthn_configuration_id webauthn database ID
+  # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
+  def multi_factor_auth_enter_webauthn_visit(
+    context:,
+    multi_factor_auth_method:,
+    webauthn_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter webAuthn authentication visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user updated their password
+  def password_changed(success:, errors:, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra)
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user added a password after verifying their email for account creation
+  def password_creation(success:, errors:, **extra)
+    track_event('Password Creation', success: success, errors: errors, **extra)
+  end
+
+  # The user got their password incorrect the max number of times, their session was terminated
+  def password_max_attempts
+    track_event('Password Max Attempts Reached')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
+  # confirmed email
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  # active proofed profile
+  # The user entered an email address to request a password reset
+  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
+    track_event(
+      'Password Reset: Email Submitted',
+      success: success,
+      errors: errors,
+      confirmed: confirmed,
+      active_profile: active_profile,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
+  # (the user will need to use their personal key to reactivate their profile)
+  # The user changed the password for their account via the paswword reset flow
+  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
+    track_event(
+      'Password Reset: Password Submitted',
+      success: success,
+      errors: errors,
+      profile_deactivated: profile_deactivated,
+      **extra,
+    )
+  end
+
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
@@ -1051,6 +1259,44 @@ module AnalyticsEvents
         **extra,
       }.compact,
     )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted additional MFA methods on user registration
+  def user_registration_2fa_additional_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: Additional 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits additional MFA selection page
+  def user_registration_2fa_additional_setup_visit
+    track_event('User Registration: Additional 2FA Setup visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Tracks when the the user has selected and submitted MFA auth methods on user registration
+  def user_registration_2fa_setup(success:, errors: nil, **extra)
+    track_event(
+      'User Registration: 2FA Setup',
+      {
+        success: success,
+        errors: errors,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user visits MFA selection page
+  def user_registration_2fa_setup_visit
+    track_event('User Registration: 2FA Setup visited')
   end
 end
 # rubocop:enable Metrics/ModuleLength

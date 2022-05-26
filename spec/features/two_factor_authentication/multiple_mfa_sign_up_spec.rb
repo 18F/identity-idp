@@ -92,15 +92,15 @@ feature 'Multi Two Factor Authentication' do
     end
 
     scenario 'clears the error when another mfa method is selected' do
-     click_2fa_option('backup_code')
-     expect(page).
-        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+      click_2fa_option('backup_code')
+      expect(page).
+         to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
     end
 
     scenario 'clears the error when phone mfa method is unselected' do
-     click_2fa_option('phone')
-     expect(page).
-       to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
+      click_2fa_option('phone')
+      expect(page).
+        to_not have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
     end
   end
 

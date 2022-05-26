@@ -14,8 +14,7 @@ module Idv
       current_async_state = async_state
 
       if current_async_state.none?
-        analytics.track_event(
-          Analytics::IDV_GPO_ADDRESS_VISITED,
+        analytics.idv_gpo_address_visited(
           letter_already_sent: @presenter.letter_already_sent?,
         )
         render :index
@@ -56,7 +55,7 @@ module Idv
     private
 
     def update_tracking
-      analytics.track_event(Analytics::IDV_GPO_ADDRESS_LETTER_REQUESTED)
+      analytics.idv_gpo_address_letter_requested
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
@@ -251,7 +250,7 @@ module Idv
     end
 
     def async_state_done_analytics(result)
-      analytics.track_event(Analytics::IDV_GPO_ADDRESS_SUBMITTED, result.to_h)
+      analytics.idv_gpo_address_submitted(**result.to_h)
       Db::SpCost::AddSpCost.call(current_sp, 2, :lexis_nexis_resolution)
       Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
     end

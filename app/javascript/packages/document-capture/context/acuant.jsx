@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
 
@@ -147,32 +148,18 @@ function AcuantContextProvider({
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
-  const value = useMemo(
-    () => ({
-      isReady,
-      isAcuantLoaded,
-      isError,
-      isCameraSupported,
-      isActive,
-      setIsActive,
-      endpoint,
-      credentials,
-      glareThreshold,
-      sharpnessThreshold,
-    }),
-    [
-      isReady,
-      isAcuantLoaded,
-      isError,
-      isCameraSupported,
-      isActive,
-      setIsActive,
-      endpoint,
-      credentials,
-      glareThreshold,
-      sharpnessThreshold,
-    ],
-  );
+  const value = useObjectMemo({
+    isReady,
+    isAcuantLoaded,
+    isError,
+    isCameraSupported,
+    isActive,
+    setIsActive,
+    endpoint,
+    credentials,
+    glareThreshold,
+    sharpnessThreshold,
+  });
 
   useEffect(() => {
     // If state is already ready (via consideration of device type), skip loading Acuant SDK.

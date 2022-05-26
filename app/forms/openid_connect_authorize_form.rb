@@ -99,6 +99,10 @@ class OpenidConnectAuthorizeForm
     @ial_context ||= IalContext.new(ial: ial, service_provider: service_provider)
   end
 
+  def ial
+    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
+  end
+
   def_delegators :ial_context,
                  :ial2_or_greater?,
                  :ial2_requested?,
@@ -193,10 +197,6 @@ class OpenidConnectAuthorizeForm
       type: :invalid_verified_within_duration,
     )
     false
-  end
-
-  def ial
-    Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_IAL[ial_values.sort.max]
   end
 
   def extra_analytics_attributes

@@ -29,7 +29,6 @@ class SessionEncryptor
     :address1,
     :city,
     :dob,
-    :state_id_number,
     :state_id_expiration,
   ).values
   SENSITIVE_REGEX = %r{#{SENSITIVE_DEFAULT_FIELDS.join('|')}}i
@@ -38,7 +37,7 @@ class SessionEncryptor
     return LegacySessionEncryptor.new.load(value) if should_use_legacy_encryptor_for_read?(value)
 
     _v2, ciphertext = value.split(':')
-    decrypted = outer_encryptor.decrypt(ciphertext)
+    decrypted = outer_decrypt(ciphertext)
 
     session = JSON.parse(decrypted, quirks_mode: true).with_indifferent_access
     kms_decrypt_sensitive_paths!(session)
@@ -55,7 +54,7 @@ class SessionEncryptor
     alert_or_raise_if_contains_sensitive_keys!(value)
     plain = JSON.generate(value, quirks_mode: true)
     alert_or_raise_if_contains_sensitive_value!(plain, value)
-    NEW_CIPHERTEXT_HEADER + ':' + outer_encryptor.encrypt(plain)
+    NEW_CIPHERTEXT_HEADER + ':' + outer_encrypt(plain)
   end
 
   def kms_encrypt(text)
@@ -68,8 +67,12 @@ class SessionEncryptor
     )
   end
 
-  def outer_encryptor
-    Encryption::Encryptors::AttributeEncryptor.new
+  def outer_encrypt(plaintext)
+    Encryption::Encryptors::AesEncryptor.new.encrypt(plaintext, session_encryption_key)
+  end
+
+  def outer_decrypt(ciphertext)
+    Encryption::Encryptors::AesEncryptor.new.decrypt(ciphertext, session_encryption_key)
   end
 
   private
@@ -183,5 +186,9 @@ class SessionEncryptor
 
   def should_use_legacy_encryptor_for_write?
     !IdentityConfig.store.session_encryptor_v2_enabled
+  end
+
+  def session_encryption_key
+    IdentityConfig.store.session_encryption_key
   end
 end

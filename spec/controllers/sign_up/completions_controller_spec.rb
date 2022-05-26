@@ -11,14 +11,14 @@ describe SignUp::CompletionsController do
       end
 
       it 'redirects to account page when SP request URL is not present' do
-          user = create(:user)
-          stub_sign_in(user)
-          subject.session[:sp] = {
-            issuer: current_sp.issuer,
-          }
-          get :show
+        user = create(:user)
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          issuer: current_sp.issuer,
+        }
+        get :show
 
-          expect(response).to redirect_to account_url
+        expect(response).to redirect_to account_url
       end
 
       context 'IAL1' do

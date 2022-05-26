@@ -22,7 +22,7 @@ function StartOverOrCancel({ canStartOver = true }: StartOverOrCancelProps) {
           {t('doc_auth.buttons.start_over')}
         </ButtonTo>
       )}
-      <div className="margin-top-2 padding-top-1 border-top border-primary-light">
+      <div className="margin-top-2 padding-top-2 border-top border-primary-light">
         <a href={addSearchParams(cancelURL, { step })}>{t('links.cancel')}</a>
       </div>
     </div>

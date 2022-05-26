@@ -24,35 +24,57 @@ describe Users::BackupCodeSetupController do
   end
 
   it 'deletes backup codes' do
-    user = build(:user, :signed_up)
+    user = build(:user, :signed_up, :with_authentication_app, :with_backup_code)
     stub_sign_in(user)
-    expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+    expect(user.backup_code_configurations.length).to eq 10
+
     post :delete
 
     expect(response).to redirect_to(account_two_factor_authentication_path)
     expect(user.backup_code_configurations.length).to eq 0
   end
 
-  context 'when user selects multiple mfas on account creation' do
+  it 'does not deletes backup codes if they are the only mfa' do
+    user = build(:user, :with_backup_code)
+    stub_sign_in(user)
+
+    post :delete
+
+    expect(response).to redirect_to(account_two_factor_authentication_path)
+    expect(user.backup_code_configurations.length).to eq 10
+  end
+
+  context 'with multiple MFA selection on' do
+    let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
+      @user = build(:user)
+      stub_sign_in(@user)
+      controller.user_session[:mfa_selections] = mfa_selections
       allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
     end
 
-    it 'redirects to MFA confirmation page' do
-      user = build(:user, :signed_up)
-      stub_sign_in(user)
-      codes = BackupCodeGenerator.new(user).create
-      controller.user_session[:backup_codes] = codes
+    context 'when user selects multiple mfas on account creation' do
+      it 'redirects to MFA confirmation page' do
+        codes = BackupCodeGenerator.new(@user).create
+        controller.user_session[:backup_codes] = codes
+        post :continue
 
-      controller.user_session[:selected_mfa_options] = ['backup_code', 'voice']
-      post :continue
+        expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+      end
+    end
 
-      expect(response).to redirect_to(auth_method_confirmation_url(next_setup_choice: 'voice'))
+    context 'when user only selects backup code on account creation' do
+      let(:mfa_selections) { ['backup_code'] }
+      it 'redirects to Suggest 2nd MFA page' do
+        codes = BackupCodeGenerator.new(@user).create
+        controller.user_session[:backup_codes] = codes
+        post :continue
+        expect(response).to redirect_to(auth_method_confirmation_url)
+      end
     end
   end
 
-  context 'when user only selects backup code on account creation' do
+  context 'with multiple MFA selection turned off' do
     it 'redirects to account page' do
       user = build(:user, :signed_up)
       stub_sign_in(user)

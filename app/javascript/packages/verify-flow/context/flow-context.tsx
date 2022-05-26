@@ -15,6 +15,11 @@ const FlowContext = createContext({
    * Current step name.
    */
   currentStep: '',
+
+  /**
+   * The path to which the current step is appended to create the current step URL.
+   */
+  basePath: '',
 });
 
 FlowContext.displayName = 'FlowContext';

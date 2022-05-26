@@ -15,7 +15,7 @@ module Users
 
       result = @update_user_password_form.submit(user_params)
 
-      analytics.track_event(Analytics::PASSWORD_CHANGED, result.to_h)
+      analytics.password_changed(**result.to_h)
 
       if result.success?
         handle_valid_password

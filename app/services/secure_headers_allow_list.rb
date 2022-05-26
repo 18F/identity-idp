@@ -31,11 +31,12 @@ class SecureHeadersAllowList
   def self.reduce_sp_redirect_uris_for_csp(uris)
     csp_uri_set = uris.each_with_object(Set.new) do |uri, uri_set|
       parsed_uri = URI.parse(uri)
-      reduced_uri = if parsed_uri.scheme.match?(/\Ahttps?\z/)
-                         reduce_web_sp_uri(parsed_uri)
-                       else
-                         reduce_native_app_sp_uri(parsed_uri)
-                       end
+      reduced_uri =
+        if parsed_uri.scheme.match?(/\Ahttps?\z/)
+          reduce_web_sp_uri(parsed_uri)
+        else
+          reduce_native_app_sp_uri(parsed_uri)
+        end
       uri_set.add(reduced_uri)
     end
     csp_uri_set.to_a

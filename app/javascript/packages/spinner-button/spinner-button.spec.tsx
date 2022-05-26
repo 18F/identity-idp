@@ -73,4 +73,13 @@ describe('SpinnerButton', () => {
 
     expect(button.classList.contains('usa-button--outline')).to.be.true();
   });
+
+  it('includes additional class for outline buttons', () => {
+    const { getByRole } = render(<SpinnerButton isOutline />);
+
+    const button = getByRole('button')!;
+    const spinner = button.closest('lg-spinner-button')!;
+
+    expect(spinner.classList.contains('spinner-button--outline')).to.be.true();
+  });
 });

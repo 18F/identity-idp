@@ -43,7 +43,7 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
       <ul className="troubleshooting-options__options">
         {options.map(({ url, text, isExternal }) => (
           <li key={url}>
-            <BlockLink url={url} isNewTab={isExternal}>
+            <BlockLink href={url} isExternal={isExternal}>
               {text}
             </BlockLink>
           </li>

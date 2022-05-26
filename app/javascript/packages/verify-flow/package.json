@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "react": "^17.0.2",
-    "cleave.js": "^1.6.0"
+    "cleave.js": "^1.6.0",
+    "libphonenumber-js": "^1.9.53",
+    "react": "^17.0.2"
   }
 }

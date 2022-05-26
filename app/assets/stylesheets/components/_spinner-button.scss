@@ -18,9 +18,21 @@ lg-spinner-button {
     button:not([type]),
     [type='submit'],
     [type='button'] {
-      background-color: color('primary-darker');
       color: transparent;
       opacity: 1;
+    }
+  }
+
+  &:not(.spinner-button--outline) .spinner-button__content {
+    a,
+    button:not([type]),
+    [type='submit'],
+    [type='button'] {
+      background-color: color('primary-darker');
+    }
+
+    .spinner-dots {
+      color: color('white');
     }
   }
 }
