@@ -32,6 +32,8 @@ Rails.application.routes.draw do
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 
+  get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
+
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
