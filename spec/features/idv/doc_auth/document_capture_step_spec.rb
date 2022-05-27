@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth document capture step' do
+feature 'doc auth document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include ActionView::Helpers::DateHelper
@@ -26,19 +26,17 @@ feature 'doc auth document capture step' do
     complete_doc_auth_steps_before_document_capture_step
   end
 
-  context 'when javascript is enabled', js: true do
-    it 'logs return to sp link click' do
-      new_window = window_opened_by do
-        click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
-      end
+  it 'logs return to sp link click' do
+    new_window = window_opened_by do
+      click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+    end
 
-      within_window new_window do
-        expect(fake_analytics).to have_logged_event(
-          'Return to SP: Failed to proof',
-          step: 'document_capture',
-          location: 'document_capture_troubleshooting_options',
-        )
-      end
+    within_window new_window do
+      expect(fake_analytics).to have_logged_event(
+        'Return to SP: Failed to proof',
+        step: 'document_capture',
+        location: 'document_capture_troubleshooting_options',
+      )
     end
   end
 
@@ -304,45 +302,9 @@ feature 'doc auth document capture step' do
         end
       end
     end
-
-    context 'async result' do
-      let(:success) { true }
-
-      before do
-        document_capture_session = user.document_capture_sessions.last
-        response = DocAuth::Response.new(success: success)
-        document_capture_session.create_doc_auth_session
-        document_capture_session.store_doc_auth_result(
-          result: response.to_h,
-          pii: response.pii_from_doc,
-        )
-        document_capture_session.save!
-      end
-
-      context 'successful result' do
-        let(:success) { true }
-
-        it 'proceeds to the next step' do
-          submit_empty_form
-
-          expect(page).to have_current_path(next_step)
-        end
-      end
-
-      context 'unsuccessful result' do
-        let(:success) { false }
-
-        it 'does not proceed to the next step' do
-          submit_empty_form
-
-          expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-          expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-        end
-      end
-    end
   end
 
-  context 'when using async uploads', :js do
+  context 'when using async uploads' do
     before do
       allow(DocumentProofingJob).to receive(:perform_later).
         and_call_original

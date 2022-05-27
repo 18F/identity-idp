@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth success step' do
+feature 'doc auth success step', :js do
   include IdvStepHelper
   include DocAuthHelper
 
