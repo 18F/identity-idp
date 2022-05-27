@@ -126,8 +126,6 @@ en:
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
-      document_capture_heading_html: Add your state&#8209;issued&nbsp;ID
-      document_capture_heading_with_selfie_html: Add your state&#8209;issued&nbsp;ID and selfie
       document_capture_selfie: Your photo
       front: Front
       interstitial: We are processing your images
@@ -166,9 +164,9 @@ en:
       lets_go: 'Identity verification happens in two parts:'
       link_sent: Please check your phone and follow instructions to take a photo of
         your state issued ID.
-      link_sent_complete_js: The next step will load automatically once you verify
-        your ID using your phone.
-      link_sent_complete_nojs: When you are done, click Continue here to finish verifying your identity.
+      link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
+      link_sent_complete_polling: The next step will load automatically once you
+        verify your ID using your phone.
       no_sp_name: The agency that you are trying to access
       privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
