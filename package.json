@@ -64,6 +64,7 @@
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^3.0.3",
     "dirty-chai": "^2.0.1",
+    "dom-accessibility-api": "^0.5.14",
     "eslint": "^8.9.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
