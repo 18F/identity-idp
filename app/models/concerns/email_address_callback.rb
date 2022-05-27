@@ -2,7 +2,7 @@ module EmailAddressCallback
   extend ActiveSupport::Concern
 
   EMAIL_COLUMNS = %i[
-    encrypted_email confirmation_token confirmed_at confirmation_sent_at email_fingerprint
+    encrypted_email confirmed_at email_fingerprint
   ].freeze
 
   def self.included(base)
@@ -22,9 +22,7 @@ module EmailAddressCallback
   def update_email_address_record
     email_addresses.take.update!(
       encrypted_email: encrypted_email,
-      confirmation_token: confirmation_token,
       confirmed_at: confirmed_at,
-      confirmation_sent_at: confirmation_sent_at,
       email_fingerprint: email_fingerprint,
     )
   end
@@ -33,9 +31,7 @@ module EmailAddressCallback
     email_addresses.create!(
       user: self,
       encrypted_email: encrypted_email,
-      confirmation_token: confirmation_token,
       confirmed_at: confirmed_at,
-      confirmation_sent_at: confirmation_sent_at,
       email_fingerprint: email_fingerprint,
     )
     email_addresses.reload

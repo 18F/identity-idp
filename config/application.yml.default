@@ -151,6 +151,7 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
+new_sign_up_cancellation_url_enabled: true
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otps_per_ip_limit: 25
@@ -371,6 +372,7 @@ production:
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  new_sign_up_cancellation_url_enabled: false
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
