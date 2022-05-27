@@ -14,6 +14,7 @@ describe('useSessionStorage', () => {
       value: {
         getItem: sinon.stub(),
         setItem: sinon.stub(),
+        removeItem: sinon.stub(),
       },
     });
   });
@@ -44,11 +45,19 @@ describe('useSessionStorage', () => {
     expect(sessionStorage.setItem).not.to.have.been.called();
   });
 
-  it('sets a value into storage', () => {
+  it('sets a string value into storage', () => {
     const { result } = renderHook(() => useSessionStorage(TEST_KEY));
     const [, setValue] = result.current;
     act(() => setValue('value'));
 
     expect(sessionStorage.setItem).to.have.been.calledWith(TEST_KEY, 'value');
+  });
+
+  it('unsets storage when given a null value', () => {
+    const { result } = renderHook(() => useSessionStorage(TEST_KEY));
+    const [, setValue] = result.current;
+    act(() => setValue(null));
+
+    expect(sessionStorage.removeItem).to.have.been.calledWith(TEST_KEY);
   });
 });

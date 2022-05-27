@@ -25,7 +25,10 @@ const getStepIndex = (stepName: string, steps: FormStep[]) =>
  *
  * @return Tuple of the validated initial step and a setter for assigning a completed step.
  */
-function useInitialStepValidation(basePath: string, steps: FormStep[]): [string, Dispatch<string>] {
+function useInitialStepValidation(
+  basePath: string,
+  steps: FormStep[],
+): [string, Dispatch<string | null>] {
   const [completedStep, setCompletedStep] = useSessionStorage('completedStep');
   const initialStep = useMemo(() => {
     const pathStep = getStepParam(window.location.pathname.split(basePath)[1]);

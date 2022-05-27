@@ -69,10 +69,6 @@ const camelCase = (string: string) =>
 const mapKeys = (object: object, mapKey: (key: string) => string) =>
   Object.entries(object).map(([key, value]) => [mapKey(key), value]);
 
-function onComplete() {
-  window.location.href = completionURL;
-}
-
 const storage = new SecretSessionStorage<SecretValues>('verify');
 
 (async () => {
@@ -91,6 +87,11 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
     const jwtData = JSON.parse(atob(userBundleToken.split('.')[1]));
     const pii = Object.fromEntries(mapKeys(jwtData.pii, camelCase));
     Object.assign(initialValues, pii);
+  }
+
+  function onComplete() {
+    storage.clear();
+    window.location.href = completionURL;
   }
 
   render(
