@@ -17,6 +17,8 @@ feature 'doc capture document capture step', js: true do
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
+      and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
     if sp_requests_ial2_strict
       visit_idp_from_oidc_sp_with_ial2_strict
@@ -233,7 +235,7 @@ feature 'doc capture document capture step', js: true do
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
     end
 
-    it 'logs a warning event when there are unknown errors in the response' do
+    it 'logs a warning event when there are unknown errors in the response', :allow_browser_log do
       Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
         yml_file.rewind
         yml_file.puts <<~YAML
@@ -242,12 +244,11 @@ feature 'doc capture document capture step', js: true do
         YAML
         yml_file.close
 
-        attach_file 'doc_auth_front_image', yml_file.path
-        attach_file 'doc_auth_back_image', yml_file.path
-        attach_file 'doc_auth_selfie_image', yml_file.path
-        click_idv_continue
+        attach_images(yml_file.path)
+        click_submit_default
       end
 
+      expect(page).to have_content(t('errors.doc_auth.throttled_heading'), wait: 5)
       expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
     end
 
