@@ -5,8 +5,8 @@ class JavascriptRequiredComponent < BaseComponent
 
   BROWSER_RESOURCES = [
     { name: 'Google Chrome', url: 'https://support.google.com' },
-    { name: 'Mozilla Firefox', url: 'https://support.microsoft.com/en-us/microsoft-edge' },
-    { name: 'Microsoft Edge', url: 'https://support.mozilla.org/en-US' },
+    { name: 'Mozilla Firefox', url: 'https://support.mozilla.org/en-US' },
+    { name: 'Microsoft Edge', url: 'https://support.microsoft.com/en-us/microsoft-edge' },
     { name: 'Apple Safari', url: 'https://support.apple.com/safari' },
   ].to_set.freeze
 
