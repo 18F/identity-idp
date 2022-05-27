@@ -149,13 +149,7 @@ describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        create(
-          :throttle,
-          :with_throttled,
-          attempts: IdentityConfig.store.doc_auth_max_attempts - 4,
-          user: user,
-          throttle_type: :idv_doc_auth,
-        )
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment!
 
         action
 
@@ -164,13 +158,13 @@ describe Idv::ImageUploadsController do
           {
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
-            remaining_attempts: 3,
+            remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
           },
         )
       end
 
       it 'returns an error when throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_doc_auth)
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         action
 
@@ -186,13 +180,7 @@ describe Idv::ImageUploadsController do
       end
 
       it 'tracks analytics' do
-        create(
-          :throttle,
-          :with_throttled,
-          attempts: IdentityConfig.store.doc_auth_max_attempts,
-          user: user,
-          throttle_type: :idv_doc_auth,
-        )
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
 
         stub_analytics
 

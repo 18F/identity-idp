@@ -151,19 +151,19 @@ module Idv
     end
 
     def validate_images
-      if front.is_a? URI::InvalidURIError
+      if front.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :front, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
-      if back.is_a? URI::InvalidURIError
+      if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
-      if selfie.is_a? URI::InvalidURIError
+      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
@@ -197,7 +197,7 @@ module Idv
         elsif value.is_a? String
           DataUrlImage.new(value)
         end
-      rescue URI::InvalidURIError => error
+      rescue DataUrlImage::InvalidUrlFormatError => error
         error
       end
     end
@@ -271,7 +271,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )

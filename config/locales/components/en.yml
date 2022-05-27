@@ -3,6 +3,11 @@ en:
   components:
     clipboard_button:
       label: Copy
+    javascript_required:
+      browser_instructions: 'Follow the instructions for your browser to enable JavaScript:'
+      enabled_alert: You have enabled JavaScript in your browser.
+      next_step: Please refresh this page once you have enabled JavaScript in your
+        browser.
     password_toggle:
       label: Password
       toggle_label: Show password

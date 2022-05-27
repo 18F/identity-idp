@@ -171,3 +171,7 @@ en:
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
         verify_in_person: Verify your ID in person at a Post Office
+    welcome:
+      no_js_header: You must enable JavaScript to verify your identity.
+      no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
+        JavaScript to continue this process.'

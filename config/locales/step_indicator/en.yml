@@ -4,7 +4,9 @@ en:
     accessible_label: Step progress
     flows:
       idv:
+        find_a_post_office: Find a Post Office
         getting_started: Getting started
+        go_to_the_post_office: Go to the Post Office
         secure_account: Secure your account
         verify_id: Verify your ID
         verify_info: Verify your personal details

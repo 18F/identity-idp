@@ -278,7 +278,7 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
@@ -299,15 +299,6 @@ feature 'doc capture document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      DocAuth::Mock::DocAuthMockClient.reset!
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        complete_doc_capture_steps_before_first_step(user)
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do
@@ -364,7 +355,7 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(next_step)
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
@@ -385,15 +376,6 @@ feature 'doc capture document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      DocAuth::Mock::DocAuthMockClient.reset!
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        complete_doc_capture_steps_before_first_step(user)
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do

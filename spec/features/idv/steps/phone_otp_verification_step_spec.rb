@@ -101,6 +101,5 @@ feature 'phone otp verification step spec' do
   context 'cancelling IdV' do
     it_behaves_like 'cancel at idv step', :phone_otp_verification
     it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
-    it_behaves_like 'cancel at idv step', :phone_otp_verification, :saml
   end
 end

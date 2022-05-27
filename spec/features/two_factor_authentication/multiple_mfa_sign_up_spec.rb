@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Multi Two Factor Authentication' do
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+    allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
   end
 
   describe 'When the user has not set up 2FA' do
@@ -27,12 +28,6 @@ feature 'Multi Two Factor Authentication' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_current_path(
-        auth_method_confirmation_path(next_setup_choice: 'backup_code'),
-      )
-
-      click_link t('mfa.add')
-
       expect(current_path).to eq backup_code_setup_path
 
       click_continue
@@ -45,29 +40,27 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
-    scenario 'user can select 2 MFA methods and complete 1 and skip one' do
+    scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
 
       expect(current_path).to eq two_factor_options_path
 
-      click_2fa_option('phone')
       click_2fa_option('backup_code')
 
       click_continue
 
-      expect(page).
-       to have_content t('titles.phone_setup')
+      expect(current_path).to eq backup_code_setup_path
 
-      expect(current_path).to eq phone_setup_path
+      click_continue
 
-      fill_in 'new_phone_form_phone', with: '703-555-1212'
-      click_send_security_code
+      expect(page).to have_link(t('forms.backup_code.download'))
 
-      fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_continue
+
+      expect(page).to have_content(t('notices.backup_codes_configured'))
 
       expect(page).to have_current_path(
-        auth_method_confirmation_path(next_setup_choice: 'backup_code'),
+        auth_method_confirmation_path,
       )
 
       click_button t('mfa.skip')

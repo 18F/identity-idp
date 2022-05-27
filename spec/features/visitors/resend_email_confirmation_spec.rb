@@ -19,7 +19,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email)).to be_present
   end
 
-  scenario 'user throttled sending confirmation emails and can send again after wait period' do
+  scenario 'user throttled sending confirmation emails' do
     user.save!
     email = user.email
 
@@ -32,12 +32,6 @@ feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email).size).to eq(max_attempts)
     submit_resend_email_confirmation(email)
     expect(unread_emails_for(user.email).size).to eq(max_attempts)
-
-    window_in_minutes = IdentityConfig.store.reg_unconfirmed_email_window_in_minutes + 1
-    travel_to(Time.zone.now + window_in_minutes.minutes) do
-      submit_resend_email_confirmation(email)
-      expect(unread_emails_for(user.email).size).to eq(max_attempts + 1)
-    end
   end
 
   scenario 'user enters email with invalid format' do
