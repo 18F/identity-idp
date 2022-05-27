@@ -1,4 +1,5 @@
 import { createRef } from 'react';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { render } from '@testing-library/react';
 import PasswordToggle from './password-toggle';
 
@@ -54,5 +55,15 @@ describe('PasswordToggle', () => {
     render(<PasswordToggle ref={ref} />);
 
     expect(ref.current).to.be.an.instanceOf(HTMLInputElement);
+  });
+
+  it('validates input as a ValidatedField', () => {
+    const { getByLabelText } = render(<PasswordToggle label="Input" required />);
+
+    const input = getByLabelText('Input') as HTMLInputElement;
+
+    input.reportValidity();
+    const description = computeAccessibleDescription(input);
+    expect(description).to.equal('simple_form.required.text');
   });
 });
