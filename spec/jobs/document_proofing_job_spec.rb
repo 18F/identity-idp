@@ -362,5 +362,18 @@ RSpec.describe DocumentProofingJob, type: :job do
         perform
       end
     end
+
+    context 'with invalid data url body' do
+      let(:body) { 'data:"' }
+
+      it 'gracefully degrades' do
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).
+          with(hash_including(front_image: nil)).
+          and_call_original
+
+        perform
+      end
+    end
   end
 end
