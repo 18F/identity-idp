@@ -190,7 +190,7 @@ feature 'IAL2 Single Sign On' do
     end
 
     context 'returning to verify after canceling during the same session' do
-      it 'allows the user to verify' do
+      it 'allows the user to verify', js: true do
         user = create(:user, :signed_up)
         request_url = saml_ial2_request_url
 

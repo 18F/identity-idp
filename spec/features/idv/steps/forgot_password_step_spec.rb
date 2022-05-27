@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'forgot password step' do
+feature 'forgot password step', :js do
   include IdvStepHelper
 
   it 'goes to the forgot password page from the review page' do
@@ -37,7 +37,7 @@ feature 'forgot password step' do
     expect(current_path).to eq edit_user_password_path
   end
 
-  context 'with idv app feature enabled', js: true do
+  context 'with idv app feature enabled' do
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
         and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])

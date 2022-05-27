@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc capture document capture step' do
+feature 'doc capture document capture step', js: true do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -145,20 +145,18 @@ feature 'doc capture document capture step' do
       )
     end
 
-    context 'when javascript is enabled', :js do
-      it 'logs return to sp link click' do
-        complete_doc_capture_steps_before_first_step(user)
-        new_window = window_opened_by do
-          click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
-        end
+    it 'logs return to sp link click' do
+      complete_doc_capture_steps_before_first_step(user)
+      new_window = window_opened_by do
+        click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+      end
 
-        within_window new_window do
-          expect(fake_analytics).to have_logged_event(
-            'Return to SP: Failed to proof',
-            step: 'document_capture',
-            location: 'document_capture_troubleshooting_options',
-          )
-        end
+      within_window new_window do
+        expect(fake_analytics).to have_logged_event(
+          'Return to SP: Failed to proof',
+          step: 'document_capture',
+          location: 'document_capture_troubleshooting_options',
+        )
       end
     end
   end
@@ -174,8 +172,7 @@ feature 'doc capture document capture step' do
       let(:sp_requests_ial2_strict) { false }
 
       it 'does not require selfie' do
-        attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
-        attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+        attach_images
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
