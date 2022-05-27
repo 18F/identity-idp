@@ -170,13 +170,6 @@ feature 'doc capture document capture step' do
       complete_doc_capture_steps_before_first_step(user)
     end
 
-    it 'shows the step indicator' do
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
-    end
-
     context 'when the SP does not request strict IAL2' do
       let(:sp_requests_ial2_strict) { false }
 
@@ -189,10 +182,14 @@ feature 'doc capture document capture step' do
         expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
       end
 
-      it 'is on the correct_page and shows the document upload options' do
+      it 'is on the correct page and shows the document upload options' do
         expect(current_path).to eq(idv_capture_doc_document_capture_step)
         expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
         expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_id'),
+        )
       end
 
       it 'does not show the selfie upload option' do
@@ -215,7 +212,7 @@ feature 'doc capture document capture step' do
       end
     end
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
@@ -324,10 +321,14 @@ feature 'doc capture document capture step' do
       complete_doc_capture_steps_before_first_step(user)
     end
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'does not show the selfie upload option' do

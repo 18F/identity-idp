@@ -26,13 +26,6 @@ feature 'doc auth document capture step' do
     complete_doc_auth_steps_before_document_capture_step
   end
 
-  it 'shows the step indicator' do
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_id'),
-    )
-  end
-
   context 'when javascript is enabled', js: true do
     it 'logs return to sp link click' do
       new_window = window_opened_by do
@@ -52,10 +45,14 @@ feature 'doc auth document capture step' do
   context 'when liveness checking is enabled' do
     let(:liveness_enabled) { true }
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'shows the selfie upload option' do
@@ -173,10 +170,14 @@ feature 'doc auth document capture step' do
   context 'when liveness checking is not enabled' do
     let(:liveness_enabled) { false }
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'does not show the selfie upload option' do
