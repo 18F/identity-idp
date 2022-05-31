@@ -79,6 +79,8 @@ class VerifyController < ApplicationController
   def completion_url
     if session[:sp]
       sign_up_completed_url
+    elsif idv_session.address_verification_mechanism == 'gpo'
+      idv_come_back_later_url
     else
       after_sign_in_path_for(current_user)
     end

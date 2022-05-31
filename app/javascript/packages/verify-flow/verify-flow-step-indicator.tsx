@@ -1,5 +1,8 @@
+import { useContext } from 'react';
 import { StepIndicator, StepIndicatorStep, StepStatus } from '@18f/identity-step-indicator';
 import { t } from '@18f/identity-i18n';
+import AddressVerificationMethodContext from './context/address-verification-method-context';
+import type { AddressVerificationMethod } from './context/address-verification-method-context';
 
 // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
 // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
@@ -62,8 +65,32 @@ export function getStepStatus(index, currentStepIndex): StepStatus {
   return StepStatus.INCOMPLETE;
 }
 
+/**
+ * Given contextual details of the current flow path, returns explicit statuses which should be used
+ * at particular steps.
+ *
+ * @param details Flow details
+ *
+ * @return Step status overrides.
+ */
+function getStatusOverrides({
+  addressVerificationMethod,
+}: {
+  addressVerificationMethod: AddressVerificationMethod;
+}) {
+  const statuses: Partial<Record<VerifyFlowStepIndicatorStep, StepStatus>> = {};
+
+  if (addressVerificationMethod === 'gpo') {
+    statuses.verify_phone_or_address = StepStatus.PENDING;
+  }
+
+  return statuses;
+}
+
 function VerifyFlowStepIndicator({ currentStep }: VerifyFlowStepIndicatorProps) {
   const currentStepIndex = STEP_INDICATOR_STEPS.indexOf(FLOW_STEP_STEP_MAPPING[currentStep]);
+  const [addressVerificationMethod] = useContext(AddressVerificationMethodContext);
+  const statusOverrides = getStatusOverrides({ addressVerificationMethod });
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -71,7 +98,7 @@ function VerifyFlowStepIndicator({ currentStep }: VerifyFlowStepIndicatorProps) 
         <StepIndicatorStep
           key={step}
           title={t(`step_indicator.flows.idv.${step}`)}
-          status={getStepStatus(index, currentStepIndex)}
+          status={statusOverrides[step] || getStepStatus(index, currentStepIndex)}
         />
       ))}
     </StepIndicator>
