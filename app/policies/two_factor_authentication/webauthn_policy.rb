@@ -21,6 +21,14 @@ module TwoFactorAuthentication
       platform_configured?
     end
 
+    def roaming_configured?
+      mfa_user.webauthn_roaming_configurations.any?
+    end
+
+    def roaming_enabled?
+      roaming_configured?
+    end
+
     def visible?
       true
     end
