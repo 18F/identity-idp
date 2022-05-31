@@ -672,6 +672,16 @@ module AnalyticsEvents
     )
   end
 
+  # User visited IDV password confirm page
+  def idv_password_confirm_visited
+    track_event('IdV: password confirm visited')
+  end
+
+  # User submitted IDV password confirm page
+  def idv_password_confirm_submitted
+    track_event('IdV: password confirm submitted')
+  end
+
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
