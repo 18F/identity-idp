@@ -4,12 +4,6 @@ import { t } from '@18f/identity-i18n';
 import AddressVerificationMethodContext from './context/address-verification-method-context';
 import type { AddressVerificationMethod } from './context/address-verification-method-context';
 
-// i18n-tasks-use t('step_indicator.flows.idv.getting_started')
-// i18n-tasks-use t('step_indicator.flows.idv.verify_id')
-// i18n-tasks-use t('step_indicator.flows.idv.verify_info')
-// i18n-tasks-use t('step_indicator.flows.idv.verify_phone_or_address')
-// i18n-tasks-use t('step_indicator.flows.idv.secure_account')
-
 type VerifyFlowStepIndicatorStep =
   | 'getting_started'
   | 'verify_id'
@@ -91,6 +85,12 @@ function VerifyFlowStepIndicator({ currentStep }: VerifyFlowStepIndicatorProps) 
   const currentStepIndex = STEP_INDICATOR_STEPS.indexOf(FLOW_STEP_STEP_MAPPING[currentStep]);
   const [addressVerificationMethod] = useContext(AddressVerificationMethodContext);
   const statusOverrides = getStatusOverrides({ addressVerificationMethod });
+
+  // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_info')
+  // i18n-tasks-use t('step_indicator.flows.idv.verify_phone_or_address')
+  // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
