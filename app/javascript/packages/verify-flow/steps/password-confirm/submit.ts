@@ -7,6 +7,8 @@ import type { VerifyFlowValues } from '../../verify-flow';
  */
 export const API_ENDPOINT = '/api/verify/v2/password_confirm';
 
+export class PasswordSubmitError extends FormError {}
+
 /**
  * Successful API response shape.
  */
@@ -33,7 +35,7 @@ async function submit({ userBundleToken, password }: VerifyFlowValues) {
 
   if (isErrorResponse(json)) {
     const [field, [error]] = Object.entries(json.error)[0];
-    throw new FormError(error, { field });
+    throw new PasswordSubmitError(error, { field });
   }
 
   return { personalKey: json.personal_key };
