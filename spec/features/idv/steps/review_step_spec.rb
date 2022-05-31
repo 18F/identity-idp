@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'idv review step', :js do
   include IdvStepHelper
 
-  it 'routes to root if not signed in', driver: :desktop_rack_test do
+  it 'routes to root if not signed in', js: false, driver: :desktop_rack_test do
     visit idv_review_path
 
     expect(current_path).to eq(root_path)
