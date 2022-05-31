@@ -7,16 +7,20 @@
 <p class='margin-top-1 margin-bottom-4'><%= t('mfa.account_info') %></p>
 
 <div class="col-12">
+<%= @next_path %>
+<%= heading_content %>
   <%= link_to(
-        second_mfa_setup_path,
+        @next_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { t('mfa.add') } %>
 </div>
 
-<%= button_to(
-      auth_method_confirmation_skip_path,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-    ) do %>
-  <%= t('mfa.skip') %>
+<% unless enforce_second_mfa? %>
+  <%= button_to(
+        auth_method_confirmation_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= t('mfa.skip') %>
+  <% end %>
 <% end %>

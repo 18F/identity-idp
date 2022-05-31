@@ -1,9 +1,11 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
-  before_action :confirm_two_factor_authenticated, except: [:show]
+  before_action :confirm_two_factor_authenticated, except: [:show, :update, :suggest]
+
+  helper_method :heading_content, :enforce_second_mfa?
 
   def show
-    @next_path = second_mfa_setup_path
+    @next_path = next_path
   end
 
   def skip
@@ -22,6 +24,21 @@ class MfaConfirmationController < ApplicationController
     else
       handle_invalid_password
     end
+  end
+
+  def heading_content
+    return 'test e' if enforce_second_mfa?
+    return 'test'
+  end
+
+  def next_path
+    return second_mfa_setup_non_restricted_path if enforce_second_mfa?
+    second_mfa_setup_path
+  end
+
+  def enforce_second_mfa?
+     IdentityConfig.store.select_multiple_mfa_options && !MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+     true
   end
 
   private
