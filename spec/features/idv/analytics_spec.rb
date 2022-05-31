@@ -34,17 +34,19 @@ feature 'Analytics Regression', js: true do
       'IdV: phone of record visited' => {},
       'IdV: phone confirmation form' => { success: true, errors: {}, phone_type: :mobile, types: [:fixed_or_mobile], carrier: 'Test Mobile Carrier', country_code: 'US', area_code: '202' },
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { messages: [], exception: nil, context: { stages: [{ address: 'AddressMock' }] }, transaction_id: 'address-mock-transaction-id-123', timed_out: false }, new_phone_added: false },
-      'IdV: review info visited' => {},
-      'IdV: review complete' => {},
-      'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
     }
     {
       FSMv1: common_events.merge(
+        'IdV: review info visited' => {},
+        'IdV: review complete' => {},
+        'IdV: final resolution' => { success: true },
         'Frontend: IdV: show personal key modal' => {},
       ),
       FSMv2: common_events.merge(
+        'IdV: password confirm visited' => {},
+        'IdV: password confirm submitted' => {},
         'IdV: personal key confirm visited' => {},
         'IdV: personal key confirm submitted' => {},
       ),
@@ -58,7 +60,7 @@ feature 'Analytics Regression', js: true do
 
   {
     FSMv1: [],
-    FSMv2: %w[personal_key personal_key_confirm],
+    FSMv2: %w[password_confirm personal_key personal_key_confirm],
   }.each do |flow_version, steps_enabled|
     context flow_version do
       before do
