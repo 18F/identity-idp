@@ -24,10 +24,14 @@ feature 'doc auth verify step', :js do
     )
   end
 
-  it 'masks the ssn' do
+  it 'masks the ssn until toggled visible' do
     expect(page).to have_text('9**-**-***4')
-    expect(page.find('.masked-text__text', text: DocAuthHelper::GOOD_SSN)).
-      to match_css('.display-none').or have_ancestor('.display-none')
+    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
+
+    check t('forms.ssn.show')
+
+    expect(page).not_to have_text('9**-**-***4')
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
 
   it 'proceeds to the next page upon confirmation' do
