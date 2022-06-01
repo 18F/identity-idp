@@ -1,6 +1,8 @@
 module Api
   module Verify
     class PasswordConfirmController < BaseController
+      REQUIRED_STEP = 'password_confirm'.freeze
+
       def create
         result, personal_key = Api::ProfileCreationForm.new(
           password: verify_params[:password],
@@ -21,10 +23,6 @@ module Api
       end
 
       private
-
-      def required_step
-        'password_confirm'
-      end
 
       def verify_params
         params.permit(:password, :user_bundle_token)
