@@ -231,13 +231,12 @@ feature 'doc auth verify step', :js do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
-      click_continue
-      # FLAKE: this errors due to some race condition, likely due to polling in the browser
+      click_idv_continue
       expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_RESULT_MISSING, {})
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_continue
+      click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
     end
   end
@@ -280,16 +279,11 @@ feature 'doc auth verify step', :js do
       allow_any_instance_of(ApplicationController).
         to receive(:analytics).and_return(fake_analytics)
 
-      click_continue
-      # FLAKE: this errors due to some race condition, likely due to polling in the browser
-      # expect(fake_analytics).to have_logged_event(
-      #   Analytics::PROOFING_RESOLUTION_RESULT_MISSING,
-      #   {},
-      # )
+      click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
-      click_continue
+      click_idv_continue
       expect(page).to have_current_path(idv_phone_path)
     end
   end
