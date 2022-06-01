@@ -20,9 +20,9 @@ class RemoveOldThrottlesJob < ApplicationJob
     total_removed = 0
 
     loop do
-      removed_count = Throttle.
+      removed_count = DatabaseThrottle.
         where('updated_at < ?', now - (WINDOW + max_window.minutes)).
-        or(Throttle.where(updated_at: nil)).
+        or(DatabaseThrottle.where(updated_at: nil)).
         limit(limit).
         delete_all
 

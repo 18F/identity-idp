@@ -21,15 +21,25 @@ class PhoneInputComponent < BaseComponent
   end
 
   def supported_country_codes
-    codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
-    codes &= allowed_countries if allowed_countries
-    codes
+    @supported_country_codes ||= begin
+      codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
+      codes &= allowed_countries if allowed_countries
+      codes
+    end
+  end
+
+  def translated_country_code_names
+    supported_country_codes.map do |code|
+      code = code.downcase
+      [code, I18n.t("countries.#{code}")]
+    end.to_h
   end
 
   def international_phone_codes
     supported_country_codes.
       map do |code_key|
-        code_data = PhoneNumberCapabilities::INTERNATIONAL_CODES[code_key]
+        code_data = PhoneNumberCapabilities.translated_international_codes[code_key]
+
         [
           international_phone_code_label(code_data),
           code_key,

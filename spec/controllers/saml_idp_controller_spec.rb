@@ -10,7 +10,7 @@ describe SamlIdpController do
       stub_analytics
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
-      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+      expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
 
       delete :logout
     end
@@ -20,7 +20,7 @@ describe SamlIdpController do
       stub_analytics
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
-      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+      expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
@@ -29,7 +29,7 @@ describe SamlIdpController do
       stub_analytics
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
-      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+      expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
@@ -553,8 +553,11 @@ describe SamlIdpController do
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: ial)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: ial,
+            billed_ial: [ial, 2].min,
+          )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
@@ -707,8 +710,11 @@ describe SamlIdpController do
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 0)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 0,
+            billed_ial: 2,
+          )
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ialmax_settings)
@@ -1869,8 +1875,11 @@ describe SamlIdpController do
                service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 1)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 1,
+            billed_ial: 1,
+          )
 
         generate_saml_response(user)
       end
@@ -1903,8 +1912,11 @@ describe SamlIdpController do
                service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SP_REDIRECT_INITIATED,
-               ial: 1)
+          with(
+            Analytics::SP_REDIRECT_INITIATED,
+            ial: 1,
+            billed_ial: 1,
+          )
 
         generate_saml_response(user)
       end

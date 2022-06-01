@@ -41,7 +41,7 @@ module IdvSession
   end
 
   def idv_attempter_throttled?
-    Throttle.for(
+    Throttle.new(
       user: effective_user,
       throttle_type: :idv_resolution,
     ).throttled?

@@ -34,8 +34,8 @@ class EmailAddress < ApplicationRecord
       return nil if !email.is_a?(String) || email.empty?
 
       email = email.downcase.strip
-      email_fingerprint = create_fingerprint(email)
-      find_by(email_fingerprint: email_fingerprint)
+      email_fingerprints = create_fingerprints(email)
+      find_by(email_fingerprint: email_fingerprints)
     end
 
     def find_with_confirmation_token(token)
@@ -47,9 +47,9 @@ class EmailAddress < ApplicationRecord
       return nil if email.to_s.empty?
 
       email = email.downcase.strip
-      email_fingerprint = create_fingerprint(email)
+      email_fingerprints = create_fingerprints(email)
       # rubocop:disable Rails/SkipsModelValidations
-      EmailAddress.where(user_id: user_id, email_fingerprint: email_fingerprint).update_all(
+      EmailAddress.where(user_id: user_id, email_fingerprint: email_fingerprints).update_all(
         last_sign_in_at: Time.zone.now,
         updated_at: Time.zone.now,
       )
@@ -58,8 +58,8 @@ class EmailAddress < ApplicationRecord
 
     private
 
-    def create_fingerprint(email)
-      Pii::Fingerprinter.fingerprint(email)
+    def create_fingerprints(email)
+      [Pii::Fingerprinter.fingerprint(email), *Pii::Fingerprinter.previous_fingerprints(email)]
     end
   end
 end

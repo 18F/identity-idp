@@ -67,12 +67,13 @@ module Idv
 
       def verify_document_capture_session
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
-        @verify_document_capture_session = if hybrid_flow_mobile?
-          document_capture_session
-        else
-          DocumentCaptureSession.find_by(
-            uuid: flow_session[verify_document_capture_session_uuid_key],
-          )
+        @verify_document_capture_session =
+          if hybrid_flow_mobile?
+            document_capture_session
+          else
+            DocumentCaptureSession.find_by(
+              uuid: flow_session[verify_document_capture_session_uuid_key],
+            )
         end
       end
 
@@ -98,7 +99,7 @@ module Idv
 
       def remaining_attempts
         return nil unless verify_document_capture_session
-        Throttle.for(
+        Throttle.new(
           user: verify_document_capture_session.user,
           throttle_type: :idv_doc_auth,
         ).remaining_count

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::VoiceSelectionPresenter do
-  let(:subject) { described_class.new(phone) }
+  let(:subject) { described_class.new(configuration: phone) }
 
   describe '#type' do
     context 'when a user has only one phone configuration' do

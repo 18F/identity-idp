@@ -80,8 +80,7 @@ class Analytics
   end
 
   def track_mfa_submit_event(attributes)
-    track_event(
-      MULTI_FACTOR_AUTH,
+    multi_factor_auth(
       **attributes,
       pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
     )
@@ -138,16 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited' # Previously: "Account verification visited"
-  INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
-  LOGOUT_INITIATED = 'Logout Initiated'
-  MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
-  MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'
-  MULTI_FACTOR_AUTH_ENTER_PIV_CAC = 'Multi-Factor Authentication: enter PIV CAC visited'
-  MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT = 'Multi-Factor Authentication: enter TOTP visited'
-  MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT = 'Multi-Factor Authentication: enter personal key visited'
-  MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT = 'Multi-Factor Authentication: enter backup code visited'
-  MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT = 'Multi-Factor Authentication: enter webAuthn authentication visited'
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'
   MULTI_FACTOR_AUTH_OPTION_LIST = 'Multi-Factor Authentication: option list'
   MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'
@@ -158,11 +147,6 @@ class Analytics
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'
-  PASSWORD_CHANGED = 'Password Changed'
-  PASSWORD_CREATION = 'Password Creation'
-  PASSWORD_MAX_ATTEMPTS = 'Password Max Attempts Reached'
-  PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'
-  PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'
   PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'

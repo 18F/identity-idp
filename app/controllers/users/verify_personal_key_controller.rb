@@ -42,7 +42,7 @@ module Users
     private
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :verify_personal_key,
       )

@@ -25,7 +25,7 @@ describe SignOutController do
       allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
 
       expect(@analytics).
-        to receive(:track_event).with(Analytics::LOGOUT_INITIATED, method: 'cancel link')
+        to receive(:track_event).with('Logout Initiated', hash_including(method: 'cancel link'))
 
       get :destroy
     end

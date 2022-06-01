@@ -62,11 +62,42 @@
   </div>
 <% end %>
 
-<div class="margin-bottom-4 card profile-info-box">
-  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
+<% if TwoFactorAuthentication::PhonePolicy.new(current_user).configured? %>
+  <div class="margin-bottom-4 card profile-info-box">
     <%= render 'phone' %>
-  <% end %>
-</div>
+  </div>
+<% end %>
+
+<% if TwoFactorAuthentication::AuthAppPolicy.new(current_user).configured? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/auth_apps' %>
+  </div>
+<% end %>
+
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).platform_configured? &&
+    IdentityConfig.store.platform_authentication_enabled %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/webauthn_platform' %>
+  </div>
+<% end %>
+
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).roaming_configured? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/webauthn_roaming' %>
+  </div>
+<% end %>
+
+<% if TwoFactorAuthentication::PivCacPolicy.new(current_user).configured? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/piv_cac' %>
+  </div>
+<% end %>
+
+<% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
+  <div class="margin-bottom-4 card profile-info-box">
+    <%= render 'accounts/backup_codes' %>
+  </div>
+<% end %>
 
 <% if @presenter.show_pii_partial? %>
   <%= render 'accounts/pii', pii: @presenter.pii,

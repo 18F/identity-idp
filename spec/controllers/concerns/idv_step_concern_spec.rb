@@ -95,13 +95,4 @@ describe 'IdvStepConcern' do
       end
     end
   end
-
-  def create_maxed_throttle(attempted_at = Time.zone.now)
-    Throttle.create(
-      throttle_type: 5,
-      user_id: user.id,
-      attempts: 5,
-      attempted_at: attempted_at,
-    )
-  end
 end

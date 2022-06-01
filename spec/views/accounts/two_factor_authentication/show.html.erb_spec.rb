@@ -77,4 +77,25 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
       )
     end
   end
+
+  context 'when multiple mfa is enabled' do
+    let(:user) { create(:user, :with_phone, :with_authentication_app) }
+    before do
+      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return true
+      assign(
+        :presenter,
+        AccountShowPresenter.new(
+          decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+          sp_session_request_url: nil, sp_name: nil,
+          locked_for_session: false
+        ),
+      )
+    end
+
+    it 'disables delete buttons for the last non restricted mfa method with phone configured' do
+      render
+
+      expect(rendered).to_not have_link(t('forms.buttons.disable', href: auth_app_delete_path))
+    end
+  end
 end

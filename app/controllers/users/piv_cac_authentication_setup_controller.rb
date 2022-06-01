@@ -122,7 +122,9 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      return if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
+      if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+        return
+      end
       redirect_to account_two_factor_authentication_path
     end
 

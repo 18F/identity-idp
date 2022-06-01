@@ -29,31 +29,31 @@ namespace :convert_application_yml_to_proper_types do
   end
 
   def value_types
-      @value_types ||= begin
-        types = {}
-        IO.foreach("#{Rails.root}/lib/identity_config.rb") do |line|
-          if (line.strip.index('config.add') == 0)
-            line = line.split(':')
-            name = nil
-            type = nil
-            if line.length == 2
-              name = line[1].strip[0..-2]
-              type = 'string'
-            elsif line.length == 4
-              name = line[1].split(',').first
-              type = line.last.strip[0..-2]
-            elsif line.length == 5
-              name = line[1].split(',').first
-              type = line[3].split(',').first
-            elsif line.length == 6
-              name = line[1].split(',').first
-              type = line[3].split(',').first
-            end
-            types[name] = type
+    @value_types ||= begin
+      types = {}
+      IO.foreach("#{Rails.root}/lib/identity_config.rb") do |line|
+        if (line.strip.index('config.add') == 0)
+          line = line.split(':')
+          name = nil
+          type = nil
+          if line.length == 2
+            name = line[1].strip[0..-2]
+            type = 'string'
+          elsif line.length == 4
+            name = line[1].split(',').first
+            type = line.last.strip[0..-2]
+          elsif line.length == 5
+            name = line[1].split(',').first
+            type = line[3].split(',').first
+          elsif line.length == 6
+            name = line[1].split(',').first
+            type = line[3].split(',').first
           end
+          types[name] = type
         end
-        types
       end
+      types
+    end
   end
 
   def convert(value, value_type)

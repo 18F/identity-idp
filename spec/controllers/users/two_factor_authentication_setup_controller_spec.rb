@@ -102,6 +102,7 @@ describe Users::TwoFactorAuthenticationSetupController do
     context 'when the selection is only phone and multi mfa is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
         stub_sign_in_before_2fa
 
         patch :create, params: {

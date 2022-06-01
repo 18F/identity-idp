@@ -1,6 +1,49 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
-import ValidatedField from './validated-field';
+import ValidatedField, { getErrorMessages } from './validated-field';
+
+describe('getErrorMessages', () => {
+  context('undefined type', () => {
+    it('returns the expected messages', () => {
+      const messages = getErrorMessages();
+
+      expect(messages).to.deep.equal({
+        valueMissing: 'simple_form.required.text',
+      });
+    });
+  });
+
+  context('text type', () => {
+    it('returns the expected messages', () => {
+      const messages = getErrorMessages('text');
+
+      expect(messages).to.deep.equal({
+        valueMissing: 'simple_form.required.text',
+      });
+    });
+  });
+
+  context('checkbox type', () => {
+    it('returns the expected messages', () => {
+      const messages = getErrorMessages('checkbox');
+
+      expect(messages).to.deep.equal({
+        valueMissing: 'forms.validation.required_checkbox',
+      });
+    });
+  });
+
+  context('email type', () => {
+    it('returns the expected messages', () => {
+      const messages = getErrorMessages('email');
+
+      expect(messages).to.deep.equal({
+        valueMissing: 'simple_form.required.text',
+        typeMismatch: 'valid_email.validations.email.invalid',
+      });
+    });
+  });
+});
 
 describe('ValidatedField', () => {
   it('renders a validated input', () => {
@@ -34,7 +77,7 @@ describe('ValidatedField', () => {
 
   it('is described by associated error message', () => {
     const validate = sinon.stub().throws(new Error('oops'));
-    const { getByRole, baseElement } = render(<ValidatedField validate={validate} />);
+    const { getByRole, baseElement, rerender } = render(<ValidatedField validate={validate} />);
 
     const input = getByRole('textbox') as HTMLInputElement;
     input.reportValidity();
@@ -42,6 +85,12 @@ describe('ValidatedField', () => {
     const errorMessage = baseElement.querySelector(`#${input.getAttribute('aria-describedby')}`)!;
     expect(errorMessage.classList.contains('usa-error-message')).to.be.true();
     expect(errorMessage.textContent).to.equal('oops');
+
+    validate.resetBehavior();
+    rerender(<ValidatedField validate={validate} required />);
+    input.reportValidity();
+
+    expect(errorMessage.textContent).to.equal('simple_form.required.text');
   });
 
   it('merges classNames', () => {

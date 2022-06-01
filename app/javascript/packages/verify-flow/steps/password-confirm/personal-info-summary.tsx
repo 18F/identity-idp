@@ -1,15 +1,23 @@
 import { parse, format } from 'libphonenumber-js';
 import { t } from '@18f/identity-i18n';
+import type { VerifyFlowValues } from '../../verify-flow';
 
-function PersonalInfoSummary({ pii }) {
+interface PersonalInfoSummaryProps {
+  pii: VerifyFlowValues;
+}
+
+function PersonalInfoSummary({ pii }: PersonalInfoSummaryProps) {
   const { firstName, lastName, dob, address1, address2, city, state, zipcode, ssn, phone } = pii;
   const phoneNumber = parse(`+1${phone}`);
   const formatted = format(phoneNumber, 'NATIONAL');
 
-  function getDateFormat(date) {
-    date = new Date(date);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString(document.documentElement.lang, options);
+  function getDateFormat(date: string) {
+    return new Date(date).toLocaleDateString(document.documentElement.lang, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
   }
 
   return (
@@ -20,13 +28,22 @@ function PersonalInfoSummary({ pii }) {
       </div>
       <div className="margin-top-4 h6">{t('idv.review.mailing_address')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">
-        {address1} <br />
-        {address2 || ''}
+        {address1}
         <br />
+        {address2 && (
+          <>
+            {address2}
+            <br />
+          </>
+        )}
         {city && state ? `${city}, ${state} ${zipcode}` : ''}
       </div>
-      <div className="margin-top-4 h6">{t('idv.review.dob')}</div>
-      <div className="h4 text-bold ico-absolute ico-absolute-success">{getDateFormat(dob)}</div>
+      {dob && (
+        <>
+          <div className="margin-top-4 h6">{t('idv.review.dob')}</div>
+          <div className="h4 text-bold ico-absolute ico-absolute-success">{getDateFormat(dob)}</div>
+        </>
+      )}
       <div className="margin-top-4 h6">{t('idv.review.ssn')}</div>
       <div className="h4 text-bold ico-absolute ico-absolute-success">{ssn}</div>
       {phone && (

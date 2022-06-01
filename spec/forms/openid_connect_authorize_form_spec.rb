@@ -312,6 +312,48 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
+  describe '#ial' do
+    context 'when IAL1 passed' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 1' do
+        expect(form.ial).to eq(1)
+      end
+    end
+
+    context 'when IAL2 passed' do
+      let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 2' do
+        expect(form.ial).to eq(2)
+      end
+    end
+
+    context 'when IALMAX passed' do
+      let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 0' do
+        expect(form.ial).to eq(0)
+      end
+    end
+
+    context 'when LOA1 passed' do
+      let(:acr_values) { Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 1' do
+        expect(form.ial).to eq(1)
+      end
+    end
+
+    context 'when LOA3 passed' do
+      let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+
+      it 'returns 2' do
+        expect(form.ial).to eq(2)
+      end
+    end
+  end
+
   describe '#verified_within' do
     context 'without a verified_within' do
       let(:verified_within) { nil }

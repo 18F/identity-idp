@@ -66,6 +66,19 @@ RSpec.configure do |config|
     end
   end
 
+  if !ENV['CI']
+    config.before(js: true) do
+      # rubocop:disable Style/GlobalVars
+      next if defined?($ran_asset_build)
+      $ran_asset_build = true
+      # rubocop:enable Style/GlobalVars
+      print '                       Bundling JavaScript and stylesheets... '
+      system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
+      system 'yarn build:css > /dev/null 2>&1'
+      puts '✨ Done!'
+    end
+  end
+
   config.before(:each) do
     I18n.locale = :en
   end
@@ -91,6 +104,7 @@ RSpec.configure do |config|
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
     PushNotification::LocalEventQueue.clear!
+    REDIS_THROTTLE_POOL.with { |namespaced| namespaced.redis.flushdb }
   end
 
   config.before(:each) do

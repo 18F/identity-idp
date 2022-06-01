@@ -6,9 +6,7 @@ module TwoFactorAuthentication
     before_action :check_personal_key_enabled
 
     def show
-      analytics.track_event(
-        Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
-      )
+      analytics.multi_factor_auth_enter_personal_key_visit(context: context)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
     end

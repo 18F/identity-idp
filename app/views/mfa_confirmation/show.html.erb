@@ -1,14 +1,14 @@
-<% title @presenter.title %>
+<% title t('titles.mfa_setup.suggest_second_mfa') %>
 
 <%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
+<%= render PageHeadingComponent.new.with_content(t('titles.mfa_setup.suggest_second_mfa')) %>
 
-<p class='margin-top-1 margin-bottom-4'><%= @presenter.info %></p>
+<p class='margin-top-1 margin-bottom-4'><%= t('mfa.account_info') %></p>
 
 <div class="col-12">
   <%= link_to(
-        @presenter.next_path,
+        second_mfa_setup_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { t('mfa.add') } %>
 </div>

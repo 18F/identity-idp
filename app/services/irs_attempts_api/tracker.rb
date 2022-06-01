@@ -16,6 +16,7 @@ module IrsAttemptsApi
         event_metadata: metadata,
       ).build_event_token
       redis_client.write_event(jti: jti, jwe: jwe)
+      jti
     end
 
     private

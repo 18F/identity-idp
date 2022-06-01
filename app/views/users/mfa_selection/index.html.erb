@@ -2,16 +2,10 @@
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.two_factor_choice')) %>
 
-<% if IdentityConfig.store.select_multiple_mfa_options %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('mfa.info') %>
-  <% end %>
-<% end %>
-
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
-                       url: mfa_setup_path do |f| %>
+                       url: second_mfa_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
@@ -30,4 +24,3 @@
 <%= render 'shared/cancel', link: destroy_user_session_path %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
-

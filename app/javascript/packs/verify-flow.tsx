@@ -40,11 +40,6 @@ interface AppRootValues {
   storeKey: string;
 
   /**
-   * URL for reset password page in rails used for redirect
-   */
-  resetPasswordUrl: string;
-
-  /**
    * Signed JWT containing user data.
    */
   userBundleToken: string;
@@ -62,7 +57,6 @@ const {
   startOverUrl: startOverURL,
   cancelUrl: cancelURL,
   completionUrl: completionURL,
-  resetPasswordUrl,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -74,10 +68,6 @@ const camelCase = (string: string) =>
 
 const mapKeys = (object: object, mapKey: (key: string) => string) =>
   Object.entries(object).map(([key, value]) => [mapKey(key), value]);
-
-function onComplete() {
-  window.location.href = completionURL;
-}
 
 const storage = new SecretSessionStorage<SecretValues>('verify');
 
@@ -99,6 +89,11 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
     Object.assign(initialValues, pii);
   }
 
+  function onComplete() {
+    storage.clear();
+    window.location.href = completionURL;
+  }
+
   render(
     <SecretsContextProvider storage={storage}>
       <VerifyFlow
@@ -106,7 +101,6 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         enabledStepNames={enabledStepNames}
         startOverURL={startOverURL}
         cancelURL={cancelURL}
-        resetPasswordUrl={resetPasswordUrl}
         basePath={basePath}
         onComplete={onComplete}
       />

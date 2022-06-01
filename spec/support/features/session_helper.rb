@@ -229,7 +229,7 @@ module Features
     def confirm_last_user
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
-      User.last.update(
+      User.last.email_addresses.first.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
 

@@ -7,6 +7,10 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-front.jpg'), 'image/jpeg')
   end
 
+  def self.document_front_image_data_uri
+    "data:image/jpeg;base64,#{Base64.strict_encode64(document_front_image)}"
+  end
+
   def self.document_back_image
     load_image_data('id-back.jpg')
   end

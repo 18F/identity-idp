@@ -32,7 +32,7 @@ describe Idv::InPersonController do
     it 'redirects to the first step' do
       get :index
 
-      expect(response).to redirect_to idv_in_person_step_url(step: :welcome)
+      expect(response).to redirect_to idv_in_person_step_url(step: :location)
     end
   end
 end

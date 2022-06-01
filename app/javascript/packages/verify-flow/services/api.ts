@@ -1,4 +1,4 @@
-export interface ErrorResponse<Field extends string> {
+export interface ErrorResponse<Field extends string = string> {
   error: Record<Field, [string, ...string[]]>;
 }
 

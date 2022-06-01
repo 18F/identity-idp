@@ -28,7 +28,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'user has pending profile' do
       it 'renders page' do
-        expect(@analytics).to receive(:track_event).with(Analytics::IDV_GPO_VERIFICATION_VISITED)
+        expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
 
         action
 
@@ -36,7 +36,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       it 'shows throttled page is user is throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
 
         action
 
@@ -56,13 +56,13 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'with throttle reached' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_VISITED,
+          'IdV: GPO verification visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
