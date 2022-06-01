@@ -71,7 +71,7 @@ feature 'IdV phone OTP delivery method selection', :js do
 
     it 'displays an error message' do
       expect(Telephony).to_not receive(:send_confirmation_otp)
-      expect(page).to have_content(t('errors.messages.must_have_us_country_code'))
+      expect(page).to have_content(t('errors.messages.phone_country_constraint_usa'))
       expect(current_path).to eq(idv_phone_path)
     end
   end
