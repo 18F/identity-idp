@@ -129,6 +129,25 @@ describe Users::SessionsController, devise: true do
       sign_in_as_user
 
       get :destroy
+      expect(controller.current_user).to be nil
+    end
+  end
+
+  describe 'DELETE /logout' do
+    it 'tracks a logout event' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with(
+        'Logout Initiated',
+        hash_including(
+          sp_initiated: false,
+          oidc: false,
+        ),
+      )
+
+      sign_in_as_user
+
+      delete :destroy
+      expect(controller.current_user).to be nil
     end
   end
 

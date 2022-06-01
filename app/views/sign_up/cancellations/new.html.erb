@@ -14,11 +14,19 @@
     <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
   </ul>
 
-  <% c.action_button(
-       action: ->(**tag_options, &block) do
-         button_to(destroy_user_path, method: :delete, **tag_options, &block)
-       end,
-     ) { t('forms.buttons.cancel') } %>
+  <% if IdentityConfig.store.new_sign_up_cancellation_url_enabled %>
+    <% c.action_button(
+         action: ->(**tag_options, &block) do
+           button_to(sign_up_destroy_path, method: :delete, **tag_options, &block)
+         end,
+       ) { t('forms.buttons.cancel') } %>
+   <% else %>
+    <% c.action_button(
+         action: ->(**tag_options, &block) do
+           button_to(destroy_user_path, method: :delete, **tag_options, &block)
+         end,
+       ) { t('forms.buttons.cancel') } %>
+   <% end %>
 
   <% c.action_button(
        action: ->(**tag_options, &block) do

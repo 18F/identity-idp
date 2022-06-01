@@ -448,7 +448,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.3.1)
     rack-attack (6.5.0)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)
@@ -762,6 +762,7 @@ DEPENDENCIES
   pry-rails
   psych
   puma
+  rack (>= 2.2.3.1)
   rack-attack (>= 6.2.1)
   rack-cors (>= 1.0.5)
   rack-headers_filter

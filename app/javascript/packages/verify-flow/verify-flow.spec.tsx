@@ -33,6 +33,7 @@ describe('VerifyFlow', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm submitted');
 
     // Personal key
+    expect(sessionStorage.getItem('completedStep')).to.equal('password_confirm');
     expect(document.title).to.equal('titles.idv.personal_key - Example App');
     await findByText('idv.messages.confirm');
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key visited');
@@ -41,6 +42,7 @@ describe('VerifyFlow', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key submitted');
 
     // Personal key confirm
+    expect(sessionStorage.getItem('completedStep')).to.equal('personal_key');
     expect(document.title).to.equal('titles.idv.personal_key - Example App');
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: personal key confirm visited');
     expect(window.location.pathname).to.equal('/personal_key_confirm');
@@ -49,6 +51,7 @@ describe('VerifyFlow', () => {
     await userEvent.keyboard('{Enter}');
 
     expect(onComplete).to.have.been.called();
+    expect(sessionStorage.getItem('completedStep')).to.be.null();
   });
 
   context('with specific enabled steps', () => {

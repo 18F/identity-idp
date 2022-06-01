@@ -672,6 +672,16 @@ module AnalyticsEvents
     )
   end
 
+  # User visited IDV password confirm page
+  def idv_password_confirm_visited
+    track_event('IdV: password confirm visited')
+  end
+
+  # User submitted IDV password confirm page
+  def idv_password_confirm_submitted
+    track_event('IdV: password confirm submitted')
+  end
+
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -1127,7 +1137,70 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when a user sets up a multi factor auth method
+# Max multi factor auth attempts met
+  def multi_factor_auth_max_attempts
+    track_event('Multi-Factor Authentication: max attempts reached')
+  end
+
+  # Multi factor selected from auth options list
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] selection
+  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
+    track_event(
+      'Multi-Factor Authentication: option list',
+      success: success,
+      errors: errors,
+      selection: selection,
+      **extra,
+    )
+  end
+
+  # User visited the list of multi-factor options to use
+  def multi_factor_auth_option_list_visit
+    track_event('Multi-Factor Authentication: option list visited')
+  end
+
+  # Multi factor auth phone setup
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] otp_delivery_preference
+  # @param [String] area_code
+  # @param [String] carrier
+  # @param [String] country_code
+  # @param [String] phone_type
+  # @param [Hash] types
+  # @param [Hash] pii_like_keypaths
+  def multi_factor_auth_phone_setup(success:,
+                                    errors:,
+                                    otp_delivery_preference:,
+                                    area_code:,
+                                    carrier:,
+                                    country_code:,
+                                    phone_type:,
+                                    types:,
+                                    **extra)
+
+    track_event(
+      'Multi-Factor Authentication: phone setup',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      area_code: area_code,
+      carrier: carrier,
+      country_code: country_code,
+      phone_type: phone_type,
+      types: types,
+      **extra,
+    )
+  end
+
+  # Max multi factor max otp sends reached
+  def multi_factor_auth_max_sends
+    track_event('Multi-Factor Authentication: max otp sends reached')
+  end
+
+# Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
   def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
     track_event(

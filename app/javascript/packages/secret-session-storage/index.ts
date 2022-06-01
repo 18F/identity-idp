@@ -87,6 +87,14 @@ class SecretSessionStorage<S extends Record<string, JSONValue>> {
   }
 
   /**
+   * Remove all values from in-memory and persisted storage.
+   */
+  clear() {
+    sessionStorage.removeItem(this.storageKey);
+    this.storage = {} as S;
+  }
+
+  /**
    * Reads and decrypts storage object, if available.
    */
   async #readStorage() {

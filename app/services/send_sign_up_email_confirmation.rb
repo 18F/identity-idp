@@ -8,7 +8,6 @@ class SendSignUpEmailConfirmation
   end
 
   def call(request_id: nil, instructions: nil, password_reset_requested: false)
-    remove_legacy_confirmation_info_on_user
     update_email_address_record
 
     if password_reset_requested && !user.confirmed?
@@ -49,13 +48,6 @@ class SendSignUpEmailConfirmation
     email_address.update!(
       confirmation_token: confirmation_token,
       confirmation_sent_at: confirmation_sent_at,
-    )
-  end
-
-  def remove_legacy_confirmation_info_on_user
-    email_address.user.update!(
-      confirmation_token: nil,
-      confirmation_sent_at: nil,
     )
   end
 

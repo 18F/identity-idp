@@ -138,4 +138,22 @@ describe('SecretSessionStorage', () => {
       expect(storage2.getItems()).to.deep.equal({});
     });
   });
+
+  describe('#clear', () => {
+    it('removes values from in-memory storage', async () => {
+      const storage = createStorage();
+      await storage.setItem('foo', 'bar');
+      storage.clear();
+
+      expect(storage.getItems()).to.deep.equal({});
+    });
+
+    it('removes values from persisted storage', async () => {
+      const storage = createStorage();
+      await storage.setItem('foo', 'bar');
+      storage.clear();
+
+      expect(sessionStorage.getItem(STORAGE_KEY)).be.null();
+    });
+  });
 });
