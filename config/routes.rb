@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
+      delete '/logout' => 'users/sessions#destroy'
       get '/active' => 'users/sessions#active'
       post '/sessions/keepalive' => 'users/sessions#keepalive'
 
