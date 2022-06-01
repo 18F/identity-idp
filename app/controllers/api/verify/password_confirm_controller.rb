@@ -1,7 +1,7 @@
 module Api
   module Verify
     class PasswordConfirmController < BaseController
-      REQUIRED_STEP = 'password_confirm'.freeze
+      self.required_step = 'password_confirm'
 
       def create
         result, personal_key = Api::ProfileCreationForm.new(

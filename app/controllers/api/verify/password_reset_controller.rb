@@ -1,7 +1,7 @@
 module Api
   module Verify
     class PasswordResetController < BaseController
-      REQUIRED_STEP = 'password_confirm'.freeze
+      self.required_step = 'password_confirm'
 
       def create
         analytics.idv_forgot_password_confirmed
@@ -14,10 +14,6 @@ module Api
       end
 
       private
-
-      def required_step
-        'password_confirm'
-      end
 
       def reset_password(email, request_id)
         sign_out
