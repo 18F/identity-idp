@@ -17,7 +17,7 @@ module Users
     def non_restricted
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
-      render "index"
+      render 'index'
     end
 
     def update
@@ -34,7 +34,7 @@ module Users
         flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
         redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       end
-      rescue ActionController::ParameterMissing
+    rescue ActionController::ParameterMissing
       flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
       redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end

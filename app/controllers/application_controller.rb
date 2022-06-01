@@ -266,7 +266,8 @@ class ApplicationController < ActionController::Base
   end
 
   def two_factor_kantara_enabled?
-    IdentityConfig.store.kantara_2fa_phone_restricted && MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+    IdentityConfig.store.kantara_2fa_phone_restricted &&
+      MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
   end
 
   def reauthn?
