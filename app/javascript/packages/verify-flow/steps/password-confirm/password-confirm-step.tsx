@@ -28,7 +28,7 @@ const FORGOT_PASSWORD_PATH = 'forgot_password';
 function PasswordConfirmStep({ errors, registerField, onChange, value }: PasswordConfirmStepProps) {
   const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
-  const [addressVerificationMethod] = useContext(AddressVerificationMethodContext);
+  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
   const stepPath = `${basePath}/password_confirm`;
   const [path] = useHistoryParam(undefined, { basePath: stepPath });
   useDidUpdateEffect(onPageTransition, [path]);

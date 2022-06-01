@@ -16,7 +16,7 @@ interface PersonalKeyStepProps extends FormStepComponentProps<VerifyFlowValues> 
 
 function PersonalKeyStep({ value }: PersonalKeyStepProps) {
   const personalKey = value.personalKey!;
-  const [addressVerificationMethod] = useContext(AddressVerificationMethodContext);
+  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
 
   return (
     <>

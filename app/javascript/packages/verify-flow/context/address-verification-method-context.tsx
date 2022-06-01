@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react';
+import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
 
 /**
@@ -24,17 +25,17 @@ interface AddressVerificationMethodContextProviderProps {
 /**
  * Context value.
  */
-type AddressVerificationMethodContextValue = [
+interface AddressVerificationMethodContextValue {
   /**
    * Current address verification method.
    */
-  addressVerificationMethod: AddressVerificationMethod,
+  addressVerificationMethod: AddressVerificationMethod;
 
   /**
    * Setter to update to a new address verification method.
    */
-  setAddressVerificationMethod: (nextMethod: AddressVerificationMethod) => void,
-];
+  setAddressVerificationMethod: (nextMethod: AddressVerificationMethod) => void;
+}
 
 /**
  * Default address verification method.
@@ -44,10 +45,10 @@ const DEFAULT_METHOD: AddressVerificationMethod = 'phone';
 /**
  * Address verification method context container.
  */
-const AddressVerificationMethodContext = createContext<AddressVerificationMethodContextValue>([
-  DEFAULT_METHOD,
-  () => {},
-]);
+const AddressVerificationMethodContext = createContext<AddressVerificationMethodContextValue>({
+  addressVerificationMethod: DEFAULT_METHOD,
+  setAddressVerificationMethod: () => {},
+});
 
 AddressVerificationMethodContext.displayName = 'AddressVerificationMethodContext';
 
@@ -55,10 +56,11 @@ export function AddressVerificationMethodContextProvider({
   initialMethod = DEFAULT_METHOD,
   children,
 }: AddressVerificationMethodContextProviderProps) {
-  const state = useState(initialMethod);
+  const [addressVerificationMethod, setAddressVerificationMethod] = useState(initialMethod);
+  const value = useObjectMemo({ addressVerificationMethod, setAddressVerificationMethod });
 
   return (
-    <AddressVerificationMethodContext.Provider value={state}>
+    <AddressVerificationMethodContext.Provider value={value}>
       {children}
     </AddressVerificationMethodContext.Provider>
   );

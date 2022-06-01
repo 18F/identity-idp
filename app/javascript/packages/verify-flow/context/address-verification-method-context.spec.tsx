@@ -7,7 +7,7 @@ import AddressVerificationMethodContext, {
 
 describe('AddressVerificationMethodContextProvider', () => {
   function TestComponent() {
-    const [addressVerificationMethod, setAddressVerificationMethod] = useContext(
+    const { addressVerificationMethod, setAddressVerificationMethod } = useContext(
       AddressVerificationMethodContext,
     );
     return (
