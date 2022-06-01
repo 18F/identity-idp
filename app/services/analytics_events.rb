@@ -1127,45 +1127,40 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when rules of use is submitted with a success or failure
-  # @param [Boolean] success
-  # @param [Hash] errors
-  def multi_factor_auth_setup(success: nil, errors: nil, **extra)
-    raise extra.inspect
+  # Tracks when a user sets up a multi factor auth method
+  # @param [String] multi_factor_auth_method
+  def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
     track_event(
       'Multi-Factor Authentication Setup',
-      success: success,
-      errors: errors,
+      multi_factor_auth_method: multi_factor_auth_method,
       **extra,
-      )
+    )
   end
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Hash] errors
-  def openid_connect_bearer_token(success: nil, errors: nil, **extra)
-    raise extra.inspect
+  def openid_connect_bearer_token(success:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
       errors: errors,
       **extra,
-      )
+    )
   end
 
   # Tracks when openid authorization request is made
-  # @param [Boolean] success
-  # @param [Hash] errors
-  #
-  #       {:client_id=>"urn:gov:gsa:openidconnect:test", :scope=>"openid profile", :acr_values=>"http://idmanagement.gov/ns/assurance/ial/0", :unauthorized_scope=>false, :user_fully_authenticated=>true}
+  # @param [Array] acr_values
+  # @param [String] client_id
+  # @param [String] scope
+  # @param [String] acr_values
+  # @param [Boolean] unauthorized_scope
+  # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
-    success: nil,
-    errors: nil,
     client_id:,
     scope:,
     acr_values:,
     unauthorized_scope:,
-    error_details: nil,
     user_fully_authenticated:,
     **extra
   )
@@ -1181,14 +1176,13 @@ module AnalyticsEvents
   end
 
   # Tracks when an openid connect token request is made
-  # @param [Boolean] success
-  # @param [Hash] errors
-  def openid_connect_token(success: nil, errors: nil, **extra)
-    raise extra.inspect
+  # @param [String] client_id
+  # @param [String] user_id
+  def openid_connect_token(client_id:, user_id:, **extra)
     track_event(
       'OpenID Connect: token',
-      success: success,
-      errors: errors,
+      client_id: client_id,
+      user_id: user_id,
       **extra,
     )
   end
