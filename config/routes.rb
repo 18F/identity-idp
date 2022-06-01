@@ -226,9 +226,6 @@ Rails.application.routes.draw do
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
     get '/two_factor_options', to: redirect('/authentication_methods_setup')
-    get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
-    patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options', to: redirect('/authentication_methods_setup')
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
