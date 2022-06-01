@@ -15,7 +15,7 @@ describe TwoFactorAuthentication::OptionsController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_OPTION_LIST_VISIT)
+        with('Multi-Factor Authentication: option list visited')
 
       get :index
     end
@@ -87,7 +87,7 @@ describe TwoFactorAuthentication::OptionsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_OPTION_LIST, result)
+        with('Multi-Factor Authentication: option list', result)
 
       post :create, params: { two_factor_options_form: { selection: 'sms' } }
     end
