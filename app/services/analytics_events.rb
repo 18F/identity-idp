@@ -1150,7 +1150,6 @@ module AnalyticsEvents
   end
 
   # Tracks when openid authorization request is made
-  # @param [Array] acr_values
   # @param [String] client_id
   # @param [String] scope
   # @param [String] acr_values
