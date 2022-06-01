@@ -92,8 +92,4 @@ class VerifyController < ApplicationController
       idv_session: idv_session,
     ).token
   end
-
-  def pending_profile?
-    current_user.pending_profile?
-  end
 end
