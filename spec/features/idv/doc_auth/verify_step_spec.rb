@@ -157,18 +157,17 @@ feature 'doc auth verify step', :js do
 
   context 'when the user lives in an AAMVA supported state' do
     it 'performs a resolution and state ID check' do
-      agent = instance_double(Idv::Agent)
-      allow(Idv::Agent).to receive(:new).and_return(agent)
-      allow(agent).to receive(:proof_resolution).and_return(
-        success: true, errors: {}, context: { stages: [] },
-      )
-
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof_resolution).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
@@ -179,12 +178,6 @@ feature 'doc auth verify step', :js do
 
   context 'when the user does not live in an AAMVA supported state' do
     it 'does not perform the state ID check' do
-      agent = instance_double(Idv::Agent)
-      allow(Idv::Agent).to receive(:new).and_return(agent)
-      allow(agent).to receive(:proof_resolution).and_return(
-        success: true, errors: {}, context: { stages: [] },
-      )
-
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         IdentityConfig.store.aamva_supported_jurisdictions -
           [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
@@ -192,6 +185,11 @@ feature 'doc auth verify step', :js do
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof_resolution).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
@@ -203,18 +201,17 @@ feature 'doc auth verify step', :js do
 
   context 'when the SP is in the AAMVA banlist' do
     it 'does not perform the state ID check' do
-      agent = instance_double(Idv::Agent)
-      allow(Idv::Agent).to receive(:new).and_return(agent)
-      allow(agent).to receive(:proof_resolution).and_return(
-        success: true, errors: {}, context: { stages: [] },
-      )
-
       allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
 
       visit_idp_from_sp_with_ial1(:oidc)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
+      agent = instance_double(Idv::Agent)
+      allow(Idv::Agent).to receive(:new).and_return(agent)
+      allow(agent).to receive(:proof_resolution).and_return(
+        success: true, errors: {}, context: { stages: [] },
+      )
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
