@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'
-  MULTI_FACTOR_AUTH_OPTION_LIST = 'Multi-Factor Authentication: option list'
-  MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'
-  MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'
-  MULTI_FACTOR_AUTH_MAX_SENDS = 'Multi-Factor Authentication: max otp sends reached'
   MULTI_FACTOR_AUTH_SETUP = 'Multi-Factor Authentication Setup'
   OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
