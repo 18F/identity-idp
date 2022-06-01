@@ -1225,7 +1225,7 @@ module AnalyticsEvents
   # Tracks when openid authorization request is made
   # @param [String] client_id
   # @param [String] scope
-  # @param [String] acr_values
+  # @param [Array] acr_values
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   def openid_connect_request_authorization(
