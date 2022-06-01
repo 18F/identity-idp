@@ -35,7 +35,7 @@ module Users
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
+      analytics.multi_factor_auth_setup(**result.to_h)
       if result.success?
         process_valid_submission
       else

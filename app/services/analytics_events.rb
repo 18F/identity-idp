@@ -1127,6 +1127,100 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when rules of use is submitted with a success or failure
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def multi_factor_auth_setup(success: nil, errors: nil, **extra)
+    raise extra.inspect
+    track_event(
+      'Multi-Factor Authentication Setup',
+      success: success,
+      errors: errors,
+      **extra,
+      )
+  end
+
+  # Tracks when an openid connect bearer token authentication request is made
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def openid_connect_bearer_token(success: nil, errors: nil, **extra)
+    raise extra.inspect
+    track_event(
+      'OpenID Connect: bearer token authentication',
+      success: success,
+      errors: errors,
+      **extra,
+      )
+  end
+
+  # Tracks when openid authorization request is made
+  # @param [Boolean] success
+  # @param [Hash] errors
+  #
+  #       {:client_id=>"urn:gov:gsa:openidconnect:test", :scope=>"openid profile", :acr_values=>"http://idmanagement.gov/ns/assurance/ial/0", :unauthorized_scope=>false, :user_fully_authenticated=>true}
+  def openid_connect_request_authorization(
+    success: nil,
+    errors: nil,
+    client_id:,
+    scope:,
+    acr_values:,
+    unauthorized_scope:,
+    error_details: nil,
+    user_fully_authenticated:,
+    **extra
+  )
+    track_event(
+      'OpenID Connect: authorization request',
+      client_id: client_id,
+      scope: scope,
+      acr_values: acr_values,
+      unauthorized_scope: unauthorized_scope,
+      user_fully_authenticated: user_fully_authenticated,
+      **extra,
+    )
+  end
+
+  # Tracks when an openid connect token request is made
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def openid_connect_token(success: nil, errors: nil, **extra)
+    raise extra.inspect
+    track_event(
+      'OpenID Connect: token',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when user makes an otp delivery selection
+  # @param [String] otp_delivery_preference (sms or voice)
+  # @param [Boolean] resend
+  # @param [String] country_code
+  # @param [String] area_code
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param [Hash] pii_like_keypaths
+  def otp_delivery_selection(
+    otp_delivery_preference:,
+    resend:,
+    country_code:,
+    area_code:,
+    context:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'OTP: Delivery Selection',
+      otp_delivery_preference: otp_delivery_preference,
+      resend: resend,
+      country_code: country_code,
+      area_code: area_code,
+      context: context,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # The user updated their password
