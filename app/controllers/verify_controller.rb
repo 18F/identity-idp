@@ -77,12 +77,12 @@ class VerifyController < ApplicationController
   end
 
   def completion_url
-    if session[:sp]
-      sign_up_completed_url
-    elsif idv_session.address_verification_mechanism == 'gpo'
+    if idv_session.address_verification_mechanism == 'gpo'
       idv_come_back_later_url
+    elsif session[:sp]
+      sign_up_completed_url
     else
-      after_sign_in_path_for(current_user)
+      account_url
     end
   end
 
@@ -91,5 +91,9 @@ class VerifyController < ApplicationController
       user: current_user,
       idv_session: idv_session,
     ).token
+  end
+
+  def pending_profile?
+    current_user.pending_profile?
   end
 end
