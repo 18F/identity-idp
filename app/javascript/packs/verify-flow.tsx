@@ -34,11 +34,6 @@ interface AppRootValues {
   cancelUrl: string;
 
   /**
-   * URL to which user should be redirected after completing the form.
-   */
-  completionUrl: string;
-
-  /**
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
@@ -70,7 +65,6 @@ const {
   basePath,
   startOverUrl: startOverURL,
   cancelUrl: cancelURL,
-  completionUrl: completionURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -102,9 +96,11 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
     initialAddressVerificationMethod = metadata.address_verification_mechanism;
   }
 
-  function onComplete() {
+  function onComplete({ completionURL }: VerifyFlowValues) {
     storage.clear();
-    window.location.href = completionURL;
+    if (completionURL) {
+      window.location.href = completionURL;
+    }
   }
 
   render(

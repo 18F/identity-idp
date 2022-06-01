@@ -41,6 +41,8 @@ export interface VerifyFlowValues {
   password?: string;
 
   dob?: string;
+
+  completionURL?: string;
 }
 
 interface VerifyFlowProps {
@@ -77,7 +79,7 @@ interface VerifyFlowProps {
   /**
    * Callback invoked after completing the form.
    */
-  onComplete: () => void;
+  onComplete: (values: VerifyFlowValues) => void;
 }
 
 /**
@@ -128,9 +130,9 @@ function VerifyFlow({
     setCompletedStep(stepName);
   }
 
-  function onFormComplete() {
+  function onFormComplete(values: VerifyFlowValues) {
     setCompletedStep(null);
-    onComplete();
+    onComplete(values);
   }
 
   return (

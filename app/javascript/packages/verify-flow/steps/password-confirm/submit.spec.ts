@@ -14,14 +14,21 @@ describe('submit', () => {
           sandbox.match({ body: JSON.stringify({ user_bundle_token: '..', password: 'hunter2' }) }),
         )
         .resolves({
-          json: () => Promise.resolve({ personal_key: '0000-0000-0000-0000' }),
+          json: () =>
+            Promise.resolve({
+              personal_key: '0000-0000-0000-0000',
+              completion_url: 'http://example.com',
+            }),
         } as Response);
     });
 
     it('sends with password confirmation values', async () => {
       const patch = await submit({ userBundleToken: '..', password: 'hunter2' });
 
-      expect(patch).to.deep.equal({ personalKey: '0000-0000-0000-0000' });
+      expect(patch).to.deep.equal({
+        personalKey: '0000-0000-0000-0000',
+        completionURL: 'http://example.com',
+      });
     });
   });
 
