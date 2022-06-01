@@ -9,10 +9,10 @@ module Users
 
     def show
       service_provider_mfa_requirement_redirect ||
-      non_phone_redirect ||
-      phone_redirect ||
-      backup_code_redirect ||
-      redirect_on_nothing_enabled
+        non_phone_redirect ||
+        phone_redirect ||
+        backup_code_redirect ||
+        redirect_on_nothing_enabled
     end
 
     def send_code
