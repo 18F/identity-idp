@@ -272,9 +272,6 @@ Rails.application.routes.draw do
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
-    # Deprecated
-    delete '/users' => 'users#destroy', as: :destroy_user
-
     get '/restricted' => 'banned_user#show', as: :banned_user
 
     scope '/verify', as: 'idv' do
