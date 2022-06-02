@@ -2,8 +2,8 @@ module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
       AAMVA_SUPPORTED_JURISDICTIONS = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KS KY MA MD ME MI MO MS MT NC ND NE
-        NJ NM OH OR PA RI SC SD TN TX VA VT WA WI WY
+        AL AR AZ CA CO CT DC DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE
+        NJ NM NV NY OH OR PA RI SC SD TN TX UT VA VT WA WI WY
       ].to_set.freeze
 
       private
