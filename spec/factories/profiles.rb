@@ -19,6 +19,10 @@ FactoryBot.define do
       deactivation_reason { :password_reset }
     end
 
+    trait :verification_cancelled do
+      deactivation_reason { :verification_cancelled }
+    end
+
     trait :with_liveness do
       proofing_components { { liveness_check: 'vendor' } }
     end
