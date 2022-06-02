@@ -86,38 +86,6 @@ describe VerifyController do
             expect(response).to render_template(:show)
           end
         end
-
-        context 'without associated sp' do
-          let(:sp_session) { nil }
-
-          it 'sets completion url' do
-            response
-
-            expect(assigns[:app_data][:completion_url]).to eq(account_url)
-          end
-        end
-
-        context 'with gpo as address verification method' do
-          before do
-            controller.idv_session.address_verification_mechanism = 'gpo'
-          end
-
-          it 'sets completion url' do
-            response
-
-            expect(assigns[:app_data][:completion_url]).to eq(idv_come_back_later_url)
-          end
-
-          context 'without associated sp' do
-            let(:sp_session) { nil }
-
-            it 'sets completion url' do
-              response
-
-              expect(assigns[:app_data][:completion_url]).to eq(idv_come_back_later_url)
-            end
-          end
-        end
       end
 
       context 'with password confirmation step enabled' do
