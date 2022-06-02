@@ -8,6 +8,10 @@ import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import { useSyncedSecretValues } from './context/secrets-context';
 import FlowContext from './context/flow-context';
 import useInitialStepValidation from './hooks/use-initial-step-validation';
+import {
+  AddressVerificationMethod,
+  AddressVerificationMethodContextProvider,
+} from './context/address-verification-method-context';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -37,6 +41,8 @@ export interface VerifyFlowValues {
   password?: string;
 
   dob?: string;
+
+  completionURL?: string;
 }
 
 interface VerifyFlowProps {
@@ -66,9 +72,14 @@ interface VerifyFlowProps {
   cancelURL?: string;
 
   /**
+   * Initial value for address verification method.
+   */
+  initialAddressVerificationMethod?: AddressVerificationMethod;
+
+  /**
    * Callback invoked after completing the form.
    */
-  onComplete: () => void;
+  onComplete: (values: VerifyFlowValues) => void;
 }
 
 /**
@@ -98,6 +109,7 @@ function VerifyFlow({
   basePath,
   startOverURL = '',
   cancelURL = '',
+  initialAddressVerificationMethod,
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
@@ -118,21 +130,28 @@ function VerifyFlow({
     setCompletedStep(stepName);
   }
 
+  function onFormComplete(values: VerifyFlowValues) {
+    setCompletedStep(null);
+    onComplete(values);
+  }
+
   return (
     <FlowContext.Provider value={context}>
-      <VerifyFlowStepIndicator currentStep={currentStep} />
-      <FormSteps
-        steps={steps}
-        initialValues={syncedValues}
-        initialStep={initialStep}
-        promptOnNavigate={false}
-        basePath={basePath}
-        titleFormat={`%{step} - ${getConfigValue('appName')}`}
-        onChange={setSyncedValues}
-        onStepSubmit={onStepSubmit}
-        onStepChange={setCurrentStep}
-        onComplete={onComplete}
-      />
+      <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
+        <VerifyFlowStepIndicator currentStep={currentStep} />
+        <FormSteps
+          steps={steps}
+          initialValues={syncedValues}
+          initialStep={initialStep}
+          promptOnNavigate={false}
+          basePath={basePath}
+          titleFormat={`%{step} - ${getConfigValue('appName')}`}
+          onChange={setSyncedValues}
+          onStepSubmit={onStepSubmit}
+          onStepChange={setCurrentStep}
+          onComplete={onFormComplete}
+        />
+      </AddressVerificationMethodContextProvider>
     </FlowContext.Provider>
   );
 }

@@ -35,7 +35,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       get :show
 
       expect(response.status).to eq(302)
-      expect(response.location).to eq(two_factor_options_url)
+      expect(response.location).to eq(authentication_methods_setup_url)
     end
   end
 
@@ -90,7 +90,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       post :create, params: { personal_key_form: { personal_key: raw_key } }
 
       expect(response.status).to eq(302)
-      expect(response.location).to eq(two_factor_options_url)
+      expect(response.location).to eq(authentication_methods_setup_url)
     end
 
     context 'when the personal key field is empty' do
@@ -155,7 +155,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).
+                          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

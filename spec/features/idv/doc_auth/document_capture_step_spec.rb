@@ -26,13 +26,6 @@ feature 'doc auth document capture step' do
     complete_doc_auth_steps_before_document_capture_step
   end
 
-  it 'shows the step indicator' do
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_id'),
-    )
-  end
-
   context 'when javascript is enabled', js: true do
     it 'logs return to sp link click' do
       new_window = window_opened_by do
@@ -52,10 +45,14 @@ feature 'doc auth document capture step' do
   context 'when liveness checking is enabled' do
     let(:liveness_enabled) { true }
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'shows the selfie upload option' do
@@ -120,7 +117,7 @@ feature 'doc auth document capture step' do
       )
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       freeze_time do
         max_attempts.times do
@@ -144,14 +141,6 @@ feature 'doc auth document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do
@@ -181,10 +170,14 @@ feature 'doc auth document capture step' do
   context 'when liveness checking is not enabled' do
     let(:liveness_enabled) { false }
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'does not show the selfie upload option' do
@@ -221,7 +214,7 @@ feature 'doc auth document capture step' do
       expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       freeze_time do
         max_attempts.times do
@@ -245,14 +238,6 @@ feature 'doc auth document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        sign_in_and_2fa_user(user)
-        complete_doc_auth_steps_before_document_capture_step
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do

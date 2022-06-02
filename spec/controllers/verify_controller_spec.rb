@@ -18,6 +18,8 @@ describe VerifyController do
     end
     let(:profile) { subject.idv_session.profile }
     let(:step) { '' }
+    let(:sp) { build(:service_provider) }
+    let(:sp_session) { { issuer: sp.issuer } }
 
     subject(:response) { get :show, params: { step: step } }
 
@@ -26,6 +28,7 @@ describe VerifyController do
         and_return(idv_api_enabled_steps)
       stub_sign_in(user)
       stub_idv_session
+      session[:sp] = sp_session if sp_session
     end
 
     it 'renders 404' do
@@ -70,7 +73,6 @@ describe VerifyController do
             base_path: idv_app_path,
             start_over_url: idv_session_path,
             cancel_url: idv_cancel_path,
-            completion_url: idv_gpo_verify_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'personalKey' => kind_of(String) },
             store_key: kind_of(String),
@@ -101,7 +103,6 @@ describe VerifyController do
             base_path: idv_app_path,
             start_over_url: idv_session_path,
             cancel_url: idv_cancel_path,
-            completion_url: account_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'userBundleToken' => kind_of(String) },
             store_key: kind_of(String),
@@ -122,7 +123,7 @@ describe VerifyController do
       idv_session = Idv::Session.new(
         user_session: controller.user_session,
         current_user: user,
-        service_provider: nil,
+        service_provider: sp,
       )
       idv_session.applicant = applicant
       idv_session.resolution_successful = true

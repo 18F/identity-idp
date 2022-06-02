@@ -164,7 +164,7 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the selection is not valid' do
-      it 'renders index page' do
+      it 'redirects to the index page' do
         stub_sign_in
 
         patch :update, params: {
@@ -173,7 +173,7 @@ describe Users::MfaSelectionController do
           },
         }
 
-        expect(response).to render_template(:index)
+        expect(response).to redirect_to two_factor_options_url(anchor: 'select_phone')
       end
     end
   end

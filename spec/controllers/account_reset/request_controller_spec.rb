@@ -21,7 +21,7 @@ describe AccountReset::RequestController do
       stub_sign_in_before_2fa
       get :show
 
-      expect(response).to redirect_to two_factor_options_url
+      expect(response).to redirect_to authentication_methods_setup_url
     end
 
     it 'logs the visit to analytics' do
@@ -100,7 +100,7 @@ describe AccountReset::RequestController do
       stub_sign_in_before_2fa
       post :create
 
-      expect(response).to redirect_to two_factor_options_url
+      expect(response).to redirect_to authentication_methods_setup_url
     end
   end
 end

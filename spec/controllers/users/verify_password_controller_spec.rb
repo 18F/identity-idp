@@ -21,7 +21,7 @@ describe Users::VerifyPasswordController do
   end
 
   context 'with password reset profile' do
-    let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+    let(:profiles) { [create(:profile, :password_reset)] }
     let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: { personal_key: key }) }
     let(:response_bad) { FormResponse.new(success: false, errors: {}) }
     let(:key) { 'key' }

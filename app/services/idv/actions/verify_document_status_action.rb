@@ -99,7 +99,7 @@ module Idv
 
       def remaining_attempts
         return nil unless verify_document_capture_session
-        Throttle.for(
+        Throttle.new(
           user: verify_document_capture_session.user,
           throttle_type: :idv_doc_auth,
         ).remaining_count

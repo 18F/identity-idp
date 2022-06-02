@@ -74,7 +74,7 @@ feature 'saml api' do
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq two_factor_options_path
+        expect(current_path).to eq authentication_methods_setup_path
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do

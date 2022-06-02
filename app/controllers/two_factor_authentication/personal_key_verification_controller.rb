@@ -26,7 +26,7 @@ module TwoFactorAuthentication
     def check_personal_key_enabled
       return if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
 
-      redirect_to two_factor_options_url
+      redirect_to authentication_methods_setup_url
     end
 
     def presenter_for_two_factor_authentication_method
@@ -97,7 +97,7 @@ module TwoFactorAuthentication
       elsif MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to after_mfa_setup_path
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
       reset_otp_session_data
     end

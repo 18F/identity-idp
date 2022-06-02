@@ -4,6 +4,7 @@ import { t } from '@18f/identity-i18n';
 import { TextInput } from '@18f/identity-components';
 import { useInstanceId } from '@18f/identity-react-hooks';
 import type { TextInputProps } from '@18f/identity-components';
+import { ValidatedField } from '@18f/identity-validated-field';
 import './password-toggle-element';
 import type PasswordToggleElement from './password-toggle-element';
 
@@ -63,13 +64,15 @@ function PasswordToggle(
 
   return (
     <lg-password-toggle class={classes}>
-      <TextInput
-        ref={ref}
-        {...textInputProps}
-        label={label}
-        id={inputId}
-        className="password-toggle__input"
-      />
+      <ValidatedField>
+        <TextInput
+          ref={ref}
+          {...textInputProps}
+          label={label}
+          id={inputId}
+          className="password-toggle__input"
+        />
+      </ValidatedField>
       <div className="password-toggle__toggle-wrapper">
         <input
           id={toggleId}

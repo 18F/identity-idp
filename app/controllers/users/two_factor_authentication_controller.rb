@@ -57,7 +57,7 @@ module Users
       if MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to login_two_factor_options_path
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
 
@@ -209,7 +209,7 @@ module Users
     end
 
     def phone_confirmation_throttle
-      @phone_confirmation_throttle ||= Throttle.for(
+      @phone_confirmation_throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :phone_confirmation,
       )
@@ -311,7 +311,7 @@ module Users
       if user_fully_authenticated?
         redirect_to account_url
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
   end

@@ -170,13 +170,6 @@ feature 'doc capture document capture step' do
       complete_doc_capture_steps_before_first_step(user)
     end
 
-    it 'shows the step indicator' do
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
-    end
-
     context 'when the SP does not request strict IAL2' do
       let(:sp_requests_ial2_strict) { false }
 
@@ -189,10 +182,14 @@ feature 'doc capture document capture step' do
         expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
       end
 
-      it 'is on the correct_page and shows the document upload options' do
+      it 'is on the correct page and shows the document upload options' do
         expect(current_path).to eq(idv_capture_doc_document_capture_step)
         expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
         expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_id'),
+        )
       end
 
       it 'does not show the selfie upload option' do
@@ -215,7 +212,7 @@ feature 'doc capture document capture step' do
       end
     end
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
@@ -278,7 +275,7 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
@@ -299,15 +296,6 @@ feature 'doc capture document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      DocAuth::Mock::DocAuthMockClient.reset!
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        complete_doc_capture_steps_before_first_step(user)
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do
@@ -333,10 +321,14 @@ feature 'doc capture document capture step' do
       complete_doc_capture_steps_before_first_step(user)
     end
 
-    it 'is on the correct_page and shows the document upload options' do
+    it 'is on the correct page and shows the document upload options' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'does not show the selfie upload option' do
@@ -364,7 +356,7 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(next_step)
     end
 
-    it 'throttles calls to acuant and allows retry after the attempt window' do
+    it 'throttles calls to acuant' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: DocAuth::Response.new(
@@ -385,15 +377,6 @@ feature 'doc capture document capture step' do
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_doc_auth,
       )
-
-      DocAuth::Mock::DocAuthMockClient.reset!
-
-      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
-        complete_doc_capture_steps_before_first_step(user)
-        attach_and_submit_images
-
-        expect(page).to have_current_path(next_step)
-      end
     end
 
     it 'catches network connection errors on post_front_image' do

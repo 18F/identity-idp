@@ -11,7 +11,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:proofing_component) }
-    it { is_expected.to have_many(:throttles) }
+    it { is_expected.to have_many(:database_throttles) }
   end
 
   it 'does not send an email when #create is called' do
@@ -377,13 +377,13 @@ RSpec.describe User do
         user = User.new
         _old_profile = create(
           :profile,
-          deactivation_reason: :verification_pending,
+          :verification_pending,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          deactivation_reason: :verification_pending,
+          :verification_pending,
           user: user,
         )
 
@@ -396,7 +396,7 @@ RSpec.describe User do
         user = User.new
         create(
           :profile,
-          deactivation_reason: :password_reset,
+          :password_reset,
           created_at: 1.day.ago,
           user: user,
         )

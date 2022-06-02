@@ -22,7 +22,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with password reset profile' do
-      let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
+      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
 
       it 'renders the `new` template' do
         get :new
@@ -37,7 +37,7 @@ describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
+        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
 
         get :new
 
@@ -46,10 +46,10 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with throttle reached' do
-      let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
+      let!(:profiles) { [create(:profile, :password_reset, user: user)] }
 
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
+        Throttle.new(throttle_type: :verify_personal_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do
@@ -74,8 +74,9 @@ describe Users::VerifyPersonalKeyController do
       [
         create(
           :profile,
-          user: user, deactivation_reason: :password_reset,
-          pii: { ssn: '123456789' }
+          :password_reset,
+          user: user,
+          pii: { ssn: '123456789' },
         ),
       ]
     }

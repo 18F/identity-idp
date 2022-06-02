@@ -8,14 +8,14 @@ module Idv
       private
 
       def throttle
-        @throttle ||= Throttle.for(
+        @throttle ||= Throttle.new(
           user: current_user,
           throttle_type: :idv_resolution,
         )
       end
 
       def idv_failure(result)
-        throttle.increment if result.extra.dig(:proofing_results, :exception).blank?
+        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
           @flow.analytics.track_event(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
@@ -93,7 +93,7 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttle.for(
+        Throttle.new(
           user: effective_user,
           throttle_type: :idv_doc_auth,
         ).throttled_else_increment?

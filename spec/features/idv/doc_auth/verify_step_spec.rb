@@ -18,6 +18,10 @@ feature 'doc auth verify step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('doc_auth.headings.verify'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_info'),
+    )
   end
 
   it 'masks the ssn' do
@@ -145,13 +149,6 @@ feature 'doc auth verify step' do
 
       expect(page).to have_current_path(idv_phone_path)
     end
-  end
-
-  it 'shows the step indicator' do
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_info'),
-    )
   end
 
   context 'when the user lives in an AAMVA supported state' do

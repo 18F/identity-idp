@@ -7,6 +7,7 @@ import type {
   ReactHTMLElement,
 } from 'react';
 import { useInstanceId } from '@18f/identity-react-hooks';
+import { t } from '@18f/identity-i18n';
 import './validated-field-element';
 import type ValidatedFieldElement from './validated-field-element';
 
@@ -35,6 +36,24 @@ declare global {
       };
     }
   }
+}
+
+/**
+ * Returns validity string error messages according to the given input type.
+ */
+export function getErrorMessages(inputType?: string) {
+  const messages: Partial<Record<keyof ValidityState, string>> = {
+    valueMissing:
+      inputType === 'checkbox'
+        ? t('forms.validation.required_checkbox')
+        : t('simple_form.required.text'),
+  };
+
+  if (inputType === 'email') {
+    messages.typeMismatch = t('valid_email.validations.email.invalid');
+  }
+
+  return messages;
 }
 
 function ValidatedField({
@@ -78,6 +97,9 @@ function ValidatedField({
 
   return (
     <lg-validated-field ref={fieldRef}>
+      <script type="application/json" className="validated-field__error-strings">
+        {JSON.stringify(getErrorMessages(inputProps.type))}
+      </script>
       <div className="validated-field__input-wrapper">
         {cloneElement(input, {
           ...inputProps,

@@ -16,7 +16,7 @@ module Users
     def create
       @new_phone_form = NewPhoneForm.new(current_user)
       result = @new_phone_form.submit(new_phone_form_params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
+      analytics.multi_factor_auth_phone_setup(**result.to_h)
 
       if result.success?
         handle_create_success(@new_phone_form.phone)

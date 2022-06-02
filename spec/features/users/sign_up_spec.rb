@@ -124,7 +124,7 @@ feature 'Sign Up' do
         Throttle.attempt_window_in_minutes(:phone_confirmation).minutes,
       )
 
-      expect(current_path).to eq(two_factor_options_path)
+      expect(current_path).to eq(authentication_methods_setup_path)
       expect(page).to have_content(
         I18n.t(
           'errors.messages.phone_confirmation_throttled',
@@ -294,16 +294,16 @@ feature 'Sign Up' do
     it 'does not return an error and redirect to root after confirming and entering password' do
       email = 'test2@test.com'
       User.create!(
-        confirmation_token: 'foo', uuid: 'foo', email: email,
-        confirmation_sent_at: Time.zone.now
+        uuid: 'foo', email: email,
       )
+      EmailAddress.delete_all
       travel_to(1.year.from_now) do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
         click_confirmation_link_in_email(email)
         submit_form_with_valid_password
 
-        expect(page).to have_current_path(two_factor_options_path)
+        expect(page).to have_current_path(authentication_methods_setup_path)
       end
     end
   end
@@ -322,7 +322,7 @@ feature 'Sign Up' do
 
   it 'redirects back with an error if the user does not select 2FA option' do
     sign_in_user
-    visit two_factor_options_path
+    visit authentication_methods_setup_path
     click_on 'Continue'
 
     expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))

@@ -37,7 +37,7 @@ feature 'Accessibility on pages that require authentication', :js do
     scenario 'two factor options page' do
       sign_up_and_set_password
 
-      expect(current_path).to eq(two_factor_options_path)
+      expect(current_path).to eq(authentication_methods_setup_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled

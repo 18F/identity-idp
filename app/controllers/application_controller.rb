@@ -186,7 +186,8 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
+      authentication_methods_setup_url : nil
   end
 
   def fix_broken_personal_key_url
@@ -246,8 +247,7 @@ class ApplicationController < ActionController::Base
 
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
-    analytics.track_event(
-      Analytics::INVALID_AUTHENTICITY_TOKEN,
+    analytics.invalid_authenticity_token(
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
@@ -267,7 +267,7 @@ class ApplicationController < ActionController::Base
 
   def two_factor_kantara_enabled?
     IdentityConfig.store.kantara_2fa_phone_restricted &&
-      MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 
   def reauthn?
@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
     return prompt_to_verify_mfa unless user_fully_authenticated?
     return prompt_to_setup_mfa if service_provider_mfa_policy.
                                   user_needs_sp_auth_method_setup?
-    return prompt_to_setup_non_restricted_mfa unless two_factor_kantara_enabled?
+    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
     enforce_total_session_duration_timeout
@@ -319,7 +319,11 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_setup_mfa
-    redirect_to two_factor_options_url
+    redirect_to authentication_methods_setup_url
+  end
+
+  def prompt_to_setup_non_restricted_mfa
+    redirect_to auth_method_confirmation_url
   end
 
   def prompt_to_setup_non_restricted_mfa

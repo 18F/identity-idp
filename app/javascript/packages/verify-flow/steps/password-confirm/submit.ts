@@ -7,11 +7,21 @@ import type { VerifyFlowValues } from '../../verify-flow';
  */
 export const API_ENDPOINT = '/api/verify/v2/password_confirm';
 
+export class PasswordSubmitError extends FormError {}
+
 /**
  * Successful API response shape.
  */
 interface PasswordConfirmSuccessResponse {
+  /**
+   * Personal key generated for the user profile.
+   */
   personal_key: string;
+
+  /**
+   * Final redirect URL for this verification session.
+   */
+  completion_url: string;
 }
 
 /**
@@ -24,7 +34,10 @@ type PasswordConfirmErrorResponse = ErrorResponse<'password'>;
  */
 type PasswordConfirmResponse = PasswordConfirmSuccessResponse | PasswordConfirmErrorResponse;
 
-async function submit({ userBundleToken, password }: VerifyFlowValues) {
+async function submit({
+  userBundleToken,
+  password,
+}: VerifyFlowValues): Promise<Partial<VerifyFlowValues>> {
   const payload = { user_bundle_token: userBundleToken, password };
   const json = await post<PasswordConfirmResponse>(API_ENDPOINT, payload, {
     json: true,
@@ -33,10 +46,10 @@ async function submit({ userBundleToken, password }: VerifyFlowValues) {
 
   if (isErrorResponse(json)) {
     const [field, [error]] = Object.entries(json.error)[0];
-    throw new FormError(error, { field });
+    throw new PasswordSubmitError(error, { field });
   }
 
-  return { personalKey: json.personal_key };
+  return { personalKey: json.personal_key, completionURL: json.completion_url };
 }
 
 export default submit;

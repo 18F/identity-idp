@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :throttle do
+  factory :database_throttle do
     throttle_type { :idv_doc_auth }
 
     trait :with_throttled do

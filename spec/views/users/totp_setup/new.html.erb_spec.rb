@@ -71,7 +71,7 @@ describe 'users/totp_setup/new.html.erb' do
 
       expect(rendered).to have_link(
         t('two_factor_authentication.choose_another_option'),
-        href: two_factor_options_path,
+        href: authentication_methods_setup_path,
       )
     end
   end

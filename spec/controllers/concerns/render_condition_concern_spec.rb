@@ -9,6 +9,7 @@ RSpec.describe RenderConditionConcern, type: :controller do
 
     check_or_render_not_found -> { FeatureManagement.all_feature? }
     check_or_render_not_found -> { FeatureManagement.show_feature? }, only: [:show]
+    check_or_render_not_found -> { instance_condition? }
 
     def index
       render plain: ''
@@ -16,6 +17,12 @@ RSpec.describe RenderConditionConcern, type: :controller do
 
     def show
       render plain: ''
+    end
+
+    private
+
+    def instance_condition?
+      true
     end
   end
 

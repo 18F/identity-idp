@@ -164,11 +164,11 @@ module Idv
     end
 
     def idv_attempter_increment
-      Throttle.for(**idv_throttle_params).increment
+      Throttle.new(**idv_throttle_params).increment!
     end
 
     def idv_attempter_throttled?
-      Throttle.for(**idv_throttle_params).throttled?
+      Throttle.new(**idv_throttle_params).throttled?
     end
 
     def throttle_failure
