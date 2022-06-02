@@ -26,7 +26,6 @@ class VerifyController < ApplicationController
       base_path: idv_app_path,
       start_over_url: idv_session_path,
       cancel_url: idv_cancel_path,
-      completion_url: completion_url,
       initial_values: initial_values,
       reset_password_url: forgot_password_url,
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
@@ -74,16 +73,6 @@ class VerifyController < ApplicationController
   def generate_personal_key
     cacher = Pii::Cacher.new(current_user, user_session)
     idv_session.profile.encrypt_recovery_pii(cacher.fetch)
-  end
-
-  def completion_url
-    if idv_session.address_verification_mechanism == 'gpo'
-      idv_come_back_later_url
-    elsif session[:sp]
-      sign_up_completed_url
-    else
-      account_url
-    end
   end
 
   def user_bundle_token

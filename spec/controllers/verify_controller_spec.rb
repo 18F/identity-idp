@@ -73,7 +73,6 @@ describe VerifyController do
             base_path: idv_app_path,
             start_over_url: idv_session_path,
             cancel_url: idv_cancel_path,
-            completion_url: sign_up_completed_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'personalKey' => kind_of(String) },
             store_key: kind_of(String),
@@ -85,38 +84,6 @@ describe VerifyController do
 
           it 'renders view' do
             expect(response).to render_template(:show)
-          end
-        end
-
-        context 'without associated sp' do
-          let(:sp_session) { nil }
-
-          it 'sets completion url' do
-            response
-
-            expect(assigns[:app_data][:completion_url]).to eq(account_url)
-          end
-        end
-
-        context 'with gpo as address verification method' do
-          before do
-            controller.idv_session.address_verification_mechanism = 'gpo'
-          end
-
-          it 'sets completion url' do
-            response
-
-            expect(assigns[:app_data][:completion_url]).to eq(idv_come_back_later_url)
-          end
-
-          context 'without associated sp' do
-            let(:sp_session) { nil }
-
-            it 'sets completion url' do
-              response
-
-              expect(assigns[:app_data][:completion_url]).to eq(idv_come_back_later_url)
-            end
           end
         end
       end
@@ -136,7 +103,6 @@ describe VerifyController do
             base_path: idv_app_path,
             start_over_url: idv_session_path,
             cancel_url: idv_cancel_path,
-            completion_url: sign_up_completed_url,
             enabled_step_names: idv_api_enabled_steps,
             initial_values: { 'userBundleToken' => kind_of(String) },
             store_key: kind_of(String),
