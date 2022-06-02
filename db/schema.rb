@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_17_103312) do
+ActiveRecord::Schema.define(version: 2022_06_02_005747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -581,9 +581,7 @@ ActiveRecord::Schema.define(version: 2022_05_17_103312) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "confirmation_token", limit: 255
     t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
     t.datetime "second_factor_locked_at"
@@ -602,7 +600,6 @@ ActiveRecord::Schema.define(version: 2022_05_17_103312) do
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at"
     t.datetime "encrypted_recovery_code_digest_generated_at"
-    t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
