@@ -1,3 +1,5 @@
+require 'rbconfig'
+
 shared_examples_for 'personal key page' do
   include PersonalKeyHelper
   include JavascriptDriverHelper
@@ -36,6 +38,13 @@ shared_examples_for 'personal key page' do
       copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
 
       expect(copied_text).to eq(scrape_personal_key)
+
+      click_continue
+      page.find(':focus').send_keys [mac? ? :meta : :control, 'v']
+
+      path_before_submit = current_path
+      within('[role=dialog]') { click_on t('forms.buttons.continue') }
+      expect(current_path).not_to eq path_before_submit
     end
 
     it 'validates as case-insensitive, crockford-normalized, length-limited, dash-flexible' do
@@ -60,5 +69,9 @@ shared_examples_for 'personal key page' do
       within('[role=dialog]') { click_on t('forms.buttons.continue') }
       expect(current_path).not_to eq path_before_submit
     end
+  end
+
+  def mac?
+    RbConfig::CONFIG['host_os'].match? 'darwin'
   end
 end
