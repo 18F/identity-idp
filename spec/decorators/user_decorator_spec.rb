@@ -295,6 +295,14 @@ describe UserDecorator do
         before { active_profile.deactivate(:password_reset) }
 
         it { expect(decorated_user.password_reset_profile).to eq(active_profile) }
+
+        context 'with a previously-cancelled pending profile' do
+          before do
+            user.profiles << build(:profile, :verification_cancelled)
+          end
+
+          it { expect(decorated_user.password_reset_profile).to eq(active_profile) }
+        end
       end
     end
   end
