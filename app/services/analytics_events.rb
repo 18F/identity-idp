@@ -1137,7 +1137,7 @@ module AnalyticsEvents
     )
   end
 
-# Max multi factor auth attempts met
+  # Max multi factor auth attempts met
   def multi_factor_auth_max_attempts
     track_event('Multi-Factor Authentication: max attempts reached')
   end
@@ -1200,7 +1200,7 @@ module AnalyticsEvents
     track_event('Multi-Factor Authentication: max otp sends reached')
   end
 
-# Tracks when a user sets up a multi factor auth method
+  # Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
   def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
     track_event(
