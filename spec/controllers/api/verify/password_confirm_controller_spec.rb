@@ -31,16 +31,11 @@ describe Api::Verify::PasswordConfirmController do
   let(:jwt) { JWT.encode({ pii: pii, metadata: {} }, key, 'RS256', sub: user.uuid) }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['personal_key'])
+    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])
   end
 
-  describe 'before_actions' do
-    it 'includes before_actions from Api::BaseController' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_two_factor_authenticated_for_api,
-      )
-    end
+  it 'extends behavior of base api class' do
+    expect(subject).to be_kind_of Api::Verify::BaseController
   end
 
   describe '#create' do
