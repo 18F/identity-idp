@@ -5,8 +5,8 @@ class MfaConfirmationController < ApplicationController
   helper_method :enforce_second_mfa?
 
   def show
+    @content = MfaConfirmationPresenter.new(current_user)
     @next_path = next_path
-    @content = content
   end
 
   def skip
@@ -27,23 +27,7 @@ class MfaConfirmationController < ApplicationController
     end
   end
 
-  def enforce_second_mfa?
-    IdentityConfig.store.select_multiple_mfa_options &&
-      !MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
-    true
-  end
-
   private
-
-  def content
-    {
-      heading: enforce_second_mfa? ?
-      t('mfa.non_restricted.heading') :
-      t('titles.mfa_setup. suggest_second_mfa'),
-      info: enforce_second_mfa? ? t('mfa.non_restricted.info_html') : t('mfa.account_info'),
-      button: enforce_second_mfa? ? t('mfa.non_restricted.button') : t('mfa.add'),
-    }
-  end
 
   def next_path
     return second_mfa_setup_non_restricted_path if enforce_second_mfa?
