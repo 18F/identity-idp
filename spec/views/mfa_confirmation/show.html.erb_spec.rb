@@ -5,6 +5,7 @@ describe 'mfa_confirmation/show.html.erb' do
   let(:decorated_user) { user.decorate }
 
   before do
+    allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:enforce_second_mfa?).and_return(true)
     @content = MfaConfirmationPresenter.new(user)
@@ -16,24 +17,43 @@ describe 'mfa_confirmation/show.html.erb' do
     render
   end
 
-  it 'has a localized header' do
+  it 'has a heading' do
     render
-    puts rendered
+
     expect(rendered).to have_content(@content.heading)
+  end
+
+  it 'provides a context for adding another MFA method' do
+    render
+
+    expect(rendered).to have_selector(
+      'p',
+      class: 'margin-top-1 margin-bottom-4',
+    )
   end
 
   it 'provides a call to action to add another MFA method' do
     render
 
     expect(rendered).to have_selector(
-      'p',
-      text: @content.info,
+      'a',
+      text: @content.button,
     )
   end
 
-  # it 'has a button with the ability to skip step' do
-  #   render
+  it 'does not have a button with the ability to skip step' do
+    render
 
-  #   expect(rendered).to have_selector('button', text: t('mfa.skip'))
-  # end
+    expect(rendered).to_not have_selector('button', text: t('mfa.skip'))
+  end
+
+  context 'users with non restriced mfa' do
+    let(:user) { create(:user, :signed_up, :with_authentication_app) }
+
+    it 'does have a button with the ability to skip step' do
+      render
+
+      expect(rendered).to have_selector('button', text: t('mfa.skip'))
+    end
+  end
 end
