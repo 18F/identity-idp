@@ -337,14 +337,18 @@ describe Users::TwoFactorAuthenticationController do
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
-        (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
-          get :send_code, params: {
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms',
-                                           otp_make_default_number: nil },
-          }
-        end
+        freeze_time do
+          (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
+            get :send_code, params: {
+              otp_delivery_selection_form: {
+                otp_delivery_preference: 'sms',
+                otp_make_default_number: nil,
+              },
+            }
+          end
 
-        expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
+          expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
+        end
       end
 
       context 'when the phone has been marked as opted out in the DB' do
