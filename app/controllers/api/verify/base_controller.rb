@@ -1,6 +1,7 @@
 module Api
   module Verify
     class BaseController < ApplicationController
+      skip_before_action :verify_authenticity_token
       include RenderConditionConcern
 
       class_attribute :required_step
@@ -11,8 +12,8 @@ module Api
         end
         IdentityConfig.store.idv_api_enabled_steps.include?(self.class.required_step)
       end
-      before_action :confirm_two_factor_authenticated_for_api
 
+      before_action :confirm_two_factor_authenticated_for_api
       respond_to :json
 
       private
