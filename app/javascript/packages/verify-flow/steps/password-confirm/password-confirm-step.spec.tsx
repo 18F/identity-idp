@@ -8,6 +8,7 @@ import { FormSteps } from '@18f/identity-form-steps';
 import { t, i18n } from '@18f/identity-i18n';
 import PasswordConfirmStep from './password-confirm-step';
 import submit, { PasswordSubmitError } from './submit';
+import { AddressVerificationMethodContextProvider } from '../../context/address-verification-method-context';
 
 describe('PasswordConfirmStep', () => {
   const sandbox = useSandbox();
@@ -118,18 +119,24 @@ describe('PasswordConfirmStep', () => {
   });
 
   describe('alert', () => {
-    context('without phone value', () => {
+    context('with gpo as address verification method', () => {
       it('does not render success alert', () => {
-        const { queryByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+        const { queryByRole } = render(
+          <AddressVerificationMethodContextProvider initialMethod="gpo">
+            <PasswordConfirmStep {...DEFAULT_PROPS} />
+          </AddressVerificationMethodContextProvider>,
+        );
 
         expect(queryByRole('status')).to.not.exist();
       });
     });
 
-    context('with phone value', () => {
+    context('with phone as address verification method', () => {
       it('renders success alert', () => {
         const { queryByRole } = render(
-          <PasswordConfirmStep {...DEFAULT_PROPS} value={{ phone: '5135551234' }} />,
+          <AddressVerificationMethodContextProvider initialMethod="phone">
+            <PasswordConfirmStep {...DEFAULT_PROPS} />
+          </AddressVerificationMethodContextProvider>,
         );
 
         const status = queryByRole('status')!;

@@ -17,6 +17,7 @@ import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import PersonalInfoSummary from './personal-info-summary';
 import StartOverOrCancel from '../../start-over-or-cancel';
+import AddressVerificationMethodContext from '../../context/address-verification-method-context';
 import type { VerifyFlowValues } from '../..';
 import { PasswordSubmitError } from './submit';
 
@@ -27,6 +28,7 @@ const FORGOT_PASSWORD_PATH = 'forgot_password';
 function PasswordConfirmStep({ errors, registerField, onChange, value }: PasswordConfirmStepProps) {
   const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
+  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
   const stepPath = `${basePath}/password_confirm`;
   const [path] = useHistoryParam(undefined, { basePath: stepPath });
   useDidUpdateEffect(onPageTransition, [path]);
@@ -39,7 +41,7 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
 
   return (
     <>
-      {value.phone && (
+      {addressVerificationMethod === 'phone' && (
         <Alert type="success" className="margin-bottom-4">
           {formatHTML(
             t('idv.messages.review.info_verified_html', {
