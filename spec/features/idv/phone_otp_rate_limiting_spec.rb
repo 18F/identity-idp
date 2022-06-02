@@ -99,8 +99,6 @@ feature 'phone otp rate limiting', :idv_job do
   end
 
   def expect_rate_limit_to_expire(user)
-    Throttle.where(throttle_type: :idv_doc_auth).destroy_all
-
     retry_minutes = IdentityConfig.store.lockout_period_in_minutes + 1
     travel_to(retry_minutes.minutes.from_now) do
       start_idv_from_sp

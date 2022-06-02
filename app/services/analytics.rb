@@ -80,8 +80,7 @@ class Analytics
   end
 
   def track_mfa_submit_event(attributes)
-    track_event(
-      MULTI_FACTOR_AUTH,
+    multi_factor_auth(
       **attributes,
       pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
     )
@@ -138,26 +137,11 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  IDV_GPO_VERIFICATION_VISITED = 'IdV: GPO verification visited' # Previously: "Account verification visited"
-  INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'
-  LOGOUT_INITIATED = 'Logout Initiated'
-  MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'
-  MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'
-  MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'
-  MULTI_FACTOR_AUTH_OPTION_LIST = 'Multi-Factor Authentication: option list'
-  MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'
-  MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'
-  MULTI_FACTOR_AUTH_MAX_SENDS = 'Multi-Factor Authentication: max otp sends reached'
   MULTI_FACTOR_AUTH_SETUP = 'Multi-Factor Authentication Setup'
   OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'
-  PASSWORD_CHANGED = 'Password Changed'
-  PASSWORD_CREATION = 'Password Creation'
-  PASSWORD_MAX_ATTEMPTS = 'Password Max Attempts Reached'
-  PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'
-  PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'
   PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'

@@ -1,7 +1,10 @@
 <%= content_tag(
       'lg-phone-input',
       class: tag_options[:class],
-      data: { delivery_methods: delivery_methods },
+      data: {
+        delivery_methods: delivery_methods,
+        translated_country_code_names: translated_country_code_names,
+      },
     ) do %>
   <%= content_tag(
         :script,

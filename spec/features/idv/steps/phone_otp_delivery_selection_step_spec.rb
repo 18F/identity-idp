@@ -114,6 +114,5 @@ feature 'IdV phone OTP delivery method selection' do
   context 'cancelling IdV' do
     it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection
     it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :oidc
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :saml
   end
 end

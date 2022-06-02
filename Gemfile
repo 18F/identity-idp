@@ -41,6 +41,7 @@ gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.11.1'
 gem 'profanity_filter'
+gem 'rack', '>= 2.2.3.1'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -93,7 +94,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.1.0', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.13.5'
+  gem 'nokogiri', '~> 1.13.6'
   gem 'parallel_tests'
   gem 'pg_query', require: false
   gem 'pry-byebug'
@@ -102,7 +103,7 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0'
-  gem 'rubocop', '~> 1.23.0', require: false
+  gem 'rubocop', '~> 1.29.1', require: false
   gem 'rubocop-performance', '~> 1.12.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end

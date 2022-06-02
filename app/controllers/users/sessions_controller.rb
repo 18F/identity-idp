@@ -40,7 +40,7 @@ module Users
     end
 
     def destroy
-      analytics.track_event(Analytics::LOGOUT_INITIATED, sp_initiated: false, oidc: false)
+      analytics.logout_initiated(sp_initiated: false, oidc: false)
       super
     end
 
@@ -97,7 +97,7 @@ module Users
 
     def redirect_to_signin
       controller_info = 'users/sessions#create'
-      analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
+      analytics.invalid_authenticity_token(controller: controller_info)
       sign_out
       flash[:error] = t('errors.general')
       redirect_back fallback_location: new_user_session_url, allow_other_host: false

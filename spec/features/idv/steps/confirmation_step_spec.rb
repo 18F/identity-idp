@@ -28,7 +28,7 @@ feature 'idv confirmation step', js: true do
   context 'with idv app feature enabled' do
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-        and_return(['personal_key', 'personal_key_confirm'])
+        and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])
     end
 
     it_behaves_like 'idv confirmation step'

@@ -5,10 +5,10 @@ describe TwoFactorAuthentication::PivCacSelectionPresenter do
   let(:user_with_mfa) { create(:user, :with_piv_or_cac) }
   let(:configuration) {}
   let(:presenter_without_mfa) {
- described_class.new(configuration: configuration, user: user_without_mfa)
+    described_class.new(configuration: configuration, user: user_without_mfa)
   }
   let(:presenter_with_mfa) {
- described_class.new(configuration: configuration, user: user_with_mfa)
+    described_class.new(configuration: configuration, user: user_with_mfa)
   }
 
   describe '#type' do

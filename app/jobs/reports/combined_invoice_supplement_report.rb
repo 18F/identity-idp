@@ -79,6 +79,10 @@ module Reports
           'issuer_ial1_total_auth_count',
           'issuer_ial2_total_auth_count',
           'issuer_ial1_plus_2_total_auth_count',
+
+          'issuer_ial1_unique_users',
+          'issuer_ial2_unique_users',
+          'issuer_ial1_plus_2_unique_users',
           'issuer_ial2_new_unique_users',
         ]
 
@@ -106,14 +110,18 @@ module Reports
                 year_month,
                 year_month_start.strftime('%B %Y'),
 
-                (ial1_unique_users = extract(iaa_results, :unique_users, ial: 1)),
-                (ial2_unique_users = extract(iaa_results, :unique_users, ial: 2)),
-                ial1_unique_users + ial2_unique_users,
+                (iaa_ial1_unique_users = extract(iaa_results, :unique_users, ial: 1)),
+                (iaa_ial2_unique_users = extract(iaa_results, :unique_users, ial: 2)),
+                iaa_ial1_unique_users + iaa_ial2_unique_users,
                 extract(iaa_results, :new_unique_users, ial: 2),
 
                 (ial1_total_auth_count = extract(issuer_results, :total_auth_count, ial: 1)),
                 (ial2_total_auth_count = extract(issuer_results, :total_auth_count, ial: 2)),
                 ial1_total_auth_count + ial2_total_auth_count,
+
+                (issuer_ial1_unique_users = extract(issuer_results, :unique_users, ial: 1)),
+                (issuer_ial2_unique_users = extract(issuer_results, :unique_users, ial: 2)),
+                issuer_ial1_unique_users + issuer_ial2_unique_users,
                 extract(issuer_results, :new_unique_users, ial: 2),
               ]
             end

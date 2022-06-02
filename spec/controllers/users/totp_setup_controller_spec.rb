@@ -262,11 +262,7 @@ describe Users::TotpSetupController, devise: true do
           let(:mfa_selections) { ['auth_app', 'voice'] }
 
           it 'redirects to mfa confirmation path with a success message and still logs analytics' do
-            expect(response).to redirect_to(
-              auth_method_confirmation_url(
-                next_setup_choice: 'voice',
-              ),
-            )
+            expect(response).to redirect_to(phone_setup_url)
 
             result = {
               success: true,

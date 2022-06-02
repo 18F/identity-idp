@@ -5,10 +5,13 @@ import { getConfigValue } from '@18f/identity-config';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import { STEPS } from './steps';
 import VerifyFlowStepIndicator from './verify-flow-step-indicator';
-import VerifyFlowAlert from './verify-flow-alert';
 import { useSyncedSecretValues } from './context/secrets-context';
 import FlowContext from './context/flow-context';
 import useInitialStepValidation from './hooks/use-initial-step-validation';
+import {
+  AddressVerificationMethod,
+  AddressVerificationMethodContextProvider,
+} from './context/address-verification-method-context';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -36,6 +39,8 @@ export interface VerifyFlowValues {
   ssn?: string;
 
   password?: string;
+
+  dob?: string;
 }
 
 interface VerifyFlowProps {
@@ -63,6 +68,11 @@ interface VerifyFlowProps {
    * URL to path for session cancel.
    */
   cancelURL?: string;
+
+  /**
+   * Initial value for address verification method.
+   */
+  initialAddressVerificationMethod?: AddressVerificationMethod;
 
   /**
    * Callback invoked after completing the form.
@@ -97,6 +107,7 @@ function VerifyFlow({
   basePath,
   startOverURL = '',
   cancelURL = '',
+  initialAddressVerificationMethod,
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
@@ -106,7 +117,6 @@ function VerifyFlow({
 
   const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
   const [currentStep, setCurrentStep] = useState(steps[0].name);
-  const [values, setValues] = useState(syncedValues);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
   const context = useObjectMemo({ startOverURL, cancelURL, currentStep, basePath });
   useEffect(() => {
@@ -118,27 +128,28 @@ function VerifyFlow({
     setCompletedStep(stepName);
   }
 
-  function onChange(nextValues: Partial<VerifyFlowValues>) {
-    setValues(nextValues);
-    setSyncedValues(nextValues);
+  function onFormComplete() {
+    setCompletedStep(null);
+    onComplete();
   }
 
   return (
     <FlowContext.Provider value={context}>
-      <VerifyFlowStepIndicator currentStep={currentStep} />
-      <VerifyFlowAlert currentStep={currentStep} values={values} />
-      <FormSteps
-        steps={steps}
-        initialValues={syncedValues}
-        initialStep={initialStep}
-        promptOnNavigate={false}
-        basePath={basePath}
-        titleFormat={`%{step} - ${getConfigValue('appName')}`}
-        onChange={onChange}
-        onStepSubmit={onStepSubmit}
-        onStepChange={setCurrentStep}
-        onComplete={onComplete}
-      />
+      <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
+        <VerifyFlowStepIndicator currentStep={currentStep} />
+        <FormSteps
+          steps={steps}
+          initialValues={syncedValues}
+          initialStep={initialStep}
+          promptOnNavigate={false}
+          basePath={basePath}
+          titleFormat={`%{step} - ${getConfigValue('appName')}`}
+          onChange={setSyncedValues}
+          onStepSubmit={onStepSubmit}
+          onStepChange={setCurrentStep}
+          onComplete={onFormComplete}
+        />
+      </AddressVerificationMethodContextProvider>
     </FlowContext.Provider>
   );
 }

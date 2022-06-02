@@ -55,7 +55,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_hash)
+        with('Multi-Factor Authentication: enter OTP visited', analytics_hash)
 
       get :show, params: { otp_delivery_preference: 'sms' }
     end
@@ -147,7 +147,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).
+                          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
@@ -451,12 +452,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           context 'multiple MFA options selected' do
-            it 'redirects to auth method confirmation with backup code next' do
-              expect(response).to redirect_to(
-                auth_method_confirmation_url(
-                  next_setup_choice: 'backup_code',
-                ),
-              )
+            it 'redirects to next mfa method with backup code next' do
+              expect(response).to redirect_to(backup_code_setup_url)
             end
           end
 

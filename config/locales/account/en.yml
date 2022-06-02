@@ -62,10 +62,10 @@ en:
       webauthn_add: Add security key
       webauthn_confirm_delete: Yes, remove key
       webauthn_delete: Remove key
-      webauthn_platform: Face or Touch Unlock
-      webauthn_platform_add: Add Face or Touch Unlock
-      webauthn_platform_confirm_delete: Yes, remove Face or Touch Unlock
-      webauthn_platform_delete: Remove Face or Touch Unlock
+      webauthn_platform: Face or touch unlock
+      webauthn_platform_add: Add face or touch unlock
+      webauthn_platform_confirm_delete: Yes, remove face or touch unlock
+      webauthn_platform_delete: Remove face or touch unlock
     items:
       delete_your_account: Delete your account
       personal_key: Personal key
@@ -79,7 +79,7 @@ en:
         %{app_name} account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
-      add_federal_id: Add Federal Employee ID
+      add_federal_id: Add federal employee ID
       add_phone_number: Add phone number
       add_platform_authenticator: Add Face or Touch Unlock
       add_security_key: Add security key

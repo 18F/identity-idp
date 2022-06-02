@@ -3,17 +3,15 @@ fr:
   forms:
     backup_code:
       are_you_sure_desc_html:
-        - <strong>Les codes de sauvegarde ne sont pas très sûrs</strong> car ils
-          peuvent facilement être perdus ou volés. <strong>Si vous le pouvez,
-          choisissez une autre option</strong> (utiliser un téléphone,
-          télécharger une application d’authentification ou utiliser une clé de
-          sécurité).
-        - <strong>Si vous continuez à utiliser des codes de sauvegarde,
-          protégez-les</strong>. Nous vous donnerons 10 codes que vous pourrez
-          télécharger, imprimer, copier ou écrire. Plus tard, vous devrez en
-          entrer un à chaque fois que vous vous connectez.
-      are_you_sure_title: Êtes-vous sûr? Nous vous donnerons des codes de sauvegarde à
-        sauvegarder et à utiliser.
+        - <strong>Les codes de sauvegarde sont la méthode d’authentification la
+          moins recommandée,</strong> car les codes peuvent facilement être
+          perdus. Nous vous encourageons à explorer d’autres options
+          d’authentification telles que le déverrouillage facial ou tactile, une
+          application d’authentification ou une clé de sécurité.
+        - Nous vous donnerons dix codes que vous pourrez télécharger, imprimer,
+          copier ou noter. Vous saisirez un code chaque fois que vous vous
+          connecterez.
+      are_you_sure_title: Êtes-vous sûr de vouloir utiliser des codes de sauvegarde?
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?

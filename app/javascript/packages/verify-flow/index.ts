@@ -4,4 +4,5 @@ export { default as StartOverOrCancel } from './start-over-or-cancel';
 export { default as VerifyFlow } from './verify-flow';
 
 export type { SecretValues } from './context/secrets-context';
+export type { AddressVerificationMethod } from './context/address-verification-method-context';
 export type { VerifyFlowValues } from './verify-flow';

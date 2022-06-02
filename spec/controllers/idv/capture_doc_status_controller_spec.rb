@@ -61,7 +61,7 @@ describe Idv::CaptureDocStatusController do
 
     context 'when the user is throttled' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_doc_auth)
+        Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
       end
 
       it 'returns throttled with redirect' do

@@ -44,10 +44,6 @@ feature 'mfa cta banner' do
       expect(page).to have_current_path(phone_setup_path)
       set_up_mfa_with_valid_phone
 
-      expect(page).to have_current_path(
-        auth_method_confirmation_path(next_setup_choice: 'backup_code'),
-      )
-      click_link t('mfa.add')
       expect(page).to have_current_path(backup_code_setup_path)
       set_up_mfa_with_backup_codes
       expect(page).to have_current_path(sign_up_completed_path)

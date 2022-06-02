@@ -1,5 +1,9 @@
 import { render } from 'react-dom';
-import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
+import {
+  VerifyFlow,
+  SecretsContextProvider,
+  AddressVerificationMethod,
+} from '@18f/identity-verify-flow';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
 import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
 
@@ -45,6 +49,16 @@ interface AppRootValues {
   userBundleToken: string;
 }
 
+interface UserBundleMetadata {
+  address_verification_mechanism: AddressVerificationMethod;
+}
+
+interface UserBundle {
+  pii: Record<string, any>;
+
+  metadata: UserBundleMetadata;
+}
+
 interface AppRootElement extends HTMLElement {
   dataset: DOMStringMap & AppRootValues;
 }
@@ -69,10 +83,6 @@ const camelCase = (string: string) =>
 const mapKeys = (object: object, mapKey: (key: string) => string) =>
   Object.entries(object).map(([key, value]) => [mapKey(key), value]);
 
-function onComplete() {
-  window.location.href = completionURL;
-}
-
 const storage = new SecretSessionStorage<SecretValues>('verify');
 
 (async () => {
@@ -82,15 +92,19 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   ]);
   storage.key = cryptoKey;
   await storage.load();
+
+  let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
   if (initialValues.userBundleToken) {
-    await storage.setItem('userBundleToken', initialValues.userBundleToken);
+    const { userBundleToken } = initialValues;
+    await storage.setItem('userBundleToken', userBundleToken);
+    const { pii, metadata } = JSON.parse(atob(userBundleToken.split('.')[1])) as UserBundle;
+    Object.assign(initialValues, Object.fromEntries(mapKeys(pii, camelCase)));
+    initialAddressVerificationMethod = metadata.address_verification_mechanism;
   }
 
-  const userBundleToken = storage.getItem('userBundleToken');
-  if (userBundleToken) {
-    const jwtData = JSON.parse(atob(userBundleToken.split('.')[1]));
-    const pii = Object.fromEntries(mapKeys(jwtData.pii, camelCase));
-    Object.assign(initialValues, pii);
+  function onComplete() {
+    storage.clear();
+    window.location.href = completionURL;
   }
 
   render(
@@ -102,6 +116,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         cancelURL={cancelURL}
         basePath={basePath}
         onComplete={onComplete}
+        initialAddressVerificationMethod={initialAddressVerificationMethod}
       />
     </SecretsContextProvider>,
     appRoot,

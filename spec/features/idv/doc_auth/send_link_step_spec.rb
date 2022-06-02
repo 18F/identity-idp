@@ -20,6 +20,10 @@ feature 'doc auth send link step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
     expect(page).to have_content(t('doc_auth.headings.take_picture'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_id'),
+    )
   end
 
   it 'proceeds to the next page with valid info' do
@@ -81,9 +85,12 @@ feature 'doc auth send link step' do
 
   it 'throttles sending the link' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    sign_in_and_2fa_user
+    user = user_with_2fa
+    sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_send_link_step
-    timeout = distance_of_time_in_words(Throttle.attempt_window_in_minutes(:idv_send_link).minutes)
+    timeout = distance_of_time_in_words(
+      Throttle.attempt_window_in_minutes(:idv_send_link).minutes,
+    )
     freeze_time do
       idv_send_link_max_attempts.times do
         expect(page).to_not have_content(
@@ -107,7 +114,9 @@ feature 'doc auth send link step' do
       throttle_type: :idv_send_link,
     )
 
-    travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes + 1) do
+    # Manual expiration is needed for now since the Throttle uses Redis ttl instead of expiretime
+    Throttle.new(throttle_type: :idv_send_link, user: user).reset!
+    travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
@@ -140,12 +149,5 @@ feature 'doc auth send link step' do
 
     document_capture_session.reload
     expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
-  end
-
-  it 'shows the step indicator' do
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_id'),
-    )
   end
 end

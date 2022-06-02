@@ -54,12 +54,16 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'tracks analytics' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::LOGOUT_INITIATED,
-                 success: true,
-                 client_id: service_provider,
-                 errors: {},
-                 sp_initiated: true,
-                 oidc: true)
+            with(
+              'Logout Initiated',
+              hash_including(
+                success: true,
+                client_id: service_provider,
+                errors: {},
+                sp_initiated: true,
+                oidc: true,
+              ),
+            )
 
           action
         end
@@ -87,13 +91,17 @@ RSpec.describe OpenidConnect::LogoutController do
             redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
           }
           expect(@analytics).to receive(:track_event).
-            with(Analytics::LOGOUT_INITIATED,
-                 success: false,
-                 client_id: service_provider,
-                 errors: errors,
-                 error_details: hash_including(*errors.keys),
-                 sp_initiated: true,
-                 oidc: true)
+            with(
+              'Logout Initiated',
+              success: false,
+              client_id: service_provider,
+              errors: errors,
+              error_details: hash_including(*errors.keys),
+              sp_initiated: true,
+              oidc: true,
+              method: nil,
+              saml_request_valid: nil,
+            )
 
           action
         end
@@ -106,13 +114,17 @@ RSpec.describe OpenidConnect::LogoutController do
           errors_keys = [:id_token_hint, :redirect_uri]
 
           expect(@analytics).to receive(:track_event).
-            with(Analytics::LOGOUT_INITIATED,
-                 success: false,
-                 client_id: nil,
-                 errors: hash_including(*errors_keys),
-                 error_details: hash_including(*errors_keys),
-                 sp_initiated: true,
-                 oidc: true)
+            with(
+              'Logout Initiated',
+              success: false,
+              client_id: nil,
+              errors: hash_including(*errors_keys),
+              error_details: hash_including(*errors_keys),
+              sp_initiated: true,
+              oidc: true,
+              method: nil,
+              saml_request_valid: nil,
+            )
 
           action
         end

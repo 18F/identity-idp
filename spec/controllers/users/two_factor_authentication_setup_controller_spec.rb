@@ -102,6 +102,7 @@ describe Users::TwoFactorAuthenticationSetupController do
     context 'when the selection is only phone and multi mfa is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
         stub_sign_in_before_2fa
 
         patch :create, params: {
@@ -112,7 +113,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
 
       it 'the redirect to the form page with an anchor' do
-        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
+        expect(response).to redirect_to(authentication_methods_setup_path(anchor: 'select_phone'))
       end
       it 'contains a flash message' do
         expect(flash[:phone_error]).to eq(

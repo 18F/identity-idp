@@ -16,7 +16,7 @@ module Idv
         pii_from_doc[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
         if pii_from_doc[:ssn].present?
-          throttle = Throttle.for(
+          throttle = Throttle.new(
             target: Pii::Fingerprinter.fingerprint(pii_from_doc[:ssn]),
             throttle_type: :proof_ssn,
           )

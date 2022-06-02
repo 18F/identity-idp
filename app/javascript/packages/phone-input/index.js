@@ -42,6 +42,9 @@ export class PhoneInput extends HTMLElement {
   /** @type {string[]} */
   deliveryMethods = [];
 
+  /** @type {Object.<string,*>} */
+  countryCodePairs = {};
+
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.textInput = this.querySelector('.phone-input__number');
@@ -49,8 +52,10 @@ export class PhoneInput extends HTMLElement {
     this.codeInput = this.querySelector('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
     this.exampleText = this.querySelector('.phone-input__example');
+
     try {
       this.deliveryMethods = JSON.parse(this.dataset.deliveryMethods || '');
+      this.countryCodePairs = JSON.parse(this.dataset.translatedCountryCodeNames || '');
     } catch {}
 
     if (!this.textInput || !this.codeInput) {
@@ -118,11 +123,12 @@ export class PhoneInput extends HTMLElement {
   }
 
   initializeIntlTelInput() {
-    const { supportedCountryCodes } = this;
+    const { supportedCountryCodes, countryCodePairs } = this;
     const allowDropdown = supportedCountryCodes && supportedCountryCodes.length > 1;
 
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
+      localizedCountries: countryCodePairs,
       onlyCountries: supportedCountryCodes,
       autoPlaceholder: 'off',
       allowDropdown,

@@ -621,11 +621,11 @@ module AnalyticsEvents
     letter_already_sent:,
     **extra
   )
-  track_event(
-    'IdV: USPS address visited',
-    letter_already_sent: letter_already_sent,
-    **extra,
-  )
+    track_event(
+      'IdV: USPS address visited',
+      letter_already_sent: letter_already_sent,
+      **extra,
+    )
   end
 
   # @identity.idp.previous_event_name Account verification submitted
@@ -648,6 +648,12 @@ module AnalyticsEvents
     )
   end
 
+  # @identity.idp.previous_event_name Account verification visited
+  # GPO verification visited
+  def idv_gpo_verification_visited
+    track_event('IdV: GPO verification visited')
+  end
+
   # User visits IdV
   def idv_intro_visit
     track_event('IdV: intro visited')
@@ -664,6 +670,16 @@ module AnalyticsEvents
       success: success,
       **extra,
     )
+  end
+
+  # User visited IDV password confirm page
+  def idv_password_confirm_visited
+    track_event('IdV: password confirm visited')
+  end
+
+  # User submitted IDV password confirm page
+  def idv_password_confirm_submitted
+    track_event('IdV: password confirm submitted')
   end
 
   # User visited IDV personal key page
@@ -921,6 +937,118 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] controller
+  # @param [Boolean] user_signed_in
+  # Authenticity token (CSRF) is invalid
+  def invalid_authenticity_token(
+    controller:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Invalid Authenticity Token',
+      controller: controller,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
+  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [Integer] rendered_event_count how many events were rendered in the API response
+  # @param [String] set_errors JSON encoded representation of SET errors from the client
+  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
+  # new set of events
+  def irs_attempts_api_events(
+    acknowledged_event_count:,
+    rendered_event_count:,
+    set_errors:,
+    **extra
+  )
+    track_event(
+      'IRS Attempt API: Events submitted',
+      acknowledged_event_count: acknowledged_event_count,
+      rendered_event_count: rendered_event_count,
+      set_errors: set_errors,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] client_id
+  # @param [Boolean] sp_initiated
+  # @param [Boolean] oidc
+  # @param [Boolean] saml_request_valid
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] method
+  # Logout Initiated
+  def logout_initiated(
+    success: nil,
+    client_id: nil,
+    sp_initiated: nil,
+    oidc: nil,
+    saml_request_valid: nil,
+    errors: nil,
+    error_details: nil,
+    method: nil,
+    **extra
+  )
+    track_event(
+      'Logout Initiated',
+      success: success,
+      client_id: client_id,
+      errors: errors,
+      error_details: error_details,
+      sp_initiated: sp_initiated,
+      oidc: oidc,
+      saml_request_valid: saml_request_valid,
+      method: method,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] context
+  # @param [String] multi_factor_auth_method
+  # @param [Integer] auth_app_configuration_id
+  # @param [Integer] piv_cac_configuration_id
+  # @param [Integer] key_id
+  # @param [Integer] webauthn_configuration_id
+  # @param [Integer] phone_configuration_id
+  # @param [Boolean] confirmation_for_add_phone
+  # Multi-Factor Authentication
+  def multi_factor_auth(
+    success:,
+    errors: nil,
+    context: nil,
+    multi_factor_auth_method: nil,
+    auth_app_configuration_id: nil,
+    piv_cac_configuration_id: nil,
+    key_id: nil,
+    webauthn_configuration_id: nil,
+    confirmation_for_add_phone: nil,
+    phone_configuration_id: nil,
+    pii_like_keypaths: nil,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication',
+      success: success,
+      errors: errors,
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      auth_app_configuration_id: auth_app_configuration_id,
+      piv_cac_configuration_id: piv_cac_configuration_id,
+      key_id: key_id,
+      webauthn_configuration_id: webauthn_configuration_id,
+      confirmation_for_add_phone: confirmation_for_add_phone,
+      phone_configuration_id: phone_configuration_id,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)
@@ -960,6 +1088,28 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] context
+  # @param [String] multi_factor_auth_method
+  # @param [Boolean] confirmation_for_add_phone
+  # @param [Integer] phone_configuration_id
+  # Multi-Factor Authentication enter OTP visited
+  def multi_factor_auth_enter_otp_visit(
+    context:,
+    multi_factor_auth_method:,
+    confirmation_for_add_phone:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter OTP visited',
+      context: context,
+      multi_factor_auth_method: multi_factor_auth_method,
+      confirmation_for_add_phone: confirmation_for_add_phone,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a TOTP as their mfa
   def multi_factor_auth_enter_totp_visit(context:, **extra)
@@ -983,6 +1133,121 @@ module AnalyticsEvents
       context: context,
       multi_factor_auth_method: multi_factor_auth_method,
       webauthn_configuration_id: webauthn_configuration_id,
+      **extra,
+    )
+  end
+
+  # Max multi factor auth attempts met
+  def multi_factor_auth_max_attempts
+    track_event('Multi-Factor Authentication: max attempts reached')
+  end
+
+  # Multi factor selected from auth options list
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] selection
+  def multi_factor_auth_option_list(success:, errors:, selection:, **extra)
+    track_event(
+      'Multi-Factor Authentication: option list',
+      success: success,
+      errors: errors,
+      selection: selection,
+      **extra,
+    )
+  end
+
+  # User visited the list of multi-factor options to use
+  def multi_factor_auth_option_list_visit
+    track_event('Multi-Factor Authentication: option list visited')
+  end
+
+  # Multi factor auth phone setup
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] otp_delivery_preference
+  # @param [String] area_code
+  # @param [String] carrier
+  # @param [String] country_code
+  # @param [String] phone_type
+  # @param [Hash] types
+  # @param [Hash] pii_like_keypaths
+  def multi_factor_auth_phone_setup(success:,
+                                    errors:,
+                                    otp_delivery_preference:,
+                                    area_code:,
+                                    carrier:,
+                                    country_code:,
+                                    phone_type:,
+                                    types:,
+                                    **extra)
+
+    track_event(
+      'Multi-Factor Authentication: phone setup',
+      success: success,
+      errors: errors,
+      otp_delivery_preference: otp_delivery_preference,
+      area_code: area_code,
+      carrier: carrier,
+      country_code: country_code,
+      phone_type: phone_type,
+      types: types,
+      **extra,
+    )
+  end
+
+  # Max multi factor max otp sends reached
+  def multi_factor_auth_max_sends
+    track_event('Multi-Factor Authentication: max otp sends reached')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user updated their password
+  def password_changed(success:, errors:, **extra)
+    track_event('Password Changed', success: success, errors: errors, **extra)
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # The user added a password after verifying their email for account creation
+  def password_creation(success:, errors:, **extra)
+    track_event('Password Creation', success: success, errors: errors, **extra)
+  end
+
+  # The user got their password incorrect the max number of times, their session was terminated
+  def password_max_attempts
+    track_event('Password Max Attempts Reached')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
+  # confirmed email
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  # active proofed profile
+  # The user entered an email address to request a password reset
+  def password_reset_email(success:, errors:, confirmed:, active_profile:, **extra)
+    track_event(
+      'Password Reset: Email Submitted',
+      success: success,
+      errors: errors,
+      confirmed: confirmed,
+      active_profile: active_profile,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
+  # (the user will need to use their personal key to reactivate their profile)
+  # The user changed the password for their account via the paswword reset flow
+  def password_reset_password(success:, errors:, profile_deactivated:, **extra)
+    track_event(
+      'Password Reset: Password Submitted',
+      success: success,
+      errors: errors,
+      profile_deactivated: profile_deactivated,
       **extra,
     )
   end

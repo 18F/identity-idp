@@ -17,7 +17,7 @@ feature 'Email confirmation during sign up' do
     fill_in t('forms.password'), with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_url).to eq two_factor_options_url
+    expect(current_url).to eq authentication_methods_setup_url
     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
 

@@ -25,9 +25,10 @@ RSpec.describe PhoneInputComponent, type: :component do
       **tag_options,
     }.compact
   end
+  let(:instance) { described_class.new(**options) }
 
   subject(:rendered) do
-    render_inline(described_class.new(**options))
+    render_inline(instance)
   end
 
   it 'renders an lg-phone-input tag' do
@@ -40,6 +41,28 @@ RSpec.describe PhoneInputComponent, type: :component do
       visible: false,
       text: t('two_factor_authentication.otp_delivery_preference.no_supported_options'),
     )
+  end
+
+  describe '#supported_country_codes' do
+    subject { instance.supported_country_codes }
+
+    it { is_expected.to start_with(['AD', 'AE', 'AF', 'AG']) }
+
+    context 'with allowed_countries' do
+      let(:allowed_countries) { ['US', 'CA'] }
+
+      it { is_expected.to eq(['CA', 'US']) }
+    end
+  end
+
+  describe '#translated_country_code_names' do
+    subject { instance.translated_country_code_names }
+
+    before do
+      I18n.locale = :es
+    end
+
+    it { is_expected.to include('us' => 'Estados Unidos') }
   end
 
   context 'with class tag option' do
@@ -69,6 +92,21 @@ RSpec.describe PhoneInputComponent, type: :component do
           options: ['United States +1'],
         )
       end
+    end
+  end
+
+  context 'when the locale has been changed' do
+    before do
+      I18n.locale = :es
+    end
+
+    let(:allowed_countries) { ['US'] }
+
+    it 'translates the allowed country name' do
+      expect(rendered).to have_select(
+        t('components.phone_input.country_code_label'),
+        options: ['Estados Unidos +1'],
+      )
     end
   end
 
