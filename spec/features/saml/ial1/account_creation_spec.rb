@@ -24,7 +24,9 @@ feature 'Canceling Account Creation' do
 
       expect(current_url).to eq sign_up_cancel_url
 
-      click_button t('forms.buttons.cancel')
+      expect {
+        click_button t('forms.buttons.cancel')
+      }.to change(User, :count).by(-1)
       expect(current_url).to eq \
         new_user_session_url(request_id: ServiceProviderRequestProxy.last.uuid)
     end
@@ -38,8 +40,10 @@ feature 'Canceling Account Creation' do
       click_link t('links.cancel_account_creation')
 
       expect(current_url).to eq sign_up_cancel_url
+      expect {
+        click_link t('links.go_back')
+      }.to change(User, :count).by(0)
 
-      click_link t('links.go_back')
       expect(current_url).to eq previous_url
     end
   end

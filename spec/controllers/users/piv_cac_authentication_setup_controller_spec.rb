@@ -132,11 +132,7 @@ describe Users::PivCacAuthenticationSetupController do
             context 'with additional MFAs leftover' do
               it 'redirects to Mfa Confirmation page' do
                 get :new, params: { token: good_token }
-                expect(response).to redirect_to(
-                  auth_method_confirmation_url(
-                    next_setup_choice: 'voice',
-                  ),
-                )
+                expect(response).to redirect_to(phone_setup_url)
               end
 
               it 'sets the piv/cac session information' do

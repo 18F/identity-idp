@@ -16,7 +16,7 @@ RequestPasswordReset = RedactedStruct.new(
   private
 
   def send_reset_password_instructions
-    if Throttle.for(user: user, throttle_type: :reset_password_email).throttled_else_increment?
+    if Throttle.new(user: user, throttle_type: :reset_password_email).throttled_else_increment?
       analytics.track_event(
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :reset_password_email,

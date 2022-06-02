@@ -109,6 +109,7 @@ irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
 irs_attempt_api_event_count_max: 10000
+kantara_2fa_phone_restricted: false
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -150,6 +151,7 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
+new_sign_up_cancellation_url_enabled: true
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otps_per_ip_limit: 25
@@ -190,6 +192,7 @@ rails_mailer_previews_enabled: false
 reauthn_window: 120
 recovery_code_length: 4
 redis_irs_attempt_api_url: redis://localhost:6379/2
+redis_throttle_enabled: false
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 reg_confirmed_email_max_attempts: 20
@@ -291,7 +294,8 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
-  idv_api_enabled_steps: '["personal_key","personal_key_confirm"]'
+  idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
+  kantara_2fa_phone_restricted: false
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   liveness_checking_enabled: true
   logins_per_ip_limit: 5
@@ -361,12 +365,14 @@ production:
   hmac_fingerprinter_key_queue: '[]'
   in_person_proofing_enabled: false
   irs_attempt_api_public_key: change-me-pls
+  kantara_2fa_phone_restricted: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  new_sign_up_cancellation_url_enabled: false
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
@@ -460,6 +466,7 @@ test:
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: 1
   recurring_jobs_disabled_names: '["disabled job"]'
+  redis_throttle_enabled: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
   reg_unconfirmed_email_window_in_minutes: 70

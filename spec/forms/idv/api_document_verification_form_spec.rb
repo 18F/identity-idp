@@ -113,12 +113,10 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
     context 'when throttled from submission' do
       before do
-        create(
-          :throttle,
-          :with_throttled,
-          user: document_capture_session.user,
+        Throttle.new(
           throttle_type: :idv_doc_auth,
-        )
+          user: document_capture_session.user,
+        ).increment_to_throttled!
         form.submit
       end
 

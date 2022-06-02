@@ -1,10 +1,13 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { accordion } from 'identity-style-guide';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox, usePropertyValue } from '@18f/identity-test-helpers';
+import { FormSteps } from '@18f/identity-form-steps';
 import { t, i18n } from '@18f/identity-i18n';
 import PasswordConfirmStep from './password-confirm-step';
+import submit, { PasswordSubmitError } from './submit';
 
 describe('PasswordConfirmStep', () => {
   const sandbox = useSandbox();
@@ -55,6 +58,41 @@ describe('PasswordConfirmStep', () => {
     expect(getByText('idv.review.mailing_address')).to.exist();
   });
 
+  it('validates missing password', async () => {
+    const { getByRole, getByLabelText, queryByRole } = render(
+      <FormSteps steps={[{ name: 'password_confirm', form: PasswordConfirmStep, submit }]} />,
+    );
+
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+
+    // There should not be a top-level error alert, only field-specific.
+    expect(queryByRole('alert')).to.not.exist();
+    const input = getByLabelText('components.password_toggle.label');
+    const description = computeAccessibleDescription(input);
+    expect(description).to.equal('simple_form.required.text');
+  });
+
+  it('validates incorrect password', async () => {
+    sandbox.stub(window, 'fetch').resolves({
+      status: 400,
+      json: () => Promise.resolve({ error: { password: ['Incorrect password'] } }),
+    } as Response);
+
+    const { getByRole, findByRole, getByLabelText } = render(
+      <FormSteps steps={[{ name: 'password_confirm', form: PasswordConfirmStep, submit }]} />,
+    );
+
+    await userEvent.type(getByLabelText('components.password_toggle.label'), 'password');
+    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+
+    // There should not be a field-specific error, only a top-level alert.
+    const alert = await findByRole('alert');
+    expect(alert.textContent).to.equal('Incorrect password');
+    const input = getByLabelText('components.password_toggle.label');
+    const description = computeAccessibleDescription(input);
+    expect(description).to.be.empty();
+  });
+
   describe('forgot password', () => {
     usePropertyValue(i18n, 'strings', {
       'idv.forgot_password.link_html': 'Forgot password? %{link}',
@@ -99,32 +137,24 @@ describe('PasswordConfirmStep', () => {
         expect(status).to.exist();
         expect(status.textContent).to.equal('idv.messages.review.info_verified_html');
       });
-
-      context('with other errors', () => {
-        it('does not render success alert', () => {
-          const { queryByRole } = render(
-            <PasswordConfirmStep
-              {...DEFAULT_PROPS}
-              value={{ phone: '5135551234' }}
-              errors={[{ error: new Error() }]}
-            />,
-          );
-
-          expect(queryByRole('status')).to.not.exist();
-        });
-      });
     });
 
     context('with errors', () => {
       it('renders error messages', () => {
         const { queryByRole } = render(
-          <PasswordConfirmStep {...DEFAULT_PROPS} errors={[{ error: new Error('Uh oh!') }]} />,
+          <PasswordConfirmStep
+            {...DEFAULT_PROPS}
+            errors={[
+              { error: new Error('Uh oh!') },
+              { error: new PasswordSubmitError('Submit error') },
+            ]}
+          />,
         );
 
         const alert = queryByRole('alert')!;
 
         expect(alert).to.exist();
-        expect(alert.textContent).to.equal('Uh oh!');
+        expect(alert.textContent).to.equal('Submit error');
       });
     });
   });

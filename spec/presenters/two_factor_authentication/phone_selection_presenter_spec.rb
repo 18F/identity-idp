@@ -10,7 +10,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
     context 'when a user does not have a phone configuration (first time)' do
       let(:phone) { nil }
       before do
-        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(false)
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(false)
       end
 
       it 'includes a note about choosing voice or sms' do
@@ -44,22 +44,31 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
     end
   end
 
-  describe '#mfa_configruation' do
+  describe '#mfa_configuration' do
     let(:phone) { nil }
     before do
-      allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+      allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
     end
     it 'returns an empty string when user has not configured this authenticator' do
       expect(presenter_without_mfa.mfa_configuration_description).to eq('')
     end
     it 'returns an # added when user has configured this authenticator' do
-      puts user_with_mfa.phone_configurations.first
       expect(presenter_with_mfa.mfa_configuration_description).to eq(
         t(
           'two_factor_authentication.two_factor_choice_options.configurations_added',
           count: 1,
         ),
       )
+    end
+
+    it 'includes a note to select an additional mfa method on first setup' do
+      expect(presenter_without_mfa.info).
+          to eq(t('two_factor_authentication.two_factor_choice_options.phone_info_html'))
+    end
+
+    it 'does not include a note to select an additional mfa on additional setup' do
+      expect(presenter_with_mfa.info).
+          to eq(t('two_factor_authentication.two_factor_choice_options.phone_info'))
     end
   end
 end

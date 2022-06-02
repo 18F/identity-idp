@@ -118,6 +118,11 @@ function VerifyFlow({
     setCompletedStep(stepName);
   }
 
+  function onFormComplete() {
+    setCompletedStep(null);
+    onComplete();
+  }
+
   return (
     <FlowContext.Provider value={context}>
       <VerifyFlowStepIndicator currentStep={currentStep} />
@@ -131,7 +136,7 @@ function VerifyFlow({
         onChange={setSyncedValues}
         onStepSubmit={onStepSubmit}
         onStepChange={setCurrentStep}
-        onComplete={onComplete}
+        onComplete={onFormComplete}
       />
     </FlowContext.Provider>
   );
