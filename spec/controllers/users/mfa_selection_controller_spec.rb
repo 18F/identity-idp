@@ -164,7 +164,7 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the selection is not valid' do
-      it 'returns to index page' do
+      it 'redirects to the index page' do
         stub_sign_in
 
         patch :update, params: {

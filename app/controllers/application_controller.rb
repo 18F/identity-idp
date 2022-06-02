@@ -267,7 +267,7 @@ class ApplicationController < ActionController::Base
 
   def two_factor_kantara_enabled?
     IdentityConfig.store.kantara_2fa_phone_restricted &&
-      MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 
   def reauthn?
@@ -282,7 +282,7 @@ class ApplicationController < ActionController::Base
     return prompt_to_verify_mfa unless user_fully_authenticated?
     return prompt_to_setup_mfa if service_provider_mfa_policy.
                                   user_needs_sp_auth_method_setup?
-    return prompt_to_setup_non_restricted_mfa unless two_factor_kantara_enabled?
+    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
     enforce_total_session_duration_timeout
