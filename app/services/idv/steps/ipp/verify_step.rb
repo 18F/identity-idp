@@ -7,6 +7,7 @@ module Idv
           # send the user to the phone page where they'll continue the remainder of
           # the idv flow
           redirect_to idv_phone_url
+          return
         end
       end
     end

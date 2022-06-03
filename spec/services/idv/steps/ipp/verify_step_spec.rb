@@ -8,6 +8,7 @@ describe Idv::Steps::Ipp::VerifyStep do
       'controller',
       session: { sp: { issuer: service_provider.issuer } },
       current_user: user,
+      url_options: {},
     )
   end
 
