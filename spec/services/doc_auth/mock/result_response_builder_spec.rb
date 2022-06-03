@@ -24,7 +24,7 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         expect(response.errors).to eq({})
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).
-          to eq(Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC)
+          to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       end
     end
 
@@ -178,7 +178,7 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
         expect(response.errors).to eq({})
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).
-          to eq(Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC)
+          to eq(Idp::Constants::MOCK_IDV_APPLICANT)
       end
     end
 

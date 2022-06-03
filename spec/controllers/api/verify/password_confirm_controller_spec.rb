@@ -10,26 +10,12 @@ describe Api::Verify::PasswordConfirmController do
 
   let(:password) { 'iambatman' }
   let(:user) { create(:user, :signed_up, password: password) }
-  let(:applicant) do
-    { first_name: 'Bruce',
-      last_name: 'Wayne',
-      address1: '123 Mansion St',
-      address2: 'Ste 456',
-      city: 'Gotham City',
-      state: 'NY',
-      zipcode: '10015' }
-  end
-
-  let(:pii) do
-    { first_name: 'Bruce',
-      last_name: 'Wayne',
-      ssn: '900-90-1234' }
-  end
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
 
   let(:profile) { subject.idv_session.profile }
   let(:key) { OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_private_key)) }
   let(:jwt_metadata) { { vendor_phone_confirmation: true, user_phone_confirmation: true } }
-  let(:jwt) { JWT.encode({ pii: pii, metadata: jwt_metadata }, key, 'RS256', sub: user.uuid) }
+  let(:jwt) { JWT.encode({ pii: applicant, metadata: jwt_metadata }, key, 'RS256', sub: user.uuid) }
 
   before do
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])

@@ -100,7 +100,7 @@ module DocAuth
           raw_pii = parsed_data_from_uploaded_file['document']
           raw_pii&.symbolize_keys || {}
         else
-          Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC
+          Idp::Constants::MOCK_IDV_APPLICANT
         end
       end
 
