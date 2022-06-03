@@ -37,25 +37,17 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
-    it 'is visible on page (not have "display-none" class)' do
-      expect(page).to_not have_css('#pw-strength-cntnr.display-none')
-    end
-
-    it 'updates as password changes' do
+    it 'updates strength feedback as password changes' do
       expect(page).to have_content '...'
 
       fill_in t('forms.password'), with: 'password'
       expect(page).to have_content 'Very weak'
 
-      fill_in t('forms.password'), with: 'this is a great sentence'
-      expect(page).to have_content 'Great!'
-    end
-
-    it 'has dynamic password strength feedback' do
-      expect(page).to have_content '...'
-
       fill_in t('forms.password'), with: '123456789'
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
+
+      fill_in t('forms.password'), with: 'this is a great sentence'
+      expect(page).to have_content 'Great!'
     end
   end
 
