@@ -73,7 +73,8 @@ module Idv
       end
 
       def aamva_state?(pii_from_doc)
-        IdentityConfig.store.aamva_supported_jurisdictions.include?(pii_from_doc['state_id_jurisdiction'])
+        IdentityConfig.store.aamva_supported_jurisdictions.include?
+        (pii_from_doc['state_id_jurisdiction'])
       end
 
       def aamva_disallowed_for_service_provider?
