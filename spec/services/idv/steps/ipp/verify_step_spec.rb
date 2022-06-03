@@ -22,7 +22,7 @@ describe Idv::Steps::Ipp::VerifyStep do
 
   describe '#call' do
     it 'works' do
-      result = step.call
+      step.call
     end
   end
 end
