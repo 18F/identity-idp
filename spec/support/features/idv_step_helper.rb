@@ -43,8 +43,16 @@ module IdvStepHelper
   end
 
   def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
-    complete_idv_steps_before_phone_step(user)
-    complete_phone_step(user)
+    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
+      sign_in_and_2fa_user(user)
+      allow_any_instance_of(Idv::Session).to receive(:applicant).
+        and_return(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE)
+      allow_any_instance_of(Idv::Session).to receive(:resolution_successful).and_return(true)
+      visit idv_app_path(step: :password_confirm)
+    else
+      complete_idv_steps_before_phone_step(user)
+      complete_phone_step(user)
+    end
   end
 
   def complete_review_step(user)
