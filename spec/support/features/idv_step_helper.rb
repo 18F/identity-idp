@@ -76,8 +76,17 @@ module IdvStepHelper
   # rubocop:enable Layout/LineLength
 
   def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
-    complete_idv_steps_before_gpo_step(user)
-    click_on t('idv.buttons.mail.send')
+    if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
+      sign_in_and_2fa_user(user)
+      idv_session = Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
+      idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+      idv_session.address_verification_mechanism = 'gpo'
+      allow(Idv::Session).to receive(:new).and_return(idv_session)
+      visit idv_app_path(step: :password_confirm)
+    else
+      complete_idv_steps_before_gpo_step(user)
+      click_on t('idv.buttons.mail.send')
+    end
   end
 
   def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)
