@@ -28,7 +28,7 @@ module Idv
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
-        # WILLFIX: remove this block when we begin collecting user data
+        # WILLFIX: remove this line when we begin collecting user data
         session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
 
         # WILLFIX: (LG-6349) remove this block when we implement the verify page
