@@ -42,7 +42,6 @@ module Idv
         type,
         decorated_user,
       )
-      sign_out
       render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
     end
 
