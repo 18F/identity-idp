@@ -10,7 +10,7 @@ import {
 import { PasswordToggle } from '@18f/identity-password-toggle';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { PageHeading, Accordion, Alert, Link } from '@18f/identity-components';
+import { PageHeading, Accordion, Alert, Link, ScrollIntoView } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import type { ChangeEvent } from 'react';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
@@ -38,6 +38,7 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
   }
 
   const appName = getConfigValue('appName');
+  const stepErrors = errors.filter(({ error }) => error instanceof PasswordSubmitError);
 
   return (
     <>
@@ -51,13 +52,15 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           )}
         </Alert>
       )}
-      {errors
-        .filter(({ error }) => error instanceof PasswordSubmitError)
-        .map(({ error }) => (
-          <Alert key={error.message} type="error" className="margin-bottom-4">
-            {error.message}
-          </Alert>
-        ))}
+      {stepErrors.length > 0 && (
+        <ScrollIntoView>
+          {stepErrors.map(({ error }) => (
+            <Alert key={error.message} type="error" className="margin-bottom-4">
+              {error.message}
+            </Alert>
+          ))}
+        </ScrollIntoView>
+      )}
       <PageHeading>{t('idv.titles.session.review', { app_name: appName })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: appName })}</p>
       <p>
