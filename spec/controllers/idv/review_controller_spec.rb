@@ -365,7 +365,7 @@ describe Idv::ReviewController do
         context 'with idv app personal key step enabled' do
           before do
             allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-              and_return(['personal_key'])
+              and_return(['password_confirm', 'personal_key', 'personal_key_confirm'])
           end
 
           it 'redirects to idv app personal key path' do
@@ -388,19 +388,6 @@ describe Idv::ReviewController do
           profile.reload
 
           expect(profile).to_not be_active
-        end
-
-        context 'with idv api personal key step enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
-              and_return(['personal_key'])
-          end
-
-          it 'redirects to personal key path' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            expect(response).to redirect_to idv_personal_key_path
-          end
         end
       end
     end
