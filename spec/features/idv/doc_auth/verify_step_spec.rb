@@ -158,6 +158,7 @@ feature 'doc auth verify step' do
       allow(agent).to receive(:proof_resolution).and_return(
         success: true, errors: {}, context: { stages: [] },
       )
+
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         [Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC[:state_id_jurisdiction]],
       )

@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { accordion } from 'identity-style-guide';
+import type { SinonSpy } from 'sinon';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox, usePropertyValue } from '@18f/identity-test-helpers';
 import { FormSteps } from '@18f/identity-form-steps';
@@ -83,15 +84,24 @@ describe('PasswordConfirmStep', () => {
       <FormSteps steps={[{ name: 'password_confirm', form: PasswordConfirmStep, submit }]} />,
     );
 
+    sandbox.spy(Element.prototype, 'scrollIntoView');
+    const continueButton = getByRole('button', { name: 'forms.buttons.continue' });
+
     await userEvent.type(getByLabelText('components.password_toggle.label'), 'password');
-    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(continueButton);
 
     // There should not be a field-specific error, only a top-level alert.
     const alert = await findByRole('alert');
+    expect(Element.prototype.scrollIntoView).to.have.been.calledOnce();
+    const { thisValue: scrollElement } = (Element.prototype.scrollIntoView as SinonSpy).getCall(0);
+    expect((scrollElement as Element).contains(alert)).to.be.true();
     expect(alert.textContent).to.equal('Incorrect password');
     const input = getByLabelText('components.password_toggle.label');
     const description = computeAccessibleDescription(input);
     expect(description).to.be.empty();
+
+    await userEvent.click(continueButton);
+    expect(Element.prototype.scrollIntoView).to.have.been.calledTwice();
   });
 
   describe('forgot password', () => {

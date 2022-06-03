@@ -83,9 +83,7 @@ module OpenidConnect
       analytics_attributes = result.to_h.except(:redirect_uri).
                              merge(user_fully_authenticated: user_fully_authenticated?)
 
-      analytics.track_event(
-        Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION, analytics_attributes
-      )
+      analytics.openid_connect_request_authorization(**analytics_attributes)
     end
 
     def identity_needs_verification?

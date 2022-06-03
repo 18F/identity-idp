@@ -36,7 +36,8 @@ describe VerifyController do
     end
 
     context 'with idv api enabled' do
-      let(:idv_api_enabled_steps) { ['something'] }
+      let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
+      let(:step) { 'password_confirm' }
 
       context 'invalid step' do
         let(:step) { 'bad' }
@@ -46,75 +47,28 @@ describe VerifyController do
         end
       end
 
-      context 'with personal key step enabled' do
-        let(:idv_api_enabled_steps) { ['personal_key', 'personal_key_confirm'] }
-        let(:step) { 'personal_key' }
-
-        before do
-          profile_maker = Idv::ProfileMaker.new(
-            applicant: applicant,
-            user: user,
-            user_password: password,
-          )
-          profile = profile_maker.save_profile
-          controller.idv_session.pii = profile_maker.pii_attributes
-          controller.idv_session.profile_id = profile.id
-          controller.idv_session.personal_key = profile.personal_key
-        end
-
-        it 'renders view' do
-          expect(response).to render_template(:show)
-        end
-
-        it 'sets app data' do
-          response
-
-          expect(assigns[:app_data]).to include(
-            base_path: idv_app_path,
-            start_over_url: idv_session_path,
-            cancel_url: idv_cancel_path,
-            enabled_step_names: idv_api_enabled_steps,
-            initial_values: { 'personalKey' => kind_of(String) },
-            store_key: kind_of(String),
-          )
-        end
-
-        context 'empty step' do
-          let(:step) { nil }
-
-          it 'renders view' do
-            expect(response).to render_template(:show)
-          end
-        end
+      it 'renders view' do
+        expect(response).to render_template(:show)
       end
 
-      context 'with password confirmation step enabled' do
-        let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
-        let(:step) { 'password_confirm' }
+      it 'sets app data' do
+        response
+
+        expect(assigns[:app_data]).to include(
+          base_path: idv_app_path,
+          start_over_url: idv_session_path,
+          cancel_url: idv_cancel_path,
+          enabled_step_names: idv_api_enabled_steps,
+          initial_values: { 'userBundleToken' => kind_of(String) },
+          store_key: kind_of(String),
+        )
+      end
+
+      context 'empty step' do
+        let(:step) { nil }
 
         it 'renders view' do
           expect(response).to render_template(:show)
-        end
-
-        it 'sets app data' do
-          response
-
-          expect(assigns[:app_data]).to include(
-            base_path: idv_app_path,
-            start_over_url: idv_session_path,
-            cancel_url: idv_cancel_path,
-            enabled_step_names: idv_api_enabled_steps,
-            initial_values: { 'userBundleToken' => kind_of(String) },
-            store_key: kind_of(String),
-          )
-        end
-
-        context 'empty step' do
-          let(:step) { nil }
-
-          it 'renders view' do
-            expect(response).to render_template(:show)
-          end
         end
       end
     end

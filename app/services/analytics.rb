@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  MULTI_FACTOR_AUTH_SETUP = 'Multi-Factor Authentication Setup'
-  OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'
-  OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'
-  OPENID_CONNECT_TOKEN = 'OpenID Connect: token'
-  OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'
   PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'
   PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'
