@@ -113,7 +113,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
 
       it 'the redirect to the form page with an anchor' do
-        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
+        expect(response).to redirect_to(authentication_methods_setup_path(anchor: 'select_phone'))
       end
       it 'contains a flash message' do
         expect(flash[:phone_error]).to eq(

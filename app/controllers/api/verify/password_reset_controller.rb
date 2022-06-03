@@ -1,6 +1,8 @@
 module Api
   module Verify
-    class PasswordResetController < Api::BaseController
+    class PasswordResetController < BaseController
+      self.required_step = 'password_confirm'
+
       def create
         analytics.idv_forgot_password_confirmed
         request_id = sp_session[:request_id]

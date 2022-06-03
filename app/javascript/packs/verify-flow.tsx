@@ -1,5 +1,9 @@
 import { render } from 'react-dom';
-import { VerifyFlow, SecretsContextProvider } from '@18f/identity-verify-flow';
+import {
+  VerifyFlow,
+  SecretsContextProvider,
+  AddressVerificationMethod,
+} from '@18f/identity-verify-flow';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
 import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
 
@@ -30,19 +34,19 @@ interface AppRootValues {
   cancelUrl: string;
 
   /**
-   * URL to which user should be redirected after completing the form.
-   */
-  completionUrl: string;
-
-  /**
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
+}
 
-  /**
-   * Signed JWT containing user data.
-   */
-  userBundleToken: string;
+interface UserBundleMetadata {
+  address_verification_mechanism: AddressVerificationMethod;
+}
+
+interface UserBundle {
+  pii: Record<string, any>;
+
+  metadata: UserBundleMetadata;
 }
 
 interface AppRootElement extends HTMLElement {
@@ -56,7 +60,6 @@ const {
   basePath,
   startOverUrl: startOverURL,
   cancelUrl: cancelURL,
-  completionUrl: completionURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -78,20 +81,16 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   ]);
   storage.key = cryptoKey;
   await storage.load();
-  if (initialValues.userBundleToken) {
-    await storage.setItem('userBundleToken', initialValues.userBundleToken);
-  }
+  const userBundleToken = initialValues.userBundleToken as string;
+  await storage.setItem('userBundleToken', userBundleToken);
+  const { pii, metadata } = JSON.parse(atob(userBundleToken.split('.')[1])) as UserBundle;
+  Object.assign(initialValues, Object.fromEntries(mapKeys(pii, camelCase)));
 
-  const userBundleToken = storage.getItem('userBundleToken');
-  if (userBundleToken) {
-    const jwtData = JSON.parse(atob(userBundleToken.split('.')[1]));
-    const pii = Object.fromEntries(mapKeys(jwtData.pii, camelCase));
-    Object.assign(initialValues, pii);
-  }
-
-  function onComplete() {
+  function onComplete({ completionURL }: VerifyFlowValues) {
     storage.clear();
-    window.location.href = completionURL;
+    if (completionURL) {
+      window.location.href = completionURL;
+    }
   }
 
   render(
@@ -103,6 +102,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         cancelURL={cancelURL}
         basePath={basePath}
         onComplete={onComplete}
+        initialAddressVerificationMethod={metadata.address_verification_mechanism}
       />
     </SecretsContextProvider>,
     appRoot,

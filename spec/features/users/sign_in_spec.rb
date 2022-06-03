@@ -143,7 +143,7 @@ feature 'Sign in' do
     submit_form_with_valid_email(email)
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
-    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_current_path(authentication_methods_setup_path)
 
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
@@ -930,7 +930,7 @@ feature 'Sign in' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
       select_2fa_option('piv_cac')
 
       expect(page).to have_current_path setup_piv_cac_path

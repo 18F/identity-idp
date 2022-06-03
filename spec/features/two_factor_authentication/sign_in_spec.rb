@@ -7,7 +7,7 @@ feature 'Two Factor Authentication' do
 
       attempt_to_bypass_2fa_setup
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
 
       select_2fa_option('phone')
 
@@ -55,7 +55,7 @@ feature 'Two Factor Authentication' do
 
         click_on t('two_factor_authentication.choose_another_option')
 
-        expect(current_path).to eq two_factor_options_path
+        expect(current_path).to eq authentication_methods_setup_path
       end
     end
 
