@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 /**
  * Mechanisms by which a user can verify their address.
  */
-export type AddressVerificationMethod = 'phone' | 'gpo';
+export type AddressVerificationMethod = 'phone' | 'gpo' | null;
 
 /**
  * Context provider props.
@@ -40,7 +40,7 @@ interface AddressVerificationMethodContextValue {
 /**
  * Default address verification method.
  */
-const DEFAULT_METHOD: AddressVerificationMethod = 'phone';
+const DEFAULT_METHOD: AddressVerificationMethod = null;
 
 /**
  * Address verification method context container.
