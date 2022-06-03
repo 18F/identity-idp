@@ -191,5 +191,13 @@ FactoryBot.define do
         create(:profile, :active, :verified, :with_pii, user: user)
       end
     end
+
+    trait :deactivated_password_reset_profile do
+      signed_up
+
+      after :build do |user|
+        create(:profile, :password_reset, :with_pii, user: user)
+      end
+    end
   end
 end
