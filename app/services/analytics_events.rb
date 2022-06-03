@@ -1200,6 +1200,93 @@ module AnalyticsEvents
     track_event('Multi-Factor Authentication: max otp sends reached')
   end
 
+  # Tracks when a user sets up a multi factor auth method
+  # @param [String] multi_factor_auth_method
+  def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
+    track_event(
+      'Multi-Factor Authentication Setup',
+      multi_factor_auth_method: multi_factor_auth_method,
+      **extra,
+    )
+  end
+
+  # Tracks when an openid connect bearer token authentication request is made
+  # @param [Boolean] success
+  # @param [Hash] errors
+  def openid_connect_bearer_token(success:, errors:, **extra)
+    track_event(
+      'OpenID Connect: bearer token authentication',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when openid authorization request is made
+  # @param [String] client_id
+  # @param [String] scope
+  # @param [Array] acr_values
+  # @param [Boolean] unauthorized_scope
+  # @param [Boolean] user_fully_authenticated
+  def openid_connect_request_authorization(
+    client_id:,
+    scope:,
+    acr_values:,
+    unauthorized_scope:,
+    user_fully_authenticated:,
+    **extra
+  )
+    track_event(
+      'OpenID Connect: authorization request',
+      client_id: client_id,
+      scope: scope,
+      acr_values: acr_values,
+      unauthorized_scope: unauthorized_scope,
+      user_fully_authenticated: user_fully_authenticated,
+      **extra,
+    )
+  end
+
+  # Tracks when an openid connect token request is made
+  # @param [String] client_id
+  # @param [String] user_id
+  def openid_connect_token(client_id:, user_id:, **extra)
+    track_event(
+      'OpenID Connect: token',
+      client_id: client_id,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks when user makes an otp delivery selection
+  # @param [String] otp_delivery_preference (sms or voice)
+  # @param [Boolean] resend
+  # @param [String] country_code
+  # @param [String] area_code
+  # @param ["authentication","reauthentication","confirmation"] context user session context
+  # @param [Hash] pii_like_keypaths
+  def otp_delivery_selection(
+    otp_delivery_preference:,
+    resend:,
+    country_code:,
+    area_code:,
+    context:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'OTP: Delivery Selection',
+      otp_delivery_preference: otp_delivery_preference,
+      resend: resend,
+      country_code: country_code,
+      area_code: area_code,
+      context: context,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # The user updated their password

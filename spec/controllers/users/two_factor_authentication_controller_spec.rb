@@ -313,7 +313,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(@analytics).to receive(:track_event).
           ordered.
-          with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
+          with('OTP: Delivery Selection', analytics_hash)
         expect(@analytics).to receive(:track_event).
           ordered.
           with(Analytics::TELEPHONY_OTP_SENT, hash_including(success: true))
@@ -434,7 +434,7 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(@analytics).to receive(:track_event).
           ordered.
-          with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
+          with('OTP: Delivery Selection', analytics_hash)
         expect(@analytics).to receive(:track_event).
           ordered.
           with(Analytics::TELEPHONY_OTP_SENT, hash_including(success: true))
