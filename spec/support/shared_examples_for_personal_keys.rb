@@ -40,7 +40,8 @@ shared_examples_for 'personal key page' do
       expect(copied_text).to eq(scrape_personal_key)
 
       click_continue
-      page.find(':focus').send_keys [mac? ? :meta : :control, 'v']
+      mod = mac? ? :meta : :control
+      page.find(':focus').send_keys [mod, 'v']
 
       path_before_submit = current_path
       within('[role=dialog]') { click_on t('forms.buttons.continue') }
