@@ -1,10 +1,7 @@
 module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
-      AAMVA_SUPPORTED_JURISDICTIONS = %w[
-        AL AR AZ CA CO CT DC DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE
-        NJ NM NV NY OH OR PA RI SC SD TN TX UT VA VT WA WI WY
-      ].to_set.freeze
+      AAMVA_SUPPORTED_JURISDICTIONS = IdentityConfig.store.aamva_supported_jurisdictions.to_set.freeze
 
       private
 
@@ -92,6 +89,8 @@ module Idv
         add_cost(:aamva, transaction_id: transaction_id)
         track_aamva
       end
+
+      def 
 
       def track_aamva
         return unless IdentityConfig.store.state_tracking_enabled
