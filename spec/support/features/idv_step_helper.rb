@@ -45,13 +45,13 @@ module IdvStepHelper
   def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
     if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
       sign_in_and_2fa_user(user)
-      idv_session = Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
-      idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-      idv_session.resolution_successful = true
-      idv_session.address_verification_mechanism = 'phone'
-      idv_session.user_phone_confirmation = true
-      idv_session.vendor_phone_confirmation = true
-      allow(Idv::Session).to receive(:new).and_return(idv_session)
+      stub_idv_session(
+        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
+        resolution_successful: true,
+        address_verification_mechanism: 'phone',
+        user_phone_confirmation: true,
+        vendor_phone_confirmation: true,
+      )
       visit idv_app_path(step: :password_confirm)
     else
       complete_idv_steps_before_phone_step(user)
@@ -78,11 +78,11 @@ module IdvStepHelper
   def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
     if IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
       sign_in_and_2fa_user(user)
-      idv_session = Idv::Session.new(user_session: {}, current_user: user, service_provider: nil)
-      idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
-      idv_session.resolution_successful = 'phone'
-      idv_session.address_verification_mechanism = 'gpo'
-      allow(Idv::Session).to receive(:new).and_return(idv_session)
+      stub_idv_session(
+        applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+        resolution_successful: 'phone',
+        address_verification_mechanism: 'gpo',
+      )
       visit idv_app_path(step: :password_confirm)
     else
       complete_idv_steps_before_gpo_step(user)
@@ -99,5 +99,15 @@ module IdvStepHelper
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
     send("complete_idv_steps_before_#{step}_step", user)
+  end
+
+  private
+
+  def stub_idv_session(**session_attributes)
+    allow(Idv::Session).to receive(:new).and_wrap_original do |original, kwargs|
+      result = original.call(**kwargs)
+      kwargs[:user_session][:idv].merge!(session_attributes)
+      result
+    end
   end
 end
