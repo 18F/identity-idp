@@ -8,15 +8,6 @@ module Idv
         state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
         ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
         verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
-        # WILLFIX: add the failure branch for verify step
-        # WILLFIX: add the verify by mail flow
-        phone: Idv::Steps::Ipp::PhoneStep, # phone finder
-        # WILLFIX: add the failure branch for phone step
-        # WILLFIX: re-use existing password confirm step
-        password_confirm: Idv::Steps::Ipp::PasswordConfirmStep,
-        # WILLFIX: re-use existing personal key step
-        personal_key: Idv::Steps::Ipp::PersonalKeyStep,
-        barcode: Idv::Steps::Ipp::BarcodeStep,
       }.freeze
 
       ACTIONS = {
@@ -32,11 +23,35 @@ module Idv
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(controller, STEPS, {}, session[name])
+        super(controller, STEPS, ACTIONS, session[name])
       end
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
+        # mock out user data for now. once we're actually collecting user data
+        # we can remove this block
+        # WILLFIX: remove this block when we're collecting user data
+        session[:idv][:applicant] ||= {
+          first_name: 'Susan',
+          last_name: 'Smith',
+          middle_name: 'Q',
+          address1: '1 Microsoft Way',
+          address2: 'Apt 3',
+          city: 'Bayside',
+          state: 'NY',
+          zipcode: '11364',
+          dob: '1938-10-06',
+          ssn: '900123123',
+        }
+
+        # skip legacy steps for now. once we've implemented the verify page
+        # then we should be able to remove this block
+        # WILLFIX: remove this block when we implement the verify page
+        session[:idv]['profile_confirmation'] = true
+        session[:idv]['vendor_phone_confirmation'] = false
+        session[:idv]['user_phone_confirmation'] = false
+        session[:idv]['address_verification_mechanism'] = 'phone'
+        session[:idv]['resolution_successful'] = 'phone'
       end
     end
   end
