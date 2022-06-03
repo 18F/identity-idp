@@ -28,9 +28,7 @@ module Idv
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
-        # mock out user data for now. once we're actually collecting user data
-        # we can remove this block
-        # WILLFIX: remove this block when we're collecting user data
+        # WILLFIX: remove this block when we begin collecting user data
         session[:idv][:applicant] ||= {
           first_name: 'Susan',
           last_name: 'Smith',
@@ -44,9 +42,7 @@ module Idv
           ssn: '900123123',
         }
 
-        # skip legacy steps for now. once we've implemented the verify page
-        # then we should be able to remove this block
-        # WILLFIX: remove this block when we implement the verify page
+        # WILLFIX: (LG-6349) remove this block when we implement the verify page
         session[:idv]['profile_confirmation'] = true
         session[:idv]['vendor_phone_confirmation'] = false
         session[:idv]['user_phone_confirmation'] = false
