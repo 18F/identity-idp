@@ -29,18 +29,7 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
         # WILLFIX: remove this block when we begin collecting user data
-        session[:idv][:applicant] ||= {
-          first_name: 'Susan',
-          last_name: 'Smith',
-          middle_name: 'Q',
-          address1: '1 Microsoft Way',
-          address2: 'Apt 3',
-          city: 'Bayside',
-          state: 'NY',
-          zipcode: '11364',
-          dob: '1938-10-06',
-          ssn: '900123123',
-        }
+        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
 
         # WILLFIX: (LG-6349) remove this block when we implement the verify page
         session[:idv]['profile_confirmation'] = true
