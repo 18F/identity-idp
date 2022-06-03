@@ -23,7 +23,7 @@ class SessionEncryptor
     ['email'],
   ]
 
-  SENSITIVE_DEFAULT_FIELDS = Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.slice(
+  SENSITIVE_DEFAULT_FIELDS = Idp::Constants::MOCK_IDV_APPLICANT.slice(
     :last_name,
     :address1,
     :city,
