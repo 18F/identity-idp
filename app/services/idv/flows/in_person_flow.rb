@@ -13,6 +13,10 @@ module Idv
       ACTIONS = {
       }.freeze
 
+      # WILLFIX: (LG-6308) move this to the barcode page when we finish setting up IPP step
+      # indicators
+      # i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
+
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },
