@@ -52,19 +52,19 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # phone page
-    expect(page).to have_content(t('in_person_proofing.headings.phone'))
+    expect(page).to have_content(t('idv.titles.session.phone'))
     fill_out_phone_form_mfa_phone(user)
     click_idv_continue
 
     # password confirm page
     expect(page).to have_content(
-      t('in_person_proofing.headings.password_confirm', app_name: APP_NAME),
+      t('idv.titles.session.review', app_name: APP_NAME),
     )
     fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
     click_idv_continue
 
     # personal key page
-    expect(page).to have_content(t('in_person_proofing.headings.personal_key'))
+    expect(page).to have_content(t('titles.idv.personal_key'))
     acknowledge_and_confirm_personal_key
 
     # returns to account page
