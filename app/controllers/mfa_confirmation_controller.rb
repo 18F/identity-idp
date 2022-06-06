@@ -2,7 +2,7 @@ class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
 
   before_action :confirm_two_factor_authenticated
-  
+
   def show
     @content = MfaConfirmationPresenter.new(current_user)
     @next_path = next_path
@@ -29,7 +29,7 @@ class MfaConfirmationController < ApplicationController
   private
 
   def enforce_second_mfa?
-    IdentityConfig.store.kantara_2fa_phone_restricted? &&
+    IdentityConfig.store.kantara_2fa_phone_restricted &&
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 
