@@ -185,7 +185,6 @@ feature 'doc auth verify step' do
         IdentityConfig.store.aamva_supported_jurisdictions -
           [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
-      )
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
