@@ -198,7 +198,7 @@ module Users
     end
 
     def track_events(otp_delivery_preference:)
-      extra = {
+      analytics.telephony_otp_sent(
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country_code,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
@@ -207,8 +207,7 @@ module Users
         resend: delivery_params[:resend],
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
-      }
-      analytics.telephony_otp_sent(**extra)
+      )
     end
 
     def exceeded_otp_send_limit?
