@@ -145,9 +145,4 @@ feature 'idv review step' do
       expect(page).to have_current_path(idv_app_path(step: :personal_key))
     end
   end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :review
-    it_behaves_like 'cancel at idv step', :review, :oidc
-  end
 end
