@@ -17,7 +17,6 @@ module Api
 
           render json: {
             status: 'in_progress',
-            document_status_token: '123abc',
           }, status: :ok
         else
           render json: { error: result.errors }, status: :bad_request
