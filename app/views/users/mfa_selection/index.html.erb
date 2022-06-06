@@ -2,6 +2,8 @@
 
 <%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.two_factor_choice')) %>
 
+<p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
+
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off' },
                        method: :patch,
@@ -21,6 +23,6 @@
   <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: @after_setup_path %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
