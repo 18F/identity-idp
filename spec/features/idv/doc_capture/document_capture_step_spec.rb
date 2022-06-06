@@ -272,29 +272,6 @@ feature 'doc capture document capture step', js: true do
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     end
 
-    it 'throttles calls to acuant' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
-
-      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-      max_attempts.times do
-        attach_and_submit_images
-      end
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_session_errors_throttled_path)
-      expect(fake_analytics).to have_logged_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_doc_auth,
-      )
-    end
-
     it 'catches network connection errors on post_front_image' do
       DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
@@ -350,29 +327,6 @@ feature 'doc capture document capture step', js: true do
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
-    end
-
-    it 'throttles calls to acuant' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
-
-      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-      max_attempts.times do
-        attach_and_submit_images
-      end
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_session_errors_throttled_path)
-      expect(fake_analytics).to have_logged_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_doc_auth,
-      )
     end
 
     it 'catches network connection errors on post_front_image' do
