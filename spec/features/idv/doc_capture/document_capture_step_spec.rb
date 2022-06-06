@@ -271,21 +271,6 @@ feature 'doc capture document capture step', js: true do
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     end
-
-    it 'catches network connection errors on post_front_image' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-    end
   end
 
   context 'when liveness checking is not enabled' do
@@ -327,21 +312,6 @@ feature 'doc capture document capture step', js: true do
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
-    end
-
-    it 'catches network connection errors on post_front_image' do
-      DocAuth::Mock::DocAuthMockClient.mock_response!(
-        method: :post_front_image,
-        response: DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
-        ),
-      )
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
   end
 
