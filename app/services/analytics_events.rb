@@ -777,7 +777,7 @@ module AnalyticsEvents
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
-  # @param [String] phone_fingerprint
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [Hash] telephony_response response from Telephony gem
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
@@ -1546,7 +1546,7 @@ module AnalyticsEvents
 
   # @param [String] area_code
   # @param [String] country_code
-  # @param [String] phone_fingerprint
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # @param [String] context the context of the OTP, either "authentication" for confirmed phones
   # or "confirmation" for unconfirmed
   # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
