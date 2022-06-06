@@ -777,6 +777,7 @@ module AnalyticsEvents
   # @param [String] country_code country code of phone number
   # @param [String] area_code area code of phone number
   # @param [Boolean] rate_limit_exceeded whether or not the rate limit was exceeded by this attempt
+  # @param [String] phone_fingerprint
   # @param [Hash] telephony_response response from Telephony gem
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
@@ -786,6 +787,7 @@ module AnalyticsEvents
     country_code:,
     area_code:,
     rate_limit_exceeded:,
+    phone_fingerprint:,
     telephony_response:,
     **extra
   )
@@ -797,6 +799,7 @@ module AnalyticsEvents
       country_code: country_code,
       area_code: area_code,
       rate_limit_exceeded: rate_limit_exceeded,
+      phone_fingerprint: phone_fingerprint,
       telephony_response: telephony_response,
       **extra,
     )
@@ -1538,6 +1541,44 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint
+  # @param [String] context the context of the OTP, either "authentication" for confirmed phones
+  # or "confirmation" for unconfirmed
+  # @param [String] otp_delivery_preference the channel used to send the message,
+  # either "sms" or "voice"
+  # @param [Boolean] resend
+  # @param [Hash] telephony_response
+  # @param [Boolean] success
+  # A phone one-time password send was attempted
+  def telephony_otp_sent(
+    area_code:,
+    country_code:,
+    phone_fingerprint:,
+    context:,
+    otp_delivery_preference:,
+    resend:,
+    telephony_response:,
+    success:,
+    **extra
+  )
+    track_event(
+      'Telephony: OTP sent',
+      {
+        area_code: area_code,
+        country_code: country_code,
+        phone_fingerprint: phone_fingerprint,
+        context: context,
+        otp_delivery_preference: otp_delivery_preference,
+        resend: resend,
+        telephony_response: telephony_response,
+        success: success,
+        **extra,
+      },
     )
   end
 

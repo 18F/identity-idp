@@ -180,7 +180,7 @@ module Users
     end
 
     def handle_telephony_result(method:, default:)
-      track_events
+      track_events(otp_delivery_preference: method)
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
@@ -197,8 +197,18 @@ module Users
       end
     end
 
-    def track_events
-      analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
+    def track_events(otp_delivery_preference:)
+      extra = {
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country_code,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: otp_delivery_preference,
+        resend: delivery_params[:resend],
+        telephony_response: @telephony_result.to_h,
+        success: @telephony_result.success?,
+      }
+      analytics.telephony_otp_sent(**extra)
     end
 
     def exceeded_otp_send_limit?
