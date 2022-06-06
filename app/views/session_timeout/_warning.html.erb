@@ -16,9 +16,11 @@
       <%= button_tag modal.continue,
                      id: 'session-keepalive-btn',
                      class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
-      <%= link_to modal.sign_out,
-                  destroy_user_session_path,
-                  class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
+      <%= button_to(
+            destroy_user_session_path,
+            method: :delete,
+            class: 'usa-button usa-button--big usa-button--full-width usa-button--outline',
+          ) { modal.sign_out } %>
     </div>
   <% end %>
 </div>
