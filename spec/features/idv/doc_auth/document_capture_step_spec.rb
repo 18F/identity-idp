@@ -132,8 +132,6 @@ feature 'doc auth document capture step', :js do
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        doc_auth_result: 'Passed',
-        billed: true,
       )
       expect_costing_for_document
     end
@@ -156,8 +154,6 @@ feature 'doc auth document capture step', :js do
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        doc_auth_result: 'Passed',
-        billed: true,
         success: false,
       )
     end

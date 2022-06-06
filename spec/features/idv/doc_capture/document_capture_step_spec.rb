@@ -66,6 +66,11 @@ feature 'doc capture document capture step', js: true do
 
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(fake_analytics).to have_logged_event(
+      "IdV: #{Analytics::DOC_AUTH.downcase} document_capture submitted",
+      step: 'document_capture',
+      flow_path: 'hybrid',
+    )
   end
 
   it 'does not advance original session with errors' do
@@ -250,19 +255,6 @@ feature 'doc capture document capture step', js: true do
 
       expect(page).to have_content(t('errors.doc_auth.throttled_heading'), wait: 5)
       expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
-    end
-
-    it 'proceeds to the next page with valid info and logs analytics info' do
-      attach_and_submit_images
-
-      expect(page).to have_current_path(next_step)
-      expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
-        step: 'document_capture',
-        flow_path: 'hybrid',
-        doc_auth_result: 'Passed',
-        billed: true,
-      )
     end
 
     it 'does not proceed to the next page with invalid info' do
