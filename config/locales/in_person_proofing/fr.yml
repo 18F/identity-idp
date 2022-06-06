@@ -5,9 +5,6 @@ fr:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
       location: Sélectionnez un emplacement pour vérifier votre identité
-      password_confirm: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
-      personal_key: Enregistrez votre clé personnelle
-      phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
       ssn: Entrez votre numéro de sécurité sociale
       state_id: Entrez les informations sur votre pièce d’identité
       verify: Veuillez vérifier vos informations
