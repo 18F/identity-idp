@@ -182,7 +182,9 @@ feature 'doc auth verify step' do
       )
 
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-        [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
+        IdentityConfig.store.aamva_supported_jurisdictions -
+          [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
+      )
       )
 
       sign_in_and_2fa_user
