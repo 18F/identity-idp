@@ -9,7 +9,7 @@ module Users
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
-      @after_setup_path = after_mfa_setup_path(current_user)
+      @after_setup_path = after_mfa_setup_path
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_additional_setup_visit
     end
