@@ -391,61 +391,7 @@ feature 'doc capture document capture step', js: true do
     end
   end
 
-  context 'when there is a stored result' do
-    before do
-      complete_doc_capture_steps_before_first_step(user)
-    end
-
-    it 'proceeds to the next step if the result was successful' do
-      document_capture_session = user.document_capture_sessions.last
-      response = DocAuth::Response.new(success: true)
-      document_capture_session.store_result_from_response(response)
-      document_capture_session.save!
-
-      submit_empty_form
-
-      expect(page).to have_current_path(next_step)
-    end
-
-    it 'does not proceed to the next step if the result was not successful' do
-      document_capture_session = user.document_capture_sessions.last
-      response = DocAuth::Response.new(success: false)
-      document_capture_session.store_result_from_response(response)
-      document_capture_session.save!
-
-      submit_empty_form
-
-      expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-    end
-
-    it 'does not proceed to the next step if there is no result' do
-      submit_empty_form
-
-      expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-    end
-
-    it 'uses the form params if form params are present' do
-      document_capture_session = user.document_capture_sessions.last
-      response = DocAuth::Response.new(success: false)
-      document_capture_session.store_result_from_response(response)
-      document_capture_session.save!
-
-      attach_and_submit_images
-
-      expect(page).to have_current_path(next_step)
-    end
-  end
-
   def next_step
     idv_capture_doc_capture_complete_step
-  end
-
-  def submit_empty_form
-    page.driver.put(
-      current_path,
-      doc_auth: { front_image: nil, back_image: nil, selfie_image: nil },
-    )
-    visit current_path
   end
 end
