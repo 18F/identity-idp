@@ -46,8 +46,7 @@ describe 'cancel IdV', :js do
     )
     expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
 
-    # After visiting /verify, expect to redirect to the jurisdiction step,
-    # the first step in the IdV flow
+    # After visiting /verify, expect to redirect to the first step in the IdV flow.
     visit idv_path
     expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
   end
@@ -77,8 +76,7 @@ describe 'cancel IdV', :js do
         href: return_to_sp_failure_to_proof_path(step: 'agreement', location: 'cancel'),
       )
 
-      # After visiting /verify, expect to redirect to the jurisdiction step,
-      # the first step in the IdV flow
+      # After visiting /verify, expect to redirect to the first step in the IdV flow.
       visit idv_path
       expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
