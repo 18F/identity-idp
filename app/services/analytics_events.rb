@@ -1549,8 +1549,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint
   # @param [String] context the context of the OTP, either "authentication" for confirmed phones
   # or "confirmation" for unconfirmed
-  # @param [String] otp_delivery_preference the channel used to send the message,
-  # either "sms" or "voice"
+  # @param ["sms","voice"] otp_delivery_preference the channel used to send the message
   # @param [Boolean] resend
   # @param [Hash] telephony_response
   # @param [Boolean] success
