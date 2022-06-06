@@ -380,7 +380,6 @@ production:
   piv_cac_verify_token_secret:
   platform_authentication_enabled: false
   session_encryptor_alert_enabled: true
-  session_encryptor_v2_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
