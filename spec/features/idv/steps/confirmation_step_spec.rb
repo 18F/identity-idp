@@ -5,11 +5,12 @@ feature 'idv confirmation step', js: true do
 
   let(:idv_api_enabled_steps) { [] }
   let(:sp) { nil }
+  let(:address_verification_mechanism) { :phone }
 
   before do
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(idv_api_enabled_steps)
     start_idv_from_sp(sp)
-    complete_idv_steps_before_confirmation_step
+    complete_idv_steps_before_confirmation_step(address_verification_mechanism)
   end
 
   it_behaves_like 'personal key page'
@@ -46,6 +47,8 @@ feature 'idv confirmation step', js: true do
   end
 
   context 'verifying by gpo' do
+    let(:address_verification_mechanism) { :gpo }
+
     it 'shows status content for gpo verification progress' do
       expect(page).to have_content(t('idv.messages.mail_sent'))
       expect(page).to have_css(

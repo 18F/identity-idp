@@ -59,9 +59,6 @@ module IdvStepHelper
   end
 
   alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
-  # rubocop:disable Layout/LineLength
-  alias complete_idv_steps_before_confirmation_step complete_idv_steps_with_phone_before_confirmation_step
-  # rubocop:enable Layout/LineLength
 
   def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
     complete_idv_steps_before_gpo_step(user)
@@ -73,6 +70,14 @@ module IdvStepHelper
     password = user.password || user_password
     fill_in 'Password', with: password
     click_continue
+  end
+
+  def complete_idv_steps_before_confirmation_step(address_verification_mechanism = :phone)
+    if address_verification_mechanism == :phone
+      complete_idv_steps_with_phone_before_confirmation_step
+    else
+      complete_idv_steps_with_gpo_before_confirmation_step
+    end
   end
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
