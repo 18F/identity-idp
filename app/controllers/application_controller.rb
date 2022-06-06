@@ -326,10 +326,6 @@ class ApplicationController < ActionController::Base
     redirect_to auth_method_confirmation_url
   end
 
-  def prompt_to_setup_non_restricted_mfa
-    redirect_to auth_method_confirmation_url
-  end
-
   def prompt_to_verify_mfa
     redirect_to user_two_factor_authentication_url
   end

@@ -1,6 +1,7 @@
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include MfaSetupConcern
 
     before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
@@ -10,6 +11,7 @@ module TwoFactorAuthentication
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
+      @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
       @presenter = presenter_for_two_factor_authentication_method
     end
 

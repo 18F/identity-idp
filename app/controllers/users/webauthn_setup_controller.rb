@@ -23,6 +23,7 @@ module Users
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
+      @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
       flash_error(result.errors) unless result.success?
     end
 

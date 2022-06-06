@@ -17,6 +17,7 @@ module Users
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
+      @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
     end
 
     def confirm

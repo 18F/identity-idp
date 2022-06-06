@@ -16,6 +16,7 @@ module Users
       if params.key?(:token)
         process_piv_cac_setup
       else
+        @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
         render_prompt
       end
     end
