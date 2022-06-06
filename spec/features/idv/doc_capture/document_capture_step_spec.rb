@@ -20,7 +20,7 @@ feature 'doc capture document capture step', js: true do
     allow_any_instance_of(DocumentProofingJob).to receive(:build_analytics).
       and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
-    if sp_requests_ial2_strict
+    if sp_requests_ial2_strict && liveness_enabled
       visit_idp_from_oidc_sp_with_ial2_strict
     else
       visit_idp_from_oidc_sp_with_ial2
