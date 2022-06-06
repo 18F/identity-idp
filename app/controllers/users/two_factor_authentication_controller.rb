@@ -204,7 +204,7 @@ module Users
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         context: context,
         otp_delivery_preference: otp_delivery_preference,
-        resend: delivery_params[:resend],
+        resend: params.dig(:otp_delivery_selection_form, :resend),
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
       )
