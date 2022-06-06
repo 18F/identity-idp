@@ -13,7 +13,6 @@ describe Api::Verify::DocumentCaptureController do
   let(:selfie_image_iv) { 'selfie-iv' }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
-  let(:key) { OpenSSL::PKey::RSA.new(Base64.strict_decode64(IdentityConfig.store.idv_private_key)) }
   let(:password) { 'iambatman' }
   let(:user) { create(:user, :signed_up, password: password) }
 
