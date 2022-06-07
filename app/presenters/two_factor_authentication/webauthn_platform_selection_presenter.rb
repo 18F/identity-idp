@@ -12,10 +12,6 @@ module TwoFactorAuthentication
       user&.webauthn_configurations&.where(platform_authenticator: true)&.any?
     end
 
-    def security_level
-      I18n.t('two_factor_authentication.two_factor_choice_options.more_secure_label')
-    end
-
     def mfa_configuration_count
       user.webauthn_configurations.where(platform_authenticator: true).count
     end
