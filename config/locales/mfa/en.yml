@@ -13,9 +13,7 @@ en:
       info_html: You opted to receive a code by SMS/text or a phone call to sign in
         after you entered your email and password. You are now required to add
         another authentication method as a backup in case you lose access to
-        your phone. <a
-        href='https://login.gov/help/get-started/authentication-options'>Learn
-        more</a>
+        your phone. <a href='%{link}'>Learn more</a>
     second_method_warning:
       link: Add a second authentication method.
       text: You will have to delete your account and start over if you lose your only
