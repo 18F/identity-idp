@@ -29,9 +29,23 @@ describe MfaConfirmationPresenter do
   describe '#info?' do
     it 'supplies a message depending on #enforce_second_mfa?' do
       expect(presenter.info).
-        to eq(t('mfa.non_restricted.info_html'))
+        to eq(
+          t(
+            'mfa.non_restricted.info_html', link: MarketingSite.help_center_article_url(
+              category: 'get-started',
+              article: 'authentication-options',
+            )
+          ),
+        )
       expect(non_restriced_presenter.info).
-        to eq(t('mfa.account_info'))
+        to eq(
+          t(
+            'mfa.account_info', link: MarketingSite.help_center_article_url(
+              category: 'get-started',
+              article: 'authentication-options',
+            )
+          ),
+        )
     end
   end
 
