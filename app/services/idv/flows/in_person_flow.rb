@@ -28,12 +28,13 @@ module Idv
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
         super(controller, STEPS, ACTIONS, session[name])
+        @flow_session[:pii_from_user] ||= {}
       end
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
         # WILLFIX: remove this line when we begin collecting user data
-        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+        # session[:idv][:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
 
         # WILLFIX: (LG-6349) remove this block when we implement the verify page
         session[:idv]['profile_confirmation'] = true
