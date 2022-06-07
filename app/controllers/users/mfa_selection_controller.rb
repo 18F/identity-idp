@@ -15,18 +15,20 @@ module Users
     end
 
     def update
-      result = submit_form
-      analytics.user_registration_2fa_additional_setup(**result.to_h)
-
-      if result.success?
-        process_valid_form
+      if params[:two_factor_options_form].blank?
+        flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       else
-        @presenter = two_factor_options_presenter
-        render :index
+        result = submit_form
+        analytics.user_registration_2fa_additional_setup(**result.to_h)
+
+        if result.success?
+          process_valid_form
+        else
+          @presenter = two_factor_options_presenter
+          render :index
+        end
       end
-    rescue ActionController::ParameterMissing
-      flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
-      redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
     end
 
     private
