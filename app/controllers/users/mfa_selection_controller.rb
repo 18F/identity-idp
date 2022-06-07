@@ -24,6 +24,9 @@ module Users
         @presenter = two_factor_options_presenter
         render :index
       end
+    rescue ActionController::ParameterMissing
+      flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+      redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
     end
 
     private
