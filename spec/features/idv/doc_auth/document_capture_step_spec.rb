@@ -129,7 +129,7 @@ feature 'doc auth document capture step', :js do
       expect_costing_for_document
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', allow_browser_log: true do
       mock_general_doc_auth_client_error(:create_document)
 
       attach_and_submit_images
@@ -137,7 +137,7 @@ feature 'doc auth document capture step', :js do
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
     end
 
-    it 'does not proceed to the next page with a successful doc auth but missing information' do
+    it 'does not proceed if doc auth is success but missing information', allow_browser_log: true do
       mock_doc_auth_no_name_pii(:post_images)
       attach_and_submit_images
 
