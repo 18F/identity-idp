@@ -194,13 +194,7 @@ feature 'doc capture document capture step', js: true do
           '.step-indicator__step--current',
           text: t('step_indicator.flows.idv.verify_id'),
         )
-      end
 
-      it 'does not show the selfie upload option' do
-        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-      end
-
-      it 'displays expected content' do
         # Doc capture tips
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
@@ -209,10 +203,8 @@ feature 'doc capture document capture step', js: true do
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
 
-        # No selfie tips
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+        # No selfie option, evidenced by "Submit" button instead of "Continue"
+        expect(page).to have_content(t('forms.buttons.submit.default'))
       end
     end
 
@@ -220,11 +212,6 @@ feature 'doc capture document capture step', js: true do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-    end
-
-    it 'displays expected content' do
-      # Selfie upload option
-      expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
 
       # Doc capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
@@ -234,10 +221,8 @@ feature 'doc capture document capture step', js: true do
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
 
-      # Selfie tips
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+      # Selfie option, evidenced by "Continue" button instead of "Submit"
+      expect(page).to have_content(t('forms.buttons.continue'))
     end
 
     it 'logs a warning event when there are unknown errors in the response', :allow_browser_log do
@@ -280,11 +265,6 @@ feature 'doc capture document capture step', js: true do
         '.step-indicator__step--current',
         text: t('step_indicator.flows.idv.verify_id'),
       )
-    end
-
-    it 'displays expected content' do
-      # No selfie upload option
-      expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
 
       # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
@@ -294,10 +274,8 @@ feature 'doc capture document capture step', js: true do
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
 
-      # No selfie tips
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+      # No selfie option, evidenced by "Submit" button instead of "Continue"
+      expect(page).to have_content(t('forms.buttons.submit.default'))
     end
 
     it 'proceeds to the next page with valid info' do
