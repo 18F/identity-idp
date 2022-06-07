@@ -23,7 +23,7 @@ describe Users::MfaSelectionController do
     end
   end
 
-  describe '#non_restricted' do
+  describe '#index/non_restricted' do
     before do
       allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
       user = build(:user, :signed_up, :with_phone)
@@ -31,7 +31,7 @@ describe Users::MfaSelectionController do
     end
 
     it 'shows the mfa setup screen' do
-      get :non_restricted
+      get :index
 
       expect(response).to render_template(:index)
     end

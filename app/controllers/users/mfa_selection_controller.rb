@@ -4,7 +4,10 @@ module Users
     include MfaSetupConcern
 
     before_action :authenticate_user
-    before_action :confirm_user_authenticated_for_2fa_setup, except: :non_restricted
+    before_action :confirm_user_authenticated_for_2fa_setup, if: proc {
+                                                                   !params[:non_restricted].
+                                                                   to_s != 'true'
+                                                                 }
     before_action :multiple_factors_enabled?
 
     def index
@@ -12,12 +15,6 @@ module Users
       @after_setup_path = after_mfa_setup_path
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_additional_setup_visit
-    end
-
-    def non_restricted
-      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
-      @presenter = two_factor_options_presenter
-      render 'index'
     end
 
     def update
