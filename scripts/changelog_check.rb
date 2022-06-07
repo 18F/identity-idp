@@ -182,8 +182,8 @@ def format_changelog(changelog_entries)
   changelog.strip
 end
 
-def main(args)
-  options = { base_branch: 'main' }
+def parsed_options(args)
+  options = { base_branch: 'main', source_branch: 'HEAD' }
   basename = File.basename($0)
 
   optparse = OptionParser.new do |opts|
@@ -200,12 +200,21 @@ def main(args)
       options[:base_branch] = val
     end
 
-    opts.on('-s', '--source_branch SOURCE_BRANCH', 'Name of source branch (required)') do |val|
+    opts.on(
+      '-s',
+      '--source_branch SOURCE_BRANCH',
+      'Name of source branch, defaults to HEAD',
+    ) do |val|
       options[:source_branch] = val
     end
   end
 
   optparse.parse!(args)
+  options
+end
+
+def main(args)
+  options = parsed_options(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
