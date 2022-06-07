@@ -111,6 +111,7 @@ module Idv
       end
 
       def request_should_use_stored_result?
+        return false if FeatureManagement.document_capture_async_uploads_enabled?
         return false if stored_result.blank?
         IMAGE_UPLOAD_PARAM_NAMES.each do |param_name|
           return false if flow_params[param_name].present?
