@@ -12,6 +12,7 @@ module Api
         ).submit
 
         if result.success?
+          analytics.idv_address_submitted(**result.to_h)
           enqueue_job
 
           render json: {
