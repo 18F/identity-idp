@@ -15,6 +15,7 @@ describe Api::Verify::DocumentCaptureController do
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:password) { 'iambatman' }
   let(:user) { create(:user, :signed_up, password: password) }
+  let(:flow_path) { 'standard' }
 
   before do
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['document_capture'])
@@ -37,6 +38,7 @@ describe Api::Verify::DocumentCaptureController do
           back_image_url: back_image_url,
           selfie_image_url: selfie_image_url,
           document_capture_session_uuid: document_capture_session_uuid,
+          flow_path: flow_path,
         }
         expect(JSON.parse(response.body)['status']).to eq('in_progress')
         expect(response.status).to eq 200

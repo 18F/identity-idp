@@ -9,7 +9,6 @@ module Api
           verify_params,
           liveness_checking_enabled: liveness_checking_enabled?,
           analytics: analytics,
-          flow_path: flow_path,
         ).submit
 
         if result.success?
@@ -21,10 +20,6 @@ module Api
         else
           render json: { error: result.errors }, status: :bad_request
         end
-      end
-
-      def show
-        render json: { status: 'success' }
       end
 
       private
@@ -50,7 +45,7 @@ module Api
           analytics_data: {
             browser_attributes: analytics.browser_attributes,
           },
-          flow_path: flow_path,
+          flow_path: params[:flow_path],
         )
         nil
       end
@@ -65,6 +60,7 @@ module Api
           :back_image_url,
           :selfie_image_url,
           :document_capture_session_uuid,
+          :flow_path,
         )
       end
 
@@ -79,10 +75,6 @@ module Api
           compact.
           transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
           deep_symbolize_keys
-      end
-
-      def flow_path
-        'standard'
       end
     end
   end
