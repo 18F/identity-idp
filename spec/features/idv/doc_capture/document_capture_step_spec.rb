@@ -178,14 +178,6 @@ feature 'doc capture document capture step', js: true do
     context 'when the SP does not request strict IAL2' do
       let(:sp_requests_ial2_strict) { false }
 
-      it 'does not require selfie' do
-        attach_images
-        click_idv_continue
-
-        expect(page).to have_current_path(next_step)
-        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
-      end
-
       it 'is on the correct page and shows the document upload options' do
         expect(current_path).to eq(idv_capture_doc_document_capture_step)
         expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
