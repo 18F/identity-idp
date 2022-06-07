@@ -46,16 +46,6 @@ describe Users::MfaSelectionController do
       patch :update, params: voice_params
     end
 
-    context 'when user does not select an option' do
-      it 'throws and error and stays on second mfa setup page' do
-        stub_sign_in
-        patch :update
-
-        expect(response).to redirect_to second_mfa_setup_path
-        expect(flash[:error]).to eq t('errors.two_factor_auth_setup.must_select_additional_option')
-      end
-    end
-
     context 'when the selection is phone' do
       let(:user) do
         create(
@@ -160,7 +150,7 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the selection is not valid' do
-      it 'renders index page' do
+      it 'returns to index page' do
         stub_sign_in
 
         patch :update, params: {
@@ -169,7 +159,7 @@ describe Users::MfaSelectionController do
           },
         }
 
-        expect(response).to render_template(:index)
+        expect(response).to redirect_to second_mfa_setup_path
       end
     end
   end

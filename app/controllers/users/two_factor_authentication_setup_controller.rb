@@ -22,11 +22,14 @@ module Users
       elsif (result.errors[:selection].include? 'phone') &&
             IdentityConfig.store.kantara_2fa_phone_restricted
         flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
-        redirect_to authentication_methods_setup_path(anchor: 'select_phone')
+        redirect_to two_factor_options_path(anchor: 'select_phone')
       else
-        flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
-        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
+        @presenter = two_factor_options_presenter
+        render :index
       end
+    rescue ActionController::ParameterMissing
+      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
+      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end
 
     private
