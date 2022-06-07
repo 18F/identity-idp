@@ -103,4 +103,29 @@ RSpec.describe 'scripts/changelog_check' do
       expect(changelogs.first.change).to start_with('P')
     end
   end
+
+  describe '#parsed_options' do
+    let(:args) { [] }
+    subject(:options) { parsed_options(args) }
+
+    it 'populates default values' do
+      expect(options).to eq({ base_branch: 'main', source_branch: 'HEAD' })
+    end
+
+    context 'with source branch passed as argument' do
+      let(:args) { ['-s', 'example'] }
+
+      it 'assigns source_branch option' do
+        expect(options).to eq({ base_branch: 'main', source_branch: 'example' })
+      end
+    end
+
+    context 'with base branch passed as argument' do
+      let(:args) { ['-b', 'example'] }
+
+      it 'assigns source_branch option' do
+        expect(options).to eq({ base_branch: 'example', source_branch: 'HEAD' })
+      end
+    end
+  end
 end

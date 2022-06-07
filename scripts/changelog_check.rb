@@ -179,7 +179,7 @@ def format_changelog(changelog_entries)
   changelog.strip
 end
 
-def main(args)
+def parsed_options(args)
   options = { base_branch: 'main', source_branch: 'HEAD' }
   basename = File.basename($0)
 
@@ -207,6 +207,11 @@ def main(args)
   end
 
   optparse.parse!(args)
+  options
+end
+
+def main(args)
+  options = parsed_options(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
