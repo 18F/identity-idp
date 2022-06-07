@@ -71,10 +71,6 @@ def build_structured_git_log(git_log)
   end
 end
 
-def current_branch
-  Open3.capture2('git', 'branch', '--show-current')[0].chomp
-end
-
 def commit_messages_contain_skip_changelog?(base_branch, source_branch)
   log, status = Open3.capture2(
     'git', 'log', '--pretty=\'%B\'', "#{base_branch}..#{source_branch}"
@@ -184,7 +180,7 @@ def format_changelog(changelog_entries)
 end
 
 def main(args)
-  options = { base_branch: 'main', source_branch: current_branch }
+  options = { base_branch: 'main', source_branch: 'HEAD' }
   basename = File.basename($0)
 
   optparse = OptionParser.new do |opts|
@@ -204,7 +200,7 @@ def main(args)
     opts.on(
       '-s',
       '--source_branch SOURCE_BRANCH',
-      'Name of source branch, defaults to current',
+      'Name of source branch, defaults to HEAD',
     ) do |val|
       options[:source_branch] = val
     end
