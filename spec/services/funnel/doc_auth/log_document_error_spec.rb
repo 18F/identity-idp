@@ -4,7 +4,7 @@ describe Funnel::DocAuth::LogDocumentError do
   describe '::call' do
     it 'sets last error when doc auth log exists' do
       doc_auth_log = create(:doc_auth_log, user_id: 1)
-      puts Funnel::DocAuth::LogDocumentError.call(1, 'test')
+      Funnel::DocAuth::LogDocumentError.call(1, 'test')
       expect(doc_auth_log.reload.last_document_error).to eq 'test'
     end
 
