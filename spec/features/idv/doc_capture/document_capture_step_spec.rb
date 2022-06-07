@@ -234,7 +234,7 @@ feature 'doc capture document capture step', js: true do
       expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', allow_browser_log: true do
       mock_general_doc_auth_client_error(:create_document)
       attach_and_submit_images
 
