@@ -44,7 +44,8 @@ describe Api::Verify::DocumentCaptureController do
         expect(response.status).to eq 200
       end
 
-      it 'returns 400 if not successful' do
+      context 'When the request does not have all the parameters'
+      it 'returns 400 and gives error message' do
         agent = instance_double(Idv::Agent)
         allow(Idv::Agent).to receive(:new).and_return(agent)
         expect(agent).to_not receive(:proof_document)
@@ -59,8 +60,8 @@ describe Api::Verify::DocumentCaptureController do
           selfie_image_url: selfie_image_url,
           document_capture_session_uuid: document_capture_session_uuid,
         }
-
-        expect(JSON.parse(response.body)['error']).to be_truthy
+        expect(JSON.parse(response.body)['error'].keys.first).to eq('front_image_iv')
+        expect(JSON.parse(response.body)['error']['front_image_iv'][0]).to eq('Please fill in this field.')
         expect(response.status).to eq 400
       end
     end
