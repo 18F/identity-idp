@@ -32,10 +32,7 @@ module Api
         verify_document_capture_session.create_doc_auth_session
 
         document_attributes = verify_params.to_h
-        applicant_pii = {}
         applicant = {
-          user_uuid: applicant_pii[:uuid],
-          uuid_prefix: applicant_pii[:uuid_prefix],
           document_arguments: document_attributes,
         }
         Idv::Agent.new(applicant).proof_document(
