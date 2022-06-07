@@ -144,8 +144,7 @@ feature 'doc auth document capture step', :js do
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
 
       expect(fake_analytics).to have_logged_event(
-        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
-        step: 'document_capture',
+        'IdV: doc auth image upload vendor pii validation',
         flow_path: 'standard',
         success: false,
       )
