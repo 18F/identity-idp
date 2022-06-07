@@ -14,12 +14,9 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute_without_setter(name: :email)
-
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
-  include EmailAddressCallback
   include DeprecatedUserAttributes
   include UserOtpMethods
 
