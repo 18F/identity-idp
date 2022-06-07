@@ -123,7 +123,7 @@ RSpec.describe 'scripts/changelog_check' do
     context 'with base branch passed as argument' do
       let(:args) { ['-b', 'example'] }
 
-      it 'assigns source_branch option' do
+      it 'assigns base_branch option' do
         expect(options).to eq({ base_branch: 'example', source_branch: 'HEAD' })
       end
     end
