@@ -14,23 +14,18 @@ module Users
     end
 
     def create
-      if params[:two_factor_options_form].blank?
-        flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
-        redirect_back(fallback_location: authentication_methods_setup_path, allow_other_host: false)
-      else
-        result = submit_form
-        analytics.user_registration_2fa_setup(**result.to_h)
+      result = submit_form
+      analytics.user_registration_2fa_setup(**result.to_h)
 
-        if result.success?
-          process_valid_form
-        elsif (result.errors[:selection].include? 'phone') ||
-              IdentityConfig.store.kantara_2fa_phone_restricted
-          flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
-          redirect_to authentication_methods_setup_path(anchor: 'select_phone')
-        else
-          @presenter = two_factor_options_presenter
-          render :index
-        end
+      if result.success?
+        process_valid_form
+      elsif (result.errors[:selection].include? 'phone') ||
+            IdentityConfig.store.kantara_2fa_phone_restricted
+        flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_to authentication_methods_setup_path(anchor: 'select_phone')
+      else
+        flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       end
     end
 
