@@ -17,7 +17,7 @@ Bundler.require(*Rails.groups)
 
 APP_NAME = 'Login.gov'.freeze
 
-module Upaya
+module Identity
   class Application < Rails::Application
     if (log_level = ENV['LOGIN_TASK_LOG_LEVEL'])
       Identity::Hostdata.logger.level = log_level

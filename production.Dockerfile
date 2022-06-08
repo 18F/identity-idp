@@ -1,8 +1,8 @@
 # Use build to install our required Gems
 FROM logindotgov/build as build
 
-# Everything happens here from now on   
-WORKDIR /upaya
+# Everything happens here from now on
+WORKDIR /idp
 
 # Prod Gems
 COPY Gemfile Gemfile.lock ./
@@ -15,15 +15,15 @@ RUN NODE_ENV=production yarn install --force \
 
 # Switch to base image
 FROM logindotgov/base
-WORKDIR /upaya
+WORKDIR /idp
 
 # Copy Gems, NPMs, and other relevant items from build layer
-COPY --chown=appuser:appuser --from=build /upaya .
+COPY --chown=appuser:appuser --from=build /idp .
 
 # Copy in whole source (minus items matched in .dockerignore)
 COPY --chown=appuser:appuser . .
 COPY --chown=appuser:appuser --from=build /usr/local/bundle/config /usr/local/bundle
-RUN mkdir -p /upaya/log /usr/local/share/aws ; chown appuser /upaya/log
+RUN mkdir -p /idp/log /usr/local/share/aws ; chown appuser /idp/log
 
 # update CA certs so that we can trust RDS
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /usr/local/share/aws/rds-combined-ca-bundle.pem && grep 'END CERTIFICATE' /usr/local/share/aws/rds-combined-ca-bundle.pem >/dev/null
