@@ -42,7 +42,13 @@ class ResetPasswordForm
 
   def update_user
     attributes = { password: password }
-    attributes[:confirmed_at] = Time.zone.now unless user.confirmed?
+
+    unless user.confirmed?
+      now = Time.zone.now
+      user.email_addresses.update(confirmed_at: now)
+      attributes[:confirmed_at] = now
+    end
+
     UpdateUser.new(user: user, attributes: attributes).call
   end
 

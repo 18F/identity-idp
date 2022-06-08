@@ -45,7 +45,7 @@ class User < ApplicationRecord
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
 
-  attr_accessor :asserted_attributes
+  attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
     email_addresses.where.not(confirmed_at: nil)
