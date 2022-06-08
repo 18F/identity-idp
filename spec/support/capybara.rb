@@ -31,7 +31,6 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--window-size=414,736')
   options.add_argument("--user-agent='#{user_agent_string}'")
-  options.add_argument('--use-fake-device-for-media-stream')
   options.add_argument("--proxy-server=127.0.0.1:#{Capybara::Webmock.port_number}")
 
   Capybara::Selenium::Driver.new app,
