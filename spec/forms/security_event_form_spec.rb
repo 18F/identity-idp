@@ -194,7 +194,7 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:jwt]).to include('Signature verification raised')
+          expect(form.errors[:jwt]).to include('Signature verification failed')
         end
       end
 
