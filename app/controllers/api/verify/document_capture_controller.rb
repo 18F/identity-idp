@@ -11,8 +11,8 @@ module Api
           analytics: analytics,
         ).submit
 
+        analytics.idv_doc_auth_submitted_image_upload_form(**result.to_h)
         if result.success?
-          analytics.idv_address_submitted(**result.to_h)
           enqueue_job
 
           render json: {
