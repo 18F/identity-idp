@@ -4,10 +4,6 @@
   <%= t('in_person_proofing.headings.verify') %>
 </h1>
 
-<p>
-  <%= JSON.pretty_generate(flow_session) %>
-</p>
-
 <%= validated_form_for :doc_auth,
                        url: url_for,
                        method: 'put',
