@@ -357,7 +357,7 @@ GEM
     io-console (0.5.9)
     irb (1.3.7)
       reline (>= 0.2.7)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
     jsbundling-rails (1.0.0)
       railties (>= 6.0.0)
     jwe (0.4.0)
