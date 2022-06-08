@@ -50,7 +50,7 @@ module SignUp
         user: @user,
         attributes: { password: password, confirmed_at: now },
       ).call
-      @user.email_addresses.update(confirmed_at: now)
+      @user.email_addresses.take.update(confirmed_at: now)
 
       Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
