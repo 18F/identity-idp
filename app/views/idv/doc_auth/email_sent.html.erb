@@ -3,7 +3,7 @@
 <%= image_tag(asset_url('state-id-confirm@3x.png'), width: 210, class: 'margin-bottom-2') %>
 
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.instructions.email_sent', email: current_user.email) %>
+  <%= t('doc_auth.instructions.email_sent', email: current_user.confirmed_email_addresses.first.email) %>
 <% end %>
 
 <%= render 'idv/doc_auth/start_over_or_cancel', step: 'email_sent' %>
