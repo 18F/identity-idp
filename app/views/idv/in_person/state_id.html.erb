@@ -1,13 +1,62 @@
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class="h3 margin-y-0">
-  <%= t('in_person_proofing.headings.state_id') %>
-</h1>
+
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
+
+<p>
+  <%= t('in_person_proofing.body.state_id.info_html') %>
+</p>
 
 <%= validated_form_for :doc_auth,
                        url: url_for,
                        method: 'put',
                        html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+
+ <div class="margin-bottom-4">
+   <%= f.input :first_name, label: t('in_person_proofing.form.state_id.first_name'),
+                            wrapper: false, required: true, maxlength: 255,
+                            input_html: { aria: { invalid: false }, value: @pii['first_name'] } %>
+   <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+     <%= t('simple_form.required.text') %>
+   </span>
+ </div>
+
+  <div class="margin-bottom-4">
+    <%= f.input :last_name, label: t('in_person_proofing.form.state_id.last_name'),
+                            wrapper: false, required: true, maxlength: 255,
+                            input_html: { aria: { invalid: false }, value: @pii['last_name'] } %>
+    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
+
+  <div class="margin-bottom-4">
+    <%= f.input :date_of_birth, as: :date, html5: true, label: t('in_person_proofing.form.state_id.date_of_birth'),
+                                hint: t('in_person_proofing.form.state_id.date_of_birth_hint'),
+                                wrapper: false, required: true, maxlength: 255,
+                                input_html: { aria: { invalid: false }, value: @pii['date_of_birth'] } %>
+    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
+
+  <div class="margin-bottom-4">
+    <%= f.input :state, collection: us_states_territories,
+                        label: t('in_person_proofing.form.state_id.state'), required: true,
+                        prompt: t('in_person_proofing.form.state_id.state_prompt'),
+                        selected: @pii['state'] %>
+  </div>
+
+  <div class="tablet:grid-col-6 margin-bottom-4">
+    <%= f.input :id_number, label: t('in_person_proofing.form.state_id.id_number'),
+                            hint: t('in_person_proofing.form.state_id.id_number_hint'),
+                            wrapper: false, required: true, maxlength: 255,
+                            input_html: { aria: { invalid: false }, value: @pii['id_number'] } %>
+    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
+
   <%= f.button :button,
                t('doc_auth.buttons.continue'),
                type: :submit,

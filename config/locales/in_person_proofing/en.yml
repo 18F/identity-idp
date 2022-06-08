@@ -1,6 +1,24 @@
 ---
 en:
   in_person_proofing:
+    body:
+      state_id:
+        info_html: 'Enter information <strong>exactly as it appears on your state-issued
+          ID.</strong> We will use this information to confirm it matches your
+          ID in person.'
+    form:
+      state_id:
+        date_of_birth: Date of birth
+        date_of_birth_hint: 'Example: 4 28 1986'
+        day: Day
+        first_name: First name
+        id_number: ID number
+        id_number_hint: May include both letters and numbers
+        last_name: Last name
+        month: Month
+        state: State
+        state_prompt: '- Select -'
+        year: Year
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
