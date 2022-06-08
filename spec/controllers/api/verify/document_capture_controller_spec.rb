@@ -60,8 +60,8 @@ describe Api::Verify::DocumentCaptureController do
           selfie_image_url: selfie_image_url,
           document_capture_session_uuid: document_capture_session_uuid,
         }
-        expect(JSON.parse(response.body)['error'].keys.first).to eq('front_image_iv')
-        expect(JSON.parse(response.body)['error']['front_image_iv'][0]).
+        expect(JSON.parse(response.body)['errors'].keys.first).to eq('front_image_iv')
+        expect(JSON.parse(response.body)['errors']['front_image_iv'][0]).
           to eq('Please fill in this field.')
         expect(response.status).to eq 400
       end
