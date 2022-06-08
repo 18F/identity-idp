@@ -8,6 +8,8 @@ module Idv
       ].freeze
 
       def call
+        return if async_uploads_enabled?
+
         if request_should_use_stored_result?
           handle_stored_result
         else
@@ -106,17 +108,23 @@ module Idv
 
       def stored_result
         return @stored_result if defined?(@stored_result)
-        @stored_result = document_capture_session&.load_result ||
-                         document_capture_session&.load_doc_auth_async_result
+        @stored_result = document_capture_session&.load_result
       end
 
       def request_should_use_stored_result?
-        return true if FeatureManagement.document_capture_async_uploads_enabled?
         return false if stored_result.blank?
         IMAGE_UPLOAD_PARAM_NAMES.each do |param_name|
           return false if flow_params[param_name].present?
         end
         true
+      end
+
+      def async_uploads_enabled?
+        FeatureManagement.document_capture_async_uploads_enabled?
+      end
+
+      def request_should_use_form_parameters?
+        !async_uploads_enabled? && !request_should_use_stored_result?
       end
 
       def front_image
@@ -133,11 +141,13 @@ module Idv
       end
 
       def form_submit
-        return FormResponse.new(success: true) if request_should_use_stored_result?
-
-        Idv::DocumentCaptureForm.
-          new(liveness_checking_enabled: liveness_checking_enabled?).
-          submit(permit(IMAGE_UPLOAD_PARAM_NAMES))
+        if request_should_use_form_parameters?
+          Idv::DocumentCaptureForm.
+            new(liveness_checking_enabled: liveness_checking_enabled?).
+            submit(permit(IMAGE_UPLOAD_PARAM_NAMES))
+        else
+          super
+        end
       end
     end
   end
