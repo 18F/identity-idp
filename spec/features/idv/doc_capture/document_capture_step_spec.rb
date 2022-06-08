@@ -196,16 +196,16 @@ feature 'doc capture document capture step' do
         expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
       end
 
-      it 'displays doc capture tips' do
+      it 'displays expected content' do
+        # Doc capture tips
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
         expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-      end
 
-      it 'does not display selfie tips' do
+        # No selfie tips
         expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
         expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
         expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
@@ -218,20 +218,19 @@ feature 'doc capture document capture step' do
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
     end
 
-    it 'shows the selfie upload option' do
+    it 'displays expected content' do
+      # Selfie upload option
       expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
-    end
 
-    it 'displays doc capture tips' do
+      # Doc capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-    end
 
-    it 'displays selfie tips' do
+      # Selfie tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
@@ -331,20 +330,19 @@ feature 'doc capture document capture step' do
       )
     end
 
-    it 'does not show the selfie upload option' do
+    it 'displays expected content' do
+      # No selfie upload option
       expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-    end
 
-    it 'displays document capture tips' do
+      # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-    end
 
-    it 'does not display selfie tips' do
+      # No selfie tips
       expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
       expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
       expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))

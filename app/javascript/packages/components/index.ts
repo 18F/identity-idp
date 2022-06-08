@@ -7,6 +7,7 @@ export { default as Icon } from './icon';
 export { default as FullScreen } from './full-screen';
 export { default as Link } from './link';
 export { default as PageHeading } from './page-heading';
+export { default as ScrollIntoView } from './scroll-into-view';
 export { default as SpinnerDots } from './spinner-dots';
 export { default as TextInput } from './text-input';
 export { default as TroubleshootingOptions } from './troubleshooting-options';

@@ -100,7 +100,8 @@ module TwoFactorAuthentication
     end
 
     def analytics_properties
-      auth_method = if form&.webauthn_configuration&.platform_authenticator || params[:platform]
+      auth_method = if form&.webauthn_configuration&.platform_authenticator ||
+                       params[:platform].to_s == 'true'
                       'webauthn_platform'
                     else
                       'webauthn'

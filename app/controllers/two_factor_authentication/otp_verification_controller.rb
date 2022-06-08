@@ -80,9 +80,7 @@ module TwoFactorAuthentication
 
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
-      if context == 'confirmation'
-        analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
-      end
+      analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
     end

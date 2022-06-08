@@ -11,7 +11,6 @@ RSpec.describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:proofing_component) }
-    it { is_expected.to have_many(:database_throttles) }
   end
 
   it 'does not send an email when #create is called' do

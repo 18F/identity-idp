@@ -4,11 +4,16 @@ import userEvent from '@testing-library/user-event';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox } from '@18f/identity-test-helpers';
 import { STEPS } from './steps';
-import VerifyFlow from './verify-flow';
+import VerifyFlow, { VerifyFlowProps } from './verify-flow';
 
 describe('VerifyFlow', () => {
   const sandbox = useSandbox();
   const personalKey = '0000-0000-0000-0000';
+  const DEFAULT_PROPS = {
+    basePath: '/',
+    initialAddressVerificationMethod: 'phone',
+    onComplete: () => {},
+  } as VerifyFlowProps;
 
   beforeEach(() => {
     sandbox.spy(analytics, 'trackEvent');
@@ -23,7 +28,7 @@ describe('VerifyFlow', () => {
     const onComplete = sandbox.spy();
 
     const { getByText, findByText, getByLabelText } = render(
-      <VerifyFlow initialValues={{ personalKey }} onComplete={onComplete} basePath="/" />,
+      <VerifyFlow {...DEFAULT_PROPS} initialValues={{ personalKey }} onComplete={onComplete} />,
     );
 
     // Password confirm
@@ -62,10 +67,9 @@ describe('VerifyFlow', () => {
     it('sets details according to the first enabled steps', () => {
       render(
         <VerifyFlow
+          {...DEFAULT_PROPS}
           initialValues={{ personalKey }}
-          onComplete={() => {}}
           enabledStepNames={[STEPS[1].name]}
-          basePath="/"
         />,
       );
 

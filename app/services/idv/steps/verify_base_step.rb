@@ -1,11 +1,6 @@
 module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
-      AAMVA_SUPPORTED_JURISDICTIONS = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KS KY MA MD ME MI MO MS MT NC ND NE
-        NJ NM OH OR PA RI SC SD TN TX VA VT WA WI WY
-      ].to_set.freeze
-
       private
 
       def summarize_result_and_throttle_failures(summary_result)
@@ -78,7 +73,9 @@ module Idv
       end
 
       def aamva_state?(pii_from_doc)
-        AAMVA_SUPPORTED_JURISDICTIONS.include?(pii_from_doc['state_id_jurisdiction'])
+        IdentityConfig.store.aamva_supported_jurisdictions.include?(
+          pii_from_doc['state_id_jurisdiction'],
+        )
       end
 
       def aamva_disallowed_for_service_provider?

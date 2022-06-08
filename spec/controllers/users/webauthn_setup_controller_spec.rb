@@ -77,7 +77,7 @@ describe Users::WebauthnSetupController do
           multi_factor_auth_method: 'webauthn',
         }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+          with('Multi-Factor Authentication Setup', result)
 
         patch :confirm, params: params
       end
