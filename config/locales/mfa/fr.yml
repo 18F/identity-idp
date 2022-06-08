@@ -15,7 +15,8 @@ fr:
         téléphonique pour vous connecter après avoir saisi votre adresse e-mail
         et votre mot de passe. Veuillez à présent ajouter une autre méthode
         d’authentification comme mesure de secours au cas où vous perdriez
-        l’accès à votre téléphone. <a href='%{link}/'>En savoir plus</a>
+        l’accès à votre téléphone. <a href='%{link}/'>En savoir plus sur les
+        options d’authentification</a>
     second_method_warning:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre

@@ -14,7 +14,8 @@ es:
         telefónica para iniciar sesión después de introducir su correo
         electrónico y contraseña. Ahora debe añadir otro método de autenticación
         como copia de seguridad en caso de que pierda el acceso a su teléfono.
-        <a href='%{link}'>Más información</a>
+        <a href='%{link}'>Obtenga más información sobre las opciones de
+        autenticación</a>
     second_method_warning:
       link: Agregue un segundo método de autenticación.
       text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
