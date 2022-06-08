@@ -48,7 +48,7 @@ class User < ApplicationRecord
   attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil)
+    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
 
   def need_two_factor_authentication?(_request)
