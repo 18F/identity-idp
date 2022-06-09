@@ -27,7 +27,7 @@ class SessionStoreMigration
   def process_in_headers!(env)
     cookie_str = env[Rack::HTTP_COOKIE]
 
-    if cookie_str.include?(OLD_KEY) && !cookie_str.include?(NEW_KEY)
+    if cookie_str && cookie_str.include?(OLD_KEY) && !cookie.include?(NEW_KEY)
       cookies = Rack::Utils.parse_cookies_header(cookie_str)
 
       updated_cookie_str = cookie_str + "; #{NEW_KEY}=#{cookies[OLD_KEY]}"
