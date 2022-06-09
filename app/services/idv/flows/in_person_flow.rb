@@ -30,7 +30,7 @@ module Idv
         super(controller, STEPS, ACTIONS, session[name])
         # WILLFIX: remove this when we are collecting these values from the user
         @flow_session ||= {}
-        @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT
+        @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT.dup
       end
 
       def self.session_idv(session)
