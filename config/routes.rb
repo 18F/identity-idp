@@ -141,6 +141,8 @@ Rails.application.routes.draw do
 
         get '/s3/:key' => 'fake_s3#show', as: :fake_s3
         put '/s3/:key' => 'fake_s3#update'
+
+        get '/session_data' => 'session_data#index'
       end
     end
 

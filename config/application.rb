@@ -104,6 +104,8 @@ module Identity
     config.middleware.use Utf8Sanitizer
     require 'secure_cookies'
     config.middleware.insert_after ActionDispatch::Static, SecureCookies
+    require 'session_store_migration'
+    config.middleware.insert_after SecureCookies, SessionStoreMigration
 
     # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do
