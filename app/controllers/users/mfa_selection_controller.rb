@@ -4,7 +4,7 @@ module Users
     include MfaSetupConcern
 
     before_action :authenticate_user
-    before_action :confirm_user_authenticated_for_2fa_setup
+    before_action :confirm_user_authenticated_for_2fa_setup, except: :non_restricted
     before_action :multiple_factors_enabled?
 
     def index
@@ -14,16 +14,29 @@ module Users
       analytics.user_registration_2fa_additional_setup_visit
     end
 
+    def non_restricted
+      @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
+      @presenter = two_factor_options_presenter
+      render 'index'
+    end
+
     def update
       result = submit_form
       analytics.user_registration_2fa_additional_setup(**result.to_h)
 
       if result.success?
         process_valid_form
+      elsif (result.errors[:selection].include? 'phone') &&
+            IdentityConfig.store.kantara_2fa_phone_restricted
+        flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_to two_factor_options_path(anchor: 'select_phone')
       else
         flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
         redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       end
+    rescue ActionController::ParameterMissing
+      flash[:error] = t('errors.two_factor_auth_setup.must_select_option')
+      redirect_back(fallback_location: two_factor_options_path, allow_other_host: false)
     end
 
     private

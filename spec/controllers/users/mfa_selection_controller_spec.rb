@@ -23,6 +23,20 @@ describe Users::MfaSelectionController do
     end
   end
 
+  describe '#non_restricted' do
+    before do
+      allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
+      user = build(:user, :signed_up, :with_phone)
+      stub_sign_in(user)
+    end
+
+    it 'shows the mfa setup screen' do
+      get :non_restricted
+
+      expect(response).to render_template(:index)
+    end
+  end
+
   describe '#update' do
     it 'submits the TwoFactorOptionsForm' do
       user = build(:user)
@@ -44,6 +58,29 @@ describe Users::MfaSelectionController do
       expect(form).to receive(:selection).and_return(['voice'])
 
       patch :update, params: voice_params
+    end
+
+    context 'when the selection is only phone and multi mfa is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
+        stub_sign_in_before_2fa
+
+        patch :update, params: {
+          two_factor_options_form: {
+            selection: 'phone',
+          },
+        }
+      end
+
+      it 'the redirect to the form page with an anchor' do
+        expect(response).to redirect_to(two_factor_options_path(anchor: 'select_phone'))
+      end
+      it 'contains a flash message' do
+        expect(flash[:phone_error]).to eq(
+          t('errors.two_factor_auth_setup.must_select_additional_option'),
+        )
+      end
     end
 
     context 'when the selection is phone' do
@@ -149,8 +186,26 @@ describe Users::MfaSelectionController do
       end
     end
 
+    context 'when the form is empty' do
+      before do
+        stub_sign_in
+
+        patch :update, params: {
+          two_factor_options_form: {
+          },
+        }
+      end
+      it 'renders the index page' do
+        expect(response).to redirect_to two_factor_options_path
+      end
+      it 'contains a flash message' do
+        expect(flash[:error]).to eq(
+          t('errors.two_factor_auth_setup.must_select_option'),
+        )
+      end
+    end
     context 'when the selection is not valid' do
-      it 'returns to index page' do
+      it 'renders the index page' do
         stub_sign_in
 
         patch :update, params: {
