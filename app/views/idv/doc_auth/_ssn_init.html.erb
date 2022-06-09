@@ -1,10 +1,12 @@
 <% title t('titles.doc_auth.ssn') %>
 
-<%= render AlertComponent.new(
-      type: :success,
-      class: 'margin-bottom-4',
-    ) do %>
-  <%= t('doc_auth.headings.capture_complete') %>
+<% if should_render_id_success_alert %>
+  <%= render AlertComponent.new(
+        type: :success,
+        class: 'margin-bottom-4',
+      ) do %>
+    <%= t('doc_auth.headings.capture_complete') %>
+  <% end %>
 <% end %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
