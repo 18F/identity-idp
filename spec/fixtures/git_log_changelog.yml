@@ -10,6 +10,18 @@ squashed_commit_with_one_commit:
   subcategory: 'Security'
   change: 'Upgrade Rails to patch vulnerability'
   pr_number: '6041'
+squashed_commit_2:
+  commit_log: |
+    title: Make some change (#9999)
+    body:changelog: Internal, Logging, Update logging flow
+    DELIMITER
+  title: 'Make some change (#9999)'
+  commit_messages:
+    - 'changelog: Internal, Logging, Update logging flow'
+  category: 'Internal'
+  subcategory: 'Logging'
+  change: 'Update logging flow'
+  pr_number: '9999'
 squashed_commit_with_duplicate_pr:
   commit_log: |
     title: Upgrade Rails to 6.1.4.8 (#6042)

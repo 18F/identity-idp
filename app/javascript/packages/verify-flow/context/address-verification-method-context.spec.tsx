@@ -12,7 +12,7 @@ describe('AddressVerificationMethodContextProvider', () => {
     );
     return (
       <>
-        <div>Current value: {addressVerificationMethod}</div>
+        <div>Current value: {String(addressVerificationMethod)}</div>
         <button
           type="button"
           onClick={() =>
@@ -32,7 +32,7 @@ describe('AddressVerificationMethodContextProvider', () => {
       </AddressVerificationMethodContextProvider>,
     );
 
-    expect(getByText('Current value: phone')).to.exist();
+    expect(getByText('Current value: null')).to.exist();
   });
 
   it('can be overridden with an initial method', () => {

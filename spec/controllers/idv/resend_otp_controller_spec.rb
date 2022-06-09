@@ -54,6 +54,7 @@ describe Idv::ResendOtpController do
 
       expected_result = {
         success: true,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
         errors: {},
         otp_delivery_preference: :sms,
         country_code: 'US',

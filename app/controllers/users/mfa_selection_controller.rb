@@ -9,6 +9,7 @@ module Users
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
+      @after_setup_path = after_mfa_setup_path
       @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_additional_setup_visit
     end
@@ -20,8 +21,8 @@ module Users
       if result.success?
         process_valid_form
       else
-        @presenter = two_factor_options_presenter
-        render :index
+        flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       end
     end
 

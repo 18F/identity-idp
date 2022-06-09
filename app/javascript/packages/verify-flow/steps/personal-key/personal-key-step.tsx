@@ -20,11 +20,12 @@ function PersonalKeyStep({ value }: PersonalKeyStepProps) {
 
   return (
     <>
-      <Alert type="success" className="margin-bottom-4">
-        {addressVerificationMethod === 'phone'
-          ? t('idv.messages.confirm')
-          : t('idv.messages.mail_sent')}
-      </Alert>
+      {addressVerificationMethod && (
+        <Alert type="success" className="margin-bottom-4">
+          {addressVerificationMethod === 'phone' && t('idv.messages.confirm')}
+          {addressVerificationMethod === 'gpo' && t('idv.messages.mail_sent')}
+        </Alert>
+      )}
       <PageHeading>{t('headings.personal_key')}</PageHeading>
       <p>{t('instructions.personal_key.info')}</p>
       <div className="full-width-box margin-y-5">

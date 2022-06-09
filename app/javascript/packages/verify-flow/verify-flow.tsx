@@ -45,7 +45,7 @@ export interface VerifyFlowValues {
   completionURL?: string;
 }
 
-interface VerifyFlowProps {
+export interface VerifyFlowProps {
   /**
    * Initial values for the form, if applicable.
    */
