@@ -56,8 +56,7 @@ module Idv
       end
 
       def pii
-        flow_session[:pii_from_doc].empty? ? flow_session[:pii_from_user]
-          : flow_session[:pii_from_doc]
+        flow_session[:pii_from_doc].presence || flow_session[:pii_from_user]
       end
 
       def delete_pii
