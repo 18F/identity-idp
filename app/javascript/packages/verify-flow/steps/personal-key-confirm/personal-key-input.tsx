@@ -1,9 +1,17 @@
 import { forwardRef, useCallback } from 'react';
 import type { ForwardedRef } from 'react';
 import Cleave from 'cleave.js/react';
+import type { ReactInstanceWithCleave } from 'cleave.js/react/props';
 import { t } from '@18f/identity-i18n';
 import { ValidatedField } from '@18f/identity-validated-field';
 import type { ValidatedFieldValidator } from '@18f/identity-validated-field';
+
+/**
+ * Internal Cleave.js React instance API methods.
+ */
+interface CleaveInstanceInternalAPI {
+  updateValueState: () => void;
+}
 
 interface PersonalKeyInputProps {
   /**
@@ -42,6 +50,9 @@ function PersonalKeyInput(
   return (
     <ValidatedField validate={validate}>
       <Cleave
+        onInit={(owner) => {
+          (owner as ReactInstanceWithCleave & CleaveInstanceInternalAPI).updateValueState();
+        }}
         options={{
           blocks: [4, 4, 4, 4],
           delimiter: '-',

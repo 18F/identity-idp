@@ -75,19 +75,15 @@ class Throttle
   end
 
   def attempts
-    if IdentityConfig.store.redis_throttle_enabled
-      redis_attempts.to_i
-    else
-      postgres_throttle.attempts
-    end
+    return @redis_attempts.to_i if defined?(@redis_attempts)
+
+    fetch_state!
+
+    @redis_attempts.to_i
   end
 
   def throttled?
-    if IdentityConfig.store.redis_throttle_enabled
-      !expired? && maxed?
-    else
-      postgres_throttle.throttled?
-    end
+    !expired? && maxed?
   end
 
   def throttled_else_increment?
@@ -100,41 +96,6 @@ class Throttle
   end
 
   def attempted_at
-    if IdentityConfig.store.redis_throttle_enabled
-      redis_attempted_at
-    else
-      postgres_throttle.attempted_at
-    end
-  end
-
-  def expires_at
-    if IdentityConfig.store.redis_throttle_enabled
-      return Time.zone.now if redis_attempted_at.blank?
-      redis_attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
-    else
-      postgres_throttle.expires_at
-    end
-  end
-
-  def remaining_count
-    return 0 if throttled?
-
-    if IdentityConfig.store.redis_throttle_enabled
-      Throttle.max_attempts(throttle_type) - attempts
-    else
-      postgres_throttle.remaining_count
-    end
-  end
-
-  def redis_attempts
-    return @redis_attempts if defined?(@redis_attempts)
-
-    fetch_state!
-
-    @redis_attempts
-  end
-
-  def redis_attempted_at
     return @redis_attempted_at if defined?(@redis_attempted_at)
 
     fetch_state!
@@ -142,12 +103,23 @@ class Throttle
     @redis_attempted_at
   end
 
+  def expires_at
+    return Time.zone.now if attempted_at.blank?
+    attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
+  end
+
+  def remaining_count
+    return 0 if throttled?
+
+    Throttle.max_attempts(throttle_type) - attempts
+  end
+
   def expired?
     expires_at <= Time.zone.now
   end
 
   def maxed?
-    redis_attempts && redis_attempts >= Throttle.max_attempts(throttle_type)
+    attempts && attempts >= Throttle.max_attempts(throttle_type)
   end
 
   def increment!
@@ -164,8 +136,6 @@ class Throttle
 
     @redis_attempts = value.to_i
     @redis_attempted_at = Time.zone.now
-
-    postgres_throttle.increment
 
     attempts
   end
@@ -205,8 +175,6 @@ class Throttle
       client.del(key)
     end
 
-    postgres_throttle.reset
-
     @redis_attempts = 0
     @redis_attempted_at = nil
   end
@@ -225,11 +193,6 @@ class Throttle
     @redis_attempts = value.to_i
     @redis_attempted_at = Time.zone.now
 
-    postgres_throttle.update(
-      attempts: Throttle.max_attempts(throttle_type),
-      attempted_at: Time.zone.now,
-    )
-
     attempts
   end
 
@@ -239,16 +202,6 @@ class Throttle
     else
       "throttle:#{@target}:#{throttle_type}"
     end
-  end
-
-  def postgres_throttle
-    return @postgres_throttle if @postgres_throttle
-
-    @postgres_throttle ||= DatabaseThrottle.for(
-      throttle_type: throttle_type,
-      user: @user,
-      target: @target,
-    )
   end
 
   def self.attempt_window_in_minutes(throttle_type)

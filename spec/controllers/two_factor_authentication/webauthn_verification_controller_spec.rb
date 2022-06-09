@@ -58,6 +58,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           client_data_json: verification_client_data_json,
           signature: signature,
           credential_id: credential_id,
+          platform: '',
         }
       end
       before do

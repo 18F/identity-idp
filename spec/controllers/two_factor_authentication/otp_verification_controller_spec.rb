@@ -147,7 +147,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).
+                          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
@@ -317,7 +318,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to receive(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
+              with('Multi-Factor Authentication Setup', properties)
             controller.user_session[:phone_id] = phone_id
             post(
               :create,
@@ -380,7 +381,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
+              with('Multi-Factor Authentication Setup', properties)
           end
         end
 
@@ -424,7 +425,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
+              with('Multi-Factor Authentication Setup', properties)
 
             expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
             expect(subject).to have_received(:create_user_event).exactly(:once)

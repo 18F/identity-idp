@@ -18,7 +18,7 @@ feature 'webauthn sign up' do
 
   def expect_webauthn_setup_error
     expect(page).to have_content t('errors.webauthn_setup.general_error')
-    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_current_path(authentication_methods_setup_path)
   end
 
   it_behaves_like 'webauthn setup'

@@ -3,7 +3,7 @@ require_relative 'document_capture_step_helper'
 module DocAuthHelper
   include DocumentCaptureStepHelper
 
-  GOOD_SSN = '900-66-1234'
+  GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -185,7 +185,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.dup
+    pii_with_no_name = Idp::Constants::MOCK_IDV_APPLICANT.dup
     pii_with_no_name[:last_name] = nil
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,

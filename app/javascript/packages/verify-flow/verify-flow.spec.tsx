@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import * as analytics from '@18f/identity-analytics';
@@ -12,7 +13,8 @@ describe('VerifyFlow', () => {
   beforeEach(() => {
     sandbox.spy(analytics, 'trackEvent');
     sandbox.stub(window, 'fetch').resolves({
-      json: () => Promise.resolve({ personal_key: personalKey }),
+      json: () =>
+        Promise.resolve({ personal_key: personalKey, completion_url: 'http://example.com' }),
     } as Response);
     document.body.innerHTML = `<script type="application/json" data-config>{"appName":"Example App"}</script>`;
   });
@@ -50,7 +52,9 @@ describe('VerifyFlow', () => {
     await userEvent.type(getByLabelText('forms.personal_key.confirmation_label'), personalKey);
     await userEvent.keyboard('{Enter}');
 
-    expect(onComplete).to.have.been.called();
+    expect(onComplete).to.have.been.calledWith(
+      sinon.match({ completionURL: 'http://example.com' }),
+    );
     expect(sessionStorage.getItem('completedStep')).to.be.null();
   });
 

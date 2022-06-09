@@ -222,9 +222,10 @@ Rails.application.routes.draw do
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
+
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
+    get '/two_factor_options', to: redirect('/authentication_methods_setup')
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/second_mfa_setup' => 'users/mfa_selection#index'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
@@ -271,9 +272,6 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
-
-    # Deprecated
-    delete '/users' => 'users#destroy', as: :destroy_user
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 

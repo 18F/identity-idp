@@ -3791,10 +3791,10 @@ iconv-lite@0.6.3, iconv-lite@^0.6.3:
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
-identity-style-guide@^6.4.2:
-  version "6.4.2"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.4.2.tgz#3efcc311132de24fbe37cada262d3f84c23e72fe"
-  integrity sha512-NUIFXpoKjVI+Pout3MPx9F0rZ1/dbiDomvecv/VOvZaebD0by2iWtJ6JGm00I5Mhg74G5ePCGjnJeVkD15L7AQ==
+identity-style-guide@^6.5.0:
+  version "6.5.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.5.0.tgz#41c869c2540faa22f80ad89ae9e0c1753e8940df"
+  integrity sha512-P/ZsOodZn3XyX6LYgrtDKzWe447rPkTUxAYADIGAcl13wv7ghQZJjaL1g1PySzG5PAvxeeoyOJYfRW58NRMUCw==
   dependencies:
     domready "1.0.8"
     uswds "^2.13.3"

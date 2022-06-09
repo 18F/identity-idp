@@ -10,7 +10,7 @@ feature 'Multi Two Factor Authentication' do
     scenario 'user can set up 2 MFA methods properly' do
       sign_in_before_2fa
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
 
       click_2fa_option('phone')
       click_2fa_option('backup_code')
@@ -43,7 +43,7 @@ feature 'Multi Two Factor Authentication' do
     scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
 
       click_2fa_option('backup_code')
 
@@ -67,6 +67,38 @@ feature 'Multi Two Factor Authentication' do
 
       expect(current_path).to eq account_path
     end
+
+    scenario 'user can select 1 MFA methods and cancels selecting second mfa' do
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('backup_code')
+
+      click_continue
+
+      expect(current_path).to eq backup_code_setup_path
+
+      click_continue
+
+      expect(page).to have_link(t('forms.backup_code.download'))
+
+      click_continue
+
+      expect(page).to have_content(t('notices.backup_codes_configured'))
+
+      expect(page).to have_current_path(
+        auth_method_confirmation_path,
+      )
+
+      click_link t('mfa.add')
+
+      expect(page).to have_current_path(second_mfa_setup_path)
+
+      click_link t('links.cancel')
+
+      expect(page).to have_current_path(account_path)
+    end
   end
 
   describe 'user attempts to submit with only the phone MFA method selected', js: true do
@@ -81,7 +113,7 @@ feature 'Multi Two Factor Authentication' do
       to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
       expect(
         URI.parse(current_url).path + '#' + URI.parse(current_url).fragment,
-      ).to eq two_factor_options_path(anchor: 'select_phone')
+      ).to eq authentication_methods_setup_path(anchor: 'select_phone')
     end
 
     scenario 'clears the error when another mfa method is selected' do

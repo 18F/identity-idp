@@ -2,12 +2,14 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { computeAccessibleDescription } from 'dom-accessibility-api';
 import { accordion } from 'identity-style-guide';
+import type { SinonSpy } from 'sinon';
 import * as analytics from '@18f/identity-analytics';
 import { useSandbox, usePropertyValue } from '@18f/identity-test-helpers';
 import { FormSteps } from '@18f/identity-form-steps';
 import { t, i18n } from '@18f/identity-i18n';
 import PasswordConfirmStep from './password-confirm-step';
 import submit, { PasswordSubmitError } from './submit';
+import { AddressVerificationMethodContextProvider } from '../../context/address-verification-method-context';
 
 describe('PasswordConfirmStep', () => {
   const sandbox = useSandbox();
@@ -82,15 +84,24 @@ describe('PasswordConfirmStep', () => {
       <FormSteps steps={[{ name: 'password_confirm', form: PasswordConfirmStep, submit }]} />,
     );
 
+    sandbox.spy(Element.prototype, 'scrollIntoView');
+    const continueButton = getByRole('button', { name: 'forms.buttons.continue' });
+
     await userEvent.type(getByLabelText('components.password_toggle.label'), 'password');
-    await userEvent.click(getByRole('button', { name: 'forms.buttons.continue' }));
+    await userEvent.click(continueButton);
 
     // There should not be a field-specific error, only a top-level alert.
     const alert = await findByRole('alert');
+    expect(Element.prototype.scrollIntoView).to.have.been.calledOnce();
+    const { thisValue: scrollElement } = (Element.prototype.scrollIntoView as SinonSpy).getCall(0);
+    expect((scrollElement as Element).contains(alert)).to.be.true();
     expect(alert.textContent).to.equal('Incorrect password');
     const input = getByLabelText('components.password_toggle.label');
     const description = computeAccessibleDescription(input);
     expect(description).to.be.empty();
+
+    await userEvent.click(continueButton);
+    expect(Element.prototype.scrollIntoView).to.have.been.calledTwice();
   });
 
   describe('forgot password', () => {
@@ -118,18 +129,24 @@ describe('PasswordConfirmStep', () => {
   });
 
   describe('alert', () => {
-    context('without phone value', () => {
+    context('with gpo as address verification method', () => {
       it('does not render success alert', () => {
-        const { queryByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+        const { queryByRole } = render(
+          <AddressVerificationMethodContextProvider initialMethod="gpo">
+            <PasswordConfirmStep {...DEFAULT_PROPS} />
+          </AddressVerificationMethodContextProvider>,
+        );
 
         expect(queryByRole('status')).to.not.exist();
       });
     });
 
-    context('with phone value', () => {
+    context('with phone as address verification method', () => {
       it('renders success alert', () => {
         const { queryByRole } = render(
-          <PasswordConfirmStep {...DEFAULT_PROPS} value={{ phone: '5135551234' }} />,
+          <AddressVerificationMethodContextProvider initialMethod="phone">
+            <PasswordConfirmStep {...DEFAULT_PROPS} />
+          </AddressVerificationMethodContextProvider>,
         );
 
         const status = queryByRole('status')!;

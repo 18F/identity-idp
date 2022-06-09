@@ -26,13 +26,13 @@ module TwoFactorAuthentication
     def index
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       @presenter = two_factor_options_presenter
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_OPTION_LIST_VISIT)
+      analytics.multi_factor_auth_option_list_visit
     end
 
     def create
       @two_factor_options_form = TwoFactorLoginOptionsForm.new(current_user)
       result = @two_factor_options_form.submit(two_factor_options_form_params)
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_OPTION_LIST, result.to_h)
+      analytics.multi_factor_auth_option_list(**result.to_h)
 
       if result.success?
         process_valid_form

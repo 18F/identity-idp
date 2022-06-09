@@ -21,7 +21,8 @@ shared_examples 'idv confirmation step' do |sp|
     end
 
     context 'user selected gpo verification' do
-      it 'shows step indicator progress with pending verify phone step' do
+      it 'shows status content for gpo verification progress' do
+        expect(page).to have_content(t('idv.messages.mail_sent'))
         expect(page).to have_css(
           '.step-indicator__step--current',
           text: t('step_indicator.flows.idv.secure_account'),
@@ -40,7 +41,8 @@ shared_examples 'idv confirmation step' do |sp|
       complete_idv_steps_with_phone_before_confirmation_step
     end
 
-    it 'shows step indicator progress with complete verify phone step' do
+    it 'shows status content for phone verification progress' do
+      expect(page).to have_content(t('idv.messages.confirm'))
       expect(page).to have_css(
         '.step-indicator__step--current',
         text: t('step_indicator.flows.idv.secure_account'),
@@ -49,6 +51,7 @@ shared_examples 'idv confirmation step' do |sp|
         '.step-indicator__step--complete',
         text: t('step_indicator.flows.idv.verify_phone_or_address'),
       )
+      expect(page).not_to have_css('.step-indicator__step--pending')
     end
 
     it 'redirects to the completions page and then to the SP', if: sp.present? do
@@ -70,16 +73,6 @@ shared_examples 'idv confirmation step' do |sp|
 
       expect(page).to have_content(t('headings.account.verified_account'))
       expect(page).to have_current_path(account_path)
-    end
-
-    context 'user selected gpo verification' do
-      it 'shows step indicator progress without pending verify step' do
-        expect(page).to have_css(
-          '.step-indicator__step--current',
-          text: t('step_indicator.flows.idv.secure_account'),
-        )
-        expect(page).not_to have_css('.step-indicator__step--pending')
-      end
     end
   end
 end

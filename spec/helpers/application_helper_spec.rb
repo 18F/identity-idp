@@ -95,7 +95,7 @@ describe ApplicationHelper do
               create(
                 :profile,
                 :verified,
-                deactivation_reason: :password_reset,
+                :password_reset,
               ),
             ],
           )
@@ -115,7 +115,7 @@ describe ApplicationHelper do
                 :profile,
                 :active,
                 :verified,
-                deactivation_reason: :password_reset,
+                :password_reset,
                 proofing_components: {
                   liveness_check: DocAuthRouter.doc_auth_vendor,
                   address_check: :lexis_nexis_address,
