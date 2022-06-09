@@ -72,8 +72,7 @@ feature 'Multi Two Factor Authentication' do
 
       mock_webauthn_setup_challenge
 
-      # webauthn option is hidden in browsers that don't support it
-      click_2fa_option('webauthn', visible: :all)
+      click_2fa_option('webauthn')
       fill_in_nickname_and_click_continue
       check t('forms.messages.remember_device')
       mock_press_button_on_hardware_key_on_setup
