@@ -73,7 +73,6 @@ class RegisterUserEmailForm
       user: user,
       email: email,
     )
-    user.email = email # Delete this when email address is retired
 
     self.email_language = email_language
     user.email_language = email_language
