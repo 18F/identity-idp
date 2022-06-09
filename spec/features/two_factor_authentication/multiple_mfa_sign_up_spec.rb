@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'Multi Two Factor Authentication' do
+  include WebAuthnHelper
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
@@ -37,6 +38,46 @@ feature 'Multi Two Factor Authentication' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
+      expect(current_path).to eq account_path
+    end
+
+    scenario 'user can select 2 MFA methods and then chooses another method during' do
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('phone')
+      click_2fa_option('backup_code')
+
+      click_continue
+
+      expect(page).
+        to have_content t('titles.phone_setup')
+
+      expect(current_path).to eq phone_setup_path
+
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_security_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq backup_code_setup_path
+
+      click_link t('two_factor_authentication.choose_another_option')
+
+      expect(page).to have_current_path(second_mfa_setup_path)
+
+      click_2fa_option('backup_code')
+
+      mock_webauthn_setup_challenge
+
+      # webauthn option is hidden in browsers that don't support it
+      click_2fa_option('webauthn', visible: :all)
+      fill_in_nickname_and_click_continue
+      check t('forms.messages.remember_device')
+      mock_press_button_on_hardware_key_on_setup
+
       expect(current_path).to eq account_path
     end
 

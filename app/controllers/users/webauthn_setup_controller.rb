@@ -9,6 +9,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       form = WebauthnVisitForm.new
       result = form.submit(new_params)
@@ -23,7 +25,6 @@ module Users
       analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
-      @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
       flash_error(result.errors) unless result.success?
     end
 

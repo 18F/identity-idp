@@ -11,13 +11,14 @@ module Users
     before_action :apply_secure_headers_override
     before_action :cap_auth_app_count, only: %i[new confirm]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       store_totp_secret_in_session
       track_event
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
-      @in_multi_mfa_selection_flow = in_multi_mfa_selection_flow?
     end
 
     def confirm

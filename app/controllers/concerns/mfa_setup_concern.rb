@@ -44,7 +44,7 @@ module MfaSetupConcern
 
   def in_multi_mfa_selection_flow?
     return false unless user_session[:mfa_selections]
-    MfaContext.new(current_user).enabled_mfa_methods_count < mfa_selection_count
+    user_session[:mfa_selection_index] < mfa_selection_count
   end
 
   def suggest_second_mfa?
