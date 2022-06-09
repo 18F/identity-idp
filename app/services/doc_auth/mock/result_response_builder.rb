@@ -104,8 +104,13 @@ module DocAuth
         end
       end
 
+      def attention_with_barcode?
+        alerts = parsed_data_from_uploaded_file&.dig('failed_alerts') || []
+        alerts.count == 1 && alerts[0] == { name: '2D Barcode Read', result: 'Attention' }
+      end
+
       def success?
-        errors.blank?
+        errors.blank? || attention_with_barcode?
       end
 
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze

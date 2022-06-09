@@ -6,5 +6,9 @@ module Idv
     def pii_from_doc
       {}
     end
+
+    def attention_with_barcode?
+      raise NotImplementedError
+    end
   end
 end
