@@ -5,7 +5,6 @@ fr:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
       location: Sélectionnez un emplacement pour vérifier votre identité
-      ssn: Entrez votre numéro de sécurité sociale
       state_id: Entrez les informations sur votre pièce d’identité
       verify: Veuillez vérifier vos informations
       welcome: Vérifiez votre identité en personne
