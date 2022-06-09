@@ -4,6 +4,12 @@ class WebauthnVisitForm
   INVALID_STATE_ERROR = 'InvalidStateError'
   NOT_SUPPORTED_ERROR = 'NotSupportedError'
 
+  attr_accessor :user
+
+  def initialize(user)
+    @user = user
+  end
+
   def submit(params)
     @platform_authenticator = params[:platform].to_s == 'true'
     check_params(params)

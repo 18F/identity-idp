@@ -10,7 +10,7 @@ module Users
     before_action :set_webauthn_setup_presenter
 
     def new
-      form = WebauthnVisitForm.new
+      form = WebauthnVisitForm.new(current_user)
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
