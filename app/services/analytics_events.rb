@@ -1418,5 +1418,29 @@ module AnalyticsEvents
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
   end
+
+  # TODO: Experimental, add for clarity. Consolidate names.
+  def user_registration_2fa_method_setup_visit(method_name:, enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: 2FA Setup visited',
+      {
+        method_name: method_name,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # TODO: Experimental, add for clarity. Consolidate names.
+  def user_registration_2fa_method_added(method_name:, enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: 2FA Setup visited',
+      {
+        method_name: method_name,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
