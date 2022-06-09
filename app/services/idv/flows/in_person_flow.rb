@@ -28,7 +28,8 @@ module Idv
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
         super(controller, STEPS, ACTIONS, session[name])
-        # WILLFIX: make this an empty hash when we begin collecting user data
+        # WILLFIX: remove this when we are collecting these values from the user
+        @flow_session ||= {}
         @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT
       end
 
