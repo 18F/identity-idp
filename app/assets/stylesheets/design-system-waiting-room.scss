@@ -2,6 +2,12 @@
 
 // basscss-base-forms
 //------------------------------------------------
+@mixin input-styles() {
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  vertical-align: middle;
+}
+
 input[type='text'],
 input[type='date'],
 input[type='datetime'],
@@ -15,10 +21,12 @@ input[type='tel'],
 input[type='time'],
 input[type='url'],
 input[type='week'] {
-  height: 3rem;
-  padding: 0.5rem 1rem;
-  vertical-align: middle;
+  @include input-styles;
   -webkit-appearance: none;
+}
+
+select {
+  @include input-styles;
 }
 
 //basscss-base-typography

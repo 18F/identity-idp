@@ -43,11 +43,12 @@
   <div class="margin-bottom-4">
     <%= f.input :state, collection: us_states_territories,
                         label: t('in_person_proofing.form.state_id.state'), required: true,
+                        hint: t('in_person_proofing.form.state_id.state_hint'),
                         prompt: t('in_person_proofing.form.state_id.state_prompt'),
                         selected: @pii['state'] %>
   </div>
 
-  <div class="tablet:grid-col-6 margin-bottom-4">
+  <div class="tablet:grid-col-7 margin-bottom-4">
     <%= f.input :id_number, label: t('in_person_proofing.form.state_id.id_number'),
                             hint: t('in_person_proofing.form.state_id.id_number_hint'),
                             wrapper: false, required: true, maxlength: 255,
