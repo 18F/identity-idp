@@ -50,9 +50,14 @@ class WebauthnVisitForm
     end
   end
 
+  def mfa_user
+    @mfa_user ||= MfaContext.new(user)
+  end
+
   def extra_analytics_attributes
     {
       platform_authenticator: platform_authenticator?,
+      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
   end
 end

@@ -11,13 +11,26 @@ module Users
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
 
-    def index; end
+    def index
+      # TODO: Refactor
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_2fa_method_setup_visit(
+        method_name: 'backup_codes',
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+      )
+    end
 
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       analytics.track_event(Analytics::BACKUP_CODE_CREATED)
+      # TODO: Refactor
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_2fa_method_added(
+        method_name: 'backup_codes',
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+      )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
     end

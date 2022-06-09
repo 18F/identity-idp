@@ -131,6 +131,12 @@ module Users
       create_user_event(:webauthn_key_added)
       mark_user_as_fully_authenticated
       handle_remember_device
+      # TODO: Refactor
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_2fa_method_added(
+        method_name: 'webauthn',
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+      )
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       if form.platform_authenticator?
         flash[:success] = t('notices.webauthn_platform_configured')

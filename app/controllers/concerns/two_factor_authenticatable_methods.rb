@@ -151,6 +151,12 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def handle_valid_otp_for_confirmation_context
     user_session[:authn_at] = Time.zone.now
+    # TODO: Refactor
+    mfa_user = MfaContext.new(current_user)
+    analytics.user_registration_2fa_method_added(
+      method_name: 'phone',
+      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+    )
     Funnel::Registration::AddMfa.call(current_user.id, 'phone')
     assign_phone
     @next_mfa_setup_path = next_setup_path

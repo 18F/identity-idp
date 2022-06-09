@@ -60,6 +60,12 @@ module Users
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
+      # TODO: Refactor
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_2fa_method_setup_visit(
+        method_name: 'piv_cac',
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+      )
       @presenter = PivCacAuthenticationSetupPresenter.new(
         current_user, user_fully_authenticated?, user_piv_cac_form
       )
@@ -101,6 +107,12 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
+      # TODO: Refactor
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_2fa_method_added(
+        method_name: 'piv_cac',
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+      )
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       final_path = after_sign_in_path_for(current_user)
