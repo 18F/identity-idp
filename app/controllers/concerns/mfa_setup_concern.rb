@@ -43,8 +43,8 @@ module MfaSetupConcern
   end
 
   def in_multi_mfa_selection_flow?
-    return false unless user_session[:mfa_selections]
-    user_session[:mfa_selection_index] < mfa_selection_count
+    return false unless user_session[:mfa_selections].present?
+    mfa_selection_index < mfa_selection_count
   end
 
   def suggest_second_mfa?
@@ -53,6 +53,10 @@ module MfaSetupConcern
 
   def mfa_selection_count
     user_session[:mfa_selections]&.count || 0
+  end
+
+  def mfa_selection_index
+    user_session[:mfa_selection_index] || 0
   end
 
   private

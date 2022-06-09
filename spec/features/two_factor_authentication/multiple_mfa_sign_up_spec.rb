@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'Multi Two Factor Authentication' do
-  include WebAuthnHelper
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
@@ -67,15 +66,17 @@ feature 'Multi Two Factor Authentication' do
       click_link t('two_factor_authentication.choose_another_option')
 
       expect(page).to have_current_path(second_mfa_setup_path)
+      
 
-      click_2fa_option('backup_code')
+      select_2fa_option('auth_app')
+      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
 
-      mock_webauthn_setup_challenge
+      secret = find('#qr-code').text
+      totp = generate_totp_code(secret) 
 
-      click_2fa_option('webauthn')
-      fill_in_nickname_and_click_continue
+      fill_in :code, with: totp
       check t('forms.messages.remember_device')
-      mock_press_button_on_hardware_key_on_setup
+      click_submit_default
 
       expect(current_path).to eq account_path
     end
