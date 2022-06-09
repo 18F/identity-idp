@@ -214,7 +214,7 @@ describe Users::MfaSelectionController do
           },
         }
 
-        expect(response).to render_template(:index)
+        expect(response).to redirect_to second_mfa_setup_path
       end
     end
   end
