@@ -31,21 +31,11 @@ describe MfaConfirmationPresenter do
       expect(presenter.info).
         to eq(
           t(
-            'mfa.non_restricted.info_html', link: MarketingSite.help_center_article_url(
-              category: 'get-started',
-              article: 'authentication-options',
-            )
+            'mfa.non_restricted.info',
           ),
         )
       expect(non_restriced_presenter.info).
-        to eq(
-          t(
-            'mfa.account_info', link: MarketingSite.help_center_article_url(
-              category: 'get-started',
-              article: 'authentication-options',
-            )
-          ),
-        )
+        to eq(t('mfa.account_info'))
     end
   end
 
@@ -55,6 +45,17 @@ describe MfaConfirmationPresenter do
         to eq(t('mfa.non_restricted.button'))
       expect(non_restriced_presenter.button).
         to eq(t('mfa.add'))
+    end
+  end
+
+  describe '#learn_more' do
+    it 'supplies href for a link' do
+      expect(presenter.learn_more).to eq(
+        MarketingSite.help_center_article_url(
+          category: 'get-started',
+          article: 'authentication-options',
+        ),
+      )
     end
   end
 end
