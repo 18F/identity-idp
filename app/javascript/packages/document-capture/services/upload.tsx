@@ -103,7 +103,7 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
 
   result.isPending = response.status === 202;
 
-  return result as UploadSuccessResponse;
+  return result;
 }
 
 export default upload as UploadImplementation;
