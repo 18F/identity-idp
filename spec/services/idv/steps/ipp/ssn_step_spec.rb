@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Steps::Ipp::SsnStep do
-  let(:params) do { doc_auth: {} } end
+  let(:params) { { doc_auth: {} } }
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do

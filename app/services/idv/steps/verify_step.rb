@@ -50,7 +50,7 @@ module Idv
       end
 
       def invalid_state?
-        pii.nil?
+        pii.blank?
       end
 
       def invalid_state_response
