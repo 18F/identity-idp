@@ -4,8 +4,7 @@ require 'session_encryptor_error_handler'
 
 Rails.application.config.session_store(
   :redis_session_store,
-  # "Upaya" is a legacy code name for the project. This should be renamed. See: LG-6584
-  key: '_upaya_session',
+  key: '_identity_idp_session',
   redis: {
     driver: :hiredis,
 
