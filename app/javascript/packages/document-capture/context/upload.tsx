@@ -138,7 +138,7 @@ interface UploadContextProviderProps {
   /**
    * CSRF token to send as parameter to upload implementation.
    */
-  csrf?: string;
+  csrf: string | null;
 
   /**
    * Extra form data to merge into the payload before uploading
