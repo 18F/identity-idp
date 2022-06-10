@@ -12,7 +12,7 @@ export class UploadFormEntryError extends FormError {
 }
 
 export class UploadFormEntriesError extends FormError {
-  formEntryErrors = [] as UploadFormEntryError[];
+  formEntryErrors: UploadFormEntryError[] = [];
 
   remainingAttempts = Infinity ;
 
