@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
-import defaultUpload from '../services/upload';
 import type { ReactNode } from 'react';
+import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
