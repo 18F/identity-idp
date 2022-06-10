@@ -31,8 +31,8 @@ module Users
         flash[:phone_error] = t('errors.two_factor_auth_setup.must_select_additional_option')
         redirect_to two_factor_options_path(anchor: 'select_phone')
       else
-        @presenter = two_factor_options_presenter
-        render :index
+        flash[:error] = t('errors.two_factor_auth_setup.must_select_additional_option')
+        redirect_back(fallback_location: second_mfa_setup_path, allow_other_host: false)
       end
     rescue ActionController::ParameterMissing
       flash[:error] = t('errors.two_factor_auth_setup.must_select_option')

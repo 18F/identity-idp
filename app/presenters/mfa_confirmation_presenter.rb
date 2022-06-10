@@ -15,10 +15,19 @@ class MfaConfirmationPresenter
   end
 
   def info
-    enforce_second_mfa? ? I18n.t('mfa.non_restricted.info_html') : I18n.t('mfa.account_info')
+    enforce_second_mfa? ? I18n.t(
+      'mfa.non_restricted.info',
+    ) : I18n.t('mfa.account_info')
   end
 
   def button
     enforce_second_mfa? ? I18n.t('mfa.non_restricted.button') : I18n.t('mfa.add')
+  end
+
+  def learn_more
+    MarketingSite.help_center_article_url(
+      category: 'get-started',
+      article: 'authentication-options',
+    )
   end
 end

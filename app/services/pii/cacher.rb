@@ -70,7 +70,10 @@ module Pii
     end
 
     def rotate_encrypted_attributes
-      KeyRotator::AttributeEncryption.new(user).rotate
+      user.email_addresses.each do |email_address|
+        KeyRotator::AttributeEncryption.new(email_address).rotate
+      end
+
       user.phone_configurations.each do |phone_configuration|
         KeyRotator::AttributeEncryption.new(phone_configuration).rotate
       end
@@ -87,7 +90,8 @@ module Pii
     end
 
     def stale_attributes?
-      user.phone_configurations.any?(&:stale_encrypted_phone?) || user.stale_encrypted_email?
+      user.phone_configurations.any?(&:stale_encrypted_phone?) ||
+        user.email_addresses.any?(&:stale_encrypted_email?)
     end
 
     def stale_ssn_signature?(profile)

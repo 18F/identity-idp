@@ -14,9 +14,8 @@ describe 'rotate' do
 
   describe 'attribute_encryption_key' do
     it 'runs successfully' do
-      old_email = user.email
+      old_email = user.email_addresses.first.email
       old_phone = user.phone_configurations.first.phone
-      old_encrypted_email = user.encrypted_email
       old_encrypted_email_address_email = user.email_addresses.first.encrypted_email
       old_encrypted_phone = user.phone_configurations.first.encrypted_phone
 
@@ -27,9 +26,7 @@ describe 'rotate' do
       user.reload
       user.phone_configurations.reload
       expect(user.phone_configurations.first.phone).to eq old_phone
-      expect(user.email).to eq old_email
       expect(user.email_addresses.first.email).to eq old_email
-      expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(user.email_addresses.first.encrypted_email).to_not eq old_encrypted_email_address_email
       expect(user.phone_configurations.first.encrypted_phone).to_not eq old_encrypted_phone
     end
