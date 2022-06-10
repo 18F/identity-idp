@@ -47,7 +47,7 @@ interface UploadOptions {
   /**
    * CSRF token to send as parameter to upload implementation.
    */
-  csrf: string;
+  csrf: string | null;
 }
 
 export interface UploadSuccessResponse {
