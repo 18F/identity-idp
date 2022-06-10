@@ -8,7 +8,7 @@ import type {
 } from '../context/upload';
 
 export class UploadFormEntryError extends FormError {
-  field = '' as string;
+  field = '';
 }
 
 export class UploadFormEntriesError extends FormError {
