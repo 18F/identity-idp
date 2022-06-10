@@ -3,6 +3,7 @@ module Api
     class BaseController < ApplicationController
       skip_before_action :verify_authenticity_token
       include RenderConditionConcern
+      include EffectiveUser
 
       class_attribute :required_step
 
@@ -19,7 +20,7 @@ module Api
       private
 
       def confirm_two_factor_authenticated_for_api
-        return if user_fully_authenticated?
+        return if effective_user
         render json: { error: 'user is not fully authenticated' }, status: :unauthorized
       end
     end

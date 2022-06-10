@@ -3,6 +3,7 @@ module Api
     class DocumentCaptureController < BaseController
       self.required_step = 'document_capture'
       include ApplicationHelper
+      include EffectiveUser
 
       def create
         result = @form ||= Idv::ApiDocumentVerificationForm.new(
@@ -33,6 +34,8 @@ module Api
 
         document_attributes = verify_params.to_h
         applicant = {
+          user_uuid: effective_user.uuid,
+          uuid_prefix: current_sp&.app_id,
           document_arguments: document_attributes,
         }
         Idv::Agent.new(applicant).proof_document(
