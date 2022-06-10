@@ -43,7 +43,7 @@ export function toFormData(object) {
  *
  * @return {UploadFormEntryError}
  */
-export function toFormEntryError(uploadFieldError: UploadFieldError) {
+export function toFormEntryError(uploadFieldError: UploadFieldError): UploadFormEntryError {
   const { field, message } = uploadFieldError;
   const formEntryError = new UploadFormEntryError(message);
   formEntryError.field = field;
