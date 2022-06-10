@@ -53,7 +53,10 @@ module Users
 
     def track_piv_cac_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT, enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count)
+      analytics.track_event(
+        Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT,
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
     end
 
     def remove_piv_cac
@@ -110,7 +113,7 @@ module Users
       mfa_user = MfaContext.new(current_user)
       analytics.user_registration_2fa_method_added(
         method_name: 'piv_cac',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
       session[:needs_to_setup_piv_cac_after_sign_in] = false

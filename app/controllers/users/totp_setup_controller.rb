@@ -67,7 +67,7 @@ module Users
       properties = {
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
     end
@@ -96,7 +96,7 @@ module Users
       mfa_user = MfaContext.new(current_user)
       analytics.user_registration_2fa_method_added(
         method_name: 'auth_app',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
     end

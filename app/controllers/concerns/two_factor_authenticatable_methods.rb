@@ -161,7 +161,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     mfa_user = MfaContext.new(current_user)
     analytics.user_registration_2fa_method_added(
       method_name: 'phone',
-      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     )
     Funnel::Registration::AddMfa.call(current_user.id, 'phone')
   end

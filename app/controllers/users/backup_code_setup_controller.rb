@@ -21,7 +21,7 @@ module Users
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
       analytics.track_event(
         Analytics::BACKUP_CODE_CREATED,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
@@ -58,13 +58,13 @@ module Users
     private
 
     def mfa_user
-      @mfa_user ||= MfaContext.new(user)
+      @mfa_user ||= MfaContext.new(current_user)
     end
 
     def track_backup_codes_confirmation_setup_visit
       analytics.track_event(
         Analytics::USER_REGISTRATION_BACKUP_CODE_CONFIRMATION_SETUP_VISIT,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
     end
 
