@@ -13,11 +13,11 @@ module Idv
         return if flow_session[verify_step_document_capture_session_uuid_key]
         return invalid_state_response if invalid_state?
 
-        pii_from_doc[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
+        pii[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
-        if pii_from_doc[:ssn].present?
+        if pii[:ssn].present?
           throttle = Throttle.new(
-            target: Pii::Fingerprinter.fingerprint(pii_from_doc[:ssn]),
+            target: Pii::Fingerprinter.fingerprint(pii[:ssn]),
             throttle_type: :proof_ssn,
           )
 
@@ -40,21 +40,17 @@ module Idv
 
         idv_agent.proof_resolution(
           document_capture_session,
-          should_proof_state_id: should_use_aamva?(pii_from_doc),
+          should_proof_state_id: should_use_aamva?(pii),
           trace_id: amzn_trace_id,
         )
       end
 
-      def pii_from_doc
-        flow_session[:pii_from_doc]
-      end
-
       def idv_agent
-        @idv_agent ||= Idv::Agent.new(pii_from_doc)
+        @idv_agent ||= Idv::Agent.new(pii)
       end
 
       def invalid_state?
-        flow_session[:pii_from_doc].nil?
+        pii.blank?
       end
 
       def invalid_state_response

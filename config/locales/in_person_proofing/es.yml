@@ -5,7 +5,6 @@ es:
       address: Ingrese su dirección actual
       barcode: Estás listo para verificar tu identidad en persona
       location: Seleccione una ubicación para verificar su identificación
-      ssn: Ingresa tu número del seguro social
       state_id: Introduce los datos de su documento de identidad
       verify: Por favor verifique su información
       welcome: Verifica tu identidad en persona
