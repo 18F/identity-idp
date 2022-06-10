@@ -63,7 +63,6 @@ module Users
     end
 
     def track_event
-      # TODO: Refactor
       mfa_user = MfaContext.new(current_user)
       properties = {
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,

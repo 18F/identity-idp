@@ -12,24 +12,16 @@ module Users
     before_action :authorize_backup_code_disable, only: [:delete]
 
     def index
-      # TODO: Refactor
-      mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_2fa_method_setup_visit(
-        method_name: 'backup_codes',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
-      )
+      track_backup_codes_confirmation_setup_visit
     end
 
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
-      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
-      # TODO: Refactor
-      mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_2fa_method_added(
-        method_name: 'backup_codes',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
+      analytics.track_event(
+        Analytics::BACKUP_CODE_CREATED,
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
@@ -64,6 +56,17 @@ module Users
     end
 
     private
+
+    def mfa_user
+      @mfa_user ||= MfaContext.new(user)
+    end
+
+    def track_backup_codes_confirmation_setup_visit
+      analytics.track_event(
+        Analytics::USER_REGISTRATION_BACKUP_CODE_CONFIRMATION_SETUP_VISIT,
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
+      )
+    end
 
     def ensure_backup_codes_in_session
       redirect_to backup_code_setup_url unless user_session[:backup_codes]

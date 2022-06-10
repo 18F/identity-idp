@@ -16,6 +16,7 @@ module Users
       if params.key?(:token)
         process_piv_cac_setup
       else
+        track_piv_cac_setup_visit
         render_prompt
       end
     end
@@ -50,6 +51,11 @@ module Users
 
     private
 
+    def track_piv_cac_setup_visit
+      mfa_user = MfaContext.new(current_user)
+      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT, enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count)
+    end
+
     def remove_piv_cac
       revoke_remember_device(current_user)
       current_user_id = current_user.id
@@ -59,13 +65,6 @@ module Users
     end
 
     def render_prompt
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-      # TODO: Refactor
-      mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_2fa_method_setup_visit(
-        method_name: 'piv_cac',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count
-      )
       @presenter = PivCacAuthenticationSetupPresenter.new(
         current_user, user_fully_authenticated?, user_piv_cac_form
       )

@@ -191,6 +191,7 @@ class Analytics
   OTP_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'
   USER_MARKED_AUTHED = 'User marked authenticated'
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'
+  USER_REGISTRATION_BACKUP_CODE_CONFIRMATION_SETUP_VISIT = 'Backup code confirmation setup visited'
   USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'
   USER_REGISTRATION_COMPLETE = 'User registration: complete'
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'

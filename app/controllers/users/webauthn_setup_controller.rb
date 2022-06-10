@@ -135,6 +135,7 @@ module Users
       mfa_user = MfaContext.new(current_user)
       analytics.user_registration_2fa_method_added(
         method_name: 'webauthn',
+        platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')

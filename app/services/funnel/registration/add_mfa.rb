@@ -9,7 +9,6 @@ module Funnel
         params = if funnel.first_mfa.present?
                    {
                      second_mfa: mfa_method,
-                     second_mfa_at: now,
                    }
                  else
                    {
