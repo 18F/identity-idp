@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
 import defaultUpload from '../services/upload';
+import type { PII } from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
@@ -87,6 +88,11 @@ export interface UploadErrorResponse {
    * Boolean to decide if capture hints should be shown with error.
    */
   hints?: boolean;
+
+  /**
+   * Personally-identifiable information from OCR analysis.
+   */
+  ocr_pii?: PII;
 }
 
 export type UploadImplementation = (

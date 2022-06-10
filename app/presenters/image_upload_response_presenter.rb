@@ -31,15 +31,20 @@ class ImageUploadResponsePresenter
   end
 
   def as_json(*)
-    if success?
+    if success? && !attention_with_barcode?
       { success: true }
     else
       hints = @form_response.errors[:hints]
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
       json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
       json[:hints] = hints unless hints.blank?
+      json[:ocr_pii] = @form_response.extra[:ocr_pii]
       json
     end
+  end
+
+  def attention_with_barcode?
+    @form_response.extra[:ocr_pii].present?
   end
 
   def url_options

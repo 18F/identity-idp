@@ -37,6 +37,7 @@ module DocAuth
         success: success?,
         errors: errors,
         exception: exception,
+        attention_with_barcode: attention_with_barcode?,
       }.merge(extra)
     end
 

@@ -75,10 +75,15 @@ module Idv
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
       response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
+      response.extra[:ocr_pii] = ocr_pii(response) if response.attention_with_barcode?
 
       update_analytics(response)
 
       response
+    end
+
+    def ocr_pii(client_response)
+      client_response.pii_from_doc.slice(:first_name, :last_name, :dob)
     end
 
     def validate_pii_from_doc(client_response)
