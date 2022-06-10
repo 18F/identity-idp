@@ -21,10 +21,10 @@ type FlowPath = 'standard' | 'hybrid';
 
 // Upload field error, after normalized to error instance.
 interface UploadFieldError {
-  //Field name
+  // Field name
   field: 'front' | 'back' | 'selfie' | 'network';
 
-  //Error message.
+  // Error message.
   message: string;
 }
 
@@ -47,7 +47,7 @@ interface UploadSuccessResponse {
   isPending: boolean;
 }
 
-interface UploadErrorResponse {
+export interface UploadErrorResponse {
   // Whether request was successful.
   success: false;
 
@@ -76,7 +76,7 @@ interface UploadContextProviderProps {
   // Whether to treat upload as a mock implementation.
   isMockClient: boolean;
 
-  //URLs to which payload values corresponding to
+  // URLs to which payload values corresponding to
   backgroundUploadURLs: Record<string, string>;
 
   // Background upload encryption key.
@@ -98,7 +98,7 @@ interface UploadContextProviderProps {
   // CSRF token to send as parameter to upload implementation.
   csrf: string;
 
-  //Extra form data to merge into the payload before uploading
+  // Extra form data to merge into the payload before uploading
   formData: Record<string, any>;
 
   // The user's session flow path, one of "standard" or "hybrid".
