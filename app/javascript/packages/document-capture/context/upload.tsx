@@ -78,11 +78,14 @@ interface UploadContextProviderProps {
   // Whether to treat upload as a mock implementation.
   isMockClient: boolean;
 
-  // URLs to which payload values corresponding to
+  /**
+   * URLs to which payload values corresponding to key should be uploaded as soon as possible.
+   */
   backgroundUploadURLs: Record<string, string>;
 
-  // Background upload encryption key.
-  // key should be uploaded as soon as possible.
+  /**
+   * Background upload encryption key.
+   */
   backgroundUploadEncryptKey: CryptoKey;
 
   // Endpoint to which payload should be sent.
