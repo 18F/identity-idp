@@ -1,16 +1,13 @@
 module DocAuth
   module Mock
-    class ResultResponseBuilder
+    class ResultResponse < DocAuth::Response
       attr_reader :uploaded_file, :config, :liveness_enabled
 
       def initialize(uploaded_file, config, liveness_enabled)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @liveness_enabled = liveness_enabled
-      end
-
-      def call
-        DocAuth::Response.new(
+        super(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,
@@ -20,8 +17,6 @@ module DocAuth
           },
         )
       end
-
-      private
 
       def errors
         @errors ||= begin
@@ -53,6 +48,21 @@ module DocAuth
           end
         end
       end
+
+      def pii_from_doc
+        if parsed_data_from_uploaded_file.present?
+          raw_pii = parsed_data_from_uploaded_file['document']
+          raw_pii&.symbolize_keys || {}
+        else
+          Idp::Constants::MOCK_IDV_APPLICANT
+        end
+      end
+
+      def success?
+        errors.blank?
+      end
+
+      private
 
       def parsed_data_from_uploaded_file
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
@@ -93,19 +103,6 @@ module DocAuth
         else
           {}
         end
-      end
-
-      def pii_from_doc
-        if parsed_data_from_uploaded_file.present?
-          raw_pii = parsed_data_from_uploaded_file['document']
-          raw_pii&.symbolize_keys || {}
-        else
-          Idp::Constants::MOCK_IDV_APPLICANT
-        end
-      end
-
-      def success?
-        errors.blank?
       end
 
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze
