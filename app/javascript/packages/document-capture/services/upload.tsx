@@ -1,23 +1,22 @@
 import { FormError } from '@18f/identity-form-steps';
 
-/** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
-/** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
-/** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
+import type {
+  UploadSuccessResponse,
+  UploadErrorResponse,
+  UploadFieldError,
+  UploadImplementation,
+} from '../context/upload';
 
 export class UploadFormEntryError extends FormError {
-  /** @type {string} */
-  field = '';
+  field = '' as string;
 }
 
 export class UploadFormEntriesError extends FormError {
-  /** @type {UploadFormEntryError[]} */
-  formEntryErrors = [];
+  formEntryErrors = [] as UploadFormEntryError[];
 
-  /** @type {number} */
-  remainingAttempts = Infinity;
+  remainingAttempts = Infinity as number;
 
-  /** @type {boolean} */
-  hints = false;
+  hints = false as boolean;
 }
 
 /**
@@ -45,16 +44,13 @@ export function toFormData(object) {
  *
  * @return {UploadFormEntryError}
  */
-export function toFormEntryError(uploadFieldError) {
+export function toFormEntryError(uploadFieldError: UploadFieldError) {
   const { field, message } = uploadFieldError;
   const formEntryError = new UploadFormEntryError(message);
   formEntryError.field = field;
   return formEntryError;
 }
 
-/**
- * @type {import('../context/upload').UploadImplementation}
- */
 async function upload(payload, { method = 'POST', endpoint, csrf }) {
   /** @type {HeadersInit} */
   const headers = {};
@@ -77,10 +73,9 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
     return new Promise(() => {});
   }
 
-  const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());
+  const result = (await response.json()) as UploadSuccessResponse | UploadErrorResponse;
   if (!result.success) {
-    /** @type {UploadErrorResponse} */
-    const errorResult = result;
+    const errorResult = result as UploadErrorResponse;
 
     if (errorResult.redirect) {
       window.onbeforeunload = null;
@@ -108,7 +103,7 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
 
   result.isPending = response.status === 202;
 
-  return /** @type {UploadSuccessResponse} */ (result);
+  return result as UploadSuccessResponse;
 }
 
-export default upload;
+export default upload as UploadImplementation;

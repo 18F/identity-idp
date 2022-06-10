@@ -20,7 +20,7 @@ type ReactNode = import('react').ReactNode;
 type FlowPath = 'standard' | 'hybrid';
 
 // Upload field error, after normalized to error instance.
-interface UploadFieldError {
+export interface UploadFieldError {
   // Field name
   field: 'front' | 'back' | 'selfie' | 'network';
 
@@ -39,7 +39,7 @@ interface UploadOptions {
   csrf: string;
 }
 
-interface UploadSuccessResponse {
+export interface UploadSuccessResponse {
   // Whether request was successful.
   success: true;
 
@@ -64,7 +64,7 @@ export interface UploadErrorResponse {
   hints: boolean;
 }
 
-type UploadImplementation = (
+export type UploadImplementation = (
   payload: Record<string, any>,
   options: UploadOptions,
 ) => Promise<UploadSuccessResponse>;
