@@ -1,8 +1,11 @@
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class="h3 margin-y-0">
-  <%= t('in_person_proofing.headings.address') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
+
+<p>
+  <%= t('in_person_proofing.body.address.info_html') %>
+  <%= new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+</p>
 
 <div class="margin-top-4 margin-bottom-4">
   <%= validated_form_for(
@@ -45,6 +48,47 @@
       </span>
     </div>
     <div class="margin-top-0">
+      <fieldset class="margin-bottom-4 padding-0 border-0">
+        <%= radio_button_tag(
+              'otp_delivery_preference',
+              :sms,
+              false,
+              disabled: VendorStatus.new.vendor_outage?(:sms),
+              class: 'usa-radio__input',
+            ) %>
+        <label for="otp_delivery_preference_sms" class="usa-radio__label">
+          <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
+        </label>
+
+        <%= radio_button_tag(
+              'otp_delivery_preference',
+              :voice,
+              false,
+              disabled: VendorStatus.new.vendor_outage?(:voice),
+              class: 'usa-radio__input',
+            ) %>
+        <label for="otp_delivery_preference_voice" class="usa-radio__label">
+          <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
+        </label>
+      </fieldset>
+
+      <%= f.input(
+            :error,
+            as: :radio_buttons,
+            label: 'Error Conditions',
+            collection: [
+              ['No error', ''],
+              ['No certificate', 'certificate.none'],
+              ['Bad certificate', 'certificate.bad'],
+              ['Expired certificate', 'certificate.expired'],
+              ['Revoked certificate', 'certificate.revoked'],
+              ['Invalid certificate', 'certificate.invalid'],
+              ['Unverified certificate', 'certificate.unverified'],
+              ['Missing token', 'token.missing'],
+              ['Invalid token', 'token.invalid'],
+            ],
+          ) %>
+
       <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">
         <%= t('forms.buttons.continue') %>
       </button>
