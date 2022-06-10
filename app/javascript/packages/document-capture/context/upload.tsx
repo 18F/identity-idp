@@ -70,7 +70,9 @@ export type UploadImplementation = (
 ) => Promise<UploadSuccessResponse>;
 
 interface UploadContextProviderProps {
-  // upload Custom upload implementation.
+  /**
+   * Custom upload implementation.
+   */
   upload: UploadImplementation;
 
   // Whether to treat upload as a mock implementation.
