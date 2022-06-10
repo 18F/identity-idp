@@ -4,13 +4,13 @@ import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
-  getStatus: () => Promise.reject(),
-  statusPollInterval: undefined,
+  getStatus: () => Promise.reject() as () => Promise<UploadSuccessResponse>,
+  statusPollInterval: undefined as number,
   isMockClient: false,
-  backgroundUploadURLs: {},
-  backgroundUploadEncryptKey: undefined,
-  flowPath: 'standard',
-  csrf: null,
+  backgroundUploadURLs: {} as Record<string, string>,
+  backgroundUploadEncryptKey: undefined as CryptoKey,
+  flowPath: 'standard' as FlowPath,
+  csrf: null as string,
 });
 
 UploadContext.displayName = 'UploadContext';
