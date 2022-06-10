@@ -16,7 +16,7 @@ export class UploadFormEntriesError extends FormError {
 
   remainingAttempts = Infinity ;
 
-  hints = false as boolean;
+  hints = false;
 }
 
 /**
