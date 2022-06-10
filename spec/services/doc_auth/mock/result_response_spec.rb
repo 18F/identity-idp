@@ -22,6 +22,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -62,6 +63,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
       )
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -89,6 +91,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq({})
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to include(dob: '1938-10-06')
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -98,7 +101,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         failed_alerts:
           - name: 1D Control Number Valid
             result: Failed
-          - name: 2D Barcode Content
+          - name: 2D Barcode Read
             result: Attention
       YAML
     end
@@ -112,6 +115,27 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
+    end
+  end
+
+  context 'with a yaml file containing barcode attention' do
+    let(:input) do
+      <<~YAML
+        document:
+          first_name: Susan
+        failed_alerts:
+          - name: 2D Barcode Read
+            result: Attention
+      YAML
+    end
+
+    it 'returns a successful result' do
+      expect(response.success?).to eq(true)
+      expect(response.errors).to eq({})
+      expect(response.exception).to eq(nil)
+      expect(response.pii_from_doc).to eq({ first_name: 'Susan' })
+      expect(response.attention_with_barcode?).to eq(true)
     end
   end
 
@@ -127,6 +151,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(warn_notifier).to receive(:call).with(hash_including(:message, :response_info)).twice
 
       expect(response.success?).to eq(false)
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -148,6 +173,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -164,6 +190,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).
         to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -179,6 +206,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq(general: ['parsed URI, but scheme was https (expected data)'])
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -194,6 +222,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq(general: ['YAML data should have been a hash, got String'])
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -212,6 +241,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       expect(response.errors).to eq(general: ['invalid YAML file'])
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -243,6 +273,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.exception).to eq(nil)
       expect(response.pii_from_doc).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 
@@ -283,6 +314,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
       )
+      expect(response.attention_with_barcode?).to eq(false)
     end
   end
 end

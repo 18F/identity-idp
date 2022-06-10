@@ -397,7 +397,7 @@
           "Group": "AUTHENTICATION_RESULT",
           "Name": "Alert_9_AuthenticationResult",
           "Values": [{
-            "Value": "Failed",
+            "Value": "Attention",
             "Detail": "Verified that the two-dimensional barcode on the document was read successfully."
           }]
         },

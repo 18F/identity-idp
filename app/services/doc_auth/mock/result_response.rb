@@ -22,7 +22,7 @@ module DocAuth
         @errors ||= begin
           file_data = parsed_data_from_uploaded_file
 
-          if file_data.blank?
+          if file_data.blank? || attention_with_barcode?
             {}
           else
             doc_auth_result = file_data.dig('doc_auth_result')
@@ -59,10 +59,18 @@ module DocAuth
       end
 
       def success?
-        errors.blank?
+        errors.blank? || attention_with_barcode?
+      end
+
+      def attention_with_barcode?
+        parsed_alerts == [ATTENTION_WITH_BARCODE_ALERT]
       end
 
       private
+
+      def parsed_alerts
+        parsed_data_from_uploaded_file&.dig('failed_alerts')
+      end
 
       def parsed_data_from_uploaded_file
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
@@ -105,6 +113,7 @@ module DocAuth
         end
       end
 
+      ATTENTION_WITH_BARCODE_ALERT = { 'name' => '2D Barcode Read', 'result' => 'Attention' }.freeze
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze
       DEFAULT_IMAGE_METRICS = {
         front: {
