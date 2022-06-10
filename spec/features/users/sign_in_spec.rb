@@ -432,7 +432,7 @@ feature 'Sign in' do
         create(:user, :signed_up, email: email, password: password)
 
         user = User.find_with_email(email)
-        encrypted_email = user.encrypted_email
+        encrypted_email = user.confirmed_email_addresses.first.encrypted_email
 
         rotate_attribute_encryption_key_with_invalid_queue
 
@@ -440,7 +440,7 @@ feature 'Sign in' do
           to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
         user = user.reload
-        expect(user.encrypted_email).to eq encrypted_email
+        expect(user.confirmed_email_addresses.first.encrypted_email).to eq encrypted_email
       end
     end
 
@@ -452,14 +452,14 @@ feature 'Sign in' do
         create(:user, :signed_up, email: email, password: password)
 
         user = User.find_with_email(email)
-        encrypted_email = user.encrypted_email
+        encrypted_email = user.confirmed_email_addresses.first.encrypted_email
 
         rotate_attribute_encryption_key_with_invalid_queue
 
         sign_in_user_with_piv(user)
 
         user = user.reload
-        expect(user.encrypted_email).to eq encrypted_email
+        expect(user.confirmed_email_addresses.first.encrypted_email).to eq encrypted_email
       end
     end
   end
