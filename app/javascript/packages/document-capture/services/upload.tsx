@@ -72,7 +72,7 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     return new Promise(() => {});
   }
 
-  const result = (await response.json()) as UploadSuccessResponse | UploadErrorResponse;
+  const result: UploadSuccessResponse | UploadErrorResponse = await response.json();
   if (!result.success) {
     if (result.redirect) {
       window.onbeforeunload = null;
