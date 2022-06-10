@@ -41,7 +41,8 @@ class SessionStoreMigration
   end
 
   def process_out_headers!(headers)
-    if (cookie_header = headers[Rack::SET_COOKIE]).present?
+    cookie_header = headers[Rack::SET_COOKIE]
+    if cookie_header.present?
       cookies = cookie_header.split(COOKIE_SEPARATOR)
 
       new_key_set = cookies.find { |cookie| cookie.start_with?(NEW_KEY) }
