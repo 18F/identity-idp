@@ -1,5 +1,4 @@
 import { FormError } from '@18f/identity-form-steps';
-
 import type {
   UploadSuccessResponse,
   UploadErrorResponse,
@@ -14,7 +13,7 @@ export class UploadFormEntryError extends FormError {
 export class UploadFormEntriesError extends FormError {
   formEntryErrors: UploadFormEntryError[] = [];
 
-  remainingAttempts = Infinity ;
+  remainingAttempts = Infinity;
 
   hints = false;
 }
@@ -51,7 +50,7 @@ export function toFormEntryError(uploadFieldError: UploadFieldError) {
   return formEntryError;
 }
 
-async function upload(payload, { method = 'POST', endpoint, csrf }) {
+const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint, csrf }) {
   /** @type {HeadersInit} */
   const headers = {};
   if (csrf) {
@@ -75,27 +74,25 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
 
   const result = (await response.json()) as UploadSuccessResponse | UploadErrorResponse;
   if (!result.success) {
-    const errorResult = result as UploadErrorResponse;
-
-    if (errorResult.redirect) {
+    if (result.redirect) {
       window.onbeforeunload = null;
-      window.location.href = errorResult.redirect;
+      window.location.href = result.redirect;
 
       // Avoid settling the promise, allowing the redirect to complete.
       return new Promise(() => {});
     }
 
     const error = new UploadFormEntriesError();
-    if (errorResult.errors) {
-      error.formEntryErrors = errorResult.errors.map(toFormEntryError);
+    if (result.errors) {
+      error.formEntryErrors = result.errors.map(toFormEntryError);
     }
 
-    if (errorResult.remaining_attempts) {
-      error.remainingAttempts = errorResult.remaining_attempts;
+    if (result.remaining_attempts) {
+      error.remainingAttempts = result.remaining_attempts;
     }
 
-    if (errorResult.hints) {
-      error.hints = errorResult.hints;
+    if (result.hints) {
+      error.hints = result.hints;
     }
 
     throw error;
@@ -104,6 +101,6 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
   result.isPending = response.status === 202;
 
   return result;
-}
+};
 
-export default upload as UploadImplementation;
+export default upload;

@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import defaultUpload from '../services/upload';
+import type { ReactNode } from 'react';
 
 const UploadContext = createContext({
   upload: defaultUpload,
@@ -8,60 +9,84 @@ const UploadContext = createContext({
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
   backgroundUploadURLs: {} as Record<string, string>,
-  backgroundUploadEncryptKey: undefined as CryptoKey,
+  backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
-  csrf: null as string,
+  csrf: null as string | null,
 });
 
 UploadContext.displayName = 'UploadContext';
 
-type ReactNode = import('react').ReactNode;
-
 type FlowPath = 'standard' | 'hybrid';
 
-// Upload field error, after normalized to error instance.
+/**
+ * Upload field error, after normalized to error instance.
+ */
 export interface UploadFieldError {
-  // Field name
+  /**
+   *  Field name
+   */
   field: 'front' | 'back' | 'selfie' | 'network';
 
-  // Error message.
+  /**
+   *  Error message.
+   */
   message: string;
 }
 
 interface UploadOptions {
-  // HTTP method to send payload.
+  /**
+   * HTTP method to send payload.
+   */
   method?: 'POST' | 'PUT';
 
-  // Endpoint to which payload should be sent.
+  /**
+   *  Endpoint to which payload should be sent.
+   */
   endpoint: string;
 
-  // CSRF token to send as parameter to upload implementation.
+  /**
+   *  CSRF token to send as parameter to upload implementation.
+   */
   csrf: string;
 }
 
 export interface UploadSuccessResponse {
-  // Whether request was successful.
+  /**
+   * Whether request was successful.
+   */
   success: true;
 
-  // Whether verification result is still pending.
+  /**
+   * Whether verification result is still pending.
+   */
   isPending: boolean;
 }
 
 export interface UploadErrorResponse {
-  // Whether request was successful.
+  /**
+   * Whether request was successful.
+   */
   success: false;
 
-  // Error messages.
-  errors: UploadFieldError[];
+  /**
+   * Error messages.
+   */
+  errors?: UploadFieldError[];
 
-  // URL to which user should be redirected.
-  redirect: string;
+  /**
+   * URL to which user should be redirected.
+   */
+  redirect?: string;
 
-  // Number of remaining doc capture attempts for user.
-  remaining_attempts: number;
+  /**
+   * Number of remaining doc capture attempts for user.
+   */
+  remaining_attempts?: number;
 
-  // Boolean to decide if capture hints should be shown with error.
-  hints: boolean;
+  /**
+   * Boolean to decide if capture hints should be shown with error.
+   */
+  hints?: boolean;
 }
 
 export type UploadImplementation = (
@@ -73,10 +98,12 @@ interface UploadContextProviderProps {
   /**
    * Custom upload implementation.
    */
-  upload: UploadImplementation;
+  upload?: UploadImplementation;
 
-  // Whether to treat upload as a mock implementation.
-  isMockClient: boolean;
+  /**
+   * Whether to treat upload as a mock implementation.
+   */
+  isMockClient?: boolean;
 
   /**
    * URLs to which payload values corresponding to key should be uploaded as soon as possible.
@@ -86,30 +113,46 @@ interface UploadContextProviderProps {
   /**
    * Background upload encryption key.
    */
-  backgroundUploadEncryptKey: CryptoKey;
+  backgroundUploadEncryptKey?: CryptoKey;
 
-  // Endpoint to which payload should be sent.
+  /**
+   * Endpoint to which payload should be sent.
+   */
   endpoint: string;
 
-  // Endpoint from which to request async upload status.
-  statusEndpoint: string;
+  /**
+   * Endpoint from which to request async upload status.
+   */
+  statusEndpoint?: string;
 
-  // Interval at which to poll for status, in milliseconds.
-  statusPollInterval: number;
+  /**
+   * Interval at which to poll for status, in milliseconds.
+   */
+  statusPollInterval?: number;
 
-  // HTTP method to send payload.
+  /**
+   * HTTP method to send payload.
+   */
   method: 'POST' | 'PUT';
 
-  // CSRF token to send as parameter to upload implementation.
-  csrf: string;
+  /**
+   * CSRF token to send as parameter to upload implementation.
+   */
+  csrf?: string;
 
-  // Extra form data to merge into the payload before uploading
-  formData: Record<string, any>;
+  /**
+   * Extra form data to merge into the payload before uploading
+   */
+  formData?: Record<string, any>;
 
-  // The user's session flow path, one of "standard" or "hybrid".
+  /**
+   * The user's session flow path, one of "standard" or "hybrid".
+   */
   flowPath: FlowPath;
 
-  // Child elements.
+  /**
+   *  Child elements.
+   */
   children: ReactNode;
 }
 
