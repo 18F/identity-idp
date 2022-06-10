@@ -20,12 +20,8 @@ export class UploadFormEntriesError extends FormError {
 
 /**
  * Returns a FormData representation of the given object.
- *
- * @param {Record<string,any>} object Object to serialize.
- *
- * @return {FormData}
  */
-export function toFormData(object) {
+export function toFormData(object: Record<string, any>): FormData {
   return Object.keys(object).reduce((form, key) => {
     const value = object[key];
     if (value !== undefined) {
@@ -38,10 +34,6 @@ export function toFormData(object) {
 
 /**
  * Returns error as received by server as an instance of UploadFormEntryError.
- *
- * @param {UploadFieldError} uploadFieldError Error received from server.
- *
- * @return {UploadFormEntryError}
  */
 export function toFormEntryError(uploadFieldError: UploadFieldError): UploadFormEntryError {
   const { field, message } = uploadFieldError;
@@ -51,8 +43,7 @@ export function toFormEntryError(uploadFieldError: UploadFieldError): UploadForm
 }
 
 const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint, csrf }) {
-  /** @type {HeadersInit} */
-  const headers = {};
+  const headers: HeadersInit = {};
   if (csrf) {
     headers['X-CSRF-Token'] = csrf;
   }
