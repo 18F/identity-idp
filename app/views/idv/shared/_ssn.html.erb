@@ -1,6 +1,19 @@
 <% title t('titles.doc_auth.ssn') %>
 
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
+<% if id_success_alert_enabled %>
+  <%= render AlertComponent.new(
+        type: :success,
+        class: 'margin-bottom-4',
+      ) do %>
+    <%= t('doc_auth.headings.capture_complete') %>
+  <% end %>
+<% end %>
+
+<% if updating_ssn %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
+<% end %>
 
 <p>
   <%= t('doc_auth.info.ssn') %>
@@ -33,4 +46,9 @@
     <%= t('forms.buttons.continue') %>
   </button>
 <% end %>
-<%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
+
+<% if updating_ssn %>
+  <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
+<% else %>
+  <%= render 'idv/doc_auth/start_over_or_cancel', step: 'ssn' %>
+<% end %>

@@ -1,5 +1,1 @@
-<% if applicant_ssn %>
-  <%= render 'idv/doc_auth/ssn_update', flow_session: flow_session %>
-<% else %>
-  <%= render 'idv/doc_auth/ssn_init', flow_session: flow_session, should_render_id_success_alert: false %>
-<% end %>
+<%= render 'idv/shared/ssn', flow_session: flow_session, id_success_alert_enabled: false, updating_ssn: applicant_ssn  %>
