@@ -23,12 +23,12 @@ type FlowPath = 'standard' | 'hybrid';
  */
 export interface UploadFieldError {
   /**
-   *  Field name
+   * Field name
    */
   field: 'front' | 'back' | 'selfie' | 'network';
 
   /**
-   *  Error message.
+   * Error message.
    */
   message: string;
 }
@@ -40,12 +40,12 @@ interface UploadOptions {
   method?: 'POST' | 'PUT';
 
   /**
-   *  Endpoint to which payload should be sent.
+   * Endpoint to which payload should be sent.
    */
   endpoint: string;
 
   /**
-   *  CSRF token to send as parameter to upload implementation.
+   * CSRF token to send as parameter to upload implementation.
    */
   csrf: string;
 }
