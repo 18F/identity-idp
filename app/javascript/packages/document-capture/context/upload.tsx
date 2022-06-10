@@ -5,7 +5,7 @@ import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
-  getStatus: () => Promise.reject() as () => Promise<UploadSuccessResponse>,
+  getStatus: () => Promise.resolve({} as UploadSuccessResponse),
   statusPollInterval: undefined as number | undefined,
   isMockClient: false,
   backgroundUploadURLs: {} as Record<string, string>,
