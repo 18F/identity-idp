@@ -1419,12 +1419,52 @@ module AnalyticsEvents
     track_event('User Registration: 2FA Setup visited')
   end
 
-  # TODO: Experimental, add for clarity. Consolidate names.
-  def user_registration_2fa_method_added(method_name:, enabled_mfa_methods_count:, **extra)
+  # Tracks when the the user has added the MFA method phone to their account
+  def user_registration_mfa_phone_added(enabled_mfa_methods_count:, **extra)
     track_event(
-      'User Registration: 2FA Setup visited',
+      'User Registration: MFA method phone added',
       {
-        method_name: method_name,
+        method_name: :phone,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method piv_cac to their account
+  def user_registration_mfa_piv_cac_added(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: MFA method PIV_CAC added',
+      {
+        method_name: :piv_cac,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method TOTP to their account
+  def user_registration_mfa_totp_added(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: MFA method TOTP added',
+      {
+        method_name: :totp,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method webauthn to their account
+  def user_registration_mfa_webauthn_added(
+    platform_authenticator:,
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'User Registration: MFA method webauthn added',
+      {
+        method_name: :webauthn,
+        platform_authenticator: platform_authenticator,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         **extra,
       }.compact,

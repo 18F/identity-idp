@@ -92,10 +92,8 @@ module Users
 
     def create_events
       create_user_event(:authenticator_enabled)
-      # Todo: Refactor
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_2fa_method_added(
-        method_name: 'auth_app',
+      analytics.user_registration_mfa_totp_added(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')

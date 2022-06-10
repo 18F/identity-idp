@@ -8,14 +8,6 @@ describe TwoFactorOptionsForm do
     let(:submit_phone) { subject.submit(selection: 'phone') }
     let(:enabled_mfa_methods_count) { 0 }
     let(:mfa_selection) { ['sms'] }
-    let(:analytics_payload) do
-      {
-        extra: {
-          enabled_mfa_methods_count: enabled_mfa_methods_count,
-          selection: mfa_selection,
-        },
-      }
-    end
 
     it 'is successful if the selection is valid' do
       %w[auth_app piv_cac webauthn webauthn_platform].each do |selection|
@@ -45,9 +37,10 @@ describe TwoFactorOptionsForm do
     end
 
     it 'includes analytics hash with a methods count of zero' do
-      expect(FormResponse).to receive(:new).with(hash_including(analytics_payload))
+      result = subject.submit(selection: 'piv_cac')
 
-      subject.submit(selection: 'sms')
+      expect(result.success?).to eq(true)
+      expect(result.to_h).to include(enabled_mfa_methods_count: 0)
     end
 
     context "when the selection is different from the user's otp_delivery_preference" do
@@ -107,9 +100,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'includes analytics hash with a method count of one' do
-        expect(FormResponse).to receive(:new).with(hash_including(analytics_payload))
+        result = submit_phone
 
-        submit_phone
+        expect(result.to_h).to include(enabled_mfa_methods_count: 1)
       end
     end
 

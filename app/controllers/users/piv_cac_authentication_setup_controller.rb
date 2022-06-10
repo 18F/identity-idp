@@ -109,16 +109,18 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
-      # TODO: Refactor
-      mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_2fa_method_added(
-        method_name: 'piv_cac',
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1,
-      )
-      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
+      track_mfa_method_added
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       final_path = after_sign_in_path_for(current_user)
       redirect_to next_setup_path || final_path
+    end
+
+    def track_mfa_method_added
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_mfa_piv_cac_added(
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count + 1,
+      )
+      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
     end
 
     def piv_cac_enabled?

@@ -4,8 +4,6 @@ class WebauthnVisitForm
   INVALID_STATE_ERROR = 'InvalidStateError'
   NOT_SUPPORTED_ERROR = 'NotSupportedError'
 
-  attr_accessor :user
-
   def initialize(user)
     @user = user
   end
@@ -57,7 +55,7 @@ class WebauthnVisitForm
   end
 
   def mfa_user
-    @mfa_user ||= MfaContext.new(user)
+    @mfa_user ||= MfaContext.new(@user)
   end
 
   def extra_analytics_attributes
