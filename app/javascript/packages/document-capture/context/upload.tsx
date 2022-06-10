@@ -16,7 +16,7 @@ const UploadContext = createContext({
 
 UploadContext.displayName = 'UploadContext';
 
-type FlowPath = 'standard' | 'hybrid';
+export type FlowPath = 'standard' | 'hybrid';
 
 /**
  * Upload field error, after normalized to error instance.
