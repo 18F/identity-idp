@@ -57,7 +57,7 @@
   <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide margin-bottom-1' %>
 <% end %>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: destroy_user_session_path, button: true, method: :delete %>
 
 <%= javascript_packs_tag_once('webauthn-unhide') %>
 

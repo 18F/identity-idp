@@ -1,8 +1,10 @@
 class PageFooterComponent < BaseComponent
   attr_reader :tag_options
 
-  def initialize(**tag_options)
+  def initialize(button: false, method: :get, **tag_options)
     @tag_options = tag_options
+    @button = button
+    @method = method
   end
 
   def call
