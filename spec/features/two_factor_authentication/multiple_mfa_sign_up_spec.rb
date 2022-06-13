@@ -66,13 +66,12 @@ feature 'Multi Two Factor Authentication' do
       click_link t('two_factor_authentication.choose_another_option')
 
       expect(page).to have_current_path(second_mfa_setup_path)
-      
 
       select_2fa_option('auth_app')
       fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
 
       secret = find('#qr-code').text
-      totp = generate_totp_code(secret) 
+      totp = generate_totp_code(secret)
 
       fill_in :code, with: totp
       check t('forms.messages.remember_device')
