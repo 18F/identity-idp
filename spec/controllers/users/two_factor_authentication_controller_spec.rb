@@ -443,6 +443,7 @@ describe Users::TwoFactorAuthenticationController do
           with('Telephony: OTP sent', hash_including(
             success: true,
             otp_delivery_preference: 'voice',
+            country_code: 'US',
           ))
 
         get :send_code, params: {
