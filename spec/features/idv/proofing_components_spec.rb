@@ -60,7 +60,7 @@ RSpec.describe 'proofing components' do
     expect(user.active_profile.includes_liveness_check?).to be_truthy
 
     visit account_path
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, user.password)

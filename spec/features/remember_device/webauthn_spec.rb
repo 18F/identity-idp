@@ -27,7 +27,7 @@ describe 'Remembering a webauthn device' do
         mock_press_button_on_hardware_key_on_verification
         check t('forms.messages.remember_device')
         click_button t('forms.buttons.continue')
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 
@@ -46,7 +46,7 @@ describe 'Remembering a webauthn device' do
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 
@@ -64,7 +64,7 @@ describe 'Remembering a webauthn device' do
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
         expect(page).to have_current_path(account_two_factor_authentication_path)
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 
@@ -90,7 +90,7 @@ describe 'Remembering a webauthn device' do
         mock_press_button_on_hardware_key_on_verification
         check t('forms.messages.remember_device')
         click_button t('forms.buttons.continue')
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 
@@ -109,7 +109,7 @@ describe 'Remembering a webauthn device' do
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 
@@ -126,7 +126,7 @@ describe 'Remembering a webauthn device' do
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
         expect(page).to have_current_path(account_two_factor_authentication_path)
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         user
       end
 

@@ -21,7 +21,7 @@ feature 'taking an action that revokes remember device' do
         href: manage_phone_path(id: user.phone_configurations.first.id),
       )
       click_on t('forms.phone.buttons.delete')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -37,7 +37,7 @@ feature 'taking an action that revokes remember device' do
       visit account_two_factor_authentication_path
       click_on t('account.index.webauthn_delete')
       click_on t('account.index.webauthn_confirm_delete')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -53,7 +53,7 @@ feature 'taking an action that revokes remember device' do
       visit account_two_factor_authentication_path
       click_on t('account.index.webauthn_platform_delete')
       click_on t('account.index.webauthn_platform_confirm_delete')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -69,7 +69,7 @@ feature 'taking an action that revokes remember device' do
       visit account_two_factor_authentication_path
       page.find('.remove-piv').click
       click_on t('account.index.piv_cac_confirm_delete')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -85,7 +85,7 @@ feature 'taking an action that revokes remember device' do
       visit account_two_factor_authentication_path
       page.find('.remove-auth-app').click # Delete
       click_on t('account.index.totp_confirm_delete')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -103,7 +103,7 @@ feature 'taking an action that revokes remember device' do
       click_on t('account.index.backup_code_confirm_regenerate')
       expect(page).to have_content(t('forms.backup_code.subtitle'))
       click_continue
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -128,7 +128,7 @@ feature 'taking an action that revokes remember device' do
 
       expect(user.reload.backup_code_configurations).to be_empty
 
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -144,7 +144,7 @@ feature 'taking an action that revokes remember device' do
       find_sidenav_forget_browsers_link.click
       click_on(t('forms.buttons.confirm'))
 
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -161,7 +161,7 @@ feature 'taking an action that revokes remember device' do
         find_sidenav_forget_browsers_link.click
         click_on(t('forms.buttons.confirm'))
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         expect_mfa_to_be_required_for_user(user)
       end
@@ -178,7 +178,7 @@ feature 'taking an action that revokes remember device' do
     check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
   end
 
   def expect_mfa_to_be_required_for_user(user)

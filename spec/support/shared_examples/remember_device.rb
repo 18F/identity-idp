@@ -31,7 +31,7 @@ shared_examples 'remember device' do
     click_submit_default
 
     # Sign out second user
-    first(:link, t('links.sign_out')).click
+    first(:button, t('links.sign_out')).click
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)

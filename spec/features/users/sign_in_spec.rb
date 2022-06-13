@@ -270,7 +270,7 @@ feature 'Sign in' do
     end
 
     scenario 'user has option to sign out' do
-      click_link(t('notices.timeout_warning.signed_in.sign_out'))
+      click_button(t('notices.timeout_warning.signed_in.sign_out'))
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
@@ -330,7 +330,7 @@ feature 'Sign in' do
 
     it 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
-      click_link(t('links.sign_out'), match: :first)
+      click_button(t('links.sign_out'), match: :first)
 
       travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))

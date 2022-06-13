@@ -52,7 +52,7 @@ feature 'idv gpo step' do
       acknowledge_and_confirm_personal_key
       visit root_path
       click_on t('idv.buttons.cancel')
-      first(:link, t('links.sign_out')).click
+      first(:button, t('links.sign_out')).click
       sign_in_live_with_2fa(user)
       click_on t('idv.messages.gpo.resend')
     end

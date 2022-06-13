@@ -16,7 +16,7 @@ describe 'Unchecking remember device' do
 
         click_button 'Submit'
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -42,7 +42,7 @@ describe 'Unchecking remember device' do
         mock_press_button_on_hardware_key_on_setup
         click_continue
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -69,7 +69,7 @@ describe 'Unchecking remember device' do
 
         click_submit_default
 
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -89,7 +89,7 @@ describe 'Unchecking remember device' do
         fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
         uncheck t('forms.messages.remember_device')
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
         sign_in_user(user)
       end
 
@@ -117,7 +117,7 @@ describe 'Unchecking remember device' do
         mock_press_button_on_hardware_key_on_verification
         uncheck(:remember_device)
         click_button t('forms.buttons.continue')
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end
@@ -136,7 +136,7 @@ describe 'Unchecking remember device' do
         uncheck t('forms.messages.remember_device')
         fill_in_code_with_last_phone_otp
         click_submit_default
-        first(:link, t('links.sign_out')).click
+        first(:button, t('links.sign_out')).click
 
         sign_in_user(user)
       end
