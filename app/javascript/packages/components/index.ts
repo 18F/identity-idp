@@ -9,6 +9,7 @@ export { default as Link } from './link';
 export { default as PageHeading } from './page-heading';
 export { default as ScrollIntoView } from './scroll-into-view';
 export { default as SpinnerDots } from './spinner-dots';
+export { default as StatusPage } from './status-page';
 export { default as TextInput } from './text-input';
 export { default as TroubleshootingOptions } from './troubleshooting-options';
 
