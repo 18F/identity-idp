@@ -16,7 +16,6 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
   }
 
   // TODO: Translate
-  // TODO: Troubleshooting options should only include "Get help at Partner Agency"
 
   return (
     <StatusPage
@@ -31,7 +30,11 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         </Button>,
       ]}
       troubleshootingOptions={
-        <DocumentCaptureTroubleshootingOptions location="post_submission_warning" hasErrors />
+        <DocumentCaptureTroubleshootingOptions
+          location="post_submission_warning"
+          showDocumentTips={false}
+          hasErrors
+        />
       }
     >
       <p>

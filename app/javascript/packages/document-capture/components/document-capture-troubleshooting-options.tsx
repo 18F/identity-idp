@@ -17,6 +17,11 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   location?: string;
 
   /**
+   * Whether to include tips for taking a good photo.
+   */
+  showDocumentTips?: boolean;
+
+  /**
    * If there are any errors (toggles whether or not to show in person proofing option)
    */
   hasErrors?: boolean;
@@ -25,6 +30,7 @@ interface DocumentCaptureTroubleshootingOptionsProps {
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
+  showDocumentTips = true,
   hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
@@ -37,7 +43,7 @@ function DocumentCaptureTroubleshootingOptions({
         heading={heading}
         options={
           [
-            {
+            showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
                 article: 'how-to-add-images-of-your-state-issued-id',
@@ -46,7 +52,7 @@ function DocumentCaptureTroubleshootingOptions({
               text: t('idv.troubleshooting.options.doc_capture_tips'),
               isExternal: true,
             },
-            {
+            showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
                 article: 'accepted-state-issued-identification',
