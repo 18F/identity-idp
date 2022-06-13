@@ -27,11 +27,7 @@ function TroubleshootingOptions({ headingTag = 'h2', heading, options, isNewFeat
   const HeadingTag = headingTag;
 
   return (
-    <section
-      className={['troubleshooting-options', isNewFeatures && 'troubleshooting-options--no-bar']
-        .filter(Boolean)
-        .join(' ')}
-    >
+    <section className="troubleshooting-options">
       {isNewFeatures && (
         <span className="usa-tag bg-accent-cool-darker text-uppercase display-inline-block">
           {t('components.troubleshooting_options.new_feature')}
