@@ -15,7 +15,7 @@ module Api
       end
 
       def render_errors(error_or_errors, status: :bad_request)
-        errors = error_or_errors.class == Hash ? error_or_errors : Array(error_or_errors)
+        errors = error_or_errors.instance_of?(Hash) ? error_or_errors : Array(error_or_errors)
         render json: { errors: errors }, status: status
       end
 
