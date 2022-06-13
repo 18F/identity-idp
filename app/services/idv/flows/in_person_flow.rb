@@ -52,10 +52,8 @@ module Idv
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
 
-        # WILLFIX: remove the lines below when we're collecting all user data
-        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.except(
-          *STATE_ID_ATTRIBUTES,
-        )
+        # WILLFIX: remove the line below when we're collecting all user data
+        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
 
         # WILLFIX: (LG-6349) remove this block when we implement the verify page
         session[:idv]['profile_confirmation'] = true
