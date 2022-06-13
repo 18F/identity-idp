@@ -21,18 +21,16 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
     window.location.reload();
   }
 
-  // TODO: Translate
-
   return (
     <StatusPage
-      header="We couldn’t read the barcode on your ID."
+      header={t('doc_auth.errors.barcode_attention.heading')}
       status="warning"
       actionButtons={[
         <Button key="continue" isBig isWide onClick={skipAttention}>
-          Continue
+          {t('forms.buttons.continue')}
         </Button>,
         <Button key="add-new" isBig isOutline isWide onClick={onDismiss}>
-          Add new photos
+          {t('doc_auth.buttons.add_new_photos')}
         </Button>,
       ]}
       troubleshootingOptions={
@@ -43,9 +41,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         />
       }
     >
-      <p>
-        If the information below is incorrect, please upload new photos of your state-issued ID.
-      </p>
+      <p>{t('doc_auth.errors.barcode_attention.confirm_info')}</p>
       <dl className="add-list-reset">
         <div>
           <dt className="display-inline">{t('doc_auth.forms.first_name')}:</dt>

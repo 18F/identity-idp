@@ -7,6 +7,7 @@ fr:
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
     buttons:
+      add_new_photos: Add new photos # TODO: Translate
       change_address: Changement
       change_address_label: Changement d’adresse
       change_ssn: Changement
@@ -65,6 +66,11 @@ fr:
           fort.
         visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
+      barcode_attention:
+        confirm_info: Si les informations ci-dessous sont incorrectes, veuillez
+          télécharger de nouvelles photos de votre carte d’identité délivrée par
+          l’État.
+        heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
       camera:
         blocked: Votre appareil photo est bloqué
         blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo.
