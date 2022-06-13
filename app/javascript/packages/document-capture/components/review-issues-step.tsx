@@ -52,7 +52,7 @@ interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepV
 
   captureHints: boolean;
 
-  pii: PII;
+  pii?: PII;
 }
 
 /**
@@ -69,9 +69,9 @@ function ReviewIssuesStep({
   unknownFieldErrors = [],
   onError = () => {},
   registerField = () => undefined,
-  remainingAttempts,
+  remainingAttempts = Infinity,
   pii,
-  captureHints,
+  captureHints = false,
 }: ReviewIssuesStepProps) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
