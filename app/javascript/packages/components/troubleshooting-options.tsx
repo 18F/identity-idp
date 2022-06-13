@@ -28,6 +28,10 @@ function TroubleshootingOptions({
 }: TroubleshootingOptionsProps) {
   const { t } = useI18n();
 
+  if (!options.length) {
+    return null;
+  }
+
   const HeadingTag = headingTag;
 
   return (
