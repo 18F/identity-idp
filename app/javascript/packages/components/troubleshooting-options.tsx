@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { BlockLink } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
-interface TroubleshootingOption {
+export interface TroubleshootingOption {
   url: string;
 
   text: ReactNode;
