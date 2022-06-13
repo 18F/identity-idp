@@ -29,11 +29,6 @@ module Users
       redirect_to next_setup_path || after_mfa_setup_path
     end
 
-    def download
-      data = user_session[:backup_codes].join("\r\n") + "\r\n"
-      send_data data, filename: 'backup_codes.txt'
-    end
-
     def confirm_delete; end
 
     def refreshed
