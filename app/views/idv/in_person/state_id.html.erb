@@ -52,14 +52,15 @@
   </div>
 
   <div class="tablet:grid-col-7 margin-bottom-4">
-    <%= f.input :state_id_number,
-                label: t('in_person_proofing.form.state_id.state_id_number'),
-                hint: t('in_person_proofing.form.state_id.state_id_number_hint'),
-                wrapper: false, required: true, maxlength: 255,
-                input_html: { aria: { invalid: false } } %>
-    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-      <%= t('simple_form.required.text') %>
-    </span>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :state_id_number,
+          label: t('in_person_proofing.form.state_id.state_id_number'),
+          hint: t('in_person_proofing.form.state_id.state_id_number_hint'),
+          wrapper: false,
+          required: true,
+          maxlength: 255,
+        ) %>
   </div>
 
   <%= f.button :button,
