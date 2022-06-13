@@ -20,9 +20,7 @@ Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
-  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \
-                      'AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                      'HeadlessChrome/88.0.4324.150 Safari/537.36'
+  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X)'
 
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_argument('--headless') if !ENV['SHOW_BROWSER']
@@ -31,6 +29,7 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--window-size=414,736')
   options.add_argument("--user-agent='#{user_agent_string}'")
+  options.add_argument('--use-fake-device-for-media-stream')
   options.add_argument("--proxy-server=127.0.0.1:#{Capybara::Webmock.port_number}")
 
   Capybara::Selenium::Driver.new app,
