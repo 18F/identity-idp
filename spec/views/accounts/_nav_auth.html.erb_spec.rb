@@ -19,11 +19,11 @@ describe 'accounts/_nav_auth.html.erb' do
     end
 
     it 'does not contain link to cancel the auth process' do
-      expect(rendered).not_to have_link(t('links.cancel'), href: destroy_user_session_path)
+      expect(rendered).not_to have_button(t('links.cancel'))
     end
 
-    it 'contains sign out link' do
-      expect(rendered).to have_link(t('links.sign_out'), href: destroy_user_session_path)
+    it 'contains sign out button' do
+      expect(rendered).to have_button(t('links.sign_out'))
     end
   end
 
