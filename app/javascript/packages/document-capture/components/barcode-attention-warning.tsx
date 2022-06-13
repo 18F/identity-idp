@@ -4,8 +4,14 @@ import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
 
 interface BarcodeAttentionWarningProps {
+  /**
+   * Callback to trigger when user opts to try to take new photos rather than continue to next step.
+   */
   onDismiss: () => void;
 
+  /**
+   * Personally-identifiable information for user to verify.
+   */
   pii: PII;
 }
 
