@@ -39,7 +39,7 @@ describe('TroubleshootingOptions', () => {
       />,
     );
 
-    const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+    const links = getAllByRole('link') as HTMLAnchorElement[];
 
     expect(links).to.have.lengthOf(2);
     expect(links[0].textContent).to.equal('Option 1 links.new_window');
