@@ -20,7 +20,7 @@ module Api
             status: 'in_progress',
           }, status: :ok
         else
-          render json: { errors: result.errors }, status: :bad_request
+          render_errors(result.errors)
         end
       end
 

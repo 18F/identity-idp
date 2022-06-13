@@ -14,6 +14,11 @@ module Api
         IdentityConfig.store.idv_api_enabled_steps.include?(self.class.required_step)
       end
 
+      def render_errors(error_or_errors, status: :bad_request)
+        errors = error_or_errors.class == Hash ? error_or_errors : Array(error_or_errors)
+        render json: { errors: errors }, status: status
+      end
+
       before_action :confirm_two_factor_authenticated_for_api
       respond_to :json
 
