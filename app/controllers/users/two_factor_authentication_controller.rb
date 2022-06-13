@@ -203,7 +203,7 @@ module Users
     def track_events(otp_delivery_preference:)
       analytics.telephony_otp_sent(
         area_code: parsed_phone.area_code,
-        country_code: parsed_phone.country_code,
+        country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         context: context,
         otp_delivery_preference: otp_delivery_preference,
