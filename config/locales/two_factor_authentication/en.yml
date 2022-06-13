@@ -137,8 +137,9 @@ en:
       more_secure_label: More Secure
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
-      phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>You
-        need to select another method in addition to this one.</strong>
+      phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>This
+        option requires you to choose an additional authentication
+        method.</strong>
       phone_info_no_voip: Do not use web-based (VOIP) phone services or premium rate
         (toll) phone numbers.
       piv_cac: Government employee ID
