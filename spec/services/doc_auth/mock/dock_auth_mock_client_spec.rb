@@ -54,6 +54,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
 
     expect(selfie_response.success?).to eq(true)
+    expect(selfie_response.attention_with_barcode?).to eq(false)
   end
 
   it 'if the document is a YAML file it returns the PII from the YAML file' do
@@ -102,6 +103,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
     )
+    expect(get_results_response.attention_with_barcode?).to eq(false)
   end
 
   it 'allows responses to be mocked' do
@@ -134,6 +136,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
 
       expect(post_images_response.success?).to eq(false)
       expect(post_images_response.errors).to eq(back_image: 'blurry')
+      expect(post_images_response.attention_with_barcode?).to eq(false)
     end
   end
 

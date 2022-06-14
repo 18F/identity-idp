@@ -48,7 +48,7 @@ module DocAuth
     end
 
     def attention_with_barcode?
-      raise NotImplementedError
+      false
     end
   end
 end
