@@ -13,7 +13,6 @@ module Idv
 
     def initialize(pii)
       @pii = pii
-      @state_id_edited = false
     end
 
     def submit(params)
@@ -22,7 +21,6 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors,
-        extra: { state_id_edited: @state_id_edited },
       )
     end
 
@@ -32,9 +30,6 @@ module Idv
       params.each do |key, value|
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
-        if send(key) != @pii[key] && (send(key).present? || @pii[key].present?)
-          @state_id_edited = true
-        end
       end
     end
 
