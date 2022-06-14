@@ -24,9 +24,11 @@ module DocCaptureHelper
 
   def using_doc_capture_session(user = user_with_2fa)
     request_uri = doc_capture_request_uri(user)
-    Capybara.using_session('mobile') do
-      visit request_uri
-      yield
+    Capybara.using_session 'mobile' do
+      Capybara.using_driver :headless_chrome_mobile do
+        visit request_uri
+        yield
+      end
     end
   end
 
