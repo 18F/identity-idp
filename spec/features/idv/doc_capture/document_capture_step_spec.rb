@@ -64,7 +64,7 @@ feature 'doc capture document capture step', js: true do
     )
   end
 
-  xit 'advances original session once complete' do
+  it 'advances original session once complete' do
     using_doc_capture_session { attach_and_submit_images }
 
     click_idv_continue
