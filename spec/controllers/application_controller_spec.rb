@@ -200,7 +200,9 @@ describe ApplicationController do
 
     context 'kantara feature is on' do
       before do
-        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_existing_user_restriction) { true }
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_existing_user_restriction) {
+                                         true
+                                       }
       end
 
       it 'redirects users with restricted mfa configurations to add a non-restricted mfa' do
