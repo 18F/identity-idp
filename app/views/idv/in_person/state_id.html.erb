@@ -12,21 +12,23 @@
                        method: 'put',
                        html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
- <div class="margin-bottom-4">
-   <%= render ValidatedFieldComponent.new(
-         name: :first_name,
-         form: f,
-         label: t('in_person_proofing.form.state_id.first_name'),
-         maxlength: 255,
-         required: true,
-       ) %>
- </div>
+  <div class="margin-bottom-4">
+    <%= render ValidatedFieldComponent.new(
+          name: :first_name,
+          form: f,
+          label: t('in_person_proofing.form.state_id.first_name'),
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+  </div>
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
           name: :last_name,
           form: f,
           label: t('in_person_proofing.form.state_id.last_name'),
+          label_html: { class: 'usa-label' },
           maxlength: 255,
           required: true,
         ) %>
@@ -40,6 +42,7 @@
           hint: t('in_person_proofing.form.state_id.dob_hint'),
           html5: true,
           label: t('in_person_proofing.form.state_id.dob'),
+          label_html: { class: 'usa-label' },
           maxlength: 255,
           required: true,
         ) %>
@@ -52,6 +55,7 @@
           form: f,
           hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
           label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+          label_html: { class: 'usa-label' },
           prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
           required: true,
         ) %>
@@ -63,6 +67,7 @@
           form: f,
           hint: t('in_person_proofing.form.state_id.state_id_number_hint'),
           label: t('in_person_proofing.form.state_id.state_id_number'),
+          label_html: { class: 'usa-label' },
           maxlength: 255,
           required: true,
         ) %>
