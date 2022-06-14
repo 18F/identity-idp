@@ -31,7 +31,7 @@
     <% if desktop_device? %>
       <%= render ButtonComponent.new(
             action: ->(**tag_options, &block) do
-               link_to(
+              link_to(
                 "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}",
                 download: 'backup_codes.txt',
                 **tag_options,
