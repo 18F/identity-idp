@@ -150,8 +150,8 @@ fr:
       phone: Message texte ou vocal
       phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
       phone_info_html: Recevoir un code de sécurité par texto (SMS) ou appel
-        téléphonique. <strong>Vous devez sélectionner une autre méthode en plus
-        de celle-ci.</strong>
+        téléphonique. <strong>Cette option nécessite que vous choisissiez une
+        méthode d’authentification supplémentaire.</strong>
       phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
         Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
       piv_cac: Carte d’identification des employés du gouvernement
