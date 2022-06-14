@@ -45,5 +45,9 @@ module DocAuth
       _key, message_or_messages = errors.first
       Array(message_or_messages).first
     end
+
+    def attention_with_barcode?
+      raise NotImplementedError
+    end
   end
 end
