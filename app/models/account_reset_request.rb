@@ -12,4 +12,8 @@ class AccountResetRequest < ApplicationRecord
       ((Time.zone.now - granted_at) >
        IdentityConfig.store.account_reset_token_valid_for_days.days)
   end
+
+  def account_reset_request?
+    requested_at.present?
+  end
 end
