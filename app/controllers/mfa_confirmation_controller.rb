@@ -1,9 +1,10 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
-  before_action :confirm_two_factor_authenticated, except: [:show]
+  before_action :confirm_two_factor_authenticated
 
   def show
-    @next_path = second_mfa_setup_path
+    @content = MfaConfirmationPresenter.new(current_user)
+    @next_path = next_path
   end
 
   def skip
@@ -25,6 +26,16 @@ class MfaConfirmationController < ApplicationController
   end
 
   private
+
+  def enforce_second_mfa?
+    IdentityConfig.store.select_multiple_mfa_options &&
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
+  end
+
+  def next_path
+    return second_mfa_setup_non_restricted_path if enforce_second_mfa?
+    second_mfa_setup_path
+  end
 
   def password
     params.require(:user)[:password]

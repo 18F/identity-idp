@@ -97,9 +97,4 @@ feature 'phone otp verification step spec' do
     expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)
   end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone_otp_verification
-    it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
-  end
 end

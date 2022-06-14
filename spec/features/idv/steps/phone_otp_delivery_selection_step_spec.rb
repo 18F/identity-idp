@@ -110,9 +110,4 @@ feature 'IdV phone OTP delivery method selection' do
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.invalid_calling_area'))
     expect(page).to have_current_path(idv_phone_path)
   end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :oidc
-  end
 end

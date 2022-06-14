@@ -18,6 +18,7 @@ aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
+aamva_supported_jurisdictions: '["AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
@@ -380,7 +381,6 @@ production:
   piv_cac_verify_token_secret:
   platform_authentication_enabled: false
   session_encryptor_alert_enabled: true
-  session_encryptor_v2_enabled: false
   recurring_jobs_disabled_names: "[]"
   redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1

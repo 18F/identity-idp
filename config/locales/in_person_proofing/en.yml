@@ -5,10 +5,6 @@ en:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
-      password_confirm: Re-enter your %{app_name} password to protect your data
-      personal_key: Save your personal key
-      phone: Enter a phone number with your name on the plan
-      ssn: Enter your Social Security number
       state_id: Enter the information on your ID
       verify: Please verify your information
       welcome: Verify your identity in person

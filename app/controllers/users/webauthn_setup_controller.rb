@@ -37,7 +37,7 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
+      analytics.multi_factor_auth_setup(**result.to_h)
       if result.success?
         process_valid_webauthn(form)
       else

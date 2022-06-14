@@ -7,6 +7,13 @@ en:
     info: Add another layer of security by selecting a multi-factor authentication
       method. We recommend you select at least (2) two different options in case
       you lose one of your methods.
+    non_restricted:
+      button: Add an authentication method
+      heading: Add another authentication method.
+      info: You opted to receive a code by SMS/text or a phone call to sign in after
+        you entered your email and password. You are now required to add another
+        authentication method as a backup in case you lose access to your phone.
+      learn_more: Learn more about authentication options
     second_method_warning:
       link: Add a second authentication method.
       text: You will have to delete your account and start over if you lose your only

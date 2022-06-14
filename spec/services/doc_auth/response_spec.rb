@@ -124,4 +124,10 @@ RSpec.describe DocAuth::Response do
       end
     end
   end
+
+  describe '#attention_with_barcode?' do
+    it 'raises NotImplementedError' do
+      expect { response.attention_with_barcode? }.to raise_error(NotImplementedError)
+    end
+  end
 end

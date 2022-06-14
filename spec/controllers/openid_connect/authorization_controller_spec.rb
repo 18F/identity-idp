@@ -50,7 +50,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks IAL1 authentication event' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: true,
                  client_id: client_id,
                  errors: {},
@@ -109,7 +109,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL2 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
-                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
                      errors: {},
@@ -208,7 +208,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL2 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
-                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
                      errors: {},
@@ -249,7 +249,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL1 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
-                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
                      errors: {},
@@ -291,7 +291,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL1 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
-                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
                      errors: {},
@@ -368,7 +368,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks the event with errors' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: false,
                  client_id: client_id,
                  unauthorized_scope: true,
@@ -396,7 +396,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks the event with errors' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: false,
                  client_id: nil,
                  unauthorized_scope: true,

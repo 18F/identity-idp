@@ -143,9 +143,6 @@ es:
       configurations_added:
         one: '(%{count} añadido)'
         other: '(%{count} añadido)'
-      least_secure_label: Lo menos seguro
-      less_secure_label: Menos seguro
-      more_secure_label: Más seguro
       phone: Mensaje de texto o de voz
       phone_info: Recibir un código seguro por medio de un mensaje de texto (SMS) o
         una llamada telefónica.
@@ -157,7 +154,6 @@ es:
       piv_cac: Identificación de empleado gubernamental
       piv_cac_info: Credenciales PIV/CAC para empleados gubernamentales y del
         ejército. Únicamente versión de escritorio.
-      secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
       unused_backup_code:

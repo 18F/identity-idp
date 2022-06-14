@@ -1,33 +1,27 @@
 import { FormError } from '@18f/identity-form-steps';
-
-/** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
-/** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
-/** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
+import type {
+  UploadSuccessResponse,
+  UploadErrorResponse,
+  UploadFieldError,
+  UploadImplementation,
+} from '../context/upload';
 
 export class UploadFormEntryError extends FormError {
-  /** @type {string} */
   field = '';
 }
 
 export class UploadFormEntriesError extends FormError {
-  /** @type {UploadFormEntryError[]} */
-  formEntryErrors = [];
+  formEntryErrors: UploadFormEntryError[] = [];
 
-  /** @type {number} */
   remainingAttempts = Infinity;
 
-  /** @type {boolean} */
   hints = false;
 }
 
 /**
  * Returns a FormData representation of the given object.
- *
- * @param {Record<string,any>} object Object to serialize.
- *
- * @return {FormData}
  */
-export function toFormData(object) {
+export function toFormData(object: Record<string, any>): FormData {
   return Object.keys(object).reduce((form, key) => {
     const value = object[key];
     if (value !== undefined) {
@@ -40,24 +34,16 @@ export function toFormData(object) {
 
 /**
  * Returns error as received by server as an instance of UploadFormEntryError.
- *
- * @param {UploadFieldError} uploadFieldError Error received from server.
- *
- * @return {UploadFormEntryError}
  */
-export function toFormEntryError(uploadFieldError) {
+export function toFormEntryError(uploadFieldError: UploadFieldError): UploadFormEntryError {
   const { field, message } = uploadFieldError;
   const formEntryError = new UploadFormEntryError(message);
   formEntryError.field = field;
   return formEntryError;
 }
 
-/**
- * @type {import('../context/upload').UploadImplementation}
- */
-async function upload(payload, { method = 'POST', endpoint, csrf }) {
-  /** @type {HeadersInit} */
-  const headers = {};
+const upload: UploadImplementation = async function (payload, { method = 'POST', endpoint, csrf }) {
+  const headers: HeadersInit = {};
   if (csrf) {
     headers['X-CSRF-Token'] = csrf;
   }
@@ -77,30 +63,27 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
     return new Promise(() => {});
   }
 
-  const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());
+  const result: UploadSuccessResponse | UploadErrorResponse = await response.json();
   if (!result.success) {
-    /** @type {UploadErrorResponse} */
-    const errorResult = result;
-
-    if (errorResult.redirect) {
+    if (result.redirect) {
       window.onbeforeunload = null;
-      window.location.href = errorResult.redirect;
+      window.location.href = result.redirect;
 
       // Avoid settling the promise, allowing the redirect to complete.
       return new Promise(() => {});
     }
 
     const error = new UploadFormEntriesError();
-    if (errorResult.errors) {
-      error.formEntryErrors = errorResult.errors.map(toFormEntryError);
+    if (result.errors) {
+      error.formEntryErrors = result.errors.map(toFormEntryError);
     }
 
-    if (errorResult.remaining_attempts) {
-      error.remainingAttempts = errorResult.remaining_attempts;
+    if (result.remaining_attempts) {
+      error.remainingAttempts = result.remaining_attempts;
     }
 
-    if (errorResult.hints) {
-      error.hints = errorResult.hints;
+    if (result.hints) {
+      error.hints = result.hints;
     }
 
     throw error;
@@ -108,7 +91,7 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
 
   result.isPending = response.status === 202;
 
-  return /** @type {UploadSuccessResponse} */ (result);
-}
+  return result;
+};
 
 export default upload;

@@ -55,20 +55,19 @@ feature 'doc auth document capture step' do
       )
     end
 
-    it 'shows the selfie upload option' do
+    it 'shows expected content' do
+      # Selfie upload option
       expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
-    end
 
-    it 'displays doc capture tips' do
+      # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-    end
 
-    it 'displays selfie tips' do
+      # Selfie tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))

@@ -23,10 +23,6 @@ module TwoFactorAuthentication
       user.phone_configurations.count
     end
 
-    def security_level
-      t('two_factor_authentication.two_factor_choice_options.less_secure_label')
-    end
-
     def disabled?
       VendorStatus.new.all_phone_vendor_outage? || user&.phone_configurations&.any?
     end

@@ -148,11 +148,6 @@ feature 'idv phone step' do
     it_behaves_like 'async timed out'
   end
 
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone
-    it_behaves_like 'cancel at idv step', :phone, :oidc
-  end
-
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :phone
 

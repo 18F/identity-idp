@@ -8,6 +8,15 @@ fr:
       d’authentification multi-facteurs. Nous vous recommandons de sélectionner
       au moins deux options différentes au cas où vous perdriez l’une de vos
       méthodes.
+    non_restricted:
+      button: Ajoutez une méthode d’authentification
+      heading: Ajoutez une autre méthode d’authentification.
+      info: Vous avez choisi de recevoir un code par SMS/texte ou par appel
+        téléphonique pour vous connecter après avoir saisi votre adresse e-mail
+        et votre mot de passe. Veuillez à présent ajouter une autre méthode
+        d’authentification comme mesure de secours au cas où vous perdriez
+        l’accès à votre téléphone.
+      learn_more: En savoir plus sur les options d’authentification
     second_method_warning:
       link: Ajoutez une deuxième méthode d’authentification.
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre

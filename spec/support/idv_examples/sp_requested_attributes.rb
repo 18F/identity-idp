@@ -3,14 +3,8 @@ shared_examples 'sp requesting attributes' do |sp|
   include IdvStepHelper
 
   let(:user) { user_with_2fa }
-  let(:good_ssn) { DocAuthHelper::GOOD_SSN }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
-  let(:saved_pii) do
-    Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
-      ssn: good_ssn,
-      phone: '+1 (555) 555-1234',
-    )
-  end
+  let(:saved_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
 
   context 'visiting an SP for the first time' do
     it 'requires the user to verify the attributes submitted to the SP', js: true do
@@ -41,7 +35,11 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-        expect(page).to have_css '.masked-text__text', text: good_ssn, visible: :hidden
+        expect(page).to have_css(
+          '.masked-text__text',
+          text: DocAuthHelper::GOOD_SSN,
+          visible: :hidden,
+        )
       end
     end
   end
@@ -103,7 +101,7 @@ shared_examples 'sp requesting attributes' do |sp|
         expect(page).to have_content t('help_text.requested_attributes.full_name')
         expect(page).to have_content 'FAKEY MCFAKERSON'
         expect(page).to have_content t('help_text.requested_attributes.phone')
-        expect(page).to have_content '+15555551234'
+        expect(page).to have_content '+1 202-555-1212'
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
         expect(page).to have_content DocAuthHelper::GOOD_SSN
       end

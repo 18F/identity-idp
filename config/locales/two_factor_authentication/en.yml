@@ -132,9 +132,6 @@ en:
       configurations_added:
         one: '(%{count} added)'
         other: '(%{count} added)'
-      least_secure_label: Least secure
-      less_secure_label: Less secure
-      more_secure_label: More Secure
       phone: Text or voice message
       phone_info: Receive a secure code by (SMS) text or phone call.
       phone_info_html: Receive a secure code by (SMS) text or phone call. <strong>This
@@ -144,7 +141,6 @@ en:
         (toll) phone numbers.
       piv_cac: Government employee ID
       piv_cac_info: PIV/CAC cards for government and military employees. Desktop only.
-      secure_label: Secure
       sms: Text message / SMS
       sms_info: Get your security code via text message / SMS.
       unused_backup_code:

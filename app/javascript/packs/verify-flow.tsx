@@ -37,11 +37,6 @@ interface AppRootValues {
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
-
-  /**
-   * Signed JWT containing user data.
-   */
-  userBundleToken: string;
 }
 
 interface UserBundleMetadata {
@@ -86,15 +81,10 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   ]);
   storage.key = cryptoKey;
   await storage.load();
-
-  let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
-  if (initialValues.userBundleToken) {
-    const { userBundleToken } = initialValues;
-    await storage.setItem('userBundleToken', userBundleToken);
-    const { pii, metadata } = JSON.parse(atob(userBundleToken.split('.')[1])) as UserBundle;
-    Object.assign(initialValues, Object.fromEntries(mapKeys(pii, camelCase)));
-    initialAddressVerificationMethod = metadata.address_verification_mechanism;
-  }
+  const userBundleToken = initialValues.userBundleToken as string;
+  await storage.setItem('userBundleToken', userBundleToken);
+  const { pii, metadata } = JSON.parse(atob(userBundleToken.split('.')[1])) as UserBundle;
+  Object.assign(initialValues, Object.fromEntries(mapKeys(pii, camelCase)));
 
   function onComplete({ completionURL }: VerifyFlowValues) {
     storage.clear();
@@ -112,7 +102,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         cancelURL={cancelURL}
         basePath={basePath}
         onComplete={onComplete}
-        initialAddressVerificationMethod={initialAddressVerificationMethod}
+        initialAddressVerificationMethod={metadata.address_verification_mechanism}
       />
     </SecretsContextProvider>,
     appRoot,

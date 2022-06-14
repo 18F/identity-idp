@@ -103,7 +103,7 @@ describe Users::TotpSetupController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
 
@@ -132,7 +132,7 @@ describe Users::TotpSetupController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
 
@@ -162,7 +162,7 @@ describe Users::TotpSetupController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
 
@@ -193,7 +193,7 @@ describe Users::TotpSetupController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
     end
@@ -222,7 +222,7 @@ describe Users::TotpSetupController, devise: true do
             auth_app_configuration_id: nil,
           }
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
 
@@ -254,7 +254,7 @@ describe Users::TotpSetupController, devise: true do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+              with('Multi-Factor Authentication Setup', result)
           end
         end
 
@@ -273,7 +273,7 @@ describe Users::TotpSetupController, devise: true do
             }
 
             expect(@analytics).to have_received(:track_event).
-              with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+              with('Multi-Factor Authentication Setup', result)
           end
         end
       end
@@ -301,7 +301,7 @@ describe Users::TotpSetupController, devise: true do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+            with('Multi-Factor Authentication Setup', result)
         end
       end
     end

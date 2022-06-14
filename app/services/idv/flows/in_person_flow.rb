@@ -8,19 +8,14 @@ module Idv
         state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
         ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
         verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
-        # WILLFIX: add the failure branch for verify step
-        # WILLFIX: add the verify by mail flow
-        phone: Idv::Steps::Ipp::PhoneStep, # phone finder
-        # WILLFIX: add the failure branch for phone step
-        # WILLFIX: re-use existing password confirm step
-        password_confirm: Idv::Steps::Ipp::PasswordConfirmStep,
-        # WILLFIX: re-use existing personal key step
-        personal_key: Idv::Steps::Ipp::PersonalKeyStep,
-        barcode: Idv::Steps::Ipp::BarcodeStep,
       }.freeze
 
       ACTIONS = {
       }.freeze
+
+      # WILLFIX: (LG-6308) move this to the barcode page when we finish setting up IPP step
+      # indicators
+      # i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
 
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
@@ -32,11 +27,24 @@ module Idv
 
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
-        super(controller, STEPS, {}, session[name])
+        super(controller, STEPS, ACTIONS, session[name])
+        # WILLFIX: remove this when we are collecting these values from the user
+        @flow_session ||= {}
+        @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT.dup
       end
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
+
+        # WILLFIX: remove this line when we begin collecting user data
+        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+
+        # WILLFIX: (LG-6349) remove this block when we implement the verify page
+        session[:idv]['profile_confirmation'] = true
+        session[:idv]['vendor_phone_confirmation'] = false
+        session[:idv]['user_phone_confirmation'] = false
+        session[:idv]['address_verification_mechanism'] = 'phone'
+        session[:idv]['resolution_successful'] = 'phone'
       end
     end
   end

@@ -197,6 +197,30 @@ describe ApplicationController do
         expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
+
+    context 'kantara feature is on' do
+      before do
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted) { true }
+      end
+
+      it 'redirects users with restricted mfa configurations to add a non-restricted mfa' do
+        user = create(:user, :with_phone)
+        sign_in_as_user(user)
+
+        get :index
+
+        expect(response).to redirect_to auth_method_confirmation_url
+      end
+
+      it 'does not redirect a user with non restricted mfa configurations' do
+        user = create(:user, :with_phone, :with_authentication_app)
+        sign_in_as_user(user)
+
+        get :index
+
+        expect(response).to have_http_status(200)
+      end
+    end
   end
 
   describe '#analytics' do
