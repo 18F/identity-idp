@@ -1348,7 +1348,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] user_id User ID of the user to receive password token
+  # @param [String] user_id UUID of the user to receive password token
   # A password token has been sent for user
   def password_reset_token(success:, errors:, user_id:, **extra)
     track_event(
