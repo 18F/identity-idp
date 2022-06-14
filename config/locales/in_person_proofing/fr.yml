@@ -1,6 +1,23 @@
 ---
 fr:
   in_person_proofing:
+    body:
+      state_id:
+        info_html: 'Entrez les informations <strong>exactement telles qu’elles
+          apparaissent sur votre pièce d’identité délivrée par l’État.</strong>
+          Nous utiliserons ces informations pour confirmer qu’elles
+          correspondent à votre pièce d’identité en personne.'
+    form:
+      state_id:
+        dob: Date de naissance
+        dob_hint: 'Exemple: 4 28 1986'
+        first_name: Prénom
+        last_name: Nom de famille
+        state_id_jurisdiction: État
+        state_id_jurisdiction_hint: Sélectionnez l’état indiqué sur votre pièce d’identité
+        state_id_jurisdiction_prompt: '- Sélectionnez -'
+        state_id_number: Numéro d’identification
+        state_id_number_hint: Peut inclure des chiffres et des lettres
     headings:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
