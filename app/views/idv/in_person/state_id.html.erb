@@ -13,53 +13,58 @@
                        html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
  <div class="margin-bottom-4">
-   <%= f.input :first_name,
-               label: t('in_person_proofing.form.state_id.first_name'),
-               wrapper: false, required: true, maxlength: 255,
-               input_html: { aria: { invalid: false } } %>
-   <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-     <%= t('simple_form.required.text') %>
-   </span>
+   <%= render ValidatedFieldComponent.new(
+         name: :first_name,
+         form: f,
+         label: t('in_person_proofing.form.state_id.first_name'),
+         maxlength: 255,
+         required: true,
+       ) %>
  </div>
 
   <div class="margin-bottom-4">
-    <%= f.input :last_name,
-                label: t('in_person_proofing.form.state_id.last_name'),
-                wrapper: false, required: true, maxlength: 255,
-                input_html: { aria: { invalid: false } } %>
-    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-      <%= t('simple_form.required.text') %>
-    </span>
+    <%= render ValidatedFieldComponent.new(
+          name: :last_name,
+          form: f,
+          label: t('in_person_proofing.form.state_id.last_name'),
+          maxlength: 255,
+          required: true,
+        ) %>
   </div>
 
   <div class="margin-bottom-4">
-    <%= f.input :dob,
-                as: :date, html5: true, label: t('in_person_proofing.form.state_id.dob'),
-                hint: t('in_person_proofing.form.state_id.dob_hint'), wrapper: false,
-                required: true, maxlength: 255,
-                input_html: { aria: { invalid: false } } %>
-    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-      <%= t('simple_form.required.text') %>
-    </span>
+    <%= render ValidatedFieldComponent.new(
+          name: :dob,
+          as: :date,
+          form: f,
+          hint: t('in_person_proofing.form.state_id.dob_hint'),
+          html5: true,
+          label: t('in_person_proofing.form.state_id.dob'),
+          maxlength: 255,
+          required: true,
+        ) %>
   </div>
 
   <div class="margin-bottom-4">
-    <%= f.input :state_id_jurisdiction,
-                collection: us_states_territories,
-                label: t('in_person_proofing.form.state_id.state_id_jurisdiction'), required: true,
-                hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
-                prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt') %>
+    <%= render ValidatedFieldComponent.new(
+          name: :state_id_jurisdiction,
+          collection: us_states_territories,
+          form: f,
+          hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
+          label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+          prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
+          required: true,
+        ) %>
   </div>
 
   <div class="tablet:grid-col-7 margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
-          form: f,
           name: :state_id_number,
-          label: t('in_person_proofing.form.state_id.state_id_number'),
+          form: f,
           hint: t('in_person_proofing.form.state_id.state_id_number_hint'),
-          wrapper: false,
-          required: true,
+          label: t('in_person_proofing.form.state_id.state_id_number'),
           maxlength: 255,
+          required: true,
         ) %>
   </div>
 
