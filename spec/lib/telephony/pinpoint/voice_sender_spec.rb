@@ -116,6 +116,27 @@ describe Telephony::Pinpoint::VoiceSender do
       end
     end
 
+    context 'when pinpoint responds with a TooManyRequestsException' do
+      it 'returns a DailyLimitReachedError' do
+        exception = Aws::PinpointSMSVoice::Errors::TooManyRequestsException.new(
+          Seahorse::Client::RequestContext.new,
+          'This is a test message',
+        )
+        expect(pinpoint_client).to receive(:send_voice_message).and_raise(exception)
+
+        response = voice_sender.send(message: message, to: recipient_phone, country_code: 'US')
+
+        error_message =
+          'Aws::PinpointSMSVoice::Errors::TooManyRequestsException: This is a test message'
+
+        expect(response.success?).to eq(false)
+        expect(response.error).to eq(Telephony::DailyLimitReachedError.new(error_message))
+        expect(response.error.friendly_message).to eq(
+          t('telephony.error.friendly_message.daily_voice_limit_reached'),
+        )
+      end
+    end
+
     context 'when pinpoint responds with an internal service error' do
       it 'returns a telephony error' do
         exception = Aws::PinpointSMSVoice::Errors::InternalServiceErrorException.new(
