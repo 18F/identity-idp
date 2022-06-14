@@ -692,6 +692,11 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
+  # A user has downloaded their backup codes
+  def idv_backup_codes_downloaded
+    track_event('IdV: download backup codes')
+  end
+
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded

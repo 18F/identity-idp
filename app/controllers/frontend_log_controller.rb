@@ -13,6 +13,7 @@ class FrontendLogController < ApplicationController
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
+    'IdV: download backup codes' => :idv_backup_codes_downloaded,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
 
   def create
