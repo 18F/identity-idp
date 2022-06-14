@@ -13,6 +13,7 @@ const UploadContext = createContext({
   backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
   csrf: null as string | null,
+  formData: {} as Record<string, any>,
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -162,6 +163,12 @@ interface UploadContextProviderProps {
   children: ReactNode;
 }
 
+/**
+ * Default form data. Assigned as a constant to avoid creating a new object reference for each call
+ * to the component.
+ */
+const DEFAULT_FORM_DATA = {};
+
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
@@ -172,7 +179,7 @@ function UploadContextProvider({
   statusPollInterval,
   method,
   csrf,
-  formData,
+  formData = DEFAULT_FORM_DATA,
   flowPath,
   children,
 }: UploadContextProviderProps) {
@@ -193,6 +200,7 @@ function UploadContextProvider({
     isMockClient,
     flowPath,
     csrf,
+    formData,
   });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

@@ -23,7 +23,7 @@ module Idv
           :gone
         elsif throttled?
           :too_many_requests
-        elsif session_result.blank?
+        elsif session_result.blank? || pending_barcode_attention_confirmation?
           :accepted
         elsif !session_result.success?
           :unauthorized
@@ -45,8 +45,11 @@ module Idv
 
     def document_capture_session
       return @document_capture_session if defined?(@document_capture_session)
-      session_uuid = flow_session[:document_capture_session_uuid]
-      @document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+      @document_capture_session = DocumentCaptureSession.find_by uuid: document_capture_session_uuid
+    end
+
+    def document_capture_session_uuid
+      flow_session[:document_capture_session_uuid]
     end
 
     def throttled?
@@ -54,6 +57,12 @@ module Idv
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       ).throttled?
+    end
+
+    def pending_barcode_attention_confirmation?
+      flow_session[:had_barcode_attention_error] ||= session_result.attention_with_barcode?
+      flow_session[:had_barcode_attention_error] &&
+        document_capture_session.ocr_confirmation_pending?
     end
   end
 end

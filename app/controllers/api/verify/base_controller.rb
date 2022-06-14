@@ -6,6 +6,8 @@ module Api
 
       class_attribute :required_step
 
+      rescue_from ActionController::ParameterMissing, with: :render_parameter_missing_errors
+
       def self.required_step
         NotImplementedError.new('Controller must define required_step')
       end
@@ -32,6 +34,10 @@ module Api
 
       def user_authenticated_for_api?
         user_fully_authenticated?
+      end
+
+      def render_parameter_missing_errors(exception)
+        render_errors({ "#{exception.param}": ["Parameter value #{exception.param} is missing"] })
       end
     end
   end

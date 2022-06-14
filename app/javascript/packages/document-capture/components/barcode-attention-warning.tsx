@@ -1,7 +1,13 @@
+import { useContext } from 'react';
 import { Button, StatusPage } from '@18f/identity-components';
+import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
+import UploadContext from '../context/upload';
+import { toFormData } from '../services/upload';
 import type { PII } from '../services/upload';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
+
+const DOCUMENT_CAPTURE_ERRORS_API_URL = '/api/verify/v2/document_capture_errors';
 
 interface BarcodeAttentionWarningProps {
   /**
@@ -16,7 +22,15 @@ interface BarcodeAttentionWarningProps {
 }
 
 function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProps) {
-  function skipAttention() {
+  const { formData } = useContext(UploadContext);
+
+  async function skipAttention() {
+    try {
+      await fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
+        method: 'DELETE',
+        body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
+      });
+    } catch {}
     window.onbeforeunload = null;
     window.location.reload();
   }
@@ -26,9 +40,9 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
       header={t('doc_auth.errors.barcode_attention.heading')}
       status="warning"
       actionButtons={[
-        <Button key="continue" isBig isWide onClick={skipAttention}>
+        <SpinnerButton key="continue" isBig isWide onClick={skipAttention}>
           {t('forms.buttons.continue')}
-        </Button>,
+        </SpinnerButton>,
         <Button key="add-new" isBig isOutline isWide onClick={onDismiss}>
           {t('doc_auth.buttons.add_new_photos')}
         </Button>,
