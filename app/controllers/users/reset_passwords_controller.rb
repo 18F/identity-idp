@@ -1,7 +1,7 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     def new
-      analytics.track_event(Analytics::PASSWORD_RESET_VISIT)
+      analytics.password_reset_visit
       @password_reset_email_form = PasswordResetEmailForm.new('')
     end
 
@@ -21,7 +21,7 @@ module Users
     def edit
       result = PasswordResetTokenValidator.new(token_user).submit
 
-      analytics.track_event(Analytics::PASSWORD_RESET_TOKEN, result.to_h)
+      analytics.password_reset_token(**result.to_h)
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)

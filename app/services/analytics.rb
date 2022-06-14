@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'
-  PASSWORD_RESET_VISIT = 'Password Reset: Email Form Visited'
-  PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'
-  PENDING_ACCOUNT_RESET_VISITED = 'Pending account reset visited'
-  PERSONAL_KEY_ALERT_ABOUT_SIGN_IN = 'Personal key: Alert user about sign in'
   PERSONAL_KEY_REACTIVATION = 'Personal key reactivation: Account reactivated with personal key'
   PERSONAL_KEY_REACTIVATION_SIGN_IN = 'Personal key reactivation: Account reactivated with personal key as MFA'
   PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'
