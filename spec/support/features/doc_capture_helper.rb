@@ -11,10 +11,10 @@ module DocCaptureHelper
   def in_doc_capture_session(user = user_with_2fa)
     request_uri = doc_capture_request_uri(user)
     Capybara.using_session 'doc capture' do
-      allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
-      visit request_uri
-      yield
-      allow_any_instance_of(Browser).to receive(:mobile?).and_call_original
+      Capybara.using_driver :headless_chrome_mobile do
+        visit request_uri
+        yield
+      end
     end
   end
 
