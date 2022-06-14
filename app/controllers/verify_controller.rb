@@ -33,14 +33,7 @@ class VerifyController < ApplicationController
   end
 
   def initial_values
-    case first_step
-    when 'password_confirm'
-      { 'userBundleToken' => user_bundle_token }
-    end
-  end
-
-  def first_step
-    enabled_steps.detect { |step| step_enabled?(step) }
+    { 'userBundleToken' => user_bundle_token }
   end
 
   def enabled_steps
