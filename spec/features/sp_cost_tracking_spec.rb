@@ -42,8 +42,7 @@ feature 'SP Costing', :email do
     fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, password)
     fill_in_code_with_last_phone_otp
     click_submit_default
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key

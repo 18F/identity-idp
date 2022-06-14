@@ -111,7 +111,7 @@ describe Idv::PhoneStep do
       expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
     end
 
-    it 'marks the phone as confirmed if it matches 2FA phone' do
+    it 'marks the phone as unconfirmed if it matches 2FA phone' do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
       subject.submit(phone: good_phone)
@@ -120,7 +120,7 @@ describe Idv::PhoneStep do
 
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
-      expect(idv_session.user_phone_confirmation).to eq(true)
+      expect(idv_session.user_phone_confirmation).to eq(false)
     end
 
     it 'does not mark the phone as confirmed if it does not match 2FA phone' do

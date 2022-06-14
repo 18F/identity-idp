@@ -106,7 +106,7 @@ module Idv
       idv_session.address_verification_mechanism = :phone
       idv_session.applicant = applicant
       idv_session.vendor_phone_confirmation = true
-      idv_session.user_phone_confirmation = phone_matches_user_phone?
+      idv_session.user_phone_confirmation = false
 
       ProofingComponent.create_or_find_by(user: idv_session.current_user).
         update(address_check: 'lexis_nexis_address')
@@ -117,20 +117,6 @@ module Idv
         phone: PhoneFormatter.format(applicant[:phone]),
         delivery_method: :sms,
       )
-    end
-
-    def phone_matches_user_phone?
-      applicant_phone = PhoneFormatter.format(applicant[:phone])
-      return false if applicant_phone.blank?
-      user_phones.include?(applicant_phone)
-    end
-
-    def user_phones
-      MfaContext.new(
-        idv_session.current_user,
-      ).phone_configurations.map do |phone_configuration|
-        PhoneFormatter.format(phone_configuration.phone)
-      end.compact
     end
 
     def extra_analytics_attributes
