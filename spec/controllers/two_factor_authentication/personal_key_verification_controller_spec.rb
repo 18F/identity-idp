@@ -59,7 +59,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
           with(analytics_hash)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN,
+          'Personal key: Alert user about sign in',
           hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
         )
 
