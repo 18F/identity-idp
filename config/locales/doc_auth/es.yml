@@ -7,7 +7,7 @@ es:
       document_capture_dialog: Captura del documento
       selfie_alt_text: Una foto subida
     buttons:
-      add_new_photos: Add new photos # TODO: Translate
+      add_new_photos: Añadir nuevas fotos
       change_address: Cambio
       change_address_label: Cambiar dirección
       change_ssn: Cambio

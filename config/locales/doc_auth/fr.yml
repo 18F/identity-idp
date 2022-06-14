@@ -7,7 +7,7 @@ fr:
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
     buttons:
-      add_new_photos: Add new photos # TODO: Translate
+      add_new_photos: Ajoutez de nouvelles photos
       change_address: Changement
       change_address_label: Changement d’adresse
       change_ssn: Changement
