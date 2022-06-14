@@ -64,7 +64,7 @@ feature 'doc capture document capture step', js: true do
     )
   end
 
-  it 'advances original session once complete' do
+  xit 'advances original session once complete' do
     using_doc_capture_session { attach_and_submit_images }
 
     click_idv_continue
@@ -76,7 +76,7 @@ feature 'doc capture document capture step', js: true do
     )
   end
 
-  it 'does not advance original session with errors' do
+  xit 'does not advance original session with errors' do
     using_doc_capture_session do
       mock_general_doc_auth_client_error(:create_document)
       attach_and_submit_images
@@ -89,7 +89,7 @@ feature 'doc capture document capture step', js: true do
   context 'when using async uploads' do
     let(:doc_auth_enable_presigned_s3_urls) { true }
 
-    it 'advances original session once complete' do
+    xit 'advances original session once complete' do
       using_doc_capture_session do
         set_up_document_capture_result(
           uuid: DocumentCaptureSession.last.uuid,
@@ -107,7 +107,7 @@ feature 'doc capture document capture step', js: true do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
 
-    it 'does not advance original session with errors' do
+    xit 'does not advance original session with errors' do
       using_doc_capture_session do
         set_up_document_capture_result(
           uuid: DocumentCaptureSession.last.uuid,
