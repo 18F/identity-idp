@@ -1,31 +1,29 @@
 class ImageUploadResponsePresenter
   include Rails.application.routes.url_helpers
 
-  attr_reader :form_response
-
   def initialize(form_response:, url_options:)
     @form_response = form_response
     @url_options = url_options
   end
 
   def success?
-    form_response.success?
+    @form_response.success?
   end
 
   def errors
-    form_response.errors.except(:hints).flat_map do |key, errs|
+    @form_response.errors.except(:hints).flat_map do |key, errs|
       Array(errs).map { |err| { field: key, message: err } }
     end
   end
 
   def remaining_attempts
-    form_response.to_h[:remaining_attempts]
+    @form_response.to_h[:remaining_attempts]
   end
 
   def status
     if success?
       :ok
-    elsif form_response.errors.key?(:limit)
+    elsif @form_response.errors.key?(:limit)
       :too_many_requests
     else
       :bad_request
@@ -36,7 +34,7 @@ class ImageUploadResponsePresenter
     if success? && !attention_with_barcode?
       { success: true }
     else
-      hints = form_response.errors[:hints]
+      hints = @form_response.errors[:hints]
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
       json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
       json[:hints] = hints unless hints.blank?
@@ -56,6 +54,6 @@ class ImageUploadResponsePresenter
   end
 
   def ocr_pii
-    form_response.ocr_pii if form_response.respond_to? :ocr_pii
+    @form_response.ocr_pii if @form_response.respond_to? :ocr_pii
   end
 end
