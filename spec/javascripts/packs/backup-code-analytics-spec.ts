@@ -17,7 +17,7 @@ describe('backupCodeAnalytics', () => {
 
   afterEach(() => {
     sandbox.restore();
-    delete require.cache[require.resolve('../../../app/javascript/packs/backup-code-analytics.ts')];
+    delete require.cache[require.resolve('../../../app/javascript/packs/backup-code-analytics')];
   });
 
   it('adds an event listener to the download button', async () => {
