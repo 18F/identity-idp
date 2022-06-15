@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
+import * as analytics from '@18f/identity-analytics';
 
 describe('backupCodeAnalytics', () => {
   const sandbox = useSandbox();
@@ -11,7 +12,7 @@ describe('backupCodeAnalytics', () => {
   <use href="http://test.host/assets/identity-style-guide/dist/assets/img/sprite-8eff3bf787e3ce0eab960fe5e9eccf4418d9af6a9f8c95a9ec9254aa778b2dbd.svg#file_download"></use>
 </svg>Download</a>
     `;
-    import('../../../app/javascript/packs/backup-code-analytics.ts');
+    return import('../../../app/javascript/packs/backup-code-analytics');
   });
 
   afterEach(() => {
@@ -20,7 +21,6 @@ describe('backupCodeAnalytics', () => {
   });
 
   it('adds an event listener to the download button', async () => {
-    const analytics = await import('@18f/identity-analytics');
     const test = sandbox.spy(analytics, 'trackEvent');
     await userEvent.click(screen.getByText('Download'));
 
