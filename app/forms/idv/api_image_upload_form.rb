@@ -82,7 +82,10 @@ module Idv
     end
 
     def validate_pii_from_doc(client_response)
-      response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
+      response = Idv::DocPiiForm.new(
+        pii: client_response.pii_from_doc,
+        attention_with_barcode: client_response.attention_with_barcode?,
+      ).submit
       response.extra.merge!(extra_attributes)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
