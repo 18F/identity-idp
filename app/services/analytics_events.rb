@@ -1387,6 +1387,31 @@ module AnalyticsEvents
     )
   end
 
+  # param [Boolean] success
+  # param [Hash] errors
+  # param [String] delivery_preference
+  # param [Integer] phone_configuration_id
+  # param [Boolean] make_default_number
+  # User has submitted a change in phone number
+  def phone_change_submitted(
+    success:,
+    errors:,
+    delivery_preference:,
+    phone_configuration_id:,
+    make_default_number:,
+    **extra
+  )
+    track_event(
+      'Phone Number Change: Form submitted',
+      success: success,
+      errors: errors,
+      delivery_preference: delivery_preference,
+      phone_configuration_id: phone_configuration_id,
+      make_default_number: make_default_number,
+      **extra,
+    )
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
