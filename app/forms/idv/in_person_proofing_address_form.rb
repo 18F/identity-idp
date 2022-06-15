@@ -2,21 +2,20 @@ module Idv
   class InPersonProofingAddressForm
     include ActiveModel::Model
 
-    def initialize(pii)
-      @pii = pii
+    ATTRIBUTES = %i[state zipcode city address1 address2 same_address_as_id].freeze
+
+    attr_accessor(*ATTRIBUTES)
+
+    def self.model_name
+      ActiveModel::Name.new(self, nil, 'InPersonProofingAddress')
     end
 
     def submit(params)
-      non_address_params = params.except(*AddressForm::ATTRIBUTES)
-      address_params = params.extract!(*AddressForm::ATTRIBUTES)
-      address_response = AddressForm.new(@pii).submit(address_params)
-
-      consume_params(non_address_params)
+      consume_params(params)
 
       FormResponse.new(
-        success: valid? && address_response.success?,
-        errors: address_response.errors.merge(errors.to_hash),
-        extra: address_response.extra,
+        success: valid?,
+        errors: errors,
       )
     end
 
@@ -24,7 +23,7 @@ module Idv
 
     def consume_params(params)
       params.each do |key, value|
-        raise_invalid_address_parameter_error(key) unless key.to_sym == :same_address_as_id
+        raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
       end
     end
