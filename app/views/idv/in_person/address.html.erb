@@ -68,9 +68,12 @@
         <%= t('idv.errors.pattern_mismatch.zipcode') %>
       </span>
     </div>
+
+
     <div class="margin-top-0">
-      <%= f.input(
-            :same_address_as_id,
+      <%= render ValidatedFieldComponent.new(
+            name: :same_address_as_id,
+            form: f,
             as: :radio_buttons,
             wrapper: :borderless_uswds_radio_buttons,
             label: t('in_person_proofing.form.address.same_address'),
@@ -81,10 +84,6 @@
             ],
             input_html: { value: pii['same_address_as_id'] },
           ) %>
-          <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-            <%= t('simple_form.required.text') %>
-          </span>
-
       </div>
     <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-1">
       <%= t('forms.buttons.continue') %>
