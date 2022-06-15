@@ -50,5 +50,10 @@ module DocAuth
     def attention_with_barcode?
       false
     end
+
+    def ocr_pii
+      return unless attention_with_barcode?
+      pii_from_doc.slice(:first_name, :last_name, :dob)
+    end
   end
 end

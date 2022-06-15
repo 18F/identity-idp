@@ -17,7 +17,6 @@ module Idv
         errors: errors,
         extra: {
           remaining_attempts: remaining_attempts,
-          ocr_pii: ocr_pii,
         },
       )
     end
@@ -28,11 +27,6 @@ module Idv
         user: @document_capture_session.user,
         throttle_type: :idv_doc_auth,
       ).remaining_count
-    end
-
-    def ocr_pii
-      return unless @async_state.attention_with_barcode?
-      @async_state.pii.slice(:first_name, :last_name, :dob)
     end
 
     def timeout_error
