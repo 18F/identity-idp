@@ -4,10 +4,17 @@ require 'data_uri'
 describe 'users/backup_code_setup/create.html.erb' do
   let(:user) { build(:user, :signed_up) }
 
-  module URI
-    def self.decode(value)
-      CGI.unescape(value)
+  around do |ex|
+    # data_uri depends on URI.decode which was removed in Ruby 3.0 :sob:
+    module URI
+      def self.decode(value)
+        CGI.unescape(value)
+      end
     end
+
+    ex.run
+
+    URI.singleton_class.undef_method(:decode)
   end
 
   before do
