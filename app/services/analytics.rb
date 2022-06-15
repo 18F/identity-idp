@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  PERSONAL_KEY_REACTIVATION = 'Personal key reactivation: Account reactivated with personal key'
-  PERSONAL_KEY_REACTIVATION_SIGN_IN = 'Personal key reactivation: Account reactivated with personal key as MFA'
-  PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'
-  PERSONAL_KEY_REACTIVATION_VISITED = 'Personal key reactivation: Personal key form visitted'
-  PERSONAL_KEY_VIEWED = 'Personal Key Viewed'
   PHONE_CHANGE_SUBMITTED = 'Phone Number Change: Form submitted'
   PHONE_CHANGE_VIEWED = 'Phone Number Change: Visited'
   PHONE_DELETION = 'Phone Number Deletion: Submitted'
