@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::DocPiiForm do
   let(:user) { create(:user) }
-  let(:subject) { Idv::DocPiiForm }
+  let(:subject) { Idv::DocPiiForm.new(pii: pii) }
   let(:valid_dob) { (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s }
   let(:too_young_dob) do
     (Time.zone.today - (IdentityConfig.store.idv_min_age_years - 1).years).to_s
@@ -32,11 +32,23 @@ describe Idv::DocPiiForm do
       state: Faker::Address.state_abbr,
     }
   end
+  let(:non_string_zipcode_pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: valid_dob,
+      state: Faker::Address.state_abbr,
+      zipcode: 12345,
+    }
+  end
+  let(:pii) { nil }
 
   describe '#submit' do
     context 'when the form is valid' do
+      let(:pii) { good_pii }
+
       it 'returns a successful form response' do
-        result = subject.new(good_pii).submit
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
@@ -45,8 +57,10 @@ describe Idv::DocPiiForm do
     end
 
     context 'when there is an error with both name fields' do
+      let(:pii) { name_errors_pii }
+
       it 'returns a single name-specific pii error' do
-        result = subject.new(name_errors_pii).submit
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
@@ -55,8 +69,10 @@ describe Idv::DocPiiForm do
     end
 
     context 'when there is an error with name fields and dob' do
+      let(:pii) { name_and_dob_errors_pii }
+
       it 'returns a single generic pii error' do
-        result = subject.new(name_and_dob_errors_pii).submit
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
@@ -67,8 +83,10 @@ describe Idv::DocPiiForm do
     end
 
     context 'when there is an error with dob minimum age' do
+      let(:pii) { dob_min_age_error_pii }
+
       it 'returns a single min age error' do
-        result = subject.new(dob_min_age_error_pii).submit
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
@@ -79,16 +97,10 @@ describe Idv::DocPiiForm do
     end
 
     context 'when there is a non-string zipcode' do
-      it 'returns a single generic pii error' do
-        invalid_pii = {
-          first_name: Faker::Name.first_name,
-          last_name: Faker::Name.last_name,
-          dob: valid_dob,
-          state: Faker::Address.state_abbr,
-          zipcode: 12345,
-        }
+      let(:pii) { non_string_zipcode_pii }
 
-        result = subject.new(invalid_pii).submit
+      it 'returns a single generic pii error' do
+        result = subject.submit
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
