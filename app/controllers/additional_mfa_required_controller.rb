@@ -1,6 +1,10 @@
-class MfaConfirmationController < ApplicationController
-    include MfaSetupConcern
+class AdditionalMfaRequiredController < ApplicationController
+    
+
+    before_action :authenticate_user
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_user_authenticated_for_2fa_setup, except: :non_restricted
+    before_action :multiple_factors_enabled?
   
     def show
       @content = MfaConfirmationPresenter.new(current_user)
