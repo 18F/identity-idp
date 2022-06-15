@@ -105,6 +105,7 @@ install:
 
 specs:
   stage: test
+  parallel: 5
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -151,7 +152,8 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rspec ./spec/features/idv/doc_auth/ssn_step_spec.rb ./spec/features/device_tracking_spec.rb
+    - bundle exec rake knapsack:rspec
+
 
 lint:
   stage: test
