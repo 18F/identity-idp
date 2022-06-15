@@ -1,6 +1,22 @@
 ---
 es:
   in_person_proofing:
+    body:
+      state_id:
+        info_html: 'Ingrese la información <strong>exactamente como aparece en su
+          identificación emitida por el estado.</strong> Usaremos esta
+          información para confirmar que coincida con su ID en persona.'
+    form:
+      state_id:
+        dob: Fecha de nacimiento
+        dob_hint: 'Ejemplo: 4 28 1986'
+        first_name: Nombre de pila
+        last_name: Apellido
+        state_id_jurisdiction: Estado
+        state_id_jurisdiction_hint: Seleccione el estado que se muestra en su identificación
+        state_id_jurisdiction_prompt: '- Seleccione -'
+        state_id_number: Número de identificación
+        state_id_number_hint: Puede incluir números y letras.
     headings:
       address: Ingrese su dirección actual
       barcode: Estás listo para verificar tu identidad en persona

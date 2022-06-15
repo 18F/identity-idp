@@ -25,19 +25,35 @@ module Idv
         { name: :go_to_the_post_office },
       ].freeze
 
+      # WILLFIX: remove this definition when no longer needed below
+      # Delete these attributes from the mock applicant data below,
+      # since we're now collecting (many of) them on the StateIdStep
+      STATE_ID_ATTRIBUTES = %i[
+        dob
+        first_name
+        last_name
+        middle_name
+        state_id_expiration
+        state_id_jurisdiction
+        state_id_number
+        state_id_type
+      ]
+
       def initialize(controller, session, name)
         @idv_session = self.class.session_idv(session)
         super(controller, STEPS, ACTIONS, session[name])
-        # WILLFIX: remove this when we are collecting these values from the user
+        # WILLFIX: remove the lines below when we're collecting all user data
         @flow_session ||= {}
-        @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT.dup
+        @flow_session[:pii_from_user] ||= Idp::Constants::MOCK_IDV_APPLICANT.except(
+          *STATE_ID_ATTRIBUTES,
+        )
       end
 
       def self.session_idv(session)
         session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
 
-        # WILLFIX: remove this line when we begin collecting user data
-        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+        # WILLFIX: remove the line below when we're collecting all user data
+        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
 
         # WILLFIX: (LG-6349) remove this block when we implement the verify page
         session[:idv]['profile_confirmation'] = true
