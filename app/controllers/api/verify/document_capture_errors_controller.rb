@@ -5,33 +5,24 @@ module Api
 
       self.required_step = nil
 
-      before_action :verify_document_capture_session
-
       def delete
-        document_capture_session.update(ocr_confirmation_pending: false)
-        render json: {}
+        form = DocumentCaptureErrorsDeleteForm.new(
+          document_capture_session_uuid: params[:document_capture_session_uuid],
+        )
+        result, document_capture_session = form.submit
+
+        if result.success?
+          document_capture_session.update(ocr_confirmation_pending: false)
+          render json: {}
+        else
+          render json: { errors: result.errors }, status: :bad_request
+        end
       end
 
       private
 
       def user_authenticated_for_api?
         !!effective_user
-      end
-
-      def verify_document_capture_session
-        return if document_capture_session
-        render_errors({ document_capture_session_uuid: ['Invalid document capture session' ] })
-      end
-
-      def document_capture_session
-        return @document_capture_session if defined?(@document_capture_session)
-        @document_capture_session = DocumentCaptureSession.find_by(
-          uuid: document_capture_session_uuid,
-        )
-      end
-
-      def document_capture_session_uuid
-        params.require(:document_capture_session_uuid)
       end
     end
   end
