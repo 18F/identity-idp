@@ -42,7 +42,7 @@ describe Idv::Steps::Ipp::AddressStep do
       end
 
       it 'sets values in flow session' do
-        Idv::InPersonProofingAddressForm::ATTRIBUTES.each do |attr|
+        Idv::InPerson::AddressForm::ATTRIBUTES.each do |attr|
           expect(flow.flow_session[:pii_from_user]).to_not have_key attr
         end
 
