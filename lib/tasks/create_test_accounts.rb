@@ -13,7 +13,7 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
 
   email.downcase!
   user = User.create!(email: email)
-  user.skip_confirmation!
+  # user.skip_confirmation!
   user.reset_password(password, password)
   user.save!
   MfaContext.new(user).phone_configurations.create(
@@ -24,7 +24,7 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
   Event.create(user_id: user.id, event_type: :account_created)
 
   if verified
-    user = User.find_by(email_fingerprint: ee.fingerprint)
+    # user = User.find_by(email_fingerprint: ee.fingerprint)
     profile = Profile.new(user: user)
     pii = Pii::Attributes.new_from_hash(
       first_name: first_name,
@@ -39,14 +39,19 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
       zipcode: zipcode,
       phone: phone
     )
+    generator = BackupCodeGenerator.new(user)
+    backup_codes = generator.generate
+    generator.save(backup_codes)
     personal_key = profile.encrypt_pii(pii, password)
     profile.verified_at = Time.zone.now
     profile.activate
   end
 
-  Rails.logger.warn "Account created:"
+  puts "Account created:"
   account_created = "email=#{email}, password=#{password}, personal_key=#{personal_key}"
-  Rails.logger.warn "#{account_created}"
+  puts "#{account_created}"
+  puts "Backup codes:"
+  puts "#{backup_codes}"
   return account_created
 end
 
@@ -75,4 +80,36 @@ def create_accounts_from_csv(data)
 
   Rails.logger.warn "\nAccounts created:"
   Rails.logger.warn(puts(accounts_created))
+end
+
+str = <<~CSV
+ID,SSN,FIRST NAME,MI,LAST NAME,DOB,Email,Password,OTPs,Phone Number,ADDRESS,CITY ,STATE ,ZIP
+11,057-05-7728,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+12,126-14-2626,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+13,102-26-8826,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+14,099-48-9126,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+15,099-94-0625,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+16,066-98-3029,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+17,077-92-1128,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+18,001-68-9127,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+19,043-88-1525,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+20,109-52-1529,MARION,R,BRIEN,3/1/1941,,,,412-462-9823,350 LEHIGH AVE,PITTSBURGH,PA,15232-2008
+21,066-40-2008,GAIL,S,VVICTORY,6/9/1951,,,,(443) 421-8935,13 NESBIT PLACE,ALPHARETTA,GA,30022
+CSV
+
+csv = CSV.parse(str, headers: true)
+csv.each do |row|
+  create_account(
+    email: "ssa-test-#{row['ID']}@ssa.gov",
+    mfa_phone: row['Phone Number'],
+    first_name: row['FIRST NAME'],
+    last_name: row['LAST NAME'],
+    dob: row['DOB'],
+    ssn: row['SSN'],
+    address1: row['ADDRESS'],
+    city: row['CITY'],
+    state: row['STATE'],
+    zipcode: row['ZIP'],
+    phone: row['Phone Number']
+  )
 end
