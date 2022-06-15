@@ -12,17 +12,19 @@
         :doc_auth, url: url_for, method: 'PUT',
                    html: { autocomplete: 'off', class: 'margin-top-2' }
       ) do |f| %>
-    <div class="margin-bottom-4">
-      <%= f.input :address1,  label: t('idv.form.address1'), wrapper: false,
+    <div class="margin-bottom-3">
+      <%= f.input :address1,  label: t('in_person_proofing.form.address.address1'), wrapper: false,
                               required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: pii['address1'] } %>
       <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
         <%= t('simple_form.required.text') %>
       </span>
     </div>
-    <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
-                           input_html: { value: pii['address2'] } %>
-    <div class="margin-bottom-4">
-      <%= f.input :city,  label: t('idv.form.city'), required: true, maxlength: 255, wrapper: false,
+    <div class="margin-bottom-3">
+      <%= f.input :address2, label: t('in_person_proofing.form.address.address2'), wrapper: false, required: false, maxlength: 255,
+                             input_html: { value: pii['address2'] } %>
+    </div>
+    <div class="margin-bottom-3">
+      <%= f.input :city,  label: t('in_person_proofing.form.address.city'), required: true, maxlength: 255, wrapper: false,
                           input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] } %>
       <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
         <%= t('simple_form.required.text') %>
@@ -30,12 +32,12 @@
     </div>
 
     <%= f.input :state, collection: us_states_territories,
-                        label: t('idv.form.state'), required: true,
+                        label: t('in_person_proofing.form.address.state'), required: true,
                         selected: pii['state'] %>
-    <div class="tablet:grid-col-6 margin-bottom-4">
+    <div class="tablet:grid-col-6 margin-bottom-3">
       <%# using :tel for mobile numeric keypad %>
       <%= f.input :zipcode, as: :tel,
-                            label: t('idv.form.zipcode'), required: true,
+                            label: t('in_person_proofing.form.address.zipcode'), required: true,
                             pattern: '(\d{5}([\-]\d{4})?)',
                             wrapper: false,
                             input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['zipcode'] } %>
@@ -48,51 +50,26 @@
       </span>
     </div>
     <div class="margin-top-0">
-      <fieldset class="margin-bottom-4 padding-0 border-0">
-        <%= radio_button_tag(
-              'otp_delivery_preference',
-              :sms,
-              false,
-              disabled: VendorStatus.new.vendor_outage?(:sms),
-              class: 'usa-radio__input',
-            ) %>
-        <label for="otp_delivery_preference_sms" class="usa-radio__label">
-          <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
-        </label>
-
-        <%= radio_button_tag(
-              'otp_delivery_preference',
-              :voice,
-              false,
-              disabled: VendorStatus.new.vendor_outage?(:voice),
-              class: 'usa-radio__input',
-            ) %>
-        <label for="otp_delivery_preference_voice" class="usa-radio__label">
-          <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
-        </label>
-      </fieldset>
-
       <%= f.input(
-            :error,
+            :same_address_as_id,
             as: :radio_buttons,
-            label: 'Error Conditions',
+            wrapper: :borderless_uswds_radio_buttons,
+            label: t('in_person_proofing.form.address.same_address'),
+            required: true,
             collection: [
-              ['No error', ''],
-              ['No certificate', 'certificate.none'],
-              ['Bad certificate', 'certificate.bad'],
-              ['Expired certificate', 'certificate.expired'],
-              ['Revoked certificate', 'certificate.revoked'],
-              ['Invalid certificate', 'certificate.invalid'],
-              ['Unverified certificate', 'certificate.unverified'],
-              ['Missing token', 'token.missing'],
-              ['Invalid token', 'token.invalid'],
+              [t('in_person_proofing.form.address.same_address_choice_yes'), true],
+              [t('in_person_proofing.form.address.same_address_choice_no'), false],
             ],
+            input_html: { value: pii['same_address_as_id'] },
           ) %>
+          <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+            <%= t('simple_form.required.text') %>
+          </span>
 
-      <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">
-        <%= t('forms.buttons.continue') %>
-      </button>
-    </div>
+      </div>
+    <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-1">
+      <%= t('forms.buttons.continue') %>
+    </button>
   <% end %>
 </div>
 

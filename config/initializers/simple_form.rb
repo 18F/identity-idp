@@ -65,6 +65,27 @@ SimpleForm.setup do |config|
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
+  config.wrappers :borderless_uswds_radio_buttons,
+                  tag: 'fieldset',
+                  wrapper_class: 'usa-fieldset margin-bottom-4',
+                  item_wrapper_tag: nil,
+                  item_label_class: 'margin-top-0 usa-radio__label width-full text-no-wrap' do |b|
+    b.use :html5
+    b.wrapper :legend, tag: 'legend', class: 'margin-bottom-2 usa-label' do |ba|
+      ba.use :label_text
+    end
+    b.use :hint, wrap_with: { tag: 'div', class: 'usa-hint margin-bottom-05' }
+    b.wrapper :grid_row, tag: :div, class: 'grid-row margin-bottom-neg-1' do |gr|
+      gr.wrapper :grid_column_radios, tag: :div, class: 'grid-col-fill' do |gc|
+        gc.wrapper :column_wrapper, tag: :div, class: 'display-inline-block minw-full' do |cr|
+          cr.use :input, class: 'usa-radio__input'
+        end
+      end
+      gr.wrapper(:grid_column_gap, tag: :div, class: 'grid-col-4 tablet:grid-col-6') {}
+    end
+    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
+  end
+
   config.default_wrapper = :vertical_form
 end
 # rubocop:enable Metrics/BlockLength
