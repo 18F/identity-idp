@@ -64,4 +64,8 @@
   <%= render 'shared/fallback_links', presenter: @presenter %>
 <% end %>
 
-<%= render 'shared/cancel_or_back_to_options' %>
+<% if MfaPolicy.new(current_user).two_factor_enabled? %>
+  <%= render 'shared/cancel', link: @presenter.cancel_link %>
+<% else %>
+  <%= render 'shared/cancel_or_back_to_options' %>
+<% end %>
