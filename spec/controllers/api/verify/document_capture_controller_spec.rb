@@ -14,8 +14,21 @@ describe Api::Verify::DocumentCaptureController do
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:password) { 'iambatman' }
-  let(:user) { create(:user, :signed_up, password: password) }
+  let(:user) { create(:user, :signed_up) }
   let(:flow_path) { 'standard' }
+  let(:liveness_checking_enabled) { false }
+  let(:analytics_data) {
+    { browser_attributes: {
+      browser_bot: false,
+      browser_device_name: "Unknown",
+      browser_mobile: false,
+      browser_name: "Unknown Browser",
+      browser_platform_name: "Unknown",
+      browser_platform_version: "0",
+      browser_version: "0.0",
+      user_agent: "Rails Testing"
+    } }
+  }
 
   before do
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['document_capture'])
@@ -27,7 +40,15 @@ describe Api::Verify::DocumentCaptureController do
       it 'returns inprogress status when create is called' do
         agent = instance_double(Idv::Agent)
         allow(Idv::Agent).to receive(:new).and_return(agent)
-        expect(agent).to receive(:proof_document)
+
+        expect(agent).to receive(:proof_document).with(
+          document_capture_session,
+          liveness_checking_enabled: liveness_checking_enabled,
+          trace_id: nil,
+          image_metadata: {},
+          analytics_data: analytics_data,
+          flow_path: flow_path
+        )
 
         post :create, params: {
           encryption_key: encryption_key,

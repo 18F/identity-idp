@@ -6,13 +6,12 @@ module Api
       include EffectiveUser
 
       def create
-        result = @form ||= Idv::ApiDocumentVerificationForm.new(
+        result = Idv::ApiDocumentVerificationForm.new(
           verify_params,
           liveness_checking_enabled: liveness_checking_enabled?,
           analytics: analytics,
         ).submit
 
-        analytics.idv_doc_auth_submitted_image_upload_form(**result.to_h)
         if result.success?
           enqueue_job
 
