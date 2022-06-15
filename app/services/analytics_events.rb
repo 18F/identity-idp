@@ -694,7 +694,7 @@ module AnalyticsEvents
 
   # A user has downloaded their backup codes
   def idv_backup_codes_downloaded
-    track_event('IdV: download backup codes')
+    track_event('Multi-Factor Authentication: download backup codes')
   end
 
   # A user has downloaded their personal key. This event is no longer emitted.
