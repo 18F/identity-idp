@@ -1387,6 +1387,47 @@ module AnalyticsEvents
     )
   end
 
+  # Account reactivated with personal key
+  def personal_key_reactivation
+    track_event('Personal key reactivation: Account reactivated with personal key')
+  end
+
+  # Account reactivated with personal key as MFA
+  def personal_key_reactivation_sign_in
+    track_event(
+      'Personal key reactivation: Account reactivated with personal key as MFA',
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # Personal key form submitted
+  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
+    track_event(
+      'Personal key reactivation: Personal key form submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # Personal key reactivation visited
+  def personal_key_reactivation_visited
+    track_event('Personal key reactivation: Personal key form visited')
+  end
+
+  # @param [Boolean] personal_key_present if personal key is present
+  # Personal key viewed
+  def personal_key_viewed(personal_key_present:, **extra)
+    track_event(
+      'Personal key viewed',
+      personal_key_present: personal_key_present,
+      **extra,
+    )
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create

@@ -2,8 +2,15 @@ import { render } from '@testing-library/react';
 import TroubleshootingOptions from './troubleshooting-options';
 
 describe('TroubleshootingOptions', () => {
+  const DEFAULT_PROPS = {
+    options: [
+      { text: <>Option 1</>, url: `/1`, isExternal: true },
+      { text: 'Option 2', url: `/2` },
+    ],
+  };
+
   it('renders the default heading', () => {
-    const { getByRole } = render(<TroubleshootingOptions options={[]} />);
+    const { getByRole } = render(<TroubleshootingOptions {...DEFAULT_PROPS} />);
 
     const heading = getByRole('heading');
 
@@ -12,7 +19,9 @@ describe('TroubleshootingOptions', () => {
   });
 
   it('renders a given heading', () => {
-    const { getByRole } = render(<TroubleshootingOptions heading="Need help?" options={[]} />);
+    const { getByRole } = render(
+      <TroubleshootingOptions {...DEFAULT_PROPS} heading="Need help?" />,
+    );
 
     const heading = getByRole('heading');
 
@@ -21,25 +30,17 @@ describe('TroubleshootingOptions', () => {
   });
 
   it('renders a given headingTag', () => {
-    const { getByText } = render(
-      <TroubleshootingOptions headingTag="h3" heading="Test Header" options={[]} />,
-    );
+    const { getByRole } = render(<TroubleshootingOptions {...DEFAULT_PROPS} headingTag="h3" />);
 
-    expect(getByText('Test Header').tagName).to.be.equal('H3');
+    const heading = getByRole('heading');
+
+    expect(heading.tagName).to.be.equal('H3');
   });
 
   it('renders given options', () => {
-    const { getAllByRole } = render(
-      <TroubleshootingOptions
-        heading=""
-        options={[
-          { text: <>Option 1</>, url: `/1`, isExternal: true },
-          { text: 'Option 2', url: `/2` },
-        ]}
-      />,
-    );
+    const { getAllByRole } = render(<TroubleshootingOptions {...DEFAULT_PROPS} />);
 
-    const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+    const links = getAllByRole('link') as HTMLAnchorElement[];
 
     expect(links).to.have.lengthOf(2);
     expect(links[0].textContent).to.equal('Option 1 links.new_window');
@@ -50,8 +51,14 @@ describe('TroubleshootingOptions', () => {
     expect(links[1].target).to.be.empty();
   });
 
+  it('renders nothing if there are no options', () => {
+    const { container } = render(<TroubleshootingOptions {...DEFAULT_PROPS} options={[]} />);
+
+    expect(container.innerHTML).to.be.empty();
+  });
+
   it('renders a new features tag with isNewFeatures', () => {
-    const { container, getByText } = render(
+    const { getByText } = render(
       <TroubleshootingOptions
         heading=""
         isNewFeatures
@@ -61,10 +68,6 @@ describe('TroubleshootingOptions', () => {
         ]}
       />,
     );
-
-    expect(
-      container.firstElementChild?.classList.contains('troubleshooting-options--no-bar'),
-    ).to.eq(true, 'it hides the visual bar');
 
     const tag = getByText('components.troubleshooting_options.new_feature');
     expect(tag.classList.contains('text-uppercase')).to.eq(true);

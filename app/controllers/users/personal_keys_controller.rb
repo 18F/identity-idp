@@ -10,8 +10,8 @@ module Users
     def show
       personal_key = user_session[:personal_key]
 
-      analytics.track_event(
-        Analytics::PERSONAL_KEY_VIEWED, personal_key_present: personal_key.present?
+      analytics.personal_key_viewed(
+        personal_key_present: personal_key.present?,
       )
 
       return redirect_to account_url if personal_key.blank?
