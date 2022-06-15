@@ -13,7 +13,7 @@ class AccountResetRequest < ApplicationRecord
        IdentityConfig.store.account_reset_token_valid_for_days.days)
   end
 
-  def account_reset_request?
+  def account_reset_requested?
     requested_at.present?
   end
 end

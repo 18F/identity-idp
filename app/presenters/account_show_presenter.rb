@@ -1,9 +1,9 @@
 class AccountShowPresenter
   attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
-              :sp_session_request_url, :sp_name
+              :sp_session_request_url, :sp_name, :account_reset_requested
 
   def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, decorated_user:,
-                 locked_for_session:)
+                 locked_for_session:, account_reset_requested:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
@@ -11,6 +11,7 @@ class AccountShowPresenter
     @sp_session_request_url = sp_session_request_url
     @locked_for_session = locked_for_session
     @pii = determine_pii
+    @account_reset_requested = account_reset_requested
   end
 
   def show_personal_key_partial?
@@ -38,11 +39,16 @@ class AccountShowPresenter
     decorated_user.pending_profile_requires_verification?
   end
 
+  def show_account_reset_requested_partial?
+    account_reset_requested.present?
+  end
+
   def showing_any_partials?
     show_service_provider_continue_partial? ||
       show_password_reset_partial? ||
       show_personal_key_partial? ||
-      show_gpo_partial?
+      show_gpo_partial? ||
+      show_account_reset_requested_partial?
   end
 
   def show_unphishable_badge?
