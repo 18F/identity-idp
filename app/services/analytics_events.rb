@@ -1431,6 +1431,18 @@ module AnalyticsEvents
     )
   end
 
+  # param [Boolean] success
+  # param [Hash] errors
+  # tracks piv cac login event
+  def piv_cac_login(success:, errors:, **extra)
+    track_event(
+      'PIV/CAC Login',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
