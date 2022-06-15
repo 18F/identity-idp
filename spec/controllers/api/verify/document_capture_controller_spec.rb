@@ -64,27 +64,28 @@ describe Api::Verify::DocumentCaptureController do
         expect(response.status).to eq 200
       end
 
-      context 'When the request does not have all the parameters'
-      it 'returns 400 and gives error message' do
-        agent = instance_double(Idv::Agent)
-        allow(Idv::Agent).to receive(:new).and_return(agent)
-        expect(agent).to_not receive(:proof_document)
+      context 'When the request does not have all the parameters' do
+        it 'returns 400 and gives error message' do
+          agent = instance_double(Idv::Agent)
+          allow(Idv::Agent).to receive(:new).and_return(agent)
+          expect(agent).to_not receive(:proof_document)
 
-        post :create, params: {
-          encryption_key: encryption_key,
-          front_image_iv: nil,
-          back_image_iv: back_image_iv,
-          selfie_image_iv: selfie_image_iv,
-          front_image_url: front_image_url,
-          back_image_url: back_image_url,
-          selfie_image_url: selfie_image_url,
-          document_capture_session_uuid: document_capture_session_uuid,
-        }
+          post :create, params: {
+            encryption_key: encryption_key,
+            front_image_iv: nil,
+            back_image_iv: back_image_iv,
+            selfie_image_iv: selfie_image_iv,
+            front_image_url: front_image_url,
+            back_image_url: back_image_url,
+            selfie_image_url: selfie_image_url,
+            document_capture_session_uuid: document_capture_session_uuid,
+          }
 
-        expect(JSON.parse(response.body)['errors'].keys.first).to eq('front_image_iv')
-        expect(JSON.parse(response.body)['errors']['front_image_iv'][0]).
-          to eq('Please fill in this field.')
-        expect(response.status).to eq 400
+          expect(JSON.parse(response.body)['errors'].keys.first).to eq('front_image_iv')
+          expect(JSON.parse(response.body)['errors']['front_image_iv'][0]).
+            to eq('Please fill in this field.')
+          expect(response.status).to eq 400
+        end
       end
     end
   end
