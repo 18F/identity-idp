@@ -31,6 +31,7 @@ module Idv
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
         cancel_update_ssn: Idv::Actions::CancelUpdateSsnAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
+        redo_doc_auth: Idv::Actions::RedoDocauthAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
