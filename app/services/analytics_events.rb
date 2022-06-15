@@ -693,8 +693,8 @@ module AnalyticsEvents
   end
 
   # A user has downloaded their backup codes
-  def idv_backup_codes_downloaded
-    track_event('Multi-Factor Authentication: download backup codes')
+  def multi_factor_auth_backup_code_download
+    track_event('Multi-Factor Authentication: download backup code')
   end
 
   # A user has downloaded their personal key. This event is no longer emitted.
