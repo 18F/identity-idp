@@ -6,13 +6,13 @@ import * as analytics from '@18f/identity-analytics';
 describe('backupCodeAnalytics', () => {
   const sandbox = useSandbox();
 
-  beforeEach(() => {
+  beforeEach(async () => {
     document.body.innerHTML = `
       <a download="backup_codes.txt" class="usa-button usa-button--outline" href="#"><svg aria-hidden="true" focusable="false" role="img" class="usa-icon">
   <use href="http://test.host/assets/identity-style-guide/dist/assets/img/sprite-8eff3bf787e3ce0eab960fe5e9eccf4418d9af6a9f8c95a9ec9254aa778b2dbd.svg#file_download"></use>
 </svg>Download</a>
     `;
-    return import('../../../app/javascript/packs/backup-code-analytics');
+    await import('../../../app/javascript/packs/backup-code-analytics');
   });
 
   afterEach(() => {
