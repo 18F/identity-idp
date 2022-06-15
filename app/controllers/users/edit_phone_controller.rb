@@ -47,8 +47,7 @@ module Users
     end
 
     def track_deletion_analytics_event
-      analytics.track_event(
-        Analytics::PHONE_DELETION,
+      analytics.phone_deletion(
         success: true,
         phone_configuration_id: phone_configuration.id,
       )

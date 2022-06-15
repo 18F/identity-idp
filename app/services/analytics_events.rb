@@ -1417,6 +1417,20 @@ module AnalyticsEvents
     track_event('Phone Number Change: Visited')
   end
 
+  # param [Boolean] success
+  # param [Hash] errors
+  # param [Integer] phone_configuration_id
+  # tracks a phone number deletion event
+  def phone_deletion(success:, errors:, phone_configuration_id:, **extra)
+    track_event(
+      'Phone Number Deletion: Submitted',
+      success: success,
+      errors: errors,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
