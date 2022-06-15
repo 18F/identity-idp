@@ -36,13 +36,13 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.welcome'))
     click_idv_continue
 
-    # address page
-    expect(page).to have_content(t('in_person_proofing.headings.address'))
-    click_idv_continue
-
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
     fill_out_state_id_form_ok
+    click_idv_continue
+
+    # address page
+    expect(page).to have_content(t('in_person_proofing.headings.address'))
     click_idv_continue
 
     # ssn page

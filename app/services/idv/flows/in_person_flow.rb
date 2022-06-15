@@ -4,8 +4,8 @@ module Idv
       STEPS = {
         location: Idv::Steps::Ipp::LocationStep,
         welcome: Idv::Steps::Ipp::WelcomeStep,  # instructions
-        address: Idv::Steps::Ipp::AddressStep,  # entering the address
         state_id: Idv::Steps::Ipp::StateIdStep, # info from state id
+        address: Idv::Steps::Ipp::AddressStep,  # entering the address
         ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
         verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
       }.freeze
