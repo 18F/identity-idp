@@ -1173,7 +1173,6 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] phone_type
   # @param [Hash] types
-  # @param [Hash] pii_like_keypaths
   def multi_factor_auth_phone_setup(success:,
                                     errors:,
                                     otp_delivery_preference:,
@@ -1345,6 +1344,47 @@ module AnalyticsEvents
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] user_id UUID of the user to receive password token
+  # A password token has been sent for user
+  def password_reset_token(success:, errors:, user_id:, **extra)
+    track_event(
+      'Password Reset: Token Submitted',
+      success: success,
+      errors: errors,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Password reset form has been visited.
+  def password_reset_visit
+    track_event('Password Reset: Email Form Visited')
+  end
+
+  # Pending account reset cancelled
+  def pending_account_reset_cancelled
+    track_event('Pending account reset cancelled')
+  end
+
+  # Pending account reset visited
+  def pending_account_reset_visited
+    track_event('Pending account reset visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Alert user if a personal key was used to sign in
+  def personal_key_alert_about_sign_in(success:, errors:, **extra)
+    track_event(
+      'Personal key: Alert user about sign in',
+      success: success,
+      errors: errors,
+      **extra,
+    )
   end
 
   # @see #profile_personal_key_create_notifications

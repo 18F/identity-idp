@@ -5,7 +5,6 @@ en:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
-      ssn: Enter your Social Security number
       state_id: Enter the information on your ID
       verify: Please verify your information
       welcome: Verify your identity in person

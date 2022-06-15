@@ -250,4 +250,43 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       end
     end
   end
+
+  describe '#attention_with_barcode?' do
+    let(:result) { DocAuth::Acuant::ResultCodes::PASSED.code }
+    let(:alerts) { [] }
+    let(:http_response) do
+      instance_double(
+        Faraday::Response,
+        body: { Result: result, Alerts: alerts }.to_json,
+      )
+    end
+
+    subject(:attention_with_barcode) { response.attention_with_barcode? }
+
+    it { expect(attention_with_barcode).to eq(false) }
+
+    context 'with multiple errors including barcode attention' do
+      let(:result) { DocAuth::Acuant::ResultCodes::ATTENTION.code }
+      let(:alerts) do
+        [
+          { Result: DocAuth::Acuant::ResultCodes::ATTENTION.code, Key: '2D Barcode Read' },
+          { Result: DocAuth::Acuant::ResultCodes::ATTENTION.code, Key: 'Birth Date Crosscheck' },
+        ]
+      end
+
+      it { expect(attention_with_barcode).to eq(false) }
+    end
+
+    context 'with single barcode attention error' do
+      let(:result) { DocAuth::Acuant::ResultCodes::ATTENTION.code }
+      let(:alerts) do
+        [
+          { Result: DocAuth::Acuant::ResultCodes::ATTENTION.code, Key: '2D Barcode Read' },
+          { Result: DocAuth::Acuant::ResultCodes::PASSED.code, Key: 'Birth Date Valid' },
+        ]
+      end
+
+      it { expect(attention_with_barcode).to eq(true) }
+    end
+  end
 end

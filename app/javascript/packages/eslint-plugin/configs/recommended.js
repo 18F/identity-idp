@@ -100,6 +100,7 @@ if (
     'react/jsx-one-expression-per-line': 'off',
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-uses-react': 'off',
+    'react/no-array-index-key': 'off',
     'react/no-unstable-nested-components': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/require-default-props': 'off',
