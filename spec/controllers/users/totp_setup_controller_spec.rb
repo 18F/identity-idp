@@ -36,7 +36,11 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = { user_signed_up: true, totp_secret_present: true }
+        properties = {
+          user_signed_up: true,
+          totp_secret_present: true,
+          enabled_mfa_methods_count: 1,
+        }
 
         expect(@analytics).
           to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
@@ -66,7 +70,11 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'captures an analytics event' do
-        properties = { user_signed_up: false, totp_secret_present: true }
+        properties = {
+          user_signed_up: false,
+          totp_secret_present: true,
+          enabled_mfa_methods_count: 0,
+        }
 
         expect(@analytics).
           to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)

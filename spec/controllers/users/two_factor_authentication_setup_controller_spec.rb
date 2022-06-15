@@ -84,6 +84,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       result = {
+        enabled_mfa_methods_count: 0,
         selection: ['voice', 'auth_app'],
         success: true,
         errors: {},
