@@ -18,16 +18,15 @@ describe Api::Verify::DocumentCaptureController do
   let(:flow_path) { 'standard' }
   let(:liveness_checking_enabled) { false }
   let(:analytics_data) {
-    { browser_attributes: {
-      browser_bot: false,
-      browser_device_name: "Unknown",
-      browser_mobile: false,
-      browser_name: "Unknown Browser",
-      browser_platform_name: "Unknown",
-      browser_platform_version: "0",
-      browser_version: "0.0",
-      user_agent: "Rails Testing"
-    } }
+    { browser_attributes:
+      { browser_bot: false,
+        browser_device_name: 'Unknown',
+        browser_mobile: false,
+        browser_name: 'Unknown Browser',
+        browser_platform_name: 'Unknown',
+        browser_platform_version: '0',
+        browser_version: '0.0',
+        user_agent: 'Rails Testing' } }
   }
 
   before do
@@ -47,7 +46,7 @@ describe Api::Verify::DocumentCaptureController do
           trace_id: nil,
           image_metadata: {},
           analytics_data: analytics_data,
-          flow_path: flow_path
+          flow_path: flow_path,
         )
 
         post :create, params: {

@@ -3,7 +3,6 @@ module Api
     class DocumentCaptureController < BaseController
       self.required_step = 'document_capture'
       include ApplicationHelper
-      include EffectiveUser
 
       def create
         result = Idv::ApiDocumentVerificationForm.new(
