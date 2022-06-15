@@ -55,18 +55,16 @@
 
     <div class="tablet:grid-col-6 margin-bottom-3">
       <%# using :tel for mobile numeric keypad %>
-      <%= f.input :zipcode, as: :tel,
-                            label: t('in_person_proofing.form.address.zipcode'), required: true,
-                            pattern: '(\d{5}([\-]\d{4})?)',
-                            wrapper: false,
-                            input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['zipcode'] } %>
-      <span class='usa-error-message margin-top-0 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
-
-      <span class='usa-error-message margin-top-0 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
-        <%= t('idv.errors.pattern_mismatch.zipcode') %>
-      </span>
+      <%= render ValidatedFieldComponent.new(
+            name: :zipcode,
+            form: f,
+            as: :tel,
+            label: t('in_person_proofing.form.address.zipcode'),
+            required: true,
+            pattern: '(\d{5}([\-]\d{4})?)',
+            input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['zipcode'] },
+            error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+          ) %>
     </div>
 
 
@@ -77,7 +75,7 @@
             as: :radio_buttons,
             wrapper: :borderless_uswds_radio_buttons,
             label: t('in_person_proofing.form.address.same_address'),
-            # required: true,
+            required: true,
             collection: [
               [t('in_person_proofing.form.address.same_address_choice_yes'), true],
               [t('in_person_proofing.form.address.same_address_choice_no'), false],
