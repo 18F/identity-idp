@@ -1412,6 +1412,11 @@ module AnalyticsEvents
     )
   end
 
+  # User has viewed the change in phone number page
+  def phone_change_viewed
+    track_event('Phone Number Change: Visited')
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create

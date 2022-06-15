@@ -142,7 +142,6 @@ class Analytics
   PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'
   PERSONAL_KEY_REACTIVATION_VISITED = 'Personal key reactivation: Personal key form visitted'
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'
-  PHONE_CHANGE_VIEWED = 'Phone Number Change: Visited'
   PHONE_DELETION = 'Phone Number Deletion: Submitted'
   PIV_CAC_LOGIN = 'PIV/CAC Login'
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
