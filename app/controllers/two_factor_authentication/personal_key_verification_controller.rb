@@ -69,7 +69,7 @@ module TwoFactorAuthentication
     end
 
     def re_encrypt_profile_recovery_pii
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SIGN_IN)
+      analytics.personal_key_reactivation_sign_in
       Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
       user_session[:personal_key] = password_reset_profile.personal_key
     end
