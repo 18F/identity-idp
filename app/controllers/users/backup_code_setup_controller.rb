@@ -11,6 +11,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def index; end
 
     def create
