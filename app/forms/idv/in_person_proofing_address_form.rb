@@ -1,6 +1,7 @@
 module Idv
   class InPersonProofingAddressForm
     include ActiveModel::Model
+    include FormInPersonProofingAddressValidator
 
     ATTRIBUTES = %i[state zipcode city address1 address2 same_address_as_id].freeze
 
