@@ -14,44 +14,44 @@
       ) do |f| %>
     <div class="margin-bottom-3">
       <%= render ValidatedFieldComponent.new(
-        name: :address1,
-        form: f,
-        label: t('in_person_proofing.form.address.address1'),
-        required: true,
-        maxlength: 255,
-        input_html: { aria: { invalid: false }, value: pii['address1'] }
-      ) %>
+            name: :address1,
+            form: f,
+            label: t('in_person_proofing.form.address.address1'),
+            required: true,
+            maxlength: 255,
+            input_html: { aria: { invalid: false }, value: pii['address1'] },
+          ) %>
     </div>
     <div class="margin-bottom-3">
       <%= render ValidatedFieldComponent.new(
-        name: :address2,
-        form: f,
-        label: t('in_person_proofing.form.address.address2'),
-        required: false,
-        maxlength: 255,
-        input_html: { value: pii['address2'] }
-      ) %>
+            name: :address2,
+            form: f,
+            label: t('in_person_proofing.form.address.address2'),
+            required: false,
+            maxlength: 255,
+            input_html: { value: pii['address2'] },
+          ) %>
     </div>
     <div class="margin-bottom-3">
       <%= render ValidatedFieldComponent.new(
-        name: :city,
-        form: f,
-        label: t('in_person_proofing.form.address.city'),
-        required: true,
-        maxlength: 255,
-        input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] }
-      ) %>
+            name: :city,
+            form: f,
+            label: t('in_person_proofing.form.address.city'),
+            required: true,
+            maxlength: 255,
+            input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] },
+          ) %>
     </div>
 
     <%= render ValidatedFieldComponent.new(
-      name: :state,
-      form: f,
-      collection: us_states_territories,
-      label: t('in_person_proofing.form.address.state'),
-      prompt: t('in_person_proofing.form.address.state_prompt'),
-      required: true,
-      selected: pii['state']
-    ) %>
+          name: :state,
+          form: f,
+          collection: us_states_territories,
+          label: t('in_person_proofing.form.address.state'),
+          prompt: t('in_person_proofing.form.address.state_prompt'),
+          required: true,
+          selected: pii['state'],
+        ) %>
 
     <div class="tablet:grid-col-6 margin-bottom-3">
       <%# using :tel for mobile numeric keypad %>

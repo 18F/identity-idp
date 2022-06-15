@@ -3,7 +3,8 @@ en:
   in_person_proofing:
     body:
       address:
-        info_html: 'If your current address does not match the address on your ID, you will need to bring proof of your current address to the Post Office.'
+        info_html: 'If your current address does not match the address on your ID, you
+          will need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
       state_id:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
@@ -14,7 +15,8 @@ en:
         address1: Address
         address2: Address (optional)
         city: City
-        same_address: 'Is this address displayed on the state-issued ID that you are bringing to the Post Office?'
+        same_address: 'Is this address displayed on the state-issued ID that you are
+          bringing to the Post Office?'
         same_address_choice_no: I have a different address on my ID
         same_address_choice_yes: This address is on my state-issued ID
         state: State
