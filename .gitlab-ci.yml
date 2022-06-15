@@ -151,7 +151,7 @@ specs:
     - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
-    - bundle exec rspec ./spec/features/idv/doc_auth/ssn_step_spec.rb:48
+    - bundle exec rspec ./spec/features/idv/doc_auth/ssn_step_spec.rb:48 ./spec/features/idv/doc_auth/ssn_step_spec.rb:65 ./spec/features/idv/doc_auth/ssn_step_spec.rb:58 ./spec/features/idv/doc_auth/ssn_step_spec.rb:72
 
 lint:
   stage: test
