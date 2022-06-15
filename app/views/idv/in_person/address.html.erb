@@ -13,27 +13,46 @@
                    html: { autocomplete: 'off', class: 'margin-top-2' }
       ) do |f| %>
     <div class="margin-bottom-3">
-      <%= f.input :address1,  label: t('in_person_proofing.form.address.address1'), wrapper: false,
-                              required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: pii['address1'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
+      <%= render ValidatedFieldComponent.new(
+        name: :address1,
+        form: f,
+        label: t('in_person_proofing.form.address.address1'),
+        required: true,
+        maxlength: 255,
+        input_html: { aria: { invalid: false }, value: pii['address1'] }
+      ) %>
     </div>
     <div class="margin-bottom-3">
-      <%= f.input :address2, label: t('in_person_proofing.form.address.address2'), wrapper: false, required: false, maxlength: 255,
-                             input_html: { value: pii['address2'] } %>
+      <%= render ValidatedFieldComponent.new(
+        name: :address2,
+        form: f,
+        label: t('in_person_proofing.form.address.address2'),
+        required: false,
+        maxlength: 255,
+        input_html: { value: pii['address2'] }
+      ) %>
     </div>
     <div class="margin-bottom-3">
-      <%= f.input :city,  label: t('in_person_proofing.form.address.city'), required: true, maxlength: 255, wrapper: false,
-                          input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
+      <%= render ValidatedFieldComponent.new(
+        name: :city,
+        form: f,
+        label: t('in_person_proofing.form.address.city'),
+        required: true,
+        maxlength: 255,
+        input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] }
+      ) %>
     </div>
 
-    <%= f.input :state, collection: us_states_territories,
-                        label: t('in_person_proofing.form.address.state'), required: true,
-                        selected: pii['state'] %>
+    <%= render ValidatedFieldComponent.new(
+      name: :state,
+      form: f,
+      collection: us_states_territories,
+      label: t('in_person_proofing.form.address.state'),
+      prompt: t('in_person_proofing.form.address.state_prompt'),
+      required: true,
+      selected: pii['state']
+    ) %>
+
     <div class="tablet:grid-col-6 margin-bottom-3">
       <%# using :tel for mobile numeric keypad %>
       <%= f.input :zipcode, as: :tel,
@@ -41,11 +60,11 @@
                             pattern: '(\d{5}([\-]\d{4})?)',
                             wrapper: false,
                             input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['zipcode'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <span class='usa-error-message margin-top-0 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
         <%= t('simple_form.required.text') %>
       </span>
 
-      <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
+      <span class='usa-error-message margin-top-0 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
         <%= t('idv.errors.pattern_mismatch.zipcode') %>
       </span>
     </div>
