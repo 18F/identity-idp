@@ -692,6 +692,11 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
+  # A user has downloaded their backup codes
+  def multi_factor_auth_backup_code_download
+    track_event('Multi-Factor Authentication: download backup code')
+  end
+
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
@@ -1348,7 +1353,7 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Integer] user_id User ID of the user to receive password token
+  # @param [String] user_id UUID of the user to receive password token
   # A password token has been sent for user
   def password_reset_token(success:, errors:, user_id:, **extra)
     track_event(
@@ -1383,6 +1388,47 @@ module AnalyticsEvents
       'Personal key: Alert user about sign in',
       success: success,
       errors: errors,
+      **extra,
+    )
+  end
+
+  # Account reactivated with personal key
+  def personal_key_reactivation
+    track_event('Personal key reactivation: Account reactivated with personal key')
+  end
+
+  # Account reactivated with personal key as MFA
+  def personal_key_reactivation_sign_in
+    track_event(
+      'Personal key reactivation: Account reactivated with personal key as MFA',
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # Personal key form submitted
+  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
+    track_event(
+      'Personal key reactivation: Personal key form submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # Personal key reactivation visited
+  def personal_key_reactivation_visited
+    track_event('Personal key reactivation: Personal key form visited')
+  end
+
+  # @param [Boolean] personal_key_present if personal key is present
+  # Personal key viewed
+  def personal_key_viewed(personal_key_present:, **extra)
+    track_event(
+      'Personal key viewed',
+      personal_key_present: personal_key_present,
       **extra,
     )
   end
@@ -1444,7 +1490,7 @@ module AnalyticsEvents
   end
 
   # param [String] error
-  #
+  # Tracks if a Profile encryption is invalid
   def profile_encryption_invalid(error:, **extra)
     track_event('Profile Encryption: Invalid', error: error, **extra)
   end

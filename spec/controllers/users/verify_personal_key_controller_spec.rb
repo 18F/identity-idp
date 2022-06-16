@@ -55,7 +55,7 @@ describe Users::VerifyPersonalKeyController do
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_REACTIVATION_VISITED,
+          'Personal key reactivation: Personal key form visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
@@ -95,14 +95,14 @@ describe Users::VerifyPersonalKeyController do
       it 'stores that the personal key was entered in the user session' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
+          'Personal key reactivation: Personal key form submitted',
           errors: {},
           success: true,
           pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         ).once
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_REACTIVATION,
+          'Personal key reactivation: Account reactivated with personal key',
         ).once
 
         post :create, params: { personal_key: profiles.first.personal_key }
@@ -133,7 +133,7 @@ describe Users::VerifyPersonalKeyController do
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
+          'Personal key reactivation: Personal key form submitted',
           errors: { personal_key: ['Please fill in this field.', 'Incorrect personal key'] },
           error_details: { personal_key: [:blank, :personal_key_incorrect] },
           success: false,

@@ -28,7 +28,7 @@ class MfaConfirmationController < ApplicationController
   private
 
   def enforce_second_mfa?
-    IdentityConfig.store.select_multiple_mfa_options &&
+    IdentityConfig.store.kantara_2fa_phone_restricted &&
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 

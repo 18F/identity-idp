@@ -37,10 +37,6 @@ RSpec.describe TroubleshootingOptionsComponent, type: :component do
         ) { |c| c.option(url: '/').with_content('Link Text') }
 
         expect(rendered).to have_css(
-          '.troubleshooting-options.troubleshooting-options--no-bar',
-        ), 'it hides the visual bar'
-
-        expect(rendered).to have_css(
           '.troubleshooting-options .usa-tag.text-uppercase',
           text: t('components.troubleshooting_options.new_feature'),
         )

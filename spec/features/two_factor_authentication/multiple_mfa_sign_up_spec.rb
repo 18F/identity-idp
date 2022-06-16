@@ -40,6 +40,46 @@ feature 'Multi Two Factor Authentication' do
       expect(current_path).to eq account_path
     end
 
+    scenario 'user can select 2 MFA methods and then chooses another method during' do
+      sign_in_before_2fa
+
+      expect(current_path).to eq authentication_methods_setup_path
+
+      click_2fa_option('phone')
+      click_2fa_option('backup_code')
+
+      click_continue
+
+      expect(page).
+        to have_content t('titles.phone_setup')
+
+      expect(current_path).to eq phone_setup_path
+
+      fill_in 'new_phone_form_phone', with: '703-555-1212'
+      click_send_security_code
+
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq backup_code_setup_path
+
+      click_link t('two_factor_authentication.choose_another_option')
+
+      expect(page).to have_current_path(second_mfa_setup_path)
+
+      select_2fa_option('auth_app')
+      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
+      secret = find('#qr-code').text
+      totp = generate_totp_code(secret)
+
+      fill_in :code, with: totp
+      check t('forms.messages.remember_device')
+      click_submit_default
+
+      expect(current_path).to eq account_path
+    end
+
     scenario 'user can select 1 MFA methods and will be prompted to add another method' do
       sign_in_before_2fa
 

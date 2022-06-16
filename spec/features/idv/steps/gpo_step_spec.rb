@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv gpo step' do
+feature 'idv gpo step', :js do
   include IdvStepHelper
 
   it 'redirects to the review step when the user chooses to verify by letter' do
@@ -24,7 +24,7 @@ feature 'idv gpo step' do
   context 'the user has sent a letter but not verified an OTP' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to resend a letter and redirects to the come back later step', js: true do
+    it 'allows the user to resend a letter and redirects to the come back later step' do
       complete_idv_and_return_to_gpo_step
 
       expect { click_on t('idv.buttons.mail.resend') }.
@@ -34,7 +34,7 @@ feature 'idv gpo step' do
       expect(page).to have_current_path(idv_come_back_later_path)
     end
 
-    it 'allows the user to return to gpo otp confirmation', js: true do
+    it 'allows the user to return to gpo otp confirmation' do
       complete_idv_and_return_to_gpo_step
       click_doc_auth_back_link
 
