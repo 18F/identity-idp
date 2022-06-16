@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp]
+  self.ignored_columns = %w[totp_timestamp email_fingerprint encrypted_email]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
@@ -14,12 +14,9 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute_without_setter(name: :email)
-
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
-  include EmailAddressCallback
   include DeprecatedUserAttributes
   include UserOtpMethods
 
@@ -48,10 +45,10 @@ class User < ApplicationRecord
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
 
-  attr_accessor :asserted_attributes
+  attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil)
+    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
 
   def need_two_factor_authentication?(_request)

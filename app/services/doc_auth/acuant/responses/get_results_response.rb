@@ -30,6 +30,18 @@ module DocAuth
           DocAuth::Acuant::PiiFromDoc.new(parsed_response_body).call
         end
 
+        def attention_with_barcode?
+          return false unless result_code == DocAuth::Acuant::ResultCodes::ATTENTION
+
+          raw_alerts.all? do |alert|
+            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(alert['Result'])
+
+            alert_result_code == DocAuth::Acuant::ResultCodes::PASSED ||
+              (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
+               alert['Key'] == BARCODE_COULD_NOT_BE_READ_ERROR)
+          end
+        end
+
         private
 
         attr_reader :http_response
@@ -95,18 +107,6 @@ module DocAuth
 
         def passed_result?
           result_code == DocAuth::Acuant::ResultCodes::PASSED
-        end
-
-        def attention_with_barcode?
-          return false unless result_code == DocAuth::Acuant::ResultCodes::ATTENTION
-
-          raw_alerts.all? do |alert|
-            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(alert['Result'])
-
-            alert_result_code == DocAuth::Acuant::ResultCodes::PASSED ||
-              (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
-               alert['Key'] == BARCODE_COULD_NOT_BE_READ_ERROR)
-          end
         end
 
         def get_image_side_name(side_number)

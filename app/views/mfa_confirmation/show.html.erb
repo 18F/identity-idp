@@ -2,21 +2,28 @@
 
 <%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.mfa_setup.suggest_second_mfa')) %>
+<%= render PageHeadingComponent.new.with_content(@content.heading) %>
 
-<p class='margin-top-1 margin-bottom-4'><%= t('mfa.account_info') %></p>
+<p class='margin-top-1 margin-bottom-4'>
+  <%= @content.info %>
+  <% if @content.enforce_second_mfa? %>
+    <%= link_to(t('mfa.non_restricted.learn_more'), @content.learn_more) %>
+  <% end %>
+</p>
 
 <div class="col-12">
   <%= link_to(
-        second_mfa_setup_path,
+        @next_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-      ) { t('mfa.add') } %>
+      ) { @content.button } %>
 </div>
 
-<%= button_to(
-      auth_method_confirmation_skip_path,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-    ) do %>
-  <%= t('mfa.skip') %>
+<% unless @content.enforce_second_mfa? %>
+  <%= button_to(
+        auth_method_confirmation_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= t('mfa.skip') %>
+  <% end %>
 <% end %>

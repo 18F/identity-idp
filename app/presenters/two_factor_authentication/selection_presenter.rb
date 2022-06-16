@@ -39,8 +39,6 @@ module TwoFactorAuthentication
       )
     end
 
-    def security_level; end
-
     def html_class
       ''
     end

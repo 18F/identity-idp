@@ -44,7 +44,8 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # ssn page
-    expect(page).to have_content(t('in_person_proofing.headings.ssn'))
+    expect(page).to have_content(t('doc_auth.headings.ssn'))
+    fill_out_ssn_form_ok
     click_idv_continue
 
     # verify page

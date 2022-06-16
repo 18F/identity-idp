@@ -39,7 +39,7 @@ feature 'SP Costing', :email do
     user.active_profile.update!(verified_at: 60.days.ago)
 
     visit_idp_from_sp_with_ial2(:oidc, verified_within: '45d')
-    fill_in_credentials_and_submit(user.email, password)
+    fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, password)
     fill_in_code_with_last_phone_otp
     click_submit_default
     complete_all_doc_auth_steps

@@ -2,7 +2,6 @@ module KeyRotator
   class HmacFingerprinter
     def rotate(user:, pii_attributes: nil, profile: nil)
       User.transaction do
-        rotate_email_fingerprint(user)
         rotate_email_fingerprints(user)
         if pii_attributes
           profile ||= user.active_profile
@@ -14,11 +13,6 @@ module KeyRotator
     private
 
     # rubocop:disable Rails/SkipsModelValidations
-    def rotate_email_fingerprint(user)
-      ee = EncryptedAttribute.new_from_decrypted(user.email)
-      user.update_columns(email_fingerprint: ee.fingerprint)
-    end
-
     def rotate_pii_fingerprints(profile, pii_attributes)
       ssn_fingerprint = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
 

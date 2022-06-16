@@ -216,7 +216,7 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).
-              to include("Invalid issuer. Expected #{client_id}, received wrong")
+              to include("Invalid issuer. Expected [\"#{client_id}\"], received wrong")
           end
         end
 
@@ -295,7 +295,7 @@ RSpec.describe OpenidConnectTokenForm do
 
           it 'is invalid' do
             expect(valid?).to eq(false)
-            expect(form.errors[:client_assertion]).to include('Signature verification raised')
+            expect(form.errors[:client_assertion]).to include('Signature verification failed')
           end
         end
       end

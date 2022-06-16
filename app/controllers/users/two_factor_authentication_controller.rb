@@ -8,8 +8,11 @@ module Users
     before_action :redirect_if_blank_phone, only: [:send_code]
 
     def show
-      service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
-        backup_code_redirect || redirect_on_nothing_enabled
+      service_provider_mfa_requirement_redirect ||
+        non_phone_redirect ||
+        phone_redirect ||
+        backup_code_redirect ||
+        redirect_on_nothing_enabled
     end
 
     def send_code
@@ -200,7 +203,7 @@ module Users
     def track_events(otp_delivery_preference:)
       analytics.telephony_otp_sent(
         area_code: parsed_phone.area_code,
-        country_code: parsed_phone.country_code,
+        country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         context: context,
         otp_delivery_preference: otp_delivery_preference,
