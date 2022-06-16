@@ -1389,6 +1389,7 @@ module AnalyticsEvents
 
   # param [Boolean] success
   # param [Hash] errors
+  # param [Hash] error_details
   # param [String] delivery_preference
   # param [Integer] phone_configuration_id
   # param [Boolean] make_default_number
@@ -1421,11 +1422,10 @@ module AnalyticsEvents
   # param [Hash] errors
   # param [Integer] phone_configuration_id
   # tracks a phone number deletion event
-  def phone_deletion(success:, errors:, phone_configuration_id:, **extra)
+  def phone_deletion(success:, phone_configuration_id:, **extra)
     track_event(
       'Phone Number Deletion: Submitted',
       success: success,
-      errors: errors,
       phone_configuration_id: phone_configuration_id,
       **extra,
     )
@@ -1444,6 +1444,7 @@ module AnalyticsEvents
   end
 
   # param [String] error
+  #
   def profile_encryption_invalid(error:, **extra)
     track_event('Profile Encryption: Invalid', error: error, **extra)
   end
