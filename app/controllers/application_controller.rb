@@ -79,6 +79,21 @@ class ApplicationController < ActionController::Base
     effective_user || AnonymousUser.new
   end
 
+  def irs_attempts_api_tracker
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
+      session_id: irs_attempts_api_session_id,
+      enabled_for_session: irs_attempt_api_enabled_for_session?,
+    )
+  end
+
+  def irs_attempt_api_enabled_for_session?
+    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+  end
+
+  def irs_attempts_api_session_id
+    decorated_session.irs_attempts_api_session_id
+  end
+
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end

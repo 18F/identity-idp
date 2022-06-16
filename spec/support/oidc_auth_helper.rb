@@ -57,7 +57,8 @@ module OidcAuthHelper
   def ial1_params(prompt: nil,
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
-                  client_id: OIDC_ISSUER)
+                  client_id: OIDC_ISSUER,
+                  irs_attempts_api_session_id: nil)
     ial1_params = {
       client_id: client_id,
       response_type: 'code',
@@ -67,6 +68,9 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
+    if irs_attempts_api_session_id
+      ial1_params[:irs_attempts_api_session_id] = irs_attempts_api_session_id
+    end
     ial1_params[:prompt] = prompt if prompt
     ial1_params
   end
@@ -75,7 +79,8 @@ module OidcAuthHelper
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
                   client_id: OIDC_ISSUER,
-                  acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
+                  acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                  irs_attempts_api_session_id: nil)
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
@@ -85,6 +90,9 @@ module OidcAuthHelper
       state: state,
       nonce: nonce,
     }
+    if irs_attempts_api_session_id
+      ial2_params[:irs_attempts_api_session_id] = irs_attempts_api_session_id
+    end
     ial2_params[:prompt] = prompt if prompt
     ial2_params
   end

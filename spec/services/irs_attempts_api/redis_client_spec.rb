@@ -1,18 +1,16 @@
 require 'rails_helper'
 
 describe IrsAttemptsApi::RedisClient do
-  before do
-    IrsAttemptsApi::RedisClient.clear_attempts!
-  end
-
   describe '#write_event' do
     it 'writes the attempt data to redis with the JTI as the key' do
-      jti, jwe = IrsAttemptsApi::EncryptedEventTokenBuilder.new(
+      event = IrsAttemptsApi::AttemptEvent.new(
         event_type: 'test_event',
         session_id: 'test-session-id',
         occurred_at: Time.zone.now,
         event_metadata: { 'foo' => 'bar' },
-      ).build_event_token
+      )
+      jti = event.jti
+      jwe = event.to_jwe
 
       subject.write_event(jti: jti, jwe: jwe)
 
@@ -27,12 +25,14 @@ describe IrsAttemptsApi::RedisClient do
     it 'reads the event events from redis' do
       events = {}
       3.times do
-        jti, jwe = IrsAttemptsApi::EncryptedEventTokenBuilder.new(
+        event = IrsAttemptsApi::AttemptEvent.new(
           event_type: 'test_event',
           session_id: 'test-session-id',
           occurred_at: Time.zone.now,
           event_metadata: { 'foo' => 'bar' },
-        ).build_event_token
+        )
+        jti = event.jti
+        jwe = event.to_jwe
         events[jti] = jwe
       end
       events.each do |jti, jwe|
@@ -49,13 +49,15 @@ describe IrsAttemptsApi::RedisClient do
     it 'deletes the events from redis' do
       events = {}
       3.times do
-        jti, jwe = IrsAttemptsApi::EncryptedEventTokenBuilder.new(
+        event = IrsAttemptsApi::AttemptEvent.new(
           event_type: 'test_event',
           session_id: 'test-session-id',
           occurred_at: Time.zone.now,
           event_metadata: { 'foo' => 'bar' },
-        ).build_event_token
-        events[jti] = jwe
+        )
+        jti = event.jti
+        jwe = event.to_jwe
+        events[jti] = event.to_jwe
       end
       events.each do |jti, jwe|
         subject.write_event(jti: jti, jwe: jwe)
