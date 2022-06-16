@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Users::BackupCodeSetupController do
-  # remove after next deployment
+  # TODO remove after next deployment
   it 'has backup codes available for download' do
     user = build(:user, :signed_up)
     stub_sign_in(user)
