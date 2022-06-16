@@ -23,7 +23,7 @@
     <% end %>
 
     <% if @presenter.show_account_reset_requested_partial? %>
-      <%= render 'accounts/password_reset', presenter: @presenter %>
+      <%= render 'accounts/account_restored', presenter: @presenter %>
     <% end %>
   </div>
 <% end %>
