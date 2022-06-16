@@ -34,6 +34,10 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
+  def click_upload_new_photos_link
+    click_on t('doc_auth.headings.capture_scan_warning_link')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
@@ -144,6 +148,14 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
     complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
     complete_ssn_step
+
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
+  end
+
+  def complete_doc_auth_steps_before_verify_step_with_barcode_warning(expect_accessible: false)
+    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
+    complete_ssn_step
+    #flow_session[:had_barcode_read_failure] = true
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 

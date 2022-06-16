@@ -12,7 +12,8 @@
               t('doc_auth.headings.capture_scan_warning_link'),
               idv_doc_auth_step_path(step: :redo_doc_auth),
               method: :put,
-              class: 'usa-button usa-button--unstyled clearfix',
+              form_class: 'display-inline',
+              class: 'usa-button usa-button--unstyled',
               'aria-label': t('doc_auth.buttons.change_ssn_label'),
               ),
           ).html_safe %>
