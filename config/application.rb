@@ -17,7 +17,7 @@ Bundler.require(*Rails.groups)
 
 APP_NAME = 'Login.gov'.freeze
 
-module Upaya
+module Identity
   class Application < Rails::Application
     if (log_level = ENV['LOGIN_TASK_LOG_LEVEL'])
       Identity::Hostdata.logger.level = log_level
@@ -104,6 +104,8 @@ module Upaya
     config.middleware.use Utf8Sanitizer
     require 'secure_cookies'
     config.middleware.insert_after ActionDispatch::Static, SecureCookies
+    require 'session_store_migration'
+    config.middleware.insert_after SecureCookies, SessionStoreMigration
 
     # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do

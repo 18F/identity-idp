@@ -1,7 +1,7 @@
 postgresql: &postgresql
   adapter: postgresql
   encoding: utf8
-  database: upaya_<%= Rails.env %>
+  database: identity_idp_<%= Rails.env %>
   port: 5432
   username: <%= ENV['DOCKER_DB_USER'] %>
 
@@ -30,7 +30,7 @@ development:
     replica: true
   worker_jobs:
     <<: *defaults
-    database: upaya_worker_jobs_<%= Rails.env %>
+    database: identity_idp_worker_jobs_<%= Rails.env %>
     migrations_paths: db/worker_jobs_migrate
 
 test:
@@ -38,7 +38,7 @@ test:
     <<: *defaults
     pool: 10
     checkout_timeout: 10
-    database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
+    database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
     user: <%= ENV['POSTGRES_USER'] %>
     password: <%= ENV['POSTGRES_PASSWORD'] %>
     migrations_paths: db/primary_migrate
@@ -47,7 +47,7 @@ test:
     replica: true
   worker_jobs:
     <<: *test
-    database: <%= "upaya_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
+    database: <%= "identity_idp_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
 
 <%
