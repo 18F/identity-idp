@@ -39,10 +39,17 @@ describe Api::Verify::DocumentCaptureErrorsController do
       end
 
       context 'with valid document capture session' do
-        let(:document_capture_session) { DocumentCaptureSession.create(user: user) }
+        let(:document_capture_session) do
+          DocumentCaptureSession.create(user: user, ocr_confirmation_pending: true)
+        end
         let(:params) { { document_capture_session_uuid: document_capture_session.uuid } }
 
-        it 'renders successful response' do
+        it 'deletes errors and renders successful response' do
+          expect { response }.
+            to change { document_capture_session.reload.ocr_confirmation_pending }.
+            from(true).
+            to(false)
+
           expect(response.status).to eq 200
           expect(parsed_body).to eq({})
         end
