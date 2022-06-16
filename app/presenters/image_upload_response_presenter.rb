@@ -34,10 +34,9 @@ class ImageUploadResponsePresenter
     if success? && !attention_with_barcode?
       { success: true }
     else
-      hints = @form_response.errors[:hints]
       json = { success: false, errors: errors, remaining_attempts: remaining_attempts }
       json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
-      json[:hints] = hints unless hints.blank?
+      json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
       json
     end
@@ -48,6 +47,10 @@ class ImageUploadResponsePresenter
   end
 
   private
+
+  def show_hints?
+    @form_response.errors[:hints].present? || attention_with_barcode?
+  end
 
   def attention_with_barcode?
     ocr_pii.present?
