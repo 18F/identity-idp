@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth ssn step' do
+feature 'doc auth ssn step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
@@ -21,7 +21,7 @@ feature 'doc auth ssn step' do
       )
     end
 
-    it 'proceeds to the next page with valid info', js: true do
+    it 'proceeds to the next page with valid info' do
       fill_out_ssn_form_ok
       expect(page.find_field(t('idv.form.ssn_label_html'))['aria-invalid']).to eq('false')
       click_idv_continue
@@ -29,7 +29,7 @@ feature 'doc auth ssn step' do
       expect(page).to have_current_path(idv_doc_auth_verify_step)
     end
 
-    it 'does not proceed to the next page with invalid info', js: true do
+    it 'does not proceed to the next page with invalid info' do
       fill_out_ssn_form_fail
       click_idv_continue
 

@@ -35,7 +35,7 @@ shared_examples 'gpo otp verification step' do |sp|
       click_agree_and_continue
 
       if sp == :saml
-        expect(current_url).to eq @saml_authn_request
+        expect(current_path).to eq(test_saml_decode_assertion_path)
       elsif sp == :oidc
         redirect_uri = URI(current_url)
 
