@@ -21,6 +21,10 @@
     <% if @presenter.show_service_provider_continue_partial? %>
       <%= render 'accounts/service_provider_continue', presenter: @presenter %>
     <% end %>
+
+    <% if @presenter.show_account_reset_requested_partial? %>
+      <%= render 'accounts/password_reset', presenter: @presenter %>
+    <% end %>
   </div>
 <% end %>
 
