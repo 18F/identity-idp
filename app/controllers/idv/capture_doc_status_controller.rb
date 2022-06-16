@@ -23,6 +23,8 @@ module Idv
           :gone
         elsif throttled?
           :too_many_requests
+        elsif confirmed_barcode_attention_result?
+          :ok
         elsif session_result.blank? || pending_barcode_attention_confirmation?
           :accepted
         elsif !session_result.success?
@@ -57,6 +59,11 @@ module Idv
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       ).throttled?
+    end
+
+    def confirmed_barcode_attention_result?
+      flow_session[:had_barcode_attention_error] &&
+        !document_capture_session.ocr_confirmation_pending?
     end
 
     def pending_barcode_attention_confirmation?
