@@ -1459,7 +1459,7 @@ module AnalyticsEvents
     )
   end
 
-  # User has viewed the change in phone number page
+  # User has viewed the page to change their phone number
   def phone_change_viewed
     track_event('Phone Number Change: Visited')
   end
