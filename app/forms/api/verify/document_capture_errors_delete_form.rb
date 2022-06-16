@@ -24,7 +24,7 @@ module Api
       private
 
       def validate_document_capture_session
-        return if document_capture_session
+        return if document_capture_session || !document_capture_session_uuid
         errors.add(
           :document_capture_session_uuid,
           'Invalid document capture session',
