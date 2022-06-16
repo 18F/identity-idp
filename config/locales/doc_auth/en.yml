@@ -113,6 +113,7 @@ en:
       dob: Date of Birth
       doc_success: We have verified your personal information
       first_name: First Name
+      id_number: ID Number
       last_name: Last Name
       selected_file: Selected file
       ssn: Social Security Number

@@ -1,15 +1,5 @@
-<% title t('titles.doc_auth.verify') %>
+<div id="form-steps-wait-alert"></div>
 
-<h1 class="h3 margin-y-0">
-  <%= t('in_person_proofing.headings.verify') %>
-</h1>
+<% title t('titles.doc_auth.verify_info') %>
 
-<%= validated_form_for :doc_auth,
-                       url: url_for,
-                       method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
-  <%= f.button :button,
-               t('doc_auth.buttons.continue'),
-               type: :submit,
-               class: 'usa-button--big usa-button--wide' %>
-<% end %>
+<%= render 'idv/shared/verify', pii: pii, remote_identity_proofing: false %>

@@ -8,6 +8,12 @@ module Idv
           # the idv flow
           redirect_to idv_phone_url
         end
+
+        def extra_view_variables
+          {
+            pii: flow_session[:pii_from_user],
+          }
+        end
       end
     end
   end

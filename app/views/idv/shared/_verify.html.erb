@@ -1,0 +1,106 @@
+<%#
+locals:
+  pii - user's PII information
+%>
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
+<div class='margin-top-4 margin-bottom-2'>
+  <% if remote_identity_proofing %>
+    <div>
+      <%= "#{t('doc_auth.forms.first_name')}: #{pii[:first_name]}" %>
+    </div>
+    <div>
+      <%= "#{t('doc_auth.forms.last_name')}: #{pii[:last_name]}" %>
+    </div>
+    <div class='padding-bottom-1'>
+      <%= "#{t('doc_auth.forms.dob')}: #{pii[:dob]}" %>
+    </div>
+  </div>
+  <% else %>
+    <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
+      <div class='grid-col-fill'>
+        <div>
+          <%= "#{t('doc_auth.forms.first_name')}: #{pii[:first_name]}" %>
+        </div>
+        <div>
+          <%= "#{t('doc_auth.forms.last_name')}: #{pii[:last_name]}" %>
+        </div>
+        <div>
+          <%= "#{t('doc_auth.forms.id_number')}: #{pii[:state_id_number]}" %>
+        </div>
+        <div class='padding-bottom-1'>
+          <%= "#{t('doc_auth.forms.dob')}: #{pii[:dob]}" %>
+        </div>
+      </div>
+      <div class='grid-auto'>
+        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url, 'aria-label': t('doc_auth.buttons.change_address_label')) %>
+      </div>
+    </div>
+  <% end %>
+    <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
+      <div class='grid-col-fill'>
+        <div>
+          <%= "#{t('doc_auth.forms.address1')}: #{pii[:address1]}" %>
+        </div>
+        <div>
+          <%= "#{t('doc_auth.forms.city')}: #{pii[:city]}" %>
+        </div>
+        <div>
+          <%= "#{t('doc_auth.forms.state')}: #{pii[:state]}" %>
+        </div>
+        <div>
+          <%= "#{t('doc_auth.forms.zip_code')}: #{pii[:zipcode]}" %>
+        </div>
+      </div>
+      <div class='grid-auto'>
+        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url, 'aria-label': t('doc_auth.buttons.change_address_label')) %>
+      </div>
+    </div>
+    <div class="grid-row grid-gap grid-gap-2 padding-top-1">
+      <div class='grid-col-fill'>
+        <%= t('doc_auth.forms.ssn') %>:
+        <%= render(
+              'shared/masked_text',
+              text: SsnFormatter.format(pii[:ssn]),
+              masked_text: SsnFormatter.format_masked(pii[:ssn]),
+              accessible_masked_text: t(
+                'idv.accessible_labels.masked_ssn',
+                first_number: pii[:ssn][0],
+                last_number: pii[:ssn][-1],
+              ),
+              toggle_label: t('forms.ssn.show'),
+            ) %>
+      </div>
+      <div class='grid-auto'>
+        <%= button_to(
+              idv_doc_auth_step_path(step: :redo_ssn),
+              method: :put,
+              class: 'usa-button usa-button--unstyled',
+              'aria-label': t('doc_auth.buttons.change_ssn_label'),
+            ) { t('doc_auth.buttons.change_ssn') } %>
+      </div>
+    </div>
+  <div class="margin-top-5">
+    <%= render SpinnerButtonComponent.new(
+          action: ->(**tag_options, &block) do
+            button_to(url_for, **tag_options, &block)
+          end,
+          big: true,
+          wide: true,
+          action_message: t('doc_auth.info.verifying'),
+          method: :put,
+          form: {
+            class: 'button_to',
+            data: {
+              form_steps_wait: '',
+              error_message: t('idv.failure.exceptions.internal_error'),
+              alert_target: '#form-steps-wait-alert',
+              wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
+              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+            },
+          },
+        ).with_content(t('forms.buttons.continue')) %>
+  </div>
+</div>
+
+<% javascript_packs_tag_once 'form-steps-wait' %>
+<%= render 'idv/doc_auth/start_over_or_cancel', step: 'verify' %>
