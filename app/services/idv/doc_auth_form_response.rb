@@ -1,18 +1,18 @@
 module Idv
   # A custom form response with additional noop methods to allow merging with DocAuth responses
   class DocAuthFormResponse < ::FormResponse
-    attr_accessor :ocr_pii
+    attr_accessor :pii_from_doc
 
     def exception; end
 
-    def pii_from_doc
-      {}
+    def attention_with_barcode?
+      extra[:attention_with_barcode].present?
     end
 
     def merge(other)
       merged = super
-      merged.ocr_pii = other.ocr_pii if other.respond_to? :ocr_pii
-      merged.ocr_pii ||= ocr_pii
+      merged.pii_from_doc = other.pii_from_doc if other.respond_to? :pii_from_doc
+      merged.pii_from_doc ||= pii_from_doc
       merged
     end
   end

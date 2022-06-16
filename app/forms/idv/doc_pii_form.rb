@@ -8,6 +8,7 @@ module Idv
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
+      @pii_from_doc = pii
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
@@ -22,17 +23,16 @@ module Idv
         errors: errors,
         extra: {
           pii_like_keypaths: [[:pii]], # see errors.add(:pii)
+          attention_with_barcode: attention_with_barcode?,
         },
       )
-      response.ocr_pii = ocr_pii if attention_with_barcode?
+      response.pii_from_doc = pii_from_doc
       response
     end
 
     private
 
-    def ocr_pii
-      { first_name: first_name, last_name: last_name, dob: dob }
-    end
+    attr_reader :pii_from_doc
 
     def validate_pii
       if error_count > 1

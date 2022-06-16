@@ -53,10 +53,11 @@ class ImageUploadResponsePresenter
   end
 
   def attention_with_barcode?
-    ocr_pii.present?
+    @form_response.respond_to?(:attention_with_barcode?) && @form_response.attention_with_barcode?
   end
 
   def ocr_pii
-    @form_response.ocr_pii if @form_response.respond_to? :ocr_pii
+    return unless attention_with_barcode? && @form_response.respond_to?(:pii_from_doc)
+    @form_response.pii_from_doc&.slice(:first_name, :last_name, :dob)
   end
 end
