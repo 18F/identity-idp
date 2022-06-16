@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Api::Verify::PasswordResetController do
   let(:request_id) { 'request_id' }
-  let(:user) { create(:user) }
+  let(:user) { build(:user) }
   let(:sp_session) { { request_id: request_id } }
 
   before do

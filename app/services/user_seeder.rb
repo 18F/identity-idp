@@ -38,12 +38,13 @@ class UserSeeder
         row['password'] = PASSWORD
         ee = EncryptedAttribute.new_from_decrypted(email)
 
-        user = User.create!
-        codes = setup_user(user: user, ee: ee)
-        row['codes'] = codes.join('|')
+        User.create!(email_fingerprint: ee.fingerprint) do |user|
+          codes = setup_user(user: user, ee: ee)
+          row['codes'] = codes.join('|')
 
-        personal_key = create_profile(user: user, row: row)
-        row['personal_key'] = personal_key
+          personal_key = create_profile(user: user, row: row)
+          row['personal_key'] = personal_key
+        end
       end
     end
 
@@ -94,9 +95,12 @@ class UserSeeder
   end
 
   def setup_user(user:, ee:)
-    EmailAddress.create!(user: user, email: ee.decrypted, confirmed_at: Time.zone.now)
+    user.encrypted_email = ee.encrypted
     user.reset_password(PASSWORD, PASSWORD)
     Event.create(user_id: user.id, event_type: :account_created)
+    # rubocop:disable Rails/SkipsModelValidations
+    user.email_addresses.update_all(confirmed_at: Time.zone.now)
+    # rubocop:enable Rails/SkipsModelValidations
     generator = BackupCodeGenerator.new(user)
     generator.generate.tap do |codes|
       generator.save(codes)

@@ -20,8 +20,7 @@ describe Idv::ForgotPasswordController do
 
   describe '#update' do
     it 'tracks an analytics event' do
-      user = create(:user)
-      stub_sign_in(user)
+      stub_sign_in
       stub_analytics
 
       expect(@analytics).to receive(:track_event).with('IdV: forgot password confirmed')
