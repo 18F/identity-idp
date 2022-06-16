@@ -2,11 +2,26 @@
 es:
   in_person_proofing:
     body:
+      address:
+        info_html: 'Si su dirección actual no coincide con la dirección que
+          figura en su documento de identidad, deberá presentar un comprobante
+          de su dirección actual en la oficina de correos.'
+        learn_more: Aprende más
       state_id:
         info_html: 'Ingrese la información <strong>exactamente como aparece en su
           identificación emitida por el estado.</strong> Usaremos esta
           información para confirmar que coincida con su ID en persona.'
     form:
+      address:
+        address1: Dirección
+        address2: Dirección (opcional)
+        city: Ciudad
+        same_address: '¿Aparece esta dirección en la identificación emitida por el estado que lleva a la oficina de correos?'
+        same_address_choice_no: Tengo una dirección diferente en mi identificación
+        same_address_choice_yes: Esta dirección está en mi identificación emitida por el estado
+        state: Estado
+        state_prompt: '- Seleccione -'
+        zipcode: Código postal
       state_id:
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'
