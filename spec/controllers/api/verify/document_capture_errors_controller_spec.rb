@@ -23,7 +23,7 @@ describe Api::Verify::DocumentCaptureErrorsController do
       it 'renders errors for missing fields' do
         expect(response.status).to eq 400
         expect(parsed_body).to eq(
-          { errors: { document_capture_session_uuid: ['Please fill in this field.'] } },
+          { errors: { document_capture_session_uuid: [t('errors.messages.blank')] } },
         )
       end
 
