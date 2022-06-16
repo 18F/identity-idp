@@ -6,7 +6,7 @@ module Api
       def create
         analytics.idv_forgot_password_confirmed
         request_id = sp_session[:request_id]
-        email = current_user.email
+        email = current_user.confirmed_email_addresses.first.email
         reset_password(email, request_id)
 
         render json: { redirect_url: forgot_password_url(request_id: request_id) },

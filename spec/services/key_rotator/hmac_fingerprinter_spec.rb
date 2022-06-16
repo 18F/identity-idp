@@ -19,7 +19,7 @@ describe KeyRotator::HmacFingerprinter do
 
       old_ssn_signature = profile.ssn_signature
       old_compound_signature = profile.name_zip_birth_year_signature
-      old_email_fingerprint = user.email_fingerprint
+      old_email_fingerprint = user.email_addresses.first.email_fingerprint
 
       rotate_hmac_key
 
@@ -27,7 +27,7 @@ describe KeyRotator::HmacFingerprinter do
 
       expect(user.active_profile.ssn_signature).to_not eq old_ssn_signature
       expect(user.active_profile.name_zip_birth_year_signature).to_not eq old_compound_signature
-      expect(user.email_fingerprint).to_not eq old_email_fingerprint
+      expect(user.email_addresses.first.email_fingerprint).to_not eq old_email_fingerprint
     end
 
     it 'does not change the `updated_at` timestamp' do
@@ -46,14 +46,14 @@ describe KeyRotator::HmacFingerprinter do
 
     it 'changes email fingerprint if no active profile' do
       rotator = described_class.new
-      user = create(:user)
-      old_email_fingerprint = user.email_fingerprint
+      user = create(:email_address).user
+      old_email_fingerprint = user.email_addresses.first.email_fingerprint
 
       rotate_hmac_key
 
       rotator.rotate(user: user)
 
-      expect(user.email_fingerprint).to_not eq old_email_fingerprint
+      expect(user.email_addresses.first.email_fingerprint).to_not eq old_email_fingerprint
     end
   end
 end

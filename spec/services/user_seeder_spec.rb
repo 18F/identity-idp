@@ -70,13 +70,9 @@ RSpec.describe UserSeeder do
       end
 
       def create_user_with_email(email)
-        ee = EncryptedAttribute.new_from_decrypted(email)
-        user = User.create!(email_fingerprint: ee.fingerprint)
-        user.encrypted_email = ee.encrypted
+        user = User.create!
+        EmailAddress.create!(user: user, email: email, confirmed_at: Time.zone.now)
         user.reset_password('S00per Seekret', 'S00per Seekret')
-        # rubocop:disable Rails/SkipsModelValidations
-        user.email_addresses.update_all(confirmed_at: Time.zone.now)
-        # rubocop:enable Rails/SkipsModelValidations
       end
     end
 
