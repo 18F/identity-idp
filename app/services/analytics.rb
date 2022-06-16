@@ -142,7 +142,6 @@ class Analytics
   PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'
   PERSONAL_KEY_REACTIVATION_VISITED = 'Personal key reactivation: Personal key form visitted'
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'
-  PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
   PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'

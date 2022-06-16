@@ -1443,6 +1443,11 @@ module AnalyticsEvents
     )
   end
 
+  # param [String] error
+  def profile_encryption_invalid(error:, **extra)
+    track_event('Profile Encryption: Invalid', error: error, **extra)
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create

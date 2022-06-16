@@ -355,7 +355,7 @@ describe Users::SessionsController, devise: true do
           error: 'Unable to parse encrypted payload',
         }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
+          with('Profile Encryption: Invalid', profile_encryption_error)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
