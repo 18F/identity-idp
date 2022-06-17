@@ -213,4 +213,22 @@ describe('document-capture/components/review-issues-step', () => {
       });
     });
   });
+
+  context('with barcode attention error', () => {
+    it('renders initially with warning page', () => {
+      async () => {
+        const { getByRole, getByText } = render(
+          <ReviewIssuesStep
+            pii={{ first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' }}
+          />,
+        );
+
+        expect(getByText('doc_auth.errors.barcode_attention.heading')).to.be.ok();
+
+        await userEvent.click(getByRole('button', { name: 'doc_auth.buttons.add_new_photos' }));
+
+        expect(getByText('doc_auth.headings.review_issues')).to.be.ok();
+      };
+    });
+  });
 });
