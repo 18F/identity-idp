@@ -12,6 +12,8 @@ module Users
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       if params.key?(:token)
         process_piv_cac_setup

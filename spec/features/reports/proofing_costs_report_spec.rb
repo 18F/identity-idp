@@ -35,14 +35,14 @@ feature 'Proofing Costs report' do
     expect(report).to eq({})
   end
 
-  it 'works for one flow' do
+  it 'works for one flow', js: true do
     sign_in_and_2fa_user(user)
     complete_all_doc_auth_steps
 
     expect(report).to eq(verify_funnel.merge(summary1))
   end
 
-  it 'works for two flows' do
+  it 'works for two flows', js: true do
     sign_in_and_2fa_user(user)
     complete_all_doc_auth_steps
     sign_in_and_2fa_user(user2)

@@ -692,6 +692,11 @@ module AnalyticsEvents
     track_event('IdV: personal key submitted')
   end
 
+  # A user has downloaded their backup codes
+  def multi_factor_auth_backup_code_download
+    track_event('Multi-Factor Authentication: download backup code')
+  end
+
   # A user has downloaded their personal key. This event is no longer emitted.
   # @identity.idp.previous_event_name IdV: download personal key
   def idv_personal_key_downloaded
@@ -1173,7 +1178,6 @@ module AnalyticsEvents
   # @param [String] country_code
   # @param [String] phone_type
   # @param [Hash] types
-  # @param [Hash] pii_like_keypaths
   def multi_factor_auth_phone_setup(success:,
                                     errors:,
                                     otp_delivery_preference:,
@@ -1345,6 +1349,88 @@ module AnalyticsEvents
   # User has visited the page that lets them confirm if they want a new personal key
   def profile_personal_key_visit
     track_event('Profile: Visited new personal key')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] user_id UUID of the user to receive password token
+  # A password token has been sent for user
+  def password_reset_token(success:, errors:, user_id:, **extra)
+    track_event(
+      'Password Reset: Token Submitted',
+      success: success,
+      errors: errors,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Password reset form has been visited.
+  def password_reset_visit
+    track_event('Password Reset: Email Form Visited')
+  end
+
+  # Pending account reset cancelled
+  def pending_account_reset_cancelled
+    track_event('Pending account reset cancelled')
+  end
+
+  # Pending account reset visited
+  def pending_account_reset_visited
+    track_event('Pending account reset visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # Alert user if a personal key was used to sign in
+  def personal_key_alert_about_sign_in(success:, errors:, **extra)
+    track_event(
+      'Personal key: Alert user about sign in',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Account reactivated with personal key
+  def personal_key_reactivation
+    track_event('Personal key reactivation: Account reactivated with personal key')
+  end
+
+  # Account reactivated with personal key as MFA
+  def personal_key_reactivation_sign_in
+    track_event(
+      'Personal key reactivation: Account reactivated with personal key as MFA',
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] pii_like_keypaths
+  # Personal key form submitted
+  def personal_key_reactivation_submitted(success:, errors:, pii_like_keypaths:, **extra)
+    track_event(
+      'Personal key reactivation: Personal key form submitted',
+      success: success,
+      errors: errors,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # Personal key reactivation visited
+  def personal_key_reactivation_visited
+    track_event('Personal key reactivation: Personal key form visited')
+  end
+
+  # @param [Boolean] personal_key_present if personal key is present
+  # Personal key viewed
+  def personal_key_viewed(personal_key_present:, **extra)
+    track_event(
+      'Personal key viewed',
+      personal_key_present: personal_key_present,
+      **extra,
+    )
   end
 
   # @see #profile_personal_key_create_notifications

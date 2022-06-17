@@ -56,7 +56,9 @@ describe('StatusPage', () => {
           status="warning"
           header=""
           actionButtons={[<Button>Button</Button>]}
-          troubleshootingOptions={<TroubleshootingOptions options={[]} />}
+          troubleshootingOptions={
+            <TroubleshootingOptions options={[{ url: '/', text: 'Option' }]} />
+          }
         >
           <div>Content</div>
         </StatusPage>,

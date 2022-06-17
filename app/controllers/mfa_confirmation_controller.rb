@@ -25,7 +25,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   private
-
+  
   def password
     params.require(:user)[:password]
   end

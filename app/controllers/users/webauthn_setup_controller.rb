@@ -9,6 +9,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       form = WebauthnVisitForm.new
       result = form.submit(new_params)

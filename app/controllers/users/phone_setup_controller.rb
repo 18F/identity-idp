@@ -8,6 +8,8 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def index
       @new_phone_form = NewPhoneForm.new(current_user)
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)

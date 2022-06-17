@@ -48,7 +48,7 @@ module TwoFactorAuthentication
       response = UserAlerts::AlertUserAboutPersonalKeySignIn.call(
         current_user, event.disavowal_token
       )
-      analytics.track_event(Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN, response.to_h)
+      analytics.personal_key_alert_about_sign_in(**response.to_h)
     end
 
     def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
@@ -69,7 +69,7 @@ module TwoFactorAuthentication
     end
 
     def re_encrypt_profile_recovery_pii
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SIGN_IN)
+      analytics.personal_key_reactivation_sign_in
       Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
       user_session[:personal_key] = password_reset_profile.personal_key
     end

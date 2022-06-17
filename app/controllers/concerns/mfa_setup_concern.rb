@@ -42,12 +42,21 @@ module MfaSetupConcern
       IdentityConfig.store.select_multiple_mfa_options
   end
 
-  def suggest_second_mfa?
-    current_mfa_selection_count < 2 && MfaContext.new(current_user).enabled_mfa_methods_count < 2
+  def in_multi_mfa_selection_flow?
+    return false unless user_session[:mfa_selections].present?
+    mfa_selection_index < mfa_selection_count
   end
 
-  def current_mfa_selection_count
+  def suggest_second_mfa?
+    mfa_selection_count < 2 && MfaContext.new(current_user).enabled_mfa_methods_count < 2
+  end
+
+  def mfa_selection_count
     user_session[:mfa_selections]&.count || 0
+  end
+
+  def mfa_selection_index
+    user_session[:mfa_selection_index] || 0
   end
 
   private
@@ -56,6 +65,7 @@ module MfaSetupConcern
     return unless user_session[:mfa_selections]
     current_setup_step = user_session[:next_mfa_selection_choice]
     current_index = user_session[:mfa_selections].find_index(current_setup_step) || 0
+    user_session[:mfa_selection_index] = current_index
     current_index + 1
   end
 

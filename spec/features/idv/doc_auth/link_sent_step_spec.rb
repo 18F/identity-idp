@@ -80,8 +80,8 @@ feature 'doc auth link sent step' do
     it 'automatically advances when the mobile flow is complete' do
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
       expect(page).to_not have_button(t('forms.buttons.continue'))
-      expect(page).to_not have_content(t('doc_auth.info.link_sent_complete_nojs'))
-      expect(page).to have_content(t('doc_auth.info.link_sent_complete_js'))
+      expect(page).to_not have_content(t('doc_auth.info.link_sent_complete_no_polling'))
+      expect(page).to have_content(t('doc_auth.info.link_sent_complete_polling'))
 
       mock_doc_captured(user.id)
 

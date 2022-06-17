@@ -6,6 +6,7 @@ describe 'users/piv_cac_authentication_setup/new.html.erb' do
       user = create(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:user_session).and_return(signing_up: false)
+      allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
       form = OpenStruct.new
       @presenter = PivCacAuthenticationSetupPresenter.new(user, true, form)
 

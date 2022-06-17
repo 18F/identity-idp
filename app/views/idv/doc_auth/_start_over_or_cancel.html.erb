@@ -1,16 +1,13 @@
 <%#
 locals:
-* hide_start_over: Whether to omit the "Start Over" link
 * step: Current step, used in analytics logging.
 %>
 <div class="margin-top-4">
-  <% if !local_assigns[:hide_start_over] %>
-    <%= button_to(
-          idv_session_path(step: local_assigns[:step]),
-          method: :delete,
-          class: 'usa-button usa-button--unstyled',
-        ) { t('doc_auth.buttons.start_over') } %>
-  <% end %>
+  <%= button_to(
+        idv_session_path(step: local_assigns[:step]),
+        method: :delete,
+        class: 'usa-button usa-button--unstyled',
+      ) { t('doc_auth.buttons.start_over') } %>
   <div class="margin-top-2 padding-top-2 border-top border-primary-light">
     <%= link_to cancel_link_text, idv_cancel_path(step: local_assigns[:step]) %>
   </div>

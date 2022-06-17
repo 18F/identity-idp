@@ -7,6 +7,7 @@ describe 'users/totp_setup/new.html.erb' do
     before do
       allow(view).to receive(:current_user).and_return(user)
       allow(view).to receive(:user_session).and_return(signing_up: false)
+      allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
 
