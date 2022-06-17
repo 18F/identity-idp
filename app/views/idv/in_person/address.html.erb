@@ -3,7 +3,7 @@
 <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 
 <p>
-  <%= t('in_person_proofing.body.address.info_html') %>
+  <%= t('in_person_proofing.body.address.info') %>
   <%= new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
@@ -19,7 +19,7 @@
             label: t('in_person_proofing.form.address.address1'),
             required: true,
             maxlength: 255,
-            input_html: { aria: { invalid: false }, value: pii['address1'] },
+            label_html: { class: 'usa-label' },
           ) %>
     </div>
     <div class="margin-bottom-3">
@@ -29,7 +29,7 @@
             label: t('in_person_proofing.form.address.address2'),
             required: false,
             maxlength: 255,
-            input_html: { value: pii['address2'] },
+            label_html: { class: 'usa-label' },
           ) %>
     </div>
     <div class="margin-bottom-3">
@@ -39,7 +39,7 @@
             label: t('in_person_proofing.form.address.city'),
             required: true,
             maxlength: 255,
-            input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['city'] },
+            label_html: { class: 'usa-label' },
           ) %>
     </div>
 
@@ -50,7 +50,7 @@
           label: t('in_person_proofing.form.address.state'),
           prompt: t('in_person_proofing.form.address.state_prompt'),
           required: true,
-          selected: pii['state'],
+          label_html: { class: 'usa-label' },
         ) %>
 
     <div class="tablet:grid-col-6 margin-bottom-3">
@@ -61,31 +61,29 @@
             as: :tel,
             label: t('in_person_proofing.form.address.zipcode'),
             required: true,
-            pattern: '(\d{5}([\-]\d{4})?)',
-            input_html: { aria: { invalid: false }, class: 'usa-input', value: pii['zipcode'] },
+            pattern: '\d{5}([\-]\d{4})?',
+            label_html: { class: 'usa-label' },
             error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
           ) %>
     </div>
 
+    <%= render ValidatedFieldComponent.new(
+          name: :same_address_as_id,
+          form: f,
+          as: :radio_buttons,
+          wrapper: :borderless_uswds_radio_buttons,
+          label: t('in_person_proofing.form.address.same_address'),
+          required: true,
+          label_html: { class: 'usa-label' },
+          collection: [
+            [t('in_person_proofing.form.address.same_address_choice_yes'), true],
+            [t('in_person_proofing.form.address.same_address_choice_no'), false],
+          ],
+        ) %>
 
-    <div class="margin-top-0">
-      <%= render ValidatedFieldComponent.new(
-            name: :same_address_as_id,
-            form: f,
-            as: :radio_buttons,
-            wrapper: :borderless_uswds_radio_buttons,
-            label: t('in_person_proofing.form.address.same_address'),
-            required: true,
-            collection: [
-              [t('in_person_proofing.form.address.same_address_choice_yes'), true],
-              [t('in_person_proofing.form.address.same_address_choice_no'), false],
-            ],
-            input_html: { value: pii['same_address_as_id'] },
-          ) %>
-      </div>
-    <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-1">
+     <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
       <%= t('forms.buttons.continue') %>
-    </button>
+    <% end %>
   <% end %>
 </div>
 
