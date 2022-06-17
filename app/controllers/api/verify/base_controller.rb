@@ -1,7 +1,9 @@
 module Api
   module Verify
     class BaseController < ApplicationController
+      skip_before_action :verify_authenticity_token
       include RenderConditionConcern
+      include EffectiveUser
 
       class_attribute :required_step
 
@@ -11,14 +13,19 @@ module Api
         end
         IdentityConfig.store.idv_api_enabled_steps.include?(self.class.required_step)
       end
-      before_action :confirm_two_factor_authenticated_for_api
 
+      def render_errors(error_or_errors, status: :bad_request)
+        errors = error_or_errors.instance_of?(Hash) ? error_or_errors : Array(error_or_errors)
+        render json: { errors: errors }, status: status
+      end
+
+      before_action :confirm_two_factor_authenticated_for_api
       respond_to :json
 
       private
 
       def confirm_two_factor_authenticated_for_api
-        return if user_fully_authenticated?
+        return if effective_user
         render json: { error: 'user is not fully authenticated' }, status: :unauthorized
       end
     end
