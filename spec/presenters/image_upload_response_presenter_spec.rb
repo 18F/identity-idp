@@ -177,10 +177,13 @@ describe ImageUploadResponsePresenter do
     end
 
     context 'with form response as attention with barcode' do
-      let(:ocr_pii) { Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob) }
       let(:form_response) do
-        response = DocAuth::Response.new(success: true, extra: { remaining_attempts: 3 })
-        allow(response).to receive(:ocr_pii).and_return(ocr_pii)
+        response = DocAuth::Response.new(
+          success: true,
+          extra: { remaining_attempts: 3 },
+          pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
+        )
+        allow(response).to receive(:attention_with_barcode?).and_return(true)
         response
       end
 
@@ -190,7 +193,7 @@ describe ImageUploadResponsePresenter do
           errors: [],
           hints: true,
           remaining_attempts: 3,
-          ocr_pii: ocr_pii,
+          ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
         }
 
         expect(presenter.as_json).to eq expected
