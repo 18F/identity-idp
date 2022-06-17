@@ -130,7 +130,7 @@ module Users
     def process_valid_webauthn(form)
       create_user_event(:webauthn_key_added)
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_mfa_webauthn_added(
+      analytics.multi_factor_auth_added_webauthn(
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )

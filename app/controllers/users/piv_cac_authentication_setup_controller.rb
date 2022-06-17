@@ -117,7 +117,7 @@ module Users
 
     def track_mfa_method_added
       mfa_user = MfaContext.new(current_user)
-      analytics.user_registration_mfa_piv_cac_added(
+      analytics.multi_factor_auth_added_piv_cac(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')

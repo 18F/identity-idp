@@ -87,7 +87,7 @@ describe Users::WebauthnSetupController do
 
         expect(@analytics).to receive(:track_event).
           with(
-            'User Registration: MFA method webauthn added',
+            'Multi-Factor Authentication: Added webauthn',
             enabled_mfa_methods_count: 3,
             method_name: :webauthn,
             platform_authenticator: false,
