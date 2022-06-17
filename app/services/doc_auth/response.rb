@@ -8,12 +8,20 @@ module DocAuth
       'Drivers License' => 'drivers_license',
     }
 
-    def initialize(success:, errors: {}, exception: nil, extra: {}, pii_from_doc: {})
+    def initialize(
+      success:,
+      errors: {},
+      exception: nil,
+      extra: {},
+      pii_from_doc: {},
+      attention_with_barcode: false
+    )
       @success = success
       @errors = errors.to_h
       @exception = exception
       @extra = extra
       @pii_from_doc = pii_from_doc
+      @attention_with_barcode = attention_with_barcode
     end
 
     def merge(other)
@@ -23,6 +31,7 @@ module DocAuth
         exception: exception || other.exception,
         extra: extra.merge(other.extra),
         pii_from_doc: pii_from_doc.merge(other.pii_from_doc),
+        attention_with_barcode: attention_with_barcode? || other.attention_with_barcode?,
       )
     end
 
@@ -48,7 +57,7 @@ module DocAuth
     end
 
     def attention_with_barcode?
-      false
+      @attention_with_barcode
     end
   end
 end
