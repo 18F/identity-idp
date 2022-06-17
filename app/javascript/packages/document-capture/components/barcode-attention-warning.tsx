@@ -25,14 +25,13 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
   const { formData } = useContext(UploadContext);
 
   async function skipAttention() {
-    try {
-      await fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
-        method: 'DELETE',
-        body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
-      });
-    } catch {}
+    await window.fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
+      method: 'DELETE',
+      body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
+    });
     window.onbeforeunload = null;
-    window.location.reload();
+    const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
+    form?.submit();
   }
 
   return (
