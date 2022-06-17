@@ -11,6 +11,9 @@ module Idv
       }.freeze
 
       ACTIONS = {
+        redo_state_id: Idv::Actions::RedoStateIdAction,
+        redo_address: Idv::Actions::RedoAddressAction,
+        redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
 
       # WILLFIX: (LG-6308) move this to the barcode page when we finish setting up IPP step

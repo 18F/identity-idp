@@ -1,6 +1,7 @@
 <%#
 locals:
   pii - user's PII information
+  remote_identity_proofing - true if we're doing RIDP, false if we're doing IPP
 %>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
