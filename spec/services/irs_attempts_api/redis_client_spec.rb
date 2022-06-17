@@ -56,7 +56,6 @@ describe IrsAttemptsApi::RedisClient do
           event_metadata: { 'foo' => 'bar' },
         )
         jti = event.jti
-        jwe = event.to_jwe
         events[jti] = event.to_jwe
       end
       events.each do |jti, jwe|

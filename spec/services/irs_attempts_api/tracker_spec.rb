@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe IrsAttemptsApi::Tracker do
   before do
-    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(irs_attempt_api_enabled)
+    allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(
+      irs_attempt_api_enabled,
+    )
   end
 
   let(:irs_attempt_api_enabled) { true }
