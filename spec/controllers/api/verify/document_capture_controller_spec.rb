@@ -11,6 +11,13 @@ describe Api::Verify::DocumentCaptureController do
   let(:back_image_iv) { 'back-iv' }
   let(:selfie_image_url) { 'http://example.com/selfie' }
   let(:selfie_image_iv) { 'selfie-iv' }
+  let(:front_image_metadata) do
+    { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }
+  end
+  let(:back_image_metadata) do
+    { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }
+  end
+  let(:image_metadata) { { front: front_image_metadata, back: back_image_metadata } }
   let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:password) { 'iambatman' }
@@ -44,7 +51,7 @@ describe Api::Verify::DocumentCaptureController do
           document_capture_session,
           liveness_checking_enabled: liveness_checking_enabled,
           trace_id: nil,
-          image_metadata: {},
+          image_metadata: image_metadata,
           analytics_data: analytics_data,
           flow_path: flow_path,
         )
@@ -57,6 +64,8 @@ describe Api::Verify::DocumentCaptureController do
           front_image_url: front_image_url,
           back_image_url: back_image_url,
           selfie_image_url: selfie_image_url,
+          front_image_metadata: front_image_metadata.to_json,
+          back_image_metadata: back_image_metadata.to_json,
           document_capture_session_uuid: document_capture_session_uuid,
           flow_path: flow_path,
         }
