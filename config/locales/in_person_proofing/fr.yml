@@ -3,7 +3,7 @@ fr:
   in_person_proofing:
     body:
       address:
-        info_html: Si votre adresse actuelle ne correspond pas à l’adresse sur votre
+        info: Si votre adresse actuelle ne correspond pas à l’adresse sur votre
           pièce d’identité, vous devrez apporter une preuve de votre adresse
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus

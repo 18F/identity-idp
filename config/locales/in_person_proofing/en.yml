@@ -3,7 +3,7 @@ en:
   in_person_proofing:
     body:
       address:
-        info_html: 'If your current address does not match the address on your ID, you
+        info: 'If your current address does not match the address on your ID, you
           will need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
       state_id:

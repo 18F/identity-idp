@@ -3,7 +3,7 @@ es:
   in_person_proofing:
     body:
       address:
-        info_html: 'Si su dirección actual no coincide con la dirección que figura en su
+        info: 'Si su dirección actual no coincide con la dirección que figura en su
           documento de identidad, deberá presentar un comprobante de su
           dirección actual en la oficina de correos.'
         learn_more: Aprende más
