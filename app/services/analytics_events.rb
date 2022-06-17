@@ -1433,12 +1433,12 @@ module AnalyticsEvents
     )
   end
 
-  # param [Boolean] success
-  # param [Hash] errors
-  # param [Hash] error_details
-  # param [String] delivery_preference
-  # param [Integer] phone_configuration_id
-  # param [Boolean] make_default_number
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] delivery_preference
+  # @param [Integer] phone_configuration_id
+  # @param [Boolean] make_default_number
   # User has submitted a change in phone number
   def phone_change_submitted(
     success:,
@@ -1464,9 +1464,9 @@ module AnalyticsEvents
     track_event('Phone Number Change: Visited')
   end
 
-  # param [Boolean] success
-  # param [Hash] errors
-  # param [Integer] phone_configuration_id
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Integer] phone_configuration_id
   # tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
     track_event(
@@ -1477,8 +1477,8 @@ module AnalyticsEvents
     )
   end
 
-  # param [Boolean] success
-  # param [Hash] errors
+  # @param [Boolean] success
+  # @param [Hash] errors
   # tracks piv cac login event
   def piv_cac_login(success:, errors:, **extra)
     track_event(
@@ -1489,7 +1489,7 @@ module AnalyticsEvents
     )
   end
 
-  # param [String] error
+  # @param [String] error
   # Tracks if a Profile encryption is invalid
   def profile_encryption_invalid(error:, **extra)
     track_event('Profile Encryption: Invalid', error: error, **extra)
