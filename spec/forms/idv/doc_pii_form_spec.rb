@@ -53,6 +53,10 @@ describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
       end
     end
 
@@ -65,6 +69,10 @@ describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.full_name_check')]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
       end
     end
 
@@ -79,6 +87,10 @@ describe Idv::DocPiiForm do
         expect(result.errors[:pii]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
       end
     end
 
@@ -93,6 +105,10 @@ describe Idv::DocPiiForm do
         expect(result.errors[:pii]).to eq [
           t('doc_auth.errors.pii.birth_date_min_age'),
         ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
       end
     end
 
@@ -107,6 +123,20 @@ describe Idv::DocPiiForm do
         expect(result.errors[:pii]).to eq [
           t('doc_auth.errors.general.no_liveness'),
         ]
+        expect(result.extra).to eq(
+          attention_with_barcode: false,
+          pii_like_keypaths: [[:pii]],
+        )
+      end
+    end
+
+    context 'when there was attention with barcode' do
+      let(:subject) { Idv::DocPiiForm.new(pii: good_pii, attention_with_barcode: true) }
+
+      it 'adds value as extra attribute' do
+        result = subject.submit
+
+        expect(result.extra[:attention_with_barcode]).to eq(true)
       end
     end
   end
