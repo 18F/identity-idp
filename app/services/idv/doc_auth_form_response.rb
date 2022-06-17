@@ -15,8 +15,7 @@ module Idv
 
     def merge(other)
       merged = super
-      merged.pii_from_doc = other.pii_from_doc if other.respond_to? :pii_from_doc
-      merged.pii_from_doc ||= pii_from_doc
+      merged.pii_from_doc = other.respond_to?(:pii_from_doc) ? other.pii_from_doc : pii_from_doc
       merged
     end
   end
