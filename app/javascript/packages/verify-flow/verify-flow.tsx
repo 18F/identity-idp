@@ -12,6 +12,7 @@ import {
   AddressVerificationMethod,
   AddressVerificationMethodContextProvider,
 } from './context/address-verification-method-context';
+import ErrorBoundary from './error-boundary';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -136,23 +137,25 @@ function VerifyFlow({
   }
 
   return (
-    <FlowContext.Provider value={context}>
-      <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
-        <VerifyFlowStepIndicator currentStep={currentStep} />
-        <FormSteps
-          steps={steps}
-          initialValues={syncedValues}
-          initialStep={initialStep}
-          promptOnNavigate={false}
-          basePath={basePath}
-          titleFormat={`%{step} - ${getConfigValue('appName')}`}
-          onChange={setSyncedValues}
-          onStepSubmit={onStepSubmit}
-          onStepChange={setCurrentStep}
-          onComplete={onFormComplete}
-        />
-      </AddressVerificationMethodContextProvider>
-    </FlowContext.Provider>
+    <ErrorBoundary>
+      <FlowContext.Provider value={context}>
+        <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
+          <VerifyFlowStepIndicator currentStep={currentStep} />
+          <FormSteps
+            steps={steps}
+            initialValues={syncedValues}
+            initialStep={initialStep}
+            promptOnNavigate={false}
+            basePath={basePath}
+            titleFormat={`%{step} - ${getConfigValue('appName')}`}
+            onChange={setSyncedValues}
+            onStepSubmit={onStepSubmit}
+            onStepChange={setCurrentStep}
+            onComplete={onFormComplete}
+          />
+        </AddressVerificationMethodContextProvider>
+      </FlowContext.Provider>
+    </ErrorBoundary>
   );
 }
 
