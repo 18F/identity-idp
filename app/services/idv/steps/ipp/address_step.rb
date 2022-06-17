@@ -10,12 +10,6 @@ module Idv
           end
         end
 
-        def extra_view_variables
-          {
-            pii: flow_session[:pii_from_user],
-          }
-        end
-
         private
 
         def form_submit
