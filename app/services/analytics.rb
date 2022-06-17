@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  PHONE_CHANGE_SUBMITTED = 'Phone Number Change: Form submitted'
-  PHONE_CHANGE_VIEWED = 'Phone Number Change: Visited'
-  PHONE_DELETION = 'Phone Number Deletion: Submitted'
-  PIV_CAC_LOGIN = 'PIV/CAC Login'
-  PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'
   PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
   REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'

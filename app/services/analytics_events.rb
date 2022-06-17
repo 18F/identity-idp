@@ -1433,6 +1433,68 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] delivery_preference
+  # @param [Integer] phone_configuration_id
+  # @param [Boolean] make_default_number
+  # User has submitted a change in phone number
+  def phone_change_submitted(
+    success:,
+    errors:,
+    delivery_preference:,
+    phone_configuration_id:,
+    make_default_number:,
+    **extra
+  )
+    track_event(
+      'Phone Number Change: Form submitted',
+      success: success,
+      errors: errors,
+      delivery_preference: delivery_preference,
+      phone_configuration_id: phone_configuration_id,
+      make_default_number: make_default_number,
+      **extra,
+    )
+  end
+
+  # User has viewed the page to change their phone number
+  def phone_change_viewed
+    track_event('Phone Number Change: Visited')
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Integer] phone_configuration_id
+  # tracks a phone number deletion event
+  def phone_deletion(success:, phone_configuration_id:, **extra)
+    track_event(
+      'Phone Number Deletion: Submitted',
+      success: success,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # tracks piv cac login event
+  def piv_cac_login(success:, errors:, **extra)
+    track_event(
+      'PIV/CAC Login',
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # @param [String] error
+  # Tracks if a Profile encryption is invalid
+  def profile_encryption_invalid(error:, **extra)
+    track_event('Profile Encryption: Invalid', error: error, **extra)
+  end
+
   # @see #profile_personal_key_create_notifications
   # User has chosen to receive a new personal key
   def profile_personal_key_create
