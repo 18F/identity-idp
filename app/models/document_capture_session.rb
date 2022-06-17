@@ -15,7 +15,7 @@ class DocumentCaptureSession < ApplicationRecord
         pii: doc_auth_response.pii_from_doc,
         attention_with_barcode: doc_auth_response.attention_with_barcode?,
       ),
-      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
+      expires_in: IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.seconds.to_i,
     )
     self.ocr_confirmation_pending = doc_auth_response.attention_with_barcode?
     save!
