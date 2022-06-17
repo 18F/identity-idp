@@ -49,5 +49,29 @@ describe Api::Verify::BaseController do
         end
       end
     end
+
+    context 'with an explicitly nil required_step' do
+      controller Api::Verify::BaseController do
+        self.required_step = nil
+
+        def show
+          render json: {}
+        end
+      end
+
+      before { routes.draw { get '/' => 'api/verify/base#show' } }
+
+      it 'renders as unauthorized (401)' do
+        expect(response.status).to eq(401)
+      end
+
+      context 'with authenticated user' do
+        before { stub_sign_in }
+
+        it 'renders as ok (200)' do
+          expect(response.status).to eq(200)
+        end
+      end
+    end
   end
 end

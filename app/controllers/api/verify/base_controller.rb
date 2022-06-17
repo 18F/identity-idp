@@ -6,11 +6,14 @@ module Api
 
       class_attribute :required_step
 
+      def self.required_step
+        NotImplementedError.new('Controller must define required_step')
+      end
+
       check_or_render_not_found -> do
-        if self.class.required_step.blank?
-          raise NotImplementedError, 'Controller must define required_step'
-        end
-        IdentityConfig.store.idv_api_enabled_steps.include?(self.class.required_step)
+        required_step = self.class.required_step
+        raise required_step if required_step.is_a?(NotImplementedError)
+        !required_step || IdentityConfig.store.idv_api_enabled_steps.include?(required_step)
       end
 
       def render_errors(error_or_errors, status: :bad_request)
