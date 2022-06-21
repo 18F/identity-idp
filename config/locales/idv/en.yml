@@ -136,7 +136,7 @@ en:
           TEST SITE
         read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
-          information you’ve given us, so that only you can access it
+          information you’ve given us, so that only you can access it.
     review:
       dob: Date of birth
       full_name: Full name

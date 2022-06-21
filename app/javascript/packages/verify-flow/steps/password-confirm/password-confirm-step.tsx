@@ -10,13 +10,14 @@ import {
 import { PasswordToggle } from '@18f/identity-password-toggle';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { PageHeading, Accordion, Alert, Link } from '@18f/identity-components';
+import { PageHeading, Accordion, Alert, Link, ScrollIntoView } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
 import type { ChangeEvent } from 'react';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import PersonalInfoSummary from './personal-info-summary';
 import StartOverOrCancel from '../../start-over-or-cancel';
+import AddressVerificationMethodContext from '../../context/address-verification-method-context';
 import type { VerifyFlowValues } from '../..';
 import { PasswordSubmitError } from './submit';
 
@@ -27,6 +28,7 @@ const FORGOT_PASSWORD_PATH = 'forgot_password';
 function PasswordConfirmStep({ errors, registerField, onChange, value }: PasswordConfirmStepProps) {
   const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
+  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
   const stepPath = `${basePath}/password_confirm`;
   const [path] = useHistoryParam(undefined, { basePath: stepPath });
   useDidUpdateEffect(onPageTransition, [path]);
@@ -36,10 +38,11 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
   }
 
   const appName = getConfigValue('appName');
+  const stepErrors = errors.filter(({ error }) => error instanceof PasswordSubmitError);
 
   return (
     <>
-      {value.phone && (
+      {addressVerificationMethod === 'phone' && (
         <Alert type="success" className="margin-bottom-4">
           {formatHTML(
             t('idv.messages.review.info_verified_html', {
@@ -49,13 +52,15 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           )}
         </Alert>
       )}
-      {errors
-        .filter(({ error }) => error instanceof PasswordSubmitError)
-        .map(({ error }) => (
-          <Alert key={error.message} type="error" className="margin-bottom-4">
-            {error.message}
-          </Alert>
-        ))}
+      {stepErrors.length > 0 && (
+        <ScrollIntoView>
+          {stepErrors.map(({ error }) => (
+            <Alert key={error.message} type="error" className="margin-bottom-4">
+              {error.message}
+            </Alert>
+          ))}
+        </ScrollIntoView>
+      )}
       <PageHeading>{t('idv.titles.session.review', { app_name: appName })}</PageHeading>
       <p>{t('idv.messages.sessions.review_message', { app_name: appName })}</p>
       <p>

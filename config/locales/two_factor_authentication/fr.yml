@@ -147,20 +147,16 @@ fr:
       configurations_added:
         one: '(%{count} ajouté)'
         other: '(%{count} ajoutés)'
-      least_secure_label: Le moins sécurisé
-      less_secure_label: Moins sécurisé
-      more_secure_label: Plus sécurisé
       phone: Message texte ou vocal
       phone_info: Recevoir un code de sécurité par texto (SMS) ou appel téléphonique.
       phone_info_html: Recevoir un code de sécurité par texto (SMS) ou appel
-        téléphonique. <strong>Vous devez sélectionner une autre méthode en plus
-        de celle-ci.</strong>
+        téléphonique. <strong>Cette option nécessite que vous choisissiez une
+        méthode d’authentification supplémentaire.</strong>
       phone_info_no_voip: N’utilisez pas de services téléphoniques basés sur le Web (
         Voix sur IP ) ou de numéros de téléphone à tarif majoré ( péage ).
       piv_cac: Carte d’identification des employés du gouvernement
       piv_cac_info: Cartes PIV/CAC pour les fonctionnaires et les militaires. Bureau
         uniquement.
-      secure_label: Sécurisé
       sms: SMS
       sms_info: Obtenez votre code de sécurité par SMS.
       unused_backup_code:

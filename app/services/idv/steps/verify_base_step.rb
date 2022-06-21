@@ -1,11 +1,6 @@
 module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
-      AAMVA_SUPPORTED_JURISDICTIONS = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KS KY MA MD ME MI MO MS MT NC ND NE
-        NJ NM OH OR PA RI SC SD TN TX VA VT WA WI WY
-      ].to_set.freeze
-
       private
 
       def summarize_result_and_throttle_failures(summary_result)
@@ -25,20 +20,19 @@ module Idv
       end
 
       def check_ssn
-        pii_from_doc = flow_session[:pii_from_doc]
-        result = Idv::SsnForm.new(current_user).submit(ssn: pii_from_doc[:ssn])
+        result = Idv::SsnForm.new(current_user).submit(ssn: pii[:ssn])
 
         if result.success?
-          save_legacy_state(pii_from_doc)
-          flow_session.delete(:pii_from_doc)
+          save_legacy_state
+          delete_pii
         end
 
         result
       end
 
-      def save_legacy_state(pii_from_doc)
+      def save_legacy_state
         skip_legacy_steps
-        idv_session['applicant'] = pii_from_doc
+        idv_session['applicant'] = pii
         idv_session['applicant']['uuid'] = current_user.uuid
       end
 
@@ -61,6 +55,15 @@ module Idv
         end
       end
 
+      def pii
+        flow_session[:pii_from_doc].presence || flow_session[:pii_from_user]
+      end
+
+      def delete_pii
+        flow_session.delete(:pii_from_doc)
+        flow_session.delete(:pii_from_user)
+      end
+
       def idv_success(idv_result)
         idv_result[:success]
       end
@@ -78,7 +81,9 @@ module Idv
       end
 
       def aamva_state?(pii_from_doc)
-        AAMVA_SUPPORTED_JURISDICTIONS.include?(pii_from_doc['state_id_jurisdiction'])
+        IdentityConfig.store.aamva_supported_jurisdictions.include?(
+          pii_from_doc['state_id_jurisdiction'],
+        )
       end
 
       def aamva_disallowed_for_service_provider?

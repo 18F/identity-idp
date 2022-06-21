@@ -28,7 +28,7 @@ describe 'phone otp confirmation' do
     def expect_failed_otp_confirmation(_delivery_method)
       visit account_path
 
-      expect(current_path).to eq(two_factor_options_path)
+      expect(current_path).to eq(authentication_methods_setup_path)
       expect(phone_configuration).to be_nil
     end
   end

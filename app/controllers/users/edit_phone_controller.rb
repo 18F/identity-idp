@@ -7,14 +7,14 @@ module Users
     before_action :confirm_user_can_remove_phone, only: %i[destroy]
 
     def edit
-      analytics.track_event(Analytics::PHONE_CHANGE_VIEWED)
+      analytics.phone_change_viewed
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
     end
 
     def update
       @edit_phone_form = EditPhoneForm.new(current_user, phone_configuration)
       result = @edit_phone_form.submit(edit_phone_params)
-      analytics.track_event(Analytics::PHONE_CHANGE_SUBMITTED, result.to_h)
+      analytics.phone_change_submitted(**result.to_h)
       if result.success?
         redirect_to account_url
       else
@@ -47,8 +47,7 @@ module Users
     end
 
     def track_deletion_analytics_event
-      analytics.track_event(
-        Analytics::PHONE_DELETION,
+      analytics.phone_deletion(
         success: true,
         phone_configuration_id: phone_configuration.id,
       )

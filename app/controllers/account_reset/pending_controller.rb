@@ -6,14 +6,14 @@ module AccountReset
     before_action :confirm_account_reset_request_exists
 
     def show
-      analytics.track_event(Analytics::PENDING_ACCOUNT_RESET_VISITED)
+      analytics.pending_account_reset_visited
       @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
     def confirm; end
 
     def cancel
-      analytics.track_event(Analytics::PENDING_ACCOUNT_RESET_CANCELLED)
+      analytics.pending_account_reset_cancelled
       AccountReset::CancelRequestForUser.new(current_user).call
     end
 

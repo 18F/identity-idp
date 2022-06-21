@@ -171,7 +171,7 @@ RSpec.describe SessionEncryptor do
 
       it 'raises if sensitive value is not KMS encrypted' do
         session = {
-          'new_key' => Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC[:last_name],
+          'new_key' => Idp::Constants::MOCK_IDV_APPLICANT[:last_name],
         }
 
         expect {

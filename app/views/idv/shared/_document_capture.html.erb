@@ -40,105 +40,18 @@
       keep_alive_endpoint: sessions_keepalive_url,
       idv_in_person_url: IdentityConfig.store.in_person_proofing_enabled ? idv_in_person_url : nil,
     } %>
-<div class="no-js">
-  <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
-
-  <%= render PageHeadingComponent.new do %>
-    <% if liveness_checking_enabled? %>
-      <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
-    <% else %>
-      <%= t('doc_auth.headings.document_capture_heading_html') %>
-    <% end %>
-  <% end %>
-
   <%= validated_form_for(
         :doc_auth,
         url: url_for,
         method: 'PUT',
-        html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' },
+        html: { class: 'js-document-capture-form' },
       ) do |f| %>
-    <%# ---- Front Image ----- %>
-
-    <p><%= t('doc_auth.info.document_capture_intro_acknowledgment') %></p>
-
-    <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
-
-    <ul>
-      <li><%= t('doc_auth.tips.document_capture_id_text1') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text2') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text3') %></li>
-      <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
-    </ul>
-
     <%= f.input(
           :document_capture_session_uuid,
           as: :hidden,
           input_html: { value: flow_session[:document_capture_session_uuid] },
         ) %>
-
-    <div class="front-image margin-top-2">
-      <p>
-        <strong>
-          <%= t('doc_auth.headings.document_capture_front') %><br/>
-        </strong>
-        <%= t('doc_auth.tips.document_capture_hint') %>
-      </p>
-
-      <%= f.input :front_image, label: false, as: :file, required: true, aria: { invalid: false } %>
-    </div>
-
-    <%# ---- Back Image ----- %>
-
-    <div class="back-image margin-top-4">
-      <p>
-        <strong>
-          <%= t('doc_auth.headings.document_capture_back') %><br/>
-        </strong>
-        <%= t('doc_auth.tips.document_capture_hint') %>
-      </p>
-
-      <%= f.input :back_image, label: false, as: :file, required: true, aria: { invalid: false } %>
-    </div>
-
-    <%# ---- Selfie ----- %>
-    <% if liveness_checking_enabled? %>
-      <hr class="margin-top-4 margin-bottom-4"/>
-      <div class="selfie">
-        <p><%= t('doc_auth.instructions.document_capture_selfie_instructions') %></p>
-
-        <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
-        <ul>
-          <li><%= t('doc_auth.tips.document_capture_selfie_text1') %></li>
-          <li><%= t('doc_auth.tips.document_capture_selfie_text2') %></li>
-          <li><%= t('doc_auth.tips.document_capture_selfie_text3') %></li>
-        </ul>
-
-        <p class='margin-top-4'>
-          <strong>
-            <%= t('doc_auth.headings.document_capture_selfie') %><br/>
-          </strong>
-          <%= t('doc_auth.tips.document_capture_hint') %>
-        </p>
-
-        <%= f.input :selfie_image, label: false, as: :file, required: true, aria: { invalid: false } %>
-      </div>
-    <% end %>
-
-    <%# ---- Submit ----- %>
-
-    <div class='margin-top-6 margin-bottom-6'>
-      <button type="submit" class="usa-button usa-button--big usa-button--wide">
-        <%= t('forms.buttons.continue') %>
-      </button>
-      <div class="clearfix"></div>
-    </div>
-  <% end %> <%# end validated_form_for %>
-
-  <%= render(
-        'idv/doc_auth/start_over_or_cancel',
-        step: 'document_capture',
-        hide_start_over: flow_path == 'hybrid',
-      ) %>
+  <% end %>
 </div>
 
 <%= javascript_packs_tag_once 'document-capture' %>

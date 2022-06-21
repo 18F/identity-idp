@@ -42,7 +42,7 @@ module Proofing
       private
 
       def state_not_supported?(state_id_jurisdiction)
-        !Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS.include? state_id_jurisdiction
+        !IdentityConfig.store.aamva_supported_jurisdictions.include? state_id_jurisdiction
       end
 
       def invalid_state_id_number?(state_id_number)

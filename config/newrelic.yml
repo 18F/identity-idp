@@ -1,6 +1,12 @@
+common: &default_settings
+  application_logging:
+    forwarding:
+      enabled: false
 development:
+  <<: *default_settings
   monitor_mode: false
 production:
+  <<: *default_settings
   agent_enabled: true
   app_name: <%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
   host: 'gov-collector.newrelic.com'
@@ -25,4 +31,5 @@ production:
   proxy_host:
   proxy_port:
 test:
+  <<: *default_settings
   monitor_mode: false

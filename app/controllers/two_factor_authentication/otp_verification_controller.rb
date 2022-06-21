@@ -1,11 +1,14 @@
 module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include MfaSetupConcern
 
     before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
     before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
+
+    helper_method :in_multi_mfa_selection_flow?
 
     def show
       analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
@@ -78,9 +81,7 @@ module TwoFactorAuthentication
 
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
-      if context == 'confirmation'
-        analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
-      end
+      analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
     end

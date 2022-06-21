@@ -8,13 +8,16 @@ module Users
     before_action :redirect_if_blank_phone, only: [:send_code]
 
     def show
-      service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
-        backup_code_redirect || redirect_on_nothing_enabled
+      service_provider_mfa_requirement_redirect ||
+        non_phone_redirect ||
+        phone_redirect ||
+        backup_code_redirect ||
+        redirect_on_nothing_enabled
     end
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      analytics.otp_delivery_selection(**result.to_h)
       if result.success?
         handle_valid_otp_params(user_select_delivery_preference, user_selected_default_number)
         update_otp_delivery_preference_if_needed
@@ -54,7 +57,7 @@ module Users
       if MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to login_two_factor_options_path
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
 
@@ -68,7 +71,7 @@ module Users
 
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      analytics.otp_delivery_selection(**result.to_h)
       phone_is_confirmed = UserSessionContext.authentication_context?(context)
       phone_capabilities = PhoneNumberCapabilities.new(
         parsed_phone,
@@ -180,7 +183,7 @@ module Users
     end
 
     def handle_telephony_result(method:, default:)
-      track_events
+      track_events(otp_delivery_preference: method)
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
@@ -197,8 +200,17 @@ module Users
       end
     end
 
-    def track_events
-      analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
+    def track_events(otp_delivery_preference:)
+      analytics.telephony_otp_sent(
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: otp_delivery_preference,
+        resend: params.dig(:otp_delivery_selection_form, :resend),
+        telephony_response: @telephony_result.to_h,
+        success: @telephony_result.success?,
+      )
     end
 
     def exceeded_otp_send_limit?
@@ -308,7 +320,7 @@ module Users
       if user_fully_authenticated?
         redirect_to account_url
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
   end

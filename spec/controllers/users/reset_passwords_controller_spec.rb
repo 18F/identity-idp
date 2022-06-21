@@ -20,7 +20,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_TOKEN, analytics_hash)
+          with('Password Reset: Token Submitted', analytics_hash)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.invalid_token')
@@ -46,7 +46,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_TOKEN, analytics_hash)
+          with('Password Reset: Token Submitted', analytics_hash)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -454,7 +454,7 @@ describe Users::ResetPasswordsController, devise: true do
     it 'logs visit to analytics' do
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::PASSWORD_RESET_VISIT)
+      expect(@analytics).to receive(:track_event).with('Password Reset: Email Form Visited')
 
       get :new
     end

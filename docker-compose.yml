@@ -2,14 +2,14 @@
 version: '3'
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: development.Dockerfile
     volumes:
       # Mounts entire tree into container - Only suitable for development
       # image with Gems installed into system path and node modules in
       # alternate location
-       - .:/upaya
+       - .:/idp
     ports:
       - "3000:3000"
     environment:

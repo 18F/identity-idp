@@ -11,6 +11,7 @@ class MarketingSite
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/phone-number-and-phone-plan-in-your-name
     verify-your-identity/verify-your-address-by-mail
+    get-started/authentication-options
   ].to_set.freeze
 
   def self.locale_segment

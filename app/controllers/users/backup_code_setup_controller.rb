@@ -11,6 +11,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
 
+    helper_method :in_multi_mfa_selection_flow?
+    
     def index
       track_backup_codes_confirmation_setup_visit
     end
@@ -30,6 +32,7 @@ module Users
       redirect_to next_setup_path || after_mfa_setup_path
     end
 
+    # Remove after next deployment
     def download
       data = user_session[:backup_codes].join("\r\n") + "\r\n"
       send_data data, filename: 'backup_codes.txt'

@@ -80,6 +80,7 @@ module Idv
         otp_delivery_preference: delivery_method,
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         rate_limit_exceeded: rate_limit_exceeded?,
         telephony_response: @telephony_response,
       }

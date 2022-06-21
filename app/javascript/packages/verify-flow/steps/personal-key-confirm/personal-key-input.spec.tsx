@@ -49,6 +49,17 @@ describe('PersonalKeyInput', () => {
     expect(input.value).to.equal('1234-1234-1234-1234');
   });
 
+  it('allows the user to paste the personal key from their clipboard', async () => {
+    const { getByRole } = render(<PersonalKeyInput />);
+
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    input.focus();
+    await userEvent.paste('1234-1234-1234-1234');
+
+    expect(input.value).to.equal('1234-1234-1234-1234');
+  });
+
   it('validates the input value against the expected value (case-insensitive, crockford)', async () => {
     const { getByRole } = render(<PersonalKeyInput expectedValue="abcd-0011-DEFG-1111" />);
 

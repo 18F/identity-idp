@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-feature 'idv review step' do
+feature 'idv review step', :js do
   include IdvStepHelper
 
-  it 'routes to root if not signed in' do
+  it 'routes to root if not signed in', js: false, driver: :desktop_rack_test do
     visit idv_review_path
 
     expect(current_path).to eq(root_path)
   end
 
-  it 'requires the user to enter the correct password to redirect to confirmation step', js: true do
+  it 'requires the user to enter the correct password to redirect to confirmation step' do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
@@ -144,10 +144,5 @@ feature 'idv review step' do
       expect(page).to have_content(t('headings.personal_key'))
       expect(page).to have_current_path(idv_app_path(step: :personal_key))
     end
-  end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :review
-    it_behaves_like 'cancel at idv step', :review, :oidc
   end
 end

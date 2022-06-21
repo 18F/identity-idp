@@ -11,8 +11,6 @@ namespace :rotate do
     User.find_in_batches.with_index do |users, _batch|
       User.transaction do
         users.each do |user|
-          rotator = KeyRotator::AttributeEncryption.new(user)
-          rotator.rotate
           user.phone_configurations.each do |phone_configuration|
             rotator = KeyRotator::AttributeEncryption.new(phone_configuration)
             rotator.rotate

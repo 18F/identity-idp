@@ -72,9 +72,10 @@ RSpec.configure do |config|
       next if defined?($ran_asset_build)
       $ran_asset_build = true
       # rubocop:enable Style/GlobalVars
-      puts 'Bundling JavaScript and stylesheets...'
-      system 'WEBPACK_PORT= yarn build'
-      system 'yarn build:css'
+      print '                       Bundling JavaScript and stylesheets... '
+      system 'WEBPACK_PORT= yarn build > /dev/null 2>&1'
+      system 'yarn build:css > /dev/null 2>&1'
+      puts '✨ Done!'
     end
   end
 
@@ -112,6 +113,10 @@ RSpec.configure do |config|
 
     ActiveJob::Base.queue_adapter = :inline
     descendants.each(&:disable_test_adapter)
+  end
+
+  config.before(:each) do
+    IrsAttemptsApi::RedisClient.clear_attempts!
   end
 
   config.around(:each, type: :feature) do |example|

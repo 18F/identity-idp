@@ -65,8 +65,6 @@ module Idv
         nil
       end
 
-      private
-
       def image_params
         params.permit(
           ['encryption_key', 'front_image_iv', 'back_image_iv', 'selfie_image_iv',

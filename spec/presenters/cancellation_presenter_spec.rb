@@ -8,7 +8,7 @@ describe CancellationPresenter do
   subject { described_class.new(referer: referer_header, url_options: {}) }
 
   describe '#go_back_link' do
-    let(:sign_up_path) { '/two_factor_options' }
+    let(:sign_up_path) { '/authentication_methods_setup' }
 
     context 'without a referer header' do
       let(:referer_header) { nil }

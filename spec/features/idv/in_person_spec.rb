@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe 'In Person Proofing' do
   include DocAuthHelper
   include IdvHelper
+  include InPersonHelper
 
   it 'works for a happy path', js: true, allow_browser_log: true do
-    sign_in_and_2fa_user
+    user = sign_in_and_2fa_user
 
     # welcome step
     visit idv_doc_auth_welcome_step # only thing used from DocAuthHelper
@@ -35,16 +36,19 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.welcome'))
     click_idv_continue
 
-    # address page
-    expect(page).to have_content(t('in_person_proofing.headings.address'))
-    click_idv_continue
-
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
+    fill_out_state_id_form_ok
+    click_idv_continue
+
+    # address page
+    expect(page).to have_content(t('in_person_proofing.headings.address'))
+    fill_out_address_form_ok
     click_idv_continue
 
     # ssn page
-    expect(page).to have_content(t('in_person_proofing.headings.ssn'))
+    expect(page).to have_content(t('doc_auth.headings.ssn'))
+    fill_out_ssn_form_ok
     click_idv_continue
 
     # verify page
@@ -52,22 +56,20 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # phone page
-    expect(page).to have_content(t('in_person_proofing.headings.phone'))
+    expect(page).to have_content(t('idv.titles.session.phone'))
+    fill_out_phone_form_mfa_phone(user)
     click_idv_continue
 
     # password confirm page
     expect(page).to have_content(
-      t('in_person_proofing.headings.password_confirm', app_name: APP_NAME),
+      t('idv.titles.session.review', app_name: APP_NAME),
     )
+    fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
     click_idv_continue
 
     # personal key page
-    expect(page).to have_content(t('in_person_proofing.headings.personal_key'))
-    click_idv_continue
-
-    # barcode page
-    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
-    click_idv_continue
+    expect(page).to have_content(t('titles.idv.personal_key'))
+    acknowledge_and_confirm_personal_key
 
     # returns to account page
     expect(page).to have_content(t('headings.account.login_info'))
