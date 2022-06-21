@@ -126,8 +126,8 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
               : ReviewIssuesStep,
         },
         {
-          name: 'welcome',
-          form: WelcomeStep,
+          name: 'prepare',
+          form: InPersonPrepareStep,
         },
       ]
         .concat(inPersonSteps)

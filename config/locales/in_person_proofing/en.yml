@@ -34,7 +34,7 @@ en:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
           ID in person.'
-      welcome:
+      prepare:
         alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
         bring_barcode_header: A copy of your barcode
         bring_barcode_info: 'We will give you a unique code that expires within 30 days.'
