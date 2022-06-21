@@ -4,9 +4,11 @@ import {
   SecretsContextProvider,
   decodeUserBundle,
   AddressVerificationMethod,
+  ErrorStatusPage,
+  FlowContext,
 } from '@18f/identity-verify-flow';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
-import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
+import type { SecretValues, VerifyFlowValues, FlowContextValue } from '@18f/identity-verify-flow';
 
 interface AppRootValues {
   /**
@@ -59,7 +61,6 @@ const {
   inPersonUrl: inPersonURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
-const storeKey = s2ab(atob(storeKeyBase64));
 const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
 const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
@@ -72,19 +73,31 @@ const mapKeys = (object: object, mapKey: (key: string) => string) =>
 const storage = new SecretSessionStorage<SecretValues>('verify');
 
 (async () => {
-  const cryptoKey = await crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
-    'encrypt',
-    'decrypt',
-  ]);
-  storage.key = cryptoKey;
-  await storage.load();
-  const userBundleToken = initialValues.userBundleToken as string;
-  await storage.setItem('userBundleToken', userBundleToken);
+  let cryptoKey: CryptoKey;
   let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
-  const userBundle = decodeUserBundle(userBundleToken);
-  if (userBundle) {
-    Object.assign(initialValues, Object.fromEntries(mapKeys(userBundle.pii, camelCase)));
-    initialAddressVerificationMethod = userBundle.metadata.address_verification_mechanism;
+  try {
+    const storeKey = s2ab(atob(storeKeyBase64));
+    cryptoKey = await crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
+      'encrypt',
+      'decrypt',
+    ]);
+    storage.key = cryptoKey;
+    await storage.load();
+    const userBundleToken = initialValues.userBundleToken as string;
+    await storage.setItem('userBundleToken', userBundleToken);
+    const userBundle = decodeUserBundle(userBundleToken);
+    if (userBundle) {
+      Object.assign(initialValues, Object.fromEntries(mapKeys(userBundle.pii, camelCase)));
+      initialAddressVerificationMethod = userBundle.metadata.address_verification_mechanism;
+    }
+  } catch (error) {
+    render(
+      <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
+        <ErrorStatusPage />
+      </FlowContext.Provider>,
+      appRoot,
+    );
+    return;
   }
 
   function onComplete({ completionURL }: VerifyFlowValues) {
