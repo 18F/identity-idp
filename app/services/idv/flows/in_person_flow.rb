@@ -12,7 +12,7 @@ module Idv
 
       ACTIONS = {
         redo_state_id: Idv::Actions::RedoStateIdAction,
-        redo_address: Idv::Actions::RedoAddressAction,
+        redo_address: Idv::InPerson::Actions::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
 
