@@ -34,10 +34,6 @@ module DocAuthHelper
     click_on '‹ ' + t('forms.buttons.back')
   end
 
-  def click_upload_new_photos_link
-    click_on t('doc_auth.headings.capture_scan_warning_link')
-  end
-
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
