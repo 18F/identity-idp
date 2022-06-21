@@ -1040,6 +1040,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the the user has added the MFA method phone to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
     track_event(
       'Multi-Factor Authentication: Added phone',
@@ -1052,6 +1053,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user has added the MFA method piv_cac to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
     track_event(
       'Multi-Factor Authentication: Added PIV_CAC',
@@ -1064,6 +1066,7 @@ module AnalyticsEvents
   end
 
   # Tracks when the user has added the MFA method TOTP to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
     track_event(
       'Multi-Factor Authentication: Added TOTP',
@@ -1076,6 +1079,8 @@ module AnalyticsEvents
   end
 
   # Tracks when the user has added the MFA method webauthn to their account
+  # @param [Boolean] platform_authenticator indicates if webauthn_platform
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
   def multi_factor_auth_added_webauthn(
     platform_authenticator:,
     enabled_mfa_methods_count:, **extra
