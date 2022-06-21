@@ -19,14 +19,6 @@
           ).html_safe %>
   <% end %>
 
-<%# button_to(
-        idv_doc_auth_step_path(step: :redo_ssn),
-        method: :put,
-        class: 'usa-button usa-button--unstyled',
-        'aria-label': t('doc_auth.buttons.change_ssn_label'),
-    ) { t('doc_auth.buttons.change_ssn') } %>
-<%# end %>
-
 <% title t('titles.doc_auth.verify_info') %>
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
