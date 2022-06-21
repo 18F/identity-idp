@@ -140,6 +140,12 @@ describe Idv::CaptureDocStatusController do
 
           expect(response.status).to eq(202)
         end
+
+        it 'assigns flow session values as having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(true)
+        end
       end
 
       context 'when result is confirmed' do
@@ -151,6 +157,34 @@ describe Idv::CaptureDocStatusController do
           get :show
 
           expect(response.status).to eq(200)
+        end
+
+        it 'assigns flow session values as having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(true)
+        end
+      end
+
+      context 'when user receives a second result that is not the attention result' do
+        let(:result) do
+          DocumentCaptureSessionResult.new(
+            id: SecureRandom.uuid,
+            success: true,
+            pii: {},
+            attention_with_barcode: false,
+          )
+        end
+
+        before do
+          flow_session[:had_barcode_attention_error] = true
+          document_capture_session.update(ocr_confirmation_pending: false)
+        end
+
+        it 'assigns flow session values as not having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(false)
         end
       end
 
@@ -173,6 +207,12 @@ describe Idv::CaptureDocStatusController do
 
             expect(response.status).to eq(202)
           end
+
+          it 'assigns flow session values as having received attention result' do
+            get :show
+
+            expect(flow_session[:had_barcode_attention_error]).to eq(true)
+          end
         end
 
         context 'when result is confirmed' do
@@ -184,6 +224,12 @@ describe Idv::CaptureDocStatusController do
             get :show
 
             expect(response.status).to eq(200)
+          end
+
+          it 'assigns flow session values as having received attention result' do
+            get :show
+
+            expect(flow_session[:had_barcode_attention_error]).to eq(true)
           end
         end
       end

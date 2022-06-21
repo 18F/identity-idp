@@ -62,14 +62,19 @@ module Idv
     end
 
     def confirmed_barcode_attention_result?
-      flow_session[:had_barcode_attention_error] &&
-        !document_capture_session.ocr_confirmation_pending?
+      had_barcode_attention_result? && !document_capture_session.ocr_confirmation_pending?
     end
 
     def pending_barcode_attention_confirmation?
-      flow_session[:had_barcode_attention_error] ||= session_result.attention_with_barcode?
-      flow_session[:had_barcode_attention_error] &&
-        document_capture_session.ocr_confirmation_pending?
+      had_barcode_attention_result? && document_capture_session.ocr_confirmation_pending?
+    end
+
+    def had_barcode_attention_result?
+      if session_result
+        flow_session[:had_barcode_attention_error] = session_result.attention_with_barcode?
+      end
+
+      flow_session[:had_barcode_attention_error]
     end
   end
 end
