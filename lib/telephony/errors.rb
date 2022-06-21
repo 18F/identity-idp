@@ -75,6 +75,13 @@ module Telephony
     end
   end
 
+  class DailyLimitReachedError < TelephonyError
+    def friendly_error_message_key
+      # i18n-tasks-use t('telephony.error.friendly_message.daily_voice_limit_reached')
+      'telephony.error.friendly_message.daily_voice_limit_reached'
+    end
+  end
+
   class TimeoutError < TelephonyError
     def friendly_error_message_key
       # i18n-tasks-use t('telephony.error.friendly_message.timeout')
