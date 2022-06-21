@@ -154,7 +154,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_verify_step_with_barcode_warning(expect_accessible: false)
     complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: expect_accessible)
-    click_on t('doc_auth.info.upload_computer_link')
+    # click_on t('doc_auth.info.upload_computer_link')
 
     #flow_session[:had_barcode_read_failure] = true
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
@@ -178,10 +178,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: false)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
-    # save_and_open_page
     attach_images_that_fail
-    save_and_open_page
-    #attach_and_submit_images
   end
 
   def complete_doc_auth_steps_before_link_sent_step
@@ -276,7 +273,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def attach_images_that_fail
-    #save_and_open_page
     Tempfile.create(['proofing_mock', '.yml']) do |yml_file|
       yml_file.rewind
       yml_file.puts <<~YAML
@@ -297,8 +293,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
             result: Attention
       YAML
       yml_file.close
-      #Capybara.ignore_hidden_elements = false
-
 
       attach_file 'file-input-1', yml_file.path
       attach_file 'file-input-2', yml_file.path

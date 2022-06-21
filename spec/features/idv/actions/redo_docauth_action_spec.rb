@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'doc auth cancel link sent action' do
+feature 'doc auth cancel link sent action', js: true do
   include IdvStepHelper
   include DocAuthHelper
 
@@ -10,8 +10,6 @@ feature 'doc auth cancel link sent action' do
   end
 
   it 'returns to send link step' do
-    click_upload_new_photos_link
-
     expect(page).to have_current_path(idv_doc_auth_document_capture_step)
   end
 end
