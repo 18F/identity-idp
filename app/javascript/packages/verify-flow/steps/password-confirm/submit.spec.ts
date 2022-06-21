@@ -41,7 +41,7 @@ describe('submit', () => {
           sandbox.match({ body: JSON.stringify({ user_bundle_token: '..', password: 'hunter2' }) }),
         )
         .resolves({
-          json: () => Promise.resolve({ error: { password: ['incorrect password'] } }),
+          json: () => Promise.resolve({ errors: { password: ['incorrect password'] } }),
         } as Response);
     });
 

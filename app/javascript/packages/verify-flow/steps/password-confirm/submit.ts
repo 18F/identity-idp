@@ -45,7 +45,7 @@ async function submit({
   });
 
   if (isErrorResponse(json)) {
-    const [field, [error]] = Object.entries(json.error)[0];
+    const [field, [error]] = Object.entries(json.errors)[0];
     throw new PasswordSubmitError(error, { field });
   }
 

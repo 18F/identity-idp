@@ -75,6 +75,10 @@ module Api
           compact.
           transform_keys { |key| key.gsub(/_image_metadata$/, '') }
       end
+
+      def user_authenticated_for_api?
+        !!effective_user
+      end
     end
   end
 end

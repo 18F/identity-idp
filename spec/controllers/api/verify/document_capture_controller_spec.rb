@@ -38,11 +38,41 @@ describe Api::Verify::DocumentCaptureController do
 
   before do
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['document_capture'])
-    stub_sign_in(user)
+    stub_sign_in(user) if user
+  end
+
+  it 'extends behavior of base api class' do
+    expect(subject).to be_kind_of Api::Verify::BaseController
   end
 
   describe '#create' do
-    context 'When user document is submitted to be verified ' do
+    it 'renders as bad request (400)' do
+      post :create
+
+      expect(response.status).to eq(400)
+    end
+
+    context 'signed out' do
+      let(:user) { nil }
+
+      it 'renders as unauthorized (401)' do
+        post :create
+
+        expect(response.status).to eq(401)
+      end
+
+      context 'with hybrid effective user' do
+        before { session[:doc_capture_user_id] = create(:user).id }
+
+        it 'renders as bad request (400)' do
+          post :create
+
+          expect(response.status).to eq(400)
+        end
+      end
+    end
+
+    context 'When user document is submitted to be verified' do
       it 'returns inprogress status when create is called' do
         agent = instance_double(Idv::Agent)
         allow(Idv::Agent).to receive(:new).and_return(agent)
