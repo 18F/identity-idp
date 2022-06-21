@@ -6,7 +6,7 @@ feature 'doc auth cancel link sent action' do
 
   before do
     sign_in_and_2fa_user
-    complete_doc_auth_steps_before_link_sent_step
+    complete_doc_auth_steps_before_verify_step_with_barcode_warning
   end
 
   it 'returns to send link step' do

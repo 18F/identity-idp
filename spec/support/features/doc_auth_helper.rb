@@ -153,8 +153,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_verify_step_with_barcode_warning(expect_accessible: false)
-    complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
-    complete_ssn_step
+    complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: expect_accessible)
+    click_on t('doc_auth.info.upload_computer_link')
+
     #flow_session[:had_barcode_read_failure] = true
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
@@ -174,8 +175,18 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_on t('doc_auth.buttons.use_phone')
   end
 
+  def complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: false)
+    complete_doc_auth_steps_before_upload_step
+    click_on t('doc_auth.info.upload_computer_link')
+    # save_and_open_page
+    attach_images_that_fail
+    save_and_open_page
+    #attach_and_submit_images
+  end
+
   def complete_doc_auth_steps_before_link_sent_step
     complete_doc_auth_steps_before_send_link_step
+
     fill_out_doc_auth_phone_form_ok
     click_idv_continue
   end
@@ -261,6 +272,36 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         result: idv_result.except(:pii_from_doc),
         pii: idv_result[:pii_from_doc],
       )
+    end
+  end
+
+  def attach_images_that_fail
+    #save_and_open_page
+    Tempfile.create(['proofing_mock', '.yml']) do |yml_file|
+      yml_file.rewind
+      yml_file.puts <<~YAML
+        document:
+          type: license
+          first_name: Susan
+          last_name: Smith
+          middle_name: Q
+          address1: 1 Microsoft Way
+          address2: Apt 3
+          city: Bayside
+          state: NY
+          zipcode: "11364"
+          dob: 10/06/1938
+          phone: +1 314-555-1212
+        failed_alerts:
+          - name: 2D Barcode Read
+            result: Attention
+      YAML
+      yml_file.close
+      #Capybara.ignore_hidden_elements = false
+
+
+      attach_file 'file-input-1', yml_file.path
+      attach_file 'file-input-2', yml_file.path
     end
   end
 
