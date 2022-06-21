@@ -1114,6 +1114,20 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user visits the backup code confirmation setup page
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_enter_backup_code_confirmation_visit(
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter backup code confirmation visited',
+      {
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)

@@ -12,7 +12,7 @@ module Users
     before_action :authorize_backup_code_disable, only: [:delete]
 
     helper_method :in_multi_mfa_selection_flow?
-    
+
     def index
       track_backup_codes_confirmation_setup_visit
     end
@@ -69,8 +69,7 @@ module Users
     end
 
     def track_backup_codes_confirmation_setup_visit
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_BACKUP_CODE_CONFIRMATION_SETUP_VISIT,
+      analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
     end
