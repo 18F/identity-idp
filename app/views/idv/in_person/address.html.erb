@@ -1,15 +1,80 @@
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class="h3 margin-y-0">
-  <%= t('in_person_proofing.headings.address') %>
-</h1>
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
 
-<%= validated_form_for :doc_auth,
-                       url: url_for,
-                       method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
-  <%= f.button :button,
-               t('doc_auth.buttons.continue'),
-               type: :submit,
-               class: 'usa-button--big usa-button--wide' %>
+<p>
+  <%= t('in_person_proofing.body.address.info') %>
+  <%= new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+</p>
+
+<%= validated_form_for(
+      :doc_auth, url: url_for, method: 'PUT',
+                 html: { autocomplete: 'off' }
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        name: :address1,
+        form: f,
+        label: t('in_person_proofing.form.address.address1'),
+        required: true,
+        maxlength: 255,
+        label_html: { class: 'usa-label' },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        name: :address2,
+        form: f,
+        label: t('in_person_proofing.form.address.address2'),
+        required: false,
+        maxlength: 255,
+        label_html: { class: 'usa-label' },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        name: :city,
+        form: f,
+        label: t('in_person_proofing.form.address.city'),
+        required: true,
+        maxlength: 255,
+        label_html: { class: 'usa-label' },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        name: :state,
+        form: f,
+        collection: us_states_territories,
+        label: t('in_person_proofing.form.address.state'),
+        prompt: t('in_person_proofing.form.address.state_prompt'),
+        required: true,
+        label_html: { class: 'usa-label' },
+      ) %>
+
+  <div class="tablet:grid-col-6">
+    <%# using :tel for mobile numeric keypad %>
+    <%= render ValidatedFieldComponent.new(
+          name: :zipcode,
+          form: f,
+          as: :tel,
+          label: t('in_person_proofing.form.address.zipcode'),
+          required: true,
+          pattern: '\d{5}([\-]\d{4})?',
+          label_html: { class: 'usa-label' },
+          error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
+        ) %>
+  </div>
+
+  <%= render ValidatedFieldComponent.new(
+        name: :same_address_as_id,
+        form: f,
+        as: :radio_buttons,
+        wrapper: :uswds_radio_buttons,
+        label: t('in_person_proofing.form.address.same_address'),
+        required: true,
+        collection: [
+          [t('in_person_proofing.form.address.same_address_choice_yes'), true],
+          [t('in_person_proofing.form.address.same_address_choice_no'), false],
+        ],
+      ) %>
+
+   <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
+    <%= t('forms.buttons.continue') %>
+  <% end %>
 <% end %>
+
+<%= javascript_packs_tag_once('formatted-fields') %>
