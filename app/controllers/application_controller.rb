@@ -267,6 +267,7 @@ class ApplicationController < ActionController::Base
 
   def two_factor_kantara_enabled?
     return false if controller_path == 'mfa_confirmation'
+    return false if user_session[:skip_kantara_req] == true
     IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
@@ -324,7 +325,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_setup_non_restricted_mfa
-    redirect_to auth_method_confirmation_url
+    redirect_to login_additional_mfa_required_url
   end
 
   def prompt_to_verify_mfa
