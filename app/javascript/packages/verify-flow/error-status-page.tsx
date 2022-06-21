@@ -1,7 +1,7 @@
-import { Button, Link, StatusPage, TroubleshootingOptions } from '@18f/identity-components';
+import { Button, Link, StatusPage } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 import { formatHTML } from '@18f/identity-react-i18n';
-import { getConfigValue } from '@18f/identity-config';
+import VerifyFlowTroubleshootingOptions from './verify-flow-troubleshooting-options';
 
 function ErrorStatusPage() {
   return (
@@ -13,20 +13,7 @@ function ErrorStatusPage() {
           {t('idv.failure.button.warning')}
         </Button>,
       ]}
-      troubleshootingOptions={
-        <TroubleshootingOptions
-          heading={t('components.troubleshooting_options.default_heading')}
-          options={[
-            {
-              url: 'https://login.gov/contact/',
-              text: t('idv.troubleshooting.options.contact_support', {
-                app_name: getConfigValue('appName'),
-              }),
-              isExternal: true,
-            },
-          ]}
-        />
-      }
+      troubleshootingOptions={<VerifyFlowTroubleshootingOptions />}
     >
       <p>
         {formatHTML(t('idv.failure.exceptions.text_html', { link: `<a></a>` }), {

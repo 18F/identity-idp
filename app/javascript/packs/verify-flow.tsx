@@ -35,6 +35,11 @@ interface AppRootValues {
   cancelUrl: string;
 
   /**
+   * URL to in-person proofing alternative flow, if enabled.
+   */
+  inPersonUrl: string | null;
+
+  /**
    * Base64-encoded encryption key for secret session store.
    */
   storeKey: string;
@@ -51,6 +56,7 @@ const {
   basePath,
   startOverUrl: startOverURL,
   cancelUrl: cancelURL,
+  inPersonUrl: inPersonURL,
   storeKey: storeKeyBase64,
 } = appRoot.dataset;
 const storeKey = s2ab(atob(storeKeyBase64));
@@ -95,6 +101,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         enabledStepNames={enabledStepNames}
         startOverURL={startOverURL}
         cancelURL={cancelURL}
+        inPersonURL={inPersonURL}
         basePath={basePath}
         onComplete={onComplete}
         initialAddressVerificationMethod={initialAddressVerificationMethod}

@@ -20,7 +20,6 @@ import { addSearchParams } from '@18f/identity-url';
  *
  * @prop {string} helpCenterRedirectURL
  * @prop {GetHelpCenterURL} getHelpCenterURL
- * @prop {string} idvInPersonURL
  */
 
 const HelpCenterContext = createContext(

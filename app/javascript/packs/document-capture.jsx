@@ -152,12 +152,12 @@ const noticeError = (error) =>
     flowPath,
     startOverUrl: startOverURL,
     cancelUrl: cancelURL,
-    idvInPersonUrl: idvInPersonURL,
+    idvInPersonUrl: inPersonURL = null,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL, idvInPersonURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [
@@ -191,6 +191,7 @@ const noticeError = (error) =>
         value: {
           startOverURL,
           cancelURL,
+          inPersonURL,
           currentStep: 'document_capture',
         },
       },

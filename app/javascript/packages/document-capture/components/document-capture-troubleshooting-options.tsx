@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
@@ -28,7 +29,8 @@ function DocumentCaptureTroubleshootingOptions({
   hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { getHelpCenterURL, idvInPersonURL } = useContext(HelpCenterContext);
+  const { inPersonURL } = useContext(FlowContext);
+  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
@@ -63,13 +65,13 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
-      {hasErrors && idvInPersonURL && (
+      {hasErrors && inPersonURL && (
         <TroubleshootingOptions
           isNewFeatures
           heading={t('idv.troubleshooting.headings.are_you_near')}
           options={[
             {
-              url: idvInPersonURL,
+              url: inPersonURL,
               text: t('idv.troubleshooting.options.verify_in_person'),
             },
           ]}
