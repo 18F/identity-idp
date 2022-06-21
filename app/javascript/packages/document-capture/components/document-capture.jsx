@@ -5,6 +5,7 @@ import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
+import WelcomeStep from './welcome-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
@@ -106,6 +107,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
                   pii: submissionError.pii,
                 })(ReviewIssuesStep)
               : ReviewIssuesStep,
+        },
+        {
+          name: 'welcome',
+          form: WelcomeStep,
         },
       ]
     : /** @type {FormStep[]} */ (
