@@ -1,4 +1,4 @@
-# Helps route between various doc auth backends, provided by the identity-doc-auth gem
+# Helps route between various doc auth backends
 module DocAuthRouter
   ERROR_TRANSLATIONS = {
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_content_check')
