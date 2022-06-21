@@ -152,11 +152,8 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_doc_auth_steps_before_verify_step_with_barcode_warning(expect_accessible: false)
+  def complete_doc_auth_steps_with_barcode_warning(expect_accessible: false)
     complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: expect_accessible)
-    # click_on t('doc_auth.info.upload_computer_link')
-
-    #flow_session[:had_barcode_read_failure] = true
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
@@ -178,7 +175,8 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: false)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
-    attach_images_that_fail
+    attach_image_with_barcode_warning
+    #click_idv_continue  <-- needs click on continue to move to next page.
   end
 
   def complete_doc_auth_steps_before_link_sent_step
@@ -272,7 +270,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     end
   end
 
-  def attach_images_that_fail
+  def attach_image_with_barcode_warning
     Tempfile.create(['proofing_mock', '.yml']) do |yml_file|
       yml_file.rewind
       yml_file.puts <<~YAML
