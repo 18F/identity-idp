@@ -2,6 +2,7 @@
 locals:
   pii - user's PII information
   remote_identity_proofing - true if we're doing RIDP, false if we're doing IPP
+  step_url - generator for step URLs
 %>
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
@@ -73,7 +74,7 @@ locals:
       </div>
       <div class='grid-auto'>
         <%= button_to(
-              idv_doc_auth_step_path(step: :redo_ssn),
+              step_url.call(step: :redo_ssn),
               method: :put,
               class: 'usa-button usa-button--unstyled',
               'aria-label': t('doc_auth.buttons.change_ssn_label'),

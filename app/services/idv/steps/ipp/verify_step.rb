@@ -12,6 +12,7 @@ module Idv
         def extra_view_variables
           {
             pii: flow_session[:pii_from_user],
+            step_url: method(:idv_in_person_step_url),
           }
         end
       end
