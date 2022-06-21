@@ -16,7 +16,13 @@ FactoryBot.define do
     end
 
     trait :password_reset do
+      activated_at { Time.zone.now }
+      verified_at { Time.zone.now }
       deactivation_reason { :password_reset }
+    end
+
+    trait :verification_cancelled do
+      deactivation_reason { :verification_cancelled }
     end
 
     trait :with_liveness do
@@ -24,21 +30,7 @@ FactoryBot.define do
     end
 
     trait :with_pii do
-      pii do
-        Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
-          ssn: DocAuthHelper::GOOD_SSN,
-          phone: '+1 (555) 555-1234',
-        )
-      end
-    end
-
-    trait :with_pii do
-      pii do
-        Idp::Constants::DEFAULT_MOCK_PII_FROM_DOC.merge(
-          ssn: DocAuthHelper::GOOD_SSN,
-          phone: '+1 (555) 555-1234',
-        )
-      end
+      pii { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
     end
 
     after(:build) do |profile, evaluator|

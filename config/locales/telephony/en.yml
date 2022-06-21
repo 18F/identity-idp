@@ -23,6 +23,10 @@ en:
       phone.  Please take a photo of your state issued ID."
     error:
       friendly_message:
+        daily_voice_limit_reached: Your security code failed to send because you
+          exceeded the maximum number of phone calls in 24 hours to this phone
+          number. You can either request a code by text message or use a
+          different number to receive a phone call.
         duplicate_endpoint: The phone number entered is not valid.
         generic: Your security code failed to send.
         invalid_calling_area: Calls to that phone number are not supported. Please try

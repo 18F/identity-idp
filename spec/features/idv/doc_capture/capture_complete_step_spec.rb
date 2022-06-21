@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'capture complete step' do
+feature 'capture complete step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper

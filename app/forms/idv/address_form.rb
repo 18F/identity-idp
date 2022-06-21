@@ -5,7 +5,7 @@ module Idv
 
     ATTRIBUTES = %i[state zipcode city address1 address2].freeze
 
-    attr_accessor :state, :zipcode, :city, :address1, :address2
+    attr_accessor(*ATTRIBUTES)
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Address')

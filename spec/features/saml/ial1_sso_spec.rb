@@ -148,7 +148,7 @@ feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request_url
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
     end
   end
 

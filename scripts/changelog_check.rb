@@ -154,7 +154,10 @@ def format_changelog(changelog_entries)
 
   changelog = ''
   CATEGORIES.each do |category|
-    category_changes = changelog_entries.filter { |ce| ce[0] == category }
+    category_changes = changelog_entries.
+      filter { |(changelog_category, _change), _changes| changelog_category == category }.
+      sort_by { |(_category, change), _changes| change }
+
     next if category_changes.empty?
     changelog.concat("## #{category}\n")
     category_changes.each do |group, entries|
@@ -179,8 +182,8 @@ def format_changelog(changelog_entries)
   changelog.strip
 end
 
-def main(args)
-  options = { base_branch: 'main' }
+def parsed_options(args)
+  options = { base_branch: 'main', source_branch: 'HEAD' }
   basename = File.basename($0)
 
   optparse = OptionParser.new do |opts|
@@ -197,12 +200,21 @@ def main(args)
       options[:base_branch] = val
     end
 
-    opts.on('-s', '--source_branch SOURCE_BRANCH', 'Name of source branch (required)') do |val|
+    opts.on(
+      '-s',
+      '--source_branch SOURCE_BRANCH',
+      'Name of source branch, defaults to HEAD',
+    ) do |val|
       options[:source_branch] = val
     end
   end
 
   optparse.parse!(args)
+  options
+end
+
+def main(args)
+  options = parsed_options(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 

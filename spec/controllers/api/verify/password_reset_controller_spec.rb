@@ -2,17 +2,17 @@ require 'rails_helper'
 
 describe Api::Verify::PasswordResetController do
   let(:request_id) { 'request_id' }
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:sp_session) { { request_id: request_id } }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['personal_key'])
+    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])
     allow(controller).to receive(:sp_session).and_return(sp_session)
     stub_sign_in(user)
   end
 
   it 'extends behavior of base api class' do
-    expect(subject).to be_kind_of Api::BaseController
+    expect(subject).to be_kind_of Api::Verify::BaseController
   end
 
   describe '#create' do

@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
+      delete '/logout' => 'users/sessions#destroy'
       get '/active' => 'users/sessions#active'
       post '/sessions/keepalive' => 'users/sessions#keepalive'
 
@@ -140,6 +141,8 @@ Rails.application.routes.draw do
 
         get '/s3/:key' => 'fake_s3#show', as: :fake_s3
         put '/s3/:key' => 'fake_s3#update'
+
+        get '/session_data' => 'session_data#index'
       end
     end
 
@@ -221,11 +224,13 @@ Rails.application.routes.draw do
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
+
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
-    get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
+    get '/two_factor_options', to: redirect('/authentication_methods_setup')
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/second_mfa_setup' => 'users/mfa_selection#index'
+    get '/second_mfa_setup/non_restricted' => 'users/mfa_selection#non_restricted'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
@@ -237,6 +242,7 @@ Rails.application.routes.draw do
     patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
+    # Remove backup_code_download after next deployment
     get '/backup_code_download' => 'users/backup_code_setup#download'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
@@ -270,9 +276,6 @@ Rails.application.routes.draw do
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
-
-    # Deprecated
-    delete '/users' => 'users#destroy', as: :destroy_user
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
@@ -339,6 +342,7 @@ Rails.application.routes.draw do
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
       post '/verify/v2/password_reset' => 'verify/password_reset#create'
+      post '/verify/v2/document_capture' => 'verify/document_capture#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

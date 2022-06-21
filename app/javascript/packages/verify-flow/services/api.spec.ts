@@ -83,7 +83,7 @@ describe('isErrorResponse', () => {
   });
 
   it('returns true if object is an error response', () => {
-    const response = { error: { field: ['message'] } };
+    const response = { errors: { field: ['message'] } };
     const result = isErrorResponse(response);
 
     expect(result).to.be.true();

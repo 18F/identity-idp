@@ -52,7 +52,10 @@ shared_examples 'phone rate limitting' do |delivery_method|
     expect(page).to have_current_path(new_user_session_path)
 
     visit root_path
-    signin(user.email, user.password || Features::SessionHelper::VALID_PASSWORD)
+    signin(
+      user.confirmed_email_addresses.first.email,
+      user.password || Features::SessionHelper::VALID_PASSWORD,
+    )
 
     expect(page).to have_content(t('two_factor_authentication.max_generic_login_attempts_reached'))
   end
@@ -61,7 +64,10 @@ shared_examples 'phone rate limitting' do |delivery_method|
     travel_to(6.minutes.from_now) do
       visit root_path
 
-      signin(user.email, user.password || Features::SessionHelper::VALID_PASSWORD)
+      signin(
+        user.confirmed_email_addresses.first.email,
+        user.password || Features::SessionHelper::VALID_PASSWORD,
+      )
 
       expect(page).to_not have_content(
         t('two_factor_authentication.max_generic_login_attempts_reached'),

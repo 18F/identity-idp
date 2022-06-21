@@ -81,6 +81,8 @@ module Telephony
         error_message = "#{err.class}: #{err.message}"
         error_class = if err.is_a? Aws::PinpointSMSVoice::Errors::LimitExceededException
                         Telephony::ThrottledError
+                      elsif err.is_a? Aws::PinpointSMSVoice::Errors::TooManyRequestsException
+                        Telephony::DailyLimitReachedError
                       else
                         Telephony::TelephonyError
                       end

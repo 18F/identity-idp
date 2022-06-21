@@ -1,5 +1,1 @@
-<% if flow_session['pii_from_doc']['ssn'] %>
-  <%= render 'idv/doc_auth/ssn_update', flow_session: flow_session %>
-<% else %>
-  <%= render 'idv/doc_auth/ssn_init', flow_session: flow_session %>
-<% end %>
+<%= render 'idv/shared/ssn', flow_session: flow_session, success_alert_enabled: applicant_ssn.blank?, updating_ssn: applicant_ssn %>

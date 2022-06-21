@@ -9,7 +9,7 @@ module Ial2ProfileConcern
     rescue Encryption::EncryptionError => err
       if profile
         profile.deactivate(:encryption_error)
-        analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
+        analytics.profile_encryption_invalid(error: err.message)
       end
     end
   end

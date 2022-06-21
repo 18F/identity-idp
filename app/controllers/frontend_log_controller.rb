@@ -6,11 +6,14 @@ class FrontendLogController < ApplicationController
   before_action :validate_parameter_types
 
   EVENT_MAP = {
+    'IdV: password confirm visited' => :idv_password_confirm_visited,
+    'IdV: password confirm submitted' => :idv_password_confirm_submitted,
     'IdV: personal key visited' => :idv_personal_key_visited,
     'IdV: personal key submitted' => :idv_personal_key_submitted,
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
+    'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
   }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
 
   def create

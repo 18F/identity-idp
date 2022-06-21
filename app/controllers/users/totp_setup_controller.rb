@@ -11,6 +11,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :cap_auth_app_count, only: %i[new confirm]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       store_totp_secret_in_session
       track_event
@@ -22,7 +24,7 @@ module Users
     def confirm
       result = totp_setup_form.submit
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
+      analytics.multi_factor_auth_setup(**result.to_h)
 
       if result.success?
         process_valid_code

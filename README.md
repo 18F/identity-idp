@@ -46,13 +46,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 3. Create the development and test databases:
 
   ```
-  $ psql -c "CREATE DATABASE upaya_development;"
-  $ psql -c "CREATE DATABASE upaya_test;"
+  $ psql -c "CREATE DATABASE identity_idp_development;"
+  $ psql -c "CREATE DATABASE identity_idp_test;"
   ```
-
-  Q: Why "Upaya"?
-
-  A: "skill in means" https://en.wikipedia.org/wiki/Upaya
 
 4. Run the following command to set up your local environment:
 

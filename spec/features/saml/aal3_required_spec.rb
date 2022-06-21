@@ -21,7 +21,7 @@ describe 'AAL3 authentication required in an SAML context' do
         sign_in_and_2fa_user(user_with_2fa)
         visit_saml_authn_request_url(overrides: { issuer: aal3_issuer, authn_context: nil })
 
-        expect(current_url).to eq(two_factor_options_url)
+        expect(current_url).to eq(authentication_methods_setup_url)
         expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
         expect(page).to have_xpath("//img[@alt='important alert icon']")
       end

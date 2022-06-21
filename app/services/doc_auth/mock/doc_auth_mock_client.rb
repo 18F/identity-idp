@@ -89,11 +89,11 @@ module DocAuth
           c.glare_threshold = 40
         end
 
-        ResultResponseBuilder.new(
+        ResultResponse.new(
           self.class.last_uploaded_back_image,
           overriden_config,
           liveness_enabled,
-        ).call
+        )
       end
       # rubocop:enable Lint/UnusedMethodArgument
 

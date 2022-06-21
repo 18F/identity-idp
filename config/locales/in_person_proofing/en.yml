@@ -1,14 +1,41 @@
 ---
 en:
   in_person_proofing:
+    body:
+      address:
+        info: 'If your current address does not match the address on your ID, you will
+          need to bring proof of your current address to the Post Office.'
+        learn_more: Learn more
+      state_id:
+        info_html: 'Enter information <strong>exactly as it appears on your state-issued
+          ID.</strong> We will use this information to confirm it matches your
+          ID in person.'
+    form:
+      address:
+        address1: Address
+        address2: Address (optional)
+        city: City
+        same_address: 'Is this address displayed on the state-issued ID that you are
+          bringing to the Post Office?'
+        same_address_choice_no: I have a different address on my ID
+        same_address_choice_yes: This address is on my state-issued ID
+        state: State
+        state_prompt: '- Select -'
+        zipcode: ZIP Code
+      state_id:
+        dob: Date of birth
+        dob_hint: 'Example: 4 28 1986'
+        first_name: First name
+        last_name: Last name
+        state_id_jurisdiction: State
+        state_id_jurisdiction_hint: Select the state shown on your ID
+        state_id_jurisdiction_prompt: '- Select -'
+        state_id_number: ID number
+        state_id_number_hint: May include letters and numbers
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
-      password_confirm: Re-enter your %{app_name} password to protect your data
-      personal_key: Save your personal key
-      phone: Enter a phone number with your name on the plan
-      ssn: Enter your Social Security number
       state_id: Enter the information on your ID
       verify: Please verify your information
       welcome: Verify your identity in person

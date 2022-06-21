@@ -79,6 +79,21 @@ class ApplicationController < ActionController::Base
     effective_user || AnonymousUser.new
   end
 
+  def irs_attempts_api_tracker
+    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
+      session_id: irs_attempts_api_session_id,
+      enabled_for_session: irs_attempt_api_enabled_for_session?,
+    )
+  end
+
+  def irs_attempt_api_enabled_for_session?
+    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
+  end
+
+  def irs_attempts_api_session_id
+    decorated_session.irs_attempts_api_session_id
+  end
+
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
@@ -186,7 +201,8 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
+      authentication_methods_setup_url : nil
   end
 
   def fix_broken_personal_key_url
@@ -264,6 +280,12 @@ class ApplicationController < ActionController::Base
       )
   end
 
+  def two_factor_kantara_enabled?
+    return false if controller_path == 'mfa_confirmation'
+    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
+  end
+
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
@@ -276,6 +298,7 @@ class ApplicationController < ActionController::Base
     return prompt_to_verify_mfa unless user_fully_authenticated?
     return prompt_to_setup_mfa if service_provider_mfa_policy.
                                   user_needs_sp_auth_method_setup?
+    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
     enforce_total_session_duration_timeout
@@ -312,7 +335,11 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_setup_mfa
-    redirect_to two_factor_options_url
+    redirect_to authentication_methods_setup_url
+  end
+
+  def prompt_to_setup_non_restricted_mfa
+    redirect_to auth_method_confirmation_url
   end
 
   def prompt_to_verify_mfa

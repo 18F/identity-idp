@@ -9,6 +9,12 @@ module Idv
         flow_session[:pii_from_doc][:ssn] = flow_params[:ssn]
       end
 
+      def extra_view_variables
+        {
+          applicant_ssn: flow_session[:pii_from_doc][:ssn],
+        }
+      end
+
       private
 
       def form_submit

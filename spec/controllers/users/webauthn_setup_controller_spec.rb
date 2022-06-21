@@ -83,7 +83,7 @@ describe Users::WebauthnSetupController do
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
+          with('Multi-Factor Authentication Setup', result)
 
         expect(@analytics).to receive(:track_event).
           with(

@@ -129,6 +129,25 @@ describe Users::SessionsController, devise: true do
       sign_in_as_user
 
       get :destroy
+      expect(controller.current_user).to be nil
+    end
+  end
+
+  describe 'DELETE /logout' do
+    it 'tracks a logout event' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with(
+        'Logout Initiated',
+        hash_including(
+          sp_initiated: false,
+          oidc: false,
+        ),
+      )
+
+      sign_in_as_user
+
+      delete :destroy
+      expect(controller.current_user).to be nil
     end
   end
 
@@ -336,7 +355,7 @@ describe Users::SessionsController, devise: true do
           error: 'Unable to parse encrypted payload',
         }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
+          with('Profile Encryption: Invalid', profile_encryption_error)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 

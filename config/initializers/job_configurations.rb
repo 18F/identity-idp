@@ -189,12 +189,6 @@ else
         cron: cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
-      # Removes old rows from the Throttles table
-      remove_old_throttles: {
-        class: 'RemoveOldThrottlesJob',
-        cron: cron_1h,
-        args: -> { [Time.zone.now] },
-      },
       # Sync opted out phone numbers from AWS
       phone_number_opt_out_sync_job: {
         class: 'PhoneNumberOptOutSyncJob',
