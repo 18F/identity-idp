@@ -125,6 +125,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
                 })(ReviewIssuesStep)
               : ReviewIssuesStep,
         },
+        {
+          name: 'welcome',
+          form: WelcomeStep,
+        },
       ]
         .concat(inPersonSteps)
         .filter(Boolean)
