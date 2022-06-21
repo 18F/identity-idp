@@ -7,6 +7,7 @@ import {
   ErrorStatusPage,
   FlowContext,
 } from '@18f/identity-verify-flow';
+import { trackError } from '@18f/identity-analytics';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
 import type { SecretValues, VerifyFlowValues, FlowContextValue } from '@18f/identity-verify-flow';
 
@@ -91,6 +92,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
       initialAddressVerificationMethod = userBundle.metadata.address_verification_mechanism;
     }
   } catch (error) {
+    trackError(error);
     render(
       <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
         <ErrorStatusPage />

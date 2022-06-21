@@ -1,13 +1,7 @@
 import { Component } from 'react';
 import type { ReactNode } from 'react';
-import type { noticeError } from 'newrelic';
+import { trackError } from '@18f/identity-analytics';
 import ErrorStatusPage from './error-status-page';
-
-type NewRelicAgent = { noticeError: typeof noticeError };
-
-interface NewRelicGlobals {
-  newrelic?: NewRelicAgent;
-}
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -26,8 +20,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   static getDerivedStateFromError = () => ({ hasError: true });
 
-  componentDidCatch(error) {
-    (globalThis as typeof globalThis & NewRelicGlobals).newrelic?.noticeError(error);
+  componentDidCatch(error: Error) {
+    trackError(error);
   }
 
   render() {
