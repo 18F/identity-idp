@@ -32,8 +32,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.location'))
     click_idv_continue
 
-    # welcome page
-    expect(page).to have_content(t('in_person_proofing.headings.welcome'))
+    # prepare page
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     click_idv_continue
 
     # state ID page

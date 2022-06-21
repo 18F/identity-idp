@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Steps::Ipp::WelcomeStep do
+describe Idv::Steps::Ipp::PrepareStep do
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:controller) do
@@ -16,7 +16,7 @@ describe Idv::Steps::Ipp::WelcomeStep do
   end
 
   subject(:step) do
-    Idv::Steps::Ipp::WelcomeStep.new(flow)
+    Idv::Steps::Ipp::PrepareStep.new(flow)
   end
 
   describe '#call' do
