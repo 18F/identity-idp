@@ -10,6 +10,13 @@ module Idv
           end
         end
 
+        def extra_view_variables
+          {
+            pii: flow_session[:pii_from_user],
+            updating_state_id: !!flow_session[:pii_from_user].has_key?(:first_name),
+          }
+        end
+
         private
 
         def form_submit
