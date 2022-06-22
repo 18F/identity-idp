@@ -26,6 +26,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expected_hash = {
         success: true,
         errors: {},
+        attention_with_barcode: false,
         exception: nil,
         billed: true,
         vendor: 'Acuant',

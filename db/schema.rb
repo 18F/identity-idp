@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_170346) do
     t.boolean "ial2_strict"
     t.string "issuer"
     t.datetime "cancelled_at"
+    t.boolean "ocr_confirmation_pending", default: false
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"

@@ -23,6 +23,17 @@ describe DocumentCaptureSession do
       expect(data).to be_a(String)
       expect(data).to_not include('Testy')
       expect(data).to_not include('Testerson')
+      expect(record.ocr_confirmation_pending).to eq(false)
+    end
+
+    context 'with attention with barcode response' do
+      before { allow(doc_auth_response).to receive(:attention_with_barcode?).and_return(true) }
+
+      it 'sets record as pending ocr confirmation' do
+        record = DocumentCaptureSession.new
+        record.store_result_from_response(doc_auth_response)
+        expect(record.ocr_confirmation_pending).to eq(true)
+      end
     end
   end
 
@@ -41,6 +52,38 @@ describe DocumentCaptureSession do
       result = record.load_result
 
       expect(result).to eq(nil)
+    end
+  end
+
+  describe '#store_doc_auth_result' do
+    it 'generates a result ID stores the result encrypted in redis' do
+      record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
+
+      record.store_doc_auth_result(
+        result: doc_auth_response.to_h,
+        pii: doc_auth_response.pii_from_doc,
+      )
+
+      result_id = record.result_id
+      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionAsyncResult)
+      data = REDIS_POOL.with { |client| client.get(key) }
+      expect(data).to be_a(String)
+      expect(data).to_not include('Testy')
+      expect(data).to_not include('Testerson')
+      expect(record.ocr_confirmation_pending).to eq(false)
+    end
+
+    context 'with attention with barcode response' do
+      before { allow(doc_auth_response).to receive(:attention_with_barcode?).and_return(true) }
+
+      it 'sets record as pending ocr confirmation' do
+        record = DocumentCaptureSession.new(result_id: SecureRandom.uuid)
+        record.store_doc_auth_result(
+          result: doc_auth_response.to_h,
+          pii: doc_auth_response.pii_from_doc,
+        )
+        expect(record.ocr_confirmation_pending).to eq(true)
+      end
     end
   end
 

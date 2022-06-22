@@ -12,19 +12,25 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
   let(:billed) { true }
+  let(:attention_with_barcode) { false }
   let(:result) do
-    { doc_auth_result: 'Passed', success: true, errors: {}, exception: nil, billed: billed }
-  end
-  let(:pii) do
     {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: Faker::Date.birthday(min_age: IdentityConfig.store.idv_min_age_years + 1).to_s,
-      state: Faker::Address.state_abbr,
+      doc_auth_result: 'Passed',
+      success: true,
+      errors: {},
+      exception: nil,
+      billed: billed,
+      attention_with_barcode: attention_with_barcode,
     }
   end
-  let(:done) { true }
-  let(:async_state) { OpenStruct.new(result: result, pii: pii, pii_from_doc: pii, 'done?' => done) }
+  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+  let(:async_state) do
+    DocumentCaptureSessionAsyncResult.new(
+      status: DocumentCaptureSessionAsyncResult::DONE,
+      result: result,
+      pii: pii,
+    )
+  end
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:test_cookie' }
   let(:sp) { create(:service_provider, issuer: issuer) }
 
@@ -58,6 +64,15 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         )
       end
 
+      it 'assigns session variables' do
+        subject.call
+
+        expect(session['idv/doc_auth']).to include(
+          had_barcode_read_failure: false,
+          pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
+        )
+      end
+
       context 'unbilled' do
         let(:billed) { false }
 
@@ -67,6 +82,19 @@ describe Idv::Actions::VerifyDocumentStatusAction do
           expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
             'acuant_front_image',
             'acuant_back_image',
+          )
+        end
+      end
+
+      context 'with barcode attention result' do
+        let(:attention_with_barcode) { true }
+
+        it 'assigns session variables' do
+          subject.call
+
+          expect(session['idv/doc_auth']).to include(
+            had_barcode_read_failure: true,
+            pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
           )
         end
       end

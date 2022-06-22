@@ -151,4 +151,32 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       });
     });
   });
+
+  context('with document tips hidden', () => {
+    it('renders nothing', () => {
+      const { container } = render(
+        <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
+      );
+
+      expect(container.innerHTML).to.be.empty();
+    });
+
+    context('with associated service provider', () => {
+      it('renders troubleshooting options', () => {
+        const { getAllByRole } = render(
+          <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
+          {
+            wrapper: wrappers.helpCenterAndServiceProviderContext,
+          },
+        );
+
+        const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
+
+        expect(links).to.have.lengthOf(1);
+        expect(links[0].getAttribute('href')).to.equal(
+          'http://example.test/url/to/failure-to-proof?location=document_capture_troubleshooting_options',
+        );
+      });
+    });
+  });
 });
