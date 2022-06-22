@@ -2,7 +2,7 @@
       **tag_options,
       class: css_class,
       href: href,
-      data: { form_id: form_id },
+      data: { form_id: form_id }.merge(tag_options[:data].to_h),
     ) { safe_join([icon_content, content&.strip].compact) } %>
 <% if form_link? %>
   <%= form_tag(href, id: form_id, method: method, class: 'display-none') {} %>
