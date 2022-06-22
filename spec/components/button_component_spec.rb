@@ -7,6 +7,14 @@ RSpec.describe ButtonComponent, type: :component do
   let(:options) { {} }
   let(:content) { 'Button' }
 
+  before do
+    lookup_context = ActionView::LookupContext.new(ActionController::Base.view_paths)
+    view_context = ActionView::Base.new(lookup_context, {}, controller)
+    allow(view_context).to receive(:enqueue_component_scripts)
+    allow(view_context).to receive(:protect_against_forgery?).and_return(false)
+    allow_any_instance_of(ApplicationController).to receive(:view_context).and_return(view_context)
+  end
+
   subject(:rendered) do
     render_inline ButtonComponent.new(**options).with_content(content)
   end
@@ -19,11 +27,27 @@ RSpec.describe ButtonComponent, type: :component do
     expect(rendered).to have_css('button.usa-button')
   end
 
+  it 'does not render with associated form' do
+    expect(BaseComponent).not_to receive(:scripts)
+    expect(rendered).not_to have_css('form')
+    expect(rendered).not_to have_css('[data-form-id]')
+  end
+
   context 'with href' do
     let(:options) { { href: 'https://example.com' } }
 
     it 'renders as a link' do
       expect(rendered).to have_css('a.usa-button[href="https://example.com"]')
+    end
+
+    context 'with method' do
+      let(:options) { { href: 'https://example.com', method: :put } }
+
+      it 'renders with associated form' do
+        expect(BaseComponent).to receive(:scripts)
+        form_id = rendered.css('[data-form-id]').first['data-form-id']
+        expect(rendered).to have_css("form[id=#{form_id}]")
+      end
     end
   end
 
