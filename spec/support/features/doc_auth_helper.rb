@@ -144,7 +144,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
     complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
     complete_ssn_step
-
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
@@ -165,7 +164,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_link_sent_step
     complete_doc_auth_steps_before_send_link_step
-
     fill_out_doc_auth_phone_form_ok
     click_idv_continue
   end
