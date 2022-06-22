@@ -2,6 +2,7 @@ import { render } from 'react-dom';
 import {
   VerifyFlow,
   SecretsContextProvider,
+  decodeUserBundle,
   AddressVerificationMethod,
 } from '@18f/identity-verify-flow';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
@@ -39,16 +40,6 @@ interface AppRootValues {
   storeKey: string;
 }
 
-interface UserBundleMetadata {
-  address_verification_mechanism: AddressVerificationMethod;
-}
-
-interface UserBundle {
-  pii: Record<string, any>;
-
-  metadata: UserBundleMetadata;
-}
-
 interface AppRootElement extends HTMLElement {
   dataset: DOMStringMap & AppRootValues;
 }
@@ -83,8 +74,12 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
   await storage.load();
   const userBundleToken = initialValues.userBundleToken as string;
   await storage.setItem('userBundleToken', userBundleToken);
-  const { pii, metadata } = JSON.parse(atob(userBundleToken.split('.')[1])) as UserBundle;
-  Object.assign(initialValues, Object.fromEntries(mapKeys(pii, camelCase)));
+  let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
+  const userBundle = decodeUserBundle(userBundleToken);
+  if (userBundle) {
+    Object.assign(initialValues, Object.fromEntries(mapKeys(userBundle.pii, camelCase)));
+    initialAddressVerificationMethod = userBundle.metadata.address_verification_mechanism;
+  }
 
   function onComplete({ completionURL }: VerifyFlowValues) {
     storage.clear();
@@ -102,7 +97,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
         cancelURL={cancelURL}
         basePath={basePath}
         onComplete={onComplete}
-        initialAddressVerificationMethod={metadata.address_verification_mechanism}
+        initialAddressVerificationMethod={initialAddressVerificationMethod}
       />
     </SecretsContextProvider>,
     appRoot,
