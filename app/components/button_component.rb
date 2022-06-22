@@ -1,8 +1,10 @@
 class ButtonComponent < BaseComponent
-  attr_reader :action, :unstyled, :icon, :big, :wide, :outline, :tag_options
+  attr_reader :action, :href, :method, :unstyled, :icon, :big, :wide, :outline, :tag_options
 
   def initialize(
-    action: ->(**tag_options, &block) { button_tag(**tag_options, &block) },
+    action: ->(**tag_options, &block) { content_tag(tag_name, **tag_options, &block) },
+    href: nil,
+    method: nil,
     unstyled: false,
     icon: nil,
     big: false,
@@ -11,12 +13,18 @@ class ButtonComponent < BaseComponent
     **tag_options
   )
     @action = action
+    @href = href
+    @method = method
     @unstyled = unstyled
     @icon = icon
     @big = big
     @wide = wide
     @outline = outline
     @tag_options = tag_options
+  end
+
+  def scripts
+    super if form_link?
   end
 
   def css_class
@@ -30,5 +38,21 @@ class ButtonComponent < BaseComponent
 
   def icon_content
     render IconComponent.new(icon: icon) if icon
+  end
+
+  def tag_name
+    if href
+      :a
+    else
+      :button
+    end
+  end
+
+  def form_id
+    "button-form-#{unique_id}" if form_link?
+  end
+
+  def form_link?
+    href && method
   end
 end
