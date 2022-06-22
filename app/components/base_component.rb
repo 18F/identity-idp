@@ -1,10 +1,6 @@
 class BaseComponent < ViewComponent::Base
   def before_render
-    return if @rendered_scripts
-    @rendered_scripts = true
-    if helpers.respond_to?(:enqueue_component_scripts) && self.class.scripts.present?
-      helpers.enqueue_component_scripts(*self.class.scripts)
-    end
+    render_scripts
   end
 
   def self.scripts
@@ -13,5 +9,18 @@ class BaseComponent < ViewComponent::Base
 
   def unique_id
     @unique_id ||= SecureRandom.hex(4)
+  end
+
+  private
+
+  def render_scripts
+    return if @rendered_scripts
+    @rendered_scripts = true
+    return unless helpers.respond_to?(:enqueue_component_scripts)
+    helpers.enqueue_component_scripts(*scripts) if scripts.present?
+  end
+
+  def scripts
+    self.class.scripts
   end
 end
