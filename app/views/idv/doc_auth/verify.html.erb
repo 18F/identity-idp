@@ -1,6 +1,6 @@
 <div id="form-steps-wait-alert"></div>
 
-<%# if flow_session[:had_barcode_read_failure] %>
+<% if flow_session[:had_barcode_read_failure] %>
   <%= render AlertComponent.new(
         type: :warning,
         class: 'margin-bottom-4',
@@ -26,7 +26,7 @@
       });
     <% end %>
   <% end %>
-<%# end %>
+<% end %>
 
 <% title t('titles.doc_auth.verify_info') %>
 
