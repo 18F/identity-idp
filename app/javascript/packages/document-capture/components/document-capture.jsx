@@ -6,6 +6,7 @@ import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
+import InPersonLocationStep from './in-person-location-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
@@ -107,6 +108,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
                   pii: submissionError.pii,
                 })(ReviewIssuesStep)
               : ReviewIssuesStep,
+        },
+        {
+          name: 'location',
+          form: InPersonLocationStep,
         },
         {
           name: 'prepare',
