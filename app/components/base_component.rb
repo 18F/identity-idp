@@ -7,6 +7,10 @@ class BaseComponent < ViewComponent::Base
     @scripts ||= _sidecar_files(['js', 'ts']).map { |file| File.basename(file, '.*') }
   end
 
+  def scripts
+    self.class.scripts
+  end
+
   def unique_id
     @unique_id ||= SecureRandom.hex(4)
   end
@@ -18,9 +22,5 @@ class BaseComponent < ViewComponent::Base
     @rendered_scripts = true
     return unless helpers.respond_to?(:enqueue_component_scripts)
     helpers.enqueue_component_scripts(*scripts) if scripts.present?
-  end
-
-  def scripts
-    self.class.scripts
   end
 end
