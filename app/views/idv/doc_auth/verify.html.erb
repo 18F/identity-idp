@@ -8,23 +8,14 @@
       ) do %>
     <%= t(
           'doc_auth.headings.capture_scan_warning_html',
-          link: link_to(
-            t('doc_auth.headings.capture_scan_warning_link'),
-            idv_doc_auth_step_path(step: :document_capture),
-            id: 'redo_doc_auth_link',
+          link: render(
+            ButtonComponent.new(
+              href: idv_doc_auth_step_path(step: :redo_doc_auth),
+              method: :put,
+              unstyled: true,
+            ).with_content(t('doc_auth.headings.capture_scan_warning_link')),
           ),
         ) %>
-    <%= form_tag(
-          idv_doc_auth_step_path(step: :redo_doc_auth),
-          method: :put,
-          id: 'redo_doc_auth_form',
-        ) %>
-    <%= javascript_tag(nonce: true) do %>
-      document.getElementById('redo_doc_auth_link').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('redo_doc_auth_form').submit();
-      });
-    <% end %>
   <% end %>
 <% end %>
 
