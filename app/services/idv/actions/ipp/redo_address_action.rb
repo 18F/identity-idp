@@ -1,6 +1,6 @@
 module Idv
-  module InPerson
-    module Actions
+  module Actions
+    module Ipp
       class RedoAddressAction < Idv::Steps::DocAuthBaseStep
         def call
           mark_step_incomplete(:address)
