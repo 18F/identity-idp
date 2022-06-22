@@ -53,6 +53,6 @@ class ButtonComponent < BaseComponent
   end
 
   def form_link?
-    href && method
+    href.present? && method.present?
   end
 end
