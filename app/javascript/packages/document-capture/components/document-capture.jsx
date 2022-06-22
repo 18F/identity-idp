@@ -126,6 +126,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
               : ReviewIssuesStep,
         },
         {
+          name: 'location',
+          form: InPersonLocationStep,
+        },
+        {
           name: 'prepare',
           form: InPersonPrepareStep,
         },
