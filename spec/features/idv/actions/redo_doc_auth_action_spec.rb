@@ -10,13 +10,7 @@ feature 'doc auth cancel link sent action', js: true do
   end
 
   context 'when barcode scan returns a warning' do
-    it 'returns a warning message' do
-    end
-
-    it 'contains a link in the warning message to redo docauth' do
-    end
-
-    it 'goes back to the upload image page to upload the images again' do
+    it 'shows a warning message to allow the user to return to upload new images' do
     end
   end
 end
