@@ -2,14 +2,14 @@ import {
   Alert,
   Icon,
   IconList,
-  IconListItem,
-  IconListIcon,
-  IconListTitle,
   IconListContent,
+  IconListIcon,
+  IconListItem,
+  IconListTitle,
   PageHeading,
   ProcessList,
-  ProcessListItem,
   ProcessListHeading,
+  ProcessListItem,
 } from '@18f/identity-components';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { useI18n } from '@18f/identity-react-i18n';
@@ -24,12 +24,7 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
 /**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonPrepareValue>} props Props object.
  */
-function InPersonPrepareStep({
-  value = {},
-  onChange = () => {},
-  errors = [],
-  registerField = () => undefined,
-}) {
+function InPersonPrepareStep({ errors = [] }) {
   const { t } = useI18n();
   const error = errors.find(({ field }) => field === 'in-person-prepare')?.error;
 
