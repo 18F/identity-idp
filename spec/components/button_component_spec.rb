@@ -19,6 +19,14 @@ RSpec.describe ButtonComponent, type: :component do
     expect(rendered).to have_css('button.usa-button')
   end
 
+  context 'with href' do
+    let(:options) { { href: 'https://example.com' } }
+
+    it 'renders as a link' do
+      expect(rendered).to have_css('a.usa-button[href="https://example.com"]')
+    end
+  end
+
   context 'with outline' do
     let(:options) { { outline: true } }
 
