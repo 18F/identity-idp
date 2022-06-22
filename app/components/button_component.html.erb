@@ -2,6 +2,7 @@
       **tag_options,
       class: css_class,
       href: href,
+      method: method,
       data: { form_id: form_id }.merge(tag_options[:data].to_h),
     ) { safe_join([icon_content, content&.strip].compact) } %>
 <% if form_link? %>

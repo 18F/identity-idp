@@ -2,7 +2,9 @@ class ButtonComponent < BaseComponent
   attr_reader :action, :href, :method, :unstyled, :icon, :big, :wide, :outline, :tag_options
 
   def initialize(
-    action: ->(**tag_options, &block) { content_tag(tag_name, **tag_options, &block) },
+    action: ->(**tag_options, &block) do
+      content_tag(tag_name, **tag_options.except(:method), &block)
+    end,
     href: nil,
     method: nil,
     unstyled: false,

@@ -111,10 +111,12 @@ RSpec.describe ButtonComponent, type: :component do
           content_tag(:'lg-custom-button', **tag_options, data: { extra: '' }, &block)
         end,
         class: 'custom-class',
+        method: :put,
+        href: '/',
       ).with_content(content)
 
       expect(rendered).to have_css(
-        'lg-custom-button[data-extra].custom-class',
+        'lg-custom-button[data-extra].custom-class[method="put"][href="/"]',
         text: content,
       )
     end
