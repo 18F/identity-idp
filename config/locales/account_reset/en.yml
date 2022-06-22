@@ -21,6 +21,9 @@ en:
         phone number.
     delete_account:
       are_you_sure: Are you sure you want to delete your account?
+      cancelled: Your request to delete your account was canceled. If you’d like to
+        delete your account, please submit the request again and complete the
+        instructions. Do not log back into your account.
       info: Deleting your account should be your last resort if you are locked out of
         your account. You will not be able to recover any information linked to
         your account. We will notify the agencies you access with %{app_name}
