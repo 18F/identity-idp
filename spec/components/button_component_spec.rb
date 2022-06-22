@@ -43,6 +43,14 @@ RSpec.describe ButtonComponent, type: :component do
     end
   end
 
+  context 'as unstyled' do
+    let(:options) { { unstyled: true } }
+
+    it 'renders with design system classes' do
+      expect(rendered).to have_css('button.usa-button.usa-button--unstyled')
+    end
+  end
+
   context 'with tag options' do
     it 'renders as attributes' do
       rendered = render_inline ButtonComponent.new(
