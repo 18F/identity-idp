@@ -148,14 +148,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_doc_auth_steps_with_barcode_warning(expect_accessible: false)
-    complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: expect_accessible)
-    attach_image_with_barcode_warning
-    # <<<< Add the continue button click >>>  <-- needs click on continue to move to next page.
-
-    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-  end
-
   def complete_verify_step
     click_idv_continue
   end
@@ -169,11 +161,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_send_link_step
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.buttons.use_phone')
-  end
-
-  def complete_doc_auth_steps_with_upload_with_computer_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.info.upload_computer_link')
   end
 
   def complete_doc_auth_steps_before_link_sent_step
@@ -264,33 +251,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
         result: idv_result.except(:pii_from_doc),
         pii: idv_result[:pii_from_doc],
       )
-    end
-  end
-
-  def attach_image_with_barcode_warning
-    Tempfile.create(['proofing_mock', '.yml']) do |yml_file|
-      yml_file.rewind
-      yml_file.puts <<~YAML
-        document:
-          type: license
-          first_name: Susan
-          last_name: Smith
-          middle_name: Q
-          address1: 1 Microsoft Way
-          address2: Apt 3
-          city: Bayside
-          state: NY
-          zipcode: "11364"
-          dob: 10/06/1938
-          phone: +1 314-555-1212
-        failed_alerts:
-          - name: 2D Barcode Read
-            result: Attention
-      YAML
-      yml_file.close
-
-      attach_file 'file-input-1', yml_file.path
-      attach_file 'file-input-2', yml_file.path
     end
   end
 
