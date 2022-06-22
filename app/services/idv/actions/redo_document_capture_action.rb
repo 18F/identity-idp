@@ -1,6 +1,6 @@
 module Idv
   module Actions
-    class RedoDocAuthAction < Idv::Steps::DocAuthBaseStep
+    class RedoDocumentCaptureAction < Idv::Steps::DocAuthBaseStep
       def call
         mark_step_incomplete(:ssn)
         mark_step_incomplete(:document_capture)
