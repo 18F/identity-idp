@@ -11,7 +11,7 @@ module Idv
 
       def extra_view_variables
         {
-          applicant_ssn: flow_session[:pii_from_doc][:ssn],
+          updating_ssn: flow_session[:pii_from_doc].has_key?(:ssn),
         }
       end
 
