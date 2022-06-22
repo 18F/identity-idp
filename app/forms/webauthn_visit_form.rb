@@ -4,6 +4,10 @@ class WebauthnVisitForm
   INVALID_STATE_ERROR = 'InvalidStateError'
   NOT_SUPPORTED_ERROR = 'NotSupportedError'
 
+  def initialize(user)
+    @user = user
+  end
+
   def submit(params)
     @platform_authenticator = params[:platform].to_s == 'true'
     check_params(params)
@@ -50,9 +54,14 @@ class WebauthnVisitForm
     end
   end
 
+  def mfa_user
+    @mfa_user ||= MfaContext.new(@user)
+  end
+
   def extra_analytics_attributes
     {
       platform_authenticator: platform_authenticator?,
+      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
   end
 end

@@ -12,7 +12,7 @@ module Users
     helper_method :in_multi_mfa_selection_flow?
 
     def new
-      form = WebauthnVisitForm.new
+      form = WebauthnVisitForm.new(current_user)
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
       @presenter = WebauthnSetupPresenter.new(
@@ -131,9 +131,14 @@ module Users
 
     def process_valid_webauthn(form)
       create_user_event(:webauthn_key_added)
+      mfa_user = MfaContext.new(current_user)
+      analytics.multi_factor_auth_added_webauthn(
+        platform_authenticator: form.platform_authenticator?,
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       mark_user_as_fully_authenticated
       handle_remember_device
-      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       if form.platform_authenticator?
         flash[:success] = t('notices.webauthn_platform_configured')
       else
