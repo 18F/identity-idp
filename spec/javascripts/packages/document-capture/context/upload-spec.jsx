@@ -20,6 +20,7 @@ describe('document-capture/context/upload', () => {
       'backgroundUploadURLs',
       'backgroundUploadEncryptKey',
       'flowPath',
+      'formData',
       'csrf',
     ]);
 

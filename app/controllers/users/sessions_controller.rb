@@ -156,13 +156,18 @@ module Users
     def track_authentication_attempt(email)
       user = User.find_with_email(email) || AnonymousUser.new
 
+      success = user_signed_in_and_not_locked_out?(user)
       analytics.email_and_password_auth(
-        success: user_signed_in_and_not_locked_out?(user),
+        success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
+      )
+      irs_attempts_api_tracker.email_and_password_auth(
+        email: email,
+        success: success,
       )
     end
 

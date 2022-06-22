@@ -29,9 +29,10 @@ describe Api::Verify::PasswordConfirmController do
     context 'when the user is not signed in and submits the password' do
       it 'does not create a profile or return a key' do
         post :create, params: { password: 'iambatman', user_bundle_token: jwt }
-        expect(JSON.parse(response.body)['personal_key']).to be_nil
+        parsed_body = JSON.parse(response.body, symbolize_names: true)
+
         expect(response.status).to eq 401
-        expect(JSON.parse(response.body)['error']).to eq 'user is not fully authenticated'
+        expect(parsed_body).to eq(errors: { user: 'Unauthorized' })
       end
     end
 
@@ -54,7 +55,7 @@ describe Api::Verify::PasswordConfirmController do
         post :create, params: { password: 'iamnotbatman', user_bundle_token: jwt }
         response_json = JSON.parse(response.body)
         expect(response_json['personal_key']).to be_nil
-        expect(response_json['error']['password']).to eq([I18n.t('idv.errors.incorrect_password')])
+        expect(response_json['errors']['password']).to eq([I18n.t('idv.errors.incorrect_password')])
         expect(response.status).to eq 400
       end
 

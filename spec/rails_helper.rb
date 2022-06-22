@@ -115,6 +115,10 @@ RSpec.configure do |config|
     descendants.each(&:disable_test_adapter)
   end
 
+  config.before(:each) do
+    IrsAttemptsApi::RedisClient.clear_attempts!
+  end
+
   config.around(:each, type: :feature) do |example|
     Bullet.enable = true
     Capybara::Webmock.start

@@ -64,6 +64,7 @@ module Idv
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
 
+        flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
         flow_session[:pii_from_doc] = pii_from_doc if store_in_session
         track_document_state(pii_from_doc[:state])
       end

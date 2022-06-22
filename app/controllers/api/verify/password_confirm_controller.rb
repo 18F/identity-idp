@@ -19,7 +19,7 @@ module Api
             completion_url: completion_url(result),
           }
         else
-          render json: { error: result.errors }, status: :bad_request
+          render_errors(result.errors)
         end
       end
 

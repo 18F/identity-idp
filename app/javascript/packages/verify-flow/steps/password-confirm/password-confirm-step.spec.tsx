@@ -77,7 +77,7 @@ describe('PasswordConfirmStep', () => {
   it('validates incorrect password', async () => {
     sandbox.stub(window, 'fetch').resolves({
       status: 400,
-      json: () => Promise.resolve({ error: { password: ['Incorrect password'] } }),
+      json: () => Promise.resolve({ errors: { password: ['Incorrect password'] } }),
     } as Response);
 
     const { getByRole, findByRole, getByLabelText } = render(

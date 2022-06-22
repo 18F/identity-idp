@@ -1,5 +1,5 @@
 export interface ErrorResponse<Field extends string = string> {
-  error: Record<Field, [string, ...string[]]>;
+  errors: Record<Field, [string, ...string[]]>;
 }
 
 interface PostOptions {
@@ -48,4 +48,4 @@ export async function post<Response = any>(
 
 export const isErrorResponse = <F extends string>(
   response: object | ErrorResponse<F>,
-): response is ErrorResponse<F> => 'error' in response;
+): response is ErrorResponse<F> => 'errors' in response;

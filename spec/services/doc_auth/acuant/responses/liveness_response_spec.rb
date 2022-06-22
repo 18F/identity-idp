@@ -12,10 +12,12 @@ RSpec.describe DocAuth::Acuant::Responses::LivenessResponse do
 
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
+      expect(response.attention_with_barcode?).to eq(false)
       expect(response.exception).to be_nil
       expect(response.to_h).to eq(
         success: true,
         errors: {},
+        attention_with_barcode: false,
         exception: nil,
         selfie_liveness_results: {
           liveness_assessment: 'Live',
@@ -38,10 +40,12 @@ RSpec.describe DocAuth::Acuant::Responses::LivenessResponse do
 
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(selfie: true)
+      expect(response.attention_with_barcode?).to eq(false)
       expect(response.exception).to be_nil
       expect(response.to_h).to eq(
         success: false,
         errors: { selfie: true },
+        attention_with_barcode: false,
         exception: nil,
         selfie_liveness_results: {
           liveness_assessment: nil,
