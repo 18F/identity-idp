@@ -50,12 +50,4 @@ describe AccountResetRequest do
       expect(subject.granted_token_expired?).to eq(false)
     end
   end
-
-  describe 'account_reset_request' do
-    it 'returns true if a account reset request has been made' do
-      subject.requested_at = Time.zone.now
-
-      expect(subject.account_reset_request?).to eq(true)
-    end
-  end
 end
