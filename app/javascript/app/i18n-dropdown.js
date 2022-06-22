@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+export function setUp() {
   const mobileLink = document.querySelector('.i18n-mobile-toggle > button');
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');
   const desktopLink = document.querySelector('.i18n-desktop-toggle > button');
@@ -35,4 +35,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobileLink) {
     languagePicker(mobileLink, mobileDropdown);
   }
-});
+
+  function syncLinkURLs() {
+    const links = document.querySelectorAll('.i18n-dropdown a[lang]');
+    links.forEach((link) => {
+      const lang = link.getAttribute('lang');
+      let prefix = '';
+      if (lang !== 'en') {
+        prefix = `/${lang}`;
+      }
+      const url = new URL(window.location.href);
+      url.pathname = prefix + url.pathname;
+      link.setAttribute('href', url.toString());
+    });
+  }
+
+  const originalPushState = History.prototype.pushState;
+  History.prototype.pushState = function (...args) {
+    const result = originalPushState.apply(this, args);
+    syncLinkURLs();
+    return result;
+  };
+  window.addEventListener('popstate', syncLinkURLs);
+
+  return () => {
+    History.prototype.pushState = originalPushState;
+  };
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  setUp();
+}
