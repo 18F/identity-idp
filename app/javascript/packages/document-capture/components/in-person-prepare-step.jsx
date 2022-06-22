@@ -1,7 +1,3 @@
-import { useContext } from 'react';
-import { hasMediaAccess } from '@18f/identity-device';
-import { useI18n } from '@18f/identity-react-i18n';
-import { FormStepsButton } from '@18f/identity-form-steps';
 import {
   Alert,
   Icon,
@@ -15,8 +11,9 @@ import {
   ProcessListItem,
   ProcessListHeading,
 } from '@18f/identity-components';
-import DeviceContext from '../context/device';
-import StartOverOrCancel from './start-over-or-cancel';
+import { FormStepsButton } from '@18f/identity-form-steps';
+import { useI18n } from '@18f/identity-react-i18n';
+import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
 /**
  * @typedef InPersonPrepareStepValue
@@ -45,7 +42,7 @@ function InPersonPrepareStep({
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
 
-      <ProcessList>
+      <ProcessList className="margin-bottom-4">
         <ProcessListItem>
           <ProcessListHeading unstyled>
             {t('in_person_proofing.body.prepare.verify_step_enter_pii')}
@@ -58,17 +55,17 @@ function InPersonPrepareStep({
         </ProcessListItem>
       </ProcessList>
 
-      <hr />
+      <hr className="margin-bottom-4" />
 
       <h2>{t('in_person_proofing.body.prepare.bring_title')}</h2>
 
       <IconList>
         <IconListItem>
-          <IconListIcon className="text-indigo">
+          <IconListIcon className="text-primary-dark">
             <Icon icon="check_circle" />
           </IconListIcon>
           <IconListContent>
-            <IconListTitle>
+            <IconListTitle className="font-sans-md padding-top-0">
               {t('in_person_proofing.body.prepare.bring_barcode_header')}
             </IconListTitle>
             <p>{t('in_person_proofing.body.prepare.bring_barcode_info')}</p>
@@ -76,11 +73,13 @@ function InPersonPrepareStep({
         </IconListItem>
 
         <IconListItem>
-          <IconListIcon className="text-indigo">
+          <IconListIcon className="text-primary-dark">
             <Icon icon="check_circle" />
           </IconListIcon>
           <IconListContent>
-            <IconListTitle>{t('in_person_proofing.body.prepare.bring_id_header')}</IconListTitle>
+            <IconListTitle className="font-sans-md padding-top-0">
+              {t('in_person_proofing.body.prepare.bring_id_header')}
+            </IconListTitle>
             <p>{t('in_person_proofing.body.prepare.bring_id_info_acceptable')}</p>
             <ul>
               <li>{t('in_person_proofing.body.prepare.bring_id_info_dl')}</li>
@@ -91,11 +90,13 @@ function InPersonPrepareStep({
         </IconListItem>
 
         <IconListItem>
-          <IconListIcon className="text-indigo">
+          <IconListIcon className="text-primary-dark">
             <Icon icon="check_circle" />
           </IconListIcon>
           <IconListContent>
-            <IconListTitle>{t('in_person_proofing.body.prepare.bring_proof_header')}</IconListTitle>
+            <IconListTitle className="font-sans-md padding-top-0">
+              {t('in_person_proofing.body.prepare.bring_proof_header')}
+            </IconListTitle>
             <p>{t('in_person_proofing.body.prepare.bring_proof_info_acceptable')}</p>
             <ul>
               <li>{t('in_person_proofing.body.prepare.bring_proof_info_lease')}</li>
@@ -106,8 +107,8 @@ function InPersonPrepareStep({
           </IconListContent>
         </IconListItem>
       </IconList>
-      <FormStepsButton.Submit />
-      <StartOverOrCancel />
+      <FormStepsButton.Continue />
+      <InPersonTroubleshootingOptions />
     </>
   );
 }
