@@ -23,12 +23,32 @@ feature 'doc auth redo document capture action', js: true do
       )
       click_link warning_link_text
 
-      expect(current_path).to eq(idv_doc_auth_document_capture_step)
+      expect(current_path).to eq(idv_doc_auth_upload_step)
+      complete_upload_step
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
       complete_ssn_step
 
       expect(page).not_to have_css('[role="status"]')
+    end
+
+    context 'on mobile', driver: :headless_chrome_mobile do
+      it 'shows a warning message to allow the user to return to upload new images' do
+        warning_link_text = t('doc_auth.headings.capture_scan_warning_link')
+
+        expect(page).to have_css(
+          '[role="status"]',
+          text: t('doc_auth.headings.capture_scan_warning_html', link: warning_link_text),
+        )
+        click_link warning_link_text
+
+        expect(current_path).to eq(idv_doc_auth_document_capture_step)
+        DocAuth::Mock::DocAuthMockClient.reset!
+        attach_and_submit_images
+        complete_ssn_step
+
+        expect(page).not_to have_css('[role="status"]')
+      end
     end
   end
 end
