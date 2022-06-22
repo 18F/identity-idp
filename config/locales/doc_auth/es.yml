@@ -154,7 +154,7 @@ es:
       address: Actualice su dirección postal
       back: Parte Trasera
       capture_complete: Hemos verificado su identificación expedida por el estado
-      capture_scan_warning: No pudimos leer el código de barras en su ID. Si la
+      capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
         información que aparece a continuación es incorrecta, por favor, %{link}
         de su ID emitido por el estado.
       capture_scan_warning_link: suba nuevas fotos

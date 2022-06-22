@@ -7,13 +7,13 @@
         text_tag: 'div',
       ) do %>
     <%= t(
-          'doc_auth.headings.capture_scan_warning',
+          'doc_auth.headings.capture_scan_warning_html',
           link: link_to(
             t('doc_auth.headings.capture_scan_warning_link'),
             idv_doc_auth_step_path(step: :document_capture),
             id: 'redo_doc_auth_link',
           ),
-        ).html_safe %>
+        ) %>
     <%= form_tag(
           idv_doc_auth_step_path(step: :redo_doc_auth),
           method: :put,
