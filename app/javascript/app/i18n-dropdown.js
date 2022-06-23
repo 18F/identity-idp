@@ -36,7 +36,11 @@ export function setUp() {
     languagePicker(mobileLink, mobileDropdown);
   }
 
-  function syncLinkURLs() {
+  /**
+   * Loops through all of the language links in the dropdown and updates their target url
+   * to reflect the correct route
+   */
+  function syncLanguageLinkURLs() {
     const links = document.querySelectorAll('.i18n-dropdown a[lang]');
     links.forEach((link) => {
       const linkLang = link.getAttribute('lang');
@@ -49,28 +53,41 @@ export function setUp() {
     });
   }
 
-  const tearDown = ['pushState', 'replaceState'].reduce(
-    (tearDownPrevious, functionName) => {
-      const originalFunction = History.prototype[functionName];
-      History.prototype[functionName] = function (...args) {
-        const result = originalFunction.apply(this, args);
-        syncLinkURLs();
-        return result;
-      };
+  /**
+   * Recursive function which monkey patches the behavior of window.history.pushState and window.history.replaceState
+   * that is used in the react app to manage url routing.
+   *
+   * @return {function}  Tear-down function
+   */
+  function createWindowHistoryPatch() {
+    return ['pushState', 'replaceState'].reduce(
+      (tearDownPrevious, functionName) => {
+        const originalFunction = History.prototype[functionName];
+        History.prototype[functionName] = function (...args) {
+          const result = originalFunction.apply(this, args);
+          syncLanguageLinkURLs();
+          return result;
+        };
 
-      return () => {
-        tearDownPrevious();
-        History.prototype[functionName] = originalFunction;
-      };
-    },
-    () => {},
-  );
+        return () => {
+          tearDownPrevious();
+          History.prototype[functionName] = originalFunction;
+        };
+      },
+      () => {},
+    );
+  }
 
-  window.addEventListener('popstate', syncLinkURLs);
+  const tearDownWindowHistoryPatch = createWindowHistoryPatch();
 
-  return tearDown;
+  window.addEventListener('popstate', syncLanguageLinkURLs);
+
+  return tearDownWindowHistoryPatch;
 }
 
+/**
+ *  used to mock this behavior for testing purposes
+ */
 if (process.env.NODE_ENV !== 'test') {
   setUp();
 }
