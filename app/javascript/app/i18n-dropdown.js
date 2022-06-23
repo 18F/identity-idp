@@ -55,7 +55,7 @@ export function setUp() {
 
   /**
    * Recursive function which monkey patches the behavior of window.history.pushState and window.history.replaceState
-   * that is used in the react app to manage url routing.
+   * which are used in the react app to manage url routing.
    *
    * @return {function}  Tear-down function
    */
