@@ -124,9 +124,12 @@ en:
       continue: Continue
       instructions_text: Use Touch or Face Unlock to access your account with %{app_name}
       instructions_title: Use Touch or Face Unlock to access your account.
-      intro: Enable face or touch unlock as an authentication method on this device.
-        You’ll need this device to use this method in the future. Start by
-        giving your device a nickname.
+      intro: When you want to access your Login.gov account, you use your device to
+        scan your face or fingerprint. Your device confirms if those scans are a
+        match to the images you already have stored on your device. We do not
+        copy or store these images. You’ll need the same device to sign in using
+        face or touch unlock in the future. Learn more about face or touch
+        unlock.
       login_text: 'When you are ready, press the button:'
       nickname: Device nickname
     webauthn_setup:
