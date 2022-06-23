@@ -7,10 +7,10 @@ en:
       document_capture_dialog: Document capture
       selfie_alt_text: An uploaded image
     buttons:
-      change_address: Change
       change_address_label: Change address
-      change_ssn: Change
+      change_label: Change
       change_ssn_label: Change Social Security Number
+      change_state_id_label: Change state ID
       continue: Continue
       start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
