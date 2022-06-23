@@ -17,7 +17,7 @@
       <ul class='usa-list--unstyled margin-bottom-0 text-center'>
         <% I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
-            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-no-underline fs-13p', lang: locale == I18n.locale ? nil : locale %>
+            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-no-underline fs-13p', lang: locale %>
           </li>
         <% end %>
       </ul>
