@@ -8,32 +8,24 @@ locals:
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
-  <% if remote_identity_proofing %>
-    <div>
-      <%= "#{t('doc_auth.forms.first_name')}: #{pii[:first_name]}" %>
-    </div>
-    <div>
-      <%= "#{t('doc_auth.forms.last_name')}: #{pii[:last_name]}" %>
-    </div>
-    <div class='padding-bottom-1'>
-      <%= "#{t('doc_auth.forms.dob')}: #{pii[:dob]}" %>
-    </div>
-  <% else %>
-    <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
-      <div class='grid-col-fill'>
+  <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1">
+    <div class='grid-col-fill'>
+      <div>
+        <%= "#{t('doc_auth.forms.first_name')}: #{pii[:first_name]}" %>
+      </div>
+      <div>
+        <%= "#{t('doc_auth.forms.last_name')}: #{pii[:last_name]}" %>
+      </div>
+      <div>
+        <%= "#{t('doc_auth.forms.dob')}: #{pii[:dob]}" %>
+      </div>
+      <% if !remote_identity_proofing %>
         <div>
-          <%= "#{t('doc_auth.forms.first_name')}: #{pii[:first_name]}" %>
-        </div>
-        <div>
-          <%= "#{t('doc_auth.forms.last_name')}: #{pii[:last_name]}" %>
-        </div>
-        <div>
-          <%= "#{t('doc_auth.forms.dob')}: #{pii[:dob]}" %>
-        </div>
-        <div class='padding-bottom-1'>
           <%= "#{t('doc_auth.forms.id_number')}: #{pii[:state_id_number]}" %>
         </div>
-      </div>
+      <% end %>
+    </div>
+    <% if !remote_identity_proofing %>
       <div class='grid-auto'>
         <%= button_to(
               step_url.call(step: :redo_state_id),
@@ -42,8 +34,8 @@ locals:
               'aria-label': t('doc_auth.buttons.change_state_id_label'),
             ) { t('doc_auth.buttons.change_label') } %>
       </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
     <div class='grid-col-fill'>
       <div>
