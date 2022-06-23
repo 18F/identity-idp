@@ -52,7 +52,7 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # verify page
-    expect(page).to have_content(t('in_person_proofing.headings.verify'))
+    expect(page).to have_content(t('doc_auth.headings.verify'))
     click_idv_continue
 
     # phone page
