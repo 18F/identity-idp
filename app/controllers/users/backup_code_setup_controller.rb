@@ -6,7 +6,7 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :ensure_backup_codes_in_session, only: %i[continue download refreshed]
+    before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
@@ -30,12 +30,6 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    # Remove after next deployment
-    def download
-      data = user_session[:backup_codes].join("\r\n") + "\r\n"
-      send_data data, filename: 'backup_codes.txt'
     end
 
     def confirm_delete; end
