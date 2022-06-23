@@ -1,4 +1,5 @@
 class WebauthnSetupPresenter < SetupPresenter
+  include ActionView::Helpers::UrlHelper
   include ActionView::Helpers::TranslationHelper
 
   def initialize(
@@ -36,10 +37,23 @@ class WebauthnSetupPresenter < SetupPresenter
 
   def intro
     if @platform_authenticator
-      t('forms.webauthn_platform_setup.intro')
+      t(
+        'forms.webauthn_platform_setup.intro_html',
+        link: intro_link,
+      )
     else
       t('forms.webauthn_setup.intro')
     end
+  end
+
+  def intro_link
+    link_to(
+      t('forms.webauthn_platform_setup.intro_link'),
+      MarketingSite.help_center_article_url(
+        category: 'get-started',
+        article: 'authentication-options',
+      ),
+    )
   end
 
   def nickname_label

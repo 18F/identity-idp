@@ -133,13 +133,13 @@ es:
       instructions_text: Use el desbloqueo facial o táctil para acceder a su cuenta
         con %{app_name}.
       instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
-      intro: Cuando quiera acceder a su cuenta de Login.gov, podrá utilizar su
+      intro_html: 'Cuando quiera acceder a su cuenta de Login.gov, podrá utilizar su
         dispositivo para escanear su cara o su huella dactilar. El dispositivo
         confirma si dichos escaneos coinciden con las imágenes que ya tiene
-        almacenadas en su dispositivo. Nosotros no copiamos ni almacenamos estas
-        imágenes. Necesitará el mismo dispositivo para iniciar sesión en el
-        futuro utilizando el desbloqueo facial o táctil. Conozca más sobre el
-        desbloqueo facial o táctil.
+        almacenadas en su dispositivo. <p>Nosotros no copiamos ni almacenamos
+        estas imágenes. Necesitará el mismo dispositivo para iniciar sesión en
+        el futuro utilizando el desbloqueo facial o táctil. %{link}</p>'
+      intro_link: Conozca más sobre el desbloqueo facial o táctil.
       login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
     webauthn_setup:
