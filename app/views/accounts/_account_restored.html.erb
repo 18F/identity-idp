@@ -1,7 +1,5 @@
 <%# Text and translations tk %>
 
-<%= render AlertComponent.new(type: :info, text_tag: 'div') do %>
-  <p>
-    <%= t('account_reset.delete_account.cancelled') %>
-  </p>
+<%= render AlertComponent.new(type: :info) do %>
+  <%= t('account_reset.delete_account.cancelled') %>
 <% end %>
