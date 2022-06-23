@@ -2,10 +2,10 @@ module Funnel
   module DocAuth
     class RegisterStepFromAnalyticsViewEvent
       ANALYTICS_EVENT_TO_DOC_AUTH_LOG_TOKEN = {
-        Analytics::IDV_PHONE_RECORD_VISIT => :verify_phone,
-        Analytics::IDV_REVIEW_VISIT => :encrypt,
-        Analytics::IDV_FINAL => :verified,
-        Analytics::IDV_GPO_ADDRESS_VISITED => :usps_address,
+        'IdV: phone of record visited' => :verify_phone,
+        'IdV: review info visited' => :encrypt,
+        'IdV: final resolution' => :verified,
+        'IdV: USPS address visited' => :usps_address,
       }.freeze
 
       def self.call(user_id, issuer, event, result)

@@ -31,7 +31,12 @@
     <% if desktop_device? %>
       <%= render ButtonComponent.new(
             action: ->(**tag_options, &block) do
-              link_to(backup_code_download_path, **tag_options, &block)
+              link_to(
+                "data:text/plain;charset=utf-8,#{CGI.escape(@codes.join("\n"))}",
+                download: 'backup_codes.txt',
+                **tag_options,
+                &block
+              )
             end,
             outline: true,
             icon: :file_download,
@@ -54,3 +59,4 @@
 <%= form_tag(backup_code_continue_path, method: :patch) do %>
   <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
+<%= javascript_packs_tag_once 'backup-code-analytics' %>

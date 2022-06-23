@@ -8,8 +8,12 @@ module TwoFactorAuthentication
       'display-none'
     end
 
-    def security_level
-      I18n.t('two_factor_authentication.two_factor_choice_options.more_secure_label')
+    def disabled?
+      user&.webauthn_configurations&.where(platform_authenticator: true)&.any?
+    end
+
+    def mfa_configuration_count
+      user.webauthn_configurations.where(platform_authenticator: true).count
     end
   end
 end

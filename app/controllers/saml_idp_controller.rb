@@ -69,6 +69,16 @@ class SamlIdpController < ApplicationController
     handle_valid_sp_remote_logout_request(user_id)
   end
 
+  def external_saml_request?
+    return true if request.path.start_with?('/api/saml/authpost')
+
+    begin
+      URI(request.referer).host != request.host
+    rescue ArgumentError, URI::Error
+      false
+    end
+  end
+
   private
 
   def confirm_user_is_authenticated_with_fresh_mfa
@@ -90,8 +100,12 @@ class SamlIdpController < ApplicationController
   end
 
   def profile_or_identity_needs_verification_or_decryption?
-    return false unless ial2_requested?
+    return false unless ial_context.ial2_or_greater? || ialmax_requested_with_ial2_user?
     profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
+  end
+
+  def ialmax_requested_with_ial2_user?
+    ial_context.ialmax_requested? && identity_needs_decryption?
   end
 
   def identity_needs_decryption?
@@ -104,7 +118,7 @@ class SamlIdpController < ApplicationController
       endpoint: remap_auth_post_path(request.env['PATH_INFO']),
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
-      requested_ial: saml_request&.requested_ial_authn_context || 'none',
+      requested_ial: requested_ial,
     )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
   end
@@ -113,14 +127,15 @@ class SamlIdpController < ApplicationController
     return unless external_saml_request?
 
     analytics.saml_auth_request(
-      requested_ial: saml_request&.requested_ial_authn_context || 'none',
+      requested_ial: requested_ial,
       service_provider: saml_request&.issuer,
     )
   end
 
-  def external_saml_request?
-    (!request.referer.nil? && URI(request.referer).host != request.host) ||
-      request.path.start_with?('/api/saml/authpost')
+  def requested_ial
+    return 'ialmax' if ial_context.ialmax_requested?
+
+    saml_request&.requested_ial_authn_context || 'none'
   end
 
   def handle_successful_handoff
@@ -147,7 +162,11 @@ class SamlIdpController < ApplicationController
   end
 
   def track_events
-    analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
+    analytics.track_event(
+      Analytics::SP_REDIRECT_INITIATED,
+      ial: ial_context.ial,
+      billed_ial: ial_context.bill_for_ial_1_or_2,
+    )
     track_billing_events
   end
 end

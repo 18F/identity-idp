@@ -37,14 +37,14 @@ class DocumentProofingJob < ApplicationJob
     back_image_url = document_args[:back_image_url]
     selfie_image_url = document_args[:selfie_image_url]
 
-    front_image = decrypt_from_s3(
+    front_image = decrypt_image_from_s3(
       timer: timer, name: :front, url: front_image_url, iv: front_image_iv, key: encryption_key,
     )
-    back_image = decrypt_from_s3(
+    back_image = decrypt_image_from_s3(
       timer: timer, name: :back, url: back_image_url, iv: back_image_iv, key: encryption_key,
     )
     if liveness_checking_enabled
-      selfie_image = decrypt_from_s3(
+      selfie_image = decrypt_image_from_s3(
         timer: timer, name: :selfie, url: selfie_image_url, iv: selfie_image_iv,
         key: encryption_key
       )
@@ -70,11 +70,10 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    throttle = Throttle.for(user: user, throttle_type: :idv_doc_auth)
+    throttle = Throttle.new(user: user, throttle_type: :idv_doc_auth)
 
-    analytics.track_event(
-      Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-      proofer_result.to_h.merge(
+    analytics.idv_doc_auth_submitted_image_upload_vendor(
+      **proofer_result.to_h.merge(
         state: proofer_result.pii_from_doc[:state],
         state_id_type: proofer_result.pii_from_doc[:state_id_type],
         async: true,
@@ -125,6 +124,15 @@ class DocumentProofingJob < ApplicationJob
     end
   end
 
+  def normalize_image_file(file_or_data_url)
+    return file_or_data_url if !file_or_data_url.start_with?('data:')
+
+    data_url_image = Idv::DataUrlImage.new(file_or_data_url)
+    data_url_image.read
+  rescue Idv::DataUrlImage::InvalidUrlFormatError
+    file_or_data_url
+  end
+
   def acuant_sdk_capture?(image_metadata)
     image_metadata.dig(:front, :source) == 'acuant' &&
       image_metadata.dig(:back, :source) == 'acuant'
@@ -134,7 +142,7 @@ class DocumentProofingJob < ApplicationJob
     @s3_helper ||= JobHelpers::S3Helper.new
   end
 
-  def decrypt_from_s3(timer:, name:, url:, iv:, key:)
+  def decrypt_image_from_s3(timer:, name:, url:, iv:, key:)
     encrypted_image = timer.time("download.#{name}") do
       if s3_helper.s3_url?(url)
         s3_helper.download(url)
@@ -144,8 +152,11 @@ class DocumentProofingJob < ApplicationJob
         end.body.b
       end
     end
-    timer.time("decrypt.#{name}") do
+    decrypted = timer.time("decrypt.#{name}") do
       encryption_helper.decrypt(data: encrypted_image, iv: iv, key: key)
+    end
+    timer.time("decode.#{name}") do
+      normalize_image_file(decrypted)
     end
   end
 

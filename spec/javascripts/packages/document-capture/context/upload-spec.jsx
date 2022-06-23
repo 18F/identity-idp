@@ -4,7 +4,7 @@ import UploadContext, {
   Provider as UploadContextProvider,
 } from '@18f/identity-document-capture/context/upload';
 import defaultUpload from '@18f/identity-document-capture/services/upload';
-import { useSandbox } from '../../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('document-capture/context/upload', () => {
   const sandbox = useSandbox();
@@ -20,10 +20,9 @@ describe('document-capture/context/upload', () => {
       'backgroundUploadURLs',
       'backgroundUploadEncryptKey',
       'flowPath',
-      'startOverURL',
-      'cancelURL',
       'csrf',
     ]);
+
     expect(result.current.upload).to.equal(defaultUpload);
     expect(result.current.getStatus).to.be.instanceOf(Function);
     expect(result.current.statusPollInterval).to.be.undefined();
@@ -31,7 +30,7 @@ describe('document-capture/context/upload', () => {
     expect(result.current.backgroundUploadURLs).to.deep.equal({});
     expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
     expect(result.current.csrf).to.be.null();
-    await new Promise((resolve) => result.current.getStatus().catch(resolve));
+    expect(await result.current.getStatus()).to.deep.equal({});
   });
 
   it('can be overridden with custom upload behavior', async () => {

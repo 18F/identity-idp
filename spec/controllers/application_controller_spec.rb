@@ -106,7 +106,7 @@ describe ApplicationController do
       stub_analytics
       event_properties = { controller: 'anonymous#index', user_signed_in: true }
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, event_properties)
+        with('Invalid Authenticity Token', event_properties)
 
       get :index
 
@@ -184,7 +184,7 @@ describe ApplicationController do
 
         get :index
 
-        expect(response).to redirect_to two_factor_options_url
+        expect(response).to redirect_to authentication_methods_setup_url
       end
     end
 
@@ -195,6 +195,32 @@ describe ApplicationController do
         get :index
 
         expect(response).to redirect_to user_two_factor_authentication_url
+      end
+    end
+
+    context 'kantara feature is on' do
+      before do
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_existing_user_restriction) {
+                                         true
+                                       }
+      end
+
+      it 'redirects users with restricted mfa configurations to add a non-restricted mfa' do
+        user = create(:user, :with_phone)
+        sign_in_as_user(user)
+
+        get :index
+
+        expect(response).to redirect_to auth_method_confirmation_url
+      end
+
+      it 'does not redirect a user with non restricted mfa configurations' do
+        user = create(:user, :with_phone, :with_authentication_app)
+        sign_in_as_user(user)
+
+        get :index
+
+        expect(response).to have_http_status(200)
       end
     end
   end

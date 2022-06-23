@@ -1,7 +1,7 @@
-<div class='margin-top-4 padding-top-1 border-top border-primary-light'>
+<%= render PageFooterComponent.new do %>
   <% if user_signing_up? %>
     <%= link_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'usa-button usa-button--unstyled' %>
   <% else %>
     <%= link_to cancel_link_text, link || return_to_sp_cancel_path %>
   <% end %>
-</div>
+<% end %>

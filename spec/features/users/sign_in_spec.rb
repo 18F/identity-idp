@@ -143,7 +143,7 @@ feature 'Sign in' do
     submit_form_with_valid_email(email)
     click_confirmation_link_in_email(email)
     submit_form_with_valid_password
-    expect(page).to have_current_path(two_factor_options_path)
+    expect(page).to have_current_path(authentication_methods_setup_path)
 
     select_2fa_option('phone')
     fill_in :new_phone_form_phone, with: '2025551314'
@@ -432,7 +432,7 @@ feature 'Sign in' do
         create(:user, :signed_up, email: email, password: password)
 
         user = User.find_with_email(email)
-        encrypted_email = user.encrypted_email
+        encrypted_email = user.confirmed_email_addresses.first.encrypted_email
 
         rotate_attribute_encryption_key_with_invalid_queue
 
@@ -440,7 +440,7 @@ feature 'Sign in' do
           to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
         user = user.reload
-        expect(user.encrypted_email).to eq encrypted_email
+        expect(user.confirmed_email_addresses.first.encrypted_email).to eq encrypted_email
       end
     end
 
@@ -452,14 +452,14 @@ feature 'Sign in' do
         create(:user, :signed_up, email: email, password: password)
 
         user = User.find_with_email(email)
-        encrypted_email = user.encrypted_email
+        encrypted_email = user.confirmed_email_addresses.first.encrypted_email
 
         rotate_attribute_encryption_key_with_invalid_queue
 
         sign_in_user_with_piv(user)
 
         user = user.reload
-        expect(user.encrypted_email).to eq encrypted_email
+        expect(user.confirmed_email_addresses.first.encrypted_email).to eq encrypted_email
       end
     end
   end
@@ -665,8 +665,6 @@ feature 'Sign in' do
   it_behaves_like 'signing in with wrong credentials', :oidc
 
   it_behaves_like 'signing in as proofed account with broken personal key', :saml, sp_ial: 1
-  it_behaves_like 'signing in as proofed account with broken personal key', :oidc, sp_ial: 1
-  it_behaves_like 'signing in as proofed account with broken personal key', :saml, sp_ial: 2
   it_behaves_like 'signing in as proofed account with broken personal key', :oidc, sp_ial: 2
 
   context 'user signs in and chooses another authentication method' do
@@ -930,7 +928,7 @@ feature 'Sign in' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_path).to eq two_factor_options_path
+      expect(current_path).to eq authentication_methods_setup_path
       select_2fa_option('piv_cac')
 
       expect(page).to have_current_path setup_piv_cac_path

@@ -13,29 +13,18 @@ module TwoFactorAuthentication
     end
 
     def info
-      if configuration.present?
-        t(
-          'two_factor_authentication.login_options.phone_info_html',
-          phone: configuration.masked_phone,
-        )
-      else
-        voip_note = if IdentityConfig.store.voip_block
-          t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
-        end
-
-        safe_join(
-          [t('two_factor_authentication.two_factor_choice_options.phone_info'), *voip_note],
-          ' ',
-        )
-      end
+      IdentityConfig.store.kantara_2fa_phone_restricted &&
+        MfaContext.new(user).enabled_mfa_methods_count == 0 ?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_html') :
+          t('two_factor_authentication.two_factor_choice_options.phone_info')
     end
 
-    def security_level
-      t('two_factor_authentication.two_factor_choice_options.less_secure_label')
+    def mfa_configuration_count
+      user.phone_configurations.count
     end
 
     def disabled?
-      VendorStatus.new.all_phone_vendor_outage?
+      VendorStatus.new.all_phone_vendor_outage? || user&.phone_configurations&.any?
     end
   end
 end

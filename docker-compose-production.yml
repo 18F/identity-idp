@@ -4,19 +4,19 @@
 version: '3'
 services:
   app:
-    build: 
+    build:
       context: .
       dockerfile: production.Dockerfile
     volumes:
-       - ./app:/upaya/app
-       - ./certs:/upaya/certs
-       - ./config:/upaya/config
-       - ./db:/upaya/db
-       - ./keys:/upaya/keys
-       - ./lib:/upaya/lib
-       - ./log:/upaya/log
-       - ./pwned_passwords:/upaya/pwned_passwords
-       - ./vendor:/upaya/vendor
+       - ./app:/idp/app
+       - ./certs:/idp/certs
+       - ./config:/idp/config
+       - ./db:/idp/db
+       - ./keys:/idp/keys
+       - ./lib:/idp/lib
+       - ./log:/idp/log
+       - ./pwned_passwords:/idp/pwned_passwords
+       - ./vendor:/idp/vendor
     environment:
       redis_url: "redis://redis:6379"
       redis_throttle_url: "redis://redis:6379"

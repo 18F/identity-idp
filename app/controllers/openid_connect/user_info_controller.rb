@@ -16,7 +16,7 @@ module OpenidConnect
     def authenticate_identity_via_bearer_token
       verifier = AccessTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
       response = verifier.submit
-      analytics.track_event(Analytics::OPENID_CONNECT_BEARER_TOKEN, response.to_h)
+      analytics.openid_connect_bearer_token(**response.to_h)
 
       if response.success?
         @current_identity = verifier.identity

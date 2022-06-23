@@ -5,15 +5,19 @@ module Users
 
     before_action :check_remember_device_preference
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
+    before_action :redirect_if_blank_phone, only: [:send_code]
 
     def show
-      service_provider_mfa_requirement_redirect || non_phone_redirect || phone_redirect ||
-        backup_code_redirect || redirect_on_nothing_enabled
+      service_provider_mfa_requirement_redirect ||
+        non_phone_redirect ||
+        phone_redirect ||
+        backup_code_redirect ||
+        redirect_on_nothing_enabled
     end
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      analytics.otp_delivery_selection(**result.to_h)
       if result.success?
         handle_valid_otp_params(user_select_delivery_preference, user_selected_default_number)
         update_otp_delivery_preference_if_needed
@@ -53,7 +57,7 @@ module Users
       if MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to login_two_factor_options_path
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
 
@@ -67,7 +71,7 @@ module Users
 
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      analytics.otp_delivery_selection(**result.to_h)
       phone_is_confirmed = UserSessionContext.authentication_context?(context)
       phone_capabilities = PhoneNumberCapabilities.new(
         parsed_phone,
@@ -127,6 +131,13 @@ module Users
       )
     end
 
+    def redirect_if_blank_phone
+      return if phone_to_deliver_to.present?
+
+      flash[:error] = t('errors.messages.phone_required')
+      redirect_to login_two_factor_options_path
+    end
+
     def redirect_to_vendor_outage_if_phone_only
       return unless VendorStatus.new.all_phone_vendor_outage? &&
                     phone_enabled? &&
@@ -172,7 +183,7 @@ module Users
     end
 
     def handle_telephony_result(method:, default:)
-      track_events(method)
+      track_events(otp_delivery_preference: method)
       if @telephony_result.success?
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
@@ -189,9 +200,17 @@ module Users
       end
     end
 
-    def track_events(method)
-      analytics.track_event(Analytics::TELEPHONY_OTP_SENT, @telephony_result.to_h)
-      add_sp_cost(method) if @telephony_result.success?
+    def track_events(otp_delivery_preference:)
+      analytics.telephony_otp_sent(
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        context: context,
+        otp_delivery_preference: otp_delivery_preference,
+        resend: params.dig(:otp_delivery_selection_form, :resend),
+        telephony_response: @telephony_result.to_h,
+        success: @telephony_result.success?,
+      )
     end
 
     def exceeded_otp_send_limit?
@@ -199,7 +218,7 @@ module Users
     end
 
     def phone_confirmation_throttle
-      @phone_confirmation_throttle ||= Throttle.for(
+      @phone_confirmation_throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :phone_confirmation,
       )
@@ -301,7 +320,7 @@ module Users
       if user_fully_authenticated?
         redirect_to account_url
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
     end
   end

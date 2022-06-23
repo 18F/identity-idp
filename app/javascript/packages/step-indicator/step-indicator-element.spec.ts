@@ -1,10 +1,9 @@
-import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { useDefineProperty } from '@18f/identity-test-helpers';
+import { useDefineProperty, useSandbox } from '@18f/identity-test-helpers';
 import './step-indicator-element';
 
 describe('StepIndicatorElement', () => {
-  const sandbox = sinon.createSandbox();
+  const sandbox = useSandbox();
   const defineProperty = useDefineProperty();
 
   function initialize({ currentStepIndex = 0 } = {}) {

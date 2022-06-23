@@ -22,7 +22,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       analytics_hash = { context: 'authentication' }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, analytics_hash)
+        with('Multi-Factor Authentication: enter personal key visited', analytics_hash)
 
       get :show
     end
@@ -35,7 +35,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       get :show
 
       expect(response.status).to eq(302)
-      expect(response.location).to eq(two_factor_options_url)
+      expect(response.location).to eq(authentication_methods_setup_url)
     end
   end
 
@@ -59,7 +59,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
           with(analytics_hash)
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN,
+          'Personal key: Alert user about sign in',
           hash_including(emails: 1, sms_message_ids: ['fake-message-id']),
         )
 
@@ -90,7 +90,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       post :create, params: { personal_key_form: { personal_key: raw_key } }
 
       expect(response.status).to eq(302)
-      expect(response.location).to eq(two_factor_options_url)
+      expect(response.location).to eq(authentication_methods_setup_url)
     end
 
     context 'when the personal key field is empty' do
@@ -155,7 +155,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).
+                          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

@@ -42,7 +42,7 @@ feature 'Remembering a phone' do
     it_behaves_like 'remember device'
   end
 
-  context 'identity verification' do
+  context 'identity verification', :js do
     let(:user) { user_with_2fa }
 
     before do

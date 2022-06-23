@@ -7,6 +7,7 @@ module Idv
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_idv_phone_confirmed
+    before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
@@ -30,7 +31,7 @@ module Idv
     def new
       @applicant = idv_session.applicant
       @step_indicator_steps = step_indicator_steps
-      analytics.track_event(Analytics::IDV_REVIEW_VISIT)
+      analytics.idv_review_info_visited
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
@@ -44,15 +45,20 @@ module Idv
     def create
       init_profile
       user_session[:need_personal_key_confirmation] = true
-      redirect_to idv_personal_key_url
-      analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
-      analytics.track_event(Analytics::IDV_FINAL, success: true)
+      redirect_to next_step
+      analytics.idv_review_complete
+      analytics.idv_final(success: true)
 
       return unless FeatureManagement.reveal_gpo_code?
       session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end
 
     private
+
+    def redirect_to_idv_app_if_enabled
+      return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
+      redirect_to idv_app_path
+    end
 
     def step_indicator_steps
       steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
@@ -106,11 +112,15 @@ module Idv
     def personal_key_confirmed
       return unless current_user
       return unless current_user.active_profile.present? && need_personal_key_confirmation?
-      redirect_to idv_personal_key_url
+      redirect_to next_step
     end
 
     def need_personal_key_confirmation?
       user_session[:need_personal_key_confirmation]
+    end
+
+    def next_step
+      idv_personal_key_url
     end
   end
 end

@@ -61,6 +61,18 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           ial: 1,
           requested_at: inside_partial_month,
           returned_at: inside_partial_month,
+          billable: true,
+        )
+
+        # non-billable event in partial month, should be ignored
+        create(
+          :sp_return_log,
+          user_id: user1.id,
+          issuer: issuer1,
+          ial: 1,
+          requested_at: inside_partial_month,
+          returned_at: inside_partial_month,
+          billable: false,
         )
 
         # 2 unique user in partial month @ IAL2
@@ -72,6 +84,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             ial: 2,
             requested_at: inside_partial_month,
             returned_at: inside_partial_month,
+            billable: true,
           )
         end
 

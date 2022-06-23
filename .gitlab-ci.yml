@@ -6,7 +6,7 @@
 variables:
   GITLAB_CI: 'true'
   ECR_REGISTRY: "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-  IDP_CI_SHA: "sha256:8650f43d0e6d44729bff92657b59e511c874103ae6207b3c0781df042df6932f"
+  IDP_CI_SHA: "sha256:db00ce3b6c4b75e449d72e19329afdde94937547a75bfbfb6ef774ed3f5d77b6"
 
 default:
   image: "${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}"
@@ -63,12 +63,14 @@ workflow:
     - if: '$CI_PIPELINE_SOURCE == "schedule"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "external_pull_request_event" || $CI_PIPELINE_SOURCE == "web"'
     - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "stages/prod"'
     - if: '$CI_MERGE_REQUEST_IID || $CI_EXTERNAL_PULL_REQUEST_IID'
-    - if: '$CI_COMMIT_BRANCH'
 
 check_changelog:
   stage: build
+  variables:
+    GIT_DEPTH: 100
   script:
     - echo "$CI_PIPELINE_SOURCE"
     - |
@@ -103,7 +105,7 @@ install:
 
 specs:
   stage: test
-  parallel: 5
+  parallel: 9
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -116,7 +118,7 @@ specs:
     CAPYBARA_WAIT_TIME_SECONDS: 5
     COVERAGE: 'true'
     DOCKER_DB_HOST: postgres
-    POSTGRES_DB: upaya_test
+    POSTGRES_DB: identity_idp_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -147,7 +149,7 @@ specs:
     - cp -a keys.example keys
     - cp -a certs.example certs
     - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://localhost:6379/1'\" > config/application.yml"
+    - "echo -e \"test:\n  redis_url: 'redis://redis:6379/0'\n  redis_throttle_url: 'redis://redis:6379/1'\n  redis_irs_attempt_api_url: 'redis://redis:6379/2'\" > config/application.yml"
     - bundle exec rake db:create db:migrate --trace
     - bundle exec rake db:seed
     - bundle exec rake knapsack:rspec
@@ -185,6 +187,8 @@ js_tests:
 
 coverage:
   stage: after_test
+  cache:
+    - <<: *ruby_cache
   script:
     - *bundle_install
     - bundle exec spec/simplecov_merger.rb
@@ -199,7 +203,7 @@ coverage:
       - coverage/assets/
       - coverage/coverage.xml
 
-artifact:
+prepare_deploy:
   stage: after_test
   tags:
     - build-pool
@@ -211,3 +215,4 @@ artifact:
     - ./deploy/build
     - ./deploy/build-post-config
     - make build_artifact ARTIFACT_DESTINATION_FILE='./tmp/idp.tar.gz'
+    - bundle exec ./scripts/artifact-upload './tmp/idp.tar.gz'

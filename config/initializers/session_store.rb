@@ -1,9 +1,10 @@
 require 'session_encryptor'
+require 'legacy_session_encryptor'
 require 'session_encryptor_error_handler'
 
 Rails.application.config.session_store(
   :redis_session_store,
-  key: '_upaya_session',
+  key: '_identity_idp_session',
   redis: {
     driver: :hiredis,
 

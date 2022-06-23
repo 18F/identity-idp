@@ -43,9 +43,8 @@ module Idv
       def async_state_done(async_result)
         doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 
-        @flow.analytics.track_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-          doc_pii_form_result.to_h.merge(
+        @flow.analytics.idv_doc_auth_submitted_pii_validation(
+          **doc_pii_form_result.to_h.merge(
             remaining_attempts: remaining_attempts,
             flow_path: flow_path,
           ),
@@ -63,17 +62,18 @@ module Idv
       end
 
       def process_result(async_state)
-        add_cost(:acuant_result) if async_state.result.to_h[:billed]
+        add_costs(async_state.result)
       end
 
       def verify_document_capture_session
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
-        @verify_document_capture_session = if hybrid_flow_mobile?
-          document_capture_session
-        else
-          DocumentCaptureSession.find_by(
-            uuid: flow_session[verify_document_capture_session_uuid_key],
-          )
+        @verify_document_capture_session =
+          if hybrid_flow_mobile?
+            document_capture_session
+          else
+            DocumentCaptureSession.find_by(
+              uuid: flow_session[verify_document_capture_session_uuid_key],
+            )
         end
       end
 
@@ -99,7 +99,7 @@ module Idv
 
       def remaining_attempts
         return nil unless verify_document_capture_session
-        Throttle.for(
+        Throttle.new(
           user: verify_document_capture_session.user,
           throttle_type: :idv_doc_auth,
         ).remaining_count

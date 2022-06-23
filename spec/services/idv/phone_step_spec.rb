@@ -40,7 +40,7 @@ describe Idv::PhoneStep do
   }
 
   describe '#submit' do
-    let(:throttle) { create(:throttle, user: user, throttle_type: :proof_address) }
+    let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
 
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
@@ -100,15 +100,15 @@ describe Idv::PhoneStep do
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
         _result = subject.async_state_done(subject.async_state)
-      end.to(change { throttle.reload.attempts }.by(1))
+      end.to(change { throttle.fetch_state!.attempts }.by(1))
     end
 
     it 'does not increment step attempts when the vendor request times out' do
-      expect { subject.submit(phone: timeout_phone) }.to_not change { throttle.reload.attempts }
+      expect { subject.submit(phone: timeout_phone) }.to_not change { throttle.attempts }
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
-      expect { subject.submit(phone: fail_phone) }.to_not change { throttle.reload.attempts }
+      expect { subject.submit(phone: fail_phone) }.to_not change { throttle.attempts }
     end
 
     it 'marks the phone as confirmed if it matches 2FA phone' do
@@ -169,12 +169,7 @@ describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        create(
-          :throttle,
-          user: user,
-          throttle_type: :proof_address,
-          attempts: Throttle.max_attempts(:proof_address) - 1,
-        )
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
 
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true

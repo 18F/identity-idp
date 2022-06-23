@@ -11,12 +11,13 @@ Rails.application.routes.draw do
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
+  post '/api/irs_attempts_api/security_events' => 'api/irs_attempts_api#create'
 
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
     get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata', format: false
     match "/api/saml/logout#{suffix}" => 'saml_idp#logout', via: %i[get post delete]
-    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post delete]
+    match "/api/saml/remotelogout#{suffix}" => 'saml_idp#remotelogout', via: %i[get post]
     # JS-driven POST redirect route to preserve existing session
     post "/api/saml/auth#{suffix}" => 'saml_post#auth'
     # actual SAML handling POST route
@@ -30,6 +31,8 @@ Rails.application.routes.draw do
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
+
+  get '/no_js/detect.css' => 'no_js#index', as: :no_js_detect_css
 
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
@@ -65,6 +68,7 @@ Rails.application.routes.draw do
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
+      delete '/logout' => 'users/sessions#destroy'
       get '/active' => 'users/sessions#active'
       post '/sessions/keepalive' => 'users/sessions#keepalive'
 
@@ -137,12 +141,13 @@ Rails.application.routes.draw do
 
         get '/s3/:key' => 'fake_s3#show', as: :fake_s3
         put '/s3/:key' => 'fake_s3#update'
+
+        get '/session_data' => 'session_data#index'
       end
     end
 
-    if IdentityConfig.store.select_multiple_mfa_options
-      get '/auth_method_confirmation' => 'mfa_confirmation#show'
-    end
+    get '/auth_method_confirmation' => 'mfa_confirmation#show'
+    post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
 
     # Non-devise-controller routes. Alphabetically sorted.
     get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
@@ -219,8 +224,14 @@ Rails.application.routes.draw do
     post '/account/personal_key' => 'accounts/personal_keys#create'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
-    get '/two_factor_options' => 'users/two_factor_authentication_setup#index'
+
+    get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
+    patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
+    get '/two_factor_options', to: redirect('/authentication_methods_setup')
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
+    get '/second_mfa_setup' => 'users/mfa_selection#index'
+    get '/second_mfa_setup/non_restricted' => 'users/mfa_selection#non_restricted'
+    patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
     get '/aal3_required' => 'users/aal3#show'
@@ -231,6 +242,7 @@ Rails.application.routes.draw do
     patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
+    # Remove backup_code_download after next deployment
     get '/backup_code_download' => 'users/backup_code_setup#download'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
@@ -257,14 +269,13 @@ Rails.application.routes.draw do
     post '/user_authorization_confirmation' => 'users/authorization_confirmation#create'
     match '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#destroy', as: :reset_user_authorization, via: %i[put delete]
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
+    delete '/sign_up/cancel' => 'sign_up/cancellations#destroy', as: :sign_up_destroy
 
     get '/redirect/return_to_sp/cancel' => 'redirect/return_to_sp#cancel', as: :return_to_sp_cancel
     get '/redirect/return_to_sp/failure_to_proof' => 'redirect/return_to_sp#failure_to_proof', as: :return_to_sp_failure_to_proof
     get '/redirect/help_center' => 'redirect/help_center#show', as: :help_center_redirect
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
-
-    delete '/users' => 'users#destroy', as: :destroy_user
 
     get '/restricted' => 'banned_user#show', as: :banned_user
 
@@ -325,12 +336,13 @@ Rails.application.routes.draw do
       post '/confirmations' => 'personal_key#update'
     end
 
-    scope '/verify/v2' do
-      get '/' => 'verify#show', as: :idv_app_root
-      %w[
-        /personal_key
-        /personal_key_confirm
-      ].each { |step_path| get step_path => 'verify#show' }
+    get '/verify/v2(/:step)' => 'verify#show', as: :idv_app
+    get '/verify/v2/password_confirm/forgot_password' => 'verify#show', as: :idv_app_forgot_password
+
+    namespace :api do
+      post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
+      post '/verify/v2/password_reset' => 'verify/password_reset#create'
+      post '/verify/v2/document_capture' => 'verify/document_capture#create'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

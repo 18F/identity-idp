@@ -5,10 +5,13 @@ module TwoFactorAuthentication
 
     before_action :check_sp_required_mfa_bypass
     before_action :confirm_multiple_factors_enabled
+    before_action :redirect_if_blank_phone, only: [:show]
     before_action :confirm_voice_capability, only: [:show]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def show
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
+      analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
 
       @presenter = presenter_for_two_factor_authentication_method
     end
@@ -17,17 +20,20 @@ module TwoFactorAuthentication
       result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
       post_analytics(result)
       if result.success?
-        next_url = nil
-        if UserSessionContext.confirmation_context?(context)
-          next_url = user_next_authentication_setup_path!
-        end
-        handle_valid_otp(next_url)
+        handle_valid_otp
       else
         handle_invalid_otp
       end
     end
 
     private
+
+    def redirect_if_blank_phone
+      return if phone.present?
+
+      flash[:error] = t('errors.messages.phone_required')
+      redirect_to new_user_session_path
+    end
 
     def confirm_multiple_factors_enabled
       return if UserSessionContext.confirmation_context?(context) || phone_enabled?
@@ -75,9 +81,7 @@ module TwoFactorAuthentication
 
     def post_analytics(result)
       properties = result.to_h.merge(analytics_properties)
-      if context == 'confirmation'
-        analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
-      end
+      analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
     end

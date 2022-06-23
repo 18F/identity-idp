@@ -1,5 +1,5 @@
 import { trackEvent } from '@18f/identity-analytics';
-import { useSandbox } from '../../support/sinon';
+import { useSandbox } from '@18f/identity-test-helpers';
 
 describe('trackEvent', () => {
   const sandbox = useSandbox();
@@ -21,7 +21,7 @@ describe('trackEvent', () => {
     const endpoint = '/log';
 
     beforeEach(() => {
-      document.body.innerHTML = `<script data-analytics-endpoint="${endpoint}"></script>`;
+      document.body.innerHTML = `<script type="application/json" data-config>{"analyticsEndpoint":"${endpoint}"}</script>`;
     });
 
     context('no payload', () => {

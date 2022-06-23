@@ -21,8 +21,11 @@
     <p><%= t('doc_auth.info.link_sent') %></p>
     <%= render AlertComponent.new(type: :warning) do %>
       <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
-      <span class="no-js"><%= t('doc_auth.info.link_sent_complete_nojs') %></span>
-      <span class="js"><%= t('doc_auth.info.link_sent_complete_js') %></span>
+      <% if FeatureManagement.doc_capture_polling_enabled? %>
+        <%= t('doc_auth.info.link_sent_complete_polling') %>
+      <% else %>
+        <%= t('doc_auth.info.link_sent_complete_no_polling') %>
+      <% end %>
     <% end %>
   </div>
 </div>
@@ -37,7 +40,7 @@
 </div>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= content_tag 'script', '', data: { doc_capture_status_endpoint: idv_capture_doc_status_url } %>
+  <%= content_tag 'script', '', data: { status_endpoint: idv_capture_doc_status_url } %>
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>
 

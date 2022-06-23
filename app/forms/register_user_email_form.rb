@@ -73,7 +73,6 @@ class RegisterUserEmailForm
       user: user,
       email: email,
     )
-    user.email = email # Delete this when email address is retired
 
     self.email_language = email_language
     user.email_language = email_language
@@ -127,7 +126,7 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_unconfirmed_email(request_id)
-    throttler = Throttle.for(user: existing_user, throttle_type: :reg_unconfirmed_email)
+    throttler = Throttle.new(user: existing_user, throttle_type: :reg_unconfirmed_email)
     @throttled = throttler.throttled_else_increment?
 
     if @throttled
@@ -141,7 +140,7 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_confirmed_email
-    throttler = Throttle.for(user: existing_user, throttle_type: :reg_confirmed_email)
+    throttler = Throttle.new(user: existing_user, throttle_type: :reg_confirmed_email)
     @throttled = throttler.throttled_else_increment?
 
     if @throttled

@@ -1,6 +1,16 @@
 require 'rails_helper'
 
 describe MfaConfirmationController do
+  describe '#show' do
+    it 'presents the mfa confirmation page.' do
+      stub_sign_in
+
+      get :show, params: { final_path: account_url }
+
+      expect(response.status).to eq 200
+    end
+  end
+
   describe '#new' do
     it 'presents the password confirmation form' do
       stub_sign_in
@@ -90,7 +100,7 @@ describe MfaConfirmationController do
         expect(controller.current_user).to be_nil
         expect(flash[:error]).to eq t('errors.max_password_attempts_reached')
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_MAX_ATTEMPTS)
+          with('Password Max Attempts Reached')
       end
     end
 

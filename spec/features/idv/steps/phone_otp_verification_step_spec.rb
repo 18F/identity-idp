@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'phone otp verification step spec' do
+feature 'phone otp verification step spec', :js do
   include IdvStepHelper
 
   it 'requires the user to enter the correct otp before continuing' do
@@ -96,11 +96,5 @@ feature 'phone otp verification step spec' do
 
     expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)
-  end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone_otp_verification
-    it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
-    it_behaves_like 'cancel at idv step', :phone_otp_verification, :saml
   end
 end

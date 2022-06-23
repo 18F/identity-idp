@@ -20,7 +20,7 @@ describe('document-capture/components/warning', () => {
           troubleshootingOptions={
             <TroubleshootingOptions
               heading="Having trouble?"
-              options={[{ text: 'Get help', url: 'https://example.com/' }]}
+              options={[{ text: 'Get help', url: '/' }]}
             />
           }
           location="example"
@@ -30,9 +30,9 @@ describe('document-capture/components/warning', () => {
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: warning shown',
-      payload: { location: 'example', remaining_attempts: undefined },
+    expect(addPageAction).to.have.been.calledWith('IdV: warning shown', {
+      location: 'example',
+      remaining_attempts: undefined,
     });
 
     const tryAgainButton = getByRole('button', { name: 'Try again' });
@@ -41,14 +41,11 @@ describe('document-capture/components/warning', () => {
     expect(getByRole('heading', { name: 'Oops!' })).to.exist();
     expect(tryAgainButton).to.exist();
     expect(actionOnClick).to.have.been.calledOnce();
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: warning action triggered',
-      payload: {
-        location: 'example',
-      },
+    expect(addPageAction).to.have.been.calledWith('IdV: warning action triggered', {
+      location: 'example',
     });
     expect(getByText('Something went wrong')).to.exist();
     expect(getByRole('heading', { name: 'Having trouble?' })).to.exist();
-    expect(getByRole('link', { name: 'Get help' }).href).to.equal('https://example.com/');
+    expect(getByRole('link', { name: 'Get help' }).getAttribute('href')).to.equal('/');
   });
 });

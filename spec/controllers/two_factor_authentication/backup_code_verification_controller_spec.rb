@@ -11,7 +11,7 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       analytics_hash = { context: 'authentication' }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, analytics_hash)
+        with('Multi-Factor Authentication: enter backup code visited', analytics_hash)
 
       get :show
     end
@@ -121,7 +121,8 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
-        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).
+                          with('Multi-Factor Authentication: max attempts reached')
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

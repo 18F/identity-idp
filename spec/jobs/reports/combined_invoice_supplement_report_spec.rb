@@ -107,6 +107,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
           ial: 1,
           requested_at: inside_iaa1,
           returned_at: inside_iaa1,
+          billable: true,
         )
 
         # 1 unique user in month 1 at IAA 2 sp 1 @ IAL 2
@@ -155,6 +156,10 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
           expect(row['issuer_ial1_total_auth_count'].to_i).to eq(1)
           expect(row['issuer_ial2_total_auth_count'].to_i).to eq(0)
           expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+
+          expect(row['issuer_ial1_unique_users'].to_i).to eq(1)
+          expect(row['issuer_ial2_unique_users'].to_i).to eq(0)
+          expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(1)
           expect(row['issuer_ial2_new_unique_users'].to_i).to eq(0)
         end
 
@@ -180,6 +185,10 @@ RSpec.describe Reports::CombinedInvoiceSupplementReport do
             expect(row['issuer_ial1_total_auth_count'].to_i).to eq(0)
             expect(row['issuer_ial2_total_auth_count'].to_i).to eq(1)
             expect(row['issuer_ial1_plus_2_total_auth_count'].to_i).to eq(1)
+
+            expect(row['issuer_ial1_unique_users'].to_i).to eq(0)
+            expect(row['issuer_ial2_unique_users'].to_i).to eq(1)
+            expect(row['issuer_ial1_plus_2_unique_users'].to_i).to eq(1)
             expect(row['issuer_ial2_new_unique_users'].to_i).to eq(1)
           end
         end

@@ -58,6 +58,10 @@ module OpenidConnect
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
     end
 
+    def ial_context
+      @authorize_form.ial_context
+    end
+
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
@@ -79,17 +83,18 @@ module OpenidConnect
       analytics_attributes = result.to_h.except(:redirect_uri).
                              merge(user_fully_authenticated: user_fully_authenticated?)
 
-      analytics.track_event(
-        Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION, analytics_attributes
-      )
+      analytics.openid_connect_request_authorization(**analytics_attributes)
     end
 
     def identity_needs_verification?
       ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
         (current_user.decorate.identity_not_verified? ||
         decorated_session.requested_more_recent_verification?)) ||
-        (@authorize_form.ial2_strict_requested? &&
-        !current_user.active_profile&.includes_liveness_check?)
+        identity_needs_strict_ial2_verification?
+    end
+
+    def identity_needs_strict_ial2_verification?
+      @authorize_form.ial2_strict_requested? && !current_user.active_profile&.strict_ial2_proofed?
     end
 
     def build_authorize_form_from_params
@@ -140,7 +145,17 @@ module OpenidConnect
     end
 
     def track_events
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
+      event_ial_context = IalContext.new(
+        ial: @authorize_form.ial,
+        service_provider: @authorize_form.service_provider,
+        user: current_user,
+      )
+
+      analytics.track_event(
+        Analytics::SP_REDIRECT_INITIATED,
+        ial: event_ial_context.ial,
+        billed_ial: event_ial_context.bill_for_ial_1_or_2,
+      )
       track_billing_events
     end
   end

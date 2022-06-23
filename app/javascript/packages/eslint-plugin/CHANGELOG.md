@@ -44,6 +44,8 @@
   - `no-loss-of-precision`
   - `no-redeclare`
   - `no-useless-constructor`
+- React: The following rules are no longer enforced:
+  - `react/no-array-index-key`
 
 ## v2.0.0 (2022-03-14)
 

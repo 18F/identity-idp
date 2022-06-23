@@ -11,6 +11,8 @@ module Users
     before_action :apply_secure_headers_override
     before_action :cap_auth_app_count, only: %i[new confirm]
 
+    helper_method :in_multi_mfa_selection_flow?
+
     def new
       store_totp_secret_in_session
       track_event
@@ -22,7 +24,7 @@ module Users
     def confirm
       result = totp_setup_form.submit
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
+      analytics.multi_factor_auth_setup(**result.to_h)
 
       if result.success?
         process_valid_code
@@ -32,8 +34,9 @@ module Users
     end
 
     def disable
-      process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
-
+      if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
+        process_successful_disable
+      end
       redirect_to account_two_factor_authentication_path
     end
 
@@ -79,7 +82,7 @@ module Users
       handle_remember_device
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
-      redirect_to user_next_authentication_setup_path!(after_mfa_setup_path)
+      redirect_to next_setup_path || after_mfa_setup_path
     end
 
     def handle_remember_device

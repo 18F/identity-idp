@@ -4,15 +4,23 @@ export interface FormErrorOptions {
    * text description.
    */
   isDetail?: boolean;
+
+  /**
+   * Field associated with the error.
+   */
+  field?: string;
 }
 
 class FormError extends Error {
+  field?: string;
+
   isDetail: boolean;
 
-  constructor(options?: { isDetail: boolean }) {
-    super();
+  constructor(message?: string, options?: FormErrorOptions) {
+    super(message);
 
     this.isDetail = Boolean(options?.isDetail);
+    this.field = options?.field;
   }
 }
 

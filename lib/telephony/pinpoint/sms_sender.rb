@@ -38,7 +38,7 @@ module Telephony
                 sms_message: {
                   body: message,
                   message_type: 'TRANSACTIONAL',
-                  origination_number: sms_config.shortcode,
+                  origination_number: origination_number(country_code, sms_config),
                   sender_id: Telephony.config.country_sender_ids[country_code.to_s],
                 },
               },
@@ -57,8 +57,7 @@ module Telephony
             channel: :sms,
             extra: response.extra,
           )
-        rescue Aws::Pinpoint::Errors::InternalServerErrorException,
-               Aws::Pinpoint::Errors::TooManyRequestsException,
+        rescue Aws::Pinpoint::Errors::ServiceError,
                Seahorse::Client::NetworkingError => e
           finish = Time.zone.now
           response = handle_pinpoint_error(e)
@@ -135,6 +134,14 @@ module Telephony
         )
       end
 
+      def origination_number(country_code, sms_config)
+        if sms_config.country_code_longcode_pool&.dig(country_code).present?
+          sms_config.country_code_longcode_pool[country_code].sample
+        else
+          sms_config.shortcode
+        end
+      end
+
       private
 
       def handle_pinpoint_error(err)
@@ -172,11 +179,12 @@ module Telephony
         status_code = message_response_result.status_code
         delivery_status = message_response_result.delivery_status
         exception_message = "Pinpoint Error: #{delivery_status} - #{status_code}"
-        exception_class = if permanent_failure_opt_out?(message_response_result)
-          OptOutError
-        else
-          ERROR_HASH[delivery_status] || TelephonyError
-        end
+        exception_class =
+          if permanent_failure_opt_out?(message_response_result)
+            OptOutError
+          else
+            ERROR_HASH[delivery_status] || TelephonyError
+          end
         exception_class.new(exception_message)
       end
 

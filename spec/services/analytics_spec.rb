@@ -186,7 +186,7 @@ describe Analytics do
     it 'does not alert when pii values are inside words' do
       expect(ahoy).to receive(:track)
 
-      stub_const('DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC', zipcode: '12345')
+      stub_const('Idp::Constants::MOCK_IDV_APPLICANT', zipcode: '12345')
 
       expect do
         analytics.track_event(

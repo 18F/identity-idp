@@ -44,7 +44,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           result = { context: 'authentication',
                      multi_factor_auth_method: 'webauthn_platform', webauthn_configuration_id: nil }
           expect(@analytics).to have_received(:track_event).with(
-            Analytics::MULTI_FACTOR_AUTH_ENTER_WEBAUTHN_VISIT,
+            'Multi-Factor Authentication: enter webAuthn authentication visited',
             result,
           )
         end
@@ -58,6 +58,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           client_data_json: verification_client_data_json,
           signature: signature,
           credential_id: credential_id,
+          platform: '',
         }
       end
       before do

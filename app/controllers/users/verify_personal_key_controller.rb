@@ -7,7 +7,7 @@ module Users
     before_action :init_account_reactivation, only: [:new]
 
     def new
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_VISITED)
+      analytics.personal_key_reactivation_visited
       @personal_key_form = VerifyPersonalKeyForm.new(
         user: current_user,
         personal_key: '',
@@ -26,8 +26,7 @@ module Users
       else
         result = personal_key_form.submit
 
-        analytics.track_event(
-          Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
+        analytics.personal_key_reactivation_submitted(
           **result.to_h,
           pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         )
@@ -42,7 +41,7 @@ module Users
     private
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :verify_personal_key,
       )
@@ -67,7 +66,7 @@ module Users
 
     # @param [Pii::Attributes] decrypted_pii
     def handle_success(decrypted_pii:)
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION)
+      analytics.personal_key_reactivation
       reactivate_account_session.store_decrypted_pii(decrypted_pii)
       redirect_to verify_password_url
     end

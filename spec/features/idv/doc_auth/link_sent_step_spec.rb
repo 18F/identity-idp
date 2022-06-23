@@ -18,6 +18,10 @@ feature 'doc auth link sent step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     expect(page).to have_content(t('doc_auth.headings.text_message'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_id'),
+    )
   end
 
   it 'proceeds to the next page with valid info' do
@@ -51,13 +55,6 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
-  it 'shows the step indicator' do
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_id'),
-    )
-  end
-
   context 'cancelled' do
     before do
       document_capture_session = user.document_capture_sessions.last
@@ -83,8 +80,8 @@ feature 'doc auth link sent step' do
     it 'automatically advances when the mobile flow is complete' do
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
       expect(page).to_not have_button(t('forms.buttons.continue'))
-      expect(page).to_not have_content(t('doc_auth.info.link_sent_complete_nojs'))
-      expect(page).to have_content(t('doc_auth.info.link_sent_complete_js'))
+      expect(page).to_not have_content(t('doc_auth.info.link_sent_complete_no_polling'))
+      expect(page).to have_content(t('doc_auth.info.link_sent_complete_polling'))
 
       mock_doc_captured(user.id)
 

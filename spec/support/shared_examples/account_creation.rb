@@ -42,7 +42,7 @@ shared_examples 'creating an account using authenticator app for 2FA' do |sp|
 end
 
 shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |sp|
-  it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true do
+  it 'does not prompt for recovery code before IdV flow', email: true, idv_job: true, js: true do
     visit_idp_from_sp_with_ial2(sp)
     register_user_with_authenticator_app
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
@@ -54,15 +54,10 @@ shared_examples 'creating an IAL2 account using authenticator app for 2FA' do |s
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
-
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
+    acknowledge_and_confirm_personal_key
 
     click_agree_and_continue
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
@@ -94,7 +89,7 @@ shared_examples 'creating an account using PIV/CAC for 2FA' do |sp|
 end
 
 shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
-  it 'does not prompt for recovery code before IdV flow', email: true do
+  it 'does not prompt for recovery code before IdV flow', email: true, js: true do
     mock_webauthn_setup_challenge
     visit_idp_from_sp_with_ial2(sp)
     confirm_email_and_password('test@test.com')
@@ -110,15 +105,10 @@ shared_examples 'creating an IAL2 account using webauthn for 2FA' do |sp|
     click_submit_default
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
-
-    if sp == :oidc
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-    end
+    acknowledge_and_confirm_personal_key
 
     click_agree_and_continue
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+    expect(current_path).to eq test_saml_decode_assertion_path if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)

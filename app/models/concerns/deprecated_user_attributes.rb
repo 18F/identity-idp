@@ -2,7 +2,7 @@ module DeprecatedUserAttributes
   extend ActiveSupport::Concern
 
   DEPRECATED_ATTRIBUTES = %i[
-    email_fingerprint encrypted_email email confirmed_at confirmation_token confirmation_sent_at
+    email confirmed_at
   ].freeze
 
   def []=(attribute, value)

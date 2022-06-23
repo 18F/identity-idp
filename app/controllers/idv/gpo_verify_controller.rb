@@ -6,7 +6,7 @@ module Idv
     before_action :confirm_verification_needed
 
     def index
-      analytics.track_event(Analytics::IDV_GPO_VERIFICATION_VISITED)
+      analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
       @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user)
@@ -26,7 +26,7 @@ module Idv
         render_throttled
       else
         result = @gpo_verify_form.submit
-        analytics.track_event(Analytics::IDV_GPO_VERIFICATION_SUBMITTED, result.to_h)
+        analytics.idv_gpo_verification_submitted(**result.to_h)
 
         if result.success?
           event = create_user_event_with_disavowal(:account_verified)
@@ -48,7 +48,7 @@ module Idv
     private
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: current_user,
         throttle_type: :verify_gpo_key,
       )

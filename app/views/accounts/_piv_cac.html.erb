@@ -10,9 +10,11 @@
           <%= piv_cac_configuration.name %>
         </div>
       </div>
-      <div class="grid-col-4 text-right">
-        <%= render 'accounts/actions/disable_piv_cac', id: piv_cac_configuration.id %>
-      </div>
+      <% if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled? %>
+        <div class="grid-col-4 text-right">
+          <%= render 'accounts/actions/disable_piv_cac', id: piv_cac_configuration.id %>
+        </div>
+      <% end %>
     </div>
   <% end %>
 </div>

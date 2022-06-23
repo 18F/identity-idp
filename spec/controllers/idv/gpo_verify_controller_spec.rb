@@ -28,7 +28,7 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'user has pending profile' do
       it 'renders page' do
-        expect(@analytics).to receive(:track_event).with(Analytics::IDV_GPO_VERIFICATION_VISITED)
+        expect(@analytics).to receive(:track_event).with('IdV: GPO verification visited')
 
         action
 
@@ -36,7 +36,7 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       it 'shows throttled page is user is throttled' do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
 
         action
 
@@ -56,13 +56,13 @@ RSpec.describe Idv::GpoVerifyController do
 
     context 'with throttle reached' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
+        Throttle.new(throttle_type: :verify_gpo_key, user: user).increment_to_throttled!
       end
 
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_VISITED,
+          'IdV: GPO verification visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
@@ -93,7 +93,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: true,
           errors: {},
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
@@ -113,7 +113,7 @@ RSpec.describe Idv::GpoVerifyController do
 
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           error_details: { otp: [:confirmation_code_incorrect] },
@@ -139,7 +139,7 @@ RSpec.describe Idv::GpoVerifyController do
         max_attempts = IdentityConfig.store.verify_gpo_key_max_attempts
 
         expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_GPO_VERIFICATION_SUBMITTED,
+          'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           error_details: { otp: [:confirmation_code_incorrect] },

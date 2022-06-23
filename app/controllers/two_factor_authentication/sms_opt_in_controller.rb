@@ -65,7 +65,7 @@ module TwoFactorAuthentication
 
     def other_options_mfa_url
       if new_user?
-        two_factor_options_path
+        authentication_methods_setup_path
       elsif has_other_auth_methods? && !user_fully_authenticated?
         login_two_factor_options_path
       end

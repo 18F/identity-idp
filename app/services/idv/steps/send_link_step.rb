@@ -68,7 +68,7 @@ module Idv
       end
 
       def throttle
-        @throttle ||= Throttle.for(
+        @throttle ||= Throttle.new(
           user: current_user,
           throttle_type: :idv_send_link,
         )

@@ -6,6 +6,7 @@ module Idv
     before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
+    before_action :confirm_gpo_allowed_if_strict_ial2
     before_action :max_attempts_reached, only: [:update]
 
     def index
@@ -13,8 +14,7 @@ module Idv
       current_async_state = async_state
 
       if current_async_state.none?
-        analytics.track_event(
-          Analytics::IDV_GPO_ADDRESS_VISITED,
+        analytics.idv_gpo_address_visited(
           letter_already_sent: @presenter.letter_already_sent?,
         )
         render :index
@@ -32,7 +32,9 @@ module Idv
       update_tracking
       idv_session.address_verification_mechanism = :gpo
 
-      if current_user.decorate.pending_profile_requires_verification?
+      if current_user.decorate.pending_profile_requires_verification? && pii_locked?
+        redirect_to capture_password_url
+      elsif current_user.decorate.pending_profile_requires_verification?
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -53,7 +55,7 @@ module Idv
     private
 
     def update_tracking
-      analytics.track_event(Analytics::IDV_GPO_ADDRESS_LETTER_REQUESTED)
+      analytics.idv_gpo_address_letter_requested
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
@@ -61,6 +63,12 @@ module Idv
 
     def failure
       redirect_to idv_gpo_url unless performed?
+    end
+
+    def confirm_gpo_allowed_if_strict_ial2
+      return unless sp_session[:ial2_strict]
+      return if IdentityConfig.store.gpo_allowed_for_strict_ial2
+      redirect_to idv_phone_url
     end
 
     def pii(address_pii)
@@ -156,11 +164,11 @@ module Idv
     end
 
     def idv_attempter_increment
-      Throttle.for(**idv_throttle_params).increment
+      Throttle.new(**idv_throttle_params).increment!
     end
 
     def idv_attempter_throttled?
-      Throttle.for(**idv_throttle_params).throttled?
+      Throttle.new(**idv_throttle_params).throttled?
     end
 
     def throttle_failure
@@ -242,7 +250,7 @@ module Idv
     end
 
     def async_state_done_analytics(result)
-      analytics.track_event(Analytics::IDV_GPO_ADDRESS_SUBMITTED, result.to_h)
+      analytics.idv_gpo_address_submitted(**result.to_h)
       Db::SpCost::AddSpCost.call(current_sp, 2, :lexis_nexis_resolution)
       Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
     end
@@ -255,6 +263,10 @@ module Idv
       flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
       ProofingSessionAsyncResult.missing
+    end
+
+    def pii_locked?
+      !Pii::Cacher.new(current_user, user_session).exists_in_session?
     end
   end
 end

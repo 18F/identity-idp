@@ -1,5 +1,43 @@
 ---
 fr:
   in_person_proofing:
+    body:
+      address:
+        info: Si votre adresse actuelle ne correspond pas à l’adresse sur votre pièce
+          d’identité, vous devrez apporter une preuve de votre adresse actuelle
+          au bureau de poste.
+        learn_more: Apprendre encore plus
+      state_id:
+        info_html: 'Entrez les informations <strong>exactement telles qu’elles
+          apparaissent sur votre pièce d’identité délivrée par l’État.</strong>
+          Nous utiliserons ces informations pour confirmer qu’elles
+          correspondent à votre pièce d’identité en personne.'
+    form:
+      address:
+        address1: Adresse
+        address2: Adresse (facultatif)
+        city: Ville
+        same_address: Cette adresse est-elle affichée sur la pièce d’identité délivrée
+          par l’État que vous apportez au bureau de poste?
+        same_address_choice_no: J’ai une adresse différente sur ma carte d’identité
+        same_address_choice_yes: Cette adresse figure sur ma pièce d’identité délivrée par l’État
+        state: État
+        state_prompt: '- Sélectionnez -'
+        zipcode: Code postal
+      state_id:
+        dob: Date de naissance
+        dob_hint: 'Exemple: 4 28 1986'
+        first_name: Prénom
+        last_name: Nom de famille
+        state_id_jurisdiction: État
+        state_id_jurisdiction_hint: Sélectionnez l’état indiqué sur votre pièce d’identité
+        state_id_jurisdiction_prompt: '- Sélectionnez -'
+        state_id_number: Numéro d’identification
+        state_id_number_hint: Peut inclure des chiffres et des lettres
     headings:
+      address: Entrez votre adresse actuelle
+      barcode: Vous êtes prêt à vérifier votre identité en personne
+      location: Sélectionnez un emplacement pour vérifier votre identité
+      state_id: Entrez les informations sur votre pièce d’identité
+      verify: Veuillez vérifier vos informations
       welcome: Vérifiez votre identité en personne

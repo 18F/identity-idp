@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FormSteps } from '@18f/identity-form-steps';
+import * as analytics from '@18f/identity-analytics';
 import PersonalKeyConfirmStep from './personal-key-confirm-step';
 
 describe('PersonalKeyConfirmStep', () => {
@@ -13,6 +14,16 @@ describe('PersonalKeyConfirmStep', () => {
     onError() {},
     registerField: () => () => {},
   };
+
+  const sandbox = sinon.createSandbox();
+
+  beforeEach(() => {
+    sandbox.spy(analytics, 'trackEvent');
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
 
   it('allows the user to return to the previous step by clicking "Back" button', async () => {
     const toPreviousStep = sinon.spy();
@@ -36,6 +47,17 @@ describe('PersonalKeyConfirmStep', () => {
     expect(toPreviousStep).to.have.been.called();
   });
 
+  it('calls trackEvent when user dismisses modal by pressing "Back" button', async () => {
+    const toPreviousStep = sinon.spy();
+
+    const { getByText } = render(
+      <PersonalKeyConfirmStep {...DEFAULT_PROPS} toPreviousStep={toPreviousStep} />,
+    );
+
+    await userEvent.click(getByText('forms.buttons.back'));
+    expect(analytics.trackEvent).to.have.been.calledWith('IdV: hide personal key modal');
+  });
+
   it('allows the user to continue only with a correct value', async () => {
     const onComplete = sinon.spy();
     const { getByLabelText, getAllByText, container } = render(
@@ -47,8 +69,8 @@ describe('PersonalKeyConfirmStep', () => {
     );
 
     const input = getByLabelText('forms.personal_key.confirmation_label');
-    const submitButton = getAllByText('forms.buttons.submit.default')[1];
-    await userEvent.click(submitButton);
+    const continueButton = getAllByText('forms.buttons.continue')[1];
+    await userEvent.click(continueButton);
 
     expect(onComplete).not.to.have.been.called();
     expect(container.ownerDocument.activeElement).to.equal(input);
@@ -68,7 +90,7 @@ describe('PersonalKeyConfirmStep', () => {
     await userEvent.type(input, '{Enter}');
     expect(onComplete).to.have.been.calledOnce();
 
-    await userEvent.click(submitButton);
+    await userEvent.click(continueButton);
     expect(onComplete).to.have.been.calledTwice();
   });
 });

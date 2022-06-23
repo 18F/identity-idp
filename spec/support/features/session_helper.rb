@@ -227,9 +227,9 @@ module Features
     end
 
     def confirm_last_user
-      @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
+      @raw_confirmation_token, = Devise.token_generator.generate(EmailAddress, :confirmation_token)
 
-      User.last.update(
+      User.last.email_addresses.first.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now,
       )
 
@@ -308,18 +308,15 @@ module Features
       click_submit_default
     end
 
-    def acknowledge_and_confirm_personal_key(js: true)
-      button_text = t('forms.buttons.continue')
+    def acknowledge_and_confirm_personal_key
+      click_acknowledge_personal_key
 
-      click_on button_text, class: 'personal-key-continue' if js
-
-      fill_in 'personal_key', with: scrape_personal_key
-
-      find_all('.personal-key-confirm', text: button_text).first.click
+      page.find(':focus').fill_in with: scrape_personal_key
+      within('[role=dialog]') { click_continue }
     end
 
     def click_acknowledge_personal_key
-      click_on t('forms.buttons.continue'), class: 'personal-key-continue'
+      click_continue
     end
 
     def enter_personal_key(personal_key:, selector: 'input[type="text"]')
@@ -543,6 +540,8 @@ module Features
 
       expect(page).to have_current_path authenticator_setup_path
 
+      fill_in t('forms.totp_setup.totp_step_1'), with: 'App'
+
       secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
@@ -550,7 +549,7 @@ module Features
 
     def register_user_with_piv_cac(email = 'test@test.com')
       confirm_email_and_password(email)
-      expect(page).to have_current_path two_factor_options_path
+      expect(page).to have_current_path authentication_methods_setup_path
       expect(page).to have_content(
         t('two_factor_authentication.two_factor_choice_options.piv_cac'),
       )
@@ -574,7 +573,7 @@ module Features
     end
 
     def sign_in_via_branded_page(user)
-      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_credentials_and_submit(user.confirmed_email_addresses.first.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
     end

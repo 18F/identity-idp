@@ -54,6 +54,7 @@ describe Idv::ResendOtpController do
 
       expected_result = {
         success: true,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse(phone).e164),
         errors: {},
         otp_delivery_preference: :sms,
         country_code: 'US',
@@ -63,7 +64,7 @@ describe Idv::ResendOtpController do
       }
 
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT,
+        'IdV: phone confirmation otp resent',
         expected_result,
       )
     end
@@ -95,7 +96,7 @@ describe Idv::ResendOtpController do
 
       it 'tracks an analytics events' do
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_OTP_RESENT,
+          'IdV: phone confirmation otp resent',
           hash_including(
             success: false,
             telephony_response: telephony_response,

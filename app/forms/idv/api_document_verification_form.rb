@@ -31,9 +31,8 @@ module Idv
         },
       )
 
-      @analytics.track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
-        response.to_h,
+      @analytics.idv_doc_auth_submitted_image_upload_form(
+        **response.to_h,
       )
 
       response
@@ -101,7 +100,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )

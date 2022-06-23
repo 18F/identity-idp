@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv phone step' do
+feature 'idv phone step', :js do
   include IdvStepHelper
   include IdvHelper
 
@@ -136,23 +136,6 @@ feature 'idv phone step' do
   end
 
   it_behaves_like 'async timed out'
-
-  context 'javascript enabled', js: true do
-    around do |example|
-      # Adjust the wait time to give the frontend time to poll for results.
-      Capybara.using_wait_time(5) do
-        example.run
-      end
-    end
-
-    it_behaves_like 'async timed out'
-  end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone
-    it_behaves_like 'cancel at idv step', :phone, :oidc
-    it_behaves_like 'cancel at idv step', :phone, :saml
-  end
 
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :phone

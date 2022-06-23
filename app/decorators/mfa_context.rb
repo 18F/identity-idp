@@ -97,6 +97,10 @@ class MfaContext
       personal_key_method_count
   end
 
+  def enabled_non_restricted_mfa_methods_count
+    enabled_mfa_methods_count - phone_configurations.to_a.count(&:mfa_enabled?)
+  end
+
   # returns a hash showing the count for each enabled 2FA configuration,
   # such as: { phone: 2, webauthn: 1 }. This is useful for analytics purposes.
   def enabled_two_factor_configuration_counts_hash

@@ -85,6 +85,7 @@ en:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
           state-issued ID</strong>.
+        state_issue: State-issued ID
     messages:
       activated_html: Your identity has been verified. If you need to change your
         verified information, please %{link}.
@@ -135,7 +136,7 @@ en:
           TEST SITE
         read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
-          information you’ve given us, so that only you can access it
+          information you’ve given us, so that only you can access it.
     review:
       dob: Date of birth
       full_name: Full name
@@ -148,6 +149,7 @@ en:
         resend: Want another letter?
         verify: Want a letter?
       otp_delivery_method: How would you like to receive a code?
+      personal_key: Personal key
       review: Review and submit
       session:
         phone: Enter a phone number with your name on the plan
@@ -169,3 +171,7 @@ en:
         supported_documents: See a list of accepted state-issued IDs
         verify_by_mail: Verify your address by mail instead
         verify_in_person: Verify your ID in person at a Post Office
+    welcome:
+      no_js_header: You must enable JavaScript to verify your identity.
+      no_js_intro: '%{sp_name} needs you to verify your identity. You need to enable
+        JavaScript to continue this process.'

@@ -76,8 +76,27 @@ describe SamlEndpoint do
       result = subject.saml_metadata
 
       expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2022\Z})
+    end
+
+    it 'does not include the SingLogoutService endpoints when configured' do
+      allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
+        and_return(false)
+      result = subject.saml_metadata
+
+      expect(result.configurator.single_logout_service_post_location).to be_nil
+      expect(result.configurator.remote_logout_service_post_location).to be_nil
+    end
+
+    it 'includes the SingLogoutService endpoints when configured' do
+      allow(IdentityConfig.store).to receive(:include_slo_in_saml_metadata).
+        and_return(true)
+      result = subject.saml_metadata
+
       expect(result.configurator.single_logout_service_post_location).to match(
         %r{api/saml/logout2022\Z},
+      )
+      expect(result.configurator.remote_logout_service_post_location).to match(
+        %r{api/saml/remotelogout2022\Z},
       )
     end
   end

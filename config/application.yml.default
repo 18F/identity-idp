@@ -18,6 +18,7 @@ aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
+aamva_supported_jurisdictions: '["AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
@@ -93,13 +94,24 @@ gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: false
 identity_pki_disabled: false
 identity_pki_local_dev: false
-idv_api_enabled: false
+idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_public_key: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZ3d0RRWUpLb1pJaHZjTkFRRUJCUUFEU3dBd1NBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaApjYW5TMGhuWm1DRGIrTEhaME5zQTdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUT09Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo='
+idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaGNhblMwaG5abUNEYitMSFowTnNBCjdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUUpCQUp6TUMvOSs2RWlHQzkrZTFlWWkKVzc0ejN4MjBkanZndFlhOHh4UDh2ZnA3TjdKQXMvaGNUbjVLOCtDM2swaXUyR2RNb21qSlp2ckxwT0IyTWh4RQo3QkVDSVFEVERhbVRCMHhKSlVpV0ljNk15Y0dFa2J4SEZ3eEtURVNCaHhzREFISDZEUUloQU5IR2NwVUs5dmVSCkdrZlZTOS9MSVNZQlk2YzRUZk1NUFJZU21KVHFNRVN2QWlBZFdiY05aV1JzZjZ6YWhCVVBhemRvVWtRV3R0UFUKdVVxRm9ONVd5b2NQT1FJZ1FrUjlaK1haMUtVcTl5eERWc1FWaWFzQXJ3K1RXRWN5ZU9tUTkrSHZNNU1DSUcrMQpxVldqNW9PL0FBSU1QbXZVZmp5L0JnMnhEQVRiOEp6alFrQ3dLSnNwCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 in_person_proofing_enabled: true
+include_slo_in_saml_metadata: false
+irs_attempt_api_audience: 'https://irs.gov'
+irs_attempt_api_auth_tokens: ''
+irs_attempt_api_enabled: false
+irs_attempt_api_event_ttl_seconds: 86400
+irs_attempt_api_event_count_default: 1000
+irs_attempt_api_event_count_max: 10000
+kantara_2fa_phone_restricted: false
+kantara_2fa_phone_existing_user_restriction: false
 liveness_checking_enabled: false
 logins_per_ip_track_only_mode: false
 # LexisNexis #####################################################
@@ -141,6 +153,7 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 min_password_score: 3
 mx_timeout: 3
+new_sign_up_cancellation_url_enabled: true
 otp_delivery_blocklist_maxretry: 10
 otp_valid_for: 10
 otps_per_ip_limit: 25
@@ -180,6 +193,7 @@ rack_timeout_service_timeout_seconds: 15
 rails_mailer_previews_enabled: false
 reauthn_window: 120
 recovery_code_length: 4
+redis_irs_attempt_api_url: redis://localhost:6379/2
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
 reg_confirmed_email_max_attempts: 20
@@ -213,6 +227,8 @@ select_multiple_mfa_options: false
 service_provider_request_ttl_hours: 24
 session_check_delay: 30
 session_check_frequency: 30
+session_encryptor_alert_enabled: false
+session_encryptor_v2_enabled: true
 session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
@@ -230,6 +246,7 @@ vendor_status_lexisnexis_instant_verify: 'operational'
 vendor_status_lexisnexis_trueid: 'operational'
 vendor_status_sms: 'operational'
 vendor_status_voice: 'operational'
+verification_errors_report_configs: '[]'
 verify_gpo_key_attempt_window_in_minutes: 10
 verify_gpo_key_max_attempts: 3
 verify_personal_key_attempt_window_in_minutes: 15
@@ -242,6 +259,7 @@ usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
+gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
 voip_check: true
@@ -277,6 +295,10 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
+  idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
+  kantara_2fa_phone_restricted: true
+  kantara_2fa_phone_existing_user_restriction: false
+  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
   liveness_checking_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -296,6 +318,7 @@ development:
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"},{"suffix":"2022","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
+  select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
@@ -344,19 +367,25 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   in_person_proofing_enabled: false
+  irs_attempt_api_public_key: change-me-pls
+  kantara_2fa_phone_restricted: false
+  kantara_2fa_phone_existing_user_restriction: false
   logins_per_ip_limit: 20
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
+  new_sign_up_cancellation_url_enabled: false
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: 5
   participate_in_dap: true
   password_pepper:
   piv_cac_verify_token_secret:
   platform_authentication_enabled: false
+  session_encryptor_alert_enabled: true
   recurring_jobs_disabled_names: "[]"
+  redis_irs_attempt_api_url: redis://redis.login.gov.internal:6379/2
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   report_timeout: 1_000_000
@@ -414,6 +443,10 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
+  irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  kantara_2fa_phone_restricted: false
+  kantara_2fa_phone_existing_user_restriction: false
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

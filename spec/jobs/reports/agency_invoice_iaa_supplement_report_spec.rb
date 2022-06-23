@@ -97,6 +97,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
           ial: 1,
           requested_at: inside_iaa1,
           returned_at: inside_iaa1,
+          billable: true,
         )
 
         # 1 unique user in month 1 at IAA 2 @ IAL 2

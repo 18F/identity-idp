@@ -12,10 +12,16 @@ module Pii
     end
 
     def save(user_password, profile = user.active_profile)
-      user_session[:decrypted_pii] = profile.decrypt_pii(user_password).to_json if profile
+      decrypted_pii = profile.decrypt_pii(user_password) if profile
+      save_decrypted_pii_json(decrypted_pii.to_json) if decrypted_pii
       rotate_fingerprints(profile) if stale_fingerprints?(profile)
       rotate_encrypted_attributes if stale_attributes?
       user_session[:decrypted_pii]
+    end
+
+    def save_decrypted_pii_json(decrypted_pii_json)
+      user_session[:decrypted_pii] = decrypted_pii_json
+      nil
     end
 
     def fetch
@@ -25,16 +31,30 @@ module Pii
       Pii::Attributes.new_from_json(pii_string)
     end
 
+    # Between requests, the decrypted PII bundle is encrypted with KMS and moved to the
+    # 'encrypted_pii' key by the SessionEncryptor.
+    #
+    # The PII is decrypted on-demand by this method and moved into the 'decrypted_pii' key.
+    # See SessionEncryptor#kms_encrypt_pii! for more detail.
     def fetch_string
-      user_session[:decrypted_pii]
+      return unless user_session[:decrypted_pii] || user_session[:encrypted_pii]
+      return user_session[:decrypted_pii] if user_session[:decrypted_pii].present?
+
+      decrypted = SessionEncryptor.new.kms_decrypt(
+        user_session[:encrypted_pii],
+      )
+      user_session[:decrypted_pii] = decrypted
+
+      decrypted
     end
 
     def exists_in_session?
-      fetch_string.present?
+      return user_session[:decrypted_pii] || user_session[:encrypted_pii]
     end
 
     def delete
       user_session.delete(:decrypted_pii)
+      user_session.delete(:encrypted_pii)
     end
 
     private
@@ -50,7 +70,10 @@ module Pii
     end
 
     def rotate_encrypted_attributes
-      KeyRotator::AttributeEncryption.new(user).rotate
+      user.email_addresses.each do |email_address|
+        KeyRotator::AttributeEncryption.new(email_address).rotate
+      end
+
       user.phone_configurations.each do |phone_configuration|
         KeyRotator::AttributeEncryption.new(phone_configuration).rotate
       end
@@ -67,7 +90,8 @@ module Pii
     end
 
     def stale_attributes?
-      user.phone_configurations.any?(&:stale_encrypted_phone?) || user.stale_encrypted_email?
+      user.phone_configurations.any?(&:stale_encrypted_phone?) ||
+        user.email_addresses.any?(&:stale_encrypted_email?)
     end
 
     def stale_ssn_signature?(profile)

@@ -4,8 +4,8 @@ import { cleanup } from '@testing-library/react';
 import { I18nContext } from '@18f/identity-react-i18n';
 import { I18n } from '@18f/identity-i18n';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
+import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import { render } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/selfie-capture', () => {
@@ -14,6 +14,7 @@ describe('document-capture/components/selfie-capture', () => {
   afterEach(cleanup);
 
   const sandbox = useSandbox();
+  const defineProperty = useDefineProperty();
 
   const wrapper = ({ children }) => (
     <I18nContext.Provider
@@ -36,13 +37,7 @@ describe('document-capture/components/selfie-capture', () => {
     value = await getFixtureFile('doc_auth_images/selfie.jpg');
   });
 
-  let originalMediaDevices;
-  let originalMediaStream;
-  let originalPermissions;
   beforeEach(() => {
-    originalMediaDevices = navigator.mediaDevices;
-    originalPermissions = navigator.permissions;
-
     function MediaStream() {}
     MediaStream.prototype = { play() {}, getTracks() {} };
     sandbox.stub(MediaStream.prototype, 'play');
@@ -50,34 +45,18 @@ describe('document-capture/components/selfie-capture', () => {
 
     sandbox.stub(window.HTMLMediaElement.prototype, 'play');
 
-    navigator.mediaDevices = {
-      getUserMedia: () => Promise.resolve(new MediaStream()),
-    };
-
-    originalMediaStream = window.MediaStream;
-    window.MediaStream = MediaStream;
+    defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        getUserMedia: () => Promise.resolve(new MediaStream()),
+      },
+    });
+    defineProperty(window, 'MediaStream', {
+      configurable: true,
+      value: MediaStream,
+    });
 
     track.stop.resetHistory();
-  });
-
-  afterEach(() => {
-    if (originalMediaDevices === undefined) {
-      delete navigator.mediaDevices;
-    } else {
-      navigator.mediaDevices = originalMediaDevices;
-    }
-
-    if (originalMediaStream === undefined) {
-      delete window.MediaStream;
-    } else {
-      window.MediaStream = originalMediaStream;
-    }
-
-    if (originalPermissions === undefined) {
-      delete navigator.permissions;
-    } else {
-      navigator.permissions = originalPermissions;
-    }
   });
 
   it('renders a consent prompt', () => {
@@ -87,12 +66,15 @@ describe('document-capture/components/selfie-capture', () => {
   });
 
   it('renders video element that auto-plays if previous consent granted', async () => {
-    navigator.permissions = {
-      query: sinon
-        .stub()
-        .withArgs({ name: 'camera' })
-        .returns(Promise.resolve({ state: 'granted' })),
-    };
+    defineProperty(navigator, 'permissions', {
+      configurable: true,
+      value: {
+        query: sinon
+          .stub()
+          .withArgs({ name: 'camera' })
+          .returns(Promise.resolve({ state: 'granted' })),
+      },
+    });
     const { getByLabelText, findByLabelText } = render(<SelfieCapture />);
 
     await findByLabelText('doc_auth.buttons.take_picture');
@@ -119,12 +101,15 @@ describe('document-capture/components/selfie-capture', () => {
   });
 
   it('renders error state if previous consent denied', async () => {
-    navigator.permissions = {
-      query: sinon
-        .stub()
-        .withArgs({ name: 'camera' })
-        .returns(Promise.resolve({ state: 'denied' })),
-    };
+    defineProperty(navigator, 'permissions', {
+      configurable: true,
+      value: {
+        query: sinon
+          .stub()
+          .withArgs({ name: 'camera' })
+          .returns(Promise.resolve({ state: 'denied' })),
+      },
+    });
     const { findByText } = render(<SelfieCapture />);
 
     await findByText('doc_auth.instructions.document_capture_selfie_consent_blocked');

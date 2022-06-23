@@ -72,33 +72,70 @@ describe 'accounts/show.html.erb' do
   end
 
   context 'phone listing and adding' do
-    it 'renders the phone section' do
-      render
-
-      expect(view).to render_template(partial: '_phone')
-    end
-
     context 'user has no phone' do
       let(:user) do
         record = create(:user, :signed_up, :with_piv_or_cac)
         record.phone_configurations = []
         record
       end
+
+      it 'does not render phone' do
+        expect(view).to_not render_template(partial: '_phone')
+      end
     end
 
     context 'user has a phone' do
-      context 'phone number formatting' do
-        before do
-          user.phone_configurations.first.tap do |phone_configuration|
-            phone_configuration.phone = '+18888675309'
-            phone_configuration.save
-          end
-        end
+      it 'renders the phone section' do
+        render
 
-        it 'formats phone numbers' do
-          render
-          expect(rendered).to have_selector('.grid-col-fill', text: '+1 888-867-5309')
+        expect(view).to render_template(partial: '_phone')
+      end
+
+      it 'formats phone numbers' do
+        user.phone_configurations.first.tap do |phone_configuration|
+          phone_configuration.phone = '+18888675309'
+          phone_configuration.save
         end
+        render
+        expect(rendered).to have_selector('.grid-col-fill', text: '+1 888-867-5309')
+      end
+    end
+  end
+
+  context 'auth app listing and adding' do
+    context 'user has no auth app' do
+      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+
+      it 'does not render auth app' do
+        expect(view).to_not render_template(partial: '_auth_apps')
+      end
+    end
+
+    context 'user has an auth app' do
+      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+      it 'renders the auth app section' do
+        render
+
+        expect(view).to render_template(partial: '_auth_apps')
+      end
+    end
+  end
+
+  context 'PIV/CAC listing and adding' do
+    context 'user has no piv/cac' do
+      let(:user) { create(:user, :signed_up, :with_authentication_app) }
+
+      it 'does not render piv/cac' do
+        expect(view).to_not render_template(partial: '_piv_cac')
+      end
+    end
+
+    context 'user has a piv/cac' do
+      let(:user) { create(:user, :signed_up, :with_piv_or_cac) }
+      it 'renders the piv/cac section' do
+        render
+
+        expect(view).to render_template(partial: '_piv_cac')
       end
     end
   end
@@ -140,12 +177,12 @@ describe 'accounts/show.html.erb' do
     end
 
     it 'renders the link to continue to the SP' do
-        render
+      render
 
-        expect(rendered).to have_link(
-          t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
-          href: sp.return_to_sp_url,
-        )
+      expect(rendered).to have_link(
+        t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
+        href: sp.return_to_sp_url,
+      )
     end
   end
 end

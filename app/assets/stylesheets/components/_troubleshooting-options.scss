@@ -14,7 +14,7 @@
     width: 5rem;
   }
 
-  &.troubleshooting-options--no-bar::before {
+  & + &::before {
     content: none;
   }
 }

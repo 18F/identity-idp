@@ -188,7 +188,10 @@ Layout/IndentationConsistency:
 
 Layout/IndentationStyle:
   Enabled: true
-  IndentationWidth: null
+
+Layout/IndentationWidth:
+  Enabled: true
+
 Layout/InitialIndentation:
   Enabled: true
 
@@ -597,9 +600,6 @@ Lint/UriRegexp:
 Lint/UselessAssignment:
   Enabled: true
 
-Lint/UselessElseWithoutRescue:
-  Enabled: true
-
 Lint/UselessSetterCall:
   Enabled: true
 
@@ -623,6 +623,7 @@ Metrics/BlockLength:
     - config/environments/*.rb
     - config/routes.rb
     - spec/**/*.rb
+    - scripts/**/*
 
 Metrics/ModuleLength:
   CountComments: false

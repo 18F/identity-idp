@@ -7,20 +7,34 @@ CHANGELOG_REGEX =
 CATEGORIES = [
   'Improvements', 'Accessibility', 'Bug Fixes', 'Internal', 'Upcoming Features'
 ]
+MAX_CATEGORY_DISTANCE = 3
 SKIP_CHANGELOG_MESSAGE = '[skip changelog]'
+DEPENDABOT_COMMIT_MESSAGE = 'Signed-off-by: dependabot[bot] <support@github.com>'
+SECURITY_CHANGELOG = {
+  category: 'Internal',
+  subcategory: 'Dependencies',
+  change: 'Update dependencies to resolve security advisories',
+}.freeze
 
 SquashedCommit = Struct.new(:title, :commit_messages, keyword_init: true)
 ChangelogEntry = Struct.new(:category, :subcategory, :change, :pr_number, keyword_init: true)
+CategoryDistance = Struct.new(:category, :distance)
 
 # A valid entry has a line in a commit message in the form of:
 # changelog: CATEGORY, SUBCATEGORY, CHANGE_DESCRIPTION
 def build_changelog(line)
-  CHANGELOG_REGEX.match(line)
+  if line == DEPENDABOT_COMMIT_MESSAGE
+    SECURITY_CHANGELOG
+  else
+    CHANGELOG_REGEX.match(line)
+  end
 end
 
 def build_changelog_from_commit(commit)
-  commit.commit_messages.reverse.map { |message| build_changelog(message) }.compact.first ||
-    build_changelog(commit.title)
+  [*commit.commit_messages, commit.title].
+    lazy.
+    map { |message| build_changelog(message) }.
+    find(&:itself)
 end
 
 def get_git_log(base_branch, source_branch)
@@ -48,12 +62,12 @@ def build_structured_git_log(git_log)
       commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
     end
   }.map do |title_and_commit_messages|
-      title = title_and_commit_messages.first.first.delete_prefix('title: ')
-      messages = title_and_commit_messages[1]
-      SquashedCommit.new(
-        title: title,
-        commit_messages: messages,
-      )
+    title = title_and_commit_messages.first.first.delete_prefix('title: ')
+    messages = title_and_commit_messages[1]
+    SquashedCommit.new(
+      title: title,
+      commit_messages: messages,
+    )
   end
 end
 
@@ -73,6 +87,19 @@ def generate_invalid_changes(git_log)
       commit.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) } ||
       build_changelog_from_commit(commit)
   end.map(&:title)
+end
+
+def closest_change_category(change)
+  CATEGORIES.
+    map do |category|
+      CategoryDistance.new(
+        category,
+        DidYouMean::Levenshtein.distance(change[:category], category),
+      )
+    end.
+    filter { |category_distance| category_distance.distance <= MAX_CATEGORY_DISTANCE }.
+    max { |category_distance| category_distance.distance }&.
+    category
 end
 
 # Get the last valid changelog line for every Pull Request and tie it to the commit subject.
@@ -100,13 +127,10 @@ def generate_changelog(git_log)
     next if item.commit_messages.any? { |message| message.include?(SKIP_CHANGELOG_MESSAGE) }
     change = build_changelog_from_commit(item)
     next unless change
+    category = closest_change_category(change)
+    next unless category
 
     pr_number = %r{\(#(?<pr>\d+)\)}.match(item[:title])
-
-    # Find most similar category
-    category = CATEGORIES.min_by do |category|
-      DidYouMean::Levenshtein.distance(change[:category], category)
-    end
 
     changelog_entry = ChangelogEntry.new(
       category: category,
@@ -130,7 +154,10 @@ def format_changelog(changelog_entries)
 
   changelog = ''
   CATEGORIES.each do |category|
-    category_changes = changelog_entries.filter { |ce| ce[0] == category }
+    category_changes = changelog_entries.
+      filter { |(changelog_category, _change), _changes| changelog_category == category }.
+      sort_by { |(_category, change), _changes| change }
+
     next if category_changes.empty?
     changelog.concat("## #{category}\n")
     category_changes.each do |group, entries|
@@ -155,8 +182,8 @@ def format_changelog(changelog_entries)
   changelog.strip
 end
 
-def main(args)
-  options = { base_branch: 'main' }
+def parsed_options(args)
+  options = { base_branch: 'main', source_branch: 'HEAD' }
   basename = File.basename($0)
 
   optparse = OptionParser.new do |opts|
@@ -173,12 +200,21 @@ def main(args)
       options[:base_branch] = val
     end
 
-    opts.on('-s', '--source_branch SOURCE_BRANCH', 'Name of source branch (required)') do |val|
+    opts.on(
+      '-s',
+      '--source_branch SOURCE_BRANCH',
+      'Name of source branch, defaults to HEAD',
+    ) do |val|
       options[:source_branch] = val
     end
   end
 
   optparse.parse!(args)
+  options
+end
+
+def main(args)
+  options = parsed_options(args)
 
   abort(optparse.help) if options[:source_branch].nil?
 
@@ -215,6 +251,8 @@ def main(args)
         #{CATEGORIES.map { |category| "- #{category}" }.join("\n")}
 
         Include "[skip changelog]" in a commit message to bypass this check.
+
+        Note: the changelog message must be separated from any other commit message by a blank line.
       ERROR
     )
 

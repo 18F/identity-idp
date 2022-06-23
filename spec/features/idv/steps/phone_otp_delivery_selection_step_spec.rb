@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV phone OTP delivery method selection' do
+feature 'IdV phone OTP delivery method selection', :js do
   include IdvStepHelper
 
   context 'the users chooses sms' do
@@ -71,7 +71,7 @@ feature 'IdV phone OTP delivery method selection' do
 
     it 'displays an error message' do
       expect(Telephony).to_not receive(:send_confirmation_otp)
-      expect(page).to have_content(t('errors.messages.must_have_us_country_code'))
+      expect(page).to have_content(t('errors.messages.phone_country_constraint_usa'))
       expect(current_path).to eq(idv_phone_path)
     end
   end
@@ -109,11 +109,5 @@ feature 'IdV phone OTP delivery method selection' do
 
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.invalid_calling_area'))
     expect(page).to have_current_path(idv_phone_path)
-  end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :oidc
-    it_behaves_like 'cancel at idv step', :phone_otp_delivery_selection, :saml
   end
 end

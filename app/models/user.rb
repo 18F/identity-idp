@@ -1,6 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp idv_attempted_at idv_attempts attribute_cost
-                            failed_attempts locked_at]
+  self.ignored_columns = %w[totp_timestamp email_fingerprint encrypted_email]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
@@ -15,12 +14,9 @@ class User < ApplicationRecord
 
   include EncryptableAttribute
 
-  encrypted_attribute_without_setter(name: :email)
-
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
-  include EmailAddressCallback
   include DeprecatedUserAttributes
   include UserOtpMethods
 
@@ -42,7 +38,6 @@ class User < ApplicationRecord
   has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
-  has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
   has_many :service_providers,
@@ -50,10 +45,10 @@ class User < ApplicationRecord
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
 
-  attr_accessor :asserted_attributes
+  attr_accessor :asserted_attributes, :email
 
   def confirmed_email_addresses
-    email_addresses.where.not(confirmed_at: nil)
+    email_addresses.where.not(confirmed_at: nil).order('last_sign_in_at DESC NULLS LAST')
   end
 
   def need_two_factor_authentication?(_request)
@@ -100,14 +95,26 @@ class User < ApplicationRecord
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end
 
+  MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH = 1000
+
   def broken_personal_key?
     window_start = IdentityConfig.store.broken_personal_key_window_start
     window_finish = IdentityConfig.store.broken_personal_key_window_finish
     last_personal_key_at = self.encrypted_recovery_code_digest_generated_at
 
-    (!last_personal_key_at || last_personal_key_at < window_finish) &&
-      active_profile.present? &&
-      (window_start..window_finish).cover?(active_profile.verified_at)
+    if active_profile.present?
+      encrypted_pii_too_short =
+        active_profile.encrypted_pii_recovery.present? &&
+        active_profile.encrypted_pii_recovery.length < MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH
+
+      inside_broken_key_window =
+        (!last_personal_key_at || last_personal_key_at < window_finish) &&
+        (window_start..window_finish).cover?(active_profile.verified_at)
+
+      encrypted_pii_too_short || inside_broken_key_window
+    else
+      false
+    end
   end
 
   # To send emails asynchronously via ActiveJob.

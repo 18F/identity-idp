@@ -13,7 +13,7 @@ module SignUp
 
     def create
       result = password_form.submit(permitted_params)
-      analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
+      analytics.password_creation(**result.to_h)
       store_sp_metadata_in_session unless sp_request_id.empty?
 
       if result.success?
@@ -45,10 +45,13 @@ module SignUp
 
     def process_successful_password_creation
       password = permitted_params[:password]
+      now = Time.zone.now
       UpdateUser.new(
         user: @user,
-        attributes: { password: password, confirmed_at: Time.zone.now },
+        attributes: { password: password, confirmed_at: now },
       ).call
+      @user.email_addresses.take.update(confirmed_at: now)
+
       Funnel::Registration::AddPassword.call(@user.id)
       sign_in_and_redirect_user
     end
@@ -75,7 +78,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to two_factor_options_url
+      redirect_to authentication_methods_setup_url
     end
   end
 end

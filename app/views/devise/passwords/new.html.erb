@@ -19,9 +19,13 @@
               input_html: { autocorrect: 'off',
                             aria: { invalid: false, describedby: 'email-description' } } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide margin-top-2' %>
+  <%= f.button(
+        :submit,
+        t('forms.buttons.continue'),
+        class: 'display-block usa-button--big usa-button--wide margin-y-5',
+      ) %>
 <% end %>
 
-<div class="margin-top-2 padding-top-1 border-top border-primary-light">
+<%= render(PageFooterComponent.new) do %>
   <%= link_to t('links.cancel'), decorated_session.cancel_link_url %>
-</div>
+<% end %>

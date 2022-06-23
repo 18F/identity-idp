@@ -1,3 +1,7 @@
 <% title t('titles.personal_key') %>
 
-<%= render 'shared/personal_key', code: @code, update_path: manage_personal_key_path %>
+<%= form_tag(manage_personal_key_path, method: 'post', id: 'app-form') %>
+<%= content_tag(:div, '', id: 'app-root', data: { personal_key: @code }) do %>
+  <%= render 'shared/personal_key', code: @code, update_path: manage_personal_key_path %>
+<% end %>
+<%= javascript_packs_tag_once('verify-personal-key') %>

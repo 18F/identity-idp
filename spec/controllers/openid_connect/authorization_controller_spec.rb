@@ -50,7 +50,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks IAL1 authentication event' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: true,
                  client_id: client_id,
                  errors: {},
@@ -59,8 +59,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  scope: 'openid')
           expect(@analytics).to receive(:track_event).
-            with(Analytics::SP_REDIRECT_INITIATED,
-                 ial: 1)
+            with(
+              Analytics::SP_REDIRECT_INITIATED,
+              ial: 1,
+              billed_ial: 1,
+            )
 
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -106,7 +109,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'tracks IAL2 authentication event' do
               stub_analytics
               expect(@analytics).to receive(:track_event).
-                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                with('OpenID Connect: authorization request',
                      success: true,
                      client_id: client_id,
                      errors: {},
@@ -115,8 +118,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
                      scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
-                with(Analytics::SP_REDIRECT_INITIATED,
-                     ial: 2)
+                with(
+                  Analytics::SP_REDIRECT_INITIATED,
+                  ial: 2,
+                  billed_ial: 2,
+                )
 
               IdentityLinker.new(user, service_provider).link_identity(ial: 2)
               user.identities.last.update!(
@@ -163,6 +169,151 @@ RSpec.describe OpenidConnect::AuthorizationController do
             it 'redirects to have the user enter their personal key' do
               action
               expect(controller).to redirect_to(reactivate_account_url)
+            end
+          end
+        end
+
+        context 'with ialmax requested' do
+          before { params[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
+
+          context 'account is already verified' do
+            let(:user) do
+              create(
+                :profile, :active, :verified, proofing_components: { liveness_check: true }
+              ).user
+            end
+
+            it 'redirects to the redirect_uri immediately when pii is unlocked' do
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            end
+
+            it 'redirects to the password capture url when pii is locked' do
+              IdentityLinker.new(user, service_provider).link_identity(ial: 3)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(true)
+              action
+
+              expect(response).to redirect_to(capture_password_url)
+            end
+
+            it 'tracks IAL2 authentication event' do
+              stub_analytics
+              expect(@analytics).to receive(:track_event).
+                with('OpenID Connect: authorization request',
+                     success: true,
+                     client_id: client_id,
+                     errors: {},
+                     unauthorized_scope: false,
+                     user_fully_authenticated: true,
+                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                     scope: 'openid profile')
+              expect(@analytics).to receive(:track_event).
+                with(
+                  Analytics::SP_REDIRECT_INITIATED,
+                  ial: 0,
+                  billed_ial: 2,
+                )
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
+
+              sp_return_log = SpReturnLog.find_by(issuer: client_id)
+              expect(sp_return_log.ial).to eq(2)
+            end
+          end
+
+          context 'account is not already verified' do
+            it 'redirects to the redirect_uri immediately without proofing' do
+              IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+
+              action
+              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            end
+
+            it 'tracks IAL1 authentication event' do
+              stub_analytics
+              expect(@analytics).to receive(:track_event).
+                with('OpenID Connect: authorization request',
+                     success: true,
+                     client_id: client_id,
+                     errors: {},
+                     unauthorized_scope: false,
+                     user_fully_authenticated: true,
+                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                     scope: 'openid profile')
+              expect(@analytics).to receive(:track_event).
+                with(
+                  Analytics::SP_REDIRECT_INITIATED,
+                  ial: 0,
+                  billed_ial: 1,
+                )
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              action
+
+              sp_return_log = SpReturnLog.find_by(issuer: client_id)
+              expect(sp_return_log.ial).to eq(1)
+            end
+          end
+
+          context 'profile is reset' do
+            let(:user) { create(:profile, :password_reset).user }
+
+            it 'redirects to the redirect_uri immediately without proofing' do
+              IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+
+              action
+              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+            end
+
+            it 'tracks IAL1 authentication event' do
+              stub_analytics
+              expect(@analytics).to receive(:track_event).
+                with('OpenID Connect: authorization request',
+                     success: true,
+                     client_id: client_id,
+                     errors: {},
+                     unauthorized_scope: false,
+                     user_fully_authenticated: true,
+                     acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
+                     scope: 'openid profile')
+              expect(@analytics).to receive(:track_event).
+                with(
+                  Analytics::SP_REDIRECT_INITIATED,
+                  ial: 0,
+                  billed_ial: 1,
+                )
+
+              IdentityLinker.new(user, service_provider).link_identity(ial: 1)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              action
+
+              sp_return_log = SpReturnLog.find_by(issuer: client_id)
+              expect(sp_return_log.ial).to eq(1)
             end
           end
         end
@@ -217,7 +368,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks the event with errors' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: false,
                  client_id: client_id,
                  unauthorized_scope: true,
@@ -245,7 +396,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'tracks the event with errors' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+            with('OpenID Connect: authorization request',
                  success: false,
                  client_id: nil,
                  unauthorized_scope: true,

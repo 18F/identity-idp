@@ -1,0 +1,35 @@
+<div class="mfa-selection">
+  <%= check_box_tag(
+        'two_factor_options_form[selection][]',
+        option.type,
+        option.type == 'phone' && flash[:phone_error].present? && IdentityConfig.store.kantara_2fa_phone_restricted,
+        disabled: option.disabled?,
+        checked: option.disabled?,
+        class: 'usa-checkbox__input usa-checkbox__input--tile',
+        id: "two_factor_options_form_selection_#{option.type}",
+      ) %>
+  <%= label_tag(
+        "two_factor_options_form_selection_#{option.type}",
+        class: [
+          option.type == 'phone' && flash[:phone_error] && 'checkbox__invalid' && IdentityConfig.store.kantara_2fa_phone_restricted,
+          'usa-checkbox__label',
+          'usa-checkbox__label--illustrated',
+        ].select(&:present?).join(' '),
+      ) do %>
+    <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: "#{option.label} icon", class: 'usa-checkbox__image') %>
+    <div class="usa-checkbox__label--text"><%= option.label %> <%= option.mfa_configuration_description %>
+      <span class="usa-checkbox__label-description">
+        <%= option.info %>
+      </span>
+    </div>
+  <% end %>
+  <% if option.type == "phone" && flash[:phone_error] && IdentityConfig.store.kantara_2fa_phone_restricted %>
+    <div id="phone_error" class="usa-error-message margin-bottom-1 margin-top-neg-1" role="alert">
+        <%= flash[:phone_error] %>
+    </div>
+  <% end %>
+</div>
+
+<% if IdentityConfig.store.kantara_2fa_phone_restricted %>
+  <%= javascript_packs_tag_once('mfa_selection_component') %>
+<% end %>

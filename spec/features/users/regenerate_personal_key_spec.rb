@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'View personal key' do
+feature 'View personal key', js: true do
   include XPathHelper
   include PersonalKeyHelper
   include SamlAuthHelper
@@ -53,13 +53,13 @@ feature 'View personal key' do
         click_continue
 
         expect(page).to have_content(t('headings.personal_key'))
-        click_acknowledge_personal_key
+        acknowledge_and_confirm_personal_key
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
       end
     end
 
-    context 'personal key actions and information' do
+    describe 'personal key actions and information' do
       before do
         sign_in_and_2fa_user(user)
         visit account_two_factor_authentication_path
@@ -70,102 +70,4 @@ feature 'View personal key' do
       it_behaves_like 'personal key page'
     end
   end
-
-  context 'with javascript enabled', js: true do
-    it 'prompts the user to enter their personal key to confirm they have it' do
-      sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
-      click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
-      click_continue
-
-      click_acknowledge_personal_key
-
-      expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-
-      expect(page).to have_selector(:link_or_button, 'Back')
-
-      click_back_button
-
-      expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
-
-      click_acknowledge_personal_key
-      submit_form_without_entering_the_code
-      submit_form_with_the_wrong_code
-
-      expect(current_path).not_to eq account_path
-
-      visit manage_personal_key_path
-
-      acknowledge_and_confirm_personal_key
-
-      expect(current_path).to eq account_path
-    end
-
-    it 'confirms personal key on mobile', driver: :headless_chrome_mobile do
-      sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
-      click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
-      click_continue
-
-      click_acknowledge_personal_key
-
-      expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-
-      expect(page).to have_selector(:link_or_button, 'Back')
-
-      click_back_button
-
-      expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
-
-      click_acknowledge_personal_key
-      submit_form_without_entering_the_code
-
-      expect(current_path).not_to eq account_path
-
-      visit manage_personal_key_path
-      acknowledge_and_confirm_personal_key
-
-      expect(current_path).to eq account_path
-    end
-  end
-end
-
-def sign_up_and_view_personal_key
-  sign_up_and_set_password
-  select_2fa_option('phone')
-  fill_in 'new_phone_form_phone', with: '202-555-1212'
-  click_send_security_code
-  fill_in_code_with_last_phone_otp
-  click_submit_default
-end
-
-def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-  expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
-  expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
-end
-
-def click_back_button
-  click_on t('forms.buttons.back')
-end
-
-def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
-  expect(page).to have_xpath(
-    "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
-  )
-  expect(page.evaluate_script('document.activeElement.value')).to eq(
-    t('forms.buttons.continue'),
-  )
-end
-
-def submit_form_without_entering_the_code
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-  expect(page).to have_selector('.validation-message')
-  expect(page).not_to have_selector('#personal-key-alert')
-end
-
-def submit_form_with_the_wrong_code
-  fill_in 'personal_key', with: 'hellohellohello'
-  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-  expect(page).to have_content(t('users.personal_key.confirmation_error'))
-  expect(page).not_to have_selector('.validation-message')
 end

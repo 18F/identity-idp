@@ -29,7 +29,7 @@ RSpec.describe Users::PersonalKeysController do
       analytics_hash = { personal_key_present: true }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::PERSONAL_KEY_VIEWED, analytics_hash)
+        with('Personal key viewed', analytics_hash)
 
       get :show
     end
@@ -40,7 +40,7 @@ RSpec.describe Users::PersonalKeysController do
       analytics_hash = { personal_key_present: false }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::PERSONAL_KEY_VIEWED, analytics_hash)
+        with('Personal key viewed', analytics_hash)
 
       get :show
     end
@@ -119,7 +119,7 @@ RSpec.describe Users::PersonalKeysController do
       allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+        with('Invalid Authenticity Token', analytics_hash)
 
       post :update
 

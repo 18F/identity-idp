@@ -2,7 +2,8 @@ module Funnel
   module DocAuth
     class RegisterStepFromAnalyticsSubmitEvent
       ANALYTICS_EVENT_TO_DOC_AUTH_LOG_TOKEN = {
-        Analytics::IDV_GPO_ADDRESS_LETTER_REQUESTED => :usps_letter_sent,
+        'IdV: USPS address letter requested' => :usps_letter_sent,
+        'IdV: phone confirmation form' => :verify_phone,
       }.freeze
 
       def self.call(user_id, issuer, event, result)

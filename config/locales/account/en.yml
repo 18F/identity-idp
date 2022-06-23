@@ -62,10 +62,10 @@ en:
       webauthn_add: Add security key
       webauthn_confirm_delete: Yes, remove key
       webauthn_delete: Remove key
-      webauthn_platform: Face or Touch Unlock
-      webauthn_platform_add: Add Face or Touch Unlock
-      webauthn_platform_confirm_delete: Yes, remove Face or Touch Unlock
-      webauthn_platform_delete: Remove Face or Touch Unlock
+      webauthn_platform: Face or touch unlock
+      webauthn_platform_add: Add face or touch unlock
+      webauthn_platform_confirm_delete: Yes, remove face or touch unlock
+      webauthn_platform_delete: Remove face or touch unlock
     items:
       delete_your_account: Delete your account
       personal_key: Personal key
@@ -74,18 +74,12 @@ en:
       regenerate_personal_key: Reset
     login:
       piv_cac: Sign in with your government employee ID
-      piv_cac_info:
-        ial1: If you have added your PIV/CAC card to your account, you may use it
-          instead of your email and password.
-        ial2: If you have added your PIV/CAC card to your account, you may use it
-          instead of your email. You will need to provide your password to
-          unlock your profile.
     navigation:
       access_services: Access your government benefits and services from your
         %{app_name} account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
-      add_federal_id: Add Federal Employee ID
+      add_federal_id: Add federal employee ID
       add_phone_number: Add phone number
       add_platform_authenticator: Add Face or Touch Unlock
       add_security_key: Add security key

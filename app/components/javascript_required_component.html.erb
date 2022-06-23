@@ -1,0 +1,28 @@
+<noscript>
+  <%= render StatusPageComponent.new(status: :error) do |c| %>
+    <% c.header { header } %>
+
+    <% if intro %>
+      <p><%= intro %></p>
+    <% end %>
+
+    <p><%= t('components.javascript_required.browser_instructions') %></p>
+
+    <ul class="usa-list">
+      <% browser_resources.each do |resource| %>
+        <li><%= new_window_link_to resource[:name], resource[:url] %></li>
+      <% end %>
+    </ul>
+
+    <p><strong><%= t('components.javascript_required.next_step') %></strong></p>
+  <% end %>
+  <link rel="stylesheet" href="<%= no_js_detect_css_path %>">
+</noscript>
+<div class="js">
+  <% if was_no_js? %>
+    <%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+      <%= t('components.javascript_required.enabled_alert') %>
+    <% end %>
+  <% end %>
+  <%= content %>
+</div>

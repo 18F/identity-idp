@@ -297,4 +297,23 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect { response.pii_from_doc }.not_to raise_error
     end
   end
+
+  describe '#attention_with_barcode?' do
+    let(:response) { described_class.new(success_response, false, config) }
+    subject(:attention_with_barcode) { response.attention_with_barcode? }
+
+    it { expect(attention_with_barcode).to eq(false) }
+
+    context 'with multiple errors including barcode attention' do
+      let(:response) { described_class.new(failure_response_with_all_failures, false, config) }
+
+      it { expect(attention_with_barcode).to eq(false) }
+    end
+
+    context 'with single barcode attention error' do
+      let(:response) { described_class.new(attention_barcode_read, false, config) }
+
+      it { expect(attention_with_barcode).to eq(true) }
+    end
+  end
 end

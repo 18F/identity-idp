@@ -1,4 +1,5 @@
-import { createContext, useContext, useMemo, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
 
@@ -147,32 +148,18 @@ function AcuantContextProvider({
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const [isActive, setIsActive] = useState(false);
-  const value = useMemo(
-    () => ({
-      isReady,
-      isAcuantLoaded,
-      isError,
-      isCameraSupported,
-      isActive,
-      setIsActive,
-      endpoint,
-      credentials,
-      glareThreshold,
-      sharpnessThreshold,
-    }),
-    [
-      isReady,
-      isAcuantLoaded,
-      isError,
-      isCameraSupported,
-      isActive,
-      setIsActive,
-      endpoint,
-      credentials,
-      glareThreshold,
-      sharpnessThreshold,
-    ],
-  );
+  const value = useObjectMemo({
+    isReady,
+    isAcuantLoaded,
+    isError,
+    isCameraSupported,
+    isActive,
+    setIsActive,
+    endpoint,
+    credentials,
+    glareThreshold,
+    sharpnessThreshold,
+  });
 
   useEffect(() => {
     // If state is already ready (via consideration of device type), skip loading Acuant SDK.
@@ -205,9 +192,9 @@ function AcuantContextProvider({
                 window
               ).AcuantCamera;
 
-              addPageAction({
-                label: 'IdV: Acuant SDK loaded',
-                payload: { success: true, isCameraSupported: nextIsCameraSupported },
+              addPageAction('IdV: Acuant SDK loaded', {
+                success: true,
+                isCameraSupported: nextIsCameraSupported,
               });
 
               setIsCameraSupported(nextIsCameraSupported);
@@ -216,13 +203,10 @@ function AcuantContextProvider({
             });
           },
           onFail(code, description) {
-            addPageAction({
-              label: 'IdV: Acuant SDK loaded',
-              payload: {
-                success: false,
-                code,
-                description,
-              },
+            addPageAction('IdV: Acuant SDK loaded', {
+              success: false,
+              code,
+              description,
             });
 
             setIsError(true);

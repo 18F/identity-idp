@@ -12,6 +12,7 @@ import {
   HelpCenterContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { trackEvent } from '@18f/identity-analytics';
 
 /** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
@@ -20,7 +21,6 @@ import { trackEvent } from '@18f/identity-analytics';
 /**
  * @typedef NewRelicAgent
  *
- * @prop {(name:string,attributes:object)=>void} addPageAction Log page action to New Relic.
  * @prop {(error:Error)=>void} noticeError Log an error without affecting application behavior.
  */
 
@@ -103,17 +103,10 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-/** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
-function addPageAction(action) {
+/** @type {import('@18f/identity-analytics').trackEvent} */
+function addPageAction(event, payload) {
   const { flowPath } = appRoot.dataset;
-  const payload = { ...action.payload, flow_path: flowPath };
-
-  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
-  if (action.key && newrelic) {
-    newrelic.addPageAction(action.key, payload);
-  }
-
-  trackEvent(action.label, payload);
+  return trackEvent(event, { ...payload, flow_path: flowPath });
 }
 
 /** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */
@@ -190,8 +183,16 @@ const noticeError = (error) =>
         backgroundUploadEncryptKey,
         formData,
         flowPath,
-        startOverURL,
-        cancelURL,
+      },
+    ],
+    [
+      FlowContext.Provider,
+      {
+        value: {
+          startOverURL,
+          cancelURL,
+          currentStep: 'document_capture',
+        },
       },
     ],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],

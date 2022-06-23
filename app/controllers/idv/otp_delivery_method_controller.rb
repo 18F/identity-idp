@@ -10,7 +10,7 @@ module Idv
     before_action :set_idv_phone
 
     def new
-      analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+      analytics.idv_phone_otp_delivery_selection_visit
       render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
@@ -48,7 +48,7 @@ module Idv
     def send_phone_confirmation_otp_and_handle_result
       save_delivery_preference
       result = send_phone_confirmation_otp
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_OTP_SENT, result.to_h)
+      analytics.idv_phone_confirmation_otp_sent(**result.to_h)
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -79,8 +79,11 @@ module Idv
     end
 
     def gpo_letter_available
+      return @gpo_letter_available if defined?(@gpo_letter_available)
       @gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
+                                !Idv::GpoMail.new(current_user).mail_spammed? &&
+                                !(sp_session[:ial2_strict] &&
+                                  !IdentityConfig.store.gpo_allowed_for_strict_ial2)
     end
   end
 end

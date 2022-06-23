@@ -6,9 +6,7 @@ module TwoFactorAuthentication
     before_action :check_personal_key_enabled
 
     def show
-      analytics.track_event(
-        Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
-      )
+      analytics.multi_factor_auth_enter_personal_key_visit(context: context)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
     end
@@ -28,7 +26,7 @@ module TwoFactorAuthentication
     def check_personal_key_enabled
       return if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
 
-      redirect_to two_factor_options_url
+      redirect_to authentication_methods_setup_url
     end
 
     def presenter_for_two_factor_authentication_method
@@ -50,7 +48,7 @@ module TwoFactorAuthentication
       response = UserAlerts::AlertUserAboutPersonalKeySignIn.call(
         current_user, event.disavowal_token
       )
-      analytics.track_event(Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN, response.to_h)
+      analytics.personal_key_alert_about_sign_in(**response.to_h)
     end
 
     def generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
@@ -71,7 +69,7 @@ module TwoFactorAuthentication
     end
 
     def re_encrypt_profile_recovery_pii
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SIGN_IN)
+      analytics.personal_key_reactivation_sign_in
       Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
       user_session[:personal_key] = password_reset_profile.personal_key
     end
@@ -99,7 +97,7 @@ module TwoFactorAuthentication
       elsif MfaPolicy.new(current_user).two_factor_enabled?
         redirect_to after_mfa_setup_path
       else
-        redirect_to two_factor_options_url
+        redirect_to authentication_methods_setup_url
       end
       reset_otp_session_data
     end

@@ -8,7 +8,7 @@ RSpec.describe 'scripts/changelog_check' do
     it 'builds a git log into structured changelog objects' do
       git_log = git_fixtures.values.pluck('commit_log').join("\n")
       changelog_entries = generate_changelog(git_log)
-      expect(changelog_entries.length).to eq 3
+      expect(changelog_entries.length).to eq 4
       fixture_and_changelog = git_fixtures.values.filter do |x|
         x['category'].present?
       end.zip(changelog_entries)
@@ -71,6 +71,7 @@ RSpec.describe 'scripts/changelog_check' do
         git_fixtures['squashed_commit_with_skip'],
         git_fixtures['squashed_commit_with_duplicate_pr'],
         git_fixtures['squashed_commit_with_multiple_commits'],
+        git_fixtures['squashed_commit_2'],
       ]
       git_log = commits.pluck('commit_log').join("\n")
       changelogs = generate_changelog(git_log)
@@ -81,6 +82,7 @@ RSpec.describe 'scripts/changelog_check' do
         - Webauthn: Provide better error flow for users who may not be able to leverage webauthn (LG-5515) ([#5976](https://github.com/18F/identity-idp/pull/5976))
 
         ## Internal
+        - Logging: Update logging flow ([#9999](https://github.com/18F/identity-idp/pull/9999))
         - Security: Upgrade Rails to patch vulnerability ([#6041](https://github.com/18F/identity-idp/pull/6041), [#6042](https://github.com/18F/identity-idp/pull/6042))
       CHANGELOG
     end
@@ -101,6 +103,31 @@ RSpec.describe 'scripts/changelog_check' do
 
       expect(changelogs.first.subcategory).to eq('Authentication')
       expect(changelogs.first.change).to start_with('P')
+    end
+  end
+
+  describe '#parsed_options' do
+    let(:args) { [] }
+    subject(:options) { parsed_options(args) }
+
+    it 'populates default values' do
+      expect(options).to eq({ base_branch: 'main', source_branch: 'HEAD' })
+    end
+
+    context 'with source branch passed as argument' do
+      let(:args) { ['-s', 'example'] }
+
+      it 'assigns source_branch option' do
+        expect(options).to eq({ base_branch: 'main', source_branch: 'example' })
+      end
+    end
+
+    context 'with base branch passed as argument' do
+      let(:args) { ['-b', 'example'] }
+
+      it 'assigns base_branch option' do
+        expect(options).to eq({ base_branch: 'example', source_branch: 'HEAD' })
+      end
     end
   end
 end

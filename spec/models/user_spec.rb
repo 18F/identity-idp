@@ -11,39 +11,12 @@ RSpec.describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:proofing_component) }
-    it { is_expected.to have_many(:throttles) }
   end
 
   it 'does not send an email when #create is called' do
     expect do
       User.create(email: 'nobody@nobody.com')
     end.to change(ActionMailer::Base.deliveries, :count).by(0)
-  end
-
-  describe 'email_address' do
-    it 'creates an entry for the user when created' do
-      expect do
-        User.create(email: 'nobody@nobody.com')
-      end.to change(EmailAddress, :count).by(1)
-    end
-
-    it 'mirrors the info from the user object on creation' do
-      user = create(:user)
-      email_address = user.email_addresses.first
-      expect(email_address).to be_present
-      expect(email_address.encrypted_email).to eq user.encrypted_email
-      expect(email_address.email).to eq user.email
-      expect(email_address.confirmed_at.to_i).to eq user.confirmed_at.to_i
-    end
-
-    it 'mirrors the info from an unconfirmed user object' do
-      user = create(:user, :unconfirmed)
-      email_address = user.email_addresses.first
-      expect(email_address).to be_present
-      expect(email_address.encrypted_email).to eq user.encrypted_email
-      expect(email_address.email).to eq user.email
-      expect(email_address.confirmed_at).to be_nil
-    end
   end
 
   describe 'password validations' do
@@ -249,7 +222,7 @@ RSpec.describe User do
       it 'normalizes email' do
         user = create(:user, email: 'FoO@example.org    ')
 
-        expect(user.email).to eq 'foo@example.org'
+        expect(user.email_addresses.first.email).to eq 'foo@example.org'
       end
     end
 
@@ -377,13 +350,13 @@ RSpec.describe User do
         user = User.new
         _old_profile = create(
           :profile,
-          deactivation_reason: :verification_pending,
+          :verification_pending,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          deactivation_reason: :verification_pending,
+          :verification_pending,
           user: user,
         )
 
@@ -396,7 +369,7 @@ RSpec.describe User do
         user = User.new
         create(
           :profile,
-          deactivation_reason: :password_reset,
+          :password_reset,
           created_at: 1.day.ago,
           user: user,
         )
@@ -490,6 +463,24 @@ RSpec.describe User do
 
         it { expect(user.broken_personal_key?).to eq(false) }
       end
+    end
+
+    context 'for a user that has encrypted profile data that is suspiciously too short' do
+      let(:user) { create(:user) }
+      let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
+
+      before do
+        create(
+          :profile,
+          user: user,
+          active: true,
+          verified_at: Time.zone.now,
+          encrypted_pii_recovery: Encryption::Encryptors::PiiEncryptor.new(personal_key).
+            encrypt('null', user_uuid: user.uuid),
+        )
+      end
+
+      it { expect(user.broken_personal_key?).to eq(true) }
     end
   end
 end

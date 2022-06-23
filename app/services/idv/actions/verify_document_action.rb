@@ -31,13 +31,12 @@ module Idv
       end
 
       def enqueue_job
-        verify_document_capture_session = if hybrid_flow_mobile?
-          document_capture_session
-        else
-          create_document_capture_session(
-            verify_document_capture_session_uuid_key,
-          )
-        end
+        verify_document_capture_session =
+          if hybrid_flow_mobile?
+            document_capture_session
+          else
+            create_document_capture_session(verify_document_capture_session_uuid_key)
+          end
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
 
@@ -66,8 +65,6 @@ module Idv
         nil
       end
 
-      private
-
       def image_params
         params.permit(
           ['encryption_key', 'front_image_iv', 'back_image_iv', 'selfie_image_iv',
@@ -80,7 +77,7 @@ module Idv
           to_h.
           transform_values do |str|
             JSON.parse(str)
-        rescue JSON::ParserError
+          rescue JSON::ParserError
             nil
           end.
           compact.

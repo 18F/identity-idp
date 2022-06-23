@@ -7,7 +7,7 @@ en:
       connected_accounts: Your connected accounts
       devices: Devices
       events: Events
-      federal_employee_id: Federal Employee ID
+      federal_employee_id: Federal employee ID
       login_info: Your account
       profile_info: Profile information
       reactivate: Reactivate your account
@@ -29,8 +29,6 @@ en:
     edit_info:
       password: Change your password
       phone: Manage your phone settings
-    mfa_setup:
-      first_authentication_method: You’ve added your first authentication method!
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue

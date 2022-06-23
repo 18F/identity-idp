@@ -1,3 +1,1 @@
-import { PasswordToggleElement } from '@18f/identity-password-toggle-element';
-
-customElements.define('lg-password-toggle', PasswordToggleElement);
+import '@18f/identity-password-toggle/password-toggle-element';

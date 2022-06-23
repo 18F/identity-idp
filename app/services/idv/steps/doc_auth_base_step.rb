@@ -8,14 +8,14 @@ module Idv
       private
 
       def throttle
-        @throttle ||= Throttle.for(
+        @throttle ||= Throttle.new(
           user: current_user,
           throttle_type: :idv_resolution,
         )
       end
 
       def idv_failure(result)
-        throttle.increment if result.extra.dig(:proofing_results, :exception).blank?
+        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
           @flow.analytics.track_event(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
@@ -30,8 +30,7 @@ module Idv
           )
           redirect_to idv_session_errors_exception_url
         else
-          @flow.analytics.track_event(
-            Analytics::IDV_DOC_AUTH_WARNING_VISITED,
+          @flow.analytics.idv_doc_auth_warning_visited(
             step_name: self.class.name,
             remaining_attempts: throttle.remaining_count,
           )
@@ -94,7 +93,7 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttle.for(
+        Throttle.new(
           user: effective_user,
           throttle_type: :idv_doc_auth,
         ).throttled_else_increment?
@@ -130,7 +129,7 @@ module Idv
       def liveness_checking_enabled?
         return false if !FeatureManagement.liveness_checking_enabled?
         return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
-        !!current_user.decorate.password_reset_profile&.includes_liveness_check?
+        !!current_user.decorate.password_reset_profile&.strict_ial2_proofed?
       end
 
       def create_document_capture_session(key)

@@ -8,25 +8,33 @@ FactoryBot.define do
       with { {} }
       email { Faker::Internet.safe_email }
       confirmed_at { Time.zone.now }
+      confirmation_token { nil }
+      confirmation_sent_at { 5.minutes.ago }
     end
 
     accepted_terms_at { Time.zone.now if email }
 
     after(:build) do |user, evaluator|
+      next if !evaluator.email.present?
       next unless user.email_addresses.empty?
       user.email_addresses.build(
         email: evaluator.email,
         confirmed_at: evaluator.confirmed_at,
+        confirmation_sent_at: evaluator.confirmation_sent_at,
+        confirmation_token: evaluator.confirmation_token,
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
     end
 
     after(:stub) do |user, evaluator|
+      next if !evaluator.email.present?
       next unless user.email_addresses.empty?
       user.email_addresses.build(
         email: evaluator.email,
         confirmed_at: evaluator.confirmed_at,
+        confirmation_sent_at: evaluator.confirmation_sent_at,
+        confirmation_token: evaluator.confirmation_token,
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
@@ -173,8 +181,23 @@ FactoryBot.define do
 
     trait :unconfirmed do
       confirmed_at { nil }
-      confirmation_sent_at { 5.minutes.ago }
       password { nil }
+    end
+
+    trait :proofed do
+      signed_up
+
+      after :build do |user|
+        create(:profile, :active, :verified, :with_pii, user: user)
+      end
+    end
+
+    trait :deactivated_password_reset_profile do
+      signed_up
+
+      after :build do |user|
+        create(:profile, :password_reset, :with_pii, user: user)
+      end
     end
   end
 end

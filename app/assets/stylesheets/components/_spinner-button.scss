@@ -1,4 +1,6 @@
-.spinner-button {
+lg-spinner-button {
+  display: block;
+
   @include at-media('mobile-lg') {
     display: inline-block;
   }
@@ -16,9 +18,21 @@
     button:not([type]),
     [type='submit'],
     [type='button'] {
-      background-color: color('primary-darker');
       color: transparent;
       opacity: 1;
+    }
+  }
+
+  &:not(.spinner-button--outline) .spinner-button__content {
+    a,
+    button:not([type]),
+    [type='submit'],
+    [type='button'] {
+      background-color: color('primary-darker');
+    }
+
+    .spinner-dots {
+      color: color('white');
     }
   }
 }

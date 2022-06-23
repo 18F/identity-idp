@@ -119,14 +119,35 @@ describe Users::SessionsController, devise: true do
     it 'tracks a logout event' do
       stub_analytics
       expect(@analytics).to receive(:track_event).with(
-        Analytics::LOGOUT_INITIATED,
-        sp_initiated: false,
-        oidc: false,
+        'Logout Initiated',
+        hash_including(
+          sp_initiated: false,
+          oidc: false,
+        ),
       )
 
       sign_in_as_user
 
       get :destroy
+      expect(controller.current_user).to be nil
+    end
+  end
+
+  describe 'DELETE /logout' do
+    it 'tracks a logout event' do
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with(
+        'Logout Initiated',
+        hash_including(
+          sp_initiated: false,
+          oidc: false,
+        ),
+      )
+
+      sign_in_as_user
+
+      delete :destroy
+      expect(controller.current_user).to be nil
     end
   end
 
@@ -334,7 +355,7 @@ describe Users::SessionsController, devise: true do
           error: 'Unable to parse encrypted payload',
         }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
+          with('Profile Encryption: Invalid', profile_encryption_error)
 
         post :create, params: { user: { email: user.email, password: user.password } }
 
@@ -346,11 +367,11 @@ describe Users::SessionsController, devise: true do
     it 'tracks CSRF errors' do
       user = create(:user, :signed_up)
       stub_analytics
-      analytics_hash = { controller: 'users/sessions#create' }
+      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
       allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+        with('Invalid Authenticity Token', analytics_hash)
 
       post :create, params: { user: { email: user.email, password: user.password } }
 

@@ -39,7 +39,4 @@
   <%= f.button :submit, t('forms.buttons.send_security_code'), class: 'usa-button--big usa-button--wide' %>
 <% end %>
 
-
-<div class="margin-top-4 padding-top-1 border-top border-primary-light">
-  <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
-</div>
+<%= render 'shared/cancel_or_back_to_options' %>

@@ -81,7 +81,8 @@ feature 'Doc Auth Funnel report' do
       'verified_view_count_average' => 0.0,
       'verified_view_percent' => 0.0,
       'verify_error_count_average' => 0.0,
-      'verify_phone_view_count_average' => 1.0,
+      # Bug: We're currently double-counting these views (LG-6538)
+      'verify_phone_view_count_average' => 2.0,
       'verify_phone_view_percent' => 100.0,
       'verify_submit_count_average' => 1.0,
       'verify_view_count_average' => 1.0,
@@ -90,6 +91,13 @@ feature 'Doc Auth Funnel report' do
       'welcome_view_percent' => 100.0,
       'agreement_view_count_average' => 1.0,
       'agreement_view_percent' => 100.0,
+      'verify_phone_submit_count_average' => 0.0,
+      'verify_phone_submit_percent' => 0.0,
+      'document_capture_submit_percent' => 100.0,
+      'verify_submit_percent' => 100.0,
+      'back_image_submit_percent' => 0.0,
+      'capture_mobile_back_image_submit_percent' => 0.0,
+      'mobile_back_image_submit_percent' => 0.0,
     }
   end
 
@@ -97,7 +105,7 @@ feature 'Doc Auth Funnel report' do
     expect(subject.new.call).to eq({})
   end
 
-  it 'works for one flow' do
+  it 'works for one flow', js: true do
     sign_in_and_2fa_user(user)
     complete_all_doc_auth_steps
 
@@ -107,7 +115,7 @@ feature 'Doc Auth Funnel report' do
     expect(subject.new.call).to_not eq(verify_funnel.merge(summary1))
   end
 
-  it 'works for two flows' do
+  it 'works for two flows', js: true do
     sign_in_and_2fa_user(user)
     complete_all_doc_auth_steps
     sign_in_and_2fa_user(user2)

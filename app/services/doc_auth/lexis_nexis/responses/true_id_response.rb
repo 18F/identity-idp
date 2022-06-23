@@ -108,6 +108,14 @@ module DocAuth
           pii
         end
 
+        def attention_with_barcode?
+          return false unless doc_auth_result_attention?
+
+          parsed_alerts[:failed]&.count.to_i == 1 &&
+            parsed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
+            parsed_alerts.dig(:failed, 0, :result) == 'Attention'
+        end
+
         private
 
         def response_info
@@ -148,14 +156,6 @@ module DocAuth
             true_id_product.present? &&
             product_status_passed? &&
             doc_auth_result_passed?
-        end
-
-        def attention_with_barcode?
-          return false unless doc_auth_result_attention?
-
-          parsed_alerts[:failed]&.count.to_i == 1 &&
-            parsed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-            parsed_alerts.dig(:failed, 0, :result) == 'Attention'
         end
 
         def product_status_passed?

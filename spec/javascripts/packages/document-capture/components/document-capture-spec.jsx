@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { render as baseRender, fireEvent } from '@testing-library/react';
+import { render as baseRender, fireEvent, cleanup } from '@testing-library/react';
 import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
@@ -16,12 +16,13 @@ import DocumentCapture, {
   except,
 } from '@18f/identity-document-capture/components/document-capture';
 import { expect } from 'chai';
+import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 import { getFixture, getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
+  const defineProperty = useDefineProperty();
   const sandbox = useSandbox();
   const { initialize } = useAcuant();
 
@@ -557,6 +558,69 @@ describe('document-capture/components/document-capture', () => {
         );
 
         expect(upload).not.to.have.been.called();
+      });
+    });
+  });
+
+  context('desktop selfie capture', () => {
+    beforeEach(() => {
+      function MediaStream() {}
+      MediaStream.prototype = { play() {}, getTracks() {} };
+      sandbox.stub(MediaStream.prototype, 'play');
+      sandbox.stub(MediaStream.prototype, 'getTracks').returns([{ stop() {} }]);
+      sandbox.stub(window.HTMLMediaElement.prototype, 'play');
+
+      defineProperty(navigator, 'mediaDevices', {
+        configurable: true,
+        value: {
+          getUserMedia: () => Promise.resolve(new MediaStream()),
+        },
+      });
+      defineProperty(window, 'MediaStream', {
+        configurable: true,
+        value: MediaStream,
+      });
+      defineProperty(navigator, 'permissions', {
+        configurable: true,
+        value: {
+          query: sinon
+            .stub()
+            .withArgs({ name: 'camera' })
+            .returns(Promise.resolve({ state: 'granted' })),
+        },
+      });
+      sandbox.stub(window.HTMLCanvasElement.prototype, 'getContext').returns({ drawImage() {} });
+      sandbox.stub(window.HTMLCanvasElement.prototype, 'toDataURL').returns('data:,');
+    });
+
+    // DOM globals are stubbed with sandbox, so run cleanup before sandbox is restored, as otherwise
+    // it will attempt to reference globals which are already restored to undefined.
+    afterEach(cleanup);
+
+    it('progresses through steps to completion', async () => {
+      const { getByLabelText, getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: false }}>
+          <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+            <DocumentCapture />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      await userEvent.upload(
+        getByLabelText('doc_auth.headings.document_capture_front'),
+        validUpload,
+      );
+      await userEvent.upload(
+        getByLabelText('doc_auth.headings.document_capture_back'),
+        validUpload,
+      );
+
+      await userEvent.click(getByText('forms.buttons.continue'));
+      await userEvent.click(getByLabelText('doc_auth.buttons.take_picture'));
+
+      await new Promise((resolve) => {
+        onSubmit.callsFake(resolve);
+        userEvent.click(getByText('forms.buttons.submit.default'));
       });
     });
   });

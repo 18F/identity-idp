@@ -95,7 +95,7 @@ describe ApplicationHelper do
               create(
                 :profile,
                 :verified,
-                deactivation_reason: :password_reset,
+                :password_reset,
               ),
             ],
           )
@@ -106,16 +106,20 @@ describe ApplicationHelper do
         end
       end
 
-      context 'current user has profile with liveness' do
+      context 'current user has profile with strict IAL2' do
         let(:current_user) do
           create(
             :user,
             profiles: [
               create(
                 :profile,
+                :active,
                 :verified,
-                deactivation_reason: :password_reset,
-                proofing_components: { liveness_check: DocAuthRouter.doc_auth_vendor },
+                :password_reset,
+                proofing_components: {
+                  liveness_check: DocAuthRouter.doc_auth_vendor,
+                  address_check: :lexis_nexis_address,
+                },
               ),
             ],
           )

@@ -5,8 +5,8 @@ describe('getAssetPath', () => {
     delete getAssetPath.cache;
   });
 
-  it('returns undefined', () => {
-    expect(getAssetPath('foo.svg')).to.be.undefined();
+  it('returns the original path argument', () => {
+    expect(getAssetPath('foo.svg')).to.be.equal('foo.svg');
   });
 
   context('with global assets not including the provided asset', () => {
@@ -14,8 +14,8 @@ describe('getAssetPath', () => {
       document.body.innerHTML = '<script type="application/json" data-asset-map>{}</script>';
     });
 
-    it('returns undefined for missing assets', () => {
-      expect(getAssetPath('foo.svg')).to.be.undefined();
+    it('returns the original path argument for missing assets', () => {
+      expect(getAssetPath('foo.svg')).to.be.equal('foo.svg');
     });
   });
 

@@ -3,18 +3,14 @@ namespace :dev do
   task prime: :environment do
     pw = 'salty pickles'
     %w[test1@test.com test2@test.com admin@gsa.gov].each_with_index do |email, index|
-      ee = EncryptedAttribute.new_from_decrypted(email)
-      User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
-        setup_user(user, ee: ee, pw: pw, num: index)
-      end
+      user = User.find_with_email(email) || User.create!
+      setup_user(user, email: email, pw: pw, num: index)
     end
 
-    ee = EncryptedAttribute.new_from_decrypted('totp@test.com')
-    User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
-      setup_totp_user(user, ee: ee, pw: pw)
-    end
+    user = User.find_with_email('totp@test.com') || User.create!
+    setup_totp_user(user, email: 'totp@test.com', pw: pw)
 
-    ial2_user = User.find_by(email_fingerprint: fingerprint('test2@test.com'))
+    ial2_user = User.find_with_email('test2@test.com')
     profile = Profile.new(user: ial2_user)
     pii = Pii::Attributes.new_from_hash(
       ssn: '660-00-1234',
@@ -57,13 +53,10 @@ namespace :dev do
     User.transaction do
       while num_created < num_users
         email_addr = "testuser#{num_created}@example.com"
-        ee = EncryptedAttribute.new_from_decrypted(email_addr)
-        User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
-          setup_user(user, ee: ee, pw: pw, num: num_created)
-        end
+        user = User.find_with_email(email_addr) || User.create!
+        setup_user(user, email: email_addr, pw: pw, num: num_created)
 
         if ENV['VERIFIED']
-          user = User.find_by(email_fingerprint: ee.fingerprint)
           profile = Profile.new(user: user)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
@@ -107,18 +100,15 @@ namespace :dev do
     warn "Emails: #{emails.join(', ')}\nPassword: salty pickles"
   end
 
-  # rubocop:disable all
   def setup_user(user, args)
-    user.encrypted_email = args[:ee].encrypted
+    EmailAddress.create!(email: args[:email], user: user, confirmed_at: Time.zone.now)
     user.reset_password(args[:pw], args[:pw])
     MfaContext.new(user).phone_configurations.create(phone_configuration_data(user, args))
     Event.create(user_id: user.id, event_type: :account_created)
-    user.email_addresses.update_all(confirmed_at: Time.zone.now)
   end
-  # rubocop:enable all
 
   def setup_totp_user(user, args)
-    user.encrypted_email = args[:ee].encrypted
+    EmailAddress.create!(email: args[:email], user: user, confirmed_at: Time.zone.now)
     user.reset_password(args[:pw], args[:pw])
     Event.create(user_id: user.id, event_type: :account_created)
   end

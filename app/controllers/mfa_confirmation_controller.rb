@@ -1,5 +1,17 @@
 class MfaConfirmationController < ApplicationController
+  include MfaSetupConcern
   before_action :confirm_two_factor_authenticated
+
+  def show
+    @content = MfaConfirmationPresenter.new(current_user)
+    @next_path = next_path
+  end
+
+  def skip
+    user_session.delete(:mfa_selections)
+    user_session.delete(:next_mfa_selection_choice)
+    redirect_to after_mfa_setup_path
+  end
 
   def new
     session[:password_attempts] ||= 0
@@ -14,6 +26,16 @@ class MfaConfirmationController < ApplicationController
   end
 
   private
+
+  def enforce_second_mfa?
+    IdentityConfig.store.kantara_2fa_phone_restricted &&
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
+  end
+
+  def next_path
+    return second_mfa_setup_non_restricted_path if enforce_second_mfa?
+    second_mfa_setup_path
+  end
 
   def password
     params.require(:user)[:password]
@@ -41,7 +63,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_max_password_attempts_reached
-    analytics.track_event(Analytics::PASSWORD_MAX_ATTEMPTS)
+    analytics.password_max_attempts
     sign_out
     redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end

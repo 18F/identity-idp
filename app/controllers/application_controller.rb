@@ -186,7 +186,8 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_setup_url
-    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ? two_factor_options_url : nil
+    service_provider_mfa_policy.user_needs_sp_auth_method_setup? ?
+      authentication_methods_setup_url : nil
   end
 
   def fix_broken_personal_key_url
@@ -246,8 +247,7 @@ class ApplicationController < ActionController::Base
 
   def invalid_auth_token(_exception)
     controller_info = "#{controller_path}##{action_name}"
-    analytics.track_event(
-      Analytics::INVALID_AUTHENTICITY_TOKEN,
+    analytics.invalid_authenticity_token(
       controller: controller_info,
       user_signed_in: user_signed_in?,
     )
@@ -265,6 +265,12 @@ class ApplicationController < ActionController::Base
       )
   end
 
+  def two_factor_kantara_enabled?
+    return false if controller_path == 'mfa_confirmation'
+    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
+  end
+
   def reauthn?
     reauthn = reauthn_param
     reauthn.present? && reauthn == 'true'
@@ -277,6 +283,7 @@ class ApplicationController < ActionController::Base
     return prompt_to_verify_mfa unless user_fully_authenticated?
     return prompt_to_setup_mfa if service_provider_mfa_policy.
                                   user_needs_sp_auth_method_setup?
+    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
     enforce_total_session_duration_timeout
@@ -313,7 +320,11 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_setup_mfa
-    redirect_to two_factor_options_url
+    redirect_to authentication_methods_setup_url
+  end
+
+  def prompt_to_setup_non_restricted_mfa
+    redirect_to auth_method_confirmation_url
   end
 
   def prompt_to_verify_mfa
@@ -393,7 +404,14 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_found
-    render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+    respond_to do |format|
+      format.json do
+        render json: { error: "The page you were looking for doesn't exist" }, status: :not_found
+      end
+      format.any do
+        render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+      end
+    end
   end
 
   def render_not_acceptable
@@ -401,7 +419,7 @@ class ApplicationController < ActionController::Base
   end
 
   def render_timeout(exception)
-    analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
+    analytics.response_timed_out(**analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
       NewRelic::Agent.notice_error(exception)
     end
@@ -419,16 +437,6 @@ class ApplicationController < ActionController::Base
       exception_message: exception.to_s,
       exception_class: exception.class.name,
     }
-  end
-
-  def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(
-      current_sp,
-      sp_session_ial,
-      token,
-      transaction_id: nil,
-      user: current_user,
-    )
   end
 
   def mobile?

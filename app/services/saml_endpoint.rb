@@ -34,8 +34,15 @@ class SamlEndpoint
 
   def saml_metadata
     config = SamlIdp.config.dup
-    config.single_service_post_location = config.single_service_post_location + suffix
-    config.single_logout_service_post_location = config.single_logout_service_post_location + suffix
+    config.single_service_post_location += suffix
+    if IdentityConfig.store.include_slo_in_saml_metadata
+      config.single_logout_service_post_location += suffix
+      config.remote_logout_service_post_location += suffix
+    else
+      config.single_logout_service_post_location = nil
+      config.remote_logout_service_post_location = nil
+    end
+
     SamlIdp::MetadataBuilder.new(
       config,
       x509_certificate,

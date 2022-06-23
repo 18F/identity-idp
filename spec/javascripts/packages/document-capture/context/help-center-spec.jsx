@@ -21,7 +21,9 @@ describe('document-capture/context/help-center', () => {
         location: 'location',
       });
 
-      expect(failureToProofURL).to.equal('?category=category&article=article&location=location');
+      expect(failureToProofURL).to.equal(
+        `${window.location.origin}/?category=category&article=article&location=location`,
+      );
     });
   });
 

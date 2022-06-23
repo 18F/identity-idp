@@ -68,7 +68,7 @@ describe Idv::PhoneController do
 
     context 'when the user is throttled' do
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
+        Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
       end
 
       it 'redirects to fail' do
@@ -91,7 +91,7 @@ describe Idv::PhoneController do
         get :new, params: params
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_PHONE_USE_DIFFERENT, step: step)
+          with('IdV: use different phone number', step: step)
       end
     end
 
@@ -174,7 +174,7 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, result
+          'IdV: phone confirmation form', result
         )
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
@@ -204,7 +204,7 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, result
+          'IdV: phone confirmation form', result
         )
       end
 
@@ -313,10 +313,10 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+          'IdV: phone confirmation form', hash_including(:success)
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+          'IdV: phone confirmation vendor', result
         )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -365,13 +365,13 @@ describe Idv::PhoneController do
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
+          'IdV: phone confirmation form', hash_including(:success)
         )
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
+          'IdV: phone confirmation vendor', result
         )
         expect(response).to redirect_to idv_phone_path
 
@@ -382,13 +382,10 @@ describe Idv::PhoneController do
         before do
           user = create(:user, with: { phone: '+1 (415) 555-0130' })
           stub_verify_steps_one_and_two(user)
-
-          create(
-            :throttle,
-            user: user,
-            throttle_type: :proof_address,
-            attempts: max_attempts - 1,
-          )
+          throttle = Throttle.new(throttle_type: :proof_address, user: user)
+          (max_attempts - 1).times do
+            throttle.increment!
+          end
         end
 
         it 'tracks throttled event' do

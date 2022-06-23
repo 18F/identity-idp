@@ -8,12 +8,10 @@
   <%= @presenter.description %>
 </p>
 
-<div class="margin-top-2 padding-top-1 border-top border-primary-light">
-  <p>
-    <% if MfaPolicy.new(current_user).two_factor_enabled? %>
-      <%= link_to t('links.cancel'), account_path %>
-    <% else %>
-      <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
-    <% end %>
-  </p>
-</div>
+<%= render PageFooterComponent.new do %>
+  <% if MfaPolicy.new(current_user).two_factor_enabled? %>
+    <%= link_to t('links.cancel'), account_path %>
+  <% else %>
+    <%= link_to t('two_factor_authentication.choose_another_option'), authentication_methods_setup_path %>
+  <% end %>
+<% end %>

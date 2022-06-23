@@ -57,10 +57,7 @@ module Idv
         extra: extra_attributes,
       )
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
-        response.to_h,
-      )
+      analytics.idv_doc_auth_submitted_image_upload_form(**response.to_h)
 
       response
     end
@@ -88,10 +85,8 @@ module Idv
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
       response.extra.merge!(extra_attributes)
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-        response.to_h,
-      )
+      analytics.idv_doc_auth_submitted_pii_validation(**response.to_h)
+
       store_pii(client_response) if client_response.success? && response.success?
 
       response
@@ -156,19 +151,19 @@ module Idv
     end
 
     def validate_images
-      if front.is_a? URI::InvalidURIError
+      if front.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :front, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
-      if back.is_a? URI::InvalidURIError
+      if back.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :back, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
         )
       end
-      if selfie.is_a? URI::InvalidURIError
+      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
         errors.add(
           :selfie, t('doc_auth.errors.not_a_file'),
           type: :not_a_file
@@ -202,7 +197,7 @@ module Idv
         elsif value.is_a? String
           DataUrlImage.new(value)
         end
-      rescue URI::InvalidURIError => error
+      rescue DataUrlImage::InvalidUrlFormatError => error
         error
       end
     end
@@ -219,9 +214,8 @@ module Idv
     def update_analytics(client_response)
       add_costs(client_response)
       update_funnel(client_response)
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(
+      analytics.idv_doc_auth_submitted_image_upload_vendor(
+        **client_response.to_h.merge(
           client_image_metrics: image_metadata,
           async: false,
           flow_path: params[:flow_path],
@@ -239,7 +233,7 @@ module Idv
         to_h.
         transform_values do |str|
           JSON.parse(str)
-      rescue JSON::ParserError
+        rescue JSON::ParserError
           nil
         end.
         compact.
@@ -277,7 +271,7 @@ module Idv
     end
 
     def throttle
-      @throttle ||= Throttle.for(
+      @throttle ||= Throttle.new(
         user: document_capture_session.user,
         throttle_type: :idv_doc_auth,
       )

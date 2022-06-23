@@ -2,18 +2,24 @@ require 'rails_helper'
 
 RSpec.describe IalContext do
   let(:ial) { nil }
-  let(:sp_liveness_checking_required) { false }
   let(:sp_ial) { nil }
   let(:service_provider) do
     build(
       :service_provider,
-      liveness_checking_required: sp_liveness_checking_required,
       ial: sp_ial,
     )
   end
   let(:user) { nil }
+  let(:authn_context_comparison) { nil }
 
-  subject(:ial_context) { IalContext.new(ial: ial, service_provider: service_provider, user: user) }
+  subject(:ial_context) do
+    IalContext.new(
+      ial: ial,
+      service_provider: service_provider,
+      user: user,
+      authn_context_comparison: authn_context_comparison,
+    )
+  end
 
   describe '#ial' do
     context 'with an integer input' do
@@ -137,8 +143,24 @@ RSpec.describe IalContext do
       it { expect(ial_context.ialmax_requested?).to eq(true) }
     end
 
-    context 'when ial 1 is requested' do
+    context 'when ial 1 is requested without Comparison=minimum and ial 2 SP' do
       let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'exact' }
+      let(:sp_ial) { 2 }
+      it { expect(ial_context.ialmax_requested?).to eq(false) }
+    end
+
+    context 'when ial 1 is requested with Comparison=minimum and ial 2 SP' do
+      let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'minimum' }
+      let(:sp_ial) { 2 }
+      it { expect(ial_context.ialmax_requested?).to eq(true) }
+    end
+
+    context 'when ial 1 is requested with Comparison=minimum and ial 1 SP' do
+      let(:ial) { Idp::Constants::IAL1 }
+      let(:authn_context_comparison) { 'minimum' }
+      let(:sp_ial) { 1 }
       it { expect(ial_context.ialmax_requested?).to eq(false) }
     end
 
@@ -263,12 +285,6 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_or_greater?).to eq(true) }
     end
 
-    context 'when ial 2 is requested and the sp requires liveness checking' do
-      let(:ial) { Idp::Constants::IAL2 }
-      let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial2_or_greater?).to eq(true) }
-    end
-
     context 'when ial 2 strict is requested' do
       let(:ial) { Idp::Constants::IAL2_STRICT }
       it { expect(ial_context.ial2_or_greater?).to eq(true) }
@@ -276,9 +292,21 @@ RSpec.describe IalContext do
   end
 
   describe '#ial2_requested?' do
-    context 'when ialmax is requested' do
+    context 'when ialmax is requested without a user' do
       let(:ial) { Idp::Constants::IAL_MAX }
       it { expect(ial_context.ial2_requested?).to eq(false) }
+    end
+
+    context 'when ialmax is requested with a user with no profile' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) { create(:user, :signed_up) }
+      it { expect(ial_context.ial2_requested?).to eq(false) }
+    end
+
+    context 'when ialmax is requested with a user with a verified profile' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) { create(:profile, :active, :verified).user }
+      it { expect(ial_context.ial2_requested?).to eq(true) }
     end
 
     context 'when ial 1 is requested' do
@@ -291,12 +319,6 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_requested?).to eq(true) }
     end
 
-    context 'when ial 2 is requested and the sp requires liveness checking' do
-      let(:ial) { Idp::Constants::IAL2 }
-      let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial2_requested?).to eq(true) }
-    end
-
     context 'when ial 2 strict is requested' do
       let(:ial) { Idp::Constants::IAL2_STRICT }
       it { expect(ial_context.ial2_requested?).to eq(false) }
@@ -307,18 +329,6 @@ RSpec.describe IalContext do
       let(:ial) { Idp::Constants::IAL2 }
       it { expect(ial_context.ial2_requested?).to eq(true) }
     end
-
-    context 'when ial max and the user has proofed for ial2' do
-      let(:ial) { Idp::Constants::IAL_MAX }
-      let(:user) do
-        create(
-          :user,
-          :signed_up,
-          profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
-        )
-      end
-      it { expect(ial_context.ial2_requested?).to eq(true) }
-    end
   end
 
   describe '#ial2_strict_requested?' do
@@ -327,51 +337,10 @@ RSpec.describe IalContext do
       it { expect(ial_context.ial2_strict_requested?).to eq(true) }
     end
 
-    context 'with ial2 passed in and liveness checking required on the sp' do
-      let(:ial) { Idp::Constants::IAL2 }
-      let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial2_strict_requested?).to eq(true) }
-    end
-
-    context 'with ial1 passed in but liveness checking required on the sp' do
-      let(:ial) { Idp::Constants::IAL1 }
-      let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial2_strict_requested?).to eq(false) }
-    end
-
     context 'when the SP is nil' do
       let(:service_provider) { nil }
       let(:ial) { Idp::Constants::IAL2 }
       it { expect(ial_context.ial2_strict_requested?).to eq(false) }
-    end
-  end
-
-  describe '#ial_for_identity_record' do
-    context 'with ial1' do
-      let(:ial) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial_context.ial_for_identity_record).to eq(Idp::Constants::IAL1) }
-    end
-
-    context 'with ial2' do
-      let(:ial) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial_context.ial_for_identity_record).to eq(Idp::Constants::IAL2) }
-    end
-
-    context 'with ial2 and liveness checking required on the sp' do
-      let(:ial) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      let(:sp_liveness_checking_required) { true }
-      it { expect(ial_context.ial_for_identity_record).to eq(Idp::Constants::IAL2_STRICT) }
-    end
-
-    context 'with ial 2 strict' do
-      let(:ial) { Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF }
-      it { expect(ial_context.ial_for_identity_record).to eq(Idp::Constants::IAL2_STRICT) }
-    end
-
-    context 'when the SP is nil' do
-      let(:service_provider) { nil }
-      let(:ial) { Idp::Constants::IAL2 }
-      it { expect(ial_context.ial_for_identity_record).to eq(Idp::Constants::IAL2) }
     end
   end
 end

@@ -12,10 +12,9 @@ feature 'doc auth email sent step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_email_sent_step)
     user = User.first
-    expect(page).to have_content(t('doc_auth.instructions.email_sent', email: user.email))
-  end
-
-  it 'shows the step indicator' do
+    expect(page).to have_content(
+      t('doc_auth.instructions.email_sent', email: user.confirmed_email_addresses.first.email),
+    )
     expect(page).to have_css(
       '.step-indicator__step--current',
       text: t('step_indicator.flows.idv.verify_id'),
