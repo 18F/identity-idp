@@ -145,6 +145,7 @@ fr:
       dob: Date de naissance
       doc_success: Nous avons vérifié vos informations personnelles
       first_name: Prénom
+      id_number: Numéro d'identification
       last_name: Nom de famille
       selected_file: Fichier sélectionné
       ssn: Numéro de sécurité sociale

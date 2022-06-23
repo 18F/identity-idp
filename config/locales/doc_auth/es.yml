@@ -140,6 +140,7 @@ es:
       dob: Fecha de nacimiento
       doc_success: Hemos verificado su información personal
       first_name: Nombre de pila
+      id_number: Número de identificación
       last_name: Apellido
       selected_file: Archivo seleccionado
       ssn: Número de seguridad social
