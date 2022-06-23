@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe WebauthnVisitForm do
-  let(:subject) { WebauthnVisitForm.new }
+  let(:user) { build(:user) }
+  let(:subject) { WebauthnVisitForm.new(user) }
 
   describe '#submit' do
     it 'returns FormResponse with success: true if there are no errors' do
@@ -11,6 +12,7 @@ describe WebauthnVisitForm do
         success: true,
         errors: {},
         platform_authenticator: false,
+        enabled_mfa_methods_count: 0,
       )
     end
 
@@ -22,6 +24,7 @@ describe WebauthnVisitForm do
           success: true,
           errors: {},
           platform_authenticator: true,
+          enabled_mfa_methods_count: 0,
         )
       end
     end

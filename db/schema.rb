@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_13_174442) do
+ActiveRecord::Schema.define(version: 2022_06_21_170346) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(version: 2022_06_13_174442) do
     t.boolean "ial2_strict"
     t.string "issuer"
     t.datetime "cancelled_at"
+    t.boolean "ocr_confirmation_pending", default: false
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
@@ -576,8 +577,6 @@ ActiveRecord::Schema.define(version: 2022_06_13_174442) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.string "unique_session_id"
-    t.string "email_fingerprint", default: "", null: false
-    t.text "encrypted_email", default: "", null: false
     t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
     t.integer "totp_timestamp"

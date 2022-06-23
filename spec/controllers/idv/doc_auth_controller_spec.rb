@@ -282,6 +282,7 @@ describe Idv::DocAuthController do
         errors: {},
         messages: ['message'],
         pii_from_doc: good_pii,
+        attention_with_barcode: false,
       }
     end
     let(:bad_pii) do
@@ -304,6 +305,7 @@ describe Idv::DocAuthController do
         errors: {},
         messages: ['message'],
         pii_from_doc: bad_pii,
+        attention_with_barcode: false,
       }
     end
     let(:fail_result) do
@@ -312,6 +314,7 @@ describe Idv::DocAuthController do
         success: false,
         errors: { front: 'Wrong document' },
         messages: ['message'],
+        attention_with_barcode: false,
       }
     end
 
@@ -350,6 +353,7 @@ describe Idv::DocAuthController do
           success: false,
           errors: [{ field: 'front', message: 'Wrong document' }],
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          ocr_pii: nil,
         }.to_json,
       )
     end
@@ -368,12 +372,14 @@ describe Idv::DocAuthController do
           errors: [{ field: 'pii',
                      message: I18n.t('doc_auth.errors.general.no_liveness') }],
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
+          ocr_pii: nil,
         }.to_json,
       )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
+          attention_with_barcode: false,
           success: false,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           step: 'verify_document_status',

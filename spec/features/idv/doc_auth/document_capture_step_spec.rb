@@ -140,6 +140,24 @@ feature 'doc auth document capture step', :js do
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
     end
 
+    it 'allows users to retake photos with attention with barcode', allow_browser_log: true do
+      mock_doc_auth_attention_with_barcode
+      attach_and_submit_images
+
+      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+      expect(page).to have_content('DAVID')
+      expect(page).to have_content('SAMPLE')
+      expect(page).to have_content('1986-10-13')
+
+      click_button t('doc_auth.buttons.add_new_photos')
+      submit_images
+
+      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_current_path(next_step, wait: 10)
+    end
+
     it 'does not proceed if doc auth is success but missing information', allow_browser_log: true do
       mock_doc_auth_no_name_pii(:post_images)
       attach_and_submit_images
@@ -268,6 +286,24 @@ feature 'doc auth document capture step', :js do
         )
         expect(back_plain.b).to eq(original.b)
       end
+    end
+
+    it 'allows users to retake photos with attention with barcode', allow_browser_log: true do
+      mock_doc_auth_attention_with_barcode
+      attach_and_submit_images
+
+      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+      expect(page).to have_content('DAVID')
+      expect(page).to have_content('SAMPLE')
+      expect(page).to have_content('1986-10-13')
+
+      click_button t('doc_auth.buttons.add_new_photos')
+      submit_images
+
+      expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_current_path(next_step, wait: 10)
     end
   end
 

@@ -86,6 +86,26 @@ feature 'doc capture document capture step', js: true do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
+  context 'with attention with barcode result' do
+    before do
+      mock_doc_auth_attention_with_barcode
+      allow(IdentityConfig.store).to receive(:doc_capture_polling_enabled).and_return(true)
+    end
+
+    it 'advances original session only after confirmed', allow_browser_log: true do
+      request_uri = doc_capture_request_uri(user)
+
+      Capybara.using_session('mobile') do
+        visit request_uri
+        attach_and_submit_images
+        expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+        click_button t('forms.buttons.continue')
+      end
+
+      expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+    end
+  end
+
   context 'when using async uploads' do
     let(:doc_auth_enable_presigned_s3_urls) { true }
 
@@ -123,6 +143,26 @@ feature 'doc capture document capture step', js: true do
 
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
+
+    context 'with attention with barcode result' do
+      before do
+        mock_doc_auth_attention_with_barcode
+        allow(IdentityConfig.store).to receive(:doc_capture_polling_enabled).and_return(true)
+      end
+
+      it 'advances original session only after confirmed', allow_browser_log: true do
+        request_uri = doc_capture_request_uri(user)
+
+        Capybara.using_session('mobile') do
+          visit request_uri
+          attach_and_submit_images
+          expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+          click_button t('forms.buttons.continue')
+        end
+
+        expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+      end
     end
   end
 

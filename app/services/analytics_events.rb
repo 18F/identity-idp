@@ -1057,6 +1057,77 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the the user has added the MFA method phone to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added phone',
+      {
+        method_name: :phone,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method piv_cac to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added PIV_CAC',
+      {
+        method_name: :piv_cac,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method TOTP to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added TOTP',
+      {
+        method_name: :totp,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method webauthn to their account
+  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_webauthn(
+    platform_authenticator:,
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: Added webauthn',
+      {
+        method_name: :webauthn,
+        platform_authenticator: platform_authenticator,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user visits the backup code confirmation setup page
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_enter_backup_code_confirmation_visit(
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter backup code confirmation visited',
+      {
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
   # @param ["authentication","reauthentication","confirmation"] context user session context
   # User visited the page to enter a backup code as their MFA
   def multi_factor_auth_enter_backup_code_visit(context:, **extra)

@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp email_fingerprint encrypted_email]
+  self.ignored_columns = %w[encrypted_phone totp_timestamp]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer

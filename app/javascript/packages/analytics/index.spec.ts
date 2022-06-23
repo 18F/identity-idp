@@ -1,5 +1,5 @@
-import { trackEvent } from '@18f/identity-analytics';
-import { useSandbox } from '@18f/identity-test-helpers';
+import { trackEvent, trackError } from '@18f/identity-analytics';
+import { usePropertyValue, useSandbox } from '@18f/identity-test-helpers';
 
 describe('trackEvent', () => {
   const sandbox = useSandbox();
@@ -54,6 +54,25 @@ describe('trackEvent', () => {
           }),
         );
       });
+    });
+  });
+});
+
+describe('trackError', () => {
+  it('is a noop', () => {
+    trackError(new Error('Oops!'));
+  });
+
+  context('with newrelic agent present', () => {
+    const sandbox = useSandbox();
+    const noticeError = sandbox.stub();
+    usePropertyValue(globalThis as any, 'newrelic', { noticeError });
+
+    it('notices error in newrelic', () => {
+      const error = new Error('Oops!');
+      trackError(error);
+
+      expect(noticeError).to.have.been.calledWith(error);
     });
   });
 });
