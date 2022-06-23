@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'In Person Proofing' do
   include DocAuthHelper
   include IdvHelper
+  include InPersonHelper
 
   it 'works for a happy path', js: true, allow_browser_log: true do
     user = sign_in_and_2fa_user
@@ -35,12 +36,14 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.welcome'))
     click_idv_continue
 
-    # address page
-    expect(page).to have_content(t('in_person_proofing.headings.address'))
-    click_idv_continue
-
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
+    fill_out_state_id_form_ok
+    click_idv_continue
+
+    # address page
+    expect(page).to have_content(t('in_person_proofing.headings.address'))
+    fill_out_address_form_ok
     click_idv_continue
 
     # ssn page

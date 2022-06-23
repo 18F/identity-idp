@@ -158,8 +158,6 @@ fr:
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
-      document_capture_heading_html: Téléchargez votre pièce d’identité délivrée par l’État
-      document_capture_heading_with_selfie_html: Téléchargez votre pièce d’identité officielle et une photo de vous
       document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
@@ -202,10 +200,11 @@ fr:
       lets_go: La vérification de l’identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l’État.
-      link_sent_complete_js: L’étape suivante se chargera automatiquement une fois que
-        vous aurez confirmé votre identifiant à l’aide de votre téléphone.
-      link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
-        pour terminer la vérification de votre identité.
+      link_sent_complete_no_polling: Quand vous aurez fini, cliquez sur « Continuer »
+        ici pour terminer la vérification de votre identité.
+      link_sent_complete_polling: L’étape suivante se chargera automatiquement une
+        fois que vous aurez confirmé votre identifiant à l’aide de votre
+        téléphone.
       no_sp_name: L’agence à laquelle vous essayez d’accéder
       privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous

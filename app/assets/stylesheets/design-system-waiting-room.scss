@@ -2,6 +2,12 @@
 
 // basscss-base-forms
 //------------------------------------------------
+@mixin input-styles() {
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  vertical-align: middle;
+}
+
 input[type='text'],
 input[type='date'],
 input[type='datetime'],
@@ -15,10 +21,43 @@ input[type='tel'],
 input[type='time'],
 input[type='url'],
 input[type='week'] {
-  height: 3rem;
-  padding: 0.5rem 1rem;
-  vertical-align: middle;
+  @include input-styles;
   -webkit-appearance: none;
+}
+
+select {
+  @include input-styles;
+
+  // all below displays custom arrow and is pulled from:
+  // https://github.com/uswds/uswds/blob/develop/packages/usa-select/src/styles/_usa-select.scss
+  @include add-background-svg('usa-icons/unfold_more');
+  appearance: none;
+  background-color: color('white');
+  background-position: right units(1) center;
+  background-size: units(2.5);
+  padding-right: units(4);
+
+  &::-ms-expand {
+    display: none;
+  }
+
+  // Show default webkit style on select element when autofilled to show icon
+  &:-webkit-autofill {
+    appearance: menulist;
+  }
+
+  // Remove dotted outline from select element on focus in Firefox
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 color('black');
+  }
+
+  // Necessary to show chevron in forced colors mode in modern browsers
+  @media (forced-colors: active) {
+    appearance: listbox;
+    background-image: none;
+    padding-right: 0;
+  }
 }
 
 //basscss-base-typography

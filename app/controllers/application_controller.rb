@@ -267,7 +267,7 @@ class ApplicationController < ActionController::Base
 
   def two_factor_kantara_enabled?
     return false if controller_path == 'mfa_confirmation'
-    IdentityConfig.store.kantara_2fa_phone_restricted &&
+    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 

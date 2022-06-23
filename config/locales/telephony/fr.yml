@@ -26,6 +26,10 @@ fr:
       émise par l'état"
     error:
       friendly_message:
+        daily_voice_limit_reached: L'envoi de votre code de sécurité a échoué, car vous
+          avez dépassé le nombre maximal d'appels téléphoniques en 24 heures
+          vers ce numéro de téléphone. Vous pouvez demander un code par SMS ou
+          utiliser un autre numéro pour recevoir un appel téléphonique.
         duplicate_endpoint: Le numéro de téléphone entré n’est pas valide.
         generic: Échec de l’envoi de votre code de sécurité.
         invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris en

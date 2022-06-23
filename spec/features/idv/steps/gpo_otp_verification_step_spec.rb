@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv gpo otp verification step' do
+feature 'idv gpo otp verification step', :js do
   include IdvStepHelper
 
   it_behaves_like 'gpo otp verification step'
