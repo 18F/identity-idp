@@ -7,10 +7,10 @@ fr:
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
     buttons:
-      change_address: Changement
       change_address_label: Changement d’adresse
-      change_ssn: Changement
+      change_label: Changement
       change_ssn_label: Changement de numéro de sécurité sociale
+      change_state_id_label: Modifier l'ID d'état
       continue: Continuer
       start_over: Recommencer
       take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
