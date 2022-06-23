@@ -36,39 +36,39 @@ export function setUp() {
     languagePicker(mobileLink, mobileDropdown);
   }
 
-  function syncLanguageLinkURLs() {
+  function syncLinkURLs() {
     const links = document.querySelectorAll('.i18n-dropdown a[lang]');
-    // const langArray = ['es', 'fr'];
     links.forEach((link) => {
-      //1. url is /foo , lang is es   //2 url is /es/foo, lang is fr
-      const lang = link.getAttribute('lang');
-      let prefix = '';
-      if (lang !== 'en') {
-        prefix = `/${lang}`; //1. es is not en so we make prefix /es/foo   //2 lang is not en so prefix is fr
-      }
+      const linkLang = link.getAttribute('lang');
+      const prefix = linkLang === 'en' ? '' : `/${linkLang}`;
       const url = new URL(window.location.href);
-      // langArray.forEach((oldLang) => {
-      //   url.pathname = prefix + url.pathname.replace(oldLang, '');
-      // })
-      link.setAttribute('href', url.toString()); //1. pathname becomes /es/foo    //2. pathname becomes /es/fr/foo because current url has /es
-      if (window.location.pathname.includes(`/${lang}/`)) {
-        //1. current url (/foo) does NOT include es so we skip  //2. current url does NOT have fr so we skip
-        link.setAttribute('href', window.location.href);
-      }
+      const { lang } = document.documentElement;
+      const barePath = url.pathname.replace(new RegExp(`^/${lang}`), '');
+      url.pathname = prefix + barePath;
+      link.setAttribute('href', url.toString());
     });
   }
 
-  const originalPushState = History.prototype.pushState;
-  History.prototype.pushState = function (...args) {
-    const result = originalPushState.apply(this, args);
-    syncLanguageLinkURLs();
-    return result;
-  };
-  window.addEventListener('popstate', syncLanguageLinkURLs);
+  const tearDown = ['pushState', 'replaceState'].reduce(
+    (tearDownPrevious, functionName) => {
+      const originalFunction = History.prototype[functionName];
+      History.prototype[functionName] = function (...args) {
+        const result = originalFunction.apply(this, args);
+        syncLinkURLs();
+        return result;
+      };
 
-  return () => {
-    History.prototype.pushState = originalPushState;
-  };
+      return () => {
+        tearDownPrevious();
+        History.prototype[functionName] = originalFunction;
+      };
+    },
+    () => {},
+  );
+
+  window.addEventListener('popstate', syncLinkURLs);
+
+  return tearDown;
 }
 
 if (process.env.NODE_ENV !== 'test') {
