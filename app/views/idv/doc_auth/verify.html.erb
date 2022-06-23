@@ -9,10 +9,9 @@
     <%= t(
           'doc_auth.headings.capture_scan_warning_html',
           link: render(
-            ButtonComponent.new(
+            FormLinkComponent.new(
               href: idv_doc_auth_step_path(step: :redo_document_capture),
               method: :put,
-              unstyled: true,
             ).with_content(t('doc_auth.headings.capture_scan_warning_link')),
           ),
         ) %>
