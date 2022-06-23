@@ -48,29 +48,6 @@ RSpec.describe BaseComponent, type: :component do
     end
   end
 
-  context 'with per-instance scripts' do
-    class ExampleComponentWithInstanceScripts < ExampleComponent
-      def initialize
-        @render_scripts = true
-      end
-
-      def self._sidecar_files(_extensions)
-        ['/components/example_component_with_instance_scripts.js']
-      end
-
-      def scripts
-        ['example_component_with_instance_scripts'] if @render_scripts
-      end
-    end
-
-    it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:enqueue_component_scripts).
-        with('example_component_with_instance_scripts')
-
-      render_inline(ExampleComponentWithInstanceScripts.new)
-    end
-  end
-
   describe '#unique_id' do
     it 'provides a unique id' do
       first_component = ExampleComponentWithScript.new
