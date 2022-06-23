@@ -79,6 +79,7 @@ function DocumentCaptureTroubleshootingOptions({
             {
               url: inPersonURL,
               text: t('idv.troubleshooting.options.verify_in_person'),
+              isContinue: true,
             },
           ]}
         />
