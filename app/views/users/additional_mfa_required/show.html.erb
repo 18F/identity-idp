@@ -16,10 +16,12 @@
       ) { @content.button } %>
 </div>
 
-<%= button_to(
-      login_additional_mfa_required_skip_path,
-      method: :post,
-      class: 'usa-button usa-button--unstyled',
-    ) do %>
-  <%= @content.skip %>
+<% unless @content.cant_skip_anymore? %>
+  <%= button_to(
+        login_additional_mfa_required_skip_path,
+        method: :post,
+        class: 'usa-button usa-button--unstyled',
+      ) do %>
+    <%= @content.skip %>
+  <% end %>
 <% end %>

@@ -225,7 +225,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 
-
   def mark_user_session_authenticated(authentication_type)
     user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
     user_session[:authn_at] = Time.zone.now
