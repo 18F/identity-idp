@@ -32,6 +32,7 @@ module Idv
         cancel_update_ssn: Idv::Actions::CancelUpdateSsnAction,
         redo_address: Idv::Actions::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
+        redo_document_capture: Idv::Actions::RedoDocumentCaptureAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
