@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
-import { Button, ButtonProps } from '@18f/identity-components';
 import BlockLinkArrow from './block-link-arrow';
 
-interface BlockSubmitButtonProps extends ButtonProps {
+interface BlockSubmitButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   /**
    * Link text.
    */
