@@ -35,20 +35,20 @@ class WebauthnSetupPresenter < SetupPresenter
     end
   end
 
-  def intro
+  def intro_html
     if @platform_authenticator
       t(
         'forms.webauthn_platform_setup.intro_html',
         link: intro_link,
       )
     else
-      t('forms.webauthn_setup.intro')
+      t('forms.webauthn_setup.intro_html')
     end
   end
 
   def intro_link
     link_to(
-      t('forms.webauthn_platform_setup.intro_link'),
+      t('forms.webauthn_platform_setup.intro_link_text'),
       MarketingSite.help_center_article_url(
         category: 'get-started',
         article: 'authentication-options',
