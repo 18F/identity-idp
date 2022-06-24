@@ -1,12 +1,12 @@
 import { basename, join } from 'path';
 import { writeFile } from 'fs/promises';
-import sass from 'sass';
+import sass from 'sass-embedded';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 
-/** @typedef {import('sass').CompileResult} CompileResult */
-/** @typedef {import('sass').Options<'sync'>} SyncSassOptions */
+/** @typedef {import('sass-embedded').CompileResult} CompileResult */
+/** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 
 /**
  * @typedef BuildOptions
