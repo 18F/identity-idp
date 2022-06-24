@@ -43,6 +43,9 @@ feature 'idv confirmation step', js: true do
       # Visit the current path is the same as refreshing
       visit current_path
       expect(page).to have_content(t('headings.personal_key'))
+
+      acknowledge_and_confirm_personal_key
+      expect(page).to have_current_path(account_path)
     end
   end
 
