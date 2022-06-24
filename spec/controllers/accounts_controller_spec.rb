@@ -48,7 +48,7 @@ describe AccountsController do
           sp_name: nil,
           decorated_user: user.decorate,
           locked_for_session: false,
-          account_reset_requested: false
+          account_reset_requested: false,
         )
         allow(subject).to receive(:presenter).and_return(presenter)
 
@@ -93,7 +93,7 @@ describe AccountsController do
             sp_name: nil,
             decorated_user: user.decorate,
             locked_for_session: false,
-            account_reset_requested: false
+            account_reset_requested: false,
           )
           allow(subject).to receive(:presenter).and_return(presenter)
 

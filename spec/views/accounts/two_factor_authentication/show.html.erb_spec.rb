@@ -38,7 +38,6 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false,
           account_reset_requested: user&.account_reset_request
-          
         ),
       )
     end

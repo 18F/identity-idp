@@ -52,7 +52,7 @@ describe AccountShowPresenter do
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false,
-          account_reset_requested: false,
+          account_reset_requested: false
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -69,7 +69,7 @@ describe AccountShowPresenter do
           decrypted_pii: {}, personal_key: '', decorated_user: user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false,
-          account_reset_requested: false,
+          account_reset_requested: false
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
