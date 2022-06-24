@@ -15,7 +15,8 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
           sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          locked_for_session: false,
+          account_reset_requested: false
         )
 
         expect(profile_index.header_personalization).to eq first_name
@@ -30,7 +31,8 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: decorated_user,
           sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          locked_for_session: false,
+          account_reset_requested: false
         )
 
         expect(profile_index.header_personalization).to eq email_address.email
@@ -49,7 +51,8 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
           sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          locked_for_session: false,
+          account_reset_requested: user&.account_reset_request,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
@@ -65,7 +68,8 @@ describe AccountShowPresenter do
         profile_index = AccountShowPresenter.new(
           decrypted_pii: {}, personal_key: '', decorated_user: user,
           sp_session_request_url: nil, sp_name: nil,
-          locked_for_session: false
+          locked_for_session: false,
+          account_reset_requested: false,
         )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
@@ -86,6 +90,7 @@ describe AccountShowPresenter do
         sp_name: nil,
         decorated_user: user.reload.decorate,
         locked_for_session: false,
+        account_reset_requested: user&.account_reset_request,
       )
 
       expect(account_show.backup_codes_generated_at).to be_within(
@@ -105,6 +110,7 @@ describe AccountShowPresenter do
         sp_name: nil,
         decorated_user: user.reload.decorate,
         locked_for_session: false,
+        account_reset_requested: false,
       )
 
       expect(account_show.backup_codes_generated_at).to be_nil
@@ -125,6 +131,7 @@ describe AccountShowPresenter do
         sp_name: nil,
         decorated_user: user.decorate,
         locked_for_session: false,
+        account_reset_requested: false,
       )
     end
 
@@ -163,6 +170,7 @@ describe AccountShowPresenter do
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
+          account_reset_requested: user&.account_reset_request,
         )
 
         expect(
@@ -187,6 +195,7 @@ describe AccountShowPresenter do
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
+          account_reset_requested: user&.account_reset_request,
         )
 
         expect(
@@ -206,6 +215,7 @@ describe AccountShowPresenter do
           sp_session_request_url: nil,
           sp_name: nil,
           locked_for_session: false,
+          account_reset_requested: user&.account_reset_request,
         )
 
         expect(profile_index.personal_key_generated_at).to be_nil

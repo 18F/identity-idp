@@ -12,7 +12,8 @@ describe 'accounts/show.html.erb' do
       AccountShowPresenter.new(
         decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
         sp_session_request_url: nil, sp_name: nil,
-        locked_for_session: false
+        locked_for_session: false,
+        account_reset_requested: user&.account_reset_request
       ),
     )
   end
@@ -171,7 +172,8 @@ describe 'accounts/show.html.erb' do
         AccountShowPresenter.new(
           decrypted_pii: nil, personal_key: 'abc123', decorated_user: decorated_user,
           sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
-          locked_for_session: false
+          locked_for_session: false,
+          account_reset_requested: false
         ),
       )
     end
