@@ -39,6 +39,7 @@ class WebauthnSetupPresenter < SetupPresenter
     if @platform_authenticator
       t(
         'forms.webauthn_platform_setup.intro_html',
+        app_name: APP_NAME,
         link: intro_link,
       )
     else
