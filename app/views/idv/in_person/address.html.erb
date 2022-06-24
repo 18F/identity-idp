@@ -70,6 +70,7 @@
 
   <%= render ValidatedFieldComponent.new(
         as: :radio_buttons,
+        checked: pii[:same_address_as_id],
         collection: [
           [t('in_person_proofing.form.address.same_address_choice_yes'), true],
           [t('in_person_proofing.form.address.same_address_choice_no'), false],
