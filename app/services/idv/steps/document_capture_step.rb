@@ -33,7 +33,7 @@ module Idv
       private
 
       def handle_stored_result
-        if stored_result.success?
+        if stored_result&.success?
           save_proofing_components
           extract_pii_from_doc(stored_result, store_in_session: !hybrid_flow_mobile?)
         else
