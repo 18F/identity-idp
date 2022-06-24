@@ -53,6 +53,18 @@ RSpec.describe 'In Person Proofing' do
 
     # verify page
     expect(page).to have_content(t('doc_auth.headings.verify'))
+    # verify information being displayed
+    expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
+    expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
+    expect(page).to have_text(InPersonHelper::GOOD_DOB)
+    expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
+    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
+    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
+    expect(page).to have_text(InPersonHelper::GOOD_CITY)
+    expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
+    expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+    expect(page).to have_text('9**-**-***4')
+
     click_idv_continue
 
     # phone page
