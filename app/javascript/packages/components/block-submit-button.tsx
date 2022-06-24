@@ -15,13 +15,13 @@ interface BlockSubmitButtonProps extends ButtonProps {
 }
 
 function BlockSubmitButton({ children, className, ...linkProps }: BlockSubmitButtonProps) {
-  const classes = ['block-link', 'usa-link', 'width-full', className].filter(Boolean).join(' ');
+  const classes = ['button-link', 'width-full', className].filter(Boolean).join(' ');
 
   return (
-    <Button type="submit" {...linkProps} className={classes} isUnstyled>
+    <button type="submit" {...linkProps} className={classes}>
       {children}
       <BlockLinkArrow />
-    </Button>
+    </button>
   );
 }
 
