@@ -53,7 +53,6 @@ RSpec.describe 'In Person Proofing' do
 
     # verify page
     expect(page).to have_content(t('doc_auth.headings.verify'))
-    # verify information being displayed
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB)
