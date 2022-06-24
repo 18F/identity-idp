@@ -3,9 +3,7 @@ class Profile < ApplicationRecord
 
   belongs_to :user
   has_many :gpo_confirmation_codes, dependent: :destroy
-
-  # todo: should we retain enrollment after profile is deleted?
-  has_one :in_person_enrollments, dependent: :destroy
+  has_one :in_person_enrollment, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
