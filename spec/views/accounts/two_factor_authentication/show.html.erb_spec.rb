@@ -13,7 +13,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
         decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
         sp_session_request_url: nil, sp_name: nil,
         locked_for_session: false,
-        account_reset_requested: user&.account_reset_request,
+        account_reset_requested: user&.account_reset_request
       ),
     )
   end
@@ -37,7 +37,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
           decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false,
-          account_reset_requested: user&.account_reset_request,
+          account_reset_requested: user&.account_reset_request
           
         ),
       )
@@ -91,7 +91,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
           decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
           sp_session_request_url: nil, sp_name: nil,
           locked_for_session: false,
-          account_reset_requested: user&.account_reset_request,
+          account_reset_requested: user&.account_reset_request
         ),
       )
     end
