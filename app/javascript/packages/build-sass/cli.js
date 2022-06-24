@@ -6,7 +6,7 @@ import { watch } from 'chokidar';
 import { fileURLToPath } from 'url';
 import { buildFile } from './index.js';
 
-/** @typedef {import('sass').Options<'sync'>} SyncSassOptions */
+/** @typedef {import('sass-embedded').Options<'sync'>} SyncSassOptions */
 /** @typedef {import('./').BuildOptions} BuildOptions */
 
 const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
