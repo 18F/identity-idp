@@ -12,11 +12,15 @@ RSpec.describe User do
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:proofing_component) }
     it { is_expected.to have_many(:in_person_enrollments).dependent(:destroy) }
-    it { is_expected.to have_one(:pending_in_person_enrollment).
+    it {
+      is_expected.to have_one(:pending_in_person_enrollment).
       conditions(status: :pending).
       order(created_at: :desc).
       class_name('InPersonEnrollment').
-      with_foreign_key(:user_id) }
+      with_foreign_key(:user_id).
+      inverse_of(:user).
+      dependent(:destroy)
+    }
   end
 
   it 'does not send an email when #create is called' do

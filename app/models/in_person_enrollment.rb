@@ -6,7 +6,6 @@ class InPersonEnrollment < ApplicationRecord
     passed: 1,
     failed: 2,
     expired: 3,
-    canceled: 4
+    canceled: 4,
   }
-
 end

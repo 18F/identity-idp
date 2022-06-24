@@ -7,7 +7,9 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'Status' do
-    it { should define_enum_for(:status).
-        with_values([:pending, :passed, :failed, :expired, :canceled]) }
+    it {
+      should define_enum_for(:status).
+        with_values([:pending, :passed, :failed, :expired, :canceled])
+    }
   end
 end
