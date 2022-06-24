@@ -22,7 +22,7 @@ interface SecretsContextProviderProps {
 /**
  * Minimal set of flow values to be synced to secret session storage.
  */
-const SYNCED_SECRET_VALUES = ['userBundleToken', 'personalKey'];
+const SYNCED_SECRET_VALUES = ['userBundleToken', 'personalKey', 'completionURL'];
 
 const SecretsContext = createContext({
   storage: new SecretSessionStorage<SecretValues>(''),
