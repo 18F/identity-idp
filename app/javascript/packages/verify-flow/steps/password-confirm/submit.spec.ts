@@ -1,6 +1,7 @@
 import { FormError } from '@18f/identity-form-steps';
 import { useSandbox } from '@18f/identity-test-helpers';
 import submit, { API_ENDPOINT } from './submit';
+import * as api from '../../services/api';
 
 describe('submit', () => {
   const sandbox = useSandbox();
@@ -8,18 +9,15 @@ describe('submit', () => {
   context('with successful submission', () => {
     beforeEach(() => {
       sandbox
-        .stub(window, 'fetch')
-        .withArgs(
-          API_ENDPOINT,
-          sandbox.match({ body: JSON.stringify({ user_bundle_token: '..', password: 'hunter2' }) }),
-        )
+        .stub(api, 'post')
+        .withArgs(API_ENDPOINT, {
+          user_bundle_token: '..',
+          password: 'hunter2',
+        })
         .resolves({
-          json: () =>
-            Promise.resolve({
-              personal_key: '0000-0000-0000-0000',
-              completion_url: 'http://example.com',
-            }),
-        } as Response);
+          personal_key: '0000-0000-0000-0000',
+          completion_url: 'http://example.com',
+        });
     });
 
     it('sends with password confirmation values', async () => {
@@ -35,14 +33,12 @@ describe('submit', () => {
   context('error submission', () => {
     beforeEach(() => {
       sandbox
-        .stub(window, 'fetch')
-        .withArgs(
-          API_ENDPOINT,
-          sandbox.match({ body: JSON.stringify({ user_bundle_token: '..', password: 'hunter2' }) }),
-        )
-        .resolves({
-          json: () => Promise.resolve({ errors: { password: ['incorrect password'] } }),
-        } as Response);
+        .stub(api, 'post')
+        .withArgs(API_ENDPOINT, {
+          user_bundle_token: '..',
+          password: 'hunter2',
+        })
+        .resolves({ errors: { password: ['incorrect password'] } });
     });
 
     it('throws error for the offending field', async () => {
