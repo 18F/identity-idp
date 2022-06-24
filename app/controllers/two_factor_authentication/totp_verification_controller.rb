@@ -5,10 +5,11 @@ module TwoFactorAuthentication
     before_action :confirm_totp_enabled
 
     def show
+      analytics.multi_factor_auth_enter_totp_visit(context: context)
+
       @presenter = presenter_for_two_factor_authentication_method
       return unless FeatureManagement.prefill_otp_codes?
       @code = ROTP::TOTP.new(current_user.auth_app_configurations.first.otp_secret_key).now
-      analytics.multi_factor_auth_enter_totp_visit
     end
 
     def create
