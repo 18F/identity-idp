@@ -8,4 +8,15 @@ class InPersonEnrollment < ApplicationRecord
     expired: 3,
     canceled: 4,
   }
+
+  validate :profile_belongs_to_user
+
+  private
+
+  def profile_belongs_to_user
+    unless profile&.user == user
+      errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
+                 type: :ipp_enrollment_mismatches_user
+    end
+  end
 end

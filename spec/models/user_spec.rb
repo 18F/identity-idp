@@ -190,6 +190,32 @@ RSpec.describe User do
     end
   end
 
+  context 'when user has IPP enrollments' do
+    let(:user) { create(:user, :signed_up) }
+
+    let(:profile1) {
+      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
+    }
+    let(:profile2) {
+      create(:profile, :verification_pending, user: user, pii: { first_name: 'Susan' })
+    }
+
+    let!(:enrollment1) { create(:in_person_enrollment, :failed, user: user, profile: profile1) }
+    let!(:enrollment2) { create(:in_person_enrollment, :pending, user: user, profile: profile2) }
+
+    describe '#in_person_enrollments' do
+      it 'returns multiple IPP enrollments' do
+        expect(user.in_person_enrollments).to eq [enrollment1, enrollment2]
+      end
+    end
+
+    describe '#pending_in_person_enrollment' do
+      it 'returns the pending IPP enrollment' do
+        expect(user.pending_in_person_enrollment).to eq enrollment2
+      end
+    end
+  end
+
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :signed_up)
