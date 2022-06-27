@@ -64,19 +64,19 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
     expect(page).to have_text('9**-**-***4')
 
-    # click upate state ID button
+    # click update state ID button
     click_button t('doc_auth.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
     click_idv_continue
     expect(page).to have_content(t('doc_auth.headings.verify'))
 
-    # click upate address button
+    # click update address button
     click_button t('doc_auth.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
     click_idv_continue
     expect(page).to have_content(t('doc_auth.headings.verify'))
 
-    # click upate ssn button
+    # click update ssn button
     click_button t('doc_auth.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_ok
