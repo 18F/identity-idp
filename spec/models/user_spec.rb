@@ -11,7 +11,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:proofing_component) }
-    it { is_expected.to have_many(:in_person_enrollments) }
+    it { is_expected.to have_many(:in_person_enrollments).dependent(:destroy) }
     it {
       is_expected.to have_one(:pending_in_person_enrollment).
       conditions(status: :pending).
@@ -206,6 +206,48 @@ RSpec.describe User do
     describe '#in_person_enrollments' do
       it 'returns multiple IPP enrollments' do
         expect(user.in_person_enrollments).to eq [enrollment1, enrollment2]
+      end
+
+      it 'deletes everything and does not result in an error when the user is deleted before the profile' do
+        enrollment_id1 = enrollment1.id
+        enrollment_id2 = enrollment2.id
+        profile_id1 = profile1.id
+        profile_id2 = profile2.id
+        user_id = user.id
+
+        expect(User.find_by(id: user_id)).to eq user
+        expect(Profile.find_by(id: profile_id1)).to eq profile1
+        expect(Profile.find_by(id: profile_id2)).to eq profile2
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        user.destroy
+        expect(User.find_by(id: user_id)).to eq nil
+        expect(Profile.find_by(id: profile_id1)).to eq nil
+        expect(Profile.find_by(id: profile_id2)).to eq nil
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq nil
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq nil
+        profile1.destroy # Profile is already deleted, but we shouldn't get an error here.
+      end
+
+      it 'deletes everything under the profile and does not result in an error when the profile is deleted before the user' do
+        enrollment_id1 = enrollment1.id
+        enrollment_id2 = enrollment2.id
+        profile_id1 = profile1.id
+        profile_id2 = profile2.id
+        user_id = user.id
+
+        expect(User.find_by(id: user_id)).to eq user
+        expect(Profile.find_by(id: profile_id1)).to eq profile1
+        expect(Profile.find_by(id: profile_id2)).to eq profile2
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        profile1.destroy
+        expect(User.find_by(id: user_id)).to eq user
+        expect(Profile.find_by(id: profile_id1)).to eq nil
+        expect(Profile.find_by(id: profile_id2)).to eq profile2
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq nil
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        user.destroy # Should work even though first profile was deleted after user was loaded
       end
     end
 

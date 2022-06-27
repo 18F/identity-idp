@@ -44,11 +44,7 @@ class User < ApplicationRecord
            through: :identities,
            source: :service_provider_record
   has_many :sign_in_restrictions, dependent: :destroy
-
-  # The following association should be deleted via profiles.
-  # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :in_person_enrollments
-  # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :in_person_enrollments, dependent: :destroy
 
   has_one :pending_in_person_enrollment, -> { where(status: :pending).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
