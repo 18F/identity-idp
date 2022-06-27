@@ -281,7 +281,7 @@ ActiveRecord::Schema.define(version: 2022_06_22_232047) do
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end
 
-  create_table "in_person_enrollments", force: :cascade do |t|
+  create_table "in_person_enrollments", comment: "Details and status of an in-person proofing enrollment for one user and profile", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "Foreign key to the user this enrollment belongs to"
     t.bigint "profile_id", null: false, comment: "Foreign key to the profile this enrollment belongs to"
     t.string "enrollment_code", comment: "The code returned by the USPS service"
