@@ -206,6 +206,7 @@ describe('useHistoryParam', () => {
 
           expect(getByDisplayValue('1')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/1');
+          expect(onURLChange).to.have.been.calledOnce();
 
           await userEvent.click(getByText('Increment'));
 
