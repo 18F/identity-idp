@@ -24,9 +24,8 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
 /**
  * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonPrepareValue>} props Props object.
  */
-function InPersonPrepareStep({ errors = [] }) {
+function InPersonPrepareStep() {
   const { t } = useI18n();
-  const error = errors.find(({ field }) => field === 'in-person-prepare')?.error;
 
   return (
     <>
