@@ -1,20 +1,15 @@
-import { forwardRef } from 'react';
 import type { ReactNode } from 'react';
 
-interface IconListIconProps extends Record<string, any> {
+interface IconListIconProps {
   children?: ReactNode;
 
   className?: string;
 }
 
-function IconListIcon({ children, className }: IconListIconProps, ref) {
+function IconListIcon({ children, className }: IconListIconProps) {
   const classes = ['usa-icon-list__icon', className].filter(Boolean).join(' ');
 
-  return (
-    <div ref={ref} className={classes}>
-      {children}
-    </div>
-  );
+  return <div className={classes}>{children}</div>;
 }
 
-export default forwardRef(IconListIcon);
+export default IconListIcon;

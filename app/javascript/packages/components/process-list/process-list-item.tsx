@@ -1,20 +1,15 @@
-import { forwardRef } from 'react';
 import type { ReactNode } from 'react';
 
-interface ProcessListItemProps extends Record<string, any> {
+interface ProcessListItemProps {
   className?: string;
 
   children?: ReactNode;
 }
 
-function ProcessListItem({ children, className }: ProcessListItemProps, ref) {
+function ProcessListItem({ children, className }: ProcessListItemProps) {
   const classes = ['usa-process-list__item', className].filter(Boolean).join(' ');
 
-  return (
-    <li ref={ref} className={classes}>
-      {children}
-    </li>
-  );
+  return <li className={classes}>{children}</li>;
 }
 
-export default forwardRef(ProcessListItem);
+export default ProcessListItem;
