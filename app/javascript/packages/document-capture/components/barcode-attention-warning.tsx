@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Button, StatusPage } from '@18f/identity-components';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
+import { trackEvent } from '@18f/identity-analytics';
 import UploadContext from '../context/upload';
 import { toFormData } from '../services/upload';
 import type { PII } from '../services/upload';
@@ -25,13 +26,21 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
   const { formData } = useContext(UploadContext);
 
   async function skipAttention() {
-    await window.fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
-      method: 'DELETE',
-      body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
-    });
+    await Promise.all([
+      trackEvent('IdV: barcode warning continue clicked'),
+      window.fetch(DOCUMENT_CAPTURE_ERRORS_API_URL, {
+        method: 'DELETE',
+        body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
+      }),
+    ]);
     window.onbeforeunload = null;
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
     form?.submit();
+  }
+
+  function handleDismiss() {
+    trackEvent('IdV: barcode warning retake photos clicked');
+    onDismiss();
   }
 
   return (
@@ -42,7 +51,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         <SpinnerButton key="continue" isBig isWide onClick={skipAttention}>
           {t('forms.buttons.continue')}
         </SpinnerButton>,
-        <Button key="add-new" isBig isOutline isWide onClick={onDismiss}>
+        <Button key="add-new" isBig isOutline isWide onClick={handleDismiss}>
           {t('doc_auth.buttons.add_new_photos')}
         </Button>,
       ]}
