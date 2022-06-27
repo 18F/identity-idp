@@ -208,7 +208,8 @@ RSpec.describe User do
         expect(user.in_person_enrollments).to eq [enrollment1, enrollment2]
       end
 
-      it 'deletes everything and does not result in an error when the user is deleted before the profile' do
+      it 'deletes everything and does not result in an error when'\
+      ' the user is deleted before the profile' do
         enrollment_id1 = enrollment1.id
         enrollment_id2 = enrollment2.id
         profile_id1 = profile1.id
@@ -229,7 +230,8 @@ RSpec.describe User do
         profile1.destroy # Profile is already deleted, but we shouldn't get an error here.
       end
 
-      it 'deletes everything under the profile and does not result in an error when the profile is deleted before the user' do
+      it 'deletes everything under the profile and does not result in an'\
+      ' error when the profile is deleted before the user' do
         enrollment_id1 = enrollment1.id
         enrollment_id2 = enrollment2.id
         profile_id1 = profile1.id
