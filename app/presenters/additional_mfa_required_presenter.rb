@@ -10,7 +10,7 @@ class AdditionalMfaRequiredPresenter
     else
       I18n.t(
         'mfa.additional_mfa_required.title',
-        date: enforcement_date.to_s(:long_ordinal),
+        date: I18n.l(enforcement_date, format: :event_date),
       )
     end
   end
@@ -23,7 +23,10 @@ class AdditionalMfaRequiredPresenter
     if current_date > enforcement_date
       I18n.t('mfa.additional_mfa_required.non_restricted_required_info')
     else
-      I18n.t('mfa.additional_mfa_required.info', date: enforcement_date.to_s(:long_ordinal))
+      I18n.t(
+        'mfa.additional_mfa_required.info',
+        date: I18n.l(enforcement_date, format: :event_date),
+      )
     end
   end
 

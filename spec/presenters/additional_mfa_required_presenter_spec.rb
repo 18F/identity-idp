@@ -19,7 +19,7 @@ describe AdditionalMfaRequiredPresenter do
           to eq(
             t(
               'mfa.additional_mfa_required.title',
-              date: enforcement_date.to_s(:long_ordinal),
+              date: I18n.l(enforcement_date, format: :event_date),
             ),
           )
       end
@@ -41,7 +41,7 @@ describe AdditionalMfaRequiredPresenter do
           to eq(
             t(
               'mfa.additional_mfa_required.info',
-              date: enforcement_date.to_s(:long_ordinal),
+              date: I18n.l(enforcement_date, format: :event_date),
             ),
           )
       end

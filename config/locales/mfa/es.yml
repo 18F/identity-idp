@@ -14,7 +14,7 @@ es:
       learn_more: Obtenga más información sobre las opciones de autenticación
       non_restricted_required_info: Debe añadir otro método de autenticación como
         copia de seguridad en caso de que pierda el acceso a su teléfono.
-      title: Añadir otro método de autenticación antes del {date}
+      title: Añadir otro método de autenticación antes del %{date}
     info: Agregue otro nivel de seguridad seleccionando un método de autentificación
       de varios factores. Le recomendamos seleccionar al menos dos opciones
       diferentes en caso de que pierda uno de los métodos.
@@ -23,3 +23,4 @@ es:
       text: Deberá eliminar su cuenta y comenzar de nuevo si pierde su único método de
         autenticación.
     skip: Omitir por ahora
+    skip_once: Omitir una vez

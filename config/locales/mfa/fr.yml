@@ -26,3 +26,4 @@ fr:
       text: Vous devrez supprimer votre compte et recommencer si vous perdez votre
         seule méthode d’authentification.
     skip: ​​Ignorer pour le moment
+    skip_once: Passer une fois

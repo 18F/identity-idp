@@ -50,7 +50,7 @@ describe 'mfa_confirmation/show.html.erb' do
   it 'does have a learn more link' do
     render
 
-    expect(rendered).to have_selector('a', text: t('mfa.non_restricted.learn_more'))
+    expect(rendered).to have_selector('a', text: t('mfa.additional_mfa_required.learn_more'))
   end
 
   context 'users with non restriced mfa' do
@@ -65,7 +65,7 @@ describe 'mfa_confirmation/show.html.erb' do
     it 'does not have a learn more link' do
       render
 
-      expect(rendered).to_not have_selector('a', text: t('mfa.non_restricted.learn_more'))
+      expect(rendered).to_not have_selector('a', text: t('mfa.additional_mfa_required.learn_more'))
     end
   end
 end
