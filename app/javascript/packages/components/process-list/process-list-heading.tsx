@@ -11,8 +11,7 @@ interface ProcessListHeadingProps {
 
 function ProcessListHeading({ children, className, unstyled }: ProcessListHeadingProps) {
   const headingClass = unstyled === true ? undefined : 'usa-process-list__heading';
-  const noClasses = headingClass === undefined && className === undefined;
-  const classes = noClasses ? undefined : [headingClass, className].filter(Boolean).join(' ');
+  const classes = [headingClass, className].filter(Boolean).join(' ');
 
   return <p className={classes}>{children}</p>;
 }
