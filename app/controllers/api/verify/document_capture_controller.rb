@@ -17,7 +17,7 @@ module Api
 
           render json: {
             status: 'in_progress',
-          }, status: :ok
+          }, status: :accepted
         else
           render_errors(result.errors)
         end
