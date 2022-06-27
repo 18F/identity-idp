@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import type { ChangeEvent } from 'react';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { t } from '@18f/identity-i18n';
 import {
@@ -12,7 +13,7 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { formatHTML } from '@18f/identity-react-i18n';
 import { PageHeading, Accordion, Alert, Link, ScrollIntoView } from '@18f/identity-components';
 import { getConfigValue } from '@18f/identity-config';
-import type { ChangeEvent } from 'react';
+import { trackEvent } from '@18f/identity-analytics';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import PersonalInfoSummary from './personal-info-summary';
@@ -25,6 +26,18 @@ interface PasswordConfirmStepProps extends FormStepComponentProps<VerifyFlowValu
 
 const FORGOT_PASSWORD_PATH = 'forgot_password';
 
+function useSubpageEventLogger(path) {
+  useDidUpdateEffect(() => {
+    switch (path) {
+      case 'forgot_password':
+        trackEvent('IdV: forgot password visited');
+        break;
+      default:
+        trackEvent('IdV: password confirm visited');
+    }
+  }, [path]);
+}
+
 function PasswordConfirmStep({ errors, registerField, onChange, value }: PasswordConfirmStepProps) {
   const { basePath } = useContext(FlowContext);
   const { onPageTransition } = useContext(FormStepsContext);
@@ -32,6 +45,7 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
   const stepPath = `${basePath}/password_confirm`;
   const [path] = useHistoryParam(undefined, { basePath: stepPath });
   useDidUpdateEffect(onPageTransition, [path]);
+  useSubpageEventLogger(path);
 
   if (path === FORGOT_PASSWORD_PATH) {
     return <ForgotPassword stepPath={stepPath} />;
