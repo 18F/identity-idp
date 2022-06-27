@@ -1,8 +1,5 @@
 class VerifyController < ApplicationController
-  include RenderConditionConcern
   include IdvSession
-
-  check_or_render_not_found -> { FeatureManagement.idv_api_enabled? }, only: [:show]
 
   before_action :validate_step
   before_action :confirm_two_factor_authenticated

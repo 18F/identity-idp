@@ -3,12 +3,10 @@ require 'rails_helper'
 feature 'idv confirmation step', js: true do
   include IdvStepHelper
 
-  let(:idv_api_enabled_steps) { [] }
   let(:sp) { nil }
   let(:address_verification_mechanism) { :phone }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(idv_api_enabled_steps)
     start_idv_from_sp(sp)
     complete_idv_steps_before_confirmation_step(address_verification_mechanism)
   end
@@ -32,21 +30,9 @@ feature 'idv confirmation step', js: true do
     # Visit the current path is the same as refreshing
     visit current_path
     expect(page).to have_content(t('headings.personal_key'))
-  end
 
-  context 'with idv app feature enabled' do
-    let(:idv_api_enabled_steps) { ['password_confirm', 'personal_key', 'personal_key_confirm'] }
-
-    it_behaves_like 'personal key page'
-
-    it 'allows the user to refresh and still displays the personal key' do
-      # Visit the current path is the same as refreshing
-      visit current_path
-      expect(page).to have_content(t('headings.personal_key'))
-
-      acknowledge_and_confirm_personal_key
-      expect(page).to have_current_path(account_path)
-    end
+    acknowledge_and_confirm_personal_key
+    expect(page).to have_current_path(account_path)
   end
 
   context 'verifying by gpo' do

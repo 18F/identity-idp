@@ -7,7 +7,7 @@ feature 'Analytics Regression', js: true do
   let(:fake_analytics) { FakeAnalytics.new }
   # rubocop:disable Layout/LineLength
   let(:happy_path_events) do
-    common_events = {
+    {
       'IdV: intro visited' => {},
       'IdV: doc auth welcome visited' => { flow_path: 'standard', step: 'welcome', step_count: 1 },
       'IdV: doc auth welcome submitted' => { success: true, errors: {}, flow_path: 'standard', step: 'welcome', step_count: 1 },
@@ -36,63 +36,42 @@ feature 'Analytics Regression', js: true do
       'IdV: phone confirmation vendor' => { success: true, errors: {}, vendor: { messages: [], exception: nil, context: { stages: [{ address: 'AddressMock' }] }, transaction_id: 'address-mock-transaction-id-123', timed_out: false }, new_phone_added: false },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
-    }
-    {
-      FSMv1: common_events.merge(
-        'IdV: review info visited' => {},
-        'IdV: review complete' => {},
-        'IdV: final resolution' => { success: true },
-        'Frontend: IdV: show personal key modal' => {},
-      ),
-      FSMv2: common_events.merge(
-        'IdV: password confirm visited' => {},
-        'IdV: password confirm submitted' => {},
-        'IdV: personal key confirm visited' => {},
-        'IdV: personal key confirm submitted' => {},
-      ),
+      'IdV: password confirm visited' => {},
+      'IdV: password confirm submitted' => {},
+      'IdV: personal key confirm visited' => {},
+      'IdV: personal key confirm submitted' => {},
     }
   end
   # rubocop:enable Layout/LineLength
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    WebMock.allow_net_connect!(net_http_connect_on_start: true)
   end
 
-  {
-    FSMv1: [],
-    FSMv2: %w[password_confirm personal_key personal_key_confirm],
-  }.each do |flow_version, steps_enabled|
-    context flow_version do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(steps_enabled)
-        WebMock.allow_net_connect!(net_http_connect_on_start: true)
-      end
+  after do
+    webmock_allow_list = WebMock::Config.instance.allow
+    WebMock.disallow_net_connect!(net_http_connect_on_start: nil, allow: webmock_allow_list)
+  end
 
-      after do
-        webmock_allow_list = WebMock::Config.instance.allow
-        WebMock.disallow_net_connect!(net_http_connect_on_start: nil, allow: webmock_allow_list)
-      end
+  context 'Happy path' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit_idp_from_sp_with_ial2(:oidc)
+      complete_welcome_step
+      complete_agreement_step
+      complete_upload_step
+      complete_document_capture_step
+      complete_ssn_step
+      complete_verify_step
+      complete_phone_step(user)
+      complete_review_step(user)
+      acknowledge_and_confirm_personal_key
+    end
 
-      context 'Happy path' do
-        before do
-          sign_in_and_2fa_user(user)
-          visit_idp_from_sp_with_ial2(:oidc)
-          complete_welcome_step
-          complete_agreement_step
-          complete_upload_step
-          complete_document_capture_step
-          complete_ssn_step
-          complete_verify_step
-          complete_phone_step(user)
-          complete_review_step(user)
-          acknowledge_and_confirm_personal_key
-        end
-
-        it 'records all of the events' do
-          happy_path_events[flow_version].each do |event, _attributes|
-            expect(fake_analytics).to have_logged_event(event)
-          end
-        end
+    it 'records all of the events' do
+      happy_path_events[flow_version].each do |event, _attributes|
+        expect(fake_analytics).to have_logged_event(event)
       end
     end
   end

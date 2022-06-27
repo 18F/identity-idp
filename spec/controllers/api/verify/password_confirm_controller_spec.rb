@@ -17,10 +17,6 @@ describe Api::Verify::PasswordConfirmController do
   let(:jwt_metadata) { { vendor_phone_confirmation: true, user_phone_confirmation: true } }
   let(:jwt) { JWT.encode({ pii: applicant, metadata: jwt_metadata }, key, 'RS256', sub: user.uuid) }
 
-  before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])
-  end
-
   it 'extends behavior of base api class' do
     expect(subject).to be_kind_of Api::Verify::BaseController
   end
