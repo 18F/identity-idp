@@ -6,6 +6,7 @@ class FrontendLogController < ApplicationController
   before_action :validate_parameter_types
 
   EVENT_MAP = {
+    'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_password_confirm_visited,
     'IdV: password confirm submitted' => :idv_password_confirm_submitted,
     'IdV: personal key visited' => :idv_personal_key_visited,

@@ -168,6 +168,7 @@ es:
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
       options:
+        add_new_photos: Añada nuevas fotos de su ID emitido por el estado
         change_phone_number: Utiliza un número de teléfono diferente
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         doc_capture_tips: Más consejos para agregar fotos de su identificación

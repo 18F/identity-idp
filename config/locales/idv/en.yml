@@ -161,6 +161,7 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
+        add_new_photos: Add new photos of your state-issued ID
         change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID

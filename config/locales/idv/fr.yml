@@ -181,6 +181,8 @@ fr:
           obtenir de l’aide:'
         still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
+        add_new_photos: Ajoutez de nouvelles photos de votre carte d’identité délivrée
+          par l’État.
         change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app_name}
         doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d’identité

@@ -13,11 +13,11 @@
         </div>
       </div>
     </div>
-    <div class='i18n-mobile-dropdown tablet:display-none display-none'>
+    <div class='i18n-dropdown i18n-mobile-dropdown tablet:display-none display-none'>
       <ul class='usa-list--unstyled margin-bottom-0 text-center'>
         <% I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
-            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-no-underline fs-13p', lang: locale == I18n.locale ? nil : locale %>
+            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'display-block padding-y-105 padding-x-2 text-no-underline fs-13p', lang: locale %>
           </li>
         <% end %>
       </ul>
@@ -53,13 +53,13 @@
                                                           class: 'margin-right-1', alt: '' %><%= t('i18n.language') %>
               <span class="caret display-inline-block margin-left-05" aria-hidden="true">&#9662;</span>
             </button>
-            <ul class="i18n-desktop-dropdown usa-dark-background bg-primary usa-list--unstyled margin-bottom-0 display-none">
+            <ul class="i18n-dropdown i18n-desktop-dropdown usa-dark-background bg-primary usa-list--unstyled margin-bottom-0 display-none">
               <% I18n.available_locales.each do |locale| %>
                 <li class='border-bottom border-primary-darker'>
                   <%= link_to t("i18n.locale.#{locale}"),
                               sanitized_requested_url.merge(locale: locale),
                               class: 'display-block padding-left-3 padding-y-2 text-no-underline',
-                              lang: locale == I18n.locale ? nil : locale %>
+                              lang: locale %>
                 </li>
               <% end %>
             </ul>

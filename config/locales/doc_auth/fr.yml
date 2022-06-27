@@ -160,6 +160,10 @@ fr:
       address: Mettre à jour votre adresse postale
       back: Verso
       capture_complete: Nous avons vérifié votre carte d’identité délivrée par l’État
+      capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
+        pièce d’identité. Si les informations ci-dessous sont incorrectes,
+        veuillez %{link} de votre carte d’identité délivrée par l’État.
+      capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
