@@ -35,6 +35,7 @@ describe('getStepParam', () => {
 describe('useHistoryParam', () => {
   const sandbox = sinon.createSandbox();
   const defineProperty = useDefineProperty();
+  const onURLChange = sandbox.stub();
 
   function TestComponent({ initialValue, basePath }: { initialValue?: string; basePath?: string }) {
     const [count = 0, setCount] = useHistoryParam(initialValue, { basePath });
@@ -57,11 +58,13 @@ describe('useHistoryParam', () => {
 
   beforeEach(() => {
     originalHash = window.location.hash;
+    window.addEventListener('lg:url-change', onURLChange);
   });
 
   afterEach(() => {
     window.location.hash = originalHash;
     sandbox.restore();
+    window.removeEventListener('lg:url-change', onURLChange);
   });
 
   it('returns undefined value if absent from initial URL', () => {

@@ -24,6 +24,9 @@ export function getParamURL(value: ParamValue, { basePath }: HistoryOptions): st
 
   return [prefix, encodeURIComponent(value || '')].filter(Boolean).join('');
 }
+
+const onURLChange = () => window.dispatchEvent(new window.CustomEvent('lg:url-change'));
+
 const subscribers: Array<() => void> = [];
 
 /**
@@ -60,6 +63,7 @@ function useHistoryParam(
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
+      onURLChange();
       window.history.pushState(null, '', getParamURL(nextValue, { basePath }));
       subscribers.forEach((sync) => sync());
     }
@@ -71,11 +75,16 @@ function useHistoryParam(
 
   useEffect(() => {
     if (initialValue && initialValue !== getCurrentValue()) {
+      onURLChange();
       window.history.replaceState(null, '', getParamURL(initialValue, { basePath }));
     }
 
     window.addEventListener('popstate', syncValue);
-    return () => window.removeEventListener('popstate', syncValue);
+    window.addEventListener('popstate', onURLChange);
+    return () => {
+      window.removeEventListener('popstate', syncValue);
+      window.removeEventListener('popstate', onURLChange);
+    };
   }, []);
 
   useEffect(() => {

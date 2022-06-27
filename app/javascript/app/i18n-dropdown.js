@@ -53,36 +53,10 @@ export function setUp() {
     });
   }
 
-  /**
-   * Recursive function which monkey patches the behavior of window.history.pushState and window.history.replaceState
-   * which are used in the react app to manage url routing.
-   *
-   * @return {function}  Tear-down function
-   */
-  function createWindowHistoryPatch() {
-    return ['pushState', 'replaceState'].reduce(
-      (tearDownPrevious, functionName) => {
-        const originalFunction = History.prototype[functionName];
-        History.prototype[functionName] = function (...args) {
-          const result = originalFunction.apply(this, args);
-          syncLanguageLinkURLs();
-          return result;
-        };
-
-        return () => {
-          tearDownPrevious();
-          History.prototype[functionName] = originalFunction;
-        };
-      },
-      () => {},
-    );
-  }
-
-  const tearDownWindowHistoryPatch = createWindowHistoryPatch();
-
-  window.addEventListener('popstate', syncLanguageLinkURLs);
-
-  return tearDownWindowHistoryPatch;
+  window.addEventListener('lg:url-change', syncLanguageLinkURLs);
+  return () => {
+    window.removeEventListener('lg:url-change', syncLanguageLinkURLs);
+  };
 }
 
 /**
