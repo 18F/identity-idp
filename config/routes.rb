@@ -297,8 +297,6 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
-      get '/review' => 'review#new'
-      put '/review' => 'review#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/phone/errors/timeout' => 'phone_errors#timeout'
       get '/session/errors/failure' => 'session_errors#failure'
