@@ -29,6 +29,7 @@ describe('StartOverOrCancel', () => {
             currentStep: 'one',
             basePath: '',
             inPersonURL: null,
+            onComplete() {},
           }}
         >
           <StartOverOrCancel />
