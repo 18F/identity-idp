@@ -109,6 +109,8 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
     }
   }
 
+  window.addEventListener('lg:session-timeout', () => storage.clear());
+
   render(
     <SecretsContextProvider storage={storage}>
       <VerifyFlow
