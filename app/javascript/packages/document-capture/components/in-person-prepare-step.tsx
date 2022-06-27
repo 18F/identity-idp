@@ -1,16 +1,12 @@
 import {
   Alert,
-<<<<<<< HEAD
   Button,
-=======
->>>>>>> 027b25e3f (collapse icon & process list components)
   IconList,
   IconListItem,
   PageHeading,
   ProcessList,
   ProcessListItem,
 } from '@18f/identity-components';
-<<<<<<< HEAD
 import { removeUnloadProtection } from '@18f/identity-url';
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -20,23 +16,6 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
 function InPersonPrepareStep() {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
-=======
-import { FormStepsButton } from '@18f/identity-form-steps';
-import { useI18n } from '@18f/identity-react-i18n';
-import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
-
-/**
- * @typedef InPersonPrepareStepValue
- *
- * @prop {Blob|string|null|undefined} inPersonPrepare InPersonPrepare value.
- */
-
-/**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonPrepareValue>} props Props object.
- */
-function InPersonPrepareStep() {
-  const { t } = useI18n();
->>>>>>> 027b25e3f (collapse icon & process list components)
 
   return (
     <>
@@ -95,7 +74,6 @@ function InPersonPrepareStep() {
           </ul>
         </IconListItem>
       </IconList>
-<<<<<<< HEAD
       {inPersonURL && (
         <div className="margin-y-5">
           <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide>
@@ -103,9 +81,6 @@ function InPersonPrepareStep() {
           </Button>
         </div>
       )}
-=======
-      <FormStepsButton.Continue />
->>>>>>> 027b25e3f (collapse icon & process list components)
       <InPersonTroubleshootingOptions />
     </>
   );
