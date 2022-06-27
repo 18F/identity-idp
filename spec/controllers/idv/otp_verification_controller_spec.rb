@@ -50,7 +50,7 @@ describe Idv::OtpVerificationController do
 
       it 'redirects to the review step' do
         get :show
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_app_path)
       end
     end
 
@@ -76,7 +76,7 @@ describe Idv::OtpVerificationController do
 
       it 'redirects to the review step' do
         put :update, params: { code: phone_confirmation_otp_code }
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_app_path)
       end
     end
 

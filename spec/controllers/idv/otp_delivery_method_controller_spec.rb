@@ -29,7 +29,7 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'redirects to the review controller' do
         get :new
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
       end
     end
 
@@ -40,7 +40,7 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'redirects to the review controller' do
         get :new
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
       end
     end
 
@@ -83,7 +83,7 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'redirects to the review controller' do
         post :create, params: params
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
       end
     end
 
@@ -94,7 +94,7 @@ describe Idv::OtpDeliveryMethodController do
 
       it 'redirects to the review controller' do
         post :create, params: params
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
       end
     end
 

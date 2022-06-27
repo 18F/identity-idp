@@ -58,7 +58,7 @@ module Idv
           redirect_to idv_otp_delivery_method_url
         end
       else
-        redirect_to idv_review_url
+        redirect_to idv_app_url
       end
     end
 

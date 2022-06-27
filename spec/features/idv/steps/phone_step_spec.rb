@@ -24,7 +24,7 @@ feature 'idv phone step', :js do
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_app_path)
     end
 
     it 'allows a user without a phone number to continue' do
@@ -84,7 +84,7 @@ feature 'idv phone step', :js do
 
       visit idv_phone_path
       expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_app_path)
 
       fill_in 'Password', with: user_password
       click_continue
@@ -101,7 +101,7 @@ feature 'idv phone step', :js do
     complete_idv_steps_before_phone_step
 
     # Try to skip ahead to review step
-    visit idv_review_path
+    visit idv_app_path
 
     expect(page).to have_current_path(idv_phone_path)
   end
@@ -131,7 +131,7 @@ feature 'idv phone step', :js do
       expect(page).to have_current_path(idv_phone_path)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_idv_continue
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_app_path)
     end
   end
 

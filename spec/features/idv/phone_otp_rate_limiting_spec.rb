@@ -108,7 +108,7 @@ feature 'phone otp rate limiting', :js do
       click_submit_default
 
       expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-      expect(current_path).to eq(idv_review_path)
+      expect(current_path).to eq(idv_app_path)
     end
   end
 end

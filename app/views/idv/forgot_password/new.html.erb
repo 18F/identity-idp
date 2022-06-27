@@ -11,7 +11,7 @@
 
   <% c.action_button(
        action: ->(**tag_options, &block) do
-         link_to(idv_review_path, **tag_options, &block)
+         link_to(idv_app_path, **tag_options, &block)
        end,
      ) { t('idv.forgot_password.try_again') } %>
 

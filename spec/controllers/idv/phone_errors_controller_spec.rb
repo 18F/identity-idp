@@ -24,7 +24,7 @@ shared_examples_for 'an idv phone errors controller action' do
     it 'redirects to the review url' do
       get action
 
-      expect(response).to redirect_to(idv_review_url)
+      expect(response).to redirect_to(idv_app_url)
     end
   end
 

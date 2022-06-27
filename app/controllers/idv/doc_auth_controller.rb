@@ -17,7 +17,7 @@ module Idv
 
     FSM_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
-      final_url: :idv_review_url,
+      final_url: :idv_app_url,
       flow: Idv::Flows::DocAuthFlow,
       analytics_id: Analytics::DOC_AUTH,
     }.freeze

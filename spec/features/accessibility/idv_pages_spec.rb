@@ -43,7 +43,7 @@ feature 'Accessibility on IDV pages', :js do
       complete_all_doc_auth_steps
       click_idv_continue
 
-      expect(page).to have_current_path(idv_review_path)
+      expect(page).to have_current_path(idv_app_path)
       expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled

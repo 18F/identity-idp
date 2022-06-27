@@ -20,7 +20,7 @@ module Idv
       analytics.idv_phone_confirmation_otp_submitted(**result.to_h)
       if result.success?
         idv_session.user_phone_confirmation = true
-        redirect_to idv_review_url
+        redirect_to idv_app_url
       else
         handle_otp_confirmation_failure
       end
@@ -30,7 +30,7 @@ module Idv
 
     def confirm_step_needed
       return unless idv_session.user_phone_confirmation
-      redirect_to idv_review_url
+      redirect_to idv_app_url
     end
 
     def confirm_otp_sent

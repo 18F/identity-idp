@@ -45,7 +45,7 @@ describe Idv::ResendOtpController do
 
       it 'redirects to the review step' do
         post :create
-        expect(response).to redirect_to(idv_review_path)
+        expect(response).to redirect_to(idv_app_path)
       end
     end
 

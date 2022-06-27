@@ -9,7 +9,7 @@ feature 'idv gpo step', :js do
     click_on t('idv.buttons.mail.send')
 
     expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_app_path)
   end
 
   it 'allows the user to go back' do

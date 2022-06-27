@@ -49,7 +49,7 @@ describe Idv::PhoneController do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
       end
     end
 
@@ -109,7 +109,7 @@ describe Idv::PhoneController do
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
       get :new
-      expect(response).to redirect_to idv_review_path
+      expect(response).to redirect_to idv_app_path
     end
 
     it 'shows waiting interstitial if async process is in progress' do
@@ -223,7 +223,7 @@ describe Idv::PhoneController do
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_review_path
+          expect(response).to redirect_to idv_app_path
 
           expected_applicant = {
             'first_name' => 'Some',
@@ -248,7 +248,7 @@ describe Idv::PhoneController do
 
             expect(response).to redirect_to idv_phone_path
             get :new
-            expect(response).to redirect_to idv_review_path
+            expect(response).to redirect_to idv_app_path
           end
         end
       end

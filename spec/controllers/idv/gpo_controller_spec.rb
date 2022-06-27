@@ -41,7 +41,7 @@ describe Idv::GpoController do
         and_return(true)
       get :index
 
-      expect(response).to redirect_to idv_review_path
+      expect(response).to redirect_to idv_app_path
     end
 
     it 'allows a user to request another letter' do
@@ -100,7 +100,7 @@ describe Idv::GpoController do
 
         put :create
 
-        expect(response).to redirect_to idv_review_path
+        expect(response).to redirect_to idv_app_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
       end
     end

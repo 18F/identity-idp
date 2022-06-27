@@ -4,7 +4,7 @@ feature 'idv review step', :js do
   include IdvStepHelper
 
   it 'routes to root if not signed in', js: false, driver: :desktop_rack_test do
-    visit idv_review_path
+    visit idv_app_path
 
     expect(current_path).to eq(root_path)
   end
@@ -27,7 +27,7 @@ feature 'idv review step', :js do
     click_idv_continue
 
     expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(idv_review_path)
+    expect(page).to have_current_path(idv_app_path)
 
     fill_in 'Password', with: user_password
     click_idv_continue
