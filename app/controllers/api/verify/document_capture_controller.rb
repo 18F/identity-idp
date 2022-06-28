@@ -1,7 +1,7 @@
 module Api
   module Verify
     class DocumentCaptureController < BaseController
-      self.required_step = 'document_capture'
+      self.required_step = nil
       include ApplicationHelper
       include EffectiveUser
 

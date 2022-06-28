@@ -47,7 +47,7 @@ describe Api::Verify::DocumentCaptureController do
 
   describe '#create' do
     it 'renders as bad request (400)' do
-      post :create
+      put :create
 
       expect(response.status).to eq(400)
     end
@@ -56,7 +56,7 @@ describe Api::Verify::DocumentCaptureController do
       let(:user) { nil }
 
       it 'renders as unauthorized (401)' do
-        post :create
+        put :create
 
         expect(response.status).to eq(401)
       end
@@ -65,7 +65,7 @@ describe Api::Verify::DocumentCaptureController do
         before { session[:doc_capture_user_id] = create(:user).id }
 
         it 'renders as bad request (400)' do
-          post :create
+          put :create
 
           expect(response.status).to eq(400)
         end
@@ -86,7 +86,7 @@ describe Api::Verify::DocumentCaptureController do
           flow_path: flow_path,
         )
 
-        post :create, params: {
+        put :create, params: {
           encryption_key: encryption_key,
           front_image_iv: front_image_iv,
           back_image_iv: back_image_iv,
@@ -100,7 +100,7 @@ describe Api::Verify::DocumentCaptureController do
           flow_path: flow_path,
         }
         expect(JSON.parse(response.body)['status']).to eq('in_progress')
-        expect(response.status).to eq 200
+        expect(response.status).to eq 202
       end
 
       context 'When the request does not have all the parameters' do
@@ -109,7 +109,7 @@ describe Api::Verify::DocumentCaptureController do
           allow(Idv::Agent).to receive(:new).and_return(agent)
           expect(agent).to_not receive(:proof_document)
 
-          post :create, params: {
+          put :create, params: {
             encryption_key: encryption_key,
             front_image_iv: nil,
             back_image_iv: back_image_iv,

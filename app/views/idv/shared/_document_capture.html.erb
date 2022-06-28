@@ -20,7 +20,7 @@
       ),
       document_capture_session_uuid: flow_session[:document_capture_session_uuid],
       endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :document_capture) :
+    api_verify_v2_document_capture_url :
     api_verify_images_url,
       status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :

@@ -340,7 +340,7 @@ Rails.application.routes.draw do
     namespace :api do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
       post '/verify/v2/password_reset' => 'verify/password_reset#create'
-      post '/verify/v2/document_capture' => 'verify/document_capture#create'
+      put '/verify/v2/document_capture' => 'verify/document_capture#create'
       delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end
 
