@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import {
   VerifyFlow,
   SecretsContextProvider,
@@ -73,6 +73,8 @@ export async function initialize() {
   const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
   const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
+  const tearDown = () => unmountComponentAtNode(appRoot);
+
   let cryptoKey: CryptoKey;
   let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
   try {
@@ -98,7 +100,7 @@ export async function initialize() {
       </FlowContext.Provider>,
       appRoot,
     );
-    return;
+    return tearDown;
   }
 
   function onComplete({ completionURL }: VerifyFlowValues) {
@@ -125,6 +127,8 @@ export async function initialize() {
     </SecretsContextProvider>,
     appRoot,
   );
+
+  return tearDown;
 }
 
 if (process.env.NODE_ENV !== 'test') {

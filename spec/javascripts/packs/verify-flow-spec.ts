@@ -1,6 +1,8 @@
 import { initialize } from '../../../app/javascript/packs/verify-flow';
 
 describe('verify-flow', () => {
+  let tearDown;
+
   beforeEach(async () => {
     document.body.innerHTML = `
       <div
@@ -15,7 +17,11 @@ describe('verify-flow', () => {
       ></div>
     `;
 
-    await initialize();
+    tearDown = await initialize();
+  });
+
+  afterEach(() => {
+    tearDown();
   });
 
   it('clears session storage on session timeout', () => {
