@@ -1,11 +1,13 @@
 import type { ReactNode } from 'react';
-import { BlockLink } from '@18f/identity-components';
+import { BlockLink, BlockSubmitButton } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
 export interface TroubleshootingOption {
   url: string;
 
   text: ReactNode;
+
+  isContinue?: boolean;
 
   isExternal?: boolean;
 }
@@ -45,11 +47,15 @@ function TroubleshootingOptions({
         {heading ?? t('components.troubleshooting_options.default_heading')}
       </HeadingTag>
       <ul className="troubleshooting-options__options">
-        {options.map(({ url, text, isExternal }) => (
+        {options.map(({ url, text, isContinue, isExternal }) => (
           <li key={url}>
-            <BlockLink href={url} isExternal={isExternal}>
-              {text}
-            </BlockLink>
+            {isContinue !== true ? (
+              <BlockLink href={url} isExternal={isExternal}>
+                {text}
+              </BlockLink>
+            ) : (
+              <BlockSubmitButton>{text}</BlockSubmitButton>
+            )}
           </li>
         ))}
       </ul>
