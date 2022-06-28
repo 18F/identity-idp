@@ -9,8 +9,8 @@ en:
     buttons:
       add_new_photos: Add new photos
       change_address_label: Change address
-      change_label: Change
-      change_ssn_label: Change Social Security Number
+      change_label: Update
+      change_ssn_label: Change Social Security number
       change_state_id_label: Change state ID
       continue: Continue
       start_over: Start over
@@ -115,15 +115,15 @@ en:
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
-      dob: Date of Birth
+      dob: Date of birth
       doc_success: We have verified your personal information
-      first_name: First Name
-      id_number: ID Number
-      last_name: Last Name
+      first_name: First name
+      id_number: ID number
+      last_name: Last name
       selected_file: Selected file
-      ssn: Social Security Number
+      ssn: Social Security number
       state: State
-      zip_code: Zip Code
+      zip_code: ZIP Code
     headings:
       address: Update your mailing address
       back: Back

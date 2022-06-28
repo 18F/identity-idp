@@ -81,8 +81,11 @@
         ) %>
   </div>
 
-  <%= f.button :button,
-               t('doc_auth.buttons.continue'),
-               type: :submit,
-               class: 'usa-button--big usa-button--wide' %>
+  <%= render ButtonComponent.new(big: true, wide: true) do %>
+    <% if updating_state_id %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
+  <% end %>
 <% end %>

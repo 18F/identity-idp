@@ -30,7 +30,7 @@ en:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
-        ssn: 'Your Social Security Number must be entered in as ###-##-####'
+        ssn: 'Your Social Security number must be entered in as ###-##-####'
         zipcode: Enter a 5 or 9 digit ZIP code
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
@@ -78,7 +78,7 @@ en:
       address2: Address (optional)
       city: City
       password: Password
-      ssn_label_html: Social Security Number
+      ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
     index:
@@ -141,7 +141,7 @@ en:
       dob: Date of birth
       full_name: Full name
       mailing_address: Mailing address
-      ssn: Social Security Number (SSN)
+      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Come back soon

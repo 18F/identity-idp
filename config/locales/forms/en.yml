@@ -86,7 +86,7 @@ en:
         email: Enter your email address
         email_language: Select your email language preference
     ssn:
-      show: Show Social Security Number
+      show: Show Social Security number
     totp_delete:
       caution: If you remove your authentication app you won’t be able to use it to
         access your %{app_name} account.

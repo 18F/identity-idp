@@ -82,8 +82,12 @@
         wrapper: :uswds_radio_buttons,
       ) %>
 
-   <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
-    <%= t('forms.buttons.continue') %>
+  <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
+    <% if updating_address %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
   <% end %>
 <% end %>
 
