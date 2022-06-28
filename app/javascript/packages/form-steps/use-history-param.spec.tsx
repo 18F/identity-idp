@@ -118,7 +118,9 @@ describe('useHistoryParam', () => {
   it('syncs by history events', async () => {
     const { getByText, getByDisplayValue, findByDisplayValue } = render(<TestComponent />);
 
+    onURLChange.callsFake(() => expect(window.location.hash).to.equal('#1'));
     await userEvent.click(getByText('Increment'));
+    onURLChange.resetBehavior();
 
     expect(getByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
@@ -130,7 +132,9 @@ describe('useHistoryParam', () => {
     expect(window.location.hash).to.equal('#2');
     expect(onURLChange).to.have.been.calledTwice();
 
+    onURLChange.callsFake(() => expect(window.location.hash).to.equal('#1'));
     window.history.back();
+    onURLChange.resetBehavior();
 
     expect(await findByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
@@ -261,7 +265,9 @@ describe('useHistoryParam', () => {
           });
 
           it('syncs to URL', () => {
+            onURLChange.callsFake(() => expect(window.location.pathname).to.equal('/base/1'));
             render(<TestComponent initialValue="1" basePath={basePath} />);
+            onURLChange.resetBehavior();
 
             expect(window.location.pathname).to.equal('/base/1');
             expect(window.history.length).to.equal(1);

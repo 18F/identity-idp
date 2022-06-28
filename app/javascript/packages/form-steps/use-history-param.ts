@@ -63,8 +63,8 @@ function useHistoryParam(
     // Push the next value to history, both to update the URL, and to allow the user to return to
     // an earlier value (see `popstate` sync behavior).
     if (nextValue !== value) {
-      onURLChange();
       window.history.pushState(null, '', getParamURL(nextValue, { basePath }));
+      onURLChange();
       subscribers.forEach((sync) => sync());
     }
 
@@ -75,8 +75,8 @@ function useHistoryParam(
 
   useEffect(() => {
     if (initialValue && initialValue !== getCurrentValue()) {
-      onURLChange();
       window.history.replaceState(null, '', getParamURL(initialValue, { basePath }));
+      onURLChange();
     }
 
     window.addEventListener('popstate', syncValue);
