@@ -672,16 +672,6 @@ module AnalyticsEvents
     )
   end
 
-  # User visited IDV password confirm page
-  def idv_password_confirm_visited
-    track_event('IdV: password confirm visited')
-  end
-
-  # User submitted IDV password confirm page
-  def idv_password_confirm_submitted
-    track_event('IdV: password confirm submitted')
-  end
-
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -919,12 +909,12 @@ module AnalyticsEvents
     )
   end
 
-  # User completed idv
+  # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
   end
 
-  # User visited idv phone of record
+  # User visited IDV password confirm page
   def idv_review_info_visited
     track_event('IdV: review info visited')
   end

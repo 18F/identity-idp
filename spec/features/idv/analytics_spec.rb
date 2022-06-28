@@ -39,14 +39,10 @@ feature 'Analytics Regression', js: true do
     }
     {
       FSMv1: common_events.merge(
-        'IdV: review info visited' => {},
-        'IdV: review complete' => {},
         'IdV: final resolution' => { success: true },
         'Frontend: IdV: show personal key modal' => {},
       ),
       FSMv2: common_events.merge(
-        'IdV: password confirm visited' => {},
-        'IdV: password confirm submitted' => {},
         'IdV: personal key confirm visited' => {},
         'IdV: personal key confirm submitted' => {},
       ),

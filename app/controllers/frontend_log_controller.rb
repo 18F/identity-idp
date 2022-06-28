@@ -7,8 +7,8 @@ class FrontendLogController < ApplicationController
 
   EVENT_MAP = {
     'IdV: forgot password visited' => :idv_forgot_password,
-    'IdV: password confirm visited' => :idv_password_confirm_visited,
-    'IdV: password confirm submitted' => :idv_password_confirm_submitted,
+    'IdV: password confirm visited' => :idv_review_info_visited,
+    'IdV: password confirm submitted' => :idv_review_complete,
     'IdV: personal key visited' => :idv_personal_key_visited,
     'IdV: personal key submitted' => :idv_personal_key_submitted,
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
