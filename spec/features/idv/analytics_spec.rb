@@ -40,7 +40,6 @@ feature 'Analytics Regression', js: true do
     }
     {
       FSMv1: common_events.merge(
-        'IdV: final resolution' => { success: true },
         'Frontend: IdV: show personal key modal' => {},
       ),
       FSMv2: common_events.merge(
