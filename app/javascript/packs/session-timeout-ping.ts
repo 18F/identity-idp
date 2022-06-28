@@ -74,7 +74,8 @@ function notifyNewRelic(request, error, actionName) {
   });
 }
 
-function forceRedirect(redirectURL: string) {
+function handleTimeout(redirectURL: string) {
+  window.dispatchEvent(new window.CustomEvent('lg:session-timeout'));
   window.onbeforeunload = null;
   window.onunload = null;
   window.location.href = redirectURL;
@@ -86,7 +87,7 @@ function success(data: PingResponse) {
 
   if (!data.live) {
     if (timeoutUrl) {
-      forceRedirect(timeoutUrl);
+      handleTimeout(timeoutUrl);
     }
     return;
   }
