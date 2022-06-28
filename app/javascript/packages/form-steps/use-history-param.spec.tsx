@@ -1,8 +1,7 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
-import { useDefineProperty } from '@18f/identity-test-helpers';
+import { useDefineProperty, useSandbox } from '@18f/identity-test-helpers';
 import useHistoryParam, { getStepParam } from './use-history-param';
 
 describe('getStepParam', () => {
@@ -33,9 +32,8 @@ describe('getStepParam', () => {
 });
 
 describe('useHistoryParam', () => {
-  const sandbox = sinon.createSandbox();
+  const sandbox = useSandbox();
   const defineProperty = useDefineProperty();
-  const onURLChange = sandbox.stub();
 
   function TestComponent({ initialValue, basePath }: { initialValue?: string; basePath?: string }) {
     const [count = 0, setCount] = useHistoryParam(initialValue, { basePath });
@@ -55,15 +53,16 @@ describe('useHistoryParam', () => {
   }
 
   let originalHash;
+  let onURLChange;
 
   beforeEach(() => {
     originalHash = window.location.hash;
+    onURLChange = sandbox.stub();
     window.addEventListener('lg:url-change', onURLChange);
   });
 
   afterEach(() => {
     window.location.hash = originalHash;
-    sandbox.restore();
     window.removeEventListener('lg:url-change', onURLChange);
   });
 
@@ -87,11 +86,13 @@ describe('useHistoryParam', () => {
 
     expect(getByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
+    expect(onURLChange).to.have.been.calledOnce();
 
     await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
     expect(window.location.hash).to.equal('#2');
+    expect(onURLChange).to.have.been.calledTwice();
   });
 
   it('scrolls to top on programmatic history manipulation', async () => {
@@ -121,21 +122,25 @@ describe('useHistoryParam', () => {
 
     expect(getByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
+    expect(onURLChange).to.have.been.calledOnce();
 
     await userEvent.click(getByText('Increment'));
 
     expect(getByDisplayValue('2')).to.be.ok();
     expect(window.location.hash).to.equal('#2');
+    expect(onURLChange).to.have.been.calledTwice();
 
     window.history.back();
 
     expect(await findByDisplayValue('1')).to.be.ok();
     expect(window.location.hash).to.equal('#1');
+    expect(onURLChange).to.have.been.calledThrice();
 
     window.history.back();
 
     expect(await findByDisplayValue('0')).to.be.ok();
     expect(window.location.hash).to.equal('');
+    expect(onURLChange).to.have.callCount(4);
   });
 
   it('encodes parameter names and values', async () => {
@@ -159,6 +164,7 @@ describe('useHistoryParam', () => {
     const [path3] = inst3.result.current;
     expect(path2).to.equal('root');
     expect(path3).to.be.undefined();
+    expect(onURLChange).to.have.been.calledOnce();
   });
 
   Object.entries({
@@ -212,6 +218,7 @@ describe('useHistoryParam', () => {
 
           expect(getByDisplayValue('2')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/2');
+          expect(onURLChange).to.have.been.calledTwice();
         });
 
         it('syncs by history events', async () => {
@@ -223,21 +230,25 @@ describe('useHistoryParam', () => {
 
           expect(getByDisplayValue('1')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/1');
+          expect(onURLChange).to.have.been.calledOnce();
 
           await userEvent.click(getByText('Increment'));
 
           expect(getByDisplayValue('2')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/2');
+          expect(onURLChange).to.have.been.calledTwice();
 
           window.history.back();
 
           expect(await findByDisplayValue('1')).to.be.ok();
           expect(window.location.pathname).to.equal('/base/1');
+          expect(onURLChange).to.have.been.calledThrice();
 
           window.history.back();
 
           expect(await findByDisplayValue('0')).to.be.ok();
           expect(window.location.pathname).to.equal(basePath);
+          expect(onURLChange).to.have.callCount(4);
         });
 
         context('with initial provided value', () => {
@@ -254,6 +265,7 @@ describe('useHistoryParam', () => {
 
             expect(window.location.pathname).to.equal('/base/1');
             expect(window.history.length).to.equal(1);
+            expect(onURLChange).to.have.been.calledOnce();
           });
         });
       });
