@@ -1,23 +1,34 @@
-<%= render(
-      'idv/shared/error',
-      type: :warning,
-      title: t('titles.failure.information_not_verified'),
-      heading: t('idv.failure.sessions.heading'),
-      action: {
-        text: t('idv.failure.button.warning'),
-        url: idv_doc_auth_path,
-      },
-      options: [
-        decorated_session.sp_name && {
-          url: return_to_sp_failure_to_proof_path(
-            step: 'verify_info',
-            location: request.params[:action],
-          ),
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-          new_tab: true,
-        },
-      ].select(&:present?),
-    ) do %>
-      <p><%= t('idv.failure.sessions.warning') %></p>
-      <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
+<% title t('titles.failure.information_not_verified') %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.header { t('idv.failure.sessions.heading') } %>
+
+  <p><%= t('idv.failure.sessions.warning') %></p>
+  <p><strong><%= t('idv.failure.attempts', count: @remaining_attempts) %></strong></p>
+
+  <% c.action_button(
+       action: ->(**tag_options, &block) { link_to(idv_doc_auth_path, **tag_options, &block) },
+     ) { t('idv.forgot_password.try_again') } %>
+
+  <% c.troubleshooting_options do |tc| %>
+    <% tc.header { t('components.troubleshooting_options.default_heading') } %>
+    <% if user_session.dig(:'idv/doc_auth', :had_barcode_read_failure) %>
+      <% tc.option(
+           url: idv_doc_auth_step_path(step: :redo_document_capture),
+           action: FormLinkComponent.method(:new),
+           method: :put,
+         ).with_content(t('idv.troubleshooting.options.add_new_photos')) %>
     <% end %>
+    <% if decorated_session.sp_name %>
+      <% tc.option(
+           url: return_to_sp_failure_to_proof_path(
+             step: 'verify_info',
+             location: request.params[:action],
+           ),
+           new_tab: true,
+         ).with_content(
+           t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+         ) %>
+    <% end %>
+  <% end %>
+<% end %>

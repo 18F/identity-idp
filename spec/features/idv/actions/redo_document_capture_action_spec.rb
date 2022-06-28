@@ -11,7 +11,8 @@ feature 'doc auth redo document capture action', js: true do
       mock_doc_auth_attention_with_barcode
       attach_and_submit_images
       click_idv_continue
-      complete_ssn_step
+      fill_out_ssn_form_with_ssn_that_fails_resolution
+      click_idv_continue
     end
 
     it 'shows a warning message to allow the user to return to upload new images' do
@@ -30,6 +31,19 @@ feature 'doc auth redo document capture action', js: true do
       complete_ssn_step
 
       expect(page).not_to have_css('[role="status"]')
+    end
+
+    it 'shows a troubleshooting option to allow the user to return to upload new images' do
+      click_idv_continue
+
+      expect(page).to have_link(
+        t('idv.troubleshooting.options.add_new_photos'),
+        href: idv_doc_auth_step_path(step: :redo_document_capture),
+      )
+
+      click_link t('idv.troubleshooting.options.add_new_photos')
+
+      expect(current_path).to eq(idv_doc_auth_upload_step)
     end
 
     context 'on mobile', driver: :headless_chrome_mobile do
