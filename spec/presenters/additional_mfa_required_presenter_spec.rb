@@ -9,7 +9,7 @@ describe AdditionalMfaRequiredPresenter do
   before do
     allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
     allow(IdentityConfig.store).to receive(:kantara_restriction_enforcement_date).
-      and_return(enforcement_date)
+      and_return(enforcement_date.to_datetime)
   end
 
   describe '#title' do
@@ -19,7 +19,7 @@ describe AdditionalMfaRequiredPresenter do
           to eq(
             t(
               'mfa.additional_mfa_required.title',
-              date: I18n.l(enforcement_date, format: :event_date),
+              date: I18n.l(enforcement_date.to_datetime, format: :event_date),
             ),
           )
       end
@@ -41,7 +41,7 @@ describe AdditionalMfaRequiredPresenter do
           to eq(
             t(
               'mfa.additional_mfa_required.info',
-              date: I18n.l(enforcement_date, format: :event_date),
+              date: I18n.l(enforcement_date.to_datetime, format: :event_date),
             ),
           )
       end

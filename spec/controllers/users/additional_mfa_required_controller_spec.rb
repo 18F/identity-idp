@@ -43,7 +43,7 @@ describe Users::AdditionalMfaRequiredController do
       it 'should add sin in attribute to users' do
         post :skip
 
-        user.reload!
+        user.reload
         expect(user.non_restricted_mfa_required_prompt_skip_date).
         to be_truthy
       end
