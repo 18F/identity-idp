@@ -22,9 +22,9 @@ es:
         su registro número de teléfono.
     delete_account:
       are_you_sure: '¿Seguro que quieres eliminar tu cuenta?'
-      cancelled: Se canceló su solicitud para la eliminación de su cuenta. Si quiere
-        eliminar su cuenta, envíe de nuevo la solicitud y complete las
-        instrucciones. No vuelva a ingresar con su cuenta.
+      cancelled: Su solicitud para eliminar su cuenta ha sido cancelada. Para reanudar
+        la eliminación, seleccione la opción de eliminar cuenta en el menú de
+        esta página.
       info: Eliminar su cuenta debe ser su último recurso si su cuenta está bloqueada.
         No podrá recuperar ninguna información vinculada a su cuenta.
         Notificaremos a las agencias a las que acceda con %{app_name} que ya no
