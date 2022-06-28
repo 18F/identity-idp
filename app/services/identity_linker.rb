@@ -43,13 +43,7 @@ class IdentityLinker
   end
 
   def find_or_create_identity_with_costing
-    identity_record = identity_relation.first
-    return identity_record if identity_record
-    user.identities.create(service_provider: service_provider.issuer)
-  end
-
-  def identity_relation
-    user.identities.where(service_provider: service_provider.issuer)
+    user.identities.create_or_find_by(service_provider: service_provider.issuer)
   end
 
   def merged_attributes(extra_attrs)

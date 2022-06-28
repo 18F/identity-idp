@@ -281,6 +281,20 @@ ActiveRecord::Schema.define(version: 2022_06_23_150235) do
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end
 
+  create_table "in_person_enrollments", comment: "Details and status of an in-person proofing enrollment for one user and profile", force: :cascade do |t|
+    t.bigint "user_id", null: false, comment: "Foreign key to the user this enrollment belongs to"
+    t.bigint "profile_id", null: false, comment: "Foreign key to the profile this enrollment belongs to"
+    t.string "enrollment_code", comment: "The code returned by the USPS service"
+    t.datetime "status_check_attempted_at", comment: "The last time a status check was attempted"
+    t.datetime "status_updated_at", comment: "The last time the status was successfully updated with a value from the USPS API"
+    t.integer "status", default: 0, comment: "The status of the enrollment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 0)"
+    t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
+  end
+
   create_table "integration_statuses", force: :cascade do |t|
     t.string "name", null: false
     t.integer "order", null: false
@@ -622,6 +636,8 @@ ActiveRecord::Schema.define(version: 2022_06_23_150235) do
   add_foreign_key "document_capture_sessions", "users"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
+  add_foreign_key "in_person_enrollments", "profiles"
+  add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"
   add_foreign_key "integrations", "integration_statuses"

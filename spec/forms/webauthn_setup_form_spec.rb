@@ -18,6 +18,7 @@ describe WebauthnSetupForm do
           platform_authenticator: false,
         }
         extra_attributes = {
+          enabled_mfa_methods_count: 1,
           mfa_method_counts: { webauthn: 1 },
           multi_factor_auth_method: 'webauthn',
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -72,6 +73,7 @@ describe WebauthnSetupForm do
           platform_authenticator: false,
         }
         extra_attributes = {
+          enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -95,6 +97,7 @@ describe WebauthnSetupForm do
           platform_authenticator: false,
         }
         extra_attributes = {
+          enabled_mfa_methods_count: 0,
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
           pii_like_keypaths: [[:mfa_method_counts, :phone]],

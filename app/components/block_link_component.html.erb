@@ -1,4 +1,4 @@
-<%= tag.a(**tag_options, href: url, class: css_class, target: target) do %>
+<%= wrapper do %>
   <%= content %>
   <% if new_tab %>
     <span class="usa-sr-only"><%= t('links.new_window') %></span>

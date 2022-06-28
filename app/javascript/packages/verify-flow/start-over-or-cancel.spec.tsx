@@ -28,6 +28,8 @@ describe('StartOverOrCancel', () => {
             cancelURL: 'http://example.test/cancel',
             currentStep: 'one',
             basePath: '',
+            inPersonURL: null,
+            onComplete() {},
           }}
         >
           <StartOverOrCancel />

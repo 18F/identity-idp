@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::TotpVerificationController do
+  before do
+    stub_analytics
+  end
+
   describe '#create' do
     context 'when the user enters a valid TOTP' do
       before do
@@ -32,7 +36,6 @@ describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'tracks the valid authentication event' do
-        stub_analytics
         attributes = {
           success: true,
           errors: {},
@@ -77,8 +80,6 @@ describe TwoFactorAuthentication::TotpVerificationController do
         user = subject.current_user
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
-
-        stub_analytics
 
         attributes = {
           success: false,
@@ -165,12 +166,47 @@ describe TwoFactorAuthentication::TotpVerificationController do
   end
 
   describe '#show' do
+    let(:user) { build(:user) }
+    before { stub_sign_in_before_2fa(user) }
+
     context 'when the user does not have an authenticator app enabled' do
       it 'redirects to user_two_factor_authentication_path' do
-        stub_sign_in_before_2fa
         get :show
 
         expect(response).to redirect_to user_two_factor_authentication_path
+      end
+    end
+
+    context 'when the user has an authenticator app enabled' do
+      let(:user) { build(:user, :with_authentication_app) }
+
+      it 'logs the visited event' do
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: enter TOTP visited',
+          { context: 'authentication' },
+        )
+      end
+
+      it 'sets view assigns' do
+        get :show
+
+        expect(assigns(:presenter)).to be_present
+        expect(assigns(:code)).not_to be_present
+      end
+
+      context 'when FeatureManagement.prefill_otp_codes? is true' do
+        before do
+          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+        end
+
+        it 'sets view assigns' do
+          get :show
+
+          expect(assigns(:presenter)).to be_present
+          expect(assigns(:code)).to be_present
+        end
       end
     end
   end

@@ -13,7 +13,7 @@ describe('post', () => {
     post('/foo/bar', 'body');
 
     expect(window.fetch).to.have.been.calledWith(
-      '/foo/bar',
+      'http://example.test/foo/bar?locale=en',
       sandbox.match({ method: 'POST', body: 'body' }),
     );
   });
@@ -33,7 +33,7 @@ describe('post', () => {
       post('/foo/bar', { foo: 'bar' }, { json: true });
 
       expect(window.fetch).to.have.been.calledWith(
-        '/foo/bar',
+        'http://example.test/foo/bar?locale=en',
         sandbox.match({
           method: 'POST',
           body: '{"foo":"bar"}',
@@ -63,7 +63,7 @@ describe('post', () => {
       post('/foo/bar', 'body', { csrf: true });
 
       expect(window.fetch).to.have.been.calledWith(
-        '/foo/bar',
+        'http://example.test/foo/bar?locale=en',
         sandbox.match({
           method: 'POST',
           body: 'body',

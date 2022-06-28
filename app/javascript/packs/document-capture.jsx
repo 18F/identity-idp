@@ -19,21 +19,9 @@ import { trackEvent } from '@18f/identity-analytics';
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
 
 /**
- * @typedef NewRelicAgent
- *
- * @prop {(error:Error)=>void} noticeError Log an error without affecting application behavior.
- */
-
-/**
  * @typedef LoginGov
  *
  * @prop {Record<string,string>} assets
- */
-
-/**
- * @typedef NewRelicGlobals
- *
- * @prop {NewRelicAgent=} newrelic New Relic agent.
  */
 
 /**
@@ -43,7 +31,7 @@ import { trackEvent } from '@18f/identity-analytics';
  */
 
 /**
- * @typedef {typeof window & NewRelicGlobals & LoginGovGlobals} DocumentCaptureGlobal
+ * @typedef {typeof window & LoginGovGlobals} DocumentCaptureGlobal
  */
 
 /**
@@ -109,10 +97,6 @@ function addPageAction(event, payload) {
   return trackEvent(event, { ...payload, flow_path: flowPath });
 }
 
-/** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */
-const noticeError = (error) =>
-  /** @type {DocumentCaptureGlobal} */ (window).newrelic?.noticeError(error);
-
 (async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
@@ -152,14 +136,14 @@ const noticeError = (error) =>
     flowPath,
     startOverUrl: startOverURL,
     cancelUrl: cancelURL,
-    idvInPersonUrl: idvInPersonURL,
+    idvInPersonUrl: inPersonURL = null,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL, idvInPersonURL } }],
+    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
     [DeviceContext.Provider, { value: device }],
-    [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
+    [AnalyticsContext.Provider, { value: { addPageAction } }],
     [
       AcuantContextProvider,
       {
@@ -191,6 +175,7 @@ const noticeError = (error) =>
         value: {
           startOverURL,
           cancelURL,
+          inPersonURL,
           currentStep: 'document_capture',
         },
       },

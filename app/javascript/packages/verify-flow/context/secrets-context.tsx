@@ -3,7 +3,9 @@ import type { ReactNode, Dispatch } from 'react';
 import SecretSessionStorage from '@18f/identity-secret-session-storage';
 import type { VerifyFlowValues } from '../verify-flow';
 
-export type SecretValues = Pick<VerifyFlowValues, 'userBundleToken' | 'personalKey'>;
+type SecretKeys = 'userBundleToken' | 'personalKey' | 'completionURL';
+
+export type SecretValues = Pick<VerifyFlowValues, SecretKeys>;
 
 type SetItems = typeof SecretSessionStorage.prototype.setItems;
 
@@ -22,7 +24,7 @@ interface SecretsContextProviderProps {
 /**
  * Minimal set of flow values to be synced to secret session storage.
  */
-const SYNCED_SECRET_VALUES = ['userBundleToken', 'personalKey'];
+const SYNCED_SECRET_VALUES: SecretKeys[] = ['userBundleToken', 'personalKey', 'completionURL'];
 
 const SecretsContext = createContext({
   storage: new SecretSessionStorage<SecretValues>(''),
