@@ -8,7 +8,6 @@ class FrontendLogController < ApplicationController
   EVENT_MAP = {
     'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_review_info_visited,
-    'IdV: password confirm submitted' => :idv_review_complete,
     'IdV: password confirm submitted' => proc do |analytics|
       analytics.idv_review_complete
       analytics.idv_final(success: true)

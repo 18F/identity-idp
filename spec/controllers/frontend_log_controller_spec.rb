@@ -45,7 +45,7 @@ describe FrontendLogController do
         it 'succeeds' do
           action
 
-          expect(fake_analytics).to have_logged_event('IdV: password confirm submitted')
+          expect(fake_analytics).to have_logged_event('IdV: review complete')
           expect(fake_analytics).to have_logged_event('IdV: final resolution', success: true)
           expect(response).to have_http_status(:ok)
           expect(json[:success]).to eq(true)
