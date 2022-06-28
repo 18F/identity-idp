@@ -6,9 +6,9 @@ describe('i18n-dropdown', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div class="i18n-dropdown">
-        <a href="/" lang="en">English</a>
-        <a href="/" lang="fr">Français</a>
-        <a href="/" lang="es">Español</a>
+        <a href="/wrong" lang="en">English</a>
+        <a href="/wrong" lang="fr">Français</a>
+        <a href="/wrong" lang="es">Español</a>
       </div>
     `;
 
@@ -20,7 +20,13 @@ describe('i18n-dropdown', () => {
   });
 
   context('with default language', () => {
-    it('updates links', () => {
+    it('updates links on initialization', () => {
+      expect(document.querySelector('a[lang="en"]').pathname).to.equal('/');
+      expect(document.querySelector('a[lang="es"]').pathname).to.equal('/es/');
+      expect(document.querySelector('a[lang="fr"]').pathname).to.equal('/fr/');
+    });
+
+    it('updates links on url change', () => {
       window.history.replaceState(null, '', '/foo');
       window.dispatchEvent(new window.CustomEvent('lg:url-change'));
 
@@ -35,7 +41,13 @@ describe('i18n-dropdown', () => {
       document.documentElement.lang = 'fr';
     });
 
-    it('updates links', () => {
+    it('updates links on initialization', () => {
+      expect(document.querySelector('a[lang="en"]').pathname).to.equal('/');
+      expect(document.querySelector('a[lang="es"]').pathname).to.equal('/es/');
+      expect(document.querySelector('a[lang="fr"]').pathname).to.equal('/fr/');
+    });
+
+    it('updates links on url change', () => {
       window.history.replaceState(null, '', '/fr/bar');
       window.dispatchEvent(new window.CustomEvent('lg:url-change'));
 

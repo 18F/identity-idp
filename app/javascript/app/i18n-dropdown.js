@@ -53,6 +53,8 @@ export function setUp() {
     });
   }
 
+  syncLanguageLinkURLs();
+
   window.addEventListener('lg:url-change', syncLanguageLinkURLs);
   return () => {
     window.removeEventListener('lg:url-change', syncLanguageLinkURLs);
