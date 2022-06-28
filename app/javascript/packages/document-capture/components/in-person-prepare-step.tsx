@@ -17,7 +17,7 @@ import InPersonTroubleshootingOptions from './in-person-troubleshooting-options'
  */
 
 /**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonPrepareValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonPrepareStepValue>} props Props object.
  */
 function InPersonPrepareStep() {
   const { t } = useI18n();

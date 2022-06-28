@@ -9,11 +9,10 @@ import { useI18n } from '@18f/identity-react-i18n';
  */
 
 /**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonLocationValue>} props Props object.
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonLocationStepValue>} props Props object.
  */
-function InPersonLocationStep({ errors = [] }) {
+function InPersonLocationStep() {
   const { t } = useI18n();
-  const error = errors.find(({ field }) => field === 'in-person-location')?.error;
 
   return (
     <>
