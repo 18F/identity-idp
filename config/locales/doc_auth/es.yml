@@ -136,10 +136,8 @@ es:
       change_file: Cambiar archivo
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
         carpeta</lg-underline>
-      city: Ciudad
       doc_success: Hemos verificado su información personal
       selected_file: Archivo seleccionado
-      state: Estado
     headings:
       address: Actualice su dirección postal
       back: Parte Trasera
@@ -224,7 +222,6 @@ es:
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
-      verifying: Verificando…
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
     instructions:

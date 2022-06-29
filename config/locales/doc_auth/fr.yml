@@ -235,7 +235,6 @@ fr:
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
-      verifying: Vérification…
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
     instructions:

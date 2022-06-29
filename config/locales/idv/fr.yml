@@ -164,6 +164,7 @@ fr:
         read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
           informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
+      verifying: Vérification…
           crypte vos données pour vous assurer que personne ne peut y accéder.
     review:
       dob: Date de naissance
