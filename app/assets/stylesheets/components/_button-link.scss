@@ -1,19 +1,16 @@
 .button-link {
-    @extend .usa-button--unstyled;
-    @extend .block-link;
-    @extend .usa-link;
+  &#{&} {
+    cursor: pointer;
+    display: block;
+    line-height: 1.5;
+  }
 
-    &#{&} {
-        cursor: pointer;
-        display: block;
-        line-height: 1.5;
-    }
+  &#{&}:hover,
+  &#{&}:active {
+    text-decoration: none;
+  }
 
-    &#{&}:hover, &#{&}:active {
-        text-decoration: none;
-    }
-
-    &#{&}:focus {
-        outline: none;
-    }
+  &#{&}:focus {
+    outline: none;
+  }
 }

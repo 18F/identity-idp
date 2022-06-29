@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import BlockLinkArrow from './block-link-arrow';
 
-interface BlockSubmitButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+interface BlockSubmitButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   /**
    * Link text.
    */
@@ -14,7 +14,16 @@ interface BlockSubmitButtonProps extends React.ComponentPropsWithoutRef<"button"
 }
 
 function BlockSubmitButton({ children, className, ...linkProps }: BlockSubmitButtonProps) {
-  const classes = ['button-link', 'width-full', className].filter(Boolean).join(' ');
+  const classes = [
+    'button-link',
+    'usa-button--unstyled',
+    'usa-link',
+    'block-link',
+    'width-full',
+    className,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button type="submit" {...linkProps} className={classes}>
