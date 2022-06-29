@@ -1599,8 +1599,8 @@ module AnalyticsEvents
 
   # Rate limit triggered
   # @param [String] type
-  def rate_limit_triggered(type:)
-    track_event('Rate Limit Triggered', type: type)
+  def rate_limit_triggered(type:, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra)
   end
 
   # User authenticated by a remembered device
