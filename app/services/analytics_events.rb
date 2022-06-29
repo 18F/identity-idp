@@ -1295,7 +1295,7 @@ module AnalyticsEvents
 
   def non_restricted_mfa_required_prompt_skipped
     track_event('Non-Restricted MFA Required Prompt skipped')
-  end 
+  end
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
