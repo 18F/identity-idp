@@ -4,12 +4,13 @@ class MfaConfirmationController < ApplicationController
 
   def show
     @content = MfaConfirmationPresenter.new(current_user)
-    analytics.user_registration_2fa_additional_setup(**result.to_h)
+    analytics.user_registration_suggest_another_mfa_notice_visited
   end
 
   def skip
     user_session.delete(:mfa_selections)
     user_session.delete(:next_mfa_selection_choice)
+    analytics.user_registration_suggest_another_mfa_notice_skipped
     redirect_to after_mfa_setup_path
   end
 
