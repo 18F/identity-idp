@@ -99,7 +99,10 @@ describe Api::Verify::DocumentCaptureController do
           document_capture_session_uuid: document_capture_session_uuid,
           flow_path: flow_path,
         }
-        expect(JSON.parse(response.body)['status']).to eq('in_progress')
+        expect(JSON.parse(response.body, symbolize_names: true)).to eq(
+          success: true,
+          status: 'in_progress',
+        )
         expect(response.status).to eq 202
       end
 

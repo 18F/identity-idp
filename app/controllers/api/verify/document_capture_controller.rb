@@ -15,9 +15,7 @@ module Api
         if result.success?
           enqueue_job
 
-          render json: {
-            status: 'in_progress',
-          }, status: :accepted
+          render json: { success: true, status: 'in_progress' }, status: :accepted
         else
           render_errors(result.errors)
         end
