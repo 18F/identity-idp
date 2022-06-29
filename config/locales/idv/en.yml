@@ -89,7 +89,7 @@ en:
       ssn: Social Security number
       ssn_label_html: Social Security number
       state: State
-      zip_code: ZIP Code
+      zipcode: ZIP Code
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current

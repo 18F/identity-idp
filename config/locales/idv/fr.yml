@@ -99,7 +99,7 @@ fr:
       ssn: Numéro de sécurité sociale
       ssn_label_html: Numéro de sécurité sociale
       state: État
-      zip_code: Code ZIP
+      zipcode: Code ZIP
     index:
       id:
         need_html: Si vous créez un compte, vous aurez besoin d’un <strong>identifiant
