@@ -909,6 +909,11 @@ module AnalyticsEvents
     )
   end
 
+  # The system encountered an error and the proofing results are missing
+  def idv_proofing_resolution_result_missing
+    track_event('Proofing Resolution Result Missing')
+  end
+
   # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
@@ -1590,6 +1595,12 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # Rate limit triggered
+  # @param [String] type
+  def rate_limit_triggered(type:, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra)
   end
 
   # User authenticated by a remembered device
