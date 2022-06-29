@@ -7,7 +7,13 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:sp_session) { {} }
   let(:session) { { 'idv/doc_auth' => {}, sp: sp_session } }
   let(:controller) do
-    instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
+    instance_double(
+      Idv::DocAuthController,
+      url_options: {},
+      session: session,
+      analytics: analytics,
+      params: ActionController::Parameters.new,
+    )
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
@@ -131,14 +137,14 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     end
 
     it 'calls analytics if missing from no result in document capture session' do
-      verify_document_capture_session = DocumentCaptureSession.new(
+      verify_document_capture_session = DocumentCaptureSession.create(
         uuid: 'uuid',
         result_id: 'result_id',
         user: create(:user),
       )
 
-      expect(subject).to receive(:verify_document_capture_session).
-        and_return(verify_document_capture_session).at_least(:once)
+      expect(subject).to receive(:document_capture_session_uuid).
+        and_return(verify_document_capture_session.uuid).at_least(:once)
       subject.call
 
       expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
