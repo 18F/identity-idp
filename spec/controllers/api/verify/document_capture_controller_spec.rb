@@ -37,7 +37,6 @@ describe Api::Verify::DocumentCaptureController do
   }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['document_capture'])
     stub_sign_in(user) if user
   end
 
