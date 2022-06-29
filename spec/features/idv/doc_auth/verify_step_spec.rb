@@ -232,7 +232,7 @@ feature 'doc auth verify step', :js do
         and_return(nil)
 
       click_idv_continue
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_RESULT_MISSING, {})
+      expect(fake_analytics).to have_logged_event('Proofing Resolution Result Missing', {})
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
