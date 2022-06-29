@@ -14,7 +14,7 @@ class EventsController < ApplicationController
       sp_name: decorated_session.sp_name,
       decorated_user: current_user.decorate,
       locked_for_session: pii_locked_for_session?(current_user),
-      account_reset_requested: current_user&.account_reset_request,
+      account_reset_requested: current_user&.account_reset_request.present?,
     )
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
