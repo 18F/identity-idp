@@ -38,5 +38,6 @@ es:
       barcode: Estás listo para verificar tu identidad en persona
       location: Seleccione una ubicación para verificar su identificación
       state_id: Introduce los datos de su documento de identidad
-      verify: Por favor verifique su información
+      update_address: Actualiza tu dirección actual
+      update_state_id: Actualiza la información de tu DNI
       welcome: Verifica tu identidad en persona

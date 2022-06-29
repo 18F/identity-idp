@@ -8,10 +8,10 @@ es:
       selfie_alt_text: Una foto subida
     buttons:
       add_new_photos: Añadir nuevas fotos
-      change_address: Cambio
       change_address_label: Cambiar dirección
-      change_ssn: Cambio
+      change_label: Cambio
       change_ssn_label: Cambiar número de Seguridad Social
+      change_state_id_label: Cambiar ID de estado
       continue: Continuar
       start_over: Comenzar de nuevo
       take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
@@ -145,6 +145,7 @@ es:
       dob: Fecha de nacimiento
       doc_success: Hemos verificado su información personal
       first_name: Nombre de pila
+      id_number: Número de identificación
       last_name: Apellido
       selected_file: Archivo seleccionado
       ssn: Número de seguridad social

@@ -10,7 +10,7 @@ module Idv
 
         def extra_view_variables
           {
-            applicant_ssn: flow_session[:pii_from_user][:ssn],
+            updating_ssn: flow_session[:pii_from_user][:ssn].present?,
           }
         end
 

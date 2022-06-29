@@ -39,5 +39,6 @@ fr:
       barcode: Vous êtes prêt à vérifier votre identité en personne
       location: Sélectionnez un emplacement pour vérifier votre identité
       state_id: Entrez les informations sur votre pièce d’identité
-      verify: Veuillez vérifier vos informations
+      update_address: Mettre à jour votre adresse actuelle
+      update_state_id: Mettre à jour les informations sur votre id
       welcome: Vérifiez votre identité en personne

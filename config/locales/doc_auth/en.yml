@@ -8,10 +8,10 @@ en:
       selfie_alt_text: An uploaded image
     buttons:
       add_new_photos: Add new photos
-      change_address: Change
       change_address_label: Change address
-      change_ssn: Change
+      change_label: Change
       change_ssn_label: Change Social Security Number
+      change_state_id_label: Change state ID
       continue: Continue
       start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
@@ -118,6 +118,7 @@ en:
       dob: Date of Birth
       doc_success: We have verified your personal information
       first_name: First Name
+      id_number: ID Number
       last_name: Last Name
       selected_file: Selected file
       ssn: Social Security Number
