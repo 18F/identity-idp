@@ -29,7 +29,6 @@ module Api
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
 
-        document_attributes = verify_params.to_h
         applicant = {
           user_uuid: effective_user.uuid,
           uuid_prefix: current_sp&.app_id,
@@ -46,6 +45,18 @@ module Api
           flow_path: params[:flow_path],
         )
         nil
+      end
+
+      def document_attributes
+        verify_params.slice(
+          :encryption_key,
+          :front_image_iv,
+          :back_image_iv,
+          :selfie_image_iv,
+          :front_image_url,
+          :back_image_url,
+          :selfie_image_url,
+        ).to_h
       end
 
       def verify_params
