@@ -25,6 +25,11 @@ export interface FlowContextValue {
    * The path to which the current step is appended to create the current step URL.
    */
   basePath: string;
+
+  /**
+   * Handle flow completion with a given destination URL.
+   */
+  onComplete({ completionURL: string }): void;
 }
 
 const FlowContext = createContext<FlowContextValue>({
@@ -33,6 +38,7 @@ const FlowContext = createContext<FlowContextValue>({
   inPersonURL: null,
   currentStep: '',
   basePath: '',
+  onComplete() {},
 });
 
 FlowContext.displayName = 'FlowContext';

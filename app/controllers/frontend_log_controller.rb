@@ -7,21 +7,28 @@ class FrontendLogController < ApplicationController
 
   EVENT_MAP = {
     'IdV: forgot password visited' => :idv_forgot_password,
-    'IdV: password confirm visited' => :idv_password_confirm_visited,
-    'IdV: password confirm submitted' => :idv_password_confirm_submitted,
+    'IdV: password confirm visited' => :idv_review_info_visited,
+    'IdV: password confirm submitted' => proc do |analytics|
+      analytics.idv_review_complete
+      analytics.idv_final(success: true)
+    end,
     'IdV: personal key visited' => :idv_personal_key_visited,
     'IdV: personal key submitted' => :idv_personal_key_submitted,
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
-  }.transform_values { |method| AnalyticsEvents.instance_method(method) }.freeze
+  }.transform_values do |method|
+    method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)
+  end.freeze
 
   def create
     event = log_params[:event]
     payload = log_params[:payload].to_h
     if (analytics_method = EVENT_MAP[event])
-      if analytics_method.parameters.empty?
+      if analytics_method.is_a?(Proc)
+        analytics_method.call(analytics, **payload)
+      elsif analytics_method.parameters.empty?
         analytics_method.bind_call(analytics)
       else
         analytics_method.bind_call(analytics, **payload)

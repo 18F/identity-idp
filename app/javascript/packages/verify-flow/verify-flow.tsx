@@ -127,7 +127,14 @@ function VerifyFlow({
   const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
   const [currentStep, setCurrentStep] = useState(steps[0].name);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
-  const context = useObjectMemo({ startOverURL, cancelURL, inPersonURL, currentStep, basePath });
+  const context = useObjectMemo({
+    startOverURL,
+    cancelURL,
+    inPersonURL,
+    currentStep,
+    basePath,
+    onComplete,
+  });
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);

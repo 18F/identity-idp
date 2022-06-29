@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import {
   VerifyFlow,
   SecretsContextProvider,
@@ -52,33 +52,34 @@ interface AppRootElement extends HTMLElement {
   dataset: DOMStringMap & AppRootValues;
 }
 
-const appRoot = document.getElementById('app-root') as AppRootElement;
-const {
-  initialValues: initialValuesJSON,
-  enabledStepNames: enabledStepNamesJSON,
-  basePath,
-  startOverUrl: startOverURL,
-  cancelUrl: cancelURL,
-  inPersonUrl: inPersonURL,
-  storeKey: storeKeyBase64,
-} = appRoot.dataset;
-const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
-const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
-
 const camelCase = (string: string) =>
   string.replace(/[^a-z]([a-z])/gi, (_match, nextLetter) => nextLetter.toUpperCase());
 
 const mapKeys = (object: object, mapKey: (key: string) => string) =>
   Object.entries(object).map(([key, value]) => [mapKey(key), value]);
 
-const storage = new SecretSessionStorage<SecretValues>('verify');
+export async function initialize() {
+  const storage = new SecretSessionStorage<SecretValues>('verify');
+  const appRoot = document.getElementById('app-root') as AppRootElement;
+  const {
+    initialValues: initialValuesJSON,
+    enabledStepNames: enabledStepNamesJSON,
+    basePath,
+    startOverUrl: startOverURL,
+    cancelUrl: cancelURL,
+    inPersonUrl: inPersonURL,
+    storeKey: storeKeyBase64,
+  } = appRoot.dataset;
+  const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
+  const enabledStepNames = JSON.parse(enabledStepNamesJSON) as string[];
 
-(async () => {
+  const tearDown = () => unmountComponentAtNode(appRoot);
+
   let cryptoKey: CryptoKey;
   let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
   try {
     const storeKey = s2ab(atob(storeKeyBase64));
-    cryptoKey = await crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
+    cryptoKey = await window.crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
       'encrypt',
       'decrypt',
     ]);
@@ -99,7 +100,7 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
       </FlowContext.Provider>,
       appRoot,
     );
-    return;
+    return tearDown;
   }
 
   function onComplete({ completionURL }: VerifyFlowValues) {
@@ -108,6 +109,8 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
       window.location.href = completionURL;
     }
   }
+
+  window.addEventListener('lg:session-timeout', () => storage.clear());
 
   render(
     <SecretsContextProvider storage={storage}>
@@ -124,4 +127,10 @@ const storage = new SecretSessionStorage<SecretValues>('verify');
     </SecretsContextProvider>,
     appRoot,
   );
-})();
+
+  return tearDown;
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  initialize();
+}
