@@ -4,6 +4,7 @@ class MfaConfirmationController < ApplicationController
 
   def show
     @content = MfaConfirmationPresenter.new(current_user)
+    analytics.user_registration_2fa_additional_setup(**result.to_h)
   end
 
   def skip

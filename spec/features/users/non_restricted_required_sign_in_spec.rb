@@ -45,7 +45,7 @@ feature 'Existing USer Non Restricted Method Required' do
         expect(page).to have_content(t('mfa.additional_mfa_required.non_restricted_required_info'))
 
         click_on(t('mfa.additional_mfa_required.button'))
-        expect(page).to have_current_path(second_mfa_setup_non_restricted_path)
+        expect(page).to have_current_path(second_mfa_setup_path)
       end
 
       scenario 'user has already skipped, cant find skip link' do
@@ -63,7 +63,7 @@ feature 'Existing USer Non Restricted Method Required' do
         expect(page).not_to have_content(t('mfa.skip'))
 
         click_on(t('mfa.additional_mfa_required.button'))
-        expect(page).to have_current_path(second_mfa_setup_non_restricted_path)
+        expect(page).to have_current_path(second_mfa_setup_path)
       end
     end
 
@@ -111,7 +111,7 @@ feature 'Existing USer Non Restricted Method Required' do
         )
 
         click_on(t('mfa.additional_mfa_required.button'))
-        expect(page).to have_current_path(second_mfa_setup_non_restricted_path)
+        expect(page).to have_current_path(second_mfa_setup_path)
       end
     end
   end

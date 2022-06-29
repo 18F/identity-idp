@@ -4,6 +4,7 @@ module Users
 
     def show
       @content = AdditionalMfaRequiredPresenter.new(current_user: current_user)
+      # analytics.user_registration_2fa_additional_setup(**result.to_h)
     end
 
     def skip

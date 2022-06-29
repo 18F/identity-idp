@@ -223,13 +223,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def after_otp_verification_confirmation_url
     return @next_mfa_setup_path if @next_mfa_setup_path
     return account_url if @updating_existing_number
-    return login_additional_mfa_required_url if two_factor_kantara_existing_user_required?
     after_sign_in_path_for(current_user)
-  end
-
-  def two_factor_kantara_existing_user_required?
-    IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
-      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
 
   def mark_user_session_authenticated(authentication_type)
