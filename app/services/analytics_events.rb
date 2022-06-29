@@ -1842,11 +1842,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user visits Additional Mfa Setup Page
-  def user_registration_2fa_additional_setup_visit
-    track_event('User Registration: Additional 2FA Setup visited')
-  end
-
   # Tracks when user visits Suggest Another MFa Page
   def user_registration_suggest_another_mfa_notice_visited
     track_event('User Registration: Suggest Another MFa Notice visited')
