@@ -909,7 +909,7 @@ module AnalyticsEvents
     )
   end
 
-  # The system encountered an error and the proofing results is missing
+  # The system encountered an error and the proofing results are missing
   def idv_proofing_resolution_result_missing
     track_event('Proofing Resolution Result Missing')
   end
