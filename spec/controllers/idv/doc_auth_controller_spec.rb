@@ -238,13 +238,13 @@ describe Idv::DocAuthController do
 
     it 'returns status of success' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: good_result,
       )
       put :update,
           params: {
             step: 'verify_document_status',
-            document_capture_session_uuid: verify_document_action_session_uuid,
+            document_capture_session_uuid: document_capture_session_uuid,
           }
 
       expect(response.status).to eq(200)
@@ -253,13 +253,13 @@ describe Idv::DocAuthController do
 
     it 'returns status of in progress' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: nil,
       )
       put :update,
           params: {
             step: 'verify_document_status',
-            document_capture_session_uuid: verify_document_action_session_uuid,
+            document_capture_session_uuid: document_capture_session_uuid,
           }
 
       expect(response.status).to eq(202)
@@ -268,13 +268,13 @@ describe Idv::DocAuthController do
 
     it 'returns status of fail' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: fail_result,
       )
       put :update,
           params: {
             step: 'verify_document_status',
-            document_capture_session_uuid: verify_document_action_session_uuid,
+            document_capture_session_uuid: document_capture_session_uuid,
           }
 
       expect(response.status).to eq(400)
@@ -290,13 +290,13 @@ describe Idv::DocAuthController do
 
     it 'returns status of fail with incomplete PII from doc auth' do
       set_up_document_capture_result(
-        uuid: verify_document_action_session_uuid,
+        uuid: document_capture_session_uuid,
         idv_result: bad_pii_result,
       )
       put :update,
           params: {
             step: 'verify_document_status',
-            document_capture_session_uuid: verify_document_action_session_uuid,
+            document_capture_session_uuid: document_capture_session_uuid,
           }
 
       expect(response.status).to eq(400)
@@ -330,20 +330,18 @@ describe Idv::DocAuthController do
   end
 
   let(:user) { create(:user, :signed_up) }
-  let(:verify_document_action_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
+  let(:document_capture_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
 
   def mock_document_capture_step
     stub_sign_in(user)
-    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
-        'document_capture_session_uuid' => 'foo',
+        'document_capture_session_uuid' => document_capture_session_uuid,
         'Idv::Steps::WelcomeStep' => true,
         'Idv::Steps::SendLinkStep' => true,
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
-        verify_document_action_document_capture_session_uuid: verify_document_action_session_uuid,
       )
   end
 end
