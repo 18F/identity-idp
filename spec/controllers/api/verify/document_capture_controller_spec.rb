@@ -100,7 +100,7 @@ describe Api::Verify::DocumentCaptureController do
           flow_path: flow_path,
         }
         expect(JSON.parse(response.body)['status']).to eq('in_progress')
-        expect(response.status).to eq 200
+        expect(response.status).to eq 202
       end
 
       context 'When the request does not have all the parameters' do
