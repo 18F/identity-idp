@@ -17,7 +17,7 @@ feature 'doc auth verify step', :js do
 
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
-    expect(page).to have_content(t('doc_auth.headings.verify'))
+    expect(page).to have_content(t('headings.verify'))
     expect(page).to have_css(
       '.step-indicator__step--current',
       text: t('step_indicator.flows.idv.verify_info'),
@@ -52,7 +52,7 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to address page prepopulated with defaults if the user clicks change address' do
-    click_button t('doc_auth.buttons.change_address_label')
+    click_button t('idv.buttons.change_address_label')
 
     expect(page).to have_current_path(idv_address_path)
     expect(page).to have_selector("input[value='1 FAKE RD']")
@@ -63,7 +63,7 @@ feature 'doc auth verify step', :js do
   it 'tracks when the user edits their address' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
 
-    click_button t('doc_auth.buttons.change_address_label')
+    click_button t('idv.buttons.change_address_label')
     fill_out_address_form_ok
     click_idv_continue # address form
 
@@ -76,7 +76,7 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do
-    click_button t('doc_auth.buttons.change_ssn_label')
+    click_button t('idv.buttons.change_ssn_label')
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))

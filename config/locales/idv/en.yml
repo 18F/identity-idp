@@ -5,6 +5,10 @@ en:
       masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
       cancel: Cancel and return to your profile
+      change_address_label: Change address
+      change_label: Update
+      change_ssn_label: Change Social Security number
+      change_state_id_label: Change state ID
       continue_plain: Continue
       mail:
         resend: Send another letter
@@ -77,10 +81,15 @@ en:
       address1: Address
       address2: Address (optional)
       city: City
+      dob: Date of birth
+      first_name: First name
+      id_number: ID number
+      last_name: Last name
       password: Password
+      ssn: Social Security number
       ssn_label_html: Social Security number
       state: State
-      zipcode: ZIP Code
+      zip_code: ZIP Code
     index:
       id:
         need_html: If you’re creating an account, you’ll need a <strong>current
@@ -137,6 +146,7 @@ en:
         read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
+      verifying: Verifying…
     review:
       dob: Date of birth
       full_name: Full name

@@ -20,7 +20,6 @@ en:
       take_photo: Take photos of your ID with a phone
       upload: Verify your ID
       verify: Verify your identity
-      verify_info: Verify your information
     edit_info:
       email_language: Edit email language preference
       password: Edit your password
@@ -40,6 +39,7 @@ en:
       phone: Verify your phone number
       reset_password: Reset Password
       review: Re-enter your password
+      verify_info: Verify your information
     mfa_setup:
       suggest_second_mfa: You’ve added your first authentication method! Add a second
         method as a backup.

@@ -67,6 +67,7 @@ fr:
     sp_handoff_bounced: Un problème est survenu lors de la connexion à %{sp_name}
     totp_setup:
       new: Ajouter une application d’authentification
+    verify: Vérifier votre information
     verify_email: Consultez vos courriels
     verify_personal_key: Vérifier votre clé personnelle
     webauthn_platform_setup:

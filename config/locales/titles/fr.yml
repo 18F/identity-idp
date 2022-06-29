@@ -20,7 +20,6 @@ fr:
       take_photo: Prenez des photos de votre pièce d’identité avec un téléphone
       upload: Vérifiez votre pièce d’identité
       verify: Vérifiez votre identité
-      verify_info: Vérifiez vos informations
     edit_info:
       email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
@@ -40,6 +39,7 @@ fr:
       phone: Vérifiez votre numéro de téléphone
       reset_password: Réinitialisez le mot de passe
       review: Saisissez à nouveau votre mot de passe
+      verify_info: Vérifiez vos informations
     mfa_setup:
       suggest_second_mfa: Vous avez ajouté votre première méthode d’authentification !
         Ajoutez-en une deuxième  en guise de sauvegarde.
