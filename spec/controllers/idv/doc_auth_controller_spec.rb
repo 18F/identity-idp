@@ -176,7 +176,6 @@ describe Idv::DocAuthController do
     end
   end
 
-
   describe 'async document verify status' do
     before do
       mock_document_capture_step
@@ -242,7 +241,11 @@ describe Idv::DocAuthController do
         uuid: verify_document_action_session_uuid,
         idv_result: good_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: verify_document_action_session_uuid,
+          }
 
       expect(response.status).to eq(200)
       expect(response.body).to eq({ success: true }.to_json)
@@ -253,7 +256,11 @@ describe Idv::DocAuthController do
         uuid: verify_document_action_session_uuid,
         idv_result: nil,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: verify_document_action_session_uuid,
+          }
 
       expect(response.status).to eq(202)
       expect(response.body).to eq({ success: true }.to_json)
@@ -264,7 +271,11 @@ describe Idv::DocAuthController do
         uuid: verify_document_action_session_uuid,
         idv_result: fail_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: verify_document_action_session_uuid,
+          }
 
       expect(response.status).to eq(400)
       expect(response.body).to eq(
@@ -282,7 +293,11 @@ describe Idv::DocAuthController do
         uuid: verify_document_action_session_uuid,
         idv_result: bad_pii_result,
       )
-      put :update, params: { step: 'verify_document_status' }
+      put :update,
+          params: {
+            step: 'verify_document_status',
+            document_capture_session_uuid: verify_document_action_session_uuid,
+          }
 
       expect(response.status).to eq(400)
       expect(response.body).to eq(
