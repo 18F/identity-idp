@@ -1,17 +1,20 @@
 import {
   Alert,
+  Button,
   IconList,
   IconListItem,
   PageHeading,
   ProcessList,
   ProcessListItem,
 } from '@18f/identity-components';
-import { FormStepsButton } from '@18f/identity-form-steps';
+import { useContext } from 'react';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
 function InPersonPrepareStep() {
   const { t } = useI18n();
+  const { inPersonURL } = useContext(FlowContext);
 
   return (
     <>
@@ -70,7 +73,13 @@ function InPersonPrepareStep() {
           </ul>
         </IconListItem>
       </IconList>
-      <FormStepsButton.Continue />
+      {inPersonURL && (
+        <div className="margin-y-5">
+          <Button href={inPersonURL} isBig isWide tabIndex={0}>
+            {t('forms.buttons.continue')}
+          </Button>
+        </div>
+      )}
       <InPersonTroubleshootingOptions />
     </>
   );
