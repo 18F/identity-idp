@@ -45,7 +45,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+          with('User marked authenticated', authentication_type: :valid_2fa)
 
         post :create, params: { code: generate_totp_code(@secret) }
       end

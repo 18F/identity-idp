@@ -233,8 +233,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   end
 
   def mark_user_session_authenticated_analytics(authentication_type)
-    analytics.track_event(
-      Analytics::USER_MARKED_AUTHED,
+    analytics.user_marked_authed(
       authentication_type: authentication_type,
     )
   end

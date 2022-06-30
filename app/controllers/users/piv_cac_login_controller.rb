@@ -106,8 +106,7 @@ module Users
     def mark_user_session_authenticated(authentication_type)
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-      analytics.track_event(
-        Analytics::USER_MARKED_AUTHED,
+      analytics.user_marked_authed(
         authentication_type: authentication_type,
       )
     end
