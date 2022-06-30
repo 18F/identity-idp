@@ -18,7 +18,7 @@ describe 'requesting acuant SDK assets' do
     end
 
     it 'does not include a session' do
-      expect(response.cookies.keys).to_not include('_upaya_session')
+      expect(response.cookies.keys).to_not include('_identity_idp_session')
     end
   end
 
@@ -32,7 +32,7 @@ describe 'requesting acuant SDK assets' do
     end
 
     it 'does not include a session' do
-      expect(response.cookies.keys).to_not include('_upaya_session')
+      expect(response.cookies.keys).to_not include('_identity_idp_session')
     end
   end
 
