@@ -50,9 +50,10 @@ fr:
       webauthn: Clé de sécurité
       webauthn_info: Utilisez votre clé de sécurité pour accéder à votre compte.
       webauthn_platform: Déverrouillage facial ou tactile
-      webauthn_platform_info: Utilisez votre appareil pour vérifier votre identité.
-        Nous ne stockons ni vos empreintes digitales ni vos images. Recommandé
-        car il permet d’éviter l’hameçonnage.
+      webauthn_platform_info: Votre appareil numérise votre visage ou votre empreinte
+        digitale et confirme que les informations correspondent aux images que
+        vous avez déjà stockées sur votre appareil. Nous ne copions ni ne
+        stockons ces images.
     login_options_link_text: Choisissez une autre option de sécurité
     login_options_title: Sélectionnez votre option de sécurité
     max_backup_code_login_attempts_reached: Pour votre sécurité, votre compte est
@@ -168,9 +169,10 @@ fr:
       webauthn_info: Un appareil physique, souvent en forme de clé USB, que vous
         branchez sur votre appareil.
       webauthn_platform: Déverrouillage facial ou tactile
-      webauthn_platform_info: Utilisez votre appareil pour vérifier votre identité.
-        Nous ne stockons ni vos empreintes digitales ni vos images. Recommandé
-        car il permet d’éviter l’hameçonnage.
+      webauthn_platform_info: Votre appareil numérise votre visage ou votre empreinte
+        digitale et confirme que les informations correspondent aux images que
+        vous avez déjà stockées sur votre appareil. Nous ne copions ni ne
+        stockons ces images.
     two_factor_hspd12_choice: Authentification supplémentaire requise
     two_factor_hspd12_choice_intro: Cette application nécessite un haut niveau de
       sécurité. Vous devez vérifier votre identité à l’aide d’un appareil
