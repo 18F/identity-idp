@@ -59,7 +59,16 @@ module RuboCop
             return true if descendant.method?(:url_options)
           end
 
+          node.parent.each_descendant(:send) do |descendant|
+            return true if url_options_attr_method?(descendant)
+          end
+
           false
+        end
+
+        def url_options_attr_method?(descendant)
+          return false unless descendant.method_name.match?(/^attr_(reader|accessor)$/)
+          descendant.arguments.any? { |arg| arg.value == :url_options }
         end
       end
     end
