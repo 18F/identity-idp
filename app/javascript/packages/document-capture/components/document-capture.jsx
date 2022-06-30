@@ -98,14 +98,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     ? [
         {
           name: 'review',
-          form: withProps({
-            remainingAttempts:
-              submissionError instanceof UploadFormEntriesError
-                ? submissionError.remainingAttempts
-                : Infinity,
-            captureHints:
-              submissionError instanceof UploadFormEntriesError ? submissionError.hints : null,
-          })(ReviewIssuesStep),
+          form:
+            submissionError instanceof UploadFormEntriesError
+              ? withProps({
+                  remainingAttempts: submissionError.remainingAttempts,
+                  captureHints: submissionError.hints,
+                  pii: submissionError.pii,
+                })(ReviewIssuesStep)
+              : ReviewIssuesStep,
         },
       ]
     : /** @type {FormStep[]} */ (

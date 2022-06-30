@@ -20,7 +20,8 @@
     "app/components",
     "app/javascript/packages",
     "app/javascript/packs",
-    "spec/javascripts/spec_helper.d.ts"
+    "spec/javascripts/spec_helper.d.ts",
+    "spec/javascripts/**/*.ts"
   ],
   "exclude": [
     "**/fixtures",

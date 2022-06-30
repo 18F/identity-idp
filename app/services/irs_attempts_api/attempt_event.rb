@@ -1,6 +1,6 @@
 module IrsAttemptsApi
-  class EncryptedEventTokenBuilder
-    attr_reader :jti, :iat, :event_type, :session_id, :occurred_at, :event_metadata
+  class AttemptEvent
+    attr_accessor :jti, :iat, :event_type, :session_id, :occurred_at, :event_metadata
 
     def initialize(
       event_type:,
@@ -18,14 +18,28 @@ module IrsAttemptsApi
       @event_metadata = event_metadata
     end
 
-    def build_event_token
-      jwe = JWE.encrypt(
+    def to_jwe
+      JWE.encrypt(
         security_event_token_data.to_json,
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
       )
-      [jti, jwe]
+    end
+
+    def self.from_jwe(jwe, private_key)
+      decrypted_event = JWE.decrypt(jwe, private_key)
+      parsed_event = JSON.parse(decrypted_event)
+      event_type = parsed_event['events'].keys.first.split('/').last
+      event_data = parsed_event['events'].values.first
+      AttemptEvent.new(
+        jti: parsed_event['jti'],
+        iat: parsed_event['iat'],
+        event_type: event_type,
+        session_id: event_data['subject']['session_id'],
+        occurred_at: Time.zone.at(event_data['occurred_at']),
+        event_metadata: event_data.symbolize_keys.except(:subject, :occurred_at),
+      )
     end
 
     private
@@ -53,7 +67,8 @@ module IrsAttemptsApi
     end
 
     def long_event_type
-      "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{event_type.to_s.dasherize}"
+      dasherized_name = event_type.to_s.dasherize
+      "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{dasherized_name}"
     end
 
     def event_data_encryption_key

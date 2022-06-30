@@ -7,6 +7,7 @@ es:
       document_capture_dialog: Captura del documento
       selfie_alt_text: Una foto subida
     buttons:
+      add_new_photos: Añadir nuevas fotos
       change_address: Cambio
       change_address_label: Cambiar dirección
       change_ssn: Cambio
@@ -61,6 +62,10 @@ es:
           Intente tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
+      barcode_attention:
+        confirm_info: Si la información que aparece a continuación es incorrecta, por
+          favor, suba nuevas fotos de su ID emitido por el estado.
+        heading: No pudimos leer el código de barras en su ID.
       camera:
         blocked: Su cámara está bloqueada
         blocked_detail: No tenemos permiso para acceder a la cámara. Por favor,
@@ -149,6 +154,10 @@ es:
       address: Actualice su dirección postal
       back: Parte Trasera
       capture_complete: Hemos verificado su identificación expedida por el estado
+      capture_scan_warning_html: No pudimos leer el código de barras en su ID. Si la
+        información que aparece a continuación es incorrecta, por favor, %{link}
+        de su ID emitido por el estado.
+      capture_scan_warning_link: suba nuevas fotos
       capture_troubleshooting_tips: '¿Tiene problemas para agregar su identificación emitida por el estado?'
       document_capture: Añada su documento de identidad expedido por el estado
       document_capture_back: Parte trasera de su documento de identidad

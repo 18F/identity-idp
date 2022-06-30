@@ -41,7 +41,10 @@ module Idv
 
       # @param [ProofingSessionAsyncResult] async_result
       def async_state_done(async_result)
-        doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
+        doc_pii_form_result = Idv::DocPiiForm.new(
+          pii: async_result.pii,
+          attention_with_barcode: async_result.attention_with_barcode?,
+        ).submit
 
         @flow.analytics.idv_doc_auth_submitted_pii_validation(
           **doc_pii_form_result.to_h.merge(

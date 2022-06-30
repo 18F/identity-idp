@@ -12,7 +12,7 @@ module Users
 
     def index
       @new_phone_form = NewPhoneForm.new(current_user)
-      analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
+      track_phone_setup_visit
     end
 
     def create
@@ -28,6 +28,14 @@ module Users
     end
 
     private
+
+    def track_phone_setup_visit
+      mfa_user = MfaContext.new(current_user)
+      analytics.track_event(
+        Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT,
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+    end
 
     def set_setup_presenter
       @presenter = SetupPresenter.new(

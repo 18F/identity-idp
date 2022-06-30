@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
@@ -17,6 +18,11 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   location?: string;
 
   /**
+   * Whether to include tips for taking a good photo.
+   */
+  showDocumentTips?: boolean;
+
+  /**
    * If there are any errors (toggles whether or not to show in person proofing option)
    */
   hasErrors?: boolean;
@@ -25,10 +31,12 @@ interface DocumentCaptureTroubleshootingOptionsProps {
 function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
+  showDocumentTips = true,
   hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { getHelpCenterURL, idvInPersonURL } = useContext(HelpCenterContext);
+  const { inPersonURL } = useContext(FlowContext);
+  const { getHelpCenterURL } = useContext(HelpCenterContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
@@ -37,7 +45,7 @@ function DocumentCaptureTroubleshootingOptions({
         heading={heading}
         options={
           [
-            {
+            showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
                 article: 'how-to-add-images-of-your-state-issued-id',
@@ -46,7 +54,7 @@ function DocumentCaptureTroubleshootingOptions({
               text: t('idv.troubleshooting.options.doc_capture_tips'),
               isExternal: true,
             },
-            {
+            showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',
                 article: 'accepted-state-issued-identification',
@@ -63,13 +71,13 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
-      {hasErrors && idvInPersonURL && (
+      {hasErrors && inPersonURL && (
         <TroubleshootingOptions
           isNewFeatures
           heading={t('idv.troubleshooting.headings.are_you_near')}
           options={[
             {
-              url: idvInPersonURL,
+              url: inPersonURL,
               text: t('idv.troubleshooting.options.verify_in_person'),
             },
           ]}

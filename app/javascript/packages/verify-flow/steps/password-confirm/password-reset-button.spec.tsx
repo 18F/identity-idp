@@ -2,6 +2,8 @@ import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useSandbox } from '@18f/identity-test-helpers';
 import PasswordResetButton, { API_ENDPOINT } from './password-reset-button';
+import * as api from '../../services/api';
+import FlowContext, { FlowContextValue } from '../../context/flow-context';
 
 describe('PasswordResetButton', () => {
   const sandbox = useSandbox();
@@ -10,16 +12,28 @@ describe('PasswordResetButton', () => {
 
   before(() => {
     sandbox
-      .stub(window, 'fetch')
-      .withArgs(API_ENDPOINT)
-      .resolves({
-        status: 202,
-        json: () => Promise.resolve({ redirect_url: REDIRECT_URL }),
-      } as Response);
+      .stub(api, 'post')
+      .withArgs(API_ENDPOINT, sandbox.match.any)
+      .resolves({ redirect_url: REDIRECT_URL });
   });
 
   it('triggers password reset API call and redirects', (done) => {
-    const { getByRole } = render(<PasswordResetButton onNavigate={() => done()} />);
+    function onComplete({ completionURL }) {
+      let error;
+
+      try {
+        expect(completionURL).to.equal(REDIRECT_URL);
+      } catch (assertionError) {
+        error = assertionError;
+      }
+
+      done(error);
+    }
+    const { getByRole } = render(
+      <FlowContext.Provider value={{ onComplete } as FlowContextValue}>
+        <PasswordResetButton />
+      </FlowContext.Provider>,
+    );
 
     const button = getByRole('button');
     userEvent.click(button);

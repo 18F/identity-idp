@@ -211,6 +211,22 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
+  def mock_doc_auth_attention_with_barcode
+    attention_with_barcode_response = instance_double(
+      Faraday::Response,
+      status: 200,
+      body: LexisNexisFixtures.true_id_barcode_read_attention,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+        attention_with_barcode_response,
+        false,
+        DocAuth::LexisNexis::Config.new,
+      ),
+    )
+  end
+
   def mock_doc_auth_acuant_error_unknown
     failed_http_response = instance_double(
       Faraday::Response,

@@ -7,6 +7,7 @@ en:
       document_capture_dialog: Document capture
       selfie_alt_text: An uploaded image
     buttons:
+      add_new_photos: Add new photos
       change_address: Change
       change_address_label: Change address
       change_ssn: Change
@@ -50,6 +51,10 @@ en:
           took the picture, or the picture is too dark. Try taking new pictures
           in brighter lighting.
         visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
+      barcode_attention:
+        confirm_info: If the information below is incorrect, please upload new photos of
+          your state-issued ID.
+        heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
         blocked_detail: We don’t have permission to access the camera. Please check your
@@ -122,6 +127,9 @@ en:
       address: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
+      capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
+        information below is incorrect, please %{link} of your state-issued ID.
+      capture_scan_warning_link: upload new photos
       capture_troubleshooting_tips: Having trouble adding your state-issued ID?
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID

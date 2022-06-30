@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+export function setUp() {
   const mobileLink = document.querySelector('.i18n-mobile-toggle > button');
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');
   const desktopLink = document.querySelector('.i18n-desktop-toggle > button');
@@ -35,4 +35,35 @@ document.addEventListener('DOMContentLoaded', () => {
   if (mobileLink) {
     languagePicker(mobileLink, mobileDropdown);
   }
-});
+
+  /**
+   * Loops through all of the language links in the dropdown and updates their target url
+   * to reflect the correct route
+   */
+  function syncLanguageLinkURLs() {
+    const links = document.querySelectorAll('.i18n-dropdown a[lang]');
+    links.forEach((link) => {
+      const linkLang = link.getAttribute('lang');
+      const prefix = linkLang === 'en' ? '' : `/${linkLang}`;
+      const url = new URL(window.location.href);
+      const { lang } = document.documentElement;
+      const barePath = url.pathname.replace(new RegExp(`^/${lang}`), '');
+      url.pathname = prefix + barePath;
+      link.setAttribute('href', url.toString());
+    });
+  }
+
+  syncLanguageLinkURLs();
+
+  window.addEventListener('lg:url-change', syncLanguageLinkURLs);
+  return () => {
+    window.removeEventListener('lg:url-change', syncLanguageLinkURLs);
+  };
+}
+
+/**
+ *  used to mock this behavior for testing purposes
+ */
+if (process.env.NODE_ENV !== 'test') {
+  setUp();
+}

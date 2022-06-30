@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IrsAttemptsApi::EncryptedEventTokenBuilder do
+RSpec.describe IrsAttemptsApi::AttemptEvent do
   let(:irs_attempt_api_private_key) { OpenSSL::PKey::RSA.new(4096) }
   let(:irs_attempt_api_public_key) { irs_attempt_api_private_key.public_key }
 
@@ -28,11 +28,9 @@ RSpec.describe IrsAttemptsApi::EncryptedEventTokenBuilder do
     )
   end
 
-  describe '#build' do
+  describe '#to_jwe' do
     it 'returns a JWE for the event' do
-      jti, jwe = subject.build_event_token
-
-      expect(jti).to eq(jti)
+      jwe = subject.to_jwe
 
       decrypted_jwe_payload = JWE.decrypt(jwe, irs_attempt_api_private_key)
       token = JSON.parse(decrypted_jwe_payload)
@@ -50,6 +48,21 @@ RSpec.describe IrsAttemptsApi::EncryptedEventTokenBuilder do
       )
       expect(event_data['foo']).to eq('bar')
       expect(event_data['occurred_at']).to eq(occurred_at.to_i)
+    end
+  end
+
+  describe '.from_jwe' do
+    it 'returns an event decrypted from the JWE' do
+      jwe = subject.to_jwe
+
+      decrypted_event = described_class.from_jwe(jwe, irs_attempt_api_private_key)
+
+      expect(decrypted_event.jti).to eq(subject.jti)
+      expect(decrypted_event.iat).to eq(subject.iat)
+      expect(decrypted_event.event_type).to eq(subject.event_type)
+      expect(decrypted_event.session_id).to eq(subject.session_id)
+      expect(decrypted_event.occurred_at).to eq(subject.occurred_at)
+      expect(decrypted_event.event_metadata).to eq(subject.event_metadata.symbolize_keys)
     end
   end
 end

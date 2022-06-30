@@ -6,6 +6,26 @@ import type {
   UploadImplementation,
 } from '../context/upload';
 
+/**
+ * Personally-identifiable information extracted from document subject to user confirmation.
+ */
+export interface PII {
+  /**
+   * First name from document.
+   */
+  first_name: string;
+
+  /**
+   * Last name from document.
+   */
+  last_name: string;
+
+  /**
+   * Date of birth from document.
+   */
+  dob: string;
+}
+
 export class UploadFormEntryError extends FormError {
   field = '';
 }
@@ -14,6 +34,8 @@ export class UploadFormEntriesError extends FormError {
   formEntryErrors: UploadFormEntryError[] = [];
 
   remainingAttempts = Infinity;
+
+  pii?: PII;
 
   hints = false;
 }
@@ -80,6 +102,10 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
 
     if (result.remaining_attempts) {
       error.remainingAttempts = result.remaining_attempts;
+    }
+
+    if (result.ocr_pii) {
+      error.pii = result.ocr_pii;
     }
 
     if (result.hints) {

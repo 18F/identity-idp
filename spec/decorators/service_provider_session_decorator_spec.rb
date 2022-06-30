@@ -7,10 +7,11 @@ RSpec.describe ServiceProviderSessionDecorator do
       sp: sp,
       view_context: view_context,
       sp_session: {},
-      service_provider_request: ServiceProviderRequest.new,
+      service_provider_request: service_provider_request,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }
+  let(:service_provider_request) { ServiceProviderRequest.new }
   let(:sp_name) { subject.sp_name }
   let(:sp_create_link) { '/sign_up/enter_email' }
 
@@ -263,6 +264,27 @@ RSpec.describe ServiceProviderSessionDecorator do
         it 'is true' do
           expect(requested_more_recent_verification?).to eq(true)
         end
+      end
+    end
+  end
+
+  describe '#irs_attempts_api_session_id' do
+    context 'with a irs_attempts_api_session_id on the request url' do
+      let(:service_provider_request) do
+        url = 'https://example.com/auth?irs_attempts_api_session_id=123abc'
+        ServiceProviderRequest.new(url: url)
+      end
+
+      it 'returns the value of irs_attempts_api_session_id' do
+        expect(subject.irs_attempts_api_session_id).to eq('123abc')
+      end
+    end
+
+    context 'without a irs_attempts_api_session_id on the request url' do
+      let(:service_provider_request) { ServiceProviderRequest.new }
+
+      it 'returns nil' do
+        expect(subject.irs_attempts_api_session_id).to be_nil
       end
     end
   end

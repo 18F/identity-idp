@@ -118,6 +118,7 @@ describe ImageUploadResponsePresenter do
           errors: [{ field: :limit, message: t('errors.doc_auth.throttled_heading') }],
           redirect: idv_session_errors_throttled_url,
           remaining_attempts: 0,
+          ocr_pii: nil,
         }
 
         expect(presenter.as_json).to eq expected
@@ -142,6 +143,7 @@ describe ImageUploadResponsePresenter do
           errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
           hints: true,
           remaining_attempts: 3,
+          ocr_pii: nil,
         }
 
         expect(presenter.as_json).to eq expected
@@ -166,10 +168,35 @@ describe ImageUploadResponsePresenter do
             hints: true,
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
+            ocr_pii: nil,
           }
 
           expect(presenter.as_json).to eq expected
         end
+      end
+    end
+
+    context 'with form response as attention with barcode' do
+      let(:form_response) do
+        response = DocAuth::Response.new(
+          success: true,
+          extra: { remaining_attempts: 3 },
+          pii_from_doc: Idp::Constants::MOCK_IDV_APPLICANT,
+        )
+        allow(response).to receive(:attention_with_barcode?).and_return(true)
+        response
+      end
+
+      it 'returns hash of properties' do
+        expected = {
+          success: false,
+          errors: [],
+          hints: true,
+          remaining_attempts: 3,
+          ocr_pii: Idp::Constants::MOCK_IDV_APPLICANT.slice(:first_name, :last_name, :dob),
+        }
+
+        expect(presenter.as_json).to eq expected
       end
     end
   end

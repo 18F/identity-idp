@@ -672,16 +672,6 @@ module AnalyticsEvents
     )
   end
 
-  # User visited IDV password confirm page
-  def idv_password_confirm_visited
-    track_event('IdV: password confirm visited')
-  end
-
-  # User submitted IDV password confirm page
-  def idv_password_confirm_submitted
-    track_event('IdV: password confirm submitted')
-  end
-
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -919,12 +909,12 @@ module AnalyticsEvents
     )
   end
 
-  # User completed idv
+  # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
   end
 
-  # User visited idv phone of record
+  # User visited IDV password confirm page
   def idv_review_info_visited
     track_event('IdV: review info visited')
   end
@@ -1054,6 +1044,77 @@ module AnalyticsEvents
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
       **extra,
+    )
+  end
+
+  # Tracks when the the user has added the MFA method phone to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added phone',
+      {
+        method_name: :phone,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method piv_cac to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added PIV_CAC',
+      {
+        method_name: :piv_cac,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method TOTP to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added TOTP',
+      {
+        method_name: :totp,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method webauthn to their account
+  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_webauthn(
+    platform_authenticator:,
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: Added webauthn',
+      {
+        method_name: :webauthn,
+        platform_authenticator: platform_authenticator,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user visits the backup code confirmation setup page
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_enter_backup_code_confirmation_visit(
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter backup code confirmation visited',
+      {
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
     )
   end
 

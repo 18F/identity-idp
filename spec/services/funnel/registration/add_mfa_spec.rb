@@ -24,6 +24,7 @@ describe Funnel::Registration::AddMfa do
 
     expect(funnel.first_mfa).to eq('phone')
     expect(funnel.first_mfa_at).to be_present
+    expect(funnel.second_mfa).to eq('backup_codes')
   end
 
   it 'does not add a 3rd mfa' do
@@ -32,5 +33,6 @@ describe Funnel::Registration::AddMfa do
     subject.call(user_id, 'auth_app')
 
     expect(funnel.first_mfa).to eq('phone')
+    expect(funnel.second_mfa).to eq('backup_codes')
   end
 end
