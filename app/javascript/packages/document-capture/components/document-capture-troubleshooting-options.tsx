@@ -75,13 +75,7 @@ function DocumentCaptureTroubleshootingOptions({
         <TroubleshootingOptions
           isNewFeatures
           heading={t('idv.troubleshooting.headings.are_you_near')}
-          options={[
-            {
-              url: inPersonURL,
-              text: t('idv.troubleshooting.options.verify_in_person'),
-              isContinue: true,
-            },
-          ]}
+          options={[{ text: t('idv.troubleshooting.options.verify_in_person') }]}
         />
       )}
     </>

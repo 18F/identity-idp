@@ -7,8 +7,6 @@ export interface TroubleshootingOption {
 
   text: ReactNode;
 
-  isContinue?: boolean;
-
   isExternal?: boolean;
 }
 
@@ -47,9 +45,9 @@ function TroubleshootingOptions({
         {heading ?? t('components.troubleshooting_options.default_heading')}
       </HeadingTag>
       <ul className="troubleshooting-options__options">
-        {options.map(({ url, text, isContinue, isExternal }) => (
-          <li key={url}>
-            {isContinue !== true ? (
+        {options.map(({ url, text, isExternal }, index) => (
+          <li key={`tso-${index}`}>
+            {url !== undefined ? (
               <BlockLink href={url} isExternal={isExternal}>
                 {text}
               </BlockLink>
