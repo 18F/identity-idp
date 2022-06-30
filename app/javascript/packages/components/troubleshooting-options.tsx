@@ -3,7 +3,7 @@ import { BlockLink, BlockSubmitButton } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
 export interface TroubleshootingOption {
-  url: string;
+  url?: string;
 
   text: ReactNode;
 
