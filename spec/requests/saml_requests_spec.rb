@@ -12,7 +12,7 @@ RSpec.describe 'SAML requests', type: :request do
         cookie_regex.match(c)[:cookie]
       end
 
-      expect(new_cookies).not_to include('_upaya_session')
+      expect(new_cookies).not_to include('_identity_idp_session')
     end
   end
 
