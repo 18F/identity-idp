@@ -12,24 +12,42 @@ fr:
         send: Envoyer une lettre
       send_confirmation_code: Continuer
     cancel:
+      actions:
+        account_page: Accéder à la page de votre compte
+        exit: Quitter %{app_name}
+        keep_going: Non, continuer
+        start_over: Recommencer
+      description:
+        exit:
+          with_sp_html:
+            - Si vous quittez %{app_name} et retournez à %{sp_name}, nous
+              n’enregistrerons pas vos informations personnelles.
+            - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
+              supprimer votre compte sur %{account_page_link}.
+          without_sp:
+            - Si vous quittez la vérification d’identité et accédez à la page de
+              votre compte, nous n’enregistrerons pas vos informations
+              personnelles.
+            - Vous aurez toujours un compte %{app_name}. Vous pouvez gérer ou
+              supprimer votre compte sur %{account_page_text}.
+        hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
+          ordinateur pour continuer à vérifier votre identité.
+        start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
+          les informations que vous avez saisies ne seront pas enregistrées.
+        account_page: la page de votre compte
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
             téléphone
+        exit:
+          with_sp: Quittez %{app_name} et retournez à %{sp_name}
+          without_sp: Quittez la vérification d’identité et accédez à la page de votre
+            compte
         prompt:
           hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
             d’identité sur ce téléphone?
-      warnings:
-        hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
-          ordinateur pour continuer à vérifier votre identité.
-        warning_1: Nous ne serons pas en mesure de vérifier votre identité
-        warning_2: Nous ne conserverons aucune information relative à votre nom, votre
-          adresse, votre date de naissance, ou votre numéro de sécurité sociale
-          américain.
-        warning_3: Vous ne pourrez pas accéder de façon sécurisée à vos renseignements
-          en utilisant %{app_name}
-        warning_4: Votre adresse e-mail sera encore associée à un compte %{app_name}
-        warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
+          standard: Annuler la vérification de votre identité?
+        start_over: Recommencez la vérification de votre identité
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.

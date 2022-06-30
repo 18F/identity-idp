@@ -2,12 +2,12 @@ import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton, FormStepsContext } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
+import { Cancel } from '@18f/identity-verify-flow';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import DeviceContext from '../context/device';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import CaptureTroubleshooting from './capture-troubleshooting';
 import DocumentCaptureTroubleshootingOptions from './document-capture-troubleshooting-options';
-import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -67,7 +67,7 @@ function DocumentsStep({
       ))}
       {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
       <DocumentCaptureTroubleshootingOptions hasErrors={!!errors.length} />
-      <StartOverOrCancel />
+      <Cancel />
     </CaptureTroubleshooting>
   );
 }

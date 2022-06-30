@@ -2,7 +2,7 @@ export { decodeUserBundle } from './user-bundle';
 export { default as ErrorStatusPage } from './error-status-page';
 export { default as FlowContext } from './context/flow-context';
 export { SecretsContextProvider } from './context/secrets-context';
-export { default as StartOverOrCancel } from './start-over-or-cancel';
+export { default as Cancel } from './cancel';
 export { default as VerifyFlow } from './verify-flow';
 
 export { default as personalKeyStep } from './steps/personal-key';

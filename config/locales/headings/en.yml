@@ -18,7 +18,6 @@ en:
     add_info:
       phone: Add a phone number
     cancellations:
-      confirmation: You have cancelled verifying your identity with %{app_name}
       prompt: Are you sure you want to cancel?
     confirmations:
       new: Send another confirmation email

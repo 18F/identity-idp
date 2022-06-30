@@ -1,16 +1,16 @@
 require 'rails_helper'
 
-describe 'idv/doc_auth/_start_over_or_cancel.html.erb' do
+describe 'idv/doc_auth/_cancel.html.erb' do
   include Devise::Test::ControllerHelpers
 
   let(:locals) { {} }
 
   subject do
-    render 'idv/doc_auth/start_over_or_cancel', **locals
+    render 'idv/doc_auth/cancel', **locals
   end
 
-  it 'shows start over link' do
-    expect(subject).to have_button(t('doc_auth.buttons.start_over'))
+  it 'renders cancel link' do
+    expect(subject).to have_link(t('links.cancel', href: idv_cancel_path))
   end
 
   context 'with step local' do
@@ -19,7 +19,6 @@ describe 'idv/doc_auth/_start_over_or_cancel.html.erb' do
 
     it 'creates links with step parameter' do
       expect(subject).to have_link(t('links.cancel', href: idv_cancel_path(step: step)))
-      expect(subject).to have_css("form[action='#{idv_session_path(step: step)}']")
     end
   end
 end

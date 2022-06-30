@@ -13,7 +13,6 @@ en:
       change_ssn_label: Change Social Security Number
       change_state_id_label: Change state ID
       continue: Continue
-      start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
         <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo

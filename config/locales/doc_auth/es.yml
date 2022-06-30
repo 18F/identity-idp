@@ -13,7 +13,6 @@ es:
       change_ssn_label: Cambiar número de Seguridad Social
       change_state_id_label: Cambiar ID de estado
       continue: Continuar
-      start_over: Comenzar de nuevo
       take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
         <lg-upload>Sube una foto</lg-upload>'
       take_picture: Tomar una foto

@@ -11,21 +11,39 @@ en:
         send: Send a letter
       send_confirmation_code: Continue
     cancel:
+      actions:
+        account_page: Go to account page
+        exit: Exit %{app_name}
+        keep_going: No, keep going
+        start_over: Start over
+      description:
+        exit:
+          with_sp_html:
+            - If you exit %{app_name} and return to %{sp_name}, we will not save
+              your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_link}.
+          without_sp:
+            - If you exit identity verification and go to your account page, we
+              will not save your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_text}.
+        hybrid: If you cancel now, you will be prompted to switch back to your computer
+          to continue verifying your identity.
+        start_over: If you start over, you will restart this process from the beginning
+          and the information you entered will not be saved.
+        account_page: account page
       headings:
         confirmation:
           hybrid: You have cancelled uploading photos of your ID on this phone
+        exit:
+          with_sp: Exit %{app_name} and return to %{sp_name}
+          without_sp: Exit identity verification and go to your account page
         prompt:
           hybrid: Are you sure you want to cancel uploading photos of your ID on this
             phone?
-      warnings:
-        hybrid: If you cancel now, you will be prompted to switch back to your computer
-          to continue verifying your identity.
-        warning_1: We won’t be able to verify your identity
-        warning_2: We won’t keep a record of your name, address, birth date, or Social
-          Security number
-        warning_3: You won’t be able to securely access your information using %{app_name}
-        warning_4: You’ll still have a %{app_name} account for your email address
-        warning_5: You can manage or delete that account on your profile page
+          standard: Cancel verifying your identity?
+        start_over: Start over verifying your identity
     errors:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
