@@ -29,7 +29,7 @@ module IdvHelper
   def click_idv_continue
     continue_button = page.find_button(t('forms.buttons.continue'), match: :first)
     page.execute_script('arguments[0].scrollIntoView()', continue_button) if javascript_enabled?
-    click_spinner_button(continue_button)
+    click_spinner_button_and_wait(continue_button)
   end
 
   def choose_idv_otp_delivery_method_sms

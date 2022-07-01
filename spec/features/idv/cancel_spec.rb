@@ -74,7 +74,7 @@ describe 'cancel IdV', :js do
       expect(current_path).to eq(idv_cancel_path)
       expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
 
-      click_spinner_button t('idv.cancel.actions.exit', app_name: APP_NAME)
+      click_spinner_button_and_wait t('idv.cancel.actions.exit', app_name: APP_NAME)
 
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
