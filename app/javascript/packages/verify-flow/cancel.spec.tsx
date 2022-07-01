@@ -14,7 +14,6 @@ describe('Cancel', () => {
       const { getByText } = render(
         <FlowContext.Provider
           value={{
-            startOverURL: 'http://example.test/start-over',
             cancelURL: 'http://example.test/cancel',
             currentStep: 'one',
             basePath: '',
