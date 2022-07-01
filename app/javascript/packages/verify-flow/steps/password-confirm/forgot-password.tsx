@@ -24,7 +24,7 @@ export function ForgotPassword({ stepPath }: ForgotPasswordProps) {
           <li key={warning}>{warning}</li>
         ))}
       </ul>
-      <div className="margin-top-4">
+      <div className="margin-top-5">
         <HistoryLink basePath={stepPath} step={undefined} isVisualButton isBig isWide>
           {t('idv.forgot_password.try_again')}
         </HistoryLink>
