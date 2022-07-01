@@ -2,7 +2,7 @@ module Idv
   class GpoPresenter
     include Rails.application.routes.url_helpers
 
-    attr_reader :current_user
+    attr_reader :current_user, :url_options
 
     def initialize(current_user, url_options)
       @current_user = current_user
@@ -35,10 +35,6 @@ module Idv
 
     def letter_already_sent?
       gpo_mail_service.any_mail_sent?
-    end
-
-    def url_options
-      @url_options
     end
 
     private

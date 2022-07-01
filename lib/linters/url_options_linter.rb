@@ -20,16 +20,14 @@ module RuboCop
       #   class MyViewModelClass
       #     include Rails.application.routes.url_helpers
       #
+      #     attr_reader :url_options
+      #
       #     def initialize(url_options)
       #       @url_options = url_options
       #     end
       #
       #     def my_method
       #       account_path
-      #     end
-      #
-      #     def url_options
-      #       @url_options
       #     end
       #   end
       #
