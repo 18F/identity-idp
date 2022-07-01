@@ -1842,12 +1842,12 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when user visits Suggest Another MFa Page
+  # Tracks when user visits Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_visited
     track_event('User Registration: Suggest Another MFA Notice visited')
   end
 
-  # Tracks when user skips Suggest Another MFa Page
+  # Tracks when user skips Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_skipped
     track_event('User Registration: Suggest Another MFA Notice Skipped')
   end
