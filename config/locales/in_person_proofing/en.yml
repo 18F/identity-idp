@@ -58,6 +58,11 @@ en:
         verify_step_enter_phone: Enter a phone number with your name on the plan.
         verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
           address and Social Security number.'
+      location:
+        location_step_about: 'If you are having trouble adding your ID, you may be able to 
+          verify in person at a local United States Post Office in select locations.'
+        retail_hours_heading: 'Retail Hours'
+        location_button: 'Select'
     form:
       address:
         address1: Address
