@@ -27,7 +27,7 @@ describe Users::AdditionalMfaRequiredController do
     context 'before enforcement date' do
       it 'should redirect to user signin' do
         post :skip
-        expect(response.status).to eq 302
+        expect(response).to redirect_to account_url
       end
     end
 
@@ -37,15 +37,15 @@ describe Users::AdditionalMfaRequiredController do
       it 'should redirect user to sign in' do
         post :skip
 
-        expect(response.status).to eq 302
+        expect(response).to redirect_to account_url
       end
 
-      it 'should add sin in attribute to users' do
+      it 'should add sign in attribute to users' do
         post :skip
 
         user.reload
         expect(user.non_restricted_mfa_required_prompt_skip_date).
-        to be_truthy
+        to eq Time.zone.today
       end
     end
   end

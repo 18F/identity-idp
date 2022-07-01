@@ -32,7 +32,7 @@ feature 'Existing USer Non Restricted Method Required' do
         expect(current_url).to eq account_url
         user.reload
         expect(user.non_restricted_mfa_required_prompt_skip_date).
-          to be_truthy
+          to eq Time.zone.today
       end
 
       scenario 'user can go add second method after redirecting to additional mfa required page' do
@@ -48,7 +48,7 @@ feature 'Existing USer Non Restricted Method Required' do
         expect(page).to have_current_path(second_mfa_setup_path)
       end
 
-      scenario 'user has already skipped, cant find skip link' do
+      scenario "user has already skipped, can't find skip link" do
         user = create(:user, :signed_up, :with_phone)
         user.non_restricted_mfa_required_prompt_skip_date = Time.zone.today
         user.save!
@@ -90,7 +90,7 @@ feature 'Existing USer Non Restricted Method Required' do
         expect(current_url).to eq account_url
         user.reload
         expect(user.non_restricted_mfa_required_prompt_skip_date).
-          to be_falsey
+          not_to eq Time.zone.today
       end
 
       scenario 'user can go to second method page' do
