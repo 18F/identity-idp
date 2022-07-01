@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
-  RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
-  REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
-  REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'
-  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT = 'Report IAL2 Users Linked to SPs Count'
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
   SP_INACTIVE_VISIT = 'SP inactive visited'

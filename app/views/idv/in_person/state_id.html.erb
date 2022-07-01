@@ -1,7 +1,10 @@
 <% title t('titles.doc_auth.verify') %>
 
-
-<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
+<% if updating_state_id %>
+  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
+<% else %>
+  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id')) %>
+<% end %>
 
 <p>
   <%= t('in_person_proofing.body.state_id.info_html') %>
@@ -16,6 +19,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :first_name,
           form: f,
+          input_html: { value: pii[:first_name] },
           label: t('in_person_proofing.form.state_id.first_name'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
@@ -27,6 +31,7 @@
     <%= render ValidatedFieldComponent.new(
           name: :last_name,
           form: f,
+          input_html: { value: pii[:last_name] },
           label: t('in_person_proofing.form.state_id.last_name'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
@@ -41,6 +46,7 @@
           form: f,
           hint: t('in_person_proofing.form.state_id.dob_hint'),
           html5: true,
+          input_html: { value: pii[:dob] },
           label: t('in_person_proofing.form.state_id.dob'),
           label_html: { class: 'usa-label' },
           maxlength: 255,
@@ -58,6 +64,7 @@
           label_html: { class: 'usa-label' },
           prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
           required: true,
+          selected: pii[:state_id_jurisdiction],
         ) %>
   </div>
 
@@ -66,6 +73,7 @@
           name: :state_id_number,
           form: f,
           hint: t('in_person_proofing.form.state_id.state_id_number_hint'),
+          input_html: { value: pii[:state_id_number] },
           label: t('in_person_proofing.form.state_id.state_id_number'),
           label_html: { class: 'usa-label' },
           maxlength: 255,

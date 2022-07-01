@@ -154,7 +154,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_link t('doc_auth.buttons.change_address')
+    click_button t('doc_auth.buttons.change_address_label')
   end
 
   def complete_doc_auth_steps_before_send_link_step

@@ -37,5 +37,6 @@ en:
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
       state_id: Enter the information on your ID
-      verify: Please verify your information
+      update_address: Update your current address
+      update_state_id: Update the information on your ID
       welcome: Verify your identity in person

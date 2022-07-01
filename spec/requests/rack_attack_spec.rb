@@ -77,7 +77,7 @@ describe 'throttling requests' do
           to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
         expect(analytics).
-          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
+          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'does not throttle if the path is in the allowlist' do
@@ -95,7 +95,7 @@ describe 'throttling requests' do
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
         expect(analytics).
-          to_not have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
+          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
       end
 
       it 'does not throttle if the ip is in the CIDR block allowlist' do
@@ -111,7 +111,7 @@ describe 'throttling requests' do
         expect(response.body).
           to_not include('Please wait a few minutes before you try again.')
         expect(analytics).
-          to_not have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
+          to_not have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
       end
     end
 
@@ -144,7 +144,7 @@ describe 'throttling requests' do
           expect(arguments[:user]).to eq user
         end
         expect(analytics).
-          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
+          to have_received(:track_event).with('Rate Limit Triggered', type: 'req/ip')
       end
     end
   end
@@ -211,7 +211,7 @@ describe 'throttling requests' do
           to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
         expect(analytics).
-          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'logins/ip')
+          to have_received(:track_event).with('Rate Limit Triggered', type: 'logins/ip')
       end
     end
   end
@@ -271,7 +271,7 @@ describe 'throttling requests' do
           to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
         expect(analytics).
-          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, analytics_hash)
+          to have_received(:track_event).with('Rate Limit Triggered', analytics_hash)
       end
     end
 

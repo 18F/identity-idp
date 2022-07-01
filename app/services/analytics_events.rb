@@ -672,16 +672,6 @@ module AnalyticsEvents
     )
   end
 
-  # User visited IDV password confirm page
-  def idv_password_confirm_visited
-    track_event('IdV: password confirm visited')
-  end
-
-  # User submitted IDV password confirm page
-  def idv_password_confirm_submitted
-    track_event('IdV: password confirm submitted')
-  end
-
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -919,12 +909,17 @@ module AnalyticsEvents
     )
   end
 
-  # User completed idv
+  # The system encountered an error and the proofing results are missing
+  def idv_proofing_resolution_result_missing
+    track_event('Proofing Resolution Result Missing')
+  end
+
+  # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
   end
 
-  # User visited idv phone of record
+  # User visited IDV password confirm page
   def idv_review_info_visited
     track_event('IdV: review info visited')
   end
@@ -1609,6 +1604,12 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # Rate limit triggered
+  # @param [String] type
+  def rate_limit_triggered(type:, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra)
   end
 
   # User authenticated by a remembered device
