@@ -9,22 +9,26 @@ locals:
 <%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
 <div class='margin-top-4 margin-bottom-2'>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1">
-    <div class='grid-col-fill'>
+    <dl class="grid-col-fill margin-bottom-0">
       <div>
-        <%= "#{t('idv.form.first_name')}: #{pii[:first_name]}" %>
+        <dt class="display-inline"> <%= t('idv.form.first_name') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:first_name] %> </dd>
       </div>
       <div>
-        <%= "#{t('idv.form.last_name')}: #{pii[:last_name]}" %>
+        <dt class="display-inline"> <%= t('idv.form.last_name') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:last_name] %> </dd>
       </div>
       <div>
-        <%= "#{t('idv.form.dob')}: #{pii[:dob]}" %>
+        <dt class="display-inline"> <%= t('idv.form.dob') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:dob] %> </dd>
       </div>
       <% if !remote_identity_proofing %>
         <div>
-          <%= "#{t('idv.form.id_number')}: #{pii[:state_id_number]}" %>
+          <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
+          <dd class="display-inline margin-left-05"> <%= pii[:state_id_number] %> </dd>
         </div>
       <% end %>
-    </div>
+    </dl>
     <% if !remote_identity_proofing %>
       <div class='grid-auto'>
         <%= button_to(
@@ -37,20 +41,24 @@ locals:
     <% end %>
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-bottom-1 padding-top-1 border-y border-primary-light">
-    <div class='grid-col-fill'>
+    <dl class='grid-col-fill margin-bottom-0'>
       <div>
-        <%= "#{t('idv.form.address1')}: #{pii[:address1]}" %>
+        <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:address1] %> </dd>
       </div>
       <div>
-        <%= "#{t('idv.form.city')}: #{pii[:city]}" %>
+        <dt class="display-inline"> <%= t('idv.form.city') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:city] %> </dd>
       </div>
       <div>
-        <%= "#{t('idv.form.state')}: #{pii[:state]}" %>
+        <dt class="display-inline"> <%= t('idv.form.state') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:state] %> </dd>
       </div>
       <div>
-        <%= "#{t('idv.form.zipcode')}: #{pii[:zipcode]}" %>
+        <dt class="display-inline"> <%= t('idv.form.zipcode') %>: </dt>
+        <dd class="display-inline margin-left-05"> <%= pii[:zipcode] %> </dd>
       </div>
-    </div>
+    </dl>
     <div class='grid-auto'>
       <%= button_to(
             step_url.call(step: :redo_address),
@@ -62,18 +70,20 @@ locals:
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
     <div class='grid-col-fill'>
-      <%= t('idv.form.ssn') %>:
-      <%= render(
-            'shared/masked_text',
-            text: SsnFormatter.format(pii[:ssn]),
-            masked_text: SsnFormatter.format_masked(pii[:ssn]),
-            accessible_masked_text: t(
-              'idv.accessible_labels.masked_ssn',
-              first_number: pii[:ssn][0],
-              last_number: pii[:ssn][-1],
-            ),
-            toggle_label: t('forms.ssn.show'),
-          ) %>
+      <%= t('idv.form.ssn') %>: 
+      <div class="display-inline margin-left-05">
+        <%= render(
+          'shared/masked_text',
+          text: SsnFormatter.format(pii[:ssn]),
+          masked_text: SsnFormatter.format_masked(pii[:ssn]),
+          accessible_masked_text: t(
+            'idv.accessible_labels.masked_ssn',
+            first_number: pii[:ssn][0],
+            last_number: pii[:ssn][-1],
+          ),
+          toggle_label: t('forms.ssn.show'),
+        ) %>
+      </div>
     </div>
     <div class='grid-auto'>
       <%= button_to(
