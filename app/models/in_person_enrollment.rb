@@ -29,6 +29,20 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  # Returns a compressed version of the user's ID for use with the USPS API
+  # This is reversible for IDs under about 70 quadrillion
+  def usps_enrollment_id
+    return nil if user_id == nil
+
+    [
+      ("%014X" % (user_id)). # Encode User ID to Hex & pad with 0's to 14 characters ~ 70 quadrillion
+      scan(/../).map(&:hex). # Parse each pair of characters into a Ruby integer array
+      pack("c*") # Convert integer array into a string, treating each element as a signed char
+    ].pack('m*'). # Encode to Base64
+    tr('+/', '-_'). # Replace "+" and "/" with "-" and "_" respectively
+    sub(/=*\n?\Z/,'') # Trim Base64 Padding
+  end
+
   private
 
   def profile_belongs_to_user
