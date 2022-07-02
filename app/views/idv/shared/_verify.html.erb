@@ -73,16 +73,16 @@ locals:
       <%= t('idv.form.ssn') %>: 
       <div class="display-inline margin-left-05">
         <%= render(
-          'shared/masked_text',
-          text: SsnFormatter.format(pii[:ssn]),
-          masked_text: SsnFormatter.format_masked(pii[:ssn]),
-          accessible_masked_text: t(
-            'idv.accessible_labels.masked_ssn',
-            first_number: pii[:ssn][0],
-            last_number: pii[:ssn][-1],
-          ),
-          toggle_label: t('forms.ssn.show'),
-        ) %>
+              'shared/masked_text',
+              text: SsnFormatter.format(pii[:ssn]),
+              masked_text: SsnFormatter.format_masked(pii[:ssn]),
+              accessible_masked_text: t(
+                'idv.accessible_labels.masked_ssn',
+                first_number: pii[:ssn][0],
+                last_number: pii[:ssn][-1],
+              ),
+              toggle_label: t('forms.ssn.show'),
+            ) %>
       </div>
     </div>
     <div class='grid-auto'>
