@@ -65,7 +65,7 @@ feature 'doc auth verify step', :js do
 
     click_button t('idv.buttons.change_address_label')
     fill_out_address_form_ok
-    click_idv_continue # address form
+    click_button t('forms.buttons.submit.update') # address form
 
     click_idv_continue
 
