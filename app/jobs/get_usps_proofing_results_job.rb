@@ -17,12 +17,15 @@ class GetUspsProofingResultsJob < ApplicationJob
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
   def perform(_now)
+    return true unless IdentityConfig.store.in_person_proofing_enabled
+
     InPersonEnrollment.needs_usps_status_check.each do |enrollment|
       # Record and commit attempt to check enrollment status to database
       enrollment.status_check_attempted_at = Time.now
       enrollment.save
 
-      # todo replace with feature flag check
+      # todo dev is likely configured w/ the appropriate env but check again later
+      # todo remove additional conditional
       if false
         # todo does this need to be factoried?
         proofer = UspsInPersonProofer.new
@@ -32,7 +35,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
         response = proofer.request_proofing_results unique_id, enrollment.enrollment_code
         unless response.is_a? Hash
-          # todo log error
+          # todo log error (treat like 500)
           next
         end
 
