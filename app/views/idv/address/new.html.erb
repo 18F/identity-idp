@@ -27,7 +27,7 @@
                            input_html: { value: @pii['address2'] } %>
     <div class="margin-bottom-4">
       <%= f.input :city,  label: t('idv.form.city'), required: true, maxlength: 255, wrapper: false,
-                          input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['city'] } %>
+                          input_html: { aria: { invalid: false }, value: @pii['city'] } %>
       <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
         <%= t('simple_form.required.text') %>
       </span>
@@ -42,7 +42,7 @@
                             label: t('idv.form.zipcode'), required: true,
                             pattern: '(\d{5}([\-]\d{4})?)',
                             wrapper: false,
-                            input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['zipcode'] } %>
+                            input_html: { aria: { invalid: false }, value: @pii['zipcode'] } %>
       <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
         <%= t('simple_form.required.text') %>
       </span>
