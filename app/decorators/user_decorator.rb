@@ -82,6 +82,7 @@ class UserDecorator
       issuer: 'Login.gov',
       otp_secret_key: otp_secret_key,
       digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+      interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
     qrcode = RQRCode::QRCode.new(url)
