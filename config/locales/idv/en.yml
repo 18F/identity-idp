@@ -17,6 +17,7 @@ en:
         keep_going: No, keep going
         start_over: Start over
       description:
+        account_page: account page
         exit:
           with_sp_html:
             - If you exit %{app_name} and return to %{sp_name}, we will not save
@@ -32,7 +33,6 @@ en:
           to continue verifying your identity.
         start_over: If you start over, you will restart this process from the beginning
           and the information you entered will not be saved.
-        account_page: account page
       headings:
         confirmation:
           hybrid: You have cancelled uploading photos of your ID on this phone

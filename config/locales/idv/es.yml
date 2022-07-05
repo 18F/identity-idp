@@ -18,6 +18,7 @@ es:
         keep_going: No, continuar
         start_over: Empezar de nuevo
       description:
+        account_page: la página de su cuenta
         exit:
           with_sp_html:
             - Si sale de %{app_name} y vuelve a %{sp_name}, su información
@@ -33,7 +34,6 @@ es:
           con la verificación de su identidad.
         start_over: Si empieza de nuevo, el proceso se reiniciará y la información que
           haya ingresado se perderá.
-        account_page: la página de su cuenta
       headings:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono

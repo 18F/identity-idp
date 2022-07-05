@@ -18,6 +18,7 @@ fr:
         keep_going: Non, continuer
         start_over: Recommencer
       description:
+        account_page: la page de votre compte
         exit:
           with_sp_html:
             - Si vous quittez %{app_name} et retournez à %{sp_name}, nous
@@ -34,7 +35,6 @@ fr:
           ordinateur pour continuer à vérifier votre identité.
         start_over: Si vous recommencez, vous reprendrez ce processus depuis le début et
           les informations que vous avez saisies ne seront pas enregistrées.
-        account_page: la page de votre compte
       headings:
         confirmation:
           hybrid: Vous avez annulé le téléchargement de vos photos d’identité sur ce
