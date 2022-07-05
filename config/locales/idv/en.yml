@@ -35,7 +35,7 @@ en:
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
         ssn: 'Your Social Security number must be entered in as ###-##-####'
-        zipcode: Enter a 5 or 9 digit ZIP code
+        zipcode: Enter a 5 or 9 digit ZIP Code
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
@@ -63,7 +63,7 @@ en:
           information online.'
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
-          are an incorrect Social Security number or ZIP code.
+          are an incorrect Social Security number or ZIP Code.
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
