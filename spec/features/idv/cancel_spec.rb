@@ -79,8 +79,7 @@ describe 'cancel IdV', :js do
       expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
       expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
 
-      # After visiting /verify, expect to redirect to the first step in the IdV flow.
-      visit idv_path
+      start_idv_from_sp(sp)
       expect(current_path).to eq(idv_doc_auth_step_path(step: :welcome))
     end
   end
