@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[totp_timestamp]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
