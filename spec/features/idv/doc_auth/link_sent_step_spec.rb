@@ -114,6 +114,7 @@ feature 'doc auth link sent step' do
 
       click_doc_auth_back_link
       click_doc_auth_back_link
+      click_link t('links.cancel')
       click_on t('idv.cancel.actions.start_over')
       complete_doc_auth_steps_before_link_sent_step
       expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
