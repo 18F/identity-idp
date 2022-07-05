@@ -50,7 +50,7 @@ describe 'cancel IdV', :js do
     expect(current_path).to eq(idv_cancel_path)
     expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'agreement')
 
-    click_on t('idv.cancel.actions.account_page')
+    click_spinner_button_and_wait t('idv.cancel.actions.account_page')
 
     expect(current_path).to eq(account_path)
     expect(fake_analytics).to have_logged_event('IdV: cancellation confirmed', step: 'agreement')
