@@ -5,10 +5,6 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
         def call
           enqueue_job
-
-          # send the user to the phone page where they'll continue the remainder of
-          # the idv flow
-          # redirect_to idv_phone_url
         end
 
         def extra_view_variables
