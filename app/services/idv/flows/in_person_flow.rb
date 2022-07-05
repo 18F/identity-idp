@@ -10,6 +10,11 @@ module Idv
         address: Idv::Steps::Ipp::AddressStep,  # entering the address
         ssn: Idv::Steps::Ipp::SsnStep, # enter SSN
         verify: Idv::Steps::Ipp::VerifyStep, # verify entered info
+        verify_wait: Idv::Steps::Ipp::VerifyWaitStep,
+      }.freeze
+
+      OPTIONAL_SHOW_STEPS = {
+        verify_wait: Idv::Steps::Ipp::VerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {
