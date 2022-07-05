@@ -111,7 +111,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           with(submit_attributes)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+          with('User marked authenticated', authentication_type: :valid_2fa)
 
         get :show, params: { token: 'good-token' }
       end
