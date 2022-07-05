@@ -166,7 +166,6 @@ class Analytics
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'
   USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
   USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'
-  USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'
   USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'
   USER_REGISTRATION_2FA_SETUP_VISIT = 'User Registration: 2FA Setup visited'

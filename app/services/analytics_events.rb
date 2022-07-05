@@ -1838,5 +1838,10 @@ module AnalyticsEvents
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
   end
+
+  # Tracks when user visits enter email page
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
+  end
 end
 # rubocop:enable Metrics/ModuleLength
