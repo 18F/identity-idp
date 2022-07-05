@@ -168,7 +168,6 @@ class Analytics
   USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'
   USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'
   USER_REGISTRATION_2FA_SETUP_VISIT = 'User Registration: 2FA Setup visited'
-  USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'

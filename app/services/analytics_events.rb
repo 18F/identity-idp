@@ -1843,5 +1843,14 @@ module AnalyticsEvents
   def user_registration_enter_email_visit
     track_event('User Registration: enter email visited')
   end
+
+  # Tracks when user visits the phone setup step during registration
+  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: phone setup visited',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
