@@ -182,18 +182,20 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_all_doc_auth_steps_before_password_step
-    complete_all_doc_auth_steps
+  def complete_all_doc_auth_steps_before_password_step(expect_accessible: false)
+    complete_all_doc_auth_steps(expect_accessible: expect_accessible)
+    fill_out_phone_form_ok if find('#idv_phone_form_phone').value.blank?
     click_continue
     verify_phone_otp
     expect(page).to have_current_path(idv_review_path, wait: 10)
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
   def complete_proofing_steps
     complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: RequestHelper::VALID_PASSWORD
     click_continue
-    click_acknowledge_personal_key
+    acknowledge_and_confirm_personal_key
     click_agree_and_continue
   end
 
