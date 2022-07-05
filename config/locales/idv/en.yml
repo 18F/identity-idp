@@ -5,10 +5,10 @@ en:
       masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
       cancel: Cancel and return to your profile
-      change_address_label: Change address
+      change_address_label: Update address
       change_label: Update
-      change_ssn_label: Change Social Security number
-      change_state_id_label: Change state ID
+      change_ssn_label: Update Social Security number
+      change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
         resend: Send another letter
