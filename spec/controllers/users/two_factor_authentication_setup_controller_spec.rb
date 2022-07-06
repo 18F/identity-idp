@@ -7,7 +7,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
+        with('User Registration: 2FA Setup visited')
 
       get :index
     end
@@ -76,7 +76,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
       patch :create, params: voice_params
 
-      expect(@analytics).to have_logged_event(Analytics::USER_REGISTRATION_2FA_SETUP, response.to_h)
+      expect(@analytics).to have_logged_event('User Registration: 2FA Setup', response.to_h)
     end
 
     it 'tracks analytics event' do
@@ -91,7 +91,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_2FA_SETUP, result)
+        with('User Registration: 2FA Setup', result)
 
       patch :create, params: {
         two_factor_options_form: {

@@ -1822,13 +1822,23 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(success:, errors: nil, **extra)
+  def user_registration_2fa_setup(
+    success:,
+    errors: nil,
+    enabled_mfa_methods_count: nil,
+    selection: nil,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup',
       {
         success: success,
         errors: errors,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        selection: selection,
         **extra,
       }.compact,
     )
@@ -1844,6 +1854,7 @@ module AnalyticsEvents
     track_event('User Registration: enter email visited')
   end
 
+  # @param [Integer] enabled_mfa_methods_count
   # Tracks when user visits the phone setup step during registration
   def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
     track_event(
