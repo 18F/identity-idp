@@ -8,6 +8,14 @@ module Idv
         create_document_capture_session(document_capture_session_uuid_key)
       end
 
+      def track_submitted_event(analytics, payload)
+        analytics.idv_doc_auth_welcome_visited(**payload)
+      end
+
+      def track_visited_event(analytics, payload)
+        analytics.idv_doc_auth_welcome_submitted(**payload)
+      end
+
       private
 
       def no_camera_redirect

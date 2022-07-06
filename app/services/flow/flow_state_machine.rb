@@ -21,10 +21,10 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
-      end
+
+      increment_step_name_counts
+      flow.step_handler(step).track_submitted_event(analytics, result.to_h.merge(analytics_properties))
+
       register_update_step(step, result)
       if flow.json
         render json: flow.json, status: flow.http_status
@@ -45,10 +45,9 @@ module Flow
     end
 
     def track_step_visited
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_visited, analytics_properties)
-      end
+      increment_step_name_counts
+      analytics.track_event(analytics_visited, analytics_properties)
+
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
     end
 
@@ -75,7 +74,6 @@ module Flow
       @namespace = flow.name.split('::').first.underscore
       @step_url = klass::FSM_SETTINGS[:step_url]
       @final_url = klass::FSM_SETTINGS[:final_url]
-      @analytics_id = klass::FSM_SETTINGS[:analytics_id]
       @view = klass::FSM_SETTINGS[:view]
 
       current_session[@name] ||= {}
@@ -120,12 +118,10 @@ module Flow
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
 
-      if @analytics_id
-        optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name)
+      optional_show_step_name = optional_show_step.to_s.demodulize.underscore
+      optional_properties = result.to_h.merge(step: optional_show_step_name)
 
-        analytics.track_event(analytics_optional_step, optional_properties)
-      end
+      optional_show_step.track_optional_step(analytics, optional_properties)
 
       if next_step.to_s != optional_step
         if next_step_is_url
