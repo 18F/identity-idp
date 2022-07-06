@@ -1,4 +1,6 @@
 class GetUspsProofingResultsJob < ApplicationJob
+  IPP_STATUS_PASSED = "In-person passed"
+  IPP_STATUS_FAILED = "In-person failed"
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
@@ -29,35 +31,69 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment.status_check_attempted_at = Time.now
       enrollment.save
 
-      # todo dev is likely configured w/ the appropriate env but check again later
-      # todo reconfigure this to call the actual endpoint
-      # if false
+      response = nil
+      begin
         response = proofer.request_proofing_results unique_id, enrollment.enrollment_code
-      # else
-        # pass
-        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json")
-        # fail
-        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json")
-        # progress
-        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json")
-        # invalid
-        response = "fubar"
-      # end
+      rescue Exception => err
+        IdentityJobLogSubscriber.logger.error(
+          {
+            name: 'usps_proofing_api.errors.request_exception',
+            enrollment_id: enrollment.id,
+            exception: {
+              class: err.class,
+              message: err.message,
+              backtrace: err.backtrace,
+            },
+          }.to_json,
+        )
+        next
+      end
+
 
       unless response.is_a? Hash
-        # todo log error (treat like 500)
+        IdentityJobLogSubscriber.logger.error(
+          {
+            name: 'usps_proofing_api.errors.bad_response_structure',
+            enrollment_id: enrollment.id,
+          }.to_json,
+        )
         next
       end
 
-      # Customer has not been to post office for IPP
-      if response['status'] == nil
+      unless response['error'].nil? || response['error'].empty?
+        IdentityJobLogSubscriber.logger.error(
+          {
+            name: 'usps_proofing_api.errors.client_error',
+            enrollment_id: enrollment.id,
+            error: response['error'],
+          }.to_json,
+        )
         next
       end
 
-      # Unsupported ID type
-      if SUPPORTED_ID_TYPES.includes? response['primaryIdType']
-        # todo retroactively fail enrollment
-        next
+      case response['status']
+      when IPP_STATUS_PASSED
+        if SUPPORTED_ID_TYPES.include? response['primaryIdType']
+          enrollment.status = :passed
+        else
+          # Unsupported ID type
+          enrollment.status = :failed
+        end
+        enrollment.save
+      when IPP_STATUS_FAILED
+        enrollment.status = :failed
+        enrollment.save
+      when nil
+        # Customer has not been to post office for IPP
+        nil
+      else
+        IdentityJobLogSubscriber.logger.error(
+          {
+            name: 'usps_proofing_api.errors.unsupported_status',
+            enrollment_id: enrollment.id,
+            status: response['status'],
+          }.to_json,
+        )
       end
     end
     true

@@ -15,6 +15,14 @@ RSpec.describe GetUspsProofingResultsJob do
             let(:pending_enrollment_2) { create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18)) }
             let(:pending_enrollment_3) { create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18)) }
             let(:pending_enrollment_4) { create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18)) }
+            let(:pending_enrollments) {
+                [
+                    pending_enrollment,
+                    pending_enrollment_2,
+                    pending_enrollment_3,
+                    pending_enrollment_4,
+                ]
+            }
             let(:passing_enrollment) { create(:in_person_enrollment, :passed) }
 
             let(:passing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json") }
@@ -44,33 +52,37 @@ RSpec.describe GetUspsProofingResultsJob do
                             v.end > 5.25.minutes.ago &&
                             v.end < 4.99.minutes.ago
                         end
-                    )
+                    ),
+                    "expected call to InPersonEnrollment#needs_usps_status_check with beginless"\
+                    " range starting about 5 minutes ago"
             end
 
             it 'records the last attempted status check regardless of response code and contents' do
-                expect(pending_enrollment.status_check_attempted_at).to eq nil
-                expect(pending_enrollment_2.status_check_attempted_at).to eq nil
-                expect(pending_enrollment_3.status_check_attempted_at).to eq nil
-                expect(pending_enrollment_4.status_check_attempted_at).to eq nil
+                expect(pending_enrollments.pluck(:status_check_attempted_at)).to (all (eq nil)),
+                    "failed test precondition: pending enrollments must not have status check time set"
 
                 allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-                    and_return([pending_enrollment, pending_enrollment_2, pending_enrollment_3, pending_enrollment_4])
+                    and_return(pending_enrollments)
 
-                allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
-                    and_return(failing_response)
+                response_array = [
+                    failing_response,
+                    progress_response,
+                    progress_response,
+                    passing_response,
+                ]
 
-                allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_2.usps_enrollment_id, pending_enrollment_2.enrollment_code).
-                    and_return(progress_response)
+                expect(pending_enrollments.length).to (eq response_array.length),
+                    "failed test precondition; pending enrollments (#{pending_enrollments.length}) "\
+                    "and response count (#{response_array.length}) must match"
 
-                allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_3.usps_enrollment_id, pending_enrollment_3.enrollment_code).
-                    and_return(progress_response)
 
-                allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_4.usps_enrollment_id, pending_enrollment_4.enrollment_code).
-                    and_return(passing_response)
+                # Pair each enrollment record with an API response
+                response_array.zip(pending_enrollments).
+                each do |(response, enrollment)|
+                    allow(proofer).to receive(:request_proofing_results).
+                        with(enrollment.usps_enrollment_id, enrollment.enrollment_code).
+                        and_return(response)
+                end
 
                 start_time = Time.now
 
@@ -79,23 +91,37 @@ RSpec.describe GetUspsProofingResultsJob do
                 expected_range = (start_time)...(Time.now)
 
                 expect(
-                    [
-                        pending_enrollment,
-                        pending_enrollment_2,
-                        pending_enrollment_3,
-                        pending_enrollment_4,
-                    ].
+                    pending_enrollments.
                     map(&:reload). # Force reload records from DB
                     pluck(:status_check_attempted_at)
-                ).to all(
+                ).to (all(
                     satisfy do |i| 
                         expected_range.cover?(i)
                     end
-                )
+                )),
+                "job must update status check time for all pending enrollments; found exception(s): #{pending_enrollments.inspect}"
             end
 
             it 'updates the enrollment record on 2xx responses with valid JSON' do
-                skip
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                    and_return([pending_enrollment])
+
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    and_return(passing_response)
+
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                expected_range = (start_time)...(Time.now)
+                
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "passed"
+                expect(pending_enrollment.status_updated_at).to satisfy do |i|
+                    expected_range.cover?(i)
+                end
             end
 
             it 'reports a high-priority error on 2xx responses with invalid JSON' do

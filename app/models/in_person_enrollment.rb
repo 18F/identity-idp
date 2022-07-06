@@ -43,6 +43,11 @@ class InPersonEnrollment < ApplicationRecord
     sub(/=*\n?\Z/,'') # Trim Base64 Padding
   end
 
+  def status=(value)
+    self.status_updated_at = Time.now
+    super(value)
+  end
+
   private
 
   def profile_belongs_to_user
