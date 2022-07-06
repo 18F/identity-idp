@@ -50,8 +50,10 @@ class AsyncButtonElement extends SpinnerButtonElement {
     this.submit();
   }
 
+  /**
+   * Submits the form, emulated using global fetch.
+   */
   async submit() {
-    // Emulate form submission through fetch.
     const { action, method } = this.form;
     const response = await window.fetch(action, { method, body: new window.FormData(this.form) });
     this.handleResponse(response);
