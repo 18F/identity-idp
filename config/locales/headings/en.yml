@@ -64,6 +64,7 @@ en:
     sp_handoff_bounced: There was a problem connecting to %{sp_name}
     totp_setup:
       new: Add an authentication app
+    verify: Verify your information
     verify_email: Check your email
     verify_personal_key: Verify your personal key
     webauthn_platform_setup:

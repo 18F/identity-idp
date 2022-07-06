@@ -6,6 +6,10 @@ fr:
         %{last_number}
     buttons:
       cancel: Annuler et retourner à votre profil
+      change_address_label: Changement d’adresse
+      change_label: Changement
+      change_ssn_label: Changement de numéro de sécurité sociale
+      change_state_id_label: Modifier l’ID d’état
       continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
@@ -86,8 +90,13 @@ fr:
     form:
       address1: Adresse
       address2: Adresse (optional)
-      city: Ville une lettre contenant un code.′
+      city: Ville
+      dob: Date de naissance
+      first_name: Prénom
+      id_number: Numéro d’identification
+      last_name: Nom de famille
       password: Mot de passe
+      ssn: Numéro de sécurité sociale
       ssn_label_html: Numéro de sécurité sociale
       state: État
       zipcode: Code ZIP
@@ -156,6 +165,7 @@ fr:
           informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
+      verifying: Vérification…
     review:
       dob: Date de naissance
       full_name: Nom complet

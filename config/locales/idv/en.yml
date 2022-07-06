@@ -5,6 +5,10 @@ en:
       masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
       cancel: Cancel and return to your profile
+      change_address_label: Update address
+      change_label: Update
+      change_ssn_label: Update Social Security number
+      change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
         resend: Send another letter
@@ -30,8 +34,8 @@ en:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
-        ssn: 'Your Social Security Number must be entered in as ###-##-####'
-        zipcode: Enter a 5 or 9 digit ZIP code
+        ssn: 'Your Social Security number must be entered in as ###-##-####'
+        zipcode: Enter a 5 or 9 digit ZIP Code
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
@@ -59,7 +63,7 @@ en:
           information online.'
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
-          are an incorrect Social Security number or ZIP code.
+          are an incorrect Social Security number or ZIP Code.
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
@@ -77,8 +81,13 @@ en:
       address1: Address
       address2: Address (optional)
       city: City
+      dob: Date of birth
+      first_name: First name
+      id_number: ID number
+      last_name: Last name
       password: Password
-      ssn_label_html: Social Security Number
+      ssn: Social Security number
+      ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
     index:
@@ -137,11 +146,12 @@ en:
         read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
+      verifying: Verifying…
     review:
       dob: Date of birth
       full_name: Full name
       mailing_address: Mailing address
-      ssn: Social Security Number (SSN)
+      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Come back soon

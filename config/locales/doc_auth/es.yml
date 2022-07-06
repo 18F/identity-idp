@@ -8,10 +8,6 @@ es:
       selfie_alt_text: Una foto subida
     buttons:
       add_new_photos: Añadir nuevas fotos
-      change_address_label: Cambiar dirección
-      change_label: Cambio
-      change_ssn_label: Cambiar número de Seguridad Social
-      change_state_id_label: Cambiar ID de estado
       continue: Continuar
       start_over: Comenzar de nuevo
       take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
@@ -136,21 +132,12 @@ es:
           área iluminada.
       upload_error: Lo siento, algo salió mal por nuestra parte.
     forms:
-      address1: Dirección
       captured_image: Imagen capturada
       change_file: Cambiar archivo
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la
         carpeta</lg-underline>
-      city: Ciudad
-      dob: Fecha de nacimiento
       doc_success: Hemos verificado su información personal
-      first_name: Nombre de pila
-      id_number: Número de identificación
-      last_name: Apellido
       selected_file: Archivo seleccionado
-      ssn: Número de seguridad social
-      state: Estado
-      zip_code: Código postal
     headings:
       address: Actualice su dirección postal
       back: Parte Trasera
@@ -180,7 +167,6 @@ es:
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento de identidad y tomarse
       upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
-      verify: Verifica tus datos
       verify_identity: Verifique su identidad
       welcome: Empiece con la verificación de su identidad
     info:
@@ -236,7 +222,6 @@ es:
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos su identidad.
       verify_identity: Le preguntaremos sus datos personales para verificar su
         identidad comparándola con los registros públicos.
-      verifying: Verificando…
       welcome_html: '%{sp_name} necesita asegurarse de que sea usted y no alguien que
         se haga pasar por usted.'
     instructions:

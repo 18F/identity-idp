@@ -6,6 +6,10 @@ es:
         %{last_number}
     buttons:
       cancel: Cancele y regrese a su perfil
+      change_address_label: Cambiar dirección
+      change_label: Cambio
+      change_ssn_label: Cambiar número de Seguridad Social
+      change_state_id_label: Cambiar ID de estado
       continue_plain: Continuar
       mail:
         resend: Enviar otra carta
@@ -83,7 +87,12 @@ es:
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
+      dob: Fecha de nacimiento
+      first_name: Nombre de pila
+      id_number: Número de identificación
+      last_name: Apellido
       password: Contraseña
+      ssn: Número de seguridad social
       ssn_label_html: Número de Seguro Social
       state: Estado
       zipcode: Código postal
@@ -144,6 +153,7 @@ es:
         read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
         review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
+      verifying: Verificando…
     review:
       dob: Fecha de nacimiento
       full_name: Nombre completo
