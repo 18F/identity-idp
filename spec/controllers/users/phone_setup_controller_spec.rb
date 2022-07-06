@@ -22,7 +22,7 @@ describe Users::PhoneSetupController do
         stub_sign_in_before_2fa(user)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT, enabled_mfa_methods_count: 0)
+          with('User Registration: phone setup visited', enabled_mfa_methods_count: 0)
         expect(NewPhoneForm).to receive(:new).with(user)
 
         get :index
