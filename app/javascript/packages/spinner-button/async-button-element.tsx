@@ -14,10 +14,16 @@ interface AsyncResponse {
 }
 
 class AsyncButtonElement extends SpinnerButtonElement {
+  #pollTimeout: number;
+
   connectedCallback(): void {
     super.connectedCallback();
 
     this.elements.button.addEventListener('click', (event) => this.onClick(event));
+  }
+
+  disconnectedCallback() {
+    window.clearTimeout(this.#pollTimeout);
   }
 
   @once()
@@ -78,7 +84,7 @@ class AsyncButtonElement extends SpinnerButtonElement {
   }
 
   scheduleSubmit() {
-    setTimeout(() => this.submit(), this.pollInterval);
+    this.#pollTimeout = window.setTimeout(() => this.submit(), this.pollInterval);
   }
 
   renderError(message: string | null) {
