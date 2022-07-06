@@ -1283,6 +1283,15 @@ module AnalyticsEvents
     )
   end
 
+  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
+  def non_restricted_mfa_required_prompt_visited
+    track_event('Non-Restricted MFA Required Prompt visited')
+  end
+
+  def non_restricted_mfa_required_prompt_skipped
+    track_event('Non-Restricted MFA Required Prompt skipped')
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Hash] errors
@@ -1887,6 +1896,16 @@ module AnalyticsEvents
         **extra,
       }.compact,
     )
+  end
+
+  # Tracks when user visits Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_visited
+    track_event('User Registration: Suggest Another MFA Notice visited')
+  end
+
+  # Tracks when user skips Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_skipped
+    track_event('User Registration: Suggest Another MFA Notice Skipped')
   end
 
   # Tracks when user visits MFA selection page
