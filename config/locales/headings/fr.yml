@@ -18,7 +18,6 @@ fr:
     add_info:
       phone: Ajouter un numéro de téléphone
     cancellations:
-      confirmation: Vous avez annulé la vérification de votre identité avec %{app_name}
       prompt: Es-tu sûre de vouloir annuler?
     confirmations:
       new: Envoyer un autre courriel de confirmation

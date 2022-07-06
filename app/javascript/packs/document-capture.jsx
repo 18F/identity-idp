@@ -41,7 +41,6 @@ import { trackEvent } from '@18f/identity-analytics';
  * @prop {string} appName
  * @prop {string} maxCaptureAttemptsBeforeTips
  * @prop {FlowPath} flowPath
- * @prop {string} startOverUrl
  * @prop {string} cancelUrl
  * @prop {string=} idvInPersonUrl
  *
@@ -134,7 +133,6 @@ function addPageAction(event, payload) {
     maxCaptureAttemptsBeforeTips,
     appName,
     flowPath,
-    startOverUrl: startOverURL,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL = null,
   } = /** @type {AppRootData} */ (appRoot.dataset);
@@ -173,7 +171,6 @@ function addPageAction(event, payload) {
       FlowContext.Provider,
       {
         value: {
-          startOverURL,
           cancelURL,
           inPersonURL,
           currentStep: 'document_capture',
