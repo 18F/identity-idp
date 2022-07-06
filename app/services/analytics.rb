@@ -166,11 +166,5 @@ class Analytics
   USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'
   USER_REGISTRATION_2FA_SETUP_VISIT = 'User Registration: 2FA Setup visited'
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'
-  USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'
-  USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'
-  USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'
-  VENDOR_OUTAGE = 'Vendor Outage'
-  WEBAUTHN_DELETED = 'WebAuthn Deleted'
-  WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
 end
 # rubocop:enable Layout/LineLength

@@ -1898,6 +1898,18 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when user's piv cac is disabled
+  def user_registration_piv_cac_disabled
+    track_event('User Registration: piv cac disabled')
+  end
+
+  # Tracks when user's piv cac setup
+  def user_registration_piv_cac_setup_visit
+    track_event(
+      'User Registration: piv cac setup visited',
+    )
+  end
+
   # Tracks when user visits Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_visited
     track_event('User Registration: Suggest Another MFA Notice visited')
@@ -1911,6 +1923,54 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
+  end
+
+  # @param [String] redirect_from
+  # @param [Hash] vendor_status
+  # Tracks when vendor has outage
+  def vendor_outage(
+    redirect_from:,
+    vendor_status:,
+    **extra
+  )
+
+    track_event(
+      'Vendor Outage',
+      redirect_from: redirect_from,
+      vendor_status: vendor_status,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] mfa_method_counts
+  # @param [Hash] pii_like_keypaths
+  # Tracks when WebAuthn is deleted
+  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+    track_event(
+      'WebAuthn Deleted',
+      success: success,
+      mfa_method_counts: mfa_method_counts,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] success
+  # Tracks when WebAuthn setup is visited
+  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
+                           **extra)
+    track_event(
+      'WebAuthn Setup Visited',
+      platform_authenticator: platform_authenticator,
+      errors: errors,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success: success,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

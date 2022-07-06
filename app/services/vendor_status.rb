@@ -90,7 +90,7 @@ class VendorStatus
       },
       redirect_from: from,
     }
-    analytics.track_event(Analytics::VENDOR_OUTAGE, tracking_data)
+    analytics.vendor_outage(**tracking_data)
   end
 
   private
