@@ -21,11 +21,13 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
-      if @analytics_id
-        increment_step_name_counts
-        analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+      if flow.http_status != :accepted
+        if @analytics_id
+          increment_step_name_counts
+          analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+        end
+        register_update_step(step, result)
       end
-      register_update_step(step, result)
       if flow.json
         render json: flow.json, status: flow.http_status
         return
