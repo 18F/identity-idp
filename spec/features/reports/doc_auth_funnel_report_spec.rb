@@ -81,8 +81,7 @@ feature 'Doc Auth Funnel report' do
       'verified_view_count_average' => 0.0,
       'verified_view_percent' => 0.0,
       'verify_error_count_average' => 0.0,
-      # Bug: We're currently double-counting these views (LG-6538)
-      'verify_phone_view_count_average' => 2.0,
+      'verify_phone_view_count_average' => 1.0,
       'verify_phone_view_percent' => 100.0,
       'verify_submit_count_average' => 1.0,
       'verify_view_count_average' => 1.0,
