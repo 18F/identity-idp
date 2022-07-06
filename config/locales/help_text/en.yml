@@ -14,7 +14,7 @@ en:
       intro_html: 'We’ll share this information with %{sp}:'
       outro_html: '%{sp} will only use this information to connect to your account.'
       phone: Phone number
-      social_security_number: Social Security Number
+      social_security_number: Social Security number
       verified_at: Updated on
       x509_issuer: PIV/CAC Issuer
       x509_subject: PIV/CAC Identity

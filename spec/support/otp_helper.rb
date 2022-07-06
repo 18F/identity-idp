@@ -17,4 +17,11 @@ module OtpHelper
     end
     nil
   end
+
+  def last_totp(user)
+    ROTP::TOTP.new(
+      user.auth_app_configurations.first.otp_secret_key,
+      interval: IdentityConfig.store.totp_code_interval,
+    ).now
+  end
 end

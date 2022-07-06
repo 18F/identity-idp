@@ -146,13 +146,12 @@ module Users
     end
 
     def capture_analytics_for_exception(telephony_error)
-      attributes = {
+      analytics.otp_phone_validation_failed(
         error: telephony_error.class.to_s,
         message: telephony_error.message,
         context: context,
         country: parsed_phone.country,
-      }
-      analytics.track_event(Analytics::OTP_PHONE_VALIDATION_FAILED, attributes)
+      )
     end
 
     def parsed_phone

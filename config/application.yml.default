@@ -238,6 +238,7 @@ sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 test_ssn_allowed_list: ''
+totp_code_interval: 30
 unauthorized_scope_enabled: false
 usps_upload_enabled: false
 usps_upload_sftp_timeout: 5
@@ -494,6 +495,7 @@ test:
   state_tracking_enabled: true
   telephony_adapter: test
   test_ssn_allowed_list: '999999999'
+  totp_code_interval: 3
   verify_gpo_key_attempt_window_in_minutes: 3
   verify_gpo_key_max_attempts: 2
   verify_personal_key_attempt_window_in_minutes: 3

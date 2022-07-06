@@ -8,9 +8,8 @@ module SignUp
     before_action :verify_needs_completions_screen
 
     def show
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        analytics_attributes(''),
+      analytics.user_registration_agency_handoff_page_visit(
+        **analytics_attributes(''),
       )
       @multiple_factors_enabled = MfaPolicy.new(current_user).multiple_factors_enabled?
       @presenter = completions_presenter

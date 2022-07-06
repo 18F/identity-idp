@@ -663,7 +663,7 @@
   "spec/services/backup_code_generator_spec.rb": 1.4904150000002119,
   "spec/jobs/reports/agreement_summary_report_spec.rb": 0.07988900000054855,
   "spec/components/password_toggle_component_spec.rb": 0.046307000004162546,
-  "spec/views/idv/doc_auth/_start_over_or_cancel.html.erb_spec.rb": 0.014914999999746215,
+  "spec/views/idv/doc_auth/_cancel.html.erb_spec.rb": 0.014914999999746215,
   "spec/jobs/reports/daily_auths_report_spec.rb": 0.041712999998708256,
   "spec/services/document_capture_session_result_spec.rb": 0.004493999993428588,
   "spec/features/idv/doc_auth/email_sent_step_spec.rb": 5.013975000001665,

@@ -10,7 +10,6 @@ describe('verify-flow', () => {
         data-initial-values="{}"
         data-enabled-step-names='["password_confirm"]'
         data-base-path="/"
-        data-start-over-url="/"
         data-cancel-url="/"
         data-in-person-url="/"
         data-store-key="dK00lFMxejQH3y5BWt+LwOShw+WSRt/6OudNYI/N9X4="

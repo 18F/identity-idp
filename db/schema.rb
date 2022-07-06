@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_23_150235) do
+
+ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -591,9 +592,7 @@ ActiveRecord::Schema.define(version: 2022_06_23_150235) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.string "unique_session_id"
-    t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
-    t.integer "totp_timestamp"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"

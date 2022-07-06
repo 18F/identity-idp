@@ -15,13 +15,14 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= validated_form_for(:idv_otp_verification, method: :put) do %>
+<%= simple_form_for('', method: :put) do |f| %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
       <div class="margin-bottom-5">
         <%= render(
               'shared/one_time_code_input',
+              form: f,
               name: :code,
               value: @code,
               required: true,
@@ -50,4 +51,4 @@
   <%= link_to(t('forms.two_factor.try_again'), idv_phone_path(step: 'phone_otp_verification')) %>
 </p>
 
-<%= render 'idv/doc_auth/start_over_or_cancel', step: 'phone_otp_verification' %>
+<%= render 'idv/doc_auth/cancel', step: 'phone_otp_verification' %>

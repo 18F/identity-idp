@@ -188,23 +188,6 @@ feature 'IAL2 Single Sign On' do
         end
       end
     end
-
-    context 'returning to verify after canceling during the same session' do
-      it 'allows the user to verify', js: true do
-        user = create(:user, :signed_up)
-        request_url = saml_ial2_request_url
-
-        visit request_url
-        sign_in_live_with_2fa(user)
-        complete_all_doc_auth_steps
-        click_on t('links.cancel')
-        click_on t('forms.buttons.cancel')
-        visit request_url
-        complete_all_doc_auth_steps
-
-        expect(current_path).to eq idv_phone_path
-      end
-    end
   end
 
   context 'visiting sign_up_completed path before proofing' do
