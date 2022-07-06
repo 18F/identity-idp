@@ -68,6 +68,7 @@ module Idv
       end
 
       def verify_document_capture_session
+        return nil unless document_capture_session_uuid
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
         @verify_document_capture_session = DocumentCaptureSession.find_by(
           uuid: document_capture_session_uuid,
