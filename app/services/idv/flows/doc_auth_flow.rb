@@ -11,7 +11,6 @@ module Idv
         document_capture: Idv::Steps::DocumentCaptureStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::VerifyStep,
-        verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
@@ -21,10 +20,6 @@ module Idv
         { name: :verify_phone_or_address },
         { name: :secure_account },
       ].freeze
-
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::VerifyWaitStepShow,
-      }.freeze
 
       ACTIONS = {
         cancel_send_link: Idv::Actions::CancelSendLinkAction,

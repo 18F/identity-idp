@@ -34,10 +34,6 @@ module Flow
       render_update(step, result)
     end
 
-    def poll_with_meta_refresh(seconds)
-      @meta_refresh = seconds
-    end
-
     private
 
     def current_step
@@ -103,7 +99,6 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      return if call_optional_show_step(step)
       step_params = flow.extra_view_variables(step)
       local_params = step_params.merge(
         flow_namespace: @namespace,
@@ -112,30 +107,6 @@ module Flow
         step_template: "#{@view || @name}/#{step}",
       )
       render template: 'layouts/flow_step', locals: local_params
-    end
-
-    def call_optional_show_step(optional_step)
-      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
-      optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[optional_step]
-      return unless optional_show_step
-      result = optional_show_step.new(@flow).base_call
-
-      if @analytics_id
-        optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name)
-
-        analytics.track_event(analytics_optional_step, optional_properties)
-      end
-
-      if next_step.to_s != optional_step
-        if next_step_is_url
-          redirect_to next_step
-        else
-          redirect_to_step(next_step)
-        end
-        return true
-      end
-      false
     end
 
     def step_indicator_params
@@ -166,10 +137,6 @@ module Flow
 
     def analytics_visited
       'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
-    end
-
-    def analytics_optional_step
-      'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
     end
 
     def analytics_properties

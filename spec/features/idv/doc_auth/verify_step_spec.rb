@@ -42,7 +42,7 @@ feature 'doc auth verify step', :js do
     expect(user.proofing_component.source_check).to eq('aamva')
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
-      'IdV: doc auth optional verify_wait submitted',
+      'IdV: doc auth verify submitted',
       address_edited: false,
     )
   end
@@ -69,7 +69,7 @@ feature 'doc auth verify step', :js do
     click_idv_continue
 
     expect(fake_analytics).to have_logged_event(
-      'IdV: doc auth optional verify_wait submitted',
+      'IdV: doc auth verify submitted',
       address_edited: true,
     )
   end

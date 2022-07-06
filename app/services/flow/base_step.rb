@@ -83,6 +83,6 @@ module Flow
     end
 
     delegate :flash, :session, :flow_session, :current_user, :current_sp, :params, :steps, :request,
-             :poll_with_meta_refresh, to: :@flow
+             to: :@flow
   end
 end

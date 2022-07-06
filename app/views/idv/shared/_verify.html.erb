@@ -70,7 +70,7 @@ locals:
   </div>
   <div class="grid-row grid-gap grid-gap-2 padding-top-1">
     <div class='grid-col-fill'>
-      <%= t('idv.form.ssn') %>: 
+      <%= t('idv.form.ssn') %>:
       <%= render(
             'shared/masked_text',
             text: SsnFormatter.format(pii[:ssn]),
@@ -92,8 +92,8 @@ locals:
           ) { t('idv.buttons.change_label') } %>
     </div>
   </div>
-  <div class="margin-top-5">
-    <%= render SpinnerButtonComponent.new(
+  <%= simple_form_for('', method: :put, html: { class: 'margin-top-5' }) do %>
+    <%= render AsyncButtonComponent.new(
           action: ->(**tag_options, &block) do
             button_to(url_for, **tag_options, &block)
           end,
@@ -101,19 +101,10 @@ locals:
           wide: true,
           action_message: t('idv.messages.verifying'),
           method: :put,
-          form: {
-            class: 'button_to',
-            data: {
-              form_steps_wait: '',
-              error_message: t('idv.failure.exceptions.internal_error'),
-              alert_target: '#form-steps-wait-alert',
-              wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
-              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
-            },
-          },
+          alert_target: 'form-steps-wait-alert',
+          poll_interval: IdentityConfig.store.poll_rate_for_verify_in_seconds.seconds.in_milliseconds,
         ).with_content(t('forms.buttons.continue')) %>
-  </div>
+  <% end %>
 </div>
 
-<% javascript_packs_tag_once 'form-steps-wait' %>
 <%= render 'idv/doc_auth/cancel', step: 'verify' %>
