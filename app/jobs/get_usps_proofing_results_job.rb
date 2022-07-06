@@ -19,36 +19,45 @@ class GetUspsProofingResultsJob < ApplicationJob
   def perform(_now)
     return true unless IdentityConfig.store.in_person_proofing_enabled
 
-    InPersonEnrollment.needs_usps_status_check.each do |enrollment|
+    proofer = UspsInPersonProofer.new
+
+    InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
+      # todo determine stable unique ID for user (or profile?)
+      unique_id = enrollment.usps_enrollment_id
+
       # Record and commit attempt to check enrollment status to database
       enrollment.status_check_attempted_at = Time.now
       enrollment.save
 
       # todo dev is likely configured w/ the appropriate env but check again later
-      # todo remove additional conditional
-      if false
-        # todo does this need to be factoried?
-        proofer = UspsInPersonProofer.new
-
-        # todo determine stable unique ID for user (or profile?)
-        unique_id = SecureRandom.hex(4)
-
+      # todo reconfigure this to call the actual endpoint
+      # if false
         response = proofer.request_proofing_results unique_id, enrollment.enrollment_code
-        unless response.is_a? Hash
-          # todo log error (treat like 500)
-          next
-        end
+      # else
+        # pass
+        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json")
+        # fail
+        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json")
+        # progress
+        # response = JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json")
+        # invalid
+        response = "fubar"
+      # end
 
-        # Customer has not been to post office for IPP
-        if response['status'] == nil
-          next
-        end
+      unless response.is_a? Hash
+        # todo log error (treat like 500)
+        next
+      end
 
-        # Unsupported ID type
-        if SUPPORTED_ID_TYPES.includes? response['primaryIdType']
-          # todo retroactively fail enrollment
-          next
-        end
+      # Customer has not been to post office for IPP
+      if response['status'] == nil
+        next
+      end
+
+      # Unsupported ID type
+      if SUPPORTED_ID_TYPES.includes? response['primaryIdType']
+        # todo retroactively fail enrollment
+        next
       end
     end
     true
