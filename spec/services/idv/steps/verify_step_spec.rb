@@ -116,19 +116,21 @@ describe Idv::Steps::VerifyStep do
       end
 
       def redirect(step)
-        step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
+        step.instance_variable_get(:@flow).instance_variable_get(:@json)[:redirect_url]
       end
 
       it 'throttles them all' do
-        expect(build_step(controller).call).to be_kind_of(ApplicationJob)
-        expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
+        build_step(controller).call
+        build_step(controller2).call
+
+        expect_any_instance_of(Idv::Agent).not_to receive(:proof_resolution)
 
         step = build_step(controller)
-        expect(step.call).to be_nil, 'does not enqueue a job'
+        step.call
         expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
 
         step2 = build_step(controller2)
-        expect(step2.call).to be_nil, 'does not enqueue a job'
+        step2.call
         expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
       end
     end
