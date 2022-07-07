@@ -38,6 +38,9 @@ module Idv
             pii_like_keypaths: [[:errors, :ssn]],
           },
         )
+        @flow.analytics.idv_optional_verify_wait_submitted(
+          **form_response.to_h.merge(flow_path: flow_path, step: 'verify_wait_step_show'),
+        )
 
         if form_response.success?
           response = check_ssn if form_response.success?

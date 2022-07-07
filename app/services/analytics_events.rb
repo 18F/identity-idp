@@ -568,6 +568,41 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] proofing_results
+  # @param [Boolean] address_edited
+  # @param [Array] pii_like_keypaths
+  # @param [String] flow_path
+  # @param [String] step
+  # @param [Boolean] ssn_is_unique
+  # Legacy event for IDV resolution submission, kept for backwards-compatibility. Prefer "verify
+  # submitted" event instead.
+  def idv_optional_verify_wait_submitted(
+    success:,
+    errors:,
+    proofing_results:,
+    address_edited:,
+    pii_like_keypaths:,
+    flow_path:,
+    step:,
+    ssn_is_unique: nil,
+    **extra
+  )
+    track_event(
+      'IdV: doc auth optional verify_wait submitted',
+      success: success,
+      errors: errors,
+      proofing_results: proofing_results,
+      address_edited: address_edited,
+      ssn_is_unique: ssn_is_unique,
+      pii_like_keypaths: pii_like_keypaths,
+      flow_path: flow_path,
+      step: step,
+      **extra,
+    )
+  end
+
   # @param [String] step_name
   # @param [Integer] remaining_attempts
   # The user was sent to a warning page during the IDV flow
