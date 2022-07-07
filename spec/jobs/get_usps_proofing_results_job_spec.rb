@@ -8,9 +8,6 @@ RSpec.describe GetUspsProofingResultsJob do
     }
     let(:sut) { GetUspsProofingResultsJob.new }
 
-    before do
-    end
-
     describe '#perform' do
         describe 'IPP enabled' do
             let(:pending_enrollment) { create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18)) }
@@ -29,12 +26,15 @@ RSpec.describe GetUspsProofingResultsJob do
 
             let(:passing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json") }
             let(:failing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json") }
+
+            # todo refactor to ensure usages are covering the correct lines;
+            # may need to switch to regular error with response double
             let(:progress_response_body) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json") }
             let(:progress_response_error) {
-                err = instance_double(Faraday::BadRequestError)
-                allow(err).to receive(:response).
-                    and_return(:body => progress_response_body)
-                err
+                response = instance_double(Faraday::Response)
+                allow(response).to receive(:[]).
+                    with(:body).and_return(progress_response_body)
+                Faraday::BadRequestError.new nil, response
             }
             let(:invalid_response) { "fubar" }
 
@@ -48,7 +48,7 @@ RSpec.describe GetUspsProofingResultsJob do
                     and_return([pending_enrollment])
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
                     and_return(invalid_response)
 
                 allow(IdentityJobLogSubscriber.logger).to receive(:error)
@@ -79,19 +79,19 @@ RSpec.describe GetUspsProofingResultsJob do
                 allow(IdentityJobLogSubscriber.logger).to receive(:warn)
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
                     and_return(failing_response)
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_2.usps_enrollment_id, pending_enrollment_2.enrollment_code).
+                    with(pending_enrollment_2.usps_unique_id, pending_enrollment_2.enrollment_code).
                     and_raise(progress_response_error)
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_3.usps_enrollment_id, pending_enrollment_3.enrollment_code).
+                    with(pending_enrollment_3.usps_unique_id, pending_enrollment_3.enrollment_code).
                     and_raise(progress_response_error)
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment_4.usps_enrollment_id, pending_enrollment_4.enrollment_code).
+                    with(pending_enrollment_4.usps_unique_id, pending_enrollment_4.enrollment_code).
                     and_return(failing_response)
 
                 start_time = Time.now
@@ -117,7 +117,7 @@ RSpec.describe GetUspsProofingResultsJob do
                     and_return([pending_enrollment])
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
                     and_return(passing_response)
 
                 start_time = Time.now
@@ -139,7 +139,7 @@ RSpec.describe GetUspsProofingResultsJob do
                     and_return([pending_enrollment])
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
                     and_return(invalid_response)
 
                 expect(IdentityJobLogSubscriber.logger).to receive(:error)
@@ -167,7 +167,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 err = Faraday::BadRequestError.new nil, nil
 
                 allow(proofer).to receive(:request_proofing_results).
-                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code) do |_,__|
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do |_,__|
                         raise err
                     end
 
@@ -196,6 +196,14 @@ RSpec.describe GetUspsProofingResultsJob do
                 pending_enrollment.reload
 
                 expect(pending_enrollment.status).to eq "pending"
+            end
+
+            it 'marks enrollments as expired when USPS says they have expired' do
+                skip
+            end
+
+            it 'ignores enrollments when USPS says the customer has not been to the post office' do
+                skip
             end
 
             it 'reports a high-priority error on 5xx responses' do

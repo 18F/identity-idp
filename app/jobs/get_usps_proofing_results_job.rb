@@ -26,12 +26,11 @@ class GetUspsProofingResultsJob < ApplicationJob
     proofer = UspsInPersonProofer.new
 
     InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
-      # todo determine stable unique ID for user (or profile?)
-      unique_id = enrollment.usps_enrollment_id
-
       # Record and commit attempt to check enrollment status to database
       enrollment.status_check_attempted_at = Time.now
       enrollment.save
+
+      unique_id = enrollment.usps_unique_id
 
       response = nil
       begin
@@ -61,7 +60,6 @@ class GetUspsProofingResultsJob < ApplicationJob
           next
         end
       rescue Exception => err
-        p err
         IdentityJobLogSubscriber.logger.error(
           {
             name: 'get_usps_proofing_results_job.errors.request_exception',
