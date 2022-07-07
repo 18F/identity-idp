@@ -1914,9 +1914,11 @@ module AnalyticsEvents
   end
 
   # Tracks when user's piv cac setup
-  def user_registration_piv_cac_setup_visit
+  # @param [Integer] enabled_mfa_methods_count
+  def user_registration_piv_cac_setup_visit(**extra)
     track_event(
       'User Registration: piv cac setup visited',
+      **extra,
     )
   end
 

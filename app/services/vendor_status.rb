@@ -80,19 +80,13 @@ class VendorStatus
   def track_event(analytics)
     raise ArgumentError, 'analytics instance required' if analytics.nil?
 
-    tracking_data = {
+    analytics.vendor_outage(
       vendor_status: {
         acuant: IdentityConfig.store.vendor_status_acuant,
         lexisnexis_instant_verify: IdentityConfig.store.vendor_status_lexisnexis_instant_verify,
         lexisnexis_trueid: IdentityConfig.store.vendor_status_lexisnexis_trueid,
         sms: IdentityConfig.store.vendor_status_sms,
         voice: IdentityConfig.store.vendor_status_voice,
-      },
-      redirect_from: from,
-    }
-    analytics.vendor_outage(
-      vendor_status: {
-        # ...
       },
       redirect_from: from,
     )
