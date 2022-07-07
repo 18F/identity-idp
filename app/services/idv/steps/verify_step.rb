@@ -6,7 +6,6 @@ module Idv
       def call
         if current_async_state.none?
           enqueue_job
-          render_pending_response
         elsif current_async_state.in_progress?
           render_pending_response
         elsif current_async_state.missing?
@@ -102,7 +101,7 @@ module Idv
               throttle_type: :proof_ssn,
               step_name: self.class,
             )
-            redirect_to idv_session_errors_ssn_failure_url
+            render_redirect idv_session_errors_ssn_failure_url
             return
           end
         end
@@ -118,6 +117,8 @@ module Idv
           should_proof_state_id: should_use_aamva?(pii),
           trace_id: amzn_trace_id,
         )
+
+        render_pending_response
       end
 
       def idv_agent
@@ -136,6 +137,10 @@ module Idv
       def render_pending_response
         render_json({ pending: true }, status: :accepted)
         FormResponse.new(success: false, extra: { pending: true })
+      end
+
+      def render_redirect(url)
+        render_json({ redirect_url: url })
       end
     end
   end
