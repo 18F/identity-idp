@@ -473,7 +473,7 @@ test:
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
-  poll_rate_for_verify_in_seconds: 1
+  poll_rate_for_verify_in_seconds: 0
   recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
