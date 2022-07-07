@@ -21,7 +21,6 @@ feature 'Analytics Regression', js: true do
       'Frontend: IdV: back image added' => { 'width' => 284, 'height' => 38, 'mimeType' => 'image/png', 'source' => 'upload', 'size' => 3694, 'attempt' => 1, 'flow_path' => 'standard' },
       'Frontend: IdV: document capture async upload submitted' => { 'success' => true, 'trace_id' => nil, 'status_code' => 200, 'flow_path' => 'standard' },
       'IdV: doc auth image upload form submitted' => { success: true, errors: {}, attempts: nil, remaining_attempts: 3, user_id: nil, flow_path: 'standard' },
-      'IdV: doc auth verify_document submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document', step_count: 1 },
       'IdV: doc auth image upload vendor pii validation' => { success: true, errors: {}, user_id: nil, remaining_attempts: 3, flow_path: 'standard' },
       'IdV: doc auth verify_document_status submitted' => { success: true, errors: {}, remaining_attempts: 3, flow_path: 'standard', step: 'verify_document_status', step_count: 1 },
       'IdV: doc auth document_capture submitted' => { success: false, errors: { front_image: ['Please fill in this field.'], back_image: ['Please fill in this field.'] }, is_fallback_link: false, error_details: { front_image: [:blank], back_image: [:blank] }, flow_path: 'standard', step: 'document_capture', step_count: 1 },
