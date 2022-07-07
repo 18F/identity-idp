@@ -230,24 +230,6 @@ feature 'doc auth verify step', :js do
     end
   end
 
-  context 'resolution failure' do
-    let(:skip_step_completion) { true }
-
-    it 'does not proceed to the next page' do
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_ssn_step
-      fill_out_ssn_form_with_ssn_that_fails_resolution
-      click_idv_continue
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_session_errors_warning_path)
-
-      click_on t('idv.failure.button.warning')
-
-      expect(page).to have_current_path(idv_doc_auth_verify_step)
-    end
-  end
-
   context 'async timed out' do
     it 'allows resubmitting form' do
       allow(DocumentCaptureSession).to receive(:find_by).
