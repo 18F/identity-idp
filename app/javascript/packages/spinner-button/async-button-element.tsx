@@ -34,7 +34,7 @@ class AsyncButtonElement extends SpinnerButtonElement {
 
   @once()
   get form(): HTMLFormElement {
-    return this.closest('form')!;
+    return this.querySelector('form')!;
   }
 
   @once()

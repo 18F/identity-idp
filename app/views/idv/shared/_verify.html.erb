@@ -92,7 +92,7 @@ locals:
           ) { t('idv.buttons.change_label') } %>
     </div>
   </div>
-  <%= simple_form_for('', method: :put, html: { class: 'margin-top-5' }) do %>
+  <div class="margin-top-5">
     <%= render AsyncButtonComponent.new(
           action: ->(**tag_options, &block) do
             button_to(url_for, **tag_options, &block)
@@ -104,7 +104,7 @@ locals:
           alert_target: 'form-steps-wait-alert',
           poll_interval: IdentityConfig.store.poll_rate_for_verify_in_seconds.seconds.in_milliseconds,
         ).with_content(t('forms.buttons.continue')) %>
-  <% end %>
+  </div>
 </div>
 
 <%= render 'idv/doc_auth/cancel', step: 'verify' %>
