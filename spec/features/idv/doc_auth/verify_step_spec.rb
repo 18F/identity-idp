@@ -9,6 +9,7 @@ feature 'doc auth verify step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:user) { create(:user, :signed_up) }
   before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     unless skip_step_completion
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
@@ -35,8 +36,6 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the next page upon confirmation' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-
     click_idv_continue
 
     expect(page).to have_current_path(idv_phone_path)
@@ -61,8 +60,6 @@ feature 'doc auth verify step', :js do
   end
 
   it 'tracks when the user edits their address' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-
     click_button t('idv.buttons.change_address_label')
     fill_out_address_form_ok
     click_button t('forms.buttons.submit.update') # address form
@@ -86,8 +83,6 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution fails' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -107,8 +102,6 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
@@ -128,7 +121,6 @@ feature 'doc auth verify step', :js do
   end
 
   it 'throttles resolution and continues when it expires' do
-    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -225,9 +217,6 @@ feature 'doc auth verify step', :js do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
 
-      allow_any_instance_of(ApplicationController).
-          to receive(:analytics).and_return(fake_analytics)
-
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
@@ -276,8 +265,6 @@ feature 'doc auth verify step', :js do
     it 'allows resubmitting form' do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
 
       click_idv_continue
       expect(page).to have_content(t('idv.failure.timeout'))
