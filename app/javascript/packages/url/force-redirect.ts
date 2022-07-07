@@ -13,7 +13,7 @@ const DEFAULT_NAVIGATE: Navigate = (url) => {
  * @param url Destination URL.
  * @param navigate Navigation implementation, used for dependency injection.
  */
-function forceRedirect(url, navigate = DEFAULT_NAVIGATE) {
+function forceRedirect(url: string, navigate: Navigate = DEFAULT_NAVIGATE) {
   removeUnloadProtection();
   navigate(url);
 }
