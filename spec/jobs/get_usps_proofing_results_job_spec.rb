@@ -26,6 +26,14 @@ RSpec.describe GetUspsProofingResultsJob do
 
             let(:passing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json") }
             let(:failing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json") }
+            let(:failing_unsupported_id_response){ 
+                passing_response['primaryIdType'] = "Not supported"
+                passing_response
+                
+                }
+
+
+
 
             # todo refactor to ensure usages are covering the correct lines;
             # may need to switch to regular error with response double
@@ -209,9 +217,22 @@ RSpec.describe GetUspsProofingResultsJob do
             it 'reports a high-priority error on 5xx responses' do
                 skip
             end
-
+            
             it 'retroactively fails enrollment for unsupported ID types' do
-                skip
+                allow(proofer).to receive(:request_proofing_results).
+                with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
+                and_return(failing_unsupported_id_response)
+            
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                and_return([pending_enrollment])
+                expect(pending_enrollment.status).to eq "pending"
+
+                sut.perform Time.now
+                #forces to reload from database
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "failed"
+
             end
         end
 
