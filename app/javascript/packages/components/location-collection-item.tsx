@@ -1,8 +1,6 @@
 import type { ReactNode } from 'react';
 import { Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
-// import fails
-import './location-collection-item.scss';
 
 // TODO: update props to be a locationItemObject
 // TODO: create locationItemObject based on data returned by API, should be separate file, need to look at api to determine fields
