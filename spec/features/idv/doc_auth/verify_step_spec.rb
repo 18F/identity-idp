@@ -242,6 +242,9 @@ feature 'doc auth verify step', :js do
 
   context 'async timed out' do
     it 'allows resubmitting form' do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
