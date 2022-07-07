@@ -64,7 +64,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         )
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
+          with('User marked authenticated', authentication_type: :valid_2fa)
 
         post :create, params: payload
       end

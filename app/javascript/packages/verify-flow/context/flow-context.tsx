@@ -2,11 +2,6 @@ import { createContext } from 'react';
 
 export interface FlowContextValue {
   /**
-   * URL to path for session restart.
-   */
-  startOverURL: string;
-
-  /**
    * URL to path for session cancel.
    */
   cancelURL: string;
@@ -33,7 +28,6 @@ export interface FlowContextValue {
 }
 
 const FlowContext = createContext<FlowContextValue>({
-  startOverURL: '',
   cancelURL: '',
   inPersonURL: null,
   currentStep: '',

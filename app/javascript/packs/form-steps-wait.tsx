@@ -1,23 +1,33 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
 
-/**
- * @typedef FormStepsWaitElements
- *
- * @prop {HTMLFormElement} form
- */
+interface FormStepsWaitElements {
+  form: HTMLFormElement;
+}
 
-/**
- * @typedef FormStepsWaitOptions
- *
- * @prop {number} pollIntervalMs Poll interval.
- * @prop {string} waitStepPath URL path to wait step, used in polling.
- * @prop {string=} errorMessage Message to show on unhandled server error.
- * @prop {string=} alertTarget DOM selector of HTML element to which alert should render.
- */
+interface FormStepsWaitOptions {
+  /**
+   * Poll interval.
+   */
+  pollIntervalMs: number;
 
-/** @type {FormStepsWaitOptions} */
-const DEFAULT_OPTIONS = {
+  /**
+   * URL path to wait step, used in polling.
+   */
+  waitStepPath: string;
+
+  /**
+   * Message to show on unhandled server error.
+   */
+  errorMessage?: string;
+
+  /**
+   * DOM selector of HTML element to which alert should render.
+   */
+  alertTarget?: string;
+}
+
+const DEFAULT_OPTIONS: FormStepsWaitOptions = {
   pollIntervalMs: 3000,
   waitStepPath: `${window.location.pathname}_wait`,
 };
@@ -25,39 +35,58 @@ const DEFAULT_OPTIONS = {
 /**
  * Returns a DOM document object for given markup string.
  *
- * @param {string} html HTML markup.
+ * @param html HTML markup.
  *
- * @return {Document} DOM document.
+ * @return DOM document.
  */
-export function getDOMFromHTML(html) {
+export function getDOMFromHTML(html: string): Document {
   const dom = document.implementation.createHTMLDocument('');
   dom.body.innerHTML = html;
   return dom;
 }
 
 /**
- * @param {Document} dom
- *
- * @return {boolean} Whether page polls.
+ * @return Whether page polls.
  */
-export function isPollingPage(dom) {
+export function isPollingPage(dom: Document): boolean {
   return Boolean(dom.querySelector('meta[http-equiv="refresh"]'));
 }
 
 /**
  * Returns trimmed page alert contents, if exists.
  *
- * @param {Document} dom
+ * @param dom
  *
- * @return {string?=} Page alert, if exists.
+ * @return Page alert, if exists.
  */
-export function getPageErrorMessage(dom) {
+export function getPageErrorMessage(dom: Document): string | null | undefined {
   return dom.querySelector('.usa-alert.usa-alert--error')?.textContent?.trim();
 }
 
+/**
+ * Given a response object and its content, returns the redirect destination, which is either the
+ * URL from parsed JSON, or the response's own URL.
+ *
+ * @param response Response object.
+ * @param body Body text.
+ *
+ * @return Redirect destination.
+ */
+function getRedirectURL(response: Response, body: string): string {
+  try {
+    const { redirect_url: redirectURL } = JSON.parse(body);
+    return redirectURL;
+  } catch {
+    return response.url;
+  }
+}
+
 export class FormStepsWait {
+  elements: FormStepsWaitElements;
+
+  options: FormStepsWaitOptions;
+
   constructor(form) {
-    /** @type {FormStepsWaitElements} */
     this.elements = { form };
 
     this.options = {
@@ -118,12 +147,14 @@ export class FormStepsWait {
         this.scheduleNextPollFetch();
       } else {
         const message = getPageErrorMessage(dom);
-        const isSamePage = new URL(response.url).pathname === window.location.pathname;
+        const redirectURL = getRedirectURL(response, body);
+        const isSamePage =
+          new URL(redirectURL, window.location.href).pathname === window.location.pathname;
         if (message && isSamePage) {
           this.renderError(message);
           this.stopSpinner();
         } else {
-          window.location.href = response.url;
+          window.location.href = redirectURL;
         }
       }
     }

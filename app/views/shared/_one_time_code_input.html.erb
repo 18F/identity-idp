@@ -3,35 +3,36 @@ Renders an OTP code input field. In addition to the locals described below, all 
 local assigns will be applied directly to the text input as a hash of HTML attributes.
 
 locals:
+* form: Form builder instance.
 * name: Field name. Defaults to `:code`.
+* required: Whether field is required. Defaults to `false`.
 * transport: WebOTP transport method. Defaults to 'sms'.
 * value: Field value. Defaults to `''`.
 * class: CSS classes to add (optional)
 * numeric: if the field should only accept digits. Defualts to true
 %>
-<% name = local_assigns.delete(:name) { :code }
+<% form = local_assigns.delete(:form)
+   name = local_assigns.delete(:name) { :code }
+   required = local_assigns.delete(:required) { false }
    numeric = local_assigns.delete(:numeric) { true }
    transport = local_assigns.delete(:transport) { 'sms' }
    classes = ['field font-family-mono usa-input one-time-code-input']
    classes << local_assigns.delete(:class) if local_assigns[:class] %>
 
-<div>
-  <%= text_field_tag(
-        name,
-        nil,
-        'aria-invalid': 'false',
+<%= render ValidatedFieldComponent.new(
+      form: form,
+      name: name,
+      required: required,
+      label: false,
+      input_html: {
         'data-transport': transport,
         pattern: numeric ? '[0-9]*' : '[a-zA-Z0-9]*',
         maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
         autocomplete: 'one-time-code',
         inputmode: numeric ? 'numeric' : 'text',
-        type: 'text',
         **local_assigns,
         class: classes,
-      ) %>
-  <span class='usa-error-message display-if-invalid display-if-invalid--value-missing margin-top-1' role='alert'>
-    <%= t('simple_form.required.text') %>
-  </span>
-</div>
+      },
+    ) %>
 
 <%= javascript_packs_tag_once 'one-time-code-input' %>

@@ -3,11 +3,11 @@ import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import { PageHeading } from '@18f/identity-components';
+import { Cancel } from '@18f/identity-verify-flow';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
-import StartOverOrCancel from './start-over-or-cancel';
 
 /**
  * @typedef SelfieStepValue
@@ -59,7 +59,7 @@ function SelfieStep({
         />
       )}
       <FormStepsButton.Submit />
-      <StartOverOrCancel />
+      <Cancel />
     </>
   );
 }

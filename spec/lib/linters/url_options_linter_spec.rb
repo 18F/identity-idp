@@ -33,4 +33,22 @@ describe RuboCop::Cop::IdentityIdp::UrlOptionsLinter do
       end
     RUBY
   end
+
+  it 'registers no offense when including Rails url_helpers and defining attr_reader' do
+    expect_no_offenses(<<~RUBY)
+      class MyViewModelClass
+        include Rails.application.routes.url_helpers
+        attr_reader :url_options
+      end
+    RUBY
+  end
+
+  it 'registers no offense when including Rails url_helpers and defining attr_accessor' do
+    expect_no_offenses(<<~RUBY)
+      class MyViewModelClass
+        include Rails.application.routes.url_helpers
+        attr_accessor :url_options
+      end
+    RUBY
+  end
 end

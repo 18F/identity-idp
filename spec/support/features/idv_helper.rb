@@ -1,5 +1,8 @@
+require_relative 'interaction_helper'
+
 module IdvHelper
   include ActiveJob::TestHelper
+  include InteractionHelper
 
   def self.included(base)
     base.class_eval { include JavascriptDriverHelper }
@@ -24,11 +27,7 @@ module IdvHelper
   end
 
   def click_idv_continue
-    continue_button = page.find_button(t('forms.buttons.continue'), match: :first)
-    page.execute_script('arguments[0].scrollIntoView()', continue_button) if javascript_enabled?
-    continue_button.click
-    # If button shows spinner when clicked, wait for it to finish.
-    expect(page).to have_no_css('lg-spinner-button.spinner-button--spinner-active', wait: 10)
+    click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
   def choose_idv_otp_delivery_method_sms

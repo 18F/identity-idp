@@ -1283,6 +1283,15 @@ module AnalyticsEvents
     )
   end
 
+  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
+  def non_restricted_mfa_required_prompt_visited
+    track_event('Non-Restricted MFA Required Prompt visited')
+  end
+
+  def non_restricted_mfa_required_prompt_skipped
+    track_event('Non-Restricted MFA Required Prompt skipped')
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Hash] errors
@@ -1328,6 +1337,63 @@ module AnalyticsEvents
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks if otp phone validation failed
+  # @identity.idp.previous_event_name Twilio Phone Validation Failed
+  # @param [String] error
+  # @param [String] context
+  # @param [String] country
+  def otp_phone_validation_failed(error:, context:, country:, **extra)
+    track_event(
+      'Vendor Phone Validation failed',
+      error: error,
+      context: context,
+      country: country,
+      **extra,
+    )
+  end
+
+  # User has been marked as authenticated
+  # @param [String] authentication_type
+  def user_marked_authed(authentication_type:, **extra)
+    track_event(
+      'User marked authenticated',
+      authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # User registration has been hadnded off to agency page
+  # @param [Boolean] ial2
+  # @param [Integer] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_agency_handoff_page_visit(
+      ial2:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      sp_session_requested_attributes:,
+      sp_request_requested_attributes: nil,
+      ialmax: nil,
+      **extra
+    )
+
+    track_event(
+      'User registration: agency handoff visited',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,
     )
   end
@@ -1501,7 +1567,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [String] delivery_preference
   # @param [Integer] phone_configuration_id
   # @param [Boolean] make_default_number
@@ -1531,7 +1596,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Hash] errors
   # @param [Integer] phone_configuration_id
   # tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
@@ -1822,21 +1886,56 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(success:, errors: nil, **extra)
+  def user_registration_2fa_setup(
+    success:,
+    errors: nil,
+    enabled_mfa_methods_count: nil,
+    selection: nil,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup',
       {
         success: success,
         errors: errors,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        selection: selection,
         **extra,
       }.compact,
     )
   end
 
+  # Tracks when user visits Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_visited
+    track_event('User Registration: Suggest Another MFA Notice visited')
+  end
+
+  # Tracks when user skips Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_skipped
+    track_event('User Registration: Suggest Another MFA Notice Skipped')
+  end
+
   # Tracks when user visits MFA selection page
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
+  end
+
+  # Tracks when user visits enter email page
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
+  end
+
+  # @param [Integer] enabled_mfa_methods_count
+  # Tracks when user visits the phone setup step during registration
+  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: phone setup visited',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

@@ -20,7 +20,7 @@
       ),
       document_capture_session_uuid: flow_session[:document_capture_session_uuid],
       endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document) :
+    api_verify_v2_document_capture_url :
     api_verify_images_url,
       status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
@@ -31,7 +31,6 @@
       max_capture_attempts_before_tips: IdentityConfig.store.doc_auth_max_capture_attempts_before_tips,
       sp_name: sp_name,
       flow_path: flow_path,
-      start_over_url: idv_session_path,
       cancel_url: idv_cancel_path,
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,

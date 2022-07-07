@@ -158,10 +158,6 @@ module Idv
         :idv_verify_step_document_capture_session_uuid
       end
 
-      def verify_document_capture_session_uuid_key
-        :verify_document_action_document_capture_session_uuid
-      end
-
       def track_document_state(state)
         return unless IdentityConfig.store.state_tracking_enabled && state
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)

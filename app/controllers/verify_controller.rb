@@ -23,7 +23,6 @@ class VerifyController < ApplicationController
 
     {
       base_path: idv_app_path,
-      start_over_url: idv_session_path,
       cancel_url: idv_cancel_path,
       in_person_url: IdentityConfig.store.in_person_proofing_enabled ? idv_in_person_url : nil,
       initial_values: initial_values,

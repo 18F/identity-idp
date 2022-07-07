@@ -63,11 +63,6 @@ export interface VerifyFlowProps {
   basePath: string;
 
   /**
-   * URL to path for session restart.
-   */
-  startOverURL?: string;
-
-  /**
    * URL to path for session cancel.
    */
   cancelURL?: string;
@@ -113,7 +108,6 @@ function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
-  startOverURL = '',
   cancelURL = '',
   inPersonURL = null,
   initialAddressVerificationMethod,
@@ -128,7 +122,6 @@ function VerifyFlow({
   const [currentStep, setCurrentStep] = useState(steps[0].name);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
   const context = useObjectMemo({
-    startOverURL,
     cancelURL,
     inPersonURL,
     currentStep,

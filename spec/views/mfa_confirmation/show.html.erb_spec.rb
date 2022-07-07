@@ -40,32 +40,4 @@ describe 'mfa_confirmation/show.html.erb' do
       text: @content.button,
     )
   end
-
-  it 'does not have a button with the ability to skip step' do
-    render
-
-    expect(rendered).to_not have_selector('button', text: t('mfa.skip'))
-  end
-
-  it 'does have a learn more link' do
-    render
-
-    expect(rendered).to have_selector('a', text: t('mfa.non_restricted.learn_more'))
-  end
-
-  context 'users with non restriced mfa' do
-    let(:user) { create(:user, :signed_up, :with_authentication_app) }
-
-    it 'does have a button with the ability to skip step' do
-      render
-
-      expect(rendered).to have_selector('button', text: t('mfa.skip'))
-    end
-
-    it 'does not have a learn more link' do
-      render
-
-      expect(rendered).to_not have_selector('a', text: t('mfa.non_restricted.learn_more'))
-    end
-  end
 end
