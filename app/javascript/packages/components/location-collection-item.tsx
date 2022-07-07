@@ -11,16 +11,19 @@ interface LocationCollectionItemProps {
   hoursWD: string;
   hoursSat: string;
   hoursSun: string;
-  children: ReactNode;
 }
-
-// TODO: need a styles.scss that includes @import './components/location-collection-item'; but needs to be separate from
-// the one that already exists
 
 // TODO: create strings in i18n for days and import here
 // flex-row doesn't work; flex-column does but the 2 items are now in a col together and stacked on top of each other
 // this means the ui as is does not match the figma file
-function LocationCollectionItem({ header, children }: LocationCollectionItemProps) {
+function LocationCollectionItem({
+  header,
+  addressLine1,
+  addressLine2,
+  hoursWD,
+  hoursSat,
+  hoursSun,
+}: LocationCollectionItemProps) {
   const { t } = useI18n();
   return (
     <li className="location-collection-item">
@@ -33,12 +36,12 @@ function LocationCollectionItem({ header, children }: LocationCollectionItemProp
             <h3 className="usa-collection__heading">{header}</h3>
           </div>
         </div>
-        <div>900 E FAYETTE ST RM 118</div>
-        <div>BALTIMORE, MD 21233-9715</div>
+        <div>{addressLine1}</div>
+        <div>{addressLine2}</div>
         <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
-        <div>Mon-Fri: 8:30 am-7:00 pm</div>
-        <div>Sat: 8:30 am-5:00 pm</div>
-        <div>Sun: Closed</div>
+        <div>{hoursWD}</div>
+        <div>{hoursSat}</div>
+        <div>{hoursSun}</div>
       </div>
     </li>
   );
