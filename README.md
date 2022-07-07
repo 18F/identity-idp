@@ -46,14 +46,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ brew services list
   ```
 
-3. Create the development and test databases:
-
-  ```
-  $ psql -c "CREATE DATABASE identity_idp_development;"
-  $ psql -c "CREATE DATABASE identity_idp_test;"
-  ```
-
-4. Run the following command to set up your local environment:
+3. Run the following command to set up your local environment:
 
   ```
   $ make setup
@@ -62,7 +55,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
 
-5. Now that you have you have everything installed, you can run the following command to start your local server:
+4. Now that you have you have everything installed, you can run the following command to start your local server:
 
   ```
   $ make run
