@@ -154,8 +154,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
                 sut.perform Time.now
 
-                expected_range = (start_time)...(Time.now)
-                
                 pending_enrollment.reload
 
                 expect(pending_enrollment.status).to eq "pending"
@@ -195,8 +193,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
                 sut.perform Time.now
 
-                expected_range = (start_time)...(Time.now)
-                
                 pending_enrollment.reload
 
                 expect(pending_enrollment.status).to eq "pending"
