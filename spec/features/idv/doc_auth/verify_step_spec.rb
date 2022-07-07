@@ -230,19 +230,6 @@ feature 'doc auth verify step', :js do
     end
   end
 
-  it 'can toggle viewing the ssn' do
-    expect(page).to have_text('9**-**-***4')
-    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-
-    check t('forms.ssn.show')
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
-    expect(page).not_to have_text('9**-**-***4')
-
-    uncheck t('forms.ssn.show')
-    expect(page).to have_text('9**-**-***4')
-    expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-  end
-
   context 'resolution failure' do
     let(:skip_step_completion) { true }
 
