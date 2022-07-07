@@ -1954,7 +1954,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Integer] mfa_method_counts
-  # @param [Hash] pii_like_keypaths
   # Tracks when WebAuthn is deleted
   def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
     track_event(
