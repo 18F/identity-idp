@@ -909,6 +909,11 @@ module AnalyticsEvents
     )
   end
 
+  # The system encountered an error and the proofing results are missing
+  def idv_proofing_resolution_result_missing
+    track_event('Proofing Resolution Result Missing')
+  end
+
   # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
@@ -1327,6 +1332,63 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if otp phone validation failed
+  # @identity.idp.previous_event_name Twilio Phone Validation Failed
+  # @param [String] error
+  # @param [String] context
+  # @param [String] country
+  def otp_phone_validation_failed(error:, context:, country:, **extra)
+    track_event(
+      'Vendor Phone Validation failed',
+      error: error,
+      context: context,
+      country: country,
+      **extra,
+    )
+  end
+
+  # User has been marked as authenticated
+  # @param [String] authentication_type
+  def user_marked_authed(authentication_type:, **extra)
+    track_event(
+      'User marked authenticated',
+      authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # User registration has been hadnded off to agency page
+  # @param [Boolean] ial2
+  # @param [Integer] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_agency_handoff_page_visit(
+      ial2:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      sp_session_requested_attributes:,
+      sp_request_requested_attributes: nil,
+      ialmax: nil,
+      **extra
+    )
+
+    track_event(
+      'User registration: agency handoff visited',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
   # Tracks when user makes an otp delivery selection
   # @param [String] otp_delivery_preference (sms or voice)
   # @param [Boolean] resend
@@ -1496,7 +1558,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [String] delivery_preference
   # @param [Integer] phone_configuration_id
   # @param [Boolean] make_default_number
@@ -1526,7 +1587,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Hash] errors
   # @param [Integer] phone_configuration_id
   # tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
@@ -1590,6 +1650,12 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # Rate limit triggered
+  # @param [String] type
+  def rate_limit_triggered(type:, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra)
   end
 
   # User authenticated by a remembered device

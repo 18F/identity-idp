@@ -137,11 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  PROOFING_RESOLUTION_RESULT_MISSING = 'Proofing Resolution Result Missing' # Previously "Proofing Resolution Timeout"
-  RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'
-  REPORT_REGISTERED_USERS_COUNT = 'Report Registered Users Count'
-  REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT = 'Report IAL1 Users Linked to SPs Count'
-  REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT = 'Report IAL2 Users Linked to SPs Count'
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
   SP_INACTIVE_VISIT = 'SP inactive visited'
@@ -161,11 +156,6 @@ class Analytics
   THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'
-  OTP_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'
-  OTP_SMS_INBOUND_MESSAGE_RECEIVED = 'Twilio SMS Inbound Message Received'
-  OTP_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'
-  USER_MARKED_AUTHED = 'User marked authenticated'
-  USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'
   USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'
   USER_REGISTRATION_COMPLETE = 'User registration: complete'
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'

@@ -136,10 +136,14 @@ fr:
         déverouillage facial pour accéder à votre compte avec %{app_name}.
       instructions_title: Utilisez le déverrouillage par empreinte digitale ou le
         déverouillage facial pour accéder à votre compte.
-      intro: Activez le déverrouillage facial ou tactile comme méthode
-        d’authentification sur cet appareil. Vous aurez besoin de cet appareil
-        pour utiliser cette méthode à l’avenir. Commencez par donner un surnom à
-        votre appareil.
+      intro_html: '<p>Lorsque vous voulez accéder à votre compte %{app_name}, vous
+        utilisez votre appareil pour numériser votre visage ou votre empreinte
+        digitale. Votre appareil confirme si ces numérisations correspondent aux
+        images que vous avez déjà stockées sur votre appareil.</p><p>Nous ne
+        copions ni ne stockons ces images. Vous aurez besoin du même appareil
+        pour vous connecter en utilisant le déverrouillage facial ou tactile à
+        l’avenir. %{link}</p>'
+      intro_link_text: En savoir plus sur le déverrouillage facial ou tactile.
       login_text: 'Lorsque vous êtes prêt, appuyez sur le bouton:'
       nickname: Pseudo dispositivo
     webauthn_setup:
@@ -147,9 +151,9 @@ fr:
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
         l’enregistrer avec %{app_name}
       instructions_title: Connectez votre clé de sécurité
-      intro: Ajoutez une clé de sécurité conforme à la norme FIDO comme méthode
-        d’authentification. Vous pouvez ajouter autant de clés de sécurité que
-        vous le souhaitez. Pour commencer, donnez d’abord un surnom à votre clé
-        de sécurité.
+      intro_html: '<p>Ajoutez une clé de sécurité conforme à la norme FIDO comme
+        méthode d’authentification. Vous pouvez ajouter autant de clés de
+        sécurité que vous le souhaitez. Pour commencer, donnez d’abord un surnom
+        à votre clé de sécurité.</p>'
       login_text: 'Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton:'
       nickname: Pseudo clé de sécurité

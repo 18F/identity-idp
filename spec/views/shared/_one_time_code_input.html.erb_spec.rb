@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 describe 'shared/_one_time_code_input.html.erb' do
+  include SimpleForm::ActionViewExtensions::FormHelper
+
   let(:params) { {} }
 
   before do
-    render('shared/one_time_code_input', **params)
+    simple_form_for('', url: '/') do |f|
+      render('shared/one_time_code_input', form: f, **params)
+    end
   end
 
   describe 'name' do

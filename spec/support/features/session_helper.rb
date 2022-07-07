@@ -353,7 +353,7 @@ module Features
     end
 
     def session_cookie
-      cookies.find { |cookie| cookie.name == '_upaya_session' }
+      cookies.find { |cookie| cookie.name == '_identity_idp_session' }
     end
 
     def session_store

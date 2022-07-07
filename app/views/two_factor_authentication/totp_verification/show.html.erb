@@ -2,13 +2,14 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.header) %>
 
-<%= validated_form_for('', method: :post, html: { class: 'margin-bottom-5' }) do |f| %>
+<%= simple_form_for('', method: :post, html: { class: 'margin-bottom-5' }) do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
   <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
   <%= render(
         'shared/one_time_code_input',
+        form: f,
         transport: nil,
         name: :code,
         value: @code,

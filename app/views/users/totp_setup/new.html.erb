@@ -9,7 +9,7 @@
       ) %>
 </p>
 
-<%= validated_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
+<%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
   <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
     <%= c.item(heading: t('forms.totp_setup.totp_step_1')) do %>
       <p><%= t('forms.totp_setup.totp_step_1a') %></p>
@@ -39,6 +39,7 @@
     <%= c.item(heading: t('forms.totp_setup.totp_step_4')) do %>
       <%= render(
             'shared/one_time_code_input',
+            form: f,
             transport: nil,
             name: :code,
             required: true,
