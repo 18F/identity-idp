@@ -23,6 +23,15 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
       end
     end
 
+    context 'with missing document capture session' do
+      let(:document_capture_session) { nil }
+
+      it 'is invalid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:document_capture_session]).to eq([t('errors.messages.blank')])
+      end
+    end
+
     context 'with pending result' do
       let(:async_state) do
         DocumentCaptureSessionAsyncResult.new(

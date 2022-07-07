@@ -157,7 +157,6 @@ function addPageAction(event, payload) {
         endpoint: String(appRoot.getAttribute('data-endpoint')),
         statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
         statusPollInterval: Number(appRoot.getAttribute('data-status-poll-interval-ms')),
-        method: isAsyncForm ? 'PUT' : 'POST',
         csrf,
         isMockClient,
         backgroundUploadURLs,
