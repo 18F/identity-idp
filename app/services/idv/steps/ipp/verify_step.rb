@@ -5,7 +5,8 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          enqueue_job false
+          pii[:state_id_type] = 'drivers_license'
+          enqueue_job
         end
 
         def extra_view_variables

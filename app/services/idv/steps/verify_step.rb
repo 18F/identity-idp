@@ -4,7 +4,7 @@ module Idv
       STEP_INDICATOR_STEP = :verify_info
 
       def call
-        enqueue_job should_use_aamva?(pii)
+        enqueue_job
       end
 
       def extra_view_variables

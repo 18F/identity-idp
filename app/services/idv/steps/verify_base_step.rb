@@ -109,7 +109,7 @@ module Idv
       #
       #
       # Used by verify_step
-      def enqueue_job(should_proof_state_id)
+      def enqueue_job
         return if flow_session[verify_step_document_capture_session_uuid_key]
         return invalid_state_response if invalid_state?
 
@@ -140,7 +140,7 @@ module Idv
 
         idv_agent.proof_resolution(
           document_capture_session,
-          should_proof_state_id: should_proof_state_id,
+          should_proof_state_id: should_use_aamva?(pii),
           trace_id: amzn_trace_id,
         )
       end
