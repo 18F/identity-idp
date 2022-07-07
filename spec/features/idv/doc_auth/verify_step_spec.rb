@@ -7,16 +7,14 @@ feature 'doc auth verify step', :js do
   let(:skip_step_completion) { false }
   let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:user) { create(:user, :signed_up) }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-    unless skip_step_completion
-      sign_in_and_2fa_user(user)
-      complete_doc_auth_steps_before_verify_step
-    end
   end
 
   it 'displays the expected content' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
+
     expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_css(
@@ -33,6 +31,8 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the next page upon confirmation' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
     click_idv_continue
 
     expect(page).to have_current_path(idv_phone_path)
@@ -48,6 +48,8 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to address page prepopulated with defaults if the user clicks change address' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
     click_button t('idv.buttons.change_address_label')
 
     expect(page).to have_current_path(idv_address_path)
@@ -57,6 +59,9 @@ feature 'doc auth verify step', :js do
   end
 
   it 'tracks when the user edits their address' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
+
     click_button t('idv.buttons.change_address_label')
     fill_out_address_form_ok
     click_button t('forms.buttons.submit.update') # address form
@@ -70,6 +75,9 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
+
     click_button t('idv.buttons.change_ssn_label')
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
