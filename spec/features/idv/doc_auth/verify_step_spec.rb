@@ -16,21 +16,18 @@ feature 'doc auth verify step', :js do
     end
   end
 
-  it 'is on the correct page' do
+  it 'displays the expected content' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_css(
       '.step-indicator__step--current',
       text: t('step_indicator.flows.idv.verify_info'),
     )
-  end
 
-  it 'masks the ssn until toggled visible' do
+    # SSN is masked until revealed
     expect(page).to have_text('9**-**-***4')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
-
     check t('forms.ssn.show')
-
     expect(page).not_to have_text('9**-**-***4')
     expect(page).to have_text(DocAuthHelper::GOOD_SSN)
   end
