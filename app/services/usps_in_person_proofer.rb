@@ -5,43 +5,6 @@ class UspsInPersonProofer
     :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
   )
 
-  # Makes a request to retrieve a new OAuth token
-  # and modifies self to store the token and when
-  # it expires (15 minutes).
-  # @return [String] the token
-  def retrieve_token!
-    body = request_token
-    @token_expires_at = Time.zone.now + body['expires_in']
-    @token = "#{body['token_type']} #{body['access_token']}"
-  end
-
-  def token_valid?
-    @token.present? && @token_expires_at.present? && @token_expires_at.future?
-  end
-
-  # Makes HTTP request to authentication endpoint
-  # and modifies self to store the token and when
-  # it expires (15 minutes).
-  # @return [Hash] API response
-  def request_token
-    url = "#{root_url}/oauth/authenticate"
-    body = {
-      username: IdentityConfig.store.usps_ipp_username,
-      password: IdentityConfig.store.usps_ipp_password,
-      grant_type: 'implicit',
-      response_type: 'token',
-      client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',
-      scope: 'ivs.ippaas.apis',
-    }.to_json
-    resp = faraday.post(url, body, request_headers)
-
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      { error: 'Failed to get token', response: resp }
-    end
-  end
-
   # Makes HTTP request to get nearby in-person proofing facilities
   # Requires address, city, state and zip code.
   # The PostOffice objects have a subset of the fields
@@ -56,29 +19,20 @@ class UspsInPersonProofer
       city: location.city,
       state: location.state,
       zipCode: location.zip_code,
-    }.to_json
+    }
 
-    headers = request_headers.merge(
-      'Authorization' => @token,
-      'RequestID' => request_id,
-    )
+    resp = faraday.post(url, body, dynamic_headers)
 
-    resp = faraday.post(url, body, headers)
-
-    if resp.success?
-      JSON.parse(resp.body)['postOffices'].map do |post_office|
-        PostOffice.new(
-          distance: post_office['distance'],
-          address: post_office['streetAddress'],
-          city: post_office['city'],
-          phone: post_office['phone'],
-          name: post_office['name'],
-          zip_code: post_office['zip5'],
-          state: post_office['state'],
-        )
-      end
-    else
-      { error: 'failed to get facilities', response: resp }
+    resp.body['postOffices'].map do |post_office|
+      PostOffice.new(
+        distance: post_office['distance'],
+        address: post_office['streetAddress'],
+        city: post_office['city'],
+        phone: post_office['phone'],
+        name: post_office['name'],
+        zip_code: post_office['zip5'],
+        state: post_office['state'],
+      )
     end
   end
 
@@ -103,22 +57,9 @@ class UspsInPersonProofer
       zipCode: applicant.zip_code,
       emailAddress: applicant.email,
       IPPAssuranceLevel: '1.5',
-    }.to_json
+    }
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
-
-    resp = faraday.post(url, body, headers)
-
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      { error: 'failed to get enroll', response: resp }
-    end
+    faraday.post(url, body, dynamic_headers).body
   end
 
   # Makes HTTP request to retrieve proofing status
@@ -135,24 +76,9 @@ class UspsInPersonProofer
       sponsorID: sponsor_id,
       uniqueID: unique_id,
       enrollmentCode: enrollment_code,
-    }.to_json
+    }
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
-
-    resp = faraday.post(url, body, headers)
-
-    if resp.success?
-      JSON.parse(resp.body)
-    elsif resp.status == 400 && resp.headers['content-type'] == 'application/json'
-      JSON.parse(resp.body)
-    else
-      { error: 'failed to get proofing results', response: resp }
-    end
+    faraday.post(url, body, dynamic_headers).body
   end
 
   # Makes HTTP request to retrieve enrollment code
@@ -167,22 +93,79 @@ class UspsInPersonProofer
     body = {
       sponsorID: sponsor_id,
       uniqueID: unique_id,
-    }.to_json
+    }
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
+    faraday.post(url, body, dynamic_headers).body
+  end
 
-    resp = faraday.post(url, body, headers)
+  # Makes a request to retrieve a new OAuth token
+  # and modifies self to store the token and when
+  # it expires (15 minutes).
+  # @return [String] the token
+  def retrieve_token!
+    body = request_token
+    @token_expires_at = Time.zone.now + body['expires_in']
+    @token = "#{body['token_type']} #{body['access_token']}"
+  end
 
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      resp
+  def token_valid?
+    @token.present? && @token_expires_at.present? && @token_expires_at.future?
+  end
+
+  private
+
+  def faraday
+    Faraday.new(headers: request_headers) do |conn|
+      conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
+
+      # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
+      # Note: The order of this matters for parsing the error response body.
+      conn.response :raise_error
+
+      # Log request method and URL, excluding headers and body
+      conn.response :logger, nil, { headers: false, bodies: false }
+
+      # Convert body to JSON
+      conn.request :json
+
+      # Parse JSON responses
+      conn.response :json
     end
+  end
+
+  # Retrieve the OAuth2 token (if needed) and then pass
+  # the headers to an arbitrary block of code as a Hash.
+  # 
+  # Returns the same value returned by that block of code.
+  def dynamic_headers
+    unless token_valid?
+      retrieve_token!
+    end
+
+    {
+      'Authorization' => @token,
+      'RequestID' => request_id,
+    }
+  end
+
+  # Makes HTTP request to authentication endpoint and
+  # returns the token and when it expires (15 minutes).
+  # @return [Hash] API response
+  def request_token
+    url = "#{root_url}/oauth/authenticate"
+    body = {
+      username: IdentityConfig.store.usps_ipp_username,
+      password: IdentityConfig.store.usps_ipp_password,
+      grant_type: 'implicit',
+      response_type: 'token',
+      client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',
+      scope: 'ivs.ippaas.apis',
+    }
+
+    faraday.post(url, body).body
   end
 
   def root_url
@@ -195,15 +178,6 @@ class UspsInPersonProofer
 
   def request_id
     SecureRandom.uuid
-  end
-
-  def faraday
-    Faraday.new do |conn|
-      conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
-      conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
-      conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
-      conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
-    end
   end
 
   def request_headers

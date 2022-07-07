@@ -294,6 +294,8 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
+    faraday_middleware (1.2.0)
+      faraday (~> 1.0)
     ffi (1.15.4)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
@@ -728,6 +730,7 @@ DEPENDENCIES
   factory_bot_rails (>= 5.2.0)
   faker
   faraday
+  faraday_middleware
   foundation_emails
   good_job (~> 2.7.0)
   guard-rspec
