@@ -151,11 +151,10 @@ module DocAuth
     end
 
     def get_error_messages(liveness_enabled, response_info)
-
       errors = Hash.new { |hash, key| hash[key] = Set.new }
       if response_info[:doc_auth_result] != 'Passed'
         response_info[:processed_alerts][:failed]&.each do |alert|
-          errors[alert[:name].to_sym] =  { result: alert[:result], side: alert[:side] }
+          errors[alert[:name].to_sym] = { result: alert[:result], side: alert[:side] }
 
           alert_msg_hash = ALERT_MESSAGES[alert[:name].to_sym]
 
