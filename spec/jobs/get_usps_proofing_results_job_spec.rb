@@ -1,13 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe GetUspsProofingResultsJob do
-    # let(:ipp_class) { class_double(InPersonEnrollment) }
     let(:proofer) {
         uipp = instance_double(UspsInPersonProofer)
         expect(UspsInPersonProofer).to receive(:new).and_return(uipp)
         uipp
     }
     let(:sut) { GetUspsProofingResultsJob.new }
+
+    before do
+    end
 
     describe '#perform' do
         describe 'IPP enabled' do
@@ -27,7 +29,13 @@ RSpec.describe GetUspsProofingResultsJob do
 
             let(:passing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json") }
             let(:failing_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json") }
-            let(:progress_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json") }
+            let(:progress_response_body) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json") }
+            let(:progress_response_error) {
+                err = instance_double(Faraday::BadRequestError)
+                allow(err).to receive(:response).
+                    and_return(:body => progress_response_body)
+                err
+            }
             let(:invalid_response) { "fubar" }
 
             before do
@@ -42,6 +50,9 @@ RSpec.describe GetUspsProofingResultsJob do
                 allow(proofer).to receive(:request_proofing_results).
                     with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
                     and_return(invalid_response)
+
+                allow(IdentityJobLogSubscriber.logger).to receive(:error)
+                allow(IdentityJobLogSubscriber.logger).to receive(:warn)
 
                 sut.perform Time.now
 
@@ -64,25 +75,24 @@ RSpec.describe GetUspsProofingResultsJob do
                 allow(InPersonEnrollment).to receive(:needs_usps_status_check).
                     and_return(pending_enrollments)
 
-                response_array = [
-                    failing_response,
-                    progress_response,
-                    progress_response,
-                    passing_response,
-                ]
+                allow(IdentityJobLogSubscriber.logger).to receive(:error)
+                allow(IdentityJobLogSubscriber.logger).to receive(:warn)
 
-                expect(pending_enrollments.length).to (eq response_array.length),
-                    "failed test precondition; pending enrollments (#{pending_enrollments.length}) "\
-                    "and response count (#{response_array.length}) must match"
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    and_return(failing_response)
 
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment_2.usps_enrollment_id, pending_enrollment_2.enrollment_code).
+                    and_raise(progress_response_error)
 
-                # Pair each enrollment record with an API response
-                response_array.zip(pending_enrollments).
-                each do |(response, enrollment)|
-                    allow(proofer).to receive(:request_proofing_results).
-                        with(enrollment.usps_enrollment_id, enrollment.enrollment_code).
-                        and_return(response)
-                end
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment_3.usps_enrollment_id, pending_enrollment_3.enrollment_code).
+                    and_raise(progress_response_error)
+
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment_4.usps_enrollment_id, pending_enrollment_4.enrollment_code).
+                    and_return(failing_response)
 
                 start_time = Time.now
 
@@ -125,11 +135,71 @@ RSpec.describe GetUspsProofingResultsJob do
             end
 
             it 'reports a high-priority error on 2xx responses with invalid JSON' do
-                skip
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                    and_return([pending_enrollment])
+
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code).
+                    and_return(invalid_response)
+
+                expect(IdentityJobLogSubscriber.logger).to receive(:error)
+                    .with(
+                        {
+                            name: 'get_usps_proofing_results_job.errors.bad_response_structure',
+                            enrollment_id: pending_enrollment.id,
+                        }.to_json,
+                    )
+
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                expected_range = (start_time)...(Time.now)
+                
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "pending"
             end
 
+            # todo does this mean all 4xx responses, or only the ones we don't cover?
             it 'reports a low-priority error on 4xx responses' do
-                skip
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                    and_return([pending_enrollment])
+
+                err = Faraday::BadRequestError.new nil, nil
+
+                allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment.usps_enrollment_id, pending_enrollment.enrollment_code) do |_,__|
+                        raise err
+                    end
+
+                expect(IdentityJobLogSubscriber.logger).to receive(:warn).
+                    with(
+                        satisfy do |event|
+                            expect(event).to be_instance_of(String)
+                            parsed_event = JSON.parse(event)
+                            expect(parsed_event).to be_instance_of(Hash).
+                            and include(
+                                "name" => 'get_usps_proofing_results_job.errors.request_exception',
+                                "enrollment_id" => pending_enrollment.id,
+                                "exception" => include(
+                                    "class" => err.class.to_s,
+                                    "message" => err.message,
+                                    "backtrace" => instance_of(Array),
+                                ),
+                            )
+                        end
+                    )
+
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                expected_range = (start_time)...(Time.now)
+                
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "pending"
             end
 
             it 'reports a high-priority error on 5xx responses' do

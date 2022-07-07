@@ -37,7 +37,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       begin
         response = proofer.request_proofing_results unique_id, enrollment.enrollment_code
       rescue Faraday::BadRequestError => err
-        case err.response[:body]&.[]('responseMessage')
+        case err.response&.[](:body)&.[]('responseMessage')
         when IPP_INCOMPLETE_ERROR_MESSAGE
           # Customer has not been to post office for IPP
           next
@@ -47,12 +47,12 @@ class GetUspsProofingResultsJob < ApplicationJob
           enrollment.save
           next
         else
-          IdentityJobLogSubscriber.logger.error(
+          IdentityJobLogSubscriber.logger.warn(
             {
               name: 'get_usps_proofing_results_job.errors.request_exception',
               enrollment_id: enrollment.id,
               exception: {
-                class: err.class,
+                class: err.class.to_s,
                 message: err.message,
                 backtrace: err.backtrace,
               },
@@ -61,12 +61,13 @@ class GetUspsProofingResultsJob < ApplicationJob
           next
         end
       rescue Exception => err
+        p err
         IdentityJobLogSubscriber.logger.error(
           {
             name: 'get_usps_proofing_results_job.errors.request_exception',
             enrollment_id: enrollment.id,
             exception: {
-              class: err.class,
+              class: err.class.to_s,
               message: err.message,
               backtrace: err.backtrace,
             },
