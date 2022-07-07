@@ -163,7 +163,6 @@ module DocAuth
             field_type = alert[:side] || alert_msg_hash[:type]
             errors[field_type.to_sym] << alert_msg_hash[:msg_key]
           end
-          binding.pry
         end
       end
 
