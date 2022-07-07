@@ -19,6 +19,10 @@ describe('BarcodeAttentionWarning', () => {
     sandbox.stub(analytics, 'trackEvent');
   });
 
+  afterEach(() => {
+    window.onbeforeunload = null;
+  });
+
   const DEFAULT_PROPS = {
     onDismiss() {},
     pii: { first_name: 'Jane', last_name: 'Smith', dob: '1938-10-06' },
