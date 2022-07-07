@@ -135,7 +135,7 @@ module Idv
 
       def render_pending_response
         render_json({ pending: true }, status: :accepted)
-        FormResponse.new(success: false)
+        FormResponse.new(success: false, extra: { pending: true })
       end
     end
   end

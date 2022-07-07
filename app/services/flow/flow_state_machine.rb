@@ -21,7 +21,7 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
-      if flow.http_status != :accepted
+      unless result.extra[:pending]
         if @analytics_id
           increment_step_name_counts
           analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
