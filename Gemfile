@@ -80,6 +80,7 @@ group :development do
   gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
+  gem 'mailcatcher'
   gem 'octokit'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
