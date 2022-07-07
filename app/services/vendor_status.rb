@@ -90,7 +90,12 @@ class VendorStatus
       },
       redirect_from: from,
     }
-    analytics.vendor_outage(**tracking_data)
+    analytics.vendor_outage(
+      vendor_status: {
+        # ...
+      },
+      redirect_from: from,
+    )
   end
 
   private
