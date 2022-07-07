@@ -3,15 +3,6 @@ module Idv
     class VerifyBaseStep < DocAuthBaseStep
       private
 
-      def summarize_result_and_throttle_failures(summary_result)
-        if summary_result.success?
-          add_proofing_components
-          summary_result
-        else
-          idv_failure(summary_result)
-        end
-      end
-
       def add_proofing_components
         ProofingComponent.create_or_find_by(user: current_user).update(
           resolution_check: 'lexis_nexis',

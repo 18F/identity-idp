@@ -14,7 +14,6 @@ module Idv
           render_json({ error: I18n.t('idv.failure.timeout') })
           FormResponse.new(success: false)
         elsif current_async_state.done?
-          render_json({ redirect_url: idv_url })
           async_state_done
         end
       end
@@ -132,6 +131,41 @@ module Idv
       def invalid_state_response
         mark_step_incomplete(:ssn)
         FormResponse.new(success: false)
+      end
+
+      def summarize_result_and_throttle_failures(summary_result)
+        if summary_result.success?
+          add_proofing_components
+          render_redirect(idv_url)
+          summary_result
+        else
+          handle_failure(summary_result)
+        end
+      end
+
+      def handle_failure(result)
+        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
+        if throttle.throttled?
+          @flow.analytics.track_event(
+            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            throttle_type: :idv_resolution,
+            step_name: self.class.name,
+          )
+          render_redirect(idv_session_errors_failure_url)
+        elsif result.extra.dig(:proofing_results, :exception).present?
+          @flow.analytics.idv_doc_auth_exception_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          render_redirect(idv_session_errors_exception_url)
+        else
+          @flow.analytics.idv_doc_auth_warning_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          render_redirect(idv_session_errors_warning_url)
+        end
+        result
       end
 
       def render_pending_response

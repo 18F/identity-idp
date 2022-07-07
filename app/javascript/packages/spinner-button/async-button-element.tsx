@@ -78,7 +78,7 @@ class AsyncButtonElement extends SpinnerButtonElement {
         this.renderError(error);
         this.toggleSpinner(false);
       } else if (redirectURL) {
-        window.location.href = response.url;
+        window.location.href = redirectURL;
       }
     }
   }
