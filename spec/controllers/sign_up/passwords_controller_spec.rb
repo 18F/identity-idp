@@ -17,7 +17,7 @@ describe SignUp::PasswordsController do
 
       expect(@analytics).to receive(:track_event).
         with(
-          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
+          'User Registration: Email Confirmation',
           { errors: {}, success: true, user_id: user.uuid },
         )
       expect(@analytics).to receive(:track_event).
@@ -80,7 +80,7 @@ describe SignUp::PasswordsController do
 
       expect(@analytics).to receive(:track_event).
         with(
-          Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION,
+          'User Registration: Email Confirmation',
           { errors: {}, success: true, user_id: user.uuid },
         )
 

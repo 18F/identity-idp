@@ -147,10 +147,11 @@ class Analytics
   THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'
-  USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'
-  USER_REGISTRATION_COMPLETE = 'User registration: complete'
-  USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'
-  USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
-  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'
+  USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'
+  USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'
+  USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'
+  VENDOR_OUTAGE = 'Vendor Outage'
+  WEBAUTHN_DELETED = 'WebAuthn Deleted'
+  WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
 end
 # rubocop:enable Layout/LineLength

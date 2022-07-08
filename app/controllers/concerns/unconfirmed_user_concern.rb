@@ -25,12 +25,12 @@ module UnconfirmedUserConcern
       errors: { email: [t('errors.messages.already_confirmed')] },
       user_id: @user.uuid,
     }
-    analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
+    analytics.user_registration_email_confirmation(**hash)
   end
 
   def stop_if_invalid_token
     result = email_confirmation_token_validator.submit
-    analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, result.to_h)
+    analytics.user_registration_email_confirmation(**result.to_h)
     return if result.success?
     process_unsuccessful_confirmation
   end

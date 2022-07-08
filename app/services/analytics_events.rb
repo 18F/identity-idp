@@ -2085,5 +2085,93 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Tracks when user cancels registration
+  # @param [String] request_came_from the controller/action the request came from
+  def user_registration_cancellation(request_came_from: 'no referer', **extra)
+    track_event('User registration: cancellation visited')
+  end
+
+  # Tracks when user completes registration
+  # @param [Boolean] ial2
+  # @param [Integer] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_complete(
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+    )
+    track_event(
+      'User registration: complete',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
+  # Tracks when user submits registration email
+  # @param [Boolean] success
+  # @param [Boolean] throttled
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [Boolean] email_already_exists
+  # @param [String] user_id
+  # @param [String] domain_name
+  def user_registration_email(
+    success:,
+    throttled:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    domain_name: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Submitted',
+      success: success,
+      throttled: throttled,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      domain_name: domain_name,
+      **extra,
+    )
+  end
+
+  # Tracks when user confirms registration email
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  def user_registration_email_confirmation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Confirmation',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
