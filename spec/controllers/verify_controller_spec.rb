@@ -3,7 +3,7 @@ require 'rails_helper'
 describe VerifyController do
   describe '#show' do
     let(:idv_api_enabled_steps) { [] }
-    let(:in_person_proofing_enabled) { false }
+    let(:in_person_proofing_enabled_issuers) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
     let(:applicant) do
@@ -27,8 +27,9 @@ describe VerifyController do
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
         and_return(idv_api_enabled_steps)
-      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-        and_return(in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
+        and_return(in_person_proofing_enabled_issuers)
+      allow(controller).to receive(:current_sp).and_return(sp)
       stub_sign_in(user)
       stub_idv_session
       session[:sp] = sp_session if sp_session
@@ -76,7 +77,7 @@ describe VerifyController do
       end
 
       context 'with in-person proofing enabled' do
-        let(:in_person_proofing_enabled) { true }
+        let(:in_person_proofing_enabled_issuers) { [sp.issuer] }
 
         it 'includes in-person URL as app data' do
           response

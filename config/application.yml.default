@@ -103,7 +103,7 @@ idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
-in_person_proofing_enabled: true
+in_person_proofing_enabled_issuers: '[null]'
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -370,7 +370,7 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
-  in_person_proofing_enabled: false
+  in_person_proofing_enabled_issuers: '[]'
   irs_attempt_api_public_key: change-me-pls
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false

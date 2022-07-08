@@ -2,14 +2,19 @@ require 'rails_helper'
 
 describe 'idv/session_errors/exception.html.erb' do
   let(:sp_name) { 'Example SP' }
-  let(:in_person_proofing_enabled) { false }
+  let(:sp_issuer) { 'example-issuer' }
+  let(:in_person_proofing_enabled_issuers) { [] }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
+    decorated_session = instance_double(
+      ServiceProviderSessionDecorator,
+      sp_name: sp_name,
+      sp_issuer: sp_issuer,
+    )
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
+      and_return(in_person_proofing_enabled_issuers)
 
     render
   end
@@ -30,7 +35,7 @@ describe 'idv/session_errors/exception.html.erb' do
   end
 
   context 'with in person proofing disabled' do
-    let(:in_person_proofing_enabled) { false }
+    let(:in_person_proofing_enabled_issuers) { [] }
 
     it 'does not render an in person proofing link' do
       expect(rendered).not_to have_link(href: idv_in_person_url)
@@ -38,7 +43,7 @@ describe 'idv/session_errors/exception.html.erb' do
   end
 
   context 'with in person proofing enabled' do
-    let(:in_person_proofing_enabled) { true }
+    let(:in_person_proofing_enabled_issuers) { [sp_issuer] }
 
     it 'renders an in person proofing link' do
       expect(rendered).to have_link(

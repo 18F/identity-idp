@@ -1,6 +1,6 @@
 module Idv
   class InPersonController < ApplicationController
-    before_action :render_404_if_disabled
+    before_action :render_404_unless_allowed
     before_action :confirm_two_factor_authenticated
 
     include Flow::FlowStateMachine
@@ -12,8 +12,14 @@ module Idv
       analytics_id: 'In Person Proofing',
     }.freeze
 
-    def render_404_if_disabled
-      render_not_found unless IdentityConfig.store.in_person_proofing_enabled
+    private
+
+    def render_404_unless_allowed
+      render_not_found unless in_person_proofing_allowed?
+    end
+
+    def in_person_proofing_allowed?
+      IdentityConfig.store.in_person_proofing_enabled_issuers.include?(current_sp&.issuer)
     end
   end
 end
