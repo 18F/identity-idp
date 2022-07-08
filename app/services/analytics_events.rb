@@ -1800,6 +1800,10 @@ module AnalyticsEvents
     track_event('SP handoff bounced visited')
   end
 
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
 
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
