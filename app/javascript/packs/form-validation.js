@@ -1,17 +1,5 @@
 import { t } from '@18f/identity-i18n';
 
-/**
- * Given a submit event, disables all submit buttons within the target form.
- *
- * @param {Event} event Submit event.
- */
-function disableFormSubmit(event) {
-  const form = /** @type {HTMLFormElement} */ (event.target);
-  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((submit) => {
-    /** @type {HTMLInputElement|HTMLButtonElement} */ (submit).disabled = true;
-  });
-}
-
 function resetInput(input) {
   if (input.hasAttribute('data-form-validation-message')) {
     input.setCustomValidity('');
@@ -66,7 +54,6 @@ export function initialize(form) {
   /** @type {HTMLInputElement[]} */
   const fields = Array.from(form.querySelectorAll('.field,[required]'));
   fields.forEach(validateInput);
-  form.addEventListener('submit', disableFormSubmit);
 }
 
 /** @type {HTMLFormElement[]} */
