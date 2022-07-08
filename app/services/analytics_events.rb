@@ -2094,7 +2094,7 @@ module AnalyticsEvents
 
   # Tracks when user completes registration
   # @param [Boolean] ial2
-  # @param [Integer] ialmax
+  # @param [Boolean] ialmax
   # @param [String] service_provider_name
   # @param [String] page_occurence
   # @param [String] needs_completion_screen_reason
