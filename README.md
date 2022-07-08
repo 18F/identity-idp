@@ -32,11 +32,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
   
-2. If you are running macOS, you will need to install openssl and link to the correct headers:
+2. You will need to install openssl version 3:
   
 - Run `brew install openssl@3`
-- In your current terminal, run `export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)"`
-  You can likewise add this environment variable to your .zshrc file if you prefer.
 
 3. Test that you have Postgres and Redis running.
 
@@ -60,6 +58,8 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+
+  Note: If you didn't explicitly install `openssl@3` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
