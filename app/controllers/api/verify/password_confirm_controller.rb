@@ -9,7 +9,7 @@ module Api
         if result.success?
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
-          session[:last_gpo_confirmation_code] = gpo_code if gpo_code
+          set_session_last_gpo_code(gpo_code)
           render json: {
             personal_key: personal_key,
             completion_url: completion_url(result),
@@ -28,6 +28,10 @@ module Api
           user_session: user_session,
           service_provider: current_sp,
         )
+      end
+
+      def set_session_last_gpo_code(code)
+        session[:last_gpo_confirmation_code] = code if code && FeatureManagement.reveal_gpo_code?
       end
 
       def verify_params

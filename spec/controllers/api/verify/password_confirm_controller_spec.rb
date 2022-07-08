@@ -81,8 +81,8 @@ describe Api::Verify::PasswordConfirmController do
         end
       end
 
-      context 'with gpo_code returned from form submission' do
-        let(:gpo_code) { 'ABC1234' }
+      context 'with gpo_code returned from form submission and reveal gpo feature enabled' do
+        let(:gpo_code) { SecureRandom.hex }
 
         let(:form) do
           Api::ProfileCreationForm.new(
@@ -94,6 +94,7 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         before do
+          allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
           allow(subject).to receive(:form).and_return(form)
           allow(form).to receive(:submit).and_return(
             [FormResponse.new(success: true, extra: { user_uuid: user.uuid }), '', gpo_code],
