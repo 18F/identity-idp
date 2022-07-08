@@ -1,6 +1,5 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
-import { once } from '@18f/identity-decorators';
 import { SpinnerButtonElement } from './spinner-button-element';
 
 const DEFAULT_POLL_INTERVAL = 3000;
@@ -26,23 +25,19 @@ class AsyncButtonElement extends SpinnerButtonElement {
     window.clearTimeout(this.#pollTimeout);
   }
 
-  @once()
   get alertTarget(): HTMLElement | null {
     const id = this.getAttribute('alert-target');
     return id ? this.ownerDocument.getElementById(id) : null;
   }
 
-  @once()
   get form(): HTMLFormElement {
     return this.querySelector('form')!;
   }
 
-  @once()
   get pollInterval(): number {
     return Number(this.getAttribute('poll-interval')) || DEFAULT_POLL_INTERVAL;
   }
 
-  @once()
   get unhandledErrorMessage(): string {
     return this.getAttribute('unhandled-error-message')!;
   }
