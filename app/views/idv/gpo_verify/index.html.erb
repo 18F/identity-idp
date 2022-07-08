@@ -24,24 +24,20 @@
     ) do |f| %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
-      <%= f.input :otp,
-                  type: 'text',
-                  maxlength: 10,
-                  required: true,
-                  autofocus: true,
-                  input_html: {
-                    aria: { invalid: false },
-                    value: @code,
-                  },
-                  label: t('forms.verify_profile.name'),
-                  wrapper: false %>
-
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
+      <%= render ValidatedFieldComponent.new(
+            form: f,
+            name: :otp,
+            maxlength: 10,
+            required: true,
+            autofocus: true,
+            input_html: {
+              value: @code,
+            },
+            label: t('forms.verify_profile.name'),
+          ) %>
       <%= f.button :submit,
                    t('forms.verify_profile.submit'),
-                   class: 'usa-button--big usa-button--full-width margin-top-5' %>
+                   class: 'usa-button--big usa-button--full-width display-block margin-top-5' %>
     </div>
   </div>
 <% end %>
