@@ -646,7 +646,7 @@ describe Users::SessionsController, devise: true do
         controller.session[:session_expires_at] = Time.zone.now + 10
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
+        expect(@analytics).to receive(:track_event).with('Session Kept Alive')
 
         post :keepalive
       end

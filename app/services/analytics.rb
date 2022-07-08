@@ -142,7 +142,6 @@ class Analytics
   BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'
   SAML_AUTH = 'SAML Auth'
   SESSION_TIMED_OUT = 'Session Timed Out'
-  SESSION_KEPT_ALIVE = 'Session Kept Alive'
   SESSION_TOTAL_DURATION_TIMEOUT = 'User Maximum Session Length Exceeded'
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'
   SMS_OPT_IN_SUBMITTED = 'SMS Opt-In: Submitted'

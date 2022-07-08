@@ -1853,6 +1853,11 @@ module AnalyticsEvents
     )
   end
 
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164

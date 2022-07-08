@@ -54,7 +54,7 @@ module Users
     def keepalive
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
-      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+      analytics.session_kept_alive if alive?
 
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
