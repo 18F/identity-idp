@@ -1,4 +1,5 @@
 import { FormError } from '@18f/identity-form-steps';
+import { forceRedirect } from '@18f/identity-url';
 import type {
   UploadSuccessResponse,
   UploadErrorResponse,
@@ -78,8 +79,7 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
   }
 
   if (response.url !== endpoint) {
-    window.onbeforeunload = null;
-    window.location.href = response.url;
+    forceRedirect(response.url);
 
     // Avoid settling the promise, allowing the redirect to complete.
     return new Promise(() => {});
@@ -88,8 +88,7 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
   const result: UploadSuccessResponse | UploadErrorResponse = await response.json();
   if (!result.success) {
     if (result.redirect) {
-      window.onbeforeunload = null;
-      window.location.href = result.redirect;
+      forceRedirect(result.redirect);
 
       // Avoid settling the promise, allowing the redirect to complete.
       return new Promise(() => {});

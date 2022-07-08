@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
+import { removeUnloadProtection } from '@18f/identity-url';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import HelpCenterContext from '../context/help-center';
@@ -79,6 +80,7 @@ function DocumentCaptureTroubleshootingOptions({
             {
               url: inPersonURL,
               text: t('idv.troubleshooting.options.verify_in_person'),
+              onClick: removeUnloadProtection,
             },
           ]}
         />
