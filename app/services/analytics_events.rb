@@ -1795,6 +1795,12 @@ module AnalyticsEvents
     track_event('SP handoff bounced detected')
   end
 
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
