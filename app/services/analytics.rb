@@ -137,7 +137,6 @@ class Analytics
 
   # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'
   SP_INACTIVE_VISIT = 'SP inactive visited'
   BACKUP_CODE_CREATED = 'Backup Code Created'
