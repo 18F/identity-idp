@@ -163,6 +163,16 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
