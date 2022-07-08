@@ -12,13 +12,11 @@ interface AsyncResponse {
   error?: string;
 }
 
-class AsyncButtonElement extends SpinnerButtonElement {
+class AsyncButtonElement extends HTMLElement {
   #pollTimeout: number;
 
   connectedCallback(): void {
-    super.connectedCallback();
-
-    this.elements.button.addEventListener('click', (event) => this.onClick(event));
+    this.addEventListener('click', (event) => this.onClick(event));
   }
 
   disconnectedCallback() {
@@ -42,7 +40,15 @@ class AsyncButtonElement extends SpinnerButtonElement {
     return this.getAttribute('unhandled-error-message')!;
   }
 
+  get spinnerButton(): SpinnerButtonElement {
+    return this.querySelector('lg-spinner-button')!;
+  }
+
   onClick(event: Event) {
+    if (event.target !== this.spinnerButton.elements.button) {
+      return;
+    }
+
     event.preventDefault();
 
     // Clear error, if present.
@@ -63,7 +69,7 @@ class AsyncButtonElement extends SpinnerButtonElement {
   async handleResponse(response) {
     if (response.status >= 500) {
       this.renderError(this.unhandledErrorMessage);
-      this.toggleSpinner(false);
+      this.spinnerButton.toggleSpinner(false);
     } else {
       const { pending, error, redirect_url: redirectURL }: AsyncResponse = await response.json();
 
@@ -71,7 +77,7 @@ class AsyncButtonElement extends SpinnerButtonElement {
         this.scheduleSubmit();
       } else if (error) {
         this.renderError(error);
-        this.toggleSpinner(false);
+        this.spinnerButton.toggleSpinner(false);
       } else if (redirectURL) {
         window.location.href = redirectURL;
       }
