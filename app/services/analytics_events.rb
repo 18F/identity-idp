@@ -1945,7 +1945,6 @@ module AnalyticsEvents
     vendor_status:,
     **extra
   )
-
     track_event(
       'Vendor Outage',
       redirect_from: redirect_from,
