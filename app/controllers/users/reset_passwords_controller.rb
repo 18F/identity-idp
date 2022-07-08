@@ -85,7 +85,7 @@ module Users
 
       return unless result
 
-      analytics.track_event('User Registration: Email Submitted', result.to_h)
+      analytics.user_registration_email(**result.to_h)
       create_user_event(:account_created, user)
     end
 
