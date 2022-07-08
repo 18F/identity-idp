@@ -87,7 +87,7 @@ describe Api::Verify::PasswordConfirmController do
         let(:form) do
           Api::ProfileCreationForm.new(
             password: password,
-            jwt: jwt_metadata,
+            jwt: jwt,
             user_session: {},
             service_provider: {},
           )
@@ -96,9 +96,7 @@ describe Api::Verify::PasswordConfirmController do
         before do
           allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
           allow(subject).to receive(:form).and_return(form)
-          allow(form).to receive(:submit).and_return(
-            [FormResponse.new(success: true, extra: { user_uuid: user.uuid }), '', gpo_code],
-          )
+          allow(form).to receive(:gpo_code).and_return(gpo_code)
         end
 
         it 'sets code into the session' do

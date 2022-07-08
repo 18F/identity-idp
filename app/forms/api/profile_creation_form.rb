@@ -30,7 +30,7 @@ module Api
         errors: errors,
         extra: extra_attributes,
       )
-      [response, personal_key, gpo_code]
+      [response, personal_key]
     end
 
     private

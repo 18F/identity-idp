@@ -114,11 +114,11 @@ RSpec.describe Api::ProfileCreationForm do
             allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
           end
 
-          it 'returns code from the submission result the session' do
-            _response, _personal_key, actual_gpo_code = subject.submit
-            expected_gpo_code = GpoConfirmation.last.entry[:otp]
+          it 'assigns gpo code' do
+            subject.submit
+            gpo_code = GpoConfirmation.last.entry[:otp]
 
-            expect(actual_gpo_code).to eq(expected_gpo_code)
+            expect(subject.gpo_code).to eq(gpo_code)
           end
         end
       end
