@@ -31,8 +31,14 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 -- (to install Node.js v.14 using brew: `brew install node@14`)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+  
+2. If you are running macOS, you will need to install openssl and link to the correct headers:
+  
+- Run `brew install openssl`
+- In your current terminal, run `export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)"`
+  You can likewise add this environment variable to your .zshrc file if you prefer.
 
-2. Test that you have Postgres and Redis running.
+3. Test that you have Postgres and Redis running.
 
   For example, if you've installed with Homebrew, you can start the services like this:
 
@@ -46,7 +52,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ brew services list
   ```
 
-3. Run the following command to set up your local environment:
+4. Run the following command to set up your local environment:
 
   ```
   $ make setup
@@ -55,7 +61,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
 
-4. Now that you have you have everything installed, you can run the following command to start your local server:
+5. Now that you have you have everything installed, you can run the following command to start your local server:
 
   ```
   $ make run
