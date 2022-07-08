@@ -154,6 +154,7 @@ class IdentityConfig
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
     config.add(:enable_load_testing_mode, type: :boolean)
+    config.add(:enable_numeric_authentication_otp, type: :boolean)
     config.add(:enable_partner_api, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
