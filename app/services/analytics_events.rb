@@ -2089,7 +2089,11 @@ module AnalyticsEvents
   # Tracks when user cancels registration
   # @param [String] request_came_from the controller/action the request came from
   def user_registration_cancellation(request_came_from:, **extra)
-    track_event('User registration: cancellation visited')
+    track_event(
+      'User registration: cancellation visited',
+      request_came_from: request_came_from,
+      **extra,
+    )
   end
 
   # Tracks when user completes registration
