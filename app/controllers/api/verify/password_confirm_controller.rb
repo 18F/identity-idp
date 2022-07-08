@@ -4,16 +4,12 @@ module Api
       self.required_step = 'password_confirm'
 
       def create
-        result, personal_key = Api::ProfileCreationForm.new(
-          password: verify_params[:password],
-          jwt: verify_params[:user_bundle_token],
-          user_session: user_session,
-          service_provider: current_sp,
-        ).submit
+        result, personal_key, gpo_code = form.submit
 
         if result.success?
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
+          session[:last_gpo_confirmation_code] = gpo_code if gpo_code
           render json: {
             personal_key: personal_key,
             completion_url: completion_url(result),
@@ -24,6 +20,15 @@ module Api
       end
 
       private
+
+      def form
+        Api::ProfileCreationForm.new(
+          password: verify_params[:password],
+          jwt: verify_params[:user_bundle_token],
+          user_session: user_session,
+          service_provider: current_sp,
+        )
+      end
 
       def verify_params
         params.permit(:password, :user_bundle_token)
