@@ -34,7 +34,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   
 2. If you are running macOS, you will need to install openssl and link to the correct headers:
   
-- Run `brew install openssl`
+- Run `brew install openssl@3`
 - In your current terminal, run `export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl)"`
   You can likewise add this environment variable to your .zshrc file if you prefer.
 
