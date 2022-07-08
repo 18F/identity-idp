@@ -20,12 +20,11 @@ module UnconfirmedUserConcern
   end
 
   def track_user_already_confirmed_event
-    hash = {
+    analytics.user_registration_email_confirmation(
       success: false,
       errors: { email: [t('errors.messages.already_confirmed')] },
       user_id: @user.uuid,
-    }
-    analytics.user_registration_email_confirmation(**hash)
+    )
   end
 
   def stop_if_invalid_token
