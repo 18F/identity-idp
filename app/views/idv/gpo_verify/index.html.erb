@@ -17,7 +17,7 @@
   <%= t('forms.verify_profile.instructions') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @gpo_verify_form,
       url: idv_gpo_verify_path,
       html: { autocomplete: 'off', method: :post },

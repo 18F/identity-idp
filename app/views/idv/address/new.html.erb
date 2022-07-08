@@ -11,7 +11,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       :idv_form,
       url: idv_address_path,
       method: 'POST',
