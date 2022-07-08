@@ -39,9 +39,9 @@ function LocationCollectionItem({
         <div>{addressLine1}</div>
         <div>{addressLine2}</div>
         <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
-        <div>{hoursWD}</div>
-        <div>{hoursSat}</div>
-        <div>{hoursSun}</div>
+        <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${hoursWD}`}</div>
+        <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${hoursSat}`}</div>
+        <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${hoursSun}`}</div>
       </div>
     </li>
   );

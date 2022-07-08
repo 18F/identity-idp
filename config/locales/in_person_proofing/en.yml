@@ -59,10 +59,13 @@ en:
         verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
           address and Social Security number.'
       location:
+        location_button: 'Select'
         location_step_about: 'If you are having trouble adding your ID, you may be able to 
           verify in person at a local United States Post Office in select locations.'
         retail_hours_heading: 'Retail Hours'
-        location_button: 'Select'
+        retail_hours_sat: 'Sat: '
+        retail_hours_sun: 'Sun: '
+        retail_hours_weekday: 'Mon-Fri: '
     form:
       address:
         address1: Address
