@@ -16,9 +16,13 @@ module Idv
         redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
 
-      # WILLFIX: (LG-6308) move this to the barcode page when we finish setting up IPP step
-      # indicators
+      # WILLFIX: (LG-6308) move this to the barcode page when
+      #          we finish setting up IPP step indicators
       # i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
+
+      # WILLFIX: (LG-6308) move this to the location page when
+      #          we finish setting up IPP step indicators
+      # i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
 
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },

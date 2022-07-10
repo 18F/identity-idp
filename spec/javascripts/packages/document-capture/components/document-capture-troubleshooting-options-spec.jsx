@@ -141,7 +141,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
       );
 
-      it('has links to IPP information', async () => {
+      it('has link to IPP flow', async () => {
         const { getByText, getAllByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           { wrapper },
@@ -149,13 +149,11 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
 
         expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
 
-        const links = getAllByRole('link');
-        const ippLink = links.find(({ href }) => href === inPersonURL);
-        expect(ippLink).to.exist();
-
-        window.onbeforeunload = () => {};
-        await userEvent.click(ippLink);
-        expect(window.onbeforeunload).not.to.exist();
+        const buttons = getAllByRole('button');
+        const ippButton = buttons.find(
+          ({ textContent }) => textContent === 'idv.troubleshooting.options.verify_in_person',
+        );
+        expect(ippButton).to.exist();
       });
     });
   });
