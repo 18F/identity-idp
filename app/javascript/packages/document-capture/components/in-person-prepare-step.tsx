@@ -7,6 +7,7 @@ import {
   ProcessList,
   ProcessListItem,
 } from '@18f/identity-components';
+import { removeUnloadProtection } from '@18f/identity-url';
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
@@ -75,7 +76,7 @@ function InPersonPrepareStep() {
       </IconList>
       {inPersonURL && (
         <div className="margin-y-5">
-          <Button href={inPersonURL} isBig isWide tabIndex={0}>
+          <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide tabIndex={0}>
             {t('forms.buttons.continue')}
           </Button>
         </div>
