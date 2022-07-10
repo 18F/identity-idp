@@ -15,11 +15,6 @@ interface InPersonTroubleshootingOptionsProps {
    * Location parameter to append to links.
    */
   location?: string;
-
-  /**
-   * If there are any errors (toggles whether or not to show in person proofing option)
-   */
-  hasErrors?: boolean;
 }
 
 function InPersonTroubleshootingOptions({
