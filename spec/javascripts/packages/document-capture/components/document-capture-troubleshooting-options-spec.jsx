@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import {
   HelpCenterContextProvider,
   ServiceProviderContextProvider,
@@ -141,7 +140,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
       );
 
-      it('has link to IPP flow', async () => {
+      it('has link to IPP flow', () => {
         const { getByText, getAllByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           { wrapper },
