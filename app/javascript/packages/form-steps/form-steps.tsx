@@ -241,6 +241,7 @@ function FormSteps({
   const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stepIsComplete, setStepIsComplete] = useState<boolean | undefined>(undefined);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
@@ -338,8 +339,8 @@ function FormSteps({
   const { form: Form, submit, name } = step;
 
   /**
-   * Increments state to the next step, or calls onComplete callback if the current step is the last
-   * step.
+   * Increments state to the next step, or calls onComplete callback
+   * if the current step is the last step.
    */
   const toNextStep: FormEventHandler = async (event) => {
     event.preventDefault();
@@ -376,19 +377,27 @@ function FormSteps({
     onStepSubmit(step?.name);
 
     const nextStepIndex = stepIndex + 1;
-    const isComplete = nextStepIndex === steps.length;
+    const isComplete =
+      stepIsComplete !== undefined ? stepIsComplete : nextStepIndex === steps.length;
     if (isComplete) {
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
+    // unset stepIsComplete so the next step that needs to can set it
+    setStepIsComplete(undefined);
   };
 
   const toPreviousStep = () => {
     const previousStepIndex = Math.max(stepIndex - 1, 0);
     const { name: nextStepName } = steps[previousStepIndex];
     setStepName(nextStepName);
+  };
+
+  // wrap setter in a function to pass to FormStepsContext
+  const changeStepIsComplete = (isComplete: boolean) => {
+    setStepIsComplete(isComplete);
   };
 
   const isLastStep = stepIndex + 1 === steps.length;
@@ -401,7 +410,9 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
+      <FormStepsContext.Provider
+        value={{ isLastStep, changeStepIsComplete, isSubmitting, onPageTransition }}
+      >
         <Form
           key={name}
           value={values}
