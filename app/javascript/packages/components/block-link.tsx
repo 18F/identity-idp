@@ -1,7 +1,7 @@
 import Link, { LinkProps } from './link';
 import BlockLinkArrow from './block-link-arrow';
 
-interface BlockLinkProps extends LinkProps {
+export interface BlockLinkProps extends LinkProps {
   /**
    * Link destination.
    */
