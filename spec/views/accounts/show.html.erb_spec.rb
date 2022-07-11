@@ -207,4 +207,24 @@ describe 'accounts/show.html.erb' do
       expect(view).to render_template(partial: '_account_restored')
     end
   end
+
+  context 'when a user restores their account' do
+    before do
+      assign(
+        :presenter,
+        AccountShowPresenter.new(
+          decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+          sp_session_request_url: nil, sp_name: nil,
+          locked_for_session: false,
+          account_reset_requested: false
+        ),
+      )
+    end
+
+    it 'does not show a banner confirming account restoration' do
+      render
+
+      expect(view).to_not render_template(partial: '_account_restored')
+    end
+  end
 end
