@@ -1875,6 +1875,47 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164

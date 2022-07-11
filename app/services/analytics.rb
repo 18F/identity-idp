@@ -142,8 +142,6 @@ class Analytics
   BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'
   SAML_AUTH = 'SAML Auth'
   SESSION_TIMED_OUT = 'Session Timed Out'
-  SMS_OPT_IN_SUBMITTED = 'SMS Opt-In: Submitted'
-  SMS_OPT_IN_VISIT = 'SMS Opt-In: Visited'
   SP_REDIRECT_INITIATED = 'SP redirect initiated'
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'
   THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
