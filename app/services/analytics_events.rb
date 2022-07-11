@@ -1862,6 +1862,19 @@ module AnalyticsEvents
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
   end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164

@@ -536,7 +536,7 @@ describe Users::SessionsController, devise: true do
         subject.session['user_return_to'] = 'http://example.com'
         properties = { flash: 'hello', stored_location: 'http://example.com' }
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT, properties)
+        expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
 
         get :new
       end

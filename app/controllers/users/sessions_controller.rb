@@ -15,8 +15,7 @@ module Users
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
-      analytics.track_event(
-        Analytics::SIGN_IN_PAGE_VISIT,
+      analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
