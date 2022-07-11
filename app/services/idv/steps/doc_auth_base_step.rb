@@ -65,7 +65,9 @@ module Idv
         )
 
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
-        flow_session[:pii_from_doc] = pii_from_doc if store_in_session
+        if store_in_session
+          flow_session[:pii_from_doc] = flow_session[:pii_from_doc].to_h.merge(pii_from_doc)
+        end
         track_document_state(pii_from_doc[:state])
       end
 
