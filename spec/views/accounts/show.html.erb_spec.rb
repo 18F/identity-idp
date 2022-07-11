@@ -208,7 +208,7 @@ describe 'accounts/show.html.erb' do
     end
   end
 
-  context 'when a user restores their account' do
+  context 'when a user has not requested an account reset request' do
     before do
       assign(
         :presenter,
