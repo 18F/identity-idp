@@ -22,6 +22,7 @@ module Telephony
         end
 
         response = nil
+        sender_id = Telephony.config.country_sender_ids[country_code.to_s]
         Telephony.config.pinpoint.sms_configs.each do |sms_config|
           start = Time.zone.now
           client = build_client(sms_config)
@@ -38,8 +39,8 @@ module Telephony
                 sms_message: {
                   body: message,
                   message_type: 'TRANSACTIONAL',
-                  origination_number: origination_number(country_code, sms_config),
-                  sender_id: Telephony.config.country_sender_ids[country_code.to_s],
+                  origination_number: origination_number(country_code, sms_config, sender_id),
+                  sender_id: sender_id,
                 },
               },
             },
@@ -134,7 +135,11 @@ module Telephony
         )
       end
 
-      def origination_number(country_code, sms_config)
+      # To ensure Sender ID is used where needed, the origination number must not be
+      # specified.
+      def origination_number(country_code, sms_config, sender_id)
+        return nil if sender_id
+
         if sms_config.country_code_longcode_pool&.dig(country_code).present?
           sms_config.country_code_longcode_pool[country_code].sample
         else
