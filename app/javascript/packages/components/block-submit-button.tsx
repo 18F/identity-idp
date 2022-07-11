@@ -15,7 +15,7 @@ interface BlockSubmitButtonProps extends React.ComponentPropsWithoutRef<'button'
 
 function BlockSubmitButton({ children, className, ...linkProps }: BlockSubmitButtonProps) {
   const classes = [
-    'button-link',
+    'block-submit-button',
     'usa-button--unstyled',
     'usa-link',
     'block-link',

@@ -9,7 +9,7 @@ describe('BlockSubmitButton', () => {
 
     const button = getByRole('button');
 
-    expect(button.classList.contains('button-link')).to.be.true();
+    expect(button.classList.contains('block-submit-button')).to.be.true();
     expect(button.querySelector('.block-link__arrow')).to.exist();
     expect(button.textContent).to.equal(buttonLabel);
   });
@@ -22,7 +22,7 @@ describe('BlockSubmitButton', () => {
 
       const button = getByRole('button');
 
-      expect(button.classList.contains('button-link')).to.be.true();
+      expect(button.classList.contains('block-submit-button')).to.be.true();
       expect(button.classList.contains('my-custom-class')).to.be.true();
     });
   });
