@@ -6,10 +6,6 @@ en:
         info: 'If your current address does not match the address on your ID, you will
           need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
-      state_id:
-        info_html: 'Enter information <strong>exactly as it appears on your state-issued
-          ID.</strong> We will use this information to confirm it matches your
-          ID in person.'
       prepare:
         alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
         bring_barcode_header: A copy of your barcode
@@ -34,6 +30,10 @@ en:
         verify_step_enter_phone: Enter a phone number with your name on the plan.
         verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
           address and Social Security number.'
+      state_id:
+        info_html: 'Enter information <strong>exactly as it appears on your state-issued
+          ID.</strong> We will use this information to confirm it matches your
+          ID in person.'
     form:
       address:
         address1: Address
