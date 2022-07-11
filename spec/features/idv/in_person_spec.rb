@@ -58,7 +58,7 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_text(InPersonHelper::GOOD_DOB)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
+    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2) if InPersonHelper::GOOD_ADDRESS2
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
