@@ -331,7 +331,7 @@ describe Users::ResetPasswordsController, devise: true do
         }
         expect(@analytics).to have_logged_event(
           'User Registration: Email Submitted',
-          analytics_hash
+          analytics_hash,
         )
 
         expect(response).to redirect_to forgot_password_path
