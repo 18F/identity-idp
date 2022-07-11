@@ -76,7 +76,7 @@ function InPersonPrepareStep() {
       </IconList>
       {inPersonURL && (
         <div className="margin-y-5">
-          <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide tabIndex={0}>
+          <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide>
             {t('forms.buttons.continue')}
           </Button>
         </div>
