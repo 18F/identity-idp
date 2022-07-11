@@ -2113,7 +2113,7 @@ module AnalyticsEvents
     sp_request_requested_attributes: nil,
     ialmax: nil,
     **extra
-    )
+  )
     track_event(
       'User registration: complete',
       ial2: ial2,

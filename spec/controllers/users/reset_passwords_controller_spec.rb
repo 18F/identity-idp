@@ -329,7 +329,10 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: User.find_with_email(email).uuid,
           domain_name: 'example.com',
         }
-        expect(@analytics).to have_logged_event('User Registration: Email Submitted', analytics_hash)
+        expect(@analytics).to have_logged_event(
+          'User Registration: Email Submitted',
+          analytics_hash
+        )
 
         expect(response).to redirect_to forgot_password_path
       end

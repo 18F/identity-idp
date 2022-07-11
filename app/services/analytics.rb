@@ -135,7 +135,6 @@ class Analytics
     Time.zone.parse(value)
   end
 
-  # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
   BACKUP_CODE_DELETED = 'Backup Code Delete'
   BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'
@@ -154,4 +153,3 @@ class Analytics
   WEBAUTHN_DELETED = 'WebAuthn Deleted'
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'
 end
-# rubocop:enable Layout/LineLength
