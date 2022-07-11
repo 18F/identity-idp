@@ -227,8 +227,8 @@ module Idv
     end
 
     def acuant_sdk_capture?
-      image_metadata.dig(:front, :source) == 'acuant' &&
-        image_metadata.dig(:back, :source) == 'acuant'
+      image_metadata.dig(:front, :source) == DocAuth::Vendors::ACUANT &&
+        image_metadata.dig(:back, :source) == DocAuth::Vendors::ACUANT
     end
 
     def image_metadata

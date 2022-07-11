@@ -153,7 +153,7 @@ module DocAuthRouter
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(vendor_discriminator: nil, warn_notifier: nil)
     case doc_auth_vendor(discriminator: vendor_discriminator)
-    when 'acuant'
+    when DocAuth::Vendors::ACUANT
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Acuant::AcuantClient.new(
           assure_id_password: IdentityConfig.store.acuant_assure_id_password,
@@ -168,7 +168,7 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
-    when 'lexisnexis'
+    when DocAuth::Vendors::LEXIS_NEXIS
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::LexisNexisClient.new(
           account_id: IdentityConfig.store.lexisnexis_account_id,
@@ -188,7 +188,7 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
-    when 'mock'
+    when DocAuth::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
