@@ -32,9 +32,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
   
-2. You will need to install openssl version 3:
+2. You will need to install openssl version 1.1:
   
-- Run `brew install openssl@3`
+- Run `brew install openssl@1.1`
 
 3. Test that you have Postgres and Redis running.
 
