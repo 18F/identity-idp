@@ -14,6 +14,7 @@ interface PersonalKeyConfirmStepProps extends FormStepComponentProps<VerifyFlowV
 function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
   const { registerField, value, onChange, toPreviousStep } = stepProps;
   const personalKey = value.personalKey!;
+  const enteredPersonalKey = value.personalKeyConfirm;
 
   const closeModalActions = () => {
     trackEvent('IdV: hide personal key modal');
@@ -40,6 +41,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
             the form is not rendered in the same DOM hierarchy, it is not invalid nesting. */}
         <form noValidate>
           <PersonalKeyInput
+            initialValue={enteredPersonalKey}
             expectedValue={personalKey}
             ref={registerField('personalKeyConfirm')}
             onChange={(personalKeyConfirm) => onChange({ personalKeyConfirm })}
