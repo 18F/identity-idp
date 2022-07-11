@@ -15,7 +15,11 @@ class AccountsController < ApplicationController
       sp_name: decorated_session.sp_name,
       decorated_user: current_user.decorate,
       locked_for_session: pii_locked_for_session?(current_user),
-      account_reset_requested: current_user&.account_reset_request.present?,
+      account_reset_requested: account_reset_requested?,
     )
+  end
+
+  def account_reset_requested?
+    AccountReset::FindPendingRequestForUser.new(current_user).call
   end
 end
