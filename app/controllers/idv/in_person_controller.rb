@@ -7,7 +7,7 @@ module Idv
 
     FSM_SETTINGS = {
       step_url: :idv_in_person_step_url,
-      final_url: :account_url,
+      final_url: :idv_phone_url,
       flow: Idv::Flows::InPersonFlow,
       analytics_id: 'In Person Proofing',
     }.freeze
