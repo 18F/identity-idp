@@ -1,5 +1,5 @@
 module Idv
-    # is there supposed to be an IPP module declared here?
+  module InPerson
     class UspsLocationsController < ApplicationController
       def index
         # get response from UspsInPersonProofer
@@ -11,5 +11,6 @@ module Idv
       def formatLocation
         # transform the multiple pieces of loc. data to create 2nd addy line
       end
+    end
   end
-  
+end
