@@ -74,7 +74,7 @@ describe('PersonalKeyInput', () => {
     expect(input.validity.valid).to.be.true();
   });
 
-  it('renders the input with an initial value if one is provided', async () => {
+  it('renders the input with an initial value if one is provided', () => {
     const { getByRole } = render(
       <PersonalKeyInput initialValue="1234-asdf" expectedValue="abcd-0011-DEFG-1111" />,
     );

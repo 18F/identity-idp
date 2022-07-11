@@ -58,7 +58,7 @@ describe('PersonalKeyConfirmStep', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: hide personal key modal');
   });
 
-  it('passes the value the user has entered to this point to the child PersonalKeyInput', async () => {
+  it('passes the value the user has entered to this point to the child PersonalKeyInput', () => {
     const props = Object.assign(DEFAULT_PROPS, {
       value: {
         personalKey: '',
