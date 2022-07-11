@@ -39,16 +39,12 @@ class AccountShowPresenter
     decorated_user.pending_profile_requires_verification?
   end
 
-  def show_account_reset_requested_partial?
-    account_reset_requested.present?
-  end
-
   def showing_any_partials?
     show_service_provider_continue_partial? ||
       show_password_reset_partial? ||
       show_personal_key_partial? ||
       show_gpo_partial? ||
-      show_account_reset_requested_partial?
+      account_reset_requested
   end
 
   def show_unphishable_badge?

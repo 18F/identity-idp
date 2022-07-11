@@ -22,7 +22,7 @@
       <%= render 'accounts/service_provider_continue', presenter: @presenter %>
     <% end %>
 
-    <% if @presenter.show_account_reset_requested_partial? %>
+    <% if @presenter.account_reset_requested %>
       <%= render 'accounts/account_restored' %>
     <% end %>
   </div>
