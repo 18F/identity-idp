@@ -12,7 +12,7 @@ module Api
           store_session_last_gpo_code(form.gpo_code)
           render json: {
             personal_key: personal_key,
-            completion_url: completion_url(result),
+            completion_url: completion_url(result, user),
           }
         else
           render_errors(result.errors)
@@ -42,14 +42,20 @@ module Api
         ProofingComponent.create_or_find_by(user: user).update(verified_at: Time.zone.now)
       end
 
-      def completion_url(result)
-        if result.extra[:profile_pending]
+      def completion_url(result, user)
+        if in_person_profile?(user)
+          idv_in_person_ready_to_verify_url
+        elsif result.extra[:profile_pending]
           idv_come_back_later_url
         elsif current_sp
           sign_up_completed_url
         else
           account_url
         end
+      end
+
+      def in_person_profile?(user)
+        ProofingComponent.find_by(user: user)&.document_check == DocAuth::Vendors::USPS
       end
     end
   end

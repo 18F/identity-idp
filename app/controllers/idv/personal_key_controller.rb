@@ -33,7 +33,9 @@ module Idv
     end
 
     def next_step
-      if session[:sp] && !pending_profile?
+      if in_person_profile?
+        idv_in_person_ready_to_verify_url
+      elsif session[:sp] && !pending_profile?
         sign_up_completed_url
       elsif pending_profile? && idv_session.address_verification_mechanism == 'gpo'
         idv_come_back_later_url
@@ -70,6 +72,10 @@ module Idv
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+    end
+
+    def in_person_profile?
+      ProofingComponent.find_by(user: current_user)&.document_check == DocAuth::Vendors::USPS
     end
 
     def pending_profile?
