@@ -9,6 +9,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_issuer) { nil }
   let(:flow_path) { 'standard' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
+  let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuers) { [] }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
@@ -25,6 +26,8 @@ describe 'idv/shared/_document_capture.html.erb' do
 
     allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled?).
       and_return(async_uploads_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+      and_return(in_person_proofing_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
       and_return(in_person_proofing_enabled_issuers)
 
@@ -76,7 +79,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
   describe 'in person url' do
     context 'when in person proofing is disabled' do
-      let(:in_person_proofing_enabled_issuers) { [] }
+      let(:in_person_proofing_enabled) { false }
 
       it 'initializes without in person url' do
         render_partial
@@ -86,9 +89,7 @@ describe 'idv/shared/_document_capture.html.erb' do
     end
 
     context 'when in person proofing is enabled' do
-      let(:sp_name) { 'Example SP' }
-      let(:sp_issuer) { 'example-issuer' }
-      let(:in_person_proofing_enabled_issuers) { [sp_issuer] }
+      let(:in_person_proofing_enabled) { true }
 
       it 'initializes with in person url' do
         render_partial
@@ -96,6 +97,29 @@ describe 'idv/shared/_document_capture.html.erb' do
         expect(rendered).to have_css(
           "#document-capture-form[data-idv-in-person-url='#{idv_in_person_url}']",
         )
+      end
+
+      context 'with an associated service provider' do
+        let(:sp_name) { 'Example SP' }
+        let(:sp_issuer) { 'example-issuer' }
+
+        it 'initializes without in person url' do
+          render_partial
+
+          expect(rendered).to_not have_css('#document-capture-form[data-idv-in-person-url]')
+        end
+
+        context 'when in person proofing is enabled for issuer' do
+          let(:in_person_proofing_enabled_issuers) { [sp_issuer] }
+
+          it 'initializes with in person url' do
+            render_partial
+
+            expect(rendered).to have_css(
+              "#document-capture-form[data-idv-in-person-url='#{idv_in_person_url}']",
+            )
+          end
+        end
       end
     end
   end

@@ -15,11 +15,7 @@ module Idv
     private
 
     def render_404_unless_allowed
-      render_not_found unless in_person_proofing_allowed?
-    end
-
-    def in_person_proofing_allowed?
-      IdentityConfig.store.in_person_proofing_enabled_issuers.include?(current_sp&.issuer)
+      render_not_found unless InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
     end
   end
 end

@@ -3,6 +3,7 @@ require 'rails_helper'
 describe VerifyController do
   describe '#show' do
     let(:idv_api_enabled_steps) { [] }
+    let(:in_person_proofing_enabled) { false }
     let(:in_person_proofing_enabled_issuers) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
@@ -19,14 +20,16 @@ describe VerifyController do
     end
     let(:profile) { subject.idv_session.profile }
     let(:step) { '' }
-    let(:sp) { build(:service_provider) }
-    let(:sp_session) { { issuer: sp.issuer } }
+    let(:sp) { nil }
+    let(:sp_session) { { issuer: sp&.issuer } }
 
     subject(:response) { get :show, params: { step: step } }
 
     before do
       allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
         and_return(idv_api_enabled_steps)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
+        and_return(in_person_proofing_enabled)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
         and_return(in_person_proofing_enabled_issuers)
       allow(controller).to receive(:current_sp).and_return(sp)
@@ -77,12 +80,32 @@ describe VerifyController do
       end
 
       context 'with in-person proofing enabled' do
-        let(:in_person_proofing_enabled_issuers) { [sp.issuer] }
+        let(:in_person_proofing_enabled) { true }
 
         it 'includes in-person URL as app data' do
           response
 
           expect(assigns[:app_data][:in_person_url]).to eq(idv_in_person_url)
+        end
+
+        context 'with associated service provider' do
+          let(:sp) { build(:service_provider) }
+
+          it 'does not include in-person URL as app data' do
+            response
+
+            expect(assigns[:app_data][:in_person_url]).to be_nil
+          end
+
+          context 'with in-person proofing enabled for service provider' do
+            let(:in_person_proofing_enabled_issuers) { [sp.issuer] }
+
+            it 'includes in-person URL as app data' do
+              response
+
+              expect(assigns[:app_data][:in_person_url]).to eq(idv_in_person_url)
+            end
+          end
         end
       end
     end

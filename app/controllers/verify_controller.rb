@@ -48,11 +48,7 @@ class VerifyController < ApplicationController
   end
 
   def in_person_url
-    idv_in_person_url if in_person_proofing_allowed?
-  end
-
-  def in_person_proofing_allowed?
-    IdentityConfig.store.in_person_proofing_enabled_issuers.include?(current_sp&.issuer)
+    idv_in_person_url if Idv::InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
   end
 
   def step_enabled?(step)
