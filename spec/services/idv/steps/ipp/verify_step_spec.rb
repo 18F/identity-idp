@@ -37,8 +37,6 @@ describe Idv::Steps::Ipp::VerifyStep do
   end
 
   describe '#call' do
-    it 'does not proof state ID'
-
     it 'sets uuid_prefix on pii_from_user' do
       expect(Idv::Agent).to receive(:new).
         with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
@@ -66,17 +64,17 @@ describe Idv::Steps::Ipp::VerifyStep do
       step.call
     end
 
-    context 'when pii_from_user is not present' do
+    context 'when pii_from_user is blank' do
       let(:flow) do
-        Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/in_person').tap do |flow|
-          flow.flow_session = { 'Idv::Steps::SsnStep' => true }
+        Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
+          flow.flow_session = { 'Idv::Steps::Ipp::SsnStep' => true, pii_from_user: {} }
         end
       end
 
       it 'marks step as incomplete' do
-        expect(flow.flow_session['Idv::Steps::SsnStep']).to eq true
+        expect(flow.flow_session['Idv::Steps::Ipp::SsnStep']).to eq true
         result = step.call
-        expect(flow.flow_session['Idv::Steps::SsnStep']).to eq nil
+        expect(flow.flow_session['Idv::Steps::Ipp::SsnStep']).to eq nil
         expect(result.success?).to eq false
       end
     end
@@ -97,7 +95,7 @@ describe Idv::Steps::Ipp::VerifyStep do
       end
 
       def build_step(controller)
-        flow = Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
+        flow = Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
           flow.flow_session = { pii_from_user: pii }
         end
 

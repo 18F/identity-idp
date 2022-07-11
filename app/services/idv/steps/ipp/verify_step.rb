@@ -5,7 +5,7 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          pii[:state_id_type] = 'drivers_license'
+          pii[:state_id_type] = 'drivers_license' unless invalid_state?
           enqueue_job
         end
 
