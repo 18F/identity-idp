@@ -59,6 +59,20 @@ describe Api::Verify::PasswordConfirmController do
         expect(response.status).to eq 400
       end
 
+      context 'with in person profile' do
+        before do
+          ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
+        end
+
+        it 'creates a profile and returns completion url' do
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(JSON.parse(response.body)['completion_url']).to eq(
+            idv_in_person_ready_to_verify_url,
+          )
+        end
+      end
+
       context 'with associated sp session' do
         before do
           session[:sp] = { issuer: create(:service_provider).issuer }

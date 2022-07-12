@@ -186,5 +186,17 @@ describe Idv::PersonalKeyController do
         expect(response).to redirect_to idv_come_back_later_path
       end
     end
+
+    context 'with in person profile' do
+      before do
+        ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
+      end
+
+      it 'creates a profile and returns completion url' do
+        patch :update
+
+        expect(response).to redirect_to idv_in_person_ready_to_verify_url
+      end
+    end
   end
 end
