@@ -1,6 +1,14 @@
 ---
 fr:
   date:
+    day_names_short:
+      - Lun
+      - Mar
+      - Mer
+      - Jeu
+      - Ven
+      - Sam
+      - Dim
     month_names:
       - null
       - janvier
@@ -19,6 +27,7 @@ fr:
     am: A.M.
     formats:
       event_date: '%-d %B %Y'
+      event_time: '%H:%M'
       event_timestamp: '%e %B %Y à %H:%M'
       event_timestamp_js: '%{day} %{month} %{year} à %{hour}:%{minute}'
       event_timestamp_utc: '%e %B %Y à %H:%M UTC'

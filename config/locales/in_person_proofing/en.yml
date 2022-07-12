@@ -30,6 +30,21 @@ en:
         verify_step_enter_phone: Enter a phone number with your name on the plan.
         verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
           address and Social Security number.'
+      barcode:
+        deadline: Your deadline to verify your identity in person is %{deadline}.
+        deadline_restart: If you go after the deadline, your information will not be
+          saved and you will need to restart the process.
+        emailed_info: We have emailed this information to the email you used to log in.
+        items_to_bring: 'Bring these items with you to the Post Office:'
+        items_to_bring_questions: Questions about what to bring?
+        learn_more: Learn more
+        location_details: Location details
+        no_appointment_required: No appointment is required.
+        retail_hours: Retail hours
+        retail_hours_closed: Closed
+        retail_phone_label: Phone number
+        speak_to_associate: You can speak with any retail associate at this Post Office
+          to verify your identity.
       state_id:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
@@ -64,3 +79,26 @@ en:
       state_id: Enter the information on your ID
       update_address: Update your current address
       update_state_id: Update the information on your ID
+    process:
+      barcode:
+        caption_label: Enrollment code
+        heading: A copy of your barcode
+        image_alt: Barcode
+        info: Print or scan from your mobile device.
+      proof_of_address:
+        acceptable_proof:
+          - Lease, Mortgage, or Deed of Trust
+          - Voter Registration
+          - Vehicle Registration Card
+          - Home or Vehicle Insurance Policy
+        heading: Proof of your current address
+        info: 'You need a proof of address if your current address is different than the
+          address on your ID. Acceptable forms of proof of address are:'
+      state_id:
+        acceptable_documents:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
+        heading: Your state-issued ID
+        info: 'Your ID must not be expired. Acceptable forms of ID are:'
+        no_other_documents: We do not currently accept any other forms of
+          identification, such as passports and military IDs.
