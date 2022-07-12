@@ -2146,13 +2146,15 @@ module AnalyticsEvents
   )
     track_event(
       'User Registration: Email Submitted',
-      success: success,
-      throttled: throttled,
-      errors: errors,
-      error_details: error_details,
-      user_id: user_id,
-      domain_name: domain_name,
-      **extra,
+      {
+        success: success,
+        throttled: throttled,
+        errors: errors,
+        error_details: error_details,
+        user_id: user_id,
+        domain_name: domain_name,
+        **extra,
+      }.compact,
     )
   end
 
