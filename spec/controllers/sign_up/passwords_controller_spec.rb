@@ -11,6 +11,7 @@ describe SignUp::PasswordsController do
       analytics_hash = {
         success: true,
         errors: {},
+        error_details: nil,
         user_id: user.uuid,
         request_id_present: false,
       }
@@ -81,7 +82,7 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with(
           'User Registration: Email Confirmation',
-          { errors: {}, success: true, user_id: user.uuid },
+          { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
 
       expect(@analytics).to receive(:track_event).
