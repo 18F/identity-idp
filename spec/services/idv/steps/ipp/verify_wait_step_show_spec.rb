@@ -106,6 +106,7 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
 
     context 'when the proofing session result is missing' do
       let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
+
       it 'deletes the document capture session and returns to the verify page' do
         expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
         step.call
