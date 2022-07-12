@@ -75,7 +75,7 @@ module Idv
     end
 
     def in_person_profile?
-      ProofingComponent.find_by(user: current_user)&.document_check == DocAuth::Vendors::USPS
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def pending_profile?

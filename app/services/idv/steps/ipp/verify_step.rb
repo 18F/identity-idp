@@ -23,7 +23,7 @@ module Idv
         def add_proofing_component
           ProofingComponent.
             create_or_find_by(user: current_user).
-            update(document_check: DocAuth::Vendors::USPS)
+            update(document_check: Idp::Constants::Vendors::USPS)
         end
       end
     end

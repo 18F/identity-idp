@@ -189,7 +189,7 @@ describe Idv::PersonalKeyController do
 
     context 'with in person profile' do
       before do
-        ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
+        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
       end
 
       it 'creates a profile and returns completion url' do

@@ -55,7 +55,7 @@ module Api
       end
 
       def in_person_profile?(user)
-        ProofingComponent.find_by(user: user)&.document_check == DocAuth::Vendors::USPS
+        ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
     end
   end

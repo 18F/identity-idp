@@ -23,7 +23,7 @@ describe Idv::InPerson::ReadyToVerifyController do
 
     context 'with in person proofing component' do
       before do
-        ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
+        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
       end
 
       it 'renders show template' do
