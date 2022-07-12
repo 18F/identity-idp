@@ -13,11 +13,7 @@ module Idv
       end
 
       def in_person_proofing_component?
-        proofing_component&.document_check == DocAuth::Vendors::USPS
-      end
-
-      def proofing_component
-        ProofingComponent.find_by(user: current_user)
+        ProofingComponent.find_by(user: current_user)&.document_check == DocAuth::Vendors::USPS
       end
     end
   end
