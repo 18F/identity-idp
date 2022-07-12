@@ -4,7 +4,9 @@ module Idv
       before_action :confirm_two_factor_authenticated
       before_action :confirm_in_person_session
 
-      def show; end
+      def show
+        analytics.idv_in_person_ready_to_verify_visit
+      end
 
       private
 

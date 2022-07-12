@@ -3,7 +3,10 @@ require 'rails_helper'
 describe Idv::InPerson::ReadyToVerifyController do
   let(:user) { create(:user) }
 
-  before { stub_sign_in(user) }
+  before do
+    stub_analytics
+    stub_sign_in(user)
+  end
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -25,6 +28,12 @@ describe Idv::InPerson::ReadyToVerifyController do
 
       it 'renders show template' do
         expect(response).to render_template :show
+      end
+
+      it 'logs analytics' do
+        response
+
+        expect(@analytics).to have_logged_event('IdV: in person ready to verify visited')
       end
     end
   end
