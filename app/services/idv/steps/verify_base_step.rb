@@ -190,7 +190,7 @@ module Idv
         )
 
         if form_response.success?
-          response = check_ssn if form_response.success?
+          response = check_ssn
           form_response = form_response.merge(response)
         end
         summarize_result_and_throttle_failures(form_response)
