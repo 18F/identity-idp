@@ -76,7 +76,7 @@ describe('PersonalKeyInput', () => {
 
   it('renders the input with an initial value if one is provided', () => {
     const { getByRole } = render(
-      <PersonalKeyInput initialValue="1234-asdf" expectedValue="abcd-0011-DEFG-1111" />,
+      <PersonalKeyInput value="1234-asdf" expectedValue="abcd-0011-DEFG-1111" />,
     );
     const input = getByRole('textbox') as HTMLInputElement;
 

@@ -18,7 +18,7 @@ interface PersonalKeyInputProps {
    * The personal key to initially render the form with. This value is used when the user has
    * entered a partial personal key and clicked the "back" button.
    */
-  initialValue?: string;
+  value?: string;
 
   /**
    * The correct personal key to validate against.
@@ -41,7 +41,7 @@ interface PersonalKeyInputProps {
 const normalize = (string: string) => string.toLowerCase().replace(/o/g, '0').replace(/[il]/g, '1');
 
 function PersonalKeyInput(
-  { initialValue, expectedValue, onChange = () => {} }: PersonalKeyInputProps,
+  { value, expectedValue, onChange = () => {} }: PersonalKeyInputProps,
   ref: ForwardedRef<HTMLElement>,
 ) {
   const validate = useCallback<ValidatedFieldValidator>(
@@ -59,7 +59,7 @@ function PersonalKeyInput(
         onInit={(owner) => {
           (owner as ReactInstanceWithCleave & CleaveInstanceInternalAPI).updateValueState();
         }}
-        value={initialValue}
+        value={value}
         options={{
           blocks: [4, 4, 4, 4],
           delimiter: '-',

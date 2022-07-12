@@ -41,7 +41,7 @@ function PersonalKeyConfirmStep(stepProps: PersonalKeyConfirmStepProps) {
             the form is not rendered in the same DOM hierarchy, it is not invalid nesting. */}
         <form noValidate>
           <PersonalKeyInput
-            initialValue={enteredPersonalKey}
+            value={enteredPersonalKey}
             expectedValue={personalKey}
             ref={registerField('personalKeyConfirm')}
             onChange={(personalKeyConfirm) => onChange({ personalKeyConfirm })}
