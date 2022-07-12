@@ -1,34 +1,30 @@
 require 'rails_helper'
 
 describe Idv::InPerson::ReadyToVerifyController do
-  let(:user) { nil }
+  let(:user) { create(:user) }
 
-  before do
-    stub_sign_in(user) if user
+  before { stub_sign_in(user) }
+
+  describe 'before_actions' do
+    it 'includes authentication before_action' do
+      expect(subject).to have_actions(:before, :confirm_two_factor_authenticated)
+    end
   end
 
   describe '#show' do
     subject(:response) { get :show }
 
-    it 'redirects to sign-in page' do
-      expect(response).to redirect_to root_url
+    it 'redirects to account page' do
+      expect(response).to redirect_to account_url
     end
 
-    context 'signed in' do
-      let(:user) { create(:user) }
-
-      it 'redirects to account page' do
-        expect(response).to redirect_to account_url
+    context 'with in person proofing component' do
+      before do
+        ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
       end
 
-      context 'with in person proofing component' do
-        before do
-          ProofingComponent.create(user: user, document_check: DocAuth::Vendors::USPS)
-        end
-
-        it 'renders show template' do
-          expect(response).to render_template :show
-        end
+      it 'renders show template' do
+        expect(response).to render_template :show
       end
     end
   end
