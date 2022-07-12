@@ -45,8 +45,8 @@ function PersonalKeyInput(
   ref: ForwardedRef<HTMLElement>,
 ) {
   const validate = useCallback<ValidatedFieldValidator>(
-    (value) => {
-      if (expectedValue && normalize(value) !== normalize(expectedValue)) {
+    (personalKey) => {
+      if (expectedValue && normalize(personalKey) !== normalize(expectedValue)) {
         throw new Error(t('users.personal_key.confirmation_error'));
       }
     },
