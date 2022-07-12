@@ -106,9 +106,6 @@ module Idv
         doc_auth_log.save!
       end
 
-      #
-      #
-      # Used by verify_step
       def enqueue_job
         return if flow_session[verify_step_document_capture_session_uuid_key]
         return invalid_state_response if invalid_state?
@@ -158,9 +155,6 @@ module Idv
         FormResponse.new(success: false)
       end
 
-      #
-      #
-      # Used by verify_wait_step_show
       def process_async_state(current_async_state)
         if current_async_state.none?
           mark_step_incomplete(:verify)

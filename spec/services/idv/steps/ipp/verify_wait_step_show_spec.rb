@@ -5,29 +5,21 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
 
   let(:user) { build(:user) }
   let(:issuer) { 'test_issuer' }
-  let(:service_provider) { create(:service_provider) }
+  let(:service_provider) { build(:service_provider, issuer: issuer) }
+
   let(:controller) do
     instance_double(
-      # do we need all of these?
       'controller',
       analytics: FakeAnalytics.new,
       current_sp: service_provider,
       current_user: user,
       flash: {},
-      request: double(
-        'request',
-        headers: {
-          'X-Amzn-Trace-Id' => amzn_trace_id,
-        },
-      ),
       poll_with_meta_refresh: nil,
-      session: { sp: { issuer: service_provider.issuer } },
       url_options: {},
     )
   end
-  let(:service_provider) { build(:service_provider, issuer: issuer) }
-  let(:amzn_trace_id) { SecureRandom.uuid }
-  let(:result) do
+
+  let(:idv_result) do
     {
       context: { stages: { resolution: {} } },
       errors: {},
@@ -35,12 +27,14 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
       success: true,
     }
   end
+
   let(:document_capture_session) {
     document_capture_session = DocumentCaptureSession.create!(user: user)
     document_capture_session.create_proofing_session
-    document_capture_session.store_proofing_result(result)
+    document_capture_session.store_proofing_result(idv_result)
     document_capture_session
   }
+
   let(:dcs_uuid) { document_capture_session.uuid }
 
   let(:pii) do
@@ -67,9 +61,10 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
 
   describe '#call' do
     it 'moves to the next page' do
+      expect(flow.flow_session['Idv::Steps::Ipp::VerifyWaitStep']).to be_nil
       step.call
 
-      expect(flow.flow_session['Idv::Steps::Ipp::VerifyWaitStep']).to eq true
+      expect(flow.flow_session['Idv::Steps::Ipp::VerifyWaitStep']).to be true
     end
 
     it 'adds costs' do
@@ -89,10 +84,10 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
       end
 
       it 'returns to the verify page' do
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq true
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
         step.call
 
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq nil
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be_nil
       end
     end
 
@@ -101,22 +96,40 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
       let(:document_capture_session) { nil }
 
       it 'deletes the document capture session and returns to the verify page' do
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq true
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
         step.call
 
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq nil
-        expect(flow.flow_session[:idv_verify_step_document_capture_session_uuid]).to eq nil
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be_nil
+        expect(flow.flow_session[:idv_verify_step_document_capture_session_uuid]).to be_nil
       end
     end
 
     context 'when the proofing session result is missing' do
       let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
       it 'deletes the document capture session and returns to the verify page' do
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq true
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
         step.call
 
-        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to eq nil
-        expect(flow.flow_session[:idv_verify_step_document_capture_session_uuid]).to eq nil
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be_nil
+        expect(flow.flow_session[:idv_verify_step_document_capture_session_uuid]).to be_nil
+      end
+    end
+
+    context 'when verification fails' do
+      let(:idv_result) do
+        {
+          context: { stages: { resolution: {} } },
+          errors: {},
+          exception: nil,
+          success: false,
+        }
+      end
+
+      it 'marks the verify step incomplete' do
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
+        step.call
+
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be_nil
       end
     end
   end
