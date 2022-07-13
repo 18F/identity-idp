@@ -1853,6 +1853,69 @@ module AnalyticsEvents
     )
   end
 
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
   # @param [String] area_code
   # @param [String] country_code
   # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164

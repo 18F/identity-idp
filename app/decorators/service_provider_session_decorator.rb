@@ -77,6 +77,10 @@ class ServiceProviderSessionDecorator
     sp.friendly_name || sp.agency&.name
   end
 
+  def sp_issuer
+    sp.issuer
+  end
+
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end

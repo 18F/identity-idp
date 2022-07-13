@@ -24,7 +24,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
         expect(assigns[:phone_configuration]).to eq(user.phone_configurations.first)
 
         expect(@analytics).to have_logged_event(
-          Analytics::SMS_OPT_IN_VISIT,
+          'SMS Opt-In: Visited',
           has_other_auth_methods: false,
           phone_configuration_id: user.phone_configurations.first.id,
         )
@@ -114,7 +114,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
           )
 
           expect(@analytics).to have_logged_event(
-            Analytics::SMS_OPT_IN_SUBMITTED,
+            'SMS Opt-In: Submitted',
             success: true,
           )
         end
@@ -144,7 +144,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
           expect(response).to render_template(:error)
 
           expect(@analytics).to have_logged_event(
-            Analytics::SMS_OPT_IN_SUBMITTED,
+            'SMS Opt-In: Submitted',
             success: false,
           )
         end
@@ -172,7 +172,7 @@ RSpec.describe TwoFactorAuthentication::SmsOptInController do
           expect(flash[:error]).to be_present
 
           expect(@analytics).to have_logged_event(
-            Analytics::SMS_OPT_IN_SUBMITTED,
+            'SMS Opt-In: Submitted',
             success: false,
           )
         end
