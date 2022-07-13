@@ -33,7 +33,7 @@ module Idv
     end
 
     def next_step
-      if in_person_profile?
+      if in_person_enrollment?
         idv_in_person_ready_to_verify_url
       elsif session[:sp] && !pending_profile?
         sign_up_completed_url
@@ -74,7 +74,8 @@ module Idv
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
     end
 
-    def in_person_profile?
+    def in_person_enrollment?
+      # WILLFIX: After LG-6708 and we have enrollment saved, reference enrollment instead.
       ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
