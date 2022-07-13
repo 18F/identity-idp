@@ -8,9 +8,9 @@ interface FormStepsContextValue {
   isLastStep: boolean;
 
   /**
-   * Allow a step to tell FormSteps it is complete
+   * Allow a step to tell FormSteps it can complete the flow
    */
-  changeStepIsComplete: (isComplete: boolean) => void;
+  changeStepCanComplete: (isComplete: boolean) => void;
 
   /**
    * Whether the current step is pending submission.
@@ -25,7 +25,7 @@ interface FormStepsContextValue {
 
 const FormStepsContext = createContext({
   isLastStep: true,
-  changeStepIsComplete: () => {},
+  changeStepCanComplete: () => {},
   isSubmitting: false,
   onPageTransition: () => {},
 } as FormStepsContextValue);

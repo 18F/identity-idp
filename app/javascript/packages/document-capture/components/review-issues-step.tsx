@@ -79,7 +79,7 @@ function ReviewIssuesStep({
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
-  const { onPageTransition, changeStepIsComplete } = useContext(FormStepsContext);
+  const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   function onWarningPageDismissed() {
@@ -91,7 +91,7 @@ function ReviewIssuesStep({
   // let FormSteps know, via FormStepsContext, whether this page
   // is ready to submit form values
   useEffect(() => {
-    changeStepIsComplete(!!hasDismissed);
+    changeStepCanComplete(!!hasDismissed);
   }, [hasDismissed]);
 
   if (!hasDismissed) {
