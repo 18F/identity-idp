@@ -5,15 +5,13 @@ import type { DesignSystemIcon } from '../icon';
 interface IconListItemProps {
   children?: ReactNode;
 
-  className?: string;
-
   icon: DesignSystemIcon;
 
   title: string;
 }
 
-function IconListItem({ children, className, icon, title }: IconListItemProps) {
-  const classes = ['usa-icon-list__item', className].filter(Boolean).join(' ');
+function IconListItem({ children, icon, title }: IconListItemProps) {
+  const classes = 'usa-icon-list__item';
 
   return (
     <li className={classes}>

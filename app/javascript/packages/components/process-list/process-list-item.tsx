@@ -2,8 +2,6 @@ import { ProcessListHeading } from '@18f/identity-components';
 import type { ReactNode } from 'react';
 
 interface ProcessListItemProps {
-  className?: string;
-
   children?: ReactNode;
 
   heading: string;
@@ -11,8 +9,8 @@ interface ProcessListItemProps {
   headingUnstyled?: boolean;
 }
 
-function ProcessListItem({ children, className, heading, headingUnstyled }: ProcessListItemProps) {
-  const classes = ['usa-process-list__item', className].filter(Boolean).join(' ');
+function ProcessListItem({ children, heading, headingUnstyled }: ProcessListItemProps) {
+  const classes = 'usa-process-list__item';
 
   return (
     <li className={classes}>

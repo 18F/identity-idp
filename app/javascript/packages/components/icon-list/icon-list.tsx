@@ -2,12 +2,10 @@ import type { ReactNode } from 'react';
 
 interface IconListProps {
   children?: ReactNode;
-
-  className?: string;
 }
 
-function IconList({ children, className }: IconListProps) {
-  const classes = ['usa-icon-list', className].filter(Boolean).join(' ');
+function IconList({ children }: IconListProps) {
+  const classes = 'usa-icon-list';
 
   return <ul className={classes}>{children}</ul>;
 }
