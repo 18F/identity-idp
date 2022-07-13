@@ -31,6 +31,10 @@ RSpec.describe GetUspsProofingResultsJob do
                 passing_response
                 
                 }
+            let(:failing_enrollment_expired){
+                passing_response[enrollment.status] = "Expired"
+                passing_response
+            }  
 
 
 
@@ -207,7 +211,15 @@ RSpec.describe GetUspsProofingResultsJob do
             end
 
             it 'marks enrollments as expired when USPS says they have expired' do
-                skip
+                allow(proofer).to receive(:request_proofing_results).
+                with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
+                and_return(failing_enrollment_expired)
+
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                and_return([pending_enrollment])
+                expect(pending_enrollments.status).to eq "expired"
+
+                
             end
 
             it 'ignores enrollments when USPS says the customer has not been to the post office' do
