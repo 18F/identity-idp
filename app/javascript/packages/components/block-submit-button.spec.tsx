@@ -4,14 +4,15 @@ import BlockSubmitButton from './block-submit-button';
 describe('BlockSubmitButton', () => {
   const buttonLabel = 'Click here to submit';
 
-  it('renders a button with an expected class name and arrow content', () => {
+  it('renders a button with an expected class name, type, and arrow content', () => {
     const { getByRole } = render(<BlockSubmitButton>{buttonLabel}</BlockSubmitButton>);
 
-    const button = getByRole('button');
+    const button = getByRole('button') as HTMLInputElement;
 
     expect(button.classList.contains('block-submit-button')).to.be.true();
     expect(button.querySelector('.block-link__arrow')).to.exist();
     expect(button.textContent).to.equal(buttonLabel);
+    expect(button.type).to.equal('submit');
   });
 
   context('with custom css class', () => {
