@@ -260,6 +260,11 @@ function FormSteps({
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
 
+  // reset stepName if it doesn't correspond to an existing step
+  if (stepName && !steps.map((step) => step.name).includes(stepName)) {
+    setStepName(undefined);
+  }
+
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
 
