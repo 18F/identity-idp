@@ -260,10 +260,13 @@ function FormSteps({
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
 
-  // reset stepName if it doesn't correspond to an existing step
-  if (stepName && !steps.map((step) => step.name).includes(stepName)) {
-    setStepName(undefined);
-  }
+  useEffect(() => {
+    // reset stepName if it doesn't correspond to an existing step
+    const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
+    if (stepName && !stepsCheck.includes(stepName)) {
+      setStepName(undefined);
+    }
+  }, [stepName, steps]);
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
