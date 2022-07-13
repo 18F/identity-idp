@@ -5,6 +5,10 @@ RSpec.describe 'In Person Proofing' do
   include IdvHelper
   include InPersonHelper
 
+  before do
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+  end
+
   it 'works for a happy path', js: true, allow_browser_log: true do
     user = sign_in_and_2fa_user
 

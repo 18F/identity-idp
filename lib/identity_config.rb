@@ -178,6 +178,7 @@ class IdentityConfig
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_sp_required, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
+    config.add(:in_person_proofing_enabled_issuers, type: :json)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
