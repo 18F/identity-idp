@@ -163,6 +163,16 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -1790,6 +1800,21 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user is bounced back from the service provider due to an integration issue.
+  def sp_handoff_bounced_detected
+    track_event('SP handoff bounced detected')
+  end
+
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1825,6 +1850,69 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
     )
   end
 

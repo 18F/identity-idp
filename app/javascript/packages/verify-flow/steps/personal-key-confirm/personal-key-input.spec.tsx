@@ -73,4 +73,13 @@ describe('PersonalKeyInput', () => {
     input.checkValidity();
     expect(input.validity.valid).to.be.true();
   });
+
+  it('renders the input with an initial value if one is provided', () => {
+    const { getByRole } = render(
+      <PersonalKeyInput value="1234-asdf" expectedValue="abcd-0011-DEFG-1111" />,
+    );
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    expect(input.value).to.equal('1234-asdf-');
+  });
 });
