@@ -75,6 +75,7 @@ module Idv
     end
 
     def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
       # WILLFIX: After LG-6708 and we have enrollment saved, reference enrollment instead.
       ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
