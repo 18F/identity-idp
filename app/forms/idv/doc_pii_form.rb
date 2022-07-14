@@ -4,35 +4,27 @@ module Idv
 
     validate :validate_pii
 
-    attr_reader :first_name, :last_name, :dob, :state, :zipcode, :attention_with_barcode
-    alias_method :attention_with_barcode?, :attention_with_barcode
+    attr_reader :first_name, :last_name, :dob, :state, :zipcode
 
-    def initialize(pii:, attention_with_barcode: false)
-      @pii_from_doc = pii
+    def initialize(pii)
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
       @state = pii[:state]
       @zipcode = pii[:zipcode]
-      @attention_with_barcode = attention_with_barcode
     end
 
     def submit
-      response = Idv::DocAuthFormResponse.new(
+      Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors,
         extra: {
           pii_like_keypaths: [[:pii]], # see errors.add(:pii)
-          attention_with_barcode: attention_with_barcode?,
         },
       )
-      response.pii_from_doc = pii_from_doc
-      response
     end
 
     private
-
-    attr_reader :pii_from_doc
 
     def validate_pii
       if error_count > 1

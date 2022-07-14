@@ -17,7 +17,6 @@ RSpec.describe DocAuth::Acuant::Responses::FacialMatchResponse do
         success: true,
         errors: {},
         exception: nil,
-        attention_with_barcode: false,
         face_match_results: {
           match_score: 83,
           is_match: true,
@@ -42,7 +41,6 @@ RSpec.describe DocAuth::Acuant::Responses::FacialMatchResponse do
         success: false,
         errors: { selfie: true },
         exception: nil,
-        attention_with_barcode: false,
         face_match_results: {
           match_score: 68,
           is_match: false,

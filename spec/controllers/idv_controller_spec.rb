@@ -72,16 +72,18 @@ describe IdvController do
 
     context 'no SP context' do
       let(:user) { build(:user, password: ControllerHelper::VALID_PASSWORD) }
-      let(:idv_sp_required) { false }
 
       before do
         stub_sign_in(user)
         session[:sp] = {}
-        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
+        allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
+        allow(IdentityConfig.store).to receive(:sp_context_needed_environment).and_return('prod')
       end
 
-      context 'sp required' do
-        let(:idv_sp_required) { true }
+      context 'prod environment' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
 
         it 'redirects back to the account page' do
           get :index
@@ -103,8 +105,23 @@ describe IdvController do
         end
       end
 
-      context 'sp not required' do
-        let(:idv_sp_required) { false }
+      context 'non-prod environment' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return('staging')
+        end
+
+        it 'begins the identity proofing process' do
+          get :index
+
+          expect(response).to redirect_to idv_doc_auth_url
+        end
+      end
+
+      context 'local development' do
+        before do
+          allow(Identity::Hostdata).to receive(:env).and_return(nil)
+          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
+        end
 
         it 'begins the identity proofing process' do
           get :index

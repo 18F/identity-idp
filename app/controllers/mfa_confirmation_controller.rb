@@ -4,13 +4,12 @@ class MfaConfirmationController < ApplicationController
 
   def show
     @content = MfaConfirmationPresenter.new(current_user)
-    analytics.user_registration_suggest_another_mfa_notice_visited
+    @next_path = next_path
   end
 
   def skip
     user_session.delete(:mfa_selections)
     user_session.delete(:next_mfa_selection_choice)
-    analytics.user_registration_suggest_another_mfa_notice_skipped
     redirect_to after_mfa_setup_path
   end
 
@@ -27,6 +26,16 @@ class MfaConfirmationController < ApplicationController
   end
 
   private
+
+  def enforce_second_mfa?
+    IdentityConfig.store.kantara_2fa_phone_restricted &&
+      MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
+  end
+
+  def next_path
+    return second_mfa_setup_non_restricted_path if enforce_second_mfa?
+    second_mfa_setup_path
+  end
 
   def password
     params.require(:user)[:password]

@@ -1,5 +1,3 @@
-import { addSearchParams } from '@18f/identity-url';
-
 export interface ErrorResponse<Field extends string = string> {
   errors: Record<Field, [string, ...string[]]>;
 }
@@ -29,9 +27,6 @@ export async function post<Response = any>(
   body: BodyInit | object,
   options: Partial<PostOptions> = {},
 ): Promise<Response> {
-  const { lang: locale } = document.documentElement;
-  const localizedURL = addSearchParams(url, { locale });
-
   const headers: HeadersInit = {};
 
   if (options.csrf) {
@@ -46,11 +41,7 @@ export async function post<Response = any>(
     body = JSON.stringify(body);
   }
 
-  const response = await window.fetch(localizedURL, {
-    method: 'POST',
-    headers,
-    body: body as BodyInit,
-  });
+  const response = await window.fetch(url, { method: 'POST', headers, body: body as BodyInit });
 
   return options.json ? response.json() : response.text();
 }

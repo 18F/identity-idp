@@ -12,7 +12,6 @@ import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
-  const DEFAULT_PROPS = { remainingAttempts: 3 };
   const sandbox = useSandbox();
 
   it('logs warning events', async () => {
@@ -20,7 +19,7 @@ describe('document-capture/components/review-issues-step', () => {
 
     const { getByRole } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
-        <ReviewIssuesStep {...DEFAULT_PROPS} />
+        <ReviewIssuesStep remainingAttempts={3} />
       </AnalyticsContext.Provider>,
     );
 
@@ -38,7 +37,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders initially with warning page and displays attempts remaining', () => {
-    const { getByRole, getByText } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
+    const { getByRole, getByText } = render(<ReviewIssuesStep remainingAttempts={3} />);
 
     expect(getByText('errors.doc_auth.throttled_heading')).to.be.ok();
     expect(getByText('idv.failure.attempts.other')).to.be.ok();
@@ -79,7 +78,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   it('renders with front, back, and selfie inputs', async () => {
-    const { getByLabelText, getByRole } = render(<ReviewIssuesStep {...DEFAULT_PROPS} />);
+    const { getByLabelText, getByRole } = render(<ReviewIssuesStep />);
 
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
@@ -90,9 +89,7 @@ describe('document-capture/components/review-issues-step', () => {
 
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
-    const { getByLabelText, getByRole } = render(
-      <ReviewIssuesStep {...DEFAULT_PROPS} onChange={onChange} />,
-    );
+    const { getByLabelText, getByRole } = render(<ReviewIssuesStep onChange={onChange} />);
     const file = await getFixtureFile('doc_auth_images/id-back.jpg');
     await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
 
@@ -128,7 +125,7 @@ describe('document-capture/components/review-issues-step', () => {
         backgroundUploadURLs={{ back: 'about:blank#back' }}
         backgroundUploadEncryptKey={key}
       >
-        <ReviewIssuesStep {...DEFAULT_PROPS} onChange={onChange} />)
+        <ReviewIssuesStep onChange={onChange} />)
       </UploadContextProvider>,
     );
 
@@ -153,7 +150,7 @@ describe('document-capture/components/review-issues-step', () => {
           isLivenessRequired: false,
         }}
       >
-        <ReviewIssuesStep {...DEFAULT_PROPS} />
+        <ReviewIssuesStep />
       </ServiceProviderContextProvider>,
     );
 
@@ -181,7 +178,7 @@ describe('document-capture/components/review-issues-step', () => {
               isLivenessRequired: false,
             }}
           >
-            <ReviewIssuesStep {...DEFAULT_PROPS} />
+            <ReviewIssuesStep />
           </ServiceProviderContextProvider>,
         );
         await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
@@ -202,7 +199,7 @@ describe('document-capture/components/review-issues-step', () => {
               isLivenessRequired: true,
             }}
           >
-            <ReviewIssuesStep {...DEFAULT_PROPS} />
+            <ReviewIssuesStep />
           </ServiceProviderContextProvider>,
         );
         await userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
@@ -211,24 +208,6 @@ describe('document-capture/components/review-issues-step', () => {
         expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
         expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
       });
-    });
-  });
-
-  context('with barcode attention error', () => {
-    it('renders initially with warning page', () => {
-      async () => {
-        const { getByRole, getByText } = render(
-          <ReviewIssuesStep
-            pii={{ first_name: 'Fakey', last_name: 'McFakerson', dob: '1938-10-06' }}
-          />,
-        );
-
-        expect(getByText('doc_auth.errors.barcode_attention.heading')).to.be.ok();
-
-        await userEvent.click(getByRole('button', { name: 'doc_auth.buttons.add_new_photos' }));
-
-        expect(getByText('doc_auth.headings.review_issues')).to.be.ok();
-      };
     });
   });
 });

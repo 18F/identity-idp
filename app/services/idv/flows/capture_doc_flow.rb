@@ -15,6 +15,7 @@ module Idv
       ].freeze
 
       ACTIONS = {
+        verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
 

@@ -1,11 +1,4 @@
-import type { noticeError } from 'newrelic';
 import { getConfigValue } from '@18f/identity-config';
-
-type NewRelicAgent = { noticeError: typeof noticeError };
-
-interface NewRelicGlobals {
-  newrelic?: NewRelicAgent;
-}
 
 /**
  * Logs an event.
@@ -24,13 +17,4 @@ export async function trackEvent(event: string, payload: object = {}): Promise<v
       body: JSON.stringify({ event, payload }),
     });
   }
-}
-
-/**
- * Logs an error.
- *
- * @param error Error object.
- */
-export function trackError(error: Error) {
-  (globalThis as typeof globalThis & NewRelicGlobals).newrelic?.noticeError(error);
 }

@@ -5,7 +5,6 @@ module Idv
 
     validate :timeout_error
     validate :failed_result
-    validates_presence_of :document_capture_session
 
     def initialize(async_state:, document_capture_session:)
       @async_state = async_state
@@ -44,9 +43,5 @@ module Idv
         errors.add(key, error, type: error)
       end
     end
-
-    private
-
-    attr_reader :document_capture_session
   end
 end

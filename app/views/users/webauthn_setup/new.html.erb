@@ -4,7 +4,9 @@
 
 <%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
 
-<%= @presenter.intro_html %>
+<p>
+  <%= @presenter.intro %>
+</p>
 
 <%= simple_form_for(
       '',

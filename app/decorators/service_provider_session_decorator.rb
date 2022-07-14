@@ -113,10 +113,6 @@ class ServiceProviderSessionDecorator
     end
   end
 
-  def irs_attempts_api_session_id
-    @irs_attempts_api_session_id ||= request_params['irs_attempts_api_session_id']
-  end
-
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request

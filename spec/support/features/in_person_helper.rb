@@ -9,7 +9,7 @@ module InPersonHelper
   GOOD_ADDRESS2 = Idp::Constants::MOCK_IDV_APPLICANT[:address2]
   GOOD_CITY = Idp::Constants::MOCK_IDV_APPLICANT[:city]
   GOOD_ZIPCODE = Idp::Constants::MOCK_IDV_APPLICANT[:zipcode]
-  GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE
+  GOOD_STATE = Idp::Constants::MOCK_IDV_APPLICANT_FULL_STATE_ID_JURISDICTION
 
   def fill_out_state_id_form_ok
     fill_in t('in_person_proofing.form.state_id.first_name'), with: GOOD_FIRST_NAME

@@ -12,14 +12,20 @@ import { createContext } from 'react';
  */
 
 /**
+ * @typedef {(error: Error)=>void} NoticeError
+ */
+
+/**
  * @typedef AnalyticsContext
  *
  * @prop {TrackEvent} addPageAction Log an action with optional payload.
+ * @prop {NoticeError} noticeError Log an error without affecting application behavior.
  */
 
 const AnalyticsContext = createContext(
   /** @type {AnalyticsContext} */ ({
     addPageAction: () => Promise.resolve(),
+    noticeError: () => {},
   }),
 );
 

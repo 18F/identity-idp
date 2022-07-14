@@ -32,7 +32,7 @@ describe SignUp::CompletionsController do
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
-            'User registration: agency handoff visited',
+            Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
             ial2: false,
             ialmax: nil,
             service_provider_name: subject.decorated_session.sp_name,
@@ -63,7 +63,7 @@ describe SignUp::CompletionsController do
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
-            'User registration: agency handoff visited',
+            Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
             ial2: true,
             ialmax: nil,
             service_provider_name: subject.decorated_session.sp_name,

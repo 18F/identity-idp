@@ -103,7 +103,7 @@ describe Idv::ResendOtpController do
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          'Vendor Phone Validation failed', telephony_error_analytics_hash
+          Analytics::OTP_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
         )
 
         post :create

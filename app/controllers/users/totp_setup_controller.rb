@@ -65,11 +65,9 @@ module Users
     end
 
     def track_event
-      mfa_user = MfaContext.new(current_user)
       properties = {
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       }
       analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
     end
@@ -94,10 +92,6 @@ module Users
 
     def create_events
       create_user_event(:authenticator_enabled)
-      mfa_user = MfaContext.new(current_user)
-      analytics.multi_factor_auth_added_totp(
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      )
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
     end
 

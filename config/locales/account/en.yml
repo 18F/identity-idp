@@ -49,7 +49,7 @@ en:
         instructions: Your profile was recently deactivated due to a password reset.
         link: Reactivate your profile now.
       sign_in_location_and_ip: From %{ip} (IP address potentially located in %{location})
-      ssn: Social Security number
+      ssn: Social Security Number
       totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:

@@ -7,8 +7,12 @@ fr:
       document_capture_dialog: Capture du document
       selfie_alt_text: Une photo téléversée
     buttons:
-      add_new_photos: Ajoutez de nouvelles photos
+      change_address: Changement
+      change_address_label: Changement d’adresse
+      change_ssn: Changement
+      change_ssn_label: Changement de numéro de sécurité sociale
       continue: Continuer
+      start_over: Recommencer
       take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
         <lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
@@ -61,11 +65,6 @@ fr:
           fort.
         visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
-      barcode_attention:
-        confirm_info: Si les informations ci-dessous sont incorrectes, veuillez
-          télécharger de nouvelles photos de votre carte d’identité délivrée par
-          l’État.
-        heading: Nous n’avons pas pu lire le code-barres de votre pièce d’identité.
       camera:
         blocked: Votre appareil photo est bloqué
         blocked_detail: Nous n’avons pas la permission d’accéder à l’appareil photo.
@@ -137,20 +136,24 @@ fr:
           photos dans un endroit lumineux.
       upload_error: Désolé, quelque chose a mal tourné de notre côté.
     forms:
+      address1: Adresse
       captured_image: Image capturée
       change_file: Changer de fichier
       choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez un
         dossier</lg-underline>
+      city: Ville
+      dob: Date de naissance
       doc_success: Nous avons vérifié vos informations personnelles
+      first_name: Prénom
+      last_name: Nom de famille
       selected_file: Fichier sélectionné
+      ssn: Numéro de sécurité sociale
+      state: Etat
+      zip_code: Code postal
     headings:
       address: Mettre à jour votre adresse postale
       back: Verso
       capture_complete: Nous avons vérifié votre carte d’identité délivrée par l’État
-      capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre
-        pièce d’identité. Si les informations ci-dessous sont incorrectes,
-        veuillez %{link} de votre carte d’identité délivrée par l’État.
-      capture_scan_warning_link: télécharger de nouvelles photos
       capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d’identité?
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
@@ -174,6 +177,7 @@ fr:
       upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
         votre pièce d’identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
+      verify: Vérifier votre information
       verify_identity: Vérifier votre identité
       welcome: Commencez à vérifier votre identité
     info:
@@ -234,6 +238,7 @@ fr:
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       verify_identity: Nous vous demanderons vos informations personnelles afin de
         vérifier votre identité par rapport aux registres publics.
+      verifying: Vérification…
       welcome_html: '%{sp_name} doit s’assurer que vous êtes bien vous, et non
         quelqu’un qui se fait passer pour vous.'
     instructions:

@@ -5,10 +5,6 @@ describe TwoFactorOptionsForm do
   subject { described_class.new(user) }
 
   describe '#submit' do
-    let(:submit_phone) { subject.submit(selection: 'phone') }
-    let(:enabled_mfa_methods_count) { 0 }
-    let(:mfa_selection) { ['sms'] }
-
     it 'is successful if the selection is valid' do
       %w[auth_app piv_cac webauthn webauthn_platform].each do |selection|
         result = subject.submit(selection: selection)
@@ -34,13 +30,6 @@ describe TwoFactorOptionsForm do
         expect(result.success?).to eq false
         expect(result.errors).to include :selection
       end
-    end
-
-    it 'includes analytics hash with a methods count of zero' do
-      result = subject.submit(selection: 'piv_cac')
-
-      expect(result.success?).to eq(true)
-      expect(result.to_h).to include(enabled_mfa_methods_count: 0)
     end
 
     context "when the selection is different from the user's otp_delivery_preference" do
@@ -82,27 +71,22 @@ describe TwoFactorOptionsForm do
       end
 
       it 'does not submit the phone when selected as the first single option' do
-        expect(submit_phone.success?).to eq false
+        result = subject.submit(selection: ['phone'])
+
+        expect(result.success?).to eq false
       end
     end
 
     context 'when a user wants to select phone as their second authentication method' do
-      let(:user) { build(:user, :with_authentication_app) }
-      let(:enabled_mfa_methods_count) { 1 }
-      let(:mfa_selection) { ['phone'] }
-
+      let(:user) { create(:user, :with_authentication_app) }
       before do
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)
       end
 
       it 'submits the form' do
-        expect(submit_phone.success?).to eq true
-      end
+        result = subject.submit(selection: ['phone'])
 
-      it 'includes analytics hash with a method count of one' do
-        result = submit_phone
-
-        expect(result.to_h).to include(enabled_mfa_methods_count: 1)
+        expect(result.success?).to eq true
       end
     end
 
@@ -113,7 +97,9 @@ describe TwoFactorOptionsForm do
       end
 
       it 'proceeds with submission' do
-        expect(submit_phone.success?).to eq true
+        result = subject.submit(selection: ['phone'])
+
+        expect(result.success?).to eq true
       end
     end
   end

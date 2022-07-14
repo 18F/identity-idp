@@ -31,7 +31,7 @@ function SubmissionComplete({ resource }) {
 
   function handleResponse() {
     if (response.isPending) {
-      if (Number.isFinite(statusPollInterval)) {
+      if (statusPollInterval !== undefined) {
         sleepTimeout.current = window.setTimeout(() => {
           setRetryError(() => {
             throw new RetrySubmissionError();

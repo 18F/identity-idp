@@ -199,7 +199,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
         expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,

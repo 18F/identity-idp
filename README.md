@@ -17,20 +17,17 @@ Thank you for your interest in contributing to the Login.gov IdP! For complete i
 
 ### Installing on your local machine
 
-This installation method is meant for those who are familiar with setting up local development environments on their machines. If you encounter errors, see the [Troubleshooting](#troubleshooting) section at the bottom of this README.
+This installation method is meant for those who are familiar with setting up local development environments on their machines.
 
-We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling to install the below dependencies; while we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
-
-#### Dependencies
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby ~> 3.0.4
+- Ruby ~> 3.0.3
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
 - [Node.js v14](https://nodejs.org)
--- (to install Node.js v.14 using brew: `brew install node@14`)
 - [Yarn](https://yarnpkg.com/en/)
-- [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+
+We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling when installing your dependencies. While we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
 
 2. Test that you have Postgres and Redis running.
 
@@ -61,6 +58,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+
+If this command errors, you may need to install dependencies outside of the Makefile with:
+```
+$ bundle install
+$ yarn install
+```
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
@@ -196,50 +199,3 @@ It's likely that you'll be prompted with a screen with warnings about an unsafe 
 There was an initial attempt to dockerize the IDP but it is currently deprecated, mostly non-functional, and not maintained. There is ongoing work to make the IDP more [12 Factor](https://12factor.net/) compliant which will eventually lead to better support for containerization.
 
 If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container.
-
-### Troubleshooting
-#### I am receiving errors when running `$ make setup`
-
-If this command returns errors, you may need to install the dependencies first, outside of the Makefile:
-```
-$ bundle install
-$ yarn install
-```
-
-#### I am receiving errors related to Capybara in feature tests
-You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
-
-chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up.
-
-#### I am receiving errors when creating the development and test databases
-
-If you receive the following error (where _whoami_ == _your username_):
-
-`psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: FATAL:  database "<whoami>" does not exist`
-
-Running the following command first, may solve the issue:
-```
-$ createdb `whoami`
-```
-
-#### I am receiving errors when running `$ make test`
-
-##### Errors related to running specs in _parallel_
-`$ make test` runs specs in _parallel_ which could potentially return errors. Running specs _serially_ may fix the problem; to run specs _serially_:
-```
-$ make test_serial
-```
-
-##### Errors related to too many _open files_
-You may receive connection errors similar to the following:
-
-`Failed to open TCP connection to 127.0.0.1:9515 (Too many open files - socket(2) for "127.0.0.1" port 9515)`
-
-Running the following, _prior_ to running tests, may solve the problem:
-```
-$ ulimit -Sn 65536 && make test
-```
-To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_profile` file, depending on your shell:
-```
-ulimit -Sn 65536
-```

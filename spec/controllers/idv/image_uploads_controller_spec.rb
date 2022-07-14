@@ -159,7 +159,6 @@ describe Idv::ImageUploadsController do
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
             remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
-            ocr_pii: nil,
           },
         )
       end
@@ -176,7 +175,6 @@ describe Idv::ImageUploadsController do
             errors: [{ field: 'limit', message: 'We could not verify your ID' }],
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
-            ocr_pii: nil,
           },
         )
       end
@@ -240,7 +238,6 @@ describe Idv::ImageUploadsController do
           'IdV: doc auth image upload vendor submitted',
           success: true,
           errors: {},
-          attention_with_barcode: false,
           async: false,
           billed: true,
           exception: nil,
@@ -262,7 +259,6 @@ describe Idv::ImageUploadsController do
           'IdV: doc auth image upload vendor pii validation',
           success: true,
           errors: {},
-          attention_with_barcode: false,
           user_id: user.uuid,
           attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -321,7 +317,6 @@ describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
-              attention_with_barcode: false,
               async: false,
               billed: true,
               exception: nil,
@@ -348,7 +343,6 @@ describe Idv::ImageUploadsController do
               error_details: {
                 pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
-              attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -381,7 +375,6 @@ describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
-              attention_with_barcode: false,
               async: false,
               billed: true,
               exception: nil,
@@ -408,7 +401,6 @@ describe Idv::ImageUploadsController do
               error_details: {
                 pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
-              attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -441,7 +433,6 @@ describe Idv::ImageUploadsController do
               'IdV: doc auth image upload vendor submitted',
               success: true,
               errors: {},
-              attention_with_barcode: false,
               async: false,
               billed: true,
               exception: nil,
@@ -468,7 +459,6 @@ describe Idv::ImageUploadsController do
               error_details: {
                 pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
-              attention_with_barcode: false,
               user_id: user.uuid,
               attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -527,7 +517,6 @@ describe Idv::ImageUploadsController do
           errors: {
             front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
           },
-          attention_with_barcode: false,
           user_id: user.uuid,
           attempts: 1,
           billed: nil,
@@ -591,7 +580,6 @@ describe Idv::ImageUploadsController do
             back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
             hints: true,
           },
-          attention_with_barcode: false,
           async: false,
           billed: true,
           doc_auth_result: 'Caution',

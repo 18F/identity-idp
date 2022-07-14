@@ -37,9 +37,5 @@ DocumentCaptureSessionAsyncResult = RedactedStruct.new(
     status == DocumentCaptureSessionAsyncResult::IN_PROGRESS
   end
 
-  def attention_with_barcode?
-    done? && result[:attention_with_barcode]
-  end
-
   alias_method :pii_from_doc, :pii
 end

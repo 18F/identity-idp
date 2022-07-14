@@ -133,14 +133,9 @@ es:
       instructions_text: Use el desbloqueo facial o táctil para acceder a su cuenta
         con %{app_name}.
       instructions_title: Use el desbloqueo facial o táctil para acceder a su cuenta.
-      intro_html: '<p>Cuando quiera acceder a su cuenta de %{app_name}, podrá utilizar
-        su dispositivo para escanear su cara o su huella dactilar. El
-        dispositivo confirma si dichos escaneos coinciden con las imágenes que
-        ya tiene almacenadas en su dispositivo.</p><p>Nosotros no copiamos ni
-        almacenamos estas imágenes. Necesitará el mismo dispositivo para iniciar
-        sesión en el futuro utilizando el desbloqueo facial o táctil.
-        %{link}</p>'
-      intro_link_text: Conozca más sobre el desbloqueo facial o táctil.
+      intro: Habilite el desbloqueo facial o táctil en este dispositivo como método de
+        autenticación. Necesitará este dispositivo para poder usar ese método en
+        el futuro. Comience dándole un apodo a su dispositivo.
       login_text: 'Cuando esté listo, presione el botón:'
       nickname: Apodo de dispositivo.
     webauthn_setup:
@@ -148,9 +143,8 @@ es:
       instructions_text: Presione el botón en su clave de seguridad para registrarlo
         con %{app_name}
       instructions_title: Conecte su llave de seguridad
-      intro_html: '<p>Añada una clave de seguridad que cumpla el estándar FIDO como
-        método de autenticación. Puede añadir tantas claves de seguridad como
-        desee. Para empezar, primero asigne un apodo a su clave de
-        seguridad.</p>'
+      intro: Añada una clave de seguridad que cumpla el estándar FIDO como método de
+        autenticación. Puede añadir tantas claves de seguridad como desee. Para
+        empezar, primero asigne un apodo a su clave de seguridad.
       login_text: 'Cuando esté listo para autenticarse, presione el botón:'
       nickname: Apodo clave de seguridad

@@ -27,17 +27,17 @@ describe Reports::SpUserCountsReport do
         user_total: 3,
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report Registered Users Count',
+        name: Analytics::REPORT_REGISTERED_USERS_COUNT,
         time: timestamp,
         count: 0,
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report IAL1 Users Linked to SPs Count',
+        name: Analytics::REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT,
         time: timestamp,
         count: 2,
       )
       expect(subject).to receive(:write_hash_to_reports_log).with(
-        name: 'Report IAL2 Users Linked to SPs Count',
+        name: Analytics::REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT,
         time: timestamp,
         count: 1,
       )

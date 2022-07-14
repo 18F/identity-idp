@@ -96,7 +96,6 @@ export function useCleanDOM(dom) {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
-    document.documentElement.lang = 'en';
     window.history.replaceState(null, '', TEST_URL);
     window.location.pathname = '';
     window.location.hash = '';

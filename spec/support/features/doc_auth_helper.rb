@@ -4,7 +4,6 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -16,7 +15,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
+    fill_in t('idv.form.ssn_label_html'), with: '123-45-6666'
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
@@ -155,7 +154,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
     expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
-    click_button t('idv.buttons.change_address_label')
+    click_link t('doc_auth.buttons.change_address')
   end
 
   def complete_doc_auth_steps_before_send_link_step
@@ -208,22 +207,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       response: DocAuth::Response.new(
         success: false,
         errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
-      ),
-    )
-  end
-
-  def mock_doc_auth_attention_with_barcode
-    attention_with_barcode_response = instance_double(
-      Faraday::Response,
-      status: 200,
-      body: LexisNexisFixtures.true_id_barcode_read_attention,
-    )
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
-      method: :get_results,
-      response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        attention_with_barcode_response,
-        false,
-        DocAuth::LexisNexis::Config.new,
       ),
     )
   end

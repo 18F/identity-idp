@@ -10,30 +10,21 @@ module Idv
       analytics.idv_cancellation_visited(step: params[:step], **properties)
       self.session_go_back_path = go_back_path || idv_path
       @hybrid_session = hybrid_session?
-      @presenter = CancellationsPresenter.new(
-        sp_name: decorated_session.sp_name,
-        url_options: url_options,
-      )
     end
 
     def update
-      analytics.idv_cancellation_go_back(step: params[:step])
-      redirect_to session_go_back_path || idv_path
+      if params.key?(:cancel)
+        analytics.idv_cancellation_go_back(step: params[:step])
+        redirect_to session_go_back_path || idv_path
+      else
+        render :new
+      end
     end
 
     def destroy
       analytics.idv_cancellation_confirmed(step: params[:step])
-      cancel_session
-      if hybrid_session?
-        render :destroy
-      else
-        render json: { redirect_url: cancelled_redirect_path }
-      end
-    end
-
-    private
-
-    def cancel_session
+      @return_to_sp_path = return_to_sp_failure_to_proof_path(location_params)
+      @hybrid_session = hybrid_session?
       if hybrid_session?
         cancel_document_capture_session
       else
@@ -43,13 +34,7 @@ module Idv
       end
     end
 
-    def cancelled_redirect_path
-      if decorated_session.sp_name
-        return_to_sp_failure_to_proof_path(location_params)
-      else
-        account_path
-      end
-    end
+    private
 
     def location_params
       params.permit(:step, :location).to_h.symbolize_keys

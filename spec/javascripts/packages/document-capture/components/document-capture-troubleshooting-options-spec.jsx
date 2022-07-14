@@ -1,27 +1,25 @@
 import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import {
   HelpCenterContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
-import { FlowContext } from '@18f/identity-verify-flow';
 import DocumentCaptureTroubleshootingOptions from '@18f/identity-document-capture/components/document-capture-troubleshooting-options';
 
 describe('DocumentCaptureTroubleshootingOptions', () => {
   const helpCenterRedirectURL = 'https://example.com/redirect/';
-  const inPersonURL = 'https://example.com/some/idv/ipp/url';
+  const idvInPersonURL = 'https://example.com/some/idv/ipp/url';
   const serviceProviderContext = {
     name: 'Example SP',
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
   };
   const wrappers = {
     helpCenterContext: ({ children }) => (
-      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL, idvInPersonURL }}>
         {children}
       </HelpCenterContextProvider>
     ),
     helpCenterAndServiceProviderContext: ({ children }) => (
-      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL, idvInPersonURL }}>
         <ServiceProviderContextProvider value={serviceProviderContext}>
           {children}
         </ServiceProviderContextProvider>
@@ -120,7 +118,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
   });
 
   context('in person proofing links', () => {
-    context('no errors and no inPersonURL', () => {
+    context('no errors and no idvInPersonURL', () => {
       it('has no IPP information', () => {
         const { queryByText } = render(<DocumentCaptureTroubleshootingOptions />);
 
@@ -128,7 +126,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       });
     });
 
-    context('hasErrors but no inPersonURL', () => {
+    context('hasErrors but no idvInPersonURL', () => {
       it('has no IPP information', () => {
         const { queryByText } = render(<DocumentCaptureTroubleshootingOptions hasErrors />);
 
@@ -136,54 +134,20 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       });
     });
 
-    context('hasErrors and inPersonURL', () => {
-      const wrapper = ({ children }) => (
-        <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
-      );
-
-      it('has links to IPP information', async () => {
+    context('hasErrors and idvInPersonURL', () => {
+      it('has links to IPP information', () => {
         const { getByText, getAllByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
-          { wrapper },
+          {
+            wrapper: wrappers.helpCenterContext,
+          },
         );
 
         expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
 
         const links = getAllByRole('link');
-        const ippLink = links.find(({ href }) => href === inPersonURL);
+        const ippLink = links.find(({ href }) => href === idvInPersonURL);
         expect(ippLink).to.exist();
-
-        window.onbeforeunload = () => {};
-        await userEvent.click(ippLink);
-        expect(window.onbeforeunload).not.to.exist();
-      });
-    });
-  });
-
-  context('with document tips hidden', () => {
-    it('renders nothing', () => {
-      const { container } = render(
-        <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
-      );
-
-      expect(container.innerHTML).to.be.empty();
-    });
-
-    context('with associated service provider', () => {
-      it('renders troubleshooting options', () => {
-        const { getAllByRole } = render(
-          <DocumentCaptureTroubleshootingOptions showDocumentTips={false} />,
-          {
-            wrapper: wrappers.helpCenterAndServiceProviderContext,
-          },
-        );
-
-        const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));
-
-        expect(links).to.have.lengthOf(1);
-        expect(links[0].getAttribute('href')).to.equal(
-          'http://example.test/url/to/failure-to-proof?location=document_capture_troubleshooting_options',
-        );
       });
     });
   });

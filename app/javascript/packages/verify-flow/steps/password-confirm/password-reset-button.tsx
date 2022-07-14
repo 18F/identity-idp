@@ -1,9 +1,7 @@
-import { useContext } from 'react';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
 import { isErrorResponse, post } from '../../services/api';
 import type { ErrorResponse } from '../../services/api';
-import FlowContext from '../../context/flow-context';
 
 /**
  * API endpoint for password reset.
@@ -22,14 +20,21 @@ interface PasswordResetSuccessResponse {
  */
 type PasswordResetResponse = PasswordResetSuccessResponse | ErrorResponse;
 
-function PasswordResetButton() {
-  const { onComplete } = useContext(FlowContext);
+/**
+ * Navigates user to the given URL.
+ *
+ * @param url Destination URL.
+ */
+function navigate(url) {
+  window.location.href = url;
+}
 
+function PasswordResetButton({ onNavigate = navigate }) {
   async function requestReset() {
     const json = await post<PasswordResetResponse>(API_ENDPOINT, {}, { csrf: true, json: true });
     if (!isErrorResponse(json)) {
-      const { redirect_url: completionURL } = json;
-      onComplete({ completionURL });
+      const { redirect_url: redirectURL } = json;
+      onNavigate(redirectURL);
     }
   }
 

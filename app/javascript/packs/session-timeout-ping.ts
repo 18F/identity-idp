@@ -1,4 +1,3 @@
-import { forceRedirect } from '@18f/identity-url';
 import type { CountdownElement } from '@18f/identity-countdown-element';
 
 interface NewRelicAgent {
@@ -75,9 +74,10 @@ function notifyNewRelic(request, error, actionName) {
   });
 }
 
-function handleTimeout(redirectURL: string) {
-  window.dispatchEvent(new window.CustomEvent('lg:session-timeout'));
-  forceRedirect(redirectURL);
+function forceRedirect(redirectURL: string) {
+  window.onbeforeunload = null;
+  window.onunload = null;
+  window.location.href = redirectURL;
 }
 
 function success(data: PingResponse) {
@@ -86,7 +86,7 @@ function success(data: PingResponse) {
 
   if (!data.live) {
     if (timeoutUrl) {
-      handleTimeout(timeoutUrl);
+      forceRedirect(timeoutUrl);
     }
     return;
   }

@@ -21,14 +21,14 @@ feature 'doc auth verify step', :js do
   it 'allows the user to enter in a new address' do
     fill_out_address_form_ok
 
-    click_button t('forms.buttons.submit.update')
+    click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
   it 'does not allows the user to enter bad address info' do
     fill_out_address_form_fail
 
-    click_button t('forms.buttons.submit.update')
+    click_idv_continue
     expect(page).to have_current_path(idv_address_path)
   end
 

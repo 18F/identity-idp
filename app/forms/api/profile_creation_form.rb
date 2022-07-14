@@ -6,7 +6,9 @@ module Api
     validate :valid_user
     validate :valid_password
 
-    attr_reader :password, :user_bundle, :user_session, :service_provider, :profile, :gpo_code
+    attr_reader :password, :user_bundle
+    attr_reader :user_session, :service_provider
+    attr_reader :profile
 
     def initialize(password:, jwt:, user_session:, service_provider: nil)
       @password = password
@@ -78,7 +80,6 @@ module Api
         profile: profile,
       )
       confirmation_maker.perform
-      @gpo_code = confirmation_maker.otp if FeatureManagement.reveal_gpo_code?
     end
 
     def build_profile_maker

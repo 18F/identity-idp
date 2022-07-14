@@ -78,7 +78,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         patch :confirm, params: params
       end
@@ -98,7 +98,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
-          with('User marked authenticated', authentication_type: :valid_2fa)
+          with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
         patch :confirm, params: params
       end

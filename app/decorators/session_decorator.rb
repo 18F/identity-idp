@@ -43,8 +43,6 @@ class SessionDecorator
     false
   end
 
-  def irs_attempts_api_session_id; end
-
   private
 
   attr_reader :view_context

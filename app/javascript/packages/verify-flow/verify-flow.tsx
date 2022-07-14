@@ -12,7 +12,6 @@ import {
   AddressVerificationMethod,
   AddressVerificationMethodContextProvider,
 } from './context/address-verification-method-context';
-import ErrorBoundary from './error-boundary';
 
 export interface VerifyFlowValues {
   userBundleToken?: string;
@@ -63,14 +62,14 @@ export interface VerifyFlowProps {
   basePath: string;
 
   /**
+   * URL to path for session restart.
+   */
+  startOverURL?: string;
+
+  /**
    * URL to path for session cancel.
    */
   cancelURL?: string;
-
-  /**
-   * URL to in-person proofing alternative flow, if enabled.
-   */
-  inPersonURL?: string | null;
 
   /**
    * Initial value for address verification method.
@@ -108,8 +107,8 @@ function VerifyFlow({
   initialValues = {},
   enabledStepNames,
   basePath,
+  startOverURL = '',
   cancelURL = '',
-  inPersonURL = null,
   initialAddressVerificationMethod,
   onComplete,
 }: VerifyFlowProps) {
@@ -121,13 +120,7 @@ function VerifyFlow({
   const [syncedValues, setSyncedValues] = useSyncedSecretValues(initialValues);
   const [currentStep, setCurrentStep] = useState(steps[0].name);
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
-  const context = useObjectMemo({
-    cancelURL,
-    inPersonURL,
-    currentStep,
-    basePath,
-    onComplete,
-  });
+  const context = useObjectMemo({ startOverURL, cancelURL, currentStep, basePath });
   useEffect(() => {
     logStepVisited(currentStep);
   }, [currentStep]);
@@ -143,25 +136,23 @@ function VerifyFlow({
   }
 
   return (
-    <ErrorBoundary>
-      <FlowContext.Provider value={context}>
-        <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
-          <VerifyFlowStepIndicator currentStep={currentStep} />
-          <FormSteps
-            steps={steps}
-            initialValues={syncedValues}
-            initialStep={initialStep}
-            promptOnNavigate={false}
-            basePath={basePath}
-            titleFormat={`%{step} - ${getConfigValue('appName')}`}
-            onChange={setSyncedValues}
-            onStepSubmit={onStepSubmit}
-            onStepChange={setCurrentStep}
-            onComplete={onFormComplete}
-          />
-        </AddressVerificationMethodContextProvider>
-      </FlowContext.Provider>
-    </ErrorBoundary>
+    <FlowContext.Provider value={context}>
+      <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
+        <VerifyFlowStepIndicator currentStep={currentStep} />
+        <FormSteps
+          steps={steps}
+          initialValues={syncedValues}
+          initialStep={initialStep}
+          promptOnNavigate={false}
+          basePath={basePath}
+          titleFormat={`%{step} - ${getConfigValue('appName')}`}
+          onChange={setSyncedValues}
+          onStepSubmit={onStepSubmit}
+          onStepChange={setCurrentStep}
+          onComplete={onFormComplete}
+        />
+      </AddressVerificationMethodContextProvider>
+    </FlowContext.Provider>
   );
 }
 

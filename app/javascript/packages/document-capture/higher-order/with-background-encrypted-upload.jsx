@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { t } from '@18f/identity-i18n';
 import { FormError } from '@18f/identity-form-steps';
-import { trackError } from '@18f/identity-analytics';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 
@@ -84,7 +83,7 @@ const withBackgroundEncryptedUpload = (Component) => {
    */
   function ComposedComponent({ onChange, onError, ...props }) {
     const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
-    const { addPageAction } = useContext(AnalyticsContext);
+    const { addPageAction, noticeError } = useContext(AnalyticsContext);
 
     /**
      * @param {Record<string, string|Blob|null|undefined>} nextValues Next values.
@@ -104,7 +103,7 @@ const withBackgroundEncryptedUpload = (Component) => {
           )
             .catch((error) => {
               addPageAction('IdV: document capture async upload encryption', { success: false });
-              trackError(error);
+              noticeError(error);
 
               // Rethrow error to skip upload and proceed from next `catch` block.
               throw error;

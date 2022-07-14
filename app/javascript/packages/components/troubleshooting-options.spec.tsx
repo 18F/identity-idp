@@ -57,15 +57,6 @@ describe('TroubleshootingOptions', () => {
     expect(container.innerHTML).to.be.empty();
   });
 
-  it('passes additional options props as link props', () => {
-    const options = [{ text: 'Option', url: '/', 'data-example': true }];
-    const { getByRole } = render(<TroubleshootingOptions {...DEFAULT_PROPS} options={options} />);
-
-    const link = getByRole('link');
-
-    expect(link.hasAttribute('data-example')).to.be.true();
-  });
-
   it('renders a new features tag with isNewFeatures', () => {
     const { getByText } = render(
       <TroubleshootingOptions

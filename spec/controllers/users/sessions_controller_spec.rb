@@ -536,7 +536,7 @@ describe Users::SessionsController, devise: true do
         subject.session['user_return_to'] = 'http://example.com'
         properties = { flash: 'hello', stored_location: 'http://example.com' }
 
-        expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT, properties)
 
         get :new
       end
@@ -646,7 +646,7 @@ describe Users::SessionsController, devise: true do
         controller.session[:session_expires_at] = Time.zone.now + 10
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with('Session Kept Alive')
+        expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
 
         post :keepalive
       end

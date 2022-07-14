@@ -100,12 +100,8 @@ public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Bu
 	yarn build
 
 test: export RAILS_ENV := test
-test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
+test: $(CONFIG) ## Runs RSpec and yarn tests
 	bundle exec rake parallel:spec && yarn test
-
-test_serial: export RAILS_ENV := test
-test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
-	bundle exec rake spec && yarn test
 
 fast_test: export RAILS_ENV := test
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs

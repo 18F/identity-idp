@@ -2,7 +2,6 @@ import { createContext } from 'react';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import type { ReactNode } from 'react';
 import defaultUpload from '../services/upload';
-import type { PII } from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
@@ -13,7 +12,6 @@ const UploadContext = createContext({
   backgroundUploadEncryptKey: undefined as CryptoKey | undefined,
   flowPath: 'standard' as FlowPath,
   csrf: null as string | null,
-  formData: {} as Record<string, any>,
 });
 
 UploadContext.displayName = 'UploadContext';
@@ -89,11 +87,6 @@ export interface UploadErrorResponse {
    * Boolean to decide if capture hints should be shown with error.
    */
   hints?: boolean;
-
-  /**
-   * Personally-identifiable information from OCR analysis.
-   */
-  ocr_pii?: PII;
 }
 
 export type UploadImplementation = (
@@ -138,6 +131,11 @@ interface UploadContextProviderProps {
   statusPollInterval?: number;
 
   /**
+   * HTTP method to send payload.
+   */
+  method: 'POST' | 'PUT';
+
+  /**
    * CSRF token to send as parameter to upload implementation.
    */
   csrf: string | null;
@@ -158,12 +156,6 @@ interface UploadContextProviderProps {
   children: ReactNode;
 }
 
-/**
- * Default form data. Assigned as a constant to avoid creating a new object reference for each call
- * to the component.
- */
-const DEFAULT_FORM_DATA = {};
-
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
@@ -172,16 +164,18 @@ function UploadContextProvider({
   endpoint,
   statusEndpoint,
   statusPollInterval,
+  method,
   csrf,
-  formData = DEFAULT_FORM_DATA,
+  formData,
   flowPath,
   children,
 }: UploadContextProviderProps) {
-  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
+  const uploadWithCSRF = (payload) =>
+    upload({ ...payload, ...formData }, { endpoint, method, csrf });
 
   const getStatus = () =>
     statusEndpoint
-      ? upload({ ...formData }, { endpoint: statusEndpoint, method: 'PUT', csrf })
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
       : Promise.reject();
 
   const value = useObjectMemo({
@@ -193,7 +187,6 @@ function UploadContextProvider({
     isMockClient,
     flowPath,
     csrf,
-    formData,
   });
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

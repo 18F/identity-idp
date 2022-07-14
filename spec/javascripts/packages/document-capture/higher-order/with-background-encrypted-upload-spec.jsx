@@ -7,7 +7,6 @@ import withBackgroundEncryptedUpload, {
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
 import { useSandbox } from '@18f/identity-test-helpers';
-import * as analytics from '@18f/identity-analytics';
 import { render } from '../../../support/document-capture';
 
 /**
@@ -133,6 +132,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
     describe('upload', () => {
       async function renderWithResponse(response) {
         const addPageAction = sinon.spy();
+        const noticeError = sinon.spy();
         const onChange = sinon.spy();
         const onError = sinon.spy();
         const key = await window.crypto.subtle.generateKey(
@@ -145,7 +145,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         );
         sandbox.stub(window, 'fetch').callsFake(() => Promise.resolve(response));
         render(
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
             <UploadContextProvider
               backgroundUploadURLs={{ foo: 'about:blank' }}
               backgroundUploadEncryptKey={key}
@@ -155,7 +155,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           </AnalyticsContext.Provider>,
         );
 
-        return { onChange, onError, addPageAction };
+        return { onChange, onError, addPageAction, noticeError };
       }
 
       context('success', () => {
@@ -237,8 +237,9 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         it('logs and throws on failed encryption', async () => {
           const error = new Error();
           sandbox.stub(window.crypto.subtle, 'encrypt').throws(error);
-          sandbox.spy(analytics, 'trackError');
-          const { onChange, onError, addPageAction } = await renderWithResponse(response);
+          const { onChange, onError, addPageAction, noticeError } = await renderWithResponse(
+            response,
+          );
 
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
@@ -250,7 +251,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
             'IdV: document capture async upload encryption',
             { success: false },
           );
-          expect(analytics.trackError).to.have.been.calledWith(error);
+          expect(noticeError).to.have.been.calledWith(error);
           expect(window.fetch).not.to.have.been.called();
         });
 

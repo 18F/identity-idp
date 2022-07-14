@@ -2,7 +2,7 @@ class PivCacAuthenticationLoginPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :form, :url_options
+  attr_reader :form
 
   def initialize(form, url_options)
     @form = form
@@ -27,5 +27,9 @@ class PivCacAuthenticationLoginPresenter
 
   def info
     t('instructions.mfa.piv_cac.sign_in', app_name: APP_NAME)
+  end
+
+  def url_options
+    @url_options
   end
 end

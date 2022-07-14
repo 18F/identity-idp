@@ -79,21 +79,6 @@ class ApplicationController < ActionController::Base
     effective_user || AnonymousUser.new
   end
 
-  def irs_attempts_api_tracker
-    @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
-      session_id: irs_attempts_api_session_id,
-      enabled_for_session: irs_attempt_api_enabled_for_session?,
-    )
-  end
-
-  def irs_attempt_api_enabled_for_session?
-    current_sp&.irs_attempts_api_enabled? && irs_attempts_api_session_id.present?
-  end
-
-  def irs_attempts_api_session_id
-    decorated_session.irs_attempts_api_session_id
-  end
-
   def user_event_creator
     @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
@@ -281,8 +266,7 @@ class ApplicationController < ActionController::Base
   end
 
   def two_factor_kantara_enabled?
-    return false if controller_path == 'additional_mfa_required'
-    return false if user_session[:skip_kantara_req]
+    return false if controller_path == 'mfa_confirmation'
     IdentityConfig.store.kantara_2fa_phone_existing_user_restriction &&
       MfaContext.new(current_user).enabled_non_restricted_mfa_methods_count < 1
   end
@@ -312,7 +296,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sign_out_with_timeout_error
-    analytics.session_total_duration_timeout
+    analytics.track_event(Analytics::SESSION_TOTAL_DURATION_TIMEOUT)
     sign_out
     flash[:info] = t('devise.failure.timeout')
     redirect_to root_url
@@ -339,16 +323,16 @@ class ApplicationController < ActionController::Base
     redirect_to authentication_methods_setup_url
   end
 
+  def prompt_to_setup_non_restricted_mfa
+    redirect_to auth_method_confirmation_url
+  end
+
   def prompt_to_verify_mfa
     redirect_to user_two_factor_authentication_url
   end
 
   def prompt_to_verify_sp_required_mfa
     redirect_to sp_required_mfa_verification_url
-  end
-
-  def prompt_to_setup_non_restricted_mfa
-    redirect_to login_additional_mfa_required_url
   end
 
   def sp_required_mfa_verification_url
