@@ -9,7 +9,7 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'Status' do
     it 'defines enum correctly' do
       should define_enum_for(:status).
-        with_values([:pending, :passed, :failed, :expired, :canceled])
+        with_values([:establishing, :pending, :passed, :failed, :expired, :canceled])
     end
   end
 
@@ -27,9 +27,9 @@ RSpec.describe InPersonEnrollment, type: :model do
       user = create(:user)
       profile = create(:profile, :verification_pending, user: user)
       profile2 = create(:profile, :verification_pending, user: user)
-      create(:in_person_enrollment, user: user, profile: profile)
+      create(:in_person_enrollment, user: user, profile: profile, status: :pending)
       expect(InPersonEnrollment.pending.count).to eq 1
-      expect { create(:in_person_enrollment, user: user, profile: profile2) }.
+      expect { create(:in_person_enrollment, user: user, profile: profile2, status: :pending) }.
         to raise_error ActiveRecord::RecordNotUnique
       expect(InPersonEnrollment.pending.count).to eq 1
     end
