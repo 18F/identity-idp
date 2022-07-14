@@ -1,6 +1,7 @@
 class UspsInPersonProofer
   attr_reader :token, :token_expires_at
 
+  # TODO: update struct so it has needed properties
   PostOffice = Struct.new(
     :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
   )

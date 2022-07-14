@@ -1,59 +1,65 @@
+import { useState, useEffect } from 'react';
 import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
+/**
+ * @typedef InPersonLocationStepValue
+ *
+ * @prop {Blob|string|null|undefined} inPersonLocation InPersonLocation value.
+ */
+
+/**
+ * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonLocationStepValue>} props Props object.
+ */
+
+const getResponse = async () => {
+  const response = await fetch('http://localhost:3000/verify/in_person/usps_locations').then(
+    // TODO: error handling
+    // eslint-disable-next-line no-console
+    (res) => res.json().catch((error) => console.log('error', error)),
+  );
+  return response;
+};
+
+// TODO: should move object definition - it is the same as the locationItemProps interface
 function InPersonLocationStep() {
+  const [locationData, setLocationData] = useState(
+    [] as {
+      name: string;
+      streetAddress: string;
+      addressLine2: string;
+      weekdayHours: string;
+      saturdayHours: string;
+      sundayHours: string;
+    }[],
+  );
+
   const { t } = useI18n();
 
-  const mockData = [
-    {
-      header: 'BALTIMORE — Post Office \u2122',
-      addressLine1: '900 E FAYETTE ST RM 118',
-      addressLine2: 'BALTIMORE, MD 21233-9715',
-      hoursWD: '8:30 am-7:00 pm',
-      hoursSat: '8:30 am-5:00 pm',
-      hoursSun: 'Closed',
-    },
-    {
-      header: 'BETHSEDA — Post Office \u2122',
-      addressLine1: '6900 WISCONSIN AVE STE 100',
-      addressLine2: 'CHEVY CHASE, MD 20815-9996',
-      hoursWD: '9:00 am-5:00 pm',
-      hoursSat: '9:00 am-4:00 pm',
-      hoursSun: 'Closed',
-    },
-    {
-      header: 'FRIENDSHIP — Post Office \u2122',
-      addressLine1: '4005 WISCONSIN AVE NW',
-      addressLine2: 'WASHINGTON, DC 20016-9997',
-      hoursWD: '8:00 am-6:00 pm',
-      hoursSat: '8:00 am-4:00 pm',
-      hoursSun: '10:00 am-4:00 pm',
-    },
-    {
-      header: 'WASHINGTON — Post Office \u2122',
-      addressLine1: '900 BRENTWOOD RD NE',
-      addressLine2: 'WASHINGTON, DC 20018-9997',
-      hoursWD: '8:30 am-7:00 pm',
-      hoursSat: '8:30 am-5:00 pm',
-      hoursSun: 'Closed',
-    },
-  ];
+  useEffect(() => {
+    (async () => {
+      const fetchedPosts = await getResponse();
+      setLocationData(fetchedPosts);
+    })();
+  }, []);
+
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
 
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       <LocationCollection>
-        {mockData.map((item) => (
-          <LocationCollectionItem
-            header={item.header}
-            addressLine1={item.addressLine1}
-            addressLine2={item.addressLine2}
-            hoursWD={item.hoursWD}
-            hoursSat={item.hoursSat}
-            hoursSun={item.hoursSun}
-          />
-        ))}
+        {locationData &&
+          locationData.map((item) => (
+            <LocationCollectionItem
+              name={`${item.name} ${t('in_person_proofing.body.location.post_office')}`}
+              streetAddress={item.streetAddress}
+              addressLine2={item.addressLine2}
+              weekdayHours={item.weekdayHours}
+              saturdayHours={item.saturdayHours}
+              sundayHours={item.sundayHours}
+            />
+          ))}
       </LocationCollection>
     </>
   );

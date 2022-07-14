@@ -62,6 +62,7 @@ en:
         location_button: 'Select'
         location_step_about: 'If you are having trouble adding your ID, you may be able to 
           verify in person at a local United States Post Office in select locations.'
+        post_office: "Post Office \u2122"
         retail_hours_heading: 'Retail Hours'
         retail_hours_sat: 'Sat: '
         retail_hours_sun: 'Sun: '
