@@ -1863,6 +1863,11 @@ module AnalyticsEvents
     track_event('Session Kept Alive')
   end
 
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
+  end
+
   # tracks when a user's session is timed out
   def session_total_duration_timeout
     track_event('User Maximum Session Length Exceeded')
