@@ -9,26 +9,14 @@ module Idv
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
 
-      delegate :selected_location_details, to: :enrollment
+      delegate :selected_location_details, :enrollment_code, to: :enrollment
 
       def initialize(enrollment:)
         @enrollment = enrollment
       end
 
-      def barcode_data_url
-        "data:image/png;base64,#{Base64.strict_encode64(barcode_image_data)}"
-      end
-
-      def barcode_html
-        Barby::Code128C.new(enrollment_code).to_html(class_name: 'barcode')
-      end
-
       def formatted_due_date
         due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
-      end
-
-      def formatted_enrollment_code
-        EnrollmentCodeFormatter.format(enrollment_code)
       end
 
       def selected_location_hours(prefix)

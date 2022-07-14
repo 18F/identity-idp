@@ -31,18 +31,11 @@
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
     <% c.item(heading: t('in_person_proofing.process.barcode.heading')) do %>
       <p><%= t('in_person_proofing.process.barcode.info') %></p>
-      <figure class="display-inline-block margin-0">
-        <%= image_tag(
-              @presenter.barcode_data_url,
-              skip_pipeline: true,
-              alt: t('in_person_proofing.process.barcode.image_alt'),
-              class: 'display-block margin-bottom-1',
-            ) %>
-        <figcaption class="text-center">
-          <span class="usa-sr-only"><%= t('in_person_proofing.process.barcode.caption_label') %>:</span>
-          <%= @presenter.formatted_enrollment_code %>
-        </figcaption>
-      </figure>
+      <%= render BarcodeComponent.new(
+            data: @presenter.enrollment_code,
+            accessible_label: t('in_person_proofing.process.barcode.caption_label'),
+            data_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+          ) %>
     <% end %>
     <% c.item(heading: t('in_person_proofing.process.state_id.heading')) do %>
       <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>

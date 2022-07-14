@@ -30,12 +30,11 @@
       <td>
         <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
         <p><%= t('in_person_proofing.process.barcode.info') %></p>
-        <figure class="display-inline-block margin-0">
-          <%= @presenter.barcode_html.html_safe %>
-          <figcaption class="text-center margin-top-1">
-            <%= @presenter.formatted_enrollment_code %>
-          </figcaption>
-        </figure>
+        <%= render BarcodeComponent.new(
+              data: @presenter.enrollment_code,
+              accessible_label: nil,
+              data_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+            ) %>
       </td>
     </tr>
     <tr>
