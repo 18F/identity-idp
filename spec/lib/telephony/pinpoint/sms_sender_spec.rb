@@ -192,6 +192,7 @@ describe Telephony::Pinpoint::SmsSender do
               sms_message: {
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
+                origination_number: nil,
                 sender_id: 'sender2',
               },
             },
@@ -225,6 +226,7 @@ describe Telephony::Pinpoint::SmsSender do
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
                 origination_number: '123456',
+                sender_id: nil,
               },
             },
           },
@@ -259,6 +261,7 @@ describe Telephony::Pinpoint::SmsSender do
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
                 origination_number: '+19393334444',
+                sender_id: nil,
               },
             },
           },

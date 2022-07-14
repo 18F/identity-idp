@@ -31,8 +31,7 @@ module Users
 
     def track_phone_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT,
+      analytics.user_registration_phone_setup_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
     end

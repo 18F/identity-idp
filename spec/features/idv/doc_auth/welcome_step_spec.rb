@@ -64,32 +64,6 @@ feature 'doc auth welcome step' do
     )
   end
 
-  context 'cancelling' do
-    let(:sp_name) { 'Test SP' }
-    before do
-      sp = build_stubbed(:service_provider, friendly_name: sp_name)
-      allow_any_instance_of(ApplicationController).to receive(:current_sp).and_return(sp)
-    end
-
-    it 'logs events when returning to sp' do
-      click_on t('links.cancel')
-      expect(fake_analytics).to have_logged_event('IdV: cancellation visited', step: 'welcome')
-
-      click_on t('forms.buttons.cancel')
-      expect(fake_analytics).to have_logged_event(
-        'IdV: cancellation confirmed',
-        step: 'welcome',
-      )
-
-      click_on "‹ #{t('links.back_to_sp', sp: sp_name)}"
-      expect(fake_analytics).to have_logged_event(
-        'Return to SP: Failed to proof',
-        step: 'welcome',
-        location: 'cancel',
-      )
-    end
-  end
-
   context 'during the acuant maintenance window' do
     context 'during the acuant maintenance window' do
       let(:maintenance_window) do

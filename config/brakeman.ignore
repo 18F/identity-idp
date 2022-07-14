@@ -1,5 +1,99 @@
 {
-  "ignored_warnings": [],
-  "updated": "2019-07-23 11:18:00 -0700",
-  "brakeman_version": "3.6.0"
+  "ignored_warnings": [
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "0300e0665f4940ef0db57c7d483c5517e8b979314a36a15f699f192278339727",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/idv/cancellations/new.html.erb",
+      "line": 41,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :put, :big => true, :wide => true, :outline => true).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Idv::CancellationsController",
+          "method": "new",
+          "line": 14,
+          "file": "app/controllers/idv/cancellations_controller.rb",
+          "rendered": {
+            "name": "idv/cancellations/new",
+            "file": "app/views/idv/cancellations/new.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "idv/cancellations/new"
+      },
+      "user_input": "params[:step]",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "5bb8762cb8e92a80dabc5dbbe689746d93d00cb3caf4208917bb2f971307710b",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/idv/cancellations/new.html.erb",
+      "line": 32,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => ButtonComponent.new(:action => (lambda do\n button_to(idv_session_path(:step => params[:step]), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true).with_content(t(\"idv.cancel.actions.start_over\")), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Idv::CancellationsController",
+          "method": "new",
+          "line": 14,
+          "file": "app/controllers/idv/cancellations_controller.rb",
+          "rendered": {
+            "name": "idv/cancellations/new",
+            "file": "app/views/idv/cancellations/new.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "idv/cancellations/new"
+      },
+      "user_input": "params[:step]",
+      "confidence": "Weak",
+      "note": ""
+    },
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "c39b10ff7d74fad282e9769c664c8ae50b1a79403169354b0654037488671bce",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/idv/cancellations/new.html.erb",
+      "line": 62,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => SpinnerButtonComponent.new(:action => (lambda do\n button_to(idv_cancel_path(:step => params[:step], :location => \"cancel\"), { **tag_options }, &block)\n end), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_session.sp_name, :url_options => url_options).exit_action_text), {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "Idv::CancellationsController",
+          "method": "new",
+          "line": 14,
+          "file": "app/controllers/idv/cancellations_controller.rb",
+          "rendered": {
+            "name": "idv/cancellations/new",
+            "file": "app/views/idv/cancellations/new.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "idv/cancellations/new"
+      },
+      "user_input": "params[:step]",
+      "confidence": "Weak",
+      "note": ""
+    }
+  ],
+  "updated": "2022-07-05 11:19:47 -0400",
+  "brakeman_version": "5.2.0"
 }

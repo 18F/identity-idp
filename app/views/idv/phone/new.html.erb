@@ -62,7 +62,7 @@
       ) %>
   <div class="margin-y-5">
     <%= render SpinnerButtonComponent.new(
-          action_message: t('doc_auth.info.verifying'),
+          action_message: t('idv.messages.verifying'),
           type: :submit,
           big: true,
           wide: true,
@@ -91,6 +91,6 @@
       ].select(&:present?),
     ) %>
 
-<%= render 'idv/doc_auth/start_over_or_cancel', step: 'phone' %>
+<%= render 'idv/doc_auth/cancel', step: 'phone' %>
 
 <% javascript_packs_tag_once 'form-steps-wait' %>

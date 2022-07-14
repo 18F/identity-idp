@@ -27,9 +27,6 @@ module Telephony
           start = Time.zone.now
           client = build_client(sms_config)
           next if client.nil?
-
-          sender_config = build_sender_config(country_code, sms_config, sender_id)
-
           pinpoint_response = client.send_messages(
             application_id: sms_config.application_id,
             message_request: {
@@ -42,7 +39,9 @@ module Telephony
                 sms_message: {
                   body: message,
                   message_type: 'TRANSACTIONAL',
-                }.merge(sender_config),
+                  origination_number: origination_number(country_code, sms_config, sender_id),
+                  sender_id: sender_id,
+                },
               },
             },
           )
@@ -136,24 +135,15 @@ module Telephony
         )
       end
 
-      def origination_number(country_code, sms_config)
+      # To ensure Sender ID is used where needed, the origination number must not be
+      # specified.
+      def origination_number(country_code, sms_config, sender_id)
+        return nil if sender_id
+
         if sms_config.country_code_longcode_pool&.dig(country_code).present?
           sms_config.country_code_longcode_pool[country_code].sample
         else
           sms_config.shortcode
-        end
-      end
-
-      # If we are sending with Sender ID, we should not include origination_number
-      def build_sender_config(country_code, sms_config, sender_id)
-        if sender_id
-          {
-            sender_id: sender_id,
-          }
-        else
-          {
-            origination_number: origination_number(country_code, sms_config),
-          }
         end
       end
 

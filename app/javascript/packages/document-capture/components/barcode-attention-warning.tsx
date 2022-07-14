@@ -3,6 +3,7 @@ import { Button, StatusPage } from '@18f/identity-components';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
+import { removeUnloadProtection } from '@18f/identity-url';
 import UploadContext from '../context/upload';
 import { toFormData } from '../services/upload';
 import type { PII } from '../services/upload';
@@ -33,7 +34,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
       }),
     ]);
-    window.onbeforeunload = null;
+    removeUnloadProtection();
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
     form?.submit();
   }
@@ -66,15 +67,15 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
       <p>{t('doc_auth.errors.barcode_attention.confirm_info')}</p>
       <dl className="add-list-reset">
         <div>
-          <dt className="display-inline">{t('doc_auth.forms.first_name')}:</dt>
+          <dt className="display-inline">{t('idv.form.first_name')}:</dt>
           <dd className="display-inline margin-left-05">{pii.first_name}</dd>
         </div>
         <div>
-          <dt className="display-inline">{t('doc_auth.forms.last_name')}:</dt>
+          <dt className="display-inline">{t('idv.form.last_name')}:</dt>
           <dd className="display-inline margin-left-05">{pii.last_name}</dd>
         </div>
         <div>
-          <dt className="display-inline">{t('doc_auth.forms.dob')}:</dt>
+          <dt className="display-inline">{t('idv.form.dob')}:</dt>
           <dd className="display-inline margin-left-05">{pii.dob}</dd>
         </div>
       </dl>

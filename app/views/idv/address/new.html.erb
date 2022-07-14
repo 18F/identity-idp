@@ -11,53 +11,63 @@
 
 <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.address')) %>
 
-<div class="margin-top-4 margin-bottom-4">
-  <%= validated_form_for(
-        :idv_form, url: idv_address_path, method: 'POST',
-                   html: { autocomplete: 'off', class: 'margin-top-2' }
-      ) do |f| %>
-    <div class="margin-bottom-4">
-      <%= f.input :address1,  label: t('idv.form.address1'), wrapper: false,
-                              required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
-    </div>
-    <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
-                           input_html: { value: @pii['address2'] } %>
-    <div class="margin-bottom-4">
-      <%= f.input :city,  label: t('idv.form.city'), required: true, maxlength: 255, wrapper: false,
-                          input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['city'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
-    </div>
-
-    <%= f.input :state, collection: us_states_territories,
-                        label: t('idv.form.state'), required: true,
-                        selected: @pii['state'] %>
-    <div class="tablet:grid-col-6 margin-bottom-4">
-      <%# using :tel for mobile numeric keypad %>
-      <%= f.input :zipcode, as: :tel,
-                            label: t('idv.form.zipcode'), required: true,
-                            pattern: '(\d{5}([\-]\d{4})?)',
-                            wrapper: false,
-                            input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['zipcode'] } %>
-      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-        <%= t('simple_form.required.text') %>
-      </span>
-
-      <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
-        <%= t('idv.errors.pattern_mismatch.zipcode') %>
-      </span>
-    </div>
-    <div class="margin-top-0">
-      <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">
-        <%= t('forms.buttons.continue') %>
-      </button>
-    </div>
+<%= simple_form_for(
+      :idv_form,
+      url: idv_address_path,
+      method: 'POST',
+      html: { autocomplete: 'off', class: 'margin-top-5' },
+    ) do |f| %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :address1,
+        label: t('idv.form.address1'),
+        required: true,
+        maxlength: 255,
+        input_html: { value: @pii['address1'] },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :address2,
+        label: t('idv.form.address2'),
+        required: false,
+        maxlength: 255,
+        input_html: { value: @pii['address2'] },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :city,
+        label: t('idv.form.city'),
+        required: true,
+        maxlength: 255,
+        input_html: { value: @pii['city'] },
+      ) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :state,
+        collection: us_states_territories,
+        label: t('idv.form.state'),
+        required: true,
+        selected: @pii['state'],
+      ) %>
+  <div class="tablet:grid-col-6">
+    <%# using :tel for mobile numeric keypad %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :zipcode,
+          as: :tel,
+          label: t('idv.form.zipcode'),
+          required: true,
+          pattern: '(\d{5}([\-]\d{4})?)',
+          input_html: { value: @pii['zipcode'], class: 'zipcode' },
+          error_messages: {
+            patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
+          },
+        ) %>
+  </div>
+  <%= render ButtonComponent.new(big: true, wide: true, class: 'display-block margin-y-5') do %>
+    <%= t('forms.buttons.submit.update') %>
   <% end %>
-</div>
+<% end %>
 
 <%= render 'idv/doc_auth/back', step: 'verify' %>
 <%= javascript_packs_tag_once('formatted-fields') %>

@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   HelpCenterContextProvider,
   ServiceProviderContextProvider,
@@ -140,7 +141,7 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
       );
 
-      it('has links to IPP information', () => {
+      it('has links to IPP information', async () => {
         const { getByText, getAllByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           { wrapper },
@@ -151,6 +152,10 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         const links = getAllByRole('link');
         const ippLink = links.find(({ href }) => href === inPersonURL);
         expect(ippLink).to.exist();
+
+        window.onbeforeunload = () => {};
+        await userEvent.click(ippLink);
+        expect(window.onbeforeunload).not.to.exist();
       });
     });
   });
