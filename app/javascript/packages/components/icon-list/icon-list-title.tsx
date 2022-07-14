@@ -7,7 +7,9 @@ interface IconListTitleProps {
 }
 
 function IconListTitle({ children, className }: IconListTitleProps) {
-  const classes = ['usa-icon-list__title', className].filter(Boolean).join(' ');
+  const classes = ['usa-icon-list__title', 'font-sans-md', 'padding-top-0', className]
+    .filter(Boolean)
+    .join(' ');
 
   return <h3 className={classes}>{children}</h3>;
 }

@@ -15,11 +15,11 @@ function IconListItem({ children, icon, title }: IconListItemProps) {
 
   return (
     <li className={classes}>
-      <IconListIcon className="text-primary-dark">
+      <IconListIcon>
         <Icon icon={icon} />
       </IconListIcon>
       <IconListContent>
-        <IconListTitle className="font-sans-md padding-top-0">{title}</IconListTitle>
+        <IconListTitle>{title}</IconListTitle>
         {children}
       </IconListContent>
     </li>
