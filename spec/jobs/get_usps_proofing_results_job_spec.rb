@@ -78,7 +78,7 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(IdentityJobLogSubscriber.logger).to receive(:error)
         allow(IdentityJobLogSubscriber.logger).to receive(:warn)
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         expect(InPersonEnrollment).to have_received(:needs_usps_status_check).
             with(
@@ -118,11 +118,11 @@ RSpec.describe GetUspsProofingResultsJob do
             with(pending_enrollment_4.usps_unique_id, pending_enrollment_4.enrollment_code).
             and_return(failing_response)
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
-        expected_range = start_time...(Time.now)
+        expected_range = start_time...(Time.zone.now)
 
         expect(
           pending_enrollments.
@@ -144,11 +144,11 @@ RSpec.describe GetUspsProofingResultsJob do
             with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
             and_return(passing_response)
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
-        expected_range = start_time...(Time.now)
+        expected_range = start_time...(Time.zone.now)
 
         pending_enrollment.reload
 
@@ -174,9 +174,9 @@ RSpec.describe GetUspsProofingResultsJob do
               }.to_json,
             )
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         pending_enrollment.reload
 
@@ -212,9 +212,9 @@ RSpec.describe GetUspsProofingResultsJob do
               end,
             )
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         pending_enrollment.reload
 
@@ -230,9 +230,9 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
         and_return([pending_enrollment])
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         pending_enrollment.reload
 
@@ -248,9 +248,9 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
         and_return([pending_enrollment])
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         pending_enrollment.reload
 
@@ -286,9 +286,9 @@ RSpec.describe GetUspsProofingResultsJob do
               end,
             )
 
-        start_time = Time.now
+        start_time = Time.zone.now
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
 
         pending_enrollment.reload
 
@@ -304,7 +304,7 @@ RSpec.describe GetUspsProofingResultsJob do
         and_return([pending_enrollment])
         expect(pending_enrollment.status).to eq 'pending'
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
         # forces to reload from database
         pending_enrollment.reload
 
@@ -326,7 +326,7 @@ RSpec.describe GetUspsProofingResultsJob do
       it 'does not request any enrollment records' do
         expect(proofer).to_not receive(:request_proofing_results)
 
-        sut.perform Time.now
+        sut.perform Time.zone.now
       end
     end
   end

@@ -211,7 +211,7 @@ else
         class: 'GetUspsProofingResultsJob',
         cron: cron_1h,
         args: -> { [Time.zone.now] },
-      },      
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength

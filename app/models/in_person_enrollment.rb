@@ -16,7 +16,7 @@ class InPersonEnrollment < ApplicationRecord
     where(status: :pending).
     and(
       where(status_check_attempted_at: check_interval).
-      or where(status_check_attempted_at: nil)
+      or where(status_check_attempted_at: nil),
     ).
     order(status_check_attempted_at: :asc)
   end
@@ -24,7 +24,7 @@ class InPersonEnrollment < ApplicationRecord
   # Does this enrollment need a status check via the USPS API?
   def needs_usps_status_check? check_interval
     status == :pending && (
-      status_check_attempted_at == nil ||
+      status_check_attempted_at.nil? ||
       check_interval.cover?(status_check_attempted_at)
     )
   end

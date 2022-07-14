@@ -1,8 +1,8 @@
 class GetUspsProofingResultsJob < ApplicationJob
-  IPP_STATUS_PASSED = "In-person passed"
-  IPP_STATUS_FAILED = "In-person failed"
-  IPP_INCOMPLETE_ERROR_MESSAGE = "Customer has not been to a post office to complete IPP"
-  IPP_EXPIRED_ERROR_MESSAGE = "More than 30 days have passed since opt-in to IPP"
+  IPP_STATUS_PASSED = 'In-person passed'
+  IPP_STATUS_FAILED = 'In-person failed'
+  IPP_INCOMPLETE_ERROR_MESSAGE = 'Customer has not been to a post office to complete IPP'
+  IPP_EXPIRED_ERROR_MESSAGE = 'More than 30 days have passed since opt-in to IPP'
   SUPPORTED_ID_TYPES = [
     "State driver's license",
     "State non-driver's identification card",
@@ -14,7 +14,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   good_job_control_concurrency_with(
     total_limit: 1,
     key: -> do
-        "get_usps_proofing_results"
+      'get_usps_proofing_results'
     end,
   )
 

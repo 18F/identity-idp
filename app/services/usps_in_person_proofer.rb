@@ -138,12 +138,10 @@ class UspsInPersonProofer
 
   # Retrieve the OAuth2 token (if needed) and then pass
   # the headers to an arbitrary block of code as a Hash.
-  # 
+  #
   # Returns the same value returned by that block of code.
   def dynamic_headers
-    unless token_valid?
-      retrieve_token!
-    end
+    retrieve_token! unless token_valid?
 
     {
       'Authorization' => @token,
