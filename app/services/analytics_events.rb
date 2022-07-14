@@ -465,6 +465,11 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # The user visited the "ready to verify" page for the in person proofing flow
+  def idv_in_person_ready_to_verify_visit
+    track_event('IdV: in person ready to verify visited')
+  end
+
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor

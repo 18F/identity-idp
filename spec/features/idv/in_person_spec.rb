@@ -103,8 +103,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('titles.idv.personal_key'))
     acknowledge_and_confirm_personal_key
 
-    # returns to account page
-    expect(page).to have_content(t('headings.account.login_info'))
+    # ready to verify page
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
   end
 
   def attach_images_that_fail

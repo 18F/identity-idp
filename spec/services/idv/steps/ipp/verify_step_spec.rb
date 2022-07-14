@@ -36,5 +36,11 @@ describe Idv::Steps::Ipp::VerifyStep do
       expect(flow.idv_session).to have_key 'applicant'
       expect(flow.idv_session['applicant']).to include(pii)
     end
+
+    it 'updates proofing component vendor' do
+      step.call
+
+      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+    end
   end
 end
