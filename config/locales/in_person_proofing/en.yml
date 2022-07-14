@@ -6,6 +6,21 @@ en:
         info: 'If your current address does not match the address on your ID, you will
           need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
+      barcode:
+        deadline: Your deadline to verify your identity in person is %{deadline}.
+        deadline_restart: If you go after the deadline, your information will not be
+          saved and you will need to restart the process.
+        emailed_info: We have emailed this information to the email you used to log in.
+        items_to_bring: 'Bring these items with you to the Post Office:'
+        items_to_bring_questions: Questions about what to bring?
+        learn_more: Learn more
+        location_details: Location details
+        no_appointment_required: No appointment is required.
+        retail_hours: Retail hours
+        retail_hours_closed: Closed
+        retail_phone_label: Phone number
+        speak_to_associate: You can speak with any retail associate at this Post Office
+          to verify your identity.
       prepare:
         alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
         bring_barcode_header: A copy of your barcode
@@ -30,21 +45,6 @@ en:
         verify_step_enter_phone: Enter a phone number with your name on the plan.
         verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
           address and Social Security number.'
-      barcode:
-        deadline: Your deadline to verify your identity in person is %{deadline}.
-        deadline_restart: If you go after the deadline, your information will not be
-          saved and you will need to restart the process.
-        emailed_info: We have emailed this information to the email you used to log in.
-        items_to_bring: 'Bring these items with you to the Post Office:'
-        items_to_bring_questions: Questions about what to bring?
-        learn_more: Learn more
-        location_details: Location details
-        no_appointment_required: No appointment is required.
-        retail_hours: Retail hours
-        retail_hours_closed: Closed
-        retail_phone_label: Phone number
-        speak_to_associate: You can speak with any retail associate at this Post Office
-          to verify your identity.
       state_id:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your

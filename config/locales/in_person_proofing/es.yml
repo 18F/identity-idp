@@ -16,11 +16,11 @@ es:
         items_to_bring: 'Lleve estos artículos a la oficina de correos:'
         items_to_bring_questions: ¿Preguntas sobre qué llevar?
         learn_more: Más información
-        location_details: Detalles de ubicación # WILLFIX: Use approved content (LG-6841)
+        location_details: Detalles de la ubicación
         no_appointment_required: No es necesario pedir cita.
-        retail_hours: Horario de venta al por menor # WILLFIX: Use approved content (LG-6841)
-        retail_hours_closed: Cerrada # WILLFIX: Use approved content (LG-6841)
-        retail_phone_label: Número de teléfono # WILLFIX: Use approved content (LG-6841)
+        retail_hours: Heures de vente au détail
+        retail_hours_closed: Cerrado
+        retail_phone_label: Número de teléfono
         speak_to_associate: Puedes hablar con cualquier socio de ventas en esta oficina
           de correos para verificar tu identidad.
       prepare:
@@ -85,9 +85,9 @@ es:
       update_state_id: Actualizar la información de su cédula de identidad
     process:
       barcode:
-        caption_label: Código de inscripción # WILLFIX: Use approved content (LG-6841)
+        caption_label: Código de registro
         heading: Una copia de su código de barras
-        image_alt: Código de barras # WILLFIX: Use approved content (LG-6841)
+        image_alt: Código de barras
         info: Imprima o escanee desde su dispositivo móvil.
       proof_of_address:
         acceptable_proof:

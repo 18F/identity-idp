@@ -17,11 +17,11 @@ fr:
         items_to_bring: 'Apportez ces articles avec vous au bureau de poste:'
         items_to_bring_questions: Des questions sur ce qu’il faut apporter?
         learn_more: En savoir plus
-        location_details: Détails de l’emplacement # WILLFIX: Use approved content (LG-6841)
+        location_details: Détails de l’emplacement
         no_appointment_required: Aucun rendez-vous n’est exigé.
-        retail_hours: Heures de vente au détail # WILLFIX: Use approved content (LG-6841)
-        retail_hours_closed: Fermée # WILLFIX: Use approved content (LG-6841)
-        retail_phone_label: Numéro de téléphone # WILLFIX: Use approved content (LG-6841)
+        retail_hours: Heures de vente au détail
+        retail_hours_closed: Fermé
+        retail_phone_label: Numéro de téléphone
         speak_to_associate: Vous pouvez vous adresser à n’importe quel employé de ce
           bureau de poste pour faire vérifier votre identité.
       prepare:
@@ -89,9 +89,9 @@ fr:
       update_state_id: Mettre à jour les informations figurant sur votre document d’identité
     process:
       barcode:
-        caption_label: Code d’inscription # WILLFIX: Use approved content (LG-6841)
+        caption_label: Code d’inscription
         heading: Une copie de votre code-barres
-        image_alt: Code à barre # WILLFIX: Use approved content (LG-6841)
+        image_alt: Code-barres
         info: Imprimez ou numérisez depuis votre appareil mobile.
       proof_of_address:
         acceptable_proof:
