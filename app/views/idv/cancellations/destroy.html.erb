@@ -1,23 +1,8 @@
-<%= render(
-      'idv/shared/error',
-      title: t('titles.idv.cancelled'),
-      heading: @hybrid_session ?
-        t('idv.cancel.headings.confirmation.hybrid') :
-        t('headings.cancellations.confirmation', app_name: APP_NAME),
-    ) do %>
-      <% if @hybrid_session %>
-        <p><%= t('doc_auth.instructions.switch_back') %></p>
-        <%= image_tag(asset_url('idv/switch.png'), width: 193) %>
-      <% else %>
-        <ul class="usa-list">
-          <li><%= t('idv.cancel.warnings.warning_2') %></li>
-          <li><%= t('idv.cancel.warnings.warning_3', app_name: APP_NAME) %></li>
-          <li><%= t('idv.cancel.warnings.warning_4', app_name: APP_NAME) %></li>
-          <li><%= t('idv.cancel.warnings.warning_5') %></li>
-        </ul>
-        <%= link_to(
-              "‹ #{t('links.back_to_sp', sp: decorated_session.sp_name || t('links.my_account'))}",
-              decorated_session.sp_name ? @return_to_sp_path : account_url,
-            ) %>
-      <% end %>
-    <% end %>
+<% title t('titles.idv.cancelled') %>
+
+<%= render StatusPageComponent.new(status: :error) do |c| %>
+  <% c.header { t('idv.cancel.headings.confirmation.hybrid') } %>
+
+  <p><%= t('doc_auth.instructions.switch_back') %></p>
+  <%= image_tag(asset_url('idv/switch.png'), width: 193) %>
+<% end %>

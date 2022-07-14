@@ -17,7 +17,7 @@ import { trackEvent } from '@18f/identity-analytics';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import { ForgotPassword } from './forgot-password';
 import PersonalInfoSummary from './personal-info-summary';
-import StartOverOrCancel from '../../start-over-or-cancel';
+import Cancel from '../../cancel';
 import AddressVerificationMethodContext from '../../context/address-verification-method-context';
 import type { VerifyFlowValues } from '../..';
 import { PasswordSubmitError } from './submit';
@@ -109,7 +109,7 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
         <PersonalInfoSummary pii={value} />
       </Accordion>
       <FormStepsButton.Continue />
-      <StartOverOrCancel />
+      <Cancel />
     </>
   );
 }

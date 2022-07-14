@@ -8,12 +8,7 @@ en:
       selfie_alt_text: An uploaded image
     buttons:
       add_new_photos: Add new photos
-      change_address_label: Change address
-      change_label: Change
-      change_ssn_label: Change Social Security Number
-      change_state_id_label: Change state ID
       continue: Continue
-      start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
         <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
@@ -110,20 +105,11 @@ en:
           Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
     forms:
-      address1: Address
       captured_image: Captured Image
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
-      city: City
-      dob: Date of Birth
       doc_success: We have verified your personal information
-      first_name: First Name
-      id_number: ID Number
-      last_name: Last Name
       selected_file: Selected file
-      ssn: Social Security Number
-      state: State
-      zip_code: Zip Code
     headings:
       address: Update your mailing address
       back: Back
@@ -151,7 +137,6 @@ en:
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
-      verify: Verify your information
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     info:
@@ -202,7 +187,6 @@ en:
       upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      verifying: Verifying…
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you.'
     instructions:

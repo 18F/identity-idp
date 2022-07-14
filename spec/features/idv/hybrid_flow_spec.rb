@@ -44,7 +44,7 @@ describe 'Hybrid Flow' do
       fill_out_ssn_form_ok
       click_idv_continue
 
-      expect(page).to have_content(t('doc_auth.headings.verify'))
+      expect(page).to have_content(t('headings.verify'))
       click_idv_continue
 
       fill_out_phone_form_mfa_phone(user)

@@ -1,3 +1,4 @@
+import { forceRedirect } from '@18f/identity-url';
 import type { CountdownElement } from '@18f/identity-countdown-element';
 
 interface NewRelicAgent {
@@ -76,9 +77,7 @@ function notifyNewRelic(request, error, actionName) {
 
 function handleTimeout(redirectURL: string) {
   window.dispatchEvent(new window.CustomEvent('lg:session-timeout'));
-  window.onbeforeunload = null;
-  window.onunload = null;
-  window.location.href = redirectURL;
+  forceRedirect(redirectURL);
 }
 
 function success(data: PingResponse) {

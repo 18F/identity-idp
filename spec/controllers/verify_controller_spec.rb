@@ -4,6 +4,7 @@ describe VerifyController do
   describe '#show' do
     let(:idv_api_enabled_steps) { [] }
     let(:in_person_proofing_enabled) { false }
+    let(:in_person_proofing_enabled_issuers) { [] }
     let(:password) { 'sekrit phrase' }
     let(:user) { create(:user, :signed_up, password: password) }
     let(:applicant) do
@@ -19,8 +20,8 @@ describe VerifyController do
     end
     let(:profile) { subject.idv_session.profile }
     let(:step) { '' }
-    let(:sp) { build(:service_provider) }
-    let(:sp_session) { { issuer: sp.issuer } }
+    let(:sp) { nil }
+    let(:sp_session) { { issuer: sp&.issuer } }
 
     subject(:response) { get :show, params: { step: step } }
 
@@ -29,6 +30,9 @@ describe VerifyController do
         and_return(idv_api_enabled_steps)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
         and_return(in_person_proofing_enabled)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
+        and_return(in_person_proofing_enabled_issuers)
+      allow(controller).to receive(:current_sp).and_return(sp)
       stub_sign_in(user)
       stub_idv_session
       session[:sp] = sp_session if sp_session
@@ -59,7 +63,6 @@ describe VerifyController do
 
         expect(assigns[:app_data]).to include(
           base_path: idv_app_path,
-          start_over_url: idv_session_path,
           cancel_url: idv_cancel_path,
           in_person_url: nil,
           enabled_step_names: idv_api_enabled_steps,
@@ -83,6 +86,26 @@ describe VerifyController do
           response
 
           expect(assigns[:app_data][:in_person_url]).to eq(idv_in_person_url)
+        end
+
+        context 'with associated service provider' do
+          let(:sp) { build(:service_provider) }
+
+          it 'does not include in-person URL as app data' do
+            response
+
+            expect(assigns[:app_data][:in_person_url]).to be_nil
+          end
+
+          context 'with in-person proofing enabled for service provider' do
+            let(:in_person_proofing_enabled_issuers) { [sp.issuer] }
+
+            it 'includes in-person URL as app data' do
+              response
+
+              expect(assigns[:app_data][:in_person_url]).to eq(idv_in_person_url)
+            end
+          end
         end
       end
     end

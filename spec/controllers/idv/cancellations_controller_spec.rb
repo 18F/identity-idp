@@ -96,44 +96,34 @@ describe Idv::CancellationsController do
       stub_analytics
     end
 
-    context 'without cancel param' do
-      it 'renders new template' do
-        put :update
+    it 'logs cancellation go back' do
+      expect(@analytics).to receive(:track_event).with(
+        'IdV: cancellation go back',
+        step: 'first',
+      )
 
-        expect(response).to render_template(:new)
-      end
+      put :update, params: { step: 'first', cancel: 'true' }
     end
 
-    context 'with cancel param' do
-      it 'logs cancellation go back' do
-        expect(@analytics).to receive(:track_event).with(
-          'IdV: cancellation go back',
-          step: 'first',
-        )
+    it 'redirects to idv_path' do
+      put :update, params: { cancel: 'true' }
 
-        put :update, params: { step: 'first', cancel: 'true' }
+      expect(response).to redirect_to idv_url
+    end
+
+    context 'with go back path stored in session' do
+      let(:go_back_path) { '/path/to/return' }
+
+      before do
+        allow(controller).to receive(:user_session).and_return(
+          idv: { go_back_path: go_back_path },
+        )
       end
 
-      it 'redirects to idv_path' do
+      it 'redirects to go back path' do
         put :update, params: { cancel: 'true' }
 
-        expect(response).to redirect_to idv_url
-      end
-
-      context 'with go back path stored in session' do
-        let(:go_back_path) { '/path/to/return' }
-
-        before do
-          allow(controller).to receive(:user_session).and_return(
-            idv: { go_back_path: go_back_path },
-          )
-        end
-
-        it 'redirects to go back path' do
-          put :update, params: { cancel: 'true' }
-
-          expect(response).to redirect_to go_back_path
-        end
+        expect(response).to redirect_to go_back_path
       end
     end
   end
@@ -194,7 +184,9 @@ describe Idv::CancellationsController do
       it 'renders template' do
         delete :destroy
 
-        expect(response).to render_template(:destroy)
+        parsed_body = JSON.parse(response.body, symbolize_names: true)
+        expect(response).not_to render_template(:destroy)
+        expect(parsed_body).to eq({ redirect_url: account_path })
       end
     end
   end

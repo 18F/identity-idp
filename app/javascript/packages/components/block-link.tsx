@@ -1,6 +1,6 @@
 import Link, { LinkProps } from './link';
 
-interface BlockLinkProps extends LinkProps {
+export interface BlockLinkProps extends LinkProps {
   /**
    * Link destination.
    */

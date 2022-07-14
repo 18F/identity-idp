@@ -28,11 +28,6 @@ interface AppRootValues {
   basePath: string;
 
   /**
-   * URL to path for session restart.
-   */
-  startOverUrl: string;
-
-  /**
    * URL to path for session cancel.
    */
   cancelUrl: string;
@@ -65,7 +60,6 @@ export async function initialize() {
     initialValues: initialValuesJSON,
     enabledStepNames: enabledStepNamesJSON,
     basePath,
-    startOverUrl: startOverURL,
     cancelUrl: cancelURL,
     inPersonUrl: inPersonURL,
     storeKey: storeKeyBase64,
@@ -117,7 +111,6 @@ export async function initialize() {
       <VerifyFlow
         initialValues={initialValues}
         enabledStepNames={enabledStepNames}
-        startOverURL={startOverURL}
         cancelURL={cancelURL}
         inPersonURL={inPersonURL}
         basePath={basePath}
