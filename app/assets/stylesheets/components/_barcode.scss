@@ -1,0 +1,13 @@
+.barcode.barby-barcode {
+  width: auto;
+  table-layout: fixed;
+}
+
+.barcode .barby-cell {
+  width: 2px;
+  height: 96px;
+
+  &.on {
+    background-color: #000;
+  }
+}

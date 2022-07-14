@@ -224,6 +224,16 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def in_person_ready_to_verify(user, email_address, enrollment:)
+    with_user_locale(user) do
+      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+      )
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)

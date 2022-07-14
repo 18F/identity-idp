@@ -198,3 +198,7 @@ en:
       help: ''
       info: There are SPs that have gone over their quota limit.
       subject: Some SPs have reached their quota limit
+    in_person_ready_to_verify:
+      subject: You’re ready to verify your identity with %{app_name} in person
+      greeting: Hi %{name}
+      intro: Here are the details to verify your identity in person at a United States Post Office near you.

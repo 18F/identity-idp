@@ -1,6 +1,7 @@
 require 'barby'
 require 'barby/barcode/code_128'
 require 'barby/outputter/png_outputter'
+require 'barby/outputter/html_outputter'
 
 module Idv
   module InPerson
@@ -16,6 +17,10 @@ module Idv
 
       def barcode_data_url
         "data:image/png;base64,#{Base64.strict_encode64(barcode_image_data)}"
+      end
+
+      def barcode_html
+        Barby::Code128C.new(enrollment_code).to_html(class_name: 'barcode')
       end
 
       def formatted_due_date

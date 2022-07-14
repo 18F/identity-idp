@@ -134,6 +134,14 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_ready_to_verify
+    UserMailer.in_person_ready_to_verify(
+      user,
+      email_address_record,
+      enrollment: in_person_enrollment,
+    )
+  end
+
   private
 
   def user
@@ -146,6 +154,17 @@ class UserMailerPreview < ActionMailer::Preview
 
   def email_address_record
     unsaveable(EmailAddress.new(email: email_address))
+  end
+
+  def in_person_enrollment
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now,
+      ),
+    )
   end
 
   # Remove #save and #save! to make sure we can't write these made-up records
