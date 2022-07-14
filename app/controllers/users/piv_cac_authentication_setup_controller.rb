@@ -32,7 +32,7 @@ module Users
     end
 
     def delete
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
+      analytics.user_registration_piv_cac_disabled
       remove_piv_cac
       clear_piv_cac_information
       create_user_event(:piv_cac_disabled)
@@ -55,8 +55,7 @@ module Users
 
     def track_piv_cac_setup_visit
       mfa_user = MfaContext.new(current_user)
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT,
+      analytics.user_registration_piv_cac_setup_visit(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
     end

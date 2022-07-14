@@ -102,7 +102,9 @@ idv_public_key: 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZ3d0RRWUpLb1pJaHZjTkFRRUJ
 idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3p4d25rbUxqeGx1NmhsRlQ2d2JreUlweHNtYkMyaGNhblMwaG5abUNEYitMSFowTnNBCjdHWURpZkMxQlRBMHRuRFo0Zm9HNTRmYjNzYk9ubGpGWXVNQ0F3RUFBUUpCQUp6TUMvOSs2RWlHQzkrZTFlWWkKVzc0ejN4MjBkanZndFlhOHh4UDh2ZnA3TjdKQXMvaGNUbjVLOCtDM2swaXUyR2RNb21qSlp2ckxwT0IyTWh4RQo3QkVDSVFEVERhbVRCMHhKSlVpV0ljNk15Y0dFa2J4SEZ3eEtURVNCaHhzREFISDZEUUloQU5IR2NwVUs5dmVSCkdrZlZTOS9MSVNZQlk2YzRUZk1NUFJZU21KVHFNRVN2QWlBZFdiY05aV1JzZjZ6YWhCVVBhemRvVWtRV3R0UFUKdVVxRm9ONVd5b2NQT1FJZ1FrUjlaK1haMUtVcTl5eERWc1FWaWFzQXJ3K1RXRWN5ZU9tUTkrSHZNNU1DSUcrMQpxVldqNW9PL0FBSU1QbXZVZmp5L0JnMnhEQVRiOEp6alFrQ3dLSnNwCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg=='
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
-in_person_proofing_enabled: true
+idv_sp_required: false
+in_person_proofing_enabled: false
+in_person_proofing_enabled_issuers: '[]'
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -234,7 +236,6 @@ session_timeout_in_minutes: 15
 session_timeout_warning_seconds: 150
 session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
-sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
 test_ssn_allowed_list: ''
@@ -298,6 +299,7 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
+  in_person_proofing_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
@@ -369,7 +371,7 @@ production:
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  in_person_proofing_enabled: false
+  idv_sp_required: true
   irs_attempt_api_public_key: change-me-pls
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
@@ -473,7 +475,7 @@ test:
   phone_setups_per_ip_period: 10
   phone_setups_per_ip_track_only_mode: false
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
-  poll_rate_for_verify_in_seconds: 1
+  poll_rate_for_verify_in_seconds: 0
   recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4

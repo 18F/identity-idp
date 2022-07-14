@@ -312,7 +312,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sign_out_with_timeout_error
-    analytics.track_event(Analytics::SESSION_TOTAL_DURATION_TIMEOUT)
+    analytics.session_total_duration_timeout
     sign_out
     flash[:info] = t('devise.failure.timeout')
     redirect_to root_url

@@ -58,6 +58,23 @@ describe('PersonalKeyConfirmStep', () => {
     expect(analytics.trackEvent).to.have.been.calledWith('IdV: hide personal key modal');
   });
 
+  it('passes the value the user has entered to this point to the child PersonalKeyInput', () => {
+    const props = {
+      ...DEFAULT_PROPS,
+      value: {
+        personalKey: '',
+        personalKeyConfirm: '1234-asdf',
+      },
+      toPreviousStep: () => {},
+    };
+
+    const { getByRole } = render(<PersonalKeyConfirmStep {...props} />);
+
+    const input = getByRole('textbox') as HTMLInputElement;
+
+    expect(input.value).to.equal('1234-asdf-');
+  });
+
   it('allows the user to continue only with a correct value', async () => {
     const onComplete = sinon.spy();
     const { getByLabelText, getAllByText, container } = render(

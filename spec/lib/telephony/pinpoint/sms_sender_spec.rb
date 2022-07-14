@@ -174,7 +174,7 @@ describe Telephony::Pinpoint::SmsSender do
     context 'in a country with sender_id' do
       let(:country_code) { 'PH' }
 
-      it 'sends a message with a shortcode and sender_id' do
+      it 'sends a message with a sender_id and no origination number' do
         mock_build_client
         response = subject.send(
           message: 'This is a test!',
@@ -192,7 +192,6 @@ describe Telephony::Pinpoint::SmsSender do
               sms_message: {
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
-                origination_number: '123456',
                 sender_id: 'sender2',
               },
             },
@@ -226,7 +225,6 @@ describe Telephony::Pinpoint::SmsSender do
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
                 origination_number: '123456',
-                sender_id: nil,
               },
             },
           },
@@ -261,7 +259,6 @@ describe Telephony::Pinpoint::SmsSender do
                 body: 'This is a test!',
                 message_type: 'TRANSACTIONAL',
                 origination_number: '+19393334444',
-                sender_id: nil,
               },
             },
           },

@@ -29,7 +29,7 @@ module Users
     private
 
     def render_prompt
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
+      analytics.user_registration_piv_cac_setup_visit
       render :prompt
     end
 

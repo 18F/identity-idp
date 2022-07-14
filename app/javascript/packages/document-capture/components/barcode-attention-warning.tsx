@@ -3,6 +3,7 @@ import { Button, StatusPage } from '@18f/identity-components';
 import { SpinnerButton } from '@18f/identity-spinner-button';
 import { t } from '@18f/identity-i18n';
 import { trackEvent } from '@18f/identity-analytics';
+import { removeUnloadProtection } from '@18f/identity-url';
 import UploadContext from '../context/upload';
 import { toFormData } from '../services/upload';
 import type { PII } from '../services/upload';
@@ -33,7 +34,7 @@ function BarcodeAttentionWarning({ onDismiss, pii }: BarcodeAttentionWarningProp
         body: toFormData({ document_capture_session_uuid: formData.document_capture_session_uuid }),
       }),
     ]);
-    window.onbeforeunload = null;
+    removeUnloadProtection();
     const form = document.querySelector<HTMLFormElement>('.js-document-capture-form');
     form?.submit();
   }

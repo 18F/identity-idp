@@ -131,5 +131,11 @@ describe Idv::Steps::Ipp::VerifyStep do
         expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
       end
     end
+
+    it 'updates proofing component vendor' do
+      step.call
+
+      expect(user.proofing_component.document_check).to eq Idp::Constants::Vendors::USPS
+    end
   end
 end

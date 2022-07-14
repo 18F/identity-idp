@@ -5,6 +5,10 @@ RSpec.describe 'In Person Proofing' do
   include IdvHelper
   include InPersonHelper
 
+  before do
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+  end
+
   it 'works for a happy path', js: true, allow_browser_log: true do
     user = sign_in_and_2fa_user
 
@@ -58,7 +62,6 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_text(InPersonHelper::GOOD_DOB)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
@@ -100,8 +103,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('titles.idv.personal_key'))
     acknowledge_and_confirm_personal_key
 
-    # returns to account page
-    expect(page).to have_content(t('headings.account.login_info'))
+    # ready to verify page
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
   end
 
   def attach_images_that_fail

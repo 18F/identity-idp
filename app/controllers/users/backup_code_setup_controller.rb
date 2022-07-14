@@ -51,8 +51,7 @@ module Users
     private
 
     def track_backup_codes_created
-      analytics.track_event(
-        Analytics::BACKUP_CODE_CREATED,
+      analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')

@@ -1,4 +1,4 @@
-import { addSearchParams } from './index';
+import addSearchParams from './add-search-params';
 
 describe('addSearchParams', () => {
   it('adds search params to an existing URL', () => {

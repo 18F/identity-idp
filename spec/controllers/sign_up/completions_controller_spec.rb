@@ -146,7 +146,7 @@ describe SignUp::CompletionsController do
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::USER_REGISTRATION_COMPLETE,
+          'User registration: complete',
           ial2: false,
           ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,
@@ -205,7 +205,7 @@ describe SignUp::CompletionsController do
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::USER_REGISTRATION_COMPLETE,
+          'User registration: complete',
           ial2: true,
           ialmax: nil,
           service_provider_name: subject.decorated_session.sp_name,

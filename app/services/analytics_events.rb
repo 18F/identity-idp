@@ -163,6 +163,16 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -453,6 +463,11 @@ module AnalyticsEvents
   # The user visited the "come back later" page shown during the GPO mailing flow
   def idv_come_back_later_visit
     track_event('IdV: come back later visited')
+  end
+
+  # The user visited the "ready to verify" page for the in person proofing flow
+  def idv_in_person_ready_to_verify_visit
+    track_event('IdV: in person ready to verify visited')
   end
 
   # @param [String] step_name which step the user was on
@@ -1790,6 +1805,21 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user is bounced back from the service provider due to an integration issue.
+  def sp_handoff_bounced_detected
+    track_event('SP handoff bounced detected')
+  end
+
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1825,6 +1855,69 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
     )
   end
 
@@ -1886,15 +1979,39 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(success:, errors: nil, **extra)
+  def user_registration_2fa_setup(
+    success:,
+    errors: nil,
+    enabled_mfa_methods_count: nil,
+    selection: nil,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup',
       {
         success: success,
         errors: errors,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        selection: selection,
         **extra,
       }.compact,
+    )
+  end
+
+  # Tracks when user's piv cac is disabled
+  def user_registration_piv_cac_disabled
+    track_event('User Registration: piv cac disabled')
+  end
+
+  # Tracks when user's piv cac setup
+  # @param [Integer] enabled_mfa_methods_count
+  def user_registration_piv_cac_setup_visit(**extra)
+    track_event(
+      'User Registration: piv cac setup visited',
+      **extra,
     )
   end
 
@@ -1911,6 +2028,161 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
+  end
+
+  # @param [String] redirect_from
+  # @param [Hash] vendor_status
+  # Tracks when vendor has outage
+  def vendor_outage(
+    redirect_from:,
+    vendor_status:,
+    **extra
+  )
+    track_event(
+      'Vendor Outage',
+      redirect_from: redirect_from,
+      vendor_status: vendor_status,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] mfa_method_counts
+  # Tracks when WebAuthn is deleted
+  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+    track_event(
+      'WebAuthn Deleted',
+      success: success,
+      mfa_method_counts: mfa_method_counts,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] success
+  # Tracks when WebAuthn setup is visited
+  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
+                           **extra)
+    track_event(
+      'WebAuthn Setup Visited',
+      platform_authenticator: platform_authenticator,
+      errors: errors,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success: success,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits enter email page
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
+  end
+
+  # @param [Integer] enabled_mfa_methods_count
+  # Tracks when user visits the phone setup step during registration
+  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: phone setup visited',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when user cancels registration
+  # @param [String] request_came_from the controller/action the request came from
+  def user_registration_cancellation(request_came_from:, **extra)
+    track_event(
+      'User registration: cancellation visited',
+      request_came_from: request_came_from,
+      **extra,
+    )
+  end
+
+  # Tracks when user completes registration
+  # @param [Boolean] ial2
+  # @param [Boolean] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_complete(
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+  )
+    track_event(
+      'User registration: complete',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
+  # Tracks when user submits registration email
+  # @param [Boolean] success
+  # @param [Boolean] throttled
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [Boolean] email_already_exists
+  # @param [String] user_id
+  # @param [String] domain_name
+  def user_registration_email(
+    success:,
+    throttled:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    domain_name: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Submitted',
+      {
+        success: success,
+        throttled: throttled,
+        errors: errors,
+        error_details: error_details,
+        user_id: user_id,
+        domain_name: domain_name,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user confirms registration email
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  def user_registration_email_confirmation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Confirmation',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

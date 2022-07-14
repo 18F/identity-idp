@@ -4,6 +4,7 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
+  SSN_THAT_FAILS_RESOLUTION = '123-45-6666'
 
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
@@ -15,7 +16,7 @@ module DocAuthHelper
   end
 
   def fill_out_ssn_form_with_ssn_that_fails_resolution
-    fill_in t('idv.form.ssn_label_html'), with: '123-45-6666'
+    fill_in t('idv.form.ssn_label_html'), with: SSN_THAT_FAILS_RESOLUTION
   end
 
   def fill_out_ssn_form_with_ssn_that_raises_exception
