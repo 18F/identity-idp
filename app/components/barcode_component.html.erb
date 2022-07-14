@@ -1,0 +1,10 @@
+<%# Beware: This component is used in mailer content, so be mindful of email markup compatibility %>
+<%= content_tag(:figure, class: 'display-inline-block margin-0', **tag_options) do %>
+  <%= barcode_html.html_safe %>
+  <figcaption class="text-center margin-top-1">
+    <% if accessible_label.present? %>
+      <span class="usa-sr-only"><%= accessible_label %>:</span>
+    <% end %>
+    <%= formatted_data %>
+  </figcaption>
+<% end %>
