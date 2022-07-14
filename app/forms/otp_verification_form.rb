@@ -21,7 +21,11 @@ class OtpVerificationForm
   end
 
   def pattern_matching_otp_code_format
-    /\A[a-z0-9]{#{otp_code_length}}\z/i
+    if IdentityConfig.store.enable_numeric_authentication_otp
+      /\A[0-9]{#{otp_code_length}}\z/i
+    else
+      /\A[a-z0-9]{#{otp_code_length}}\z/i
+    end
   end
 
   def otp_code_length

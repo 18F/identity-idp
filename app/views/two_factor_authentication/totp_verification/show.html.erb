@@ -17,6 +17,7 @@
         autofocus: true,
         size: 16,
         class: 'width-auto',
+        maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
       ) %>
   <%= f.input(
         :remember_device,
