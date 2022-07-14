@@ -88,6 +88,7 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('idv.titles.session.phone'))
     fill_out_phone_form_mfa_phone(user)
     click_idv_continue
+    verify_phone_otp
 
     # password confirm page
     expect(page).to have_content(
