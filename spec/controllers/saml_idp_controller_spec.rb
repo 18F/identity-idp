@@ -541,7 +541,7 @@ describe SamlIdpController do
                requested_ial: authn_context,
                service_provider: sp1_issuer)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH,
+          with('SAML Auth',
                success: true,
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
@@ -698,7 +698,7 @@ describe SamlIdpController do
                requested_ial: 'ialmax',
                service_provider: sp1_issuer)
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH,
+          with('SAML Auth',
                success: true,
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
@@ -756,7 +756,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -866,7 +866,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -909,7 +909,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1144,7 +1144,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1179,7 +1179,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'defaults to email when added to issuers_with_email_nameid_format' do
@@ -1212,7 +1212,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1241,7 +1241,7 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1282,7 +1282,7 @@ describe SamlIdpController do
 
         expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'sends the appropriate identifier for email NameID SPs' do
@@ -1312,7 +1312,7 @@ describe SamlIdpController do
 
         expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
 
       it 'sends the old user ID for legacy SPS' do
@@ -1342,7 +1342,7 @@ describe SamlIdpController do
 
         expect(name_id.children.first.to_s).to eq(user.id.to_s)
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
       end
     end
 
@@ -1832,7 +1832,7 @@ describe SamlIdpController do
                requested_ial: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000')
         expect(@analytics).to receive(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          with('SAML Auth', analytics_hash)
 
         get :auth
       end
@@ -1873,7 +1873,7 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000')
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+        expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(
             Analytics::SP_REDIRECT_INITIATED,
@@ -1910,7 +1910,7 @@ describe SamlIdpController do
           with('SAML Auth Request',
                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                service_provider: 'http://localhost:3000')
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+        expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(
             Analytics::SP_REDIRECT_INITIATED,

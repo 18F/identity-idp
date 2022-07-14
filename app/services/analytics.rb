@@ -139,7 +139,7 @@ class Analytics
   BACKUP_CODE_DELETED = 'Backup Code Delete'
   BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'
   BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'
-  SAML_AUTH = 'SAML Auth'
+  #SAML_AUTH = 'SAML Auth'
   #SESSION_TIMED_OUT = 'Session Timed Out'
   SP_REDIRECT_INITIATED = 'SP redirect initiated'
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'

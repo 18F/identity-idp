@@ -1840,6 +1840,11 @@ module AnalyticsEvents
     )
   end
 
+  # Record SAML authentication payload Hash
+  def saml_auth(analytics_payload)
+    track_event('SAML Auth', analytics_payload)
+  end
+
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
