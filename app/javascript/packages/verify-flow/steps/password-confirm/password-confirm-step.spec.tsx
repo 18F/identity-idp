@@ -116,6 +116,8 @@ describe('PasswordConfirmStep', () => {
       await userEvent.click(getByRole('link', { name: 'idv.forgot_password.link_text' }));
 
       expect(window.location.pathname).to.equal('/password_confirm/forgot_password');
+      expect(analytics.trackEvent).to.have.been.calledWith('IdV: forgot password visited');
+      expect(analytics.trackEvent).not.to.have.been.calledWith('IdV: password confirm visited');
     });
 
     it('navigates back from forgot password subpage', async () => {
@@ -125,6 +127,8 @@ describe('PasswordConfirmStep', () => {
       await userEvent.click(getByRole('link', { name: 'idv.forgot_password.try_again' }));
 
       expect(window.location.pathname).to.equal('/password_confirm');
+      expect(analytics.trackEvent).to.have.been.calledWith('IdV: forgot password visited');
+      expect(analytics.trackEvent).to.have.been.calledWith('IdV: password confirm visited');
     });
   });
 

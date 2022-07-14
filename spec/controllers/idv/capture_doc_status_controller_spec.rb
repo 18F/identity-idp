@@ -115,5 +115,124 @@ describe Idv::CaptureDocStatusController do
         expect(response.status).to eq(200)
       end
     end
+
+    context 'when capture succeeded with barcode attention' do
+      let(:result) do
+        DocumentCaptureSessionResult.new(
+          id: SecureRandom.uuid,
+          success: true,
+          pii: {},
+          attention_with_barcode: true,
+        )
+      end
+
+      before do
+        allow(EncryptedRedisStructStorage).to receive(:load).and_return(result)
+      end
+
+      context 'when barcode attention result is pending confirmation' do
+        before do
+          document_capture_session.update(ocr_confirmation_pending: true)
+        end
+
+        it 'returns pending result' do
+          get :show
+
+          expect(response.status).to eq(202)
+        end
+
+        it 'assigns flow session values as having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(true)
+        end
+      end
+
+      context 'when result is confirmed' do
+        before do
+          document_capture_session.update(ocr_confirmation_pending: false)
+        end
+
+        it 'returns success' do
+          get :show
+
+          expect(response.status).to eq(200)
+        end
+
+        it 'assigns flow session values as having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(true)
+        end
+      end
+
+      context 'when user receives a second result that is not the attention result' do
+        let(:result) do
+          DocumentCaptureSessionResult.new(
+            id: SecureRandom.uuid,
+            success: true,
+            pii: {},
+            attention_with_barcode: false,
+          )
+        end
+
+        before do
+          flow_session[:had_barcode_attention_error] = true
+          document_capture_session.update(ocr_confirmation_pending: false)
+        end
+
+        it 'assigns flow session values as not having received attention result' do
+          get :show
+
+          expect(flow_session[:had_barcode_attention_error]).to eq(false)
+        end
+      end
+
+      context 'when loaded result expires but session was already marked with attention result' do
+        let(:result) { nil }
+        let(:flow_session) do
+          {
+            document_capture_session_uuid: document_capture_session.uuid,
+            had_barcode_attention_error: true,
+          }
+        end
+
+        context 'when barcode attention result is pending confirmation' do
+          before do
+            document_capture_session.update(ocr_confirmation_pending: true)
+          end
+
+          it 'returns pending result' do
+            get :show
+
+            expect(response.status).to eq(202)
+          end
+
+          it 'assigns flow session values as having received attention result' do
+            get :show
+
+            expect(flow_session[:had_barcode_attention_error]).to eq(true)
+          end
+        end
+
+        context 'when result is confirmed' do
+          before do
+            document_capture_session.update(ocr_confirmation_pending: false)
+          end
+
+          it 'returns success' do
+            get :show
+
+            expect(response.status).to eq(200)
+          end
+
+          it 'assigns flow session values as having received attention result' do
+            get :show
+
+            expect(flow_session[:had_barcode_attention_error]).to eq(true)
+          end
+        end
+      end
+    end
   end
 end

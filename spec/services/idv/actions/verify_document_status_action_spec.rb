@@ -6,25 +6,41 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:user) { create(:user) }
   let(:sp_session) { {} }
   let(:session) { { 'idv/doc_auth' => {}, sp: sp_session } }
+  let(:document_capture_session) { DocumentCaptureSession.create(user: user) }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:controller) do
-    instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
+    instance_double(
+      Idv::DocAuthController,
+      url_options: {},
+      session: session,
+      analytics: analytics,
+      params: ActionController::Parameters.new(
+        document_capture_session_uuid: document_capture_session_uuid,
+      ),
+    )
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
   let(:billed) { true }
+  let(:attention_with_barcode) { false }
   let(:result) do
-    { doc_auth_result: 'Passed', success: true, errors: {}, exception: nil, billed: billed }
-  end
-  let(:pii) do
     {
-      first_name: Faker::Name.first_name,
-      last_name: Faker::Name.last_name,
-      dob: Faker::Date.birthday(min_age: IdentityConfig.store.idv_min_age_years + 1).to_s,
-      state: Faker::Address.state_abbr,
+      doc_auth_result: 'Passed',
+      success: true,
+      errors: {},
+      exception: nil,
+      billed: billed,
+      attention_with_barcode: attention_with_barcode,
     }
   end
-  let(:done) { true }
-  let(:async_state) { OpenStruct.new(result: result, pii: pii, pii_from_doc: pii, 'done?' => done) }
+  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+  let(:async_state) do
+    DocumentCaptureSessionAsyncResult.new(
+      status: DocumentCaptureSessionAsyncResult::DONE,
+      result: result,
+      pii: pii,
+    )
+  end
   let(:issuer) { 'urn:gov:gsa:openidconnect:sp:test_cookie' }
   let(:sp) { create(:service_provider, issuer: issuer) }
 
@@ -58,6 +74,15 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         )
       end
 
+      it 'assigns session variables' do
+        subject.call
+
+        expect(session['idv/doc_auth']).to include(
+          had_barcode_read_failure: false,
+          pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
+        )
+      end
+
       context 'unbilled' do
         let(:billed) { false }
 
@@ -67,6 +92,19 @@ describe Idv::Actions::VerifyDocumentStatusAction do
           expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
             'acuant_front_image',
             'acuant_back_image',
+          )
+        end
+      end
+
+      context 'with barcode attention result' do
+        let(:attention_with_barcode) { true }
+
+        it 'assigns session variables' do
+          subject.call
+
+          expect(session['idv/doc_auth']).to include(
+            had_barcode_read_failure: true,
+            pii_from_doc: pii.merge(uuid: user.uuid, uuid_prefix: sp.app_id, phone: nil),
           )
         end
       end
@@ -91,35 +129,41 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       end
     end
 
-    it 'calls analytics if missing from no document capture session' do
-      subject.call
+    context 'with no document capture session' do
+      let(:document_capture_session_uuid) { nil }
 
-      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
-      expect(analytics).to have_logged_event(
-        'Doc Auth Async',
-        error: 'failed to load verify_document_capture_session',
-        uuid: nil,
-      )
+      it 'calls analytics' do
+        subject.call
+
+        expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
+        expect(analytics).to have_logged_event(
+          'Doc Auth Async',
+          error: 'failed to load verify_document_capture_session',
+          uuid: nil,
+        )
+      end
     end
 
-    it 'calls analytics if missing from no result in document capture session' do
-      verify_document_capture_session = DocumentCaptureSession.new(
-        uuid: 'uuid',
-        result_id: 'result_id',
-        user: create(:user),
-      )
+    context 'with document capture session with no result' do
+      let(:document_capture_session) do
+        DocumentCaptureSession.create(
+          uuid: 'uuid',
+          result_id: 'result_id',
+          user: create(:user),
+        )
+      end
 
-      expect(subject).to receive(:verify_document_capture_session).
-        and_return(verify_document_capture_session).at_least(:once)
-      subject.call
+      it 'calls analytics' do
+        subject.call
 
-      expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
-      expect(analytics).to have_logged_event(
-        'Doc Auth Async',
-        error: 'failed to load async result',
-        uuid: verify_document_capture_session.uuid,
-        result_id: verify_document_capture_session.result_id,
-      )
+        expect(analytics).to have_logged_event('Proofing Document Result Missing', {})
+        expect(analytics).to have_logged_event(
+          'Doc Auth Async',
+          error: 'failed to load async result',
+          uuid: document_capture_session.uuid,
+          result_id: document_capture_session.result_id,
+        )
+      end
     end
   end
 end

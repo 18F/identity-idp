@@ -40,14 +40,14 @@ module Reports
 
     def track_global_user_total_events
       track_global_registered_users
-      track_users_linked_to_sps(ial: 1, event: Analytics::REPORT_IAL1_USERS_LINKED_TO_SPS_COUNT)
-      track_users_linked_to_sps(ial: 2, event: Analytics::REPORT_IAL2_USERS_LINKED_TO_SPS_COUNT)
+      track_users_linked_to_sps(ial: 1, event: 'Report IAL1 Users Linked to SPs Count')
+      track_users_linked_to_sps(ial: 2, event: 'Report IAL2 Users Linked to SPs Count')
     end
 
     def track_global_registered_users
       transaction_with_timeout do
         track_report_data_event(
-          Analytics::REPORT_REGISTERED_USERS_COUNT,
+          'Report Registered Users Count',
           count: Funnel::Registration::TotalRegisteredCount.call,
         )
       end

@@ -28,9 +28,14 @@ class TwoFactorOptionsForm
   attr_accessor :user
   attr_writer :selection
 
+  def mfa_user
+    @mfa_user ||= MfaContext.new(user)
+  end
+
   def extra_analytics_attributes
     {
       selection: selection,
+      enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
   end
 

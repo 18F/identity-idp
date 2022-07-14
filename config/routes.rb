@@ -117,6 +117,8 @@ Rails.application.routes.draw do
       post 'login/add_piv_cac/prompt' => 'users/piv_cac_setup_from_sign_in#decline'
       get 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#success'
       post 'login/add_piv_cac/success' => 'users/piv_cac_setup_from_sign_in#next'
+      get 'login/additional_mfa_required' => 'users/additional_mfa_required#show'
+      post 'login/additional_mfa_required/skip' => 'users/additional_mfa_required#skip'
 
       get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
       post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
@@ -230,7 +232,6 @@ Rails.application.routes.draw do
     get '/two_factor_options', to: redirect('/authentication_methods_setup')
     patch '/two_factor_options' => 'users/two_factor_authentication_setup#create'
     get '/second_mfa_setup' => 'users/mfa_selection#index'
-    get '/second_mfa_setup/non_restricted' => 'users/mfa_selection#non_restricted'
     patch '/second_mfa_setup' => 'users/mfa_selection#update'
     get '/phone_setup' => 'users/phone_setup#index'
     patch '/phone_setup' => 'users/phone_setup#create'
@@ -242,8 +243,6 @@ Rails.application.routes.draw do
     patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'
     get '/backup_code_regenerate' => 'users/backup_code_setup#edit'
-    # Remove backup_code_download after next deployment
-    get '/backup_code_download' => 'users/backup_code_setup#download'
     get '/backup_code_delete' => 'users/backup_code_setup#confirm_delete'
     get '/backup_code_create' => 'users/backup_code_setup#confirm_create'
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
@@ -343,6 +342,7 @@ Rails.application.routes.draw do
       post '/verify/v2/password_confirm' => 'verify/password_confirm#create'
       post '/verify/v2/password_reset' => 'verify/password_reset#create'
       post '/verify/v2/document_capture' => 'verify/document_capture#create'
+      delete '/verify/v2/document_capture_errors' => 'verify/document_capture_errors#delete'
     end
 
     get '/account/verify' => 'idv/gpo_verify#index', as: :idv_gpo_verify

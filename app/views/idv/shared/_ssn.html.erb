@@ -51,12 +51,16 @@ locals:
   <p><%= flow_session[:error_message] %></p>
 
   <button type="submit" class="display-block margin-y-5 usa-button usa-button--big usa-button--wide">
-    <%= t('forms.buttons.continue') %>
+    <% if updating_ssn %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
   </button>
 <% end %>
 
 <% if updating_ssn %>
   <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
 <% else %>
-  <%= render 'idv/doc_auth/start_over_or_cancel', step: 'ssn' %>
+  <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
 <% end %>

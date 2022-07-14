@@ -45,8 +45,13 @@ describe Users::WebauthnSetupController do
         stub_analytics
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::WEBAUTHN_SETUP_VISIT, platform_authenticator: false,
-                                                errors: {}, success: true)
+          with(
+            'WebAuthn Setup Visited',
+            platform_authenticator: false,
+            errors: {},
+            enabled_mfa_methods_count: 0,
+            success: true,
+          )
 
         get :new
       end
@@ -68,16 +73,25 @@ describe Users::WebauthnSetupController do
 
       it 'tracks the submission' do
         result = {
-          success: true,
-          errors: {},
+          enabled_mfa_methods_count: 3,
           mfa_method_counts: {
             auth_app: 1, phone: 1, webauthn: 1
           },
-          pii_like_keypaths: [[:mfa_method_counts, :phone]],
           multi_factor_auth_method: 'webauthn',
+          success: true,
+          errors: {},
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication Setup', result)
+
+        expect(@analytics).to receive(:track_event).
+          with(
+            'Multi-Factor Authentication: Added webauthn',
+            enabled_mfa_methods_count: 3,
+            method_name: :webauthn,
+            platform_authenticator: false,
+          )
 
         patch :confirm, params: params
       end
@@ -106,7 +120,7 @@ describe Users::WebauthnSetupController do
           mfa_method_counts: { auth_app: 1, phone: 1 },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
-        expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
+        expect(@analytics).to receive(:track_event).with('WebAuthn Deleted', result)
 
         delete :delete, params: { id: webauthn_configuration.id }
       end

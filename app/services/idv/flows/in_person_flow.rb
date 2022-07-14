@@ -1,6 +1,8 @@
 module Idv
   module Flows
     class InPersonFlow < Flow::BaseFlow
+      attr_reader :idv_session # this is used by DocAuthBaseStep
+
       STEPS = {
         location: Idv::Steps::Ipp::LocationStep,
         welcome: Idv::Steps::Ipp::WelcomeStep,  # instructions
@@ -11,6 +13,9 @@ module Idv
       }.freeze
 
       ACTIONS = {
+        redo_state_id: Idv::Actions::Ipp::RedoStateIdAction,
+        redo_address: Idv::Actions::Ipp::RedoAddressAction,
+        redo_ssn: Idv::Actions::RedoSsnAction,
       }.freeze
 
       # WILLFIX: (LG-6308) move this to the barcode page when we finish setting up IPP step
@@ -33,17 +38,7 @@ module Idv
       end
 
       def self.session_idv(session)
-        session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
-
-        # WILLFIX: remove the line below when we're collecting all user data
-        session[:idv][:applicant] ||= Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
-
-        # WILLFIX: (LG-6349) remove this block when we implement the verify page
-        session[:idv]['profile_confirmation'] = true
-        session[:idv]['vendor_phone_confirmation'] = false
-        session[:idv]['user_phone_confirmation'] = false
-        session[:idv]['address_verification_mechanism'] = 'phone'
-        session[:idv]['resolution_successful'] = 'phone'
+        session[:idv] ||= {}
       end
     end
   end

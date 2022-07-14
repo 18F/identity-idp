@@ -222,7 +222,7 @@ describe Idv::OtpDeliveryMethodController do
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::OTP_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
+          'Vendor Phone Validation failed', telephony_error_analytics_hash
         )
 
         post :create, params: params

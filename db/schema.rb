@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_07_150151) do
+
+ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -192,6 +193,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_150151) do
     t.boolean "ial2_strict"
     t.string "issuer"
     t.datetime "cancelled_at"
+    t.boolean "ocr_confirmation_pending", default: false
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
@@ -278,6 +280,20 @@ ActiveRecord::Schema.define(version: 2022_06_07_150151) do
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
+  end
+
+  create_table "in_person_enrollments", comment: "Details and status of an in-person proofing enrollment for one user and profile", force: :cascade do |t|
+    t.bigint "user_id", null: false, comment: "Foreign key to the user this enrollment belongs to"
+    t.bigint "profile_id", null: false, comment: "Foreign key to the profile this enrollment belongs to"
+    t.string "enrollment_code", comment: "The code returned by the USPS service"
+    t.datetime "status_check_attempted_at", comment: "The last time a status check was attempted"
+    t.datetime "status_updated_at", comment: "The last time the status was successfully updated with a value from the USPS API"
+    t.integer "status", default: 0, comment: "The status of the enrollment"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 0)"
+    t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
   end
 
   create_table "integration_statuses", force: :cascade do |t|
@@ -527,6 +543,7 @@ ActiveRecord::Schema.define(version: 2022_06_07_150151) do
     t.string "certs", array: true
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "use_legacy_name_id_behavior", default: false
+    t.boolean "irs_attempts_api_enabled"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -575,17 +592,14 @@ ActiveRecord::Schema.define(version: 2022_06_07_150151) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.string "unique_session_id"
-    t.string "email_fingerprint", default: "", null: false
-    t.text "encrypted_email", default: "", null: false
-    t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
-    t.integer "totp_timestamp"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at"
     t.datetime "encrypted_recovery_code_digest_generated_at"
+    t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
@@ -621,6 +635,8 @@ ActiveRecord::Schema.define(version: 2022_06_07_150151) do
   add_foreign_key "document_capture_sessions", "users"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
+  add_foreign_key "in_person_enrollments", "profiles"
+  add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"
   add_foreign_key "integrations", "integration_statuses"

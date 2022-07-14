@@ -37,7 +37,6 @@ describe Api::Verify::DocumentCaptureController do
   }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['document_capture'])
     stub_sign_in(user) if user
   end
 
@@ -75,7 +74,19 @@ describe Api::Verify::DocumentCaptureController do
     context 'When user document is submitted to be verified' do
       it 'returns inprogress status when create is called' do
         agent = instance_double(Idv::Agent)
-        allow(Idv::Agent).to receive(:new).and_return(agent)
+        allow(Idv::Agent).to receive(:new).with(
+          user_uuid: user.uuid,
+          uuid_prefix: nil,
+          document_arguments: {
+            'encryption_key' => encryption_key,
+            'front_image_iv' => front_image_iv,
+            'back_image_iv' => back_image_iv,
+            'selfie_image_iv' => selfie_image_iv,
+            'front_image_url' => front_image_url,
+            'back_image_url' => back_image_url,
+            'selfie_image_url' => selfie_image_url,
+          },
+        ).and_return(agent)
 
         expect(agent).to receive(:proof_document).with(
           document_capture_session,
@@ -99,8 +110,11 @@ describe Api::Verify::DocumentCaptureController do
           document_capture_session_uuid: document_capture_session_uuid,
           flow_path: flow_path,
         }
-        expect(JSON.parse(response.body)['status']).to eq('in_progress')
-        expect(response.status).to eq 200
+        expect(JSON.parse(response.body, symbolize_names: true)).to eq(
+          success: true,
+          status: 'in_progress',
+        )
+        expect(response.status).to eq 202
       end
 
       context 'When the request does not have all the parameters' do

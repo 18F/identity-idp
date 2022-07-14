@@ -6,22 +6,23 @@ module Users
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
-    before_action :ensure_backup_codes_in_session, only: %i[continue download refreshed]
+    before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
 
     helper_method :in_multi_mfa_selection_flow?
 
-    def index; end
+    def index
+      track_backup_codes_confirmation_setup_visit
+    end
 
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
-      analytics.track_event(Analytics::BACKUP_CODE_CREATED)
-      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
       save_backup_codes
+      track_backup_codes_created
     end
 
     def edit; end
@@ -29,12 +30,6 @@ module Users
     def continue
       flash[:success] = t('notices.backup_codes_configured')
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    # Remove after next deployment
-    def download
-      data = user_session[:backup_codes].join("\r\n") + "\r\n"
-      send_data data, filename: 'backup_codes.txt'
     end
 
     def confirm_delete; end
@@ -54,6 +49,23 @@ module Users
     end
 
     private
+
+    def track_backup_codes_created
+      analytics.backup_code_created(
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
+    end
+
+    def mfa_user
+      @mfa_user ||= MfaContext.new(current_user)
+    end
+
+    def track_backup_codes_confirmation_setup_visit
+      analytics.multi_factor_auth_enter_backup_code_confirmation_visit(
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+    end
 
     def ensure_backup_codes_in_session
       redirect_to backup_code_setup_url unless user_session[:backup_codes]

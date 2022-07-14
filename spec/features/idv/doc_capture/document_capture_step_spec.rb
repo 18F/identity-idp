@@ -51,19 +51,6 @@ feature 'doc capture document capture step', js: true do
     )
   end
 
-  it 'goes back to the right place when clicking "go back" after cancelling' do
-    complete_doc_capture_steps_before_first_step(user)
-
-    click_on t('links.cancel')
-    click_on t('links.go_back')
-
-    expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-    expect(fake_analytics).to have_logged_event(
-      'IdV: cancellation go back',
-      step: 'document_capture',
-    )
-  end
-
   it 'advances original session once complete' do
     using_doc_capture_session { attach_and_submit_images }
 
@@ -84,6 +71,26 @@ feature 'doc capture document capture step', js: true do
 
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
+  context 'with attention with barcode result' do
+    before do
+      mock_doc_auth_attention_with_barcode
+      allow(IdentityConfig.store).to receive(:doc_capture_polling_enabled).and_return(true)
+    end
+
+    it 'advances original session only after confirmed', allow_browser_log: true do
+      request_uri = doc_capture_request_uri(user)
+
+      Capybara.using_session('mobile') do
+        visit request_uri
+        attach_and_submit_images
+        expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+        click_button t('forms.buttons.continue')
+      end
+
+      expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+    end
   end
 
   context 'when using async uploads' do
@@ -123,6 +130,26 @@ feature 'doc capture document capture step', js: true do
 
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
+
+    context 'with attention with barcode result' do
+      before do
+        mock_doc_auth_attention_with_barcode
+        allow(IdentityConfig.store).to receive(:doc_capture_polling_enabled).and_return(true)
+      end
+
+      it 'advances original session only after confirmed', allow_browser_log: true do
+        request_uri = doc_capture_request_uri(user)
+
+        Capybara.using_session('mobile') do
+          visit request_uri
+          attach_and_submit_images
+          expect(page).to have_content(t('doc_auth.errors.barcode_attention.confirm_info'))
+          click_button t('forms.buttons.continue')
+        end
+
+        expect(page).to have_current_path(idv_doc_auth_ssn_step, wait: 10)
+      end
     end
   end
 

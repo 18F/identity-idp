@@ -7,12 +7,8 @@ en:
       document_capture_dialog: Document capture
       selfie_alt_text: An uploaded image
     buttons:
-      change_address: Change
-      change_address_label: Change address
-      change_ssn: Change
-      change_ssn_label: Change Social Security Number
+      add_new_photos: Add new photos
       continue: Continue
-      start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
         <lg-upload>Upload photo</lg-upload>'
       take_picture: Take photo
@@ -50,6 +46,10 @@ en:
           took the picture, or the picture is too dark. Try taking new pictures
           in brighter lighting.
         visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
+      barcode_attention:
+        confirm_info: If the information below is incorrect, please upload new photos of
+          your state-issued ID.
+        heading: We couldn’t read the barcode on your ID.
       camera:
         blocked: Your camera is blocked
         blocked_detail: We don’t have permission to access the camera. Please check your
@@ -105,23 +105,18 @@ en:
           Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
     forms:
-      address1: Address
       captured_image: Captured Image
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
-      city: City
-      dob: Date of Birth
       doc_success: We have verified your personal information
-      first_name: First Name
-      last_name: Last Name
       selected_file: Selected file
-      ssn: Social Security Number
-      state: State
-      zip_code: Zip Code
     headings:
       address: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
+      capture_scan_warning_html: We couldn’t read the barcode on your ID. If the
+        information below is incorrect, please %{link} of your state-issued ID.
+      capture_scan_warning_link: upload new photos
       capture_troubleshooting_tips: Having trouble adding your state-issued ID?
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
@@ -142,7 +137,6 @@ en:
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
-      verify: Verify your information
       verify_identity: Verify your identity
       welcome: Get started verifying your identity
     info:
@@ -193,7 +187,6 @@ en:
       upload_no_image_storage: We do not store images you upload. We only verify your identity.
       verify_identity: We’ll ask for your personal information to verify your identity
         against public records.
-      verifying: Verifying…
       welcome_html: '%{sp_name} needs to make sure you are you — not someone
         pretending to be you.'
     instructions:

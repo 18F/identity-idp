@@ -111,6 +111,16 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
         )
       end
+
+      it 'returns the expected response' do
+        response = form.submit
+
+        expect(response).to be_a_kind_of DocAuth::Response
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      end
     end
 
     context 'image data returns unknown errors' do
@@ -125,6 +135,22 @@ RSpec.describe Idv::ApiImageUploadForm do
         form.submit
 
         expect(fake_analytics).to have_logged_event('Doc Auth Warning', {})
+      end
+
+      it 'returns the expected response' do
+        response = form.submit
+
+        expect(response).to be_a_kind_of DocAuth::Response
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(
+          {
+            general: [t('doc_auth.errors.alerts.selfie_failure')],
+            hints: false,
+            selfie: [t('doc_auth.errors.general.fallback_field_level')],
+          },
+        )
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq({})
       end
     end
 
@@ -143,6 +169,16 @@ RSpec.describe Idv::ApiImageUploadForm do
           user_id: document_capture_session.user.uuid,
         )
       end
+
+      it 'returns the expected response' do
+        response = form.submit
+
+        expect(response).to be_a_kind_of DocAuth::Response
+        expect(response.success?).to eq(true)
+        expect(response.errors).to eq({})
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq(Idp::Constants::MOCK_IDV_APPLICANT)
+      end
     end
 
     context 'form is missing a required param' do
@@ -150,7 +186,12 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not successful' do
         response = form.submit
+
+        expect(response).to be_a_kind_of Idv::DocAuthFormResponse
         expect(response.success?).to eq(false)
+        expect(response.errors).to eq({ front: [t('errors.messages.blank')] })
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq({})
       end
 
       it 'includes remaining_attempts' do
@@ -173,7 +214,11 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not successful' do
         response = form.submit
+
+        expect(response).to be_a_kind_of DocAuth::Response
         expect(response.success?).to eq(false)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq({})
       end
 
       it 'includes remaining_attempts' do
@@ -188,14 +233,26 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'PII validation from client response fails' do
-      let(:failed_response) { FormResponse.new(success: false, errors: { doc_pii: 'bad' }) }
+      let(:failed_response) do
+        Idv::DocAuthFormResponse.new(
+          success: false,
+          errors: { doc_pii: 'bad' },
+          extra: {
+            pii_like_keypaths: [[:pii]],
+            attention_with_barcode: false,
+          },
+        )
+      end
       before do
         allow_any_instance_of(Idv::DocPiiForm).to receive(:submit).and_return(failed_response)
       end
 
       it 'is not successful' do
         response = form.submit
+
         expect(response.success?).to eq(false)
+        expect(response.attention_with_barcode?).to eq(false)
+        expect(response.pii_from_doc).to eq({})
       end
 
       it 'includes remaining_attempts' do

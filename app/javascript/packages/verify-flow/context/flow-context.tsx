@@ -1,25 +1,38 @@
 import { createContext } from 'react';
 
-const FlowContext = createContext({
-  /**
-   * URL to path for session restart.
-   */
-  startOverURL: '',
-
+export interface FlowContextValue {
   /**
    * URL to path for session cancel.
    */
-  cancelURL: '',
+  cancelURL: string;
+
+  /**
+   * URL to in-person proofing alternative flow, if enabled.
+   */
+  inPersonURL: string | null;
 
   /**
    * Current step name.
    */
-  currentStep: '',
+  currentStep: string;
 
   /**
    * The path to which the current step is appended to create the current step URL.
    */
+  basePath: string;
+
+  /**
+   * Handle flow completion with a given destination URL.
+   */
+  onComplete({ completionURL: string }): void;
+}
+
+const FlowContext = createContext<FlowContextValue>({
+  cancelURL: '',
+  inPersonURL: null,
+  currentStep: '',
   basePath: '',
+  onComplete() {},
 });
 
 FlowContext.displayName = 'FlowContext';

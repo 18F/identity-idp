@@ -163,6 +163,16 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -672,16 +682,6 @@ module AnalyticsEvents
     )
   end
 
-  # User visited IDV password confirm page
-  def idv_password_confirm_visited
-    track_event('IdV: password confirm visited')
-  end
-
-  # User submitted IDV password confirm page
-  def idv_password_confirm_submitted
-    track_event('IdV: password confirm submitted')
-  end
-
   # User visited IDV personal key page
   def idv_personal_key_visited
     track_event('IdV: personal key visited')
@@ -919,12 +919,17 @@ module AnalyticsEvents
     )
   end
 
-  # User completed idv
+  # The system encountered an error and the proofing results are missing
+  def idv_proofing_resolution_result_missing
+    track_event('Proofing Resolution Result Missing')
+  end
+
+  # User submitted IDV password confirm page
   def idv_review_complete
     track_event('IdV: review complete')
   end
 
-  # User visited idv phone of record
+  # User visited IDV password confirm page
   def idv_review_info_visited
     track_event('IdV: review info visited')
   end
@@ -1054,6 +1059,77 @@ module AnalyticsEvents
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
       **extra,
+    )
+  end
+
+  # Tracks when the the user has added the MFA method phone to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_phone(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added phone',
+      {
+        method_name: :phone,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method piv_cac to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_piv_cac(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added PIV_CAC',
+      {
+        method_name: :piv_cac,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method TOTP to their account
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_totp(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Multi-Factor Authentication: Added TOTP',
+      {
+        method_name: :totp,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user has added the MFA method webauthn to their account
+  # @param [Boolean] platform_authenticator indicates if webauthn_platform was used
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_added_webauthn(
+    platform_authenticator:,
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: Added webauthn',
+      {
+        method_name: :webauthn,
+        platform_authenticator: platform_authenticator,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when the user visits the backup code confirmation setup page
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def multi_factor_auth_enter_backup_code_confirmation_visit(
+    enabled_mfa_methods_count:, **extra
+  )
+    track_event(
+      'Multi-Factor Authentication: enter backup code confirmation visited',
+      {
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        **extra,
+      }.compact,
     )
   end
 
@@ -1217,6 +1293,15 @@ module AnalyticsEvents
     )
   end
 
+  # Track when users get directed to the prompt requiring multiple MFAs for Phone MFA
+  def non_restricted_mfa_required_prompt_visited
+    track_event('Non-Restricted MFA Required Prompt visited')
+  end
+
+  def non_restricted_mfa_required_prompt_skipped
+    track_event('Non-Restricted MFA Required Prompt skipped')
+  end
+
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
   # @param [Hash] errors
@@ -1262,6 +1347,63 @@ module AnalyticsEvents
       'OpenID Connect: token',
       client_id: client_id,
       user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks if otp phone validation failed
+  # @identity.idp.previous_event_name Twilio Phone Validation Failed
+  # @param [String] error
+  # @param [String] context
+  # @param [String] country
+  def otp_phone_validation_failed(error:, context:, country:, **extra)
+    track_event(
+      'Vendor Phone Validation failed',
+      error: error,
+      context: context,
+      country: country,
+      **extra,
+    )
+  end
+
+  # User has been marked as authenticated
+  # @param [String] authentication_type
+  def user_marked_authed(authentication_type:, **extra)
+    track_event(
+      'User marked authenticated',
+      authentication_type: authentication_type,
+      **extra,
+    )
+  end
+
+  # User registration has been hadnded off to agency page
+  # @param [Boolean] ial2
+  # @param [Integer] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_agency_handoff_page_visit(
+      ial2:,
+      service_provider_name:,
+      page_occurence:,
+      needs_completion_screen_reason:,
+      sp_session_requested_attributes:,
+      sp_request_requested_attributes: nil,
+      ialmax: nil,
+      **extra
+    )
+
+    track_event(
+      'User registration: agency handoff visited',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
       **extra,
     )
   end
@@ -1435,7 +1577,6 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
-  # @param [Hash] error_details
   # @param [String] delivery_preference
   # @param [Integer] phone_configuration_id
   # @param [Boolean] make_default_number
@@ -1465,7 +1606,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success
-  # @param [Hash] errors
   # @param [Integer] phone_configuration_id
   # tracks a phone number deletion event
   def phone_deletion(success:, phone_configuration_id:, **extra)
@@ -1529,6 +1669,12 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_document_result_missing
     track_event('Proofing Document Result Missing')
+  end
+
+  # Rate limit triggered
+  # @param [String] type
+  def rate_limit_triggered(type:, **extra)
+    track_event('Rate Limit Triggered', type: type, **extra)
   end
 
   # User authenticated by a remembered device
@@ -1654,6 +1800,21 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user is bounced back from the service provider due to an integration issue.
+  def sp_handoff_bounced_detected
+    track_event('SP handoff bounced detected')
+  end
+
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1689,6 +1850,69 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
     )
   end
 
@@ -1750,21 +1974,116 @@ module AnalyticsEvents
 
   # @param [Boolean] success
   # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
-  def user_registration_2fa_setup(success:, errors: nil, **extra)
+  def user_registration_2fa_setup(
+    success:,
+    errors: nil,
+    enabled_mfa_methods_count: nil,
+    selection: nil,
+    **extra
+  )
     track_event(
       'User Registration: 2FA Setup',
       {
         success: success,
         errors: errors,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        selection: selection,
         **extra,
       }.compact,
     )
   end
 
+  # Tracks when user's piv cac is disabled
+  def user_registration_piv_cac_disabled
+    track_event('User Registration: piv cac disabled')
+  end
+
+  # Tracks when user's piv cac setup
+  # @param [Integer] enabled_mfa_methods_count
+  def user_registration_piv_cac_setup_visit(**extra)
+    track_event(
+      'User Registration: piv cac setup visited',
+      **extra,
+    )
+  end
+
+  # Tracks when user visits Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_visited
+    track_event('User Registration: Suggest Another MFA Notice visited')
+  end
+
+  # Tracks when user skips Suggest Another MFA Page
+  def user_registration_suggest_another_mfa_notice_skipped
+    track_event('User Registration: Suggest Another MFA Notice Skipped')
+  end
+
   # Tracks when user visits MFA selection page
   def user_registration_2fa_setup_visit
     track_event('User Registration: 2FA Setup visited')
+  end
+
+  # @param [String] redirect_from
+  # @param [Hash] vendor_status
+  # Tracks when vendor has outage
+  def vendor_outage(
+    redirect_from:,
+    vendor_status:,
+    **extra
+  )
+    track_event(
+      'Vendor Outage',
+      redirect_from: redirect_from,
+      vendor_status: vendor_status,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] mfa_method_counts
+  # Tracks when WebAuthn is deleted
+  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+    track_event(
+      'WebAuthn Deleted',
+      success: success,
+      mfa_method_counts: mfa_method_counts,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] success
+  # Tracks when WebAuthn setup is visited
+  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
+                           **extra)
+    track_event(
+      'WebAuthn Setup Visited',
+      platform_authenticator: platform_authenticator,
+      errors: errors,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success: success,
+      **extra,
+    )
+  end
+
+  # Tracks when user visits enter email page
+  def user_registration_enter_email_visit
+    track_event('User Registration: enter email visited')
+  end
+
+  # @param [Integer] enabled_mfa_methods_count
+  # Tracks when user visits the phone setup step during registration
+  def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'User Registration: phone setup visited',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength

@@ -6,24 +6,19 @@
 
 <p class='margin-top-1 margin-bottom-4'>
   <%= @content.info %>
-  <% if @content.enforce_second_mfa? %>
-    <%= link_to(t('mfa.non_restricted.learn_more'), @content.learn_more) %>
-  <% end %>
 </p>
 
 <div class="col-12">
   <%= link_to(
-        @next_path,
+        second_mfa_setup_path,
         class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
       ) { @content.button } %>
 </div>
 
-<% unless @content.enforce_second_mfa? %>
-  <%= button_to(
-        auth_method_confirmation_skip_path,
-        method: :post,
-        class: 'usa-button usa-button--unstyled',
-      ) do %>
-    <%= t('mfa.skip') %>
-  <% end %>
+<%= button_to(
+      auth_method_confirmation_skip_path,
+      method: :post,
+      class: 'usa-button usa-button--unstyled',
+    ) do %>
+  <%= t('mfa.skip') %>
 <% end %>

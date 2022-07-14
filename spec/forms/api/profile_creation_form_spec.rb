@@ -108,6 +108,19 @@ RSpec.describe Api::ProfileCreationForm do
 
           expect(profile.gpo_confirmation_codes.first_with_otp(gpo_otp)).not_to be_nil
         end
+
+        context 'with reveal_gpo_code? feature enabled' do
+          before do
+            allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
+          end
+
+          it 'assigns gpo code' do
+            subject.submit
+            gpo_code = GpoConfirmation.last.entry[:otp]
+
+            expect(subject.gpo_code).to eq(gpo_code)
+          end
+        end
       end
     end
 

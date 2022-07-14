@@ -64,7 +64,10 @@ module Idv
           uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
 
-        flow_session[:pii_from_doc] = pii_from_doc if store_in_session
+        flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
+        if store_in_session
+          flow_session[:pii_from_doc] = flow_session[:pii_from_doc].to_h.merge(pii_from_doc)
+        end
         track_document_state(pii_from_doc[:state])
       end
 
@@ -155,10 +158,6 @@ module Idv
 
       def verify_step_document_capture_session_uuid_key
         :idv_verify_step_document_capture_session_uuid
-      end
-
-      def verify_document_capture_session_uuid_key
-        :verify_document_action_document_capture_session_uuid
       end
 
       def track_document_state(state)

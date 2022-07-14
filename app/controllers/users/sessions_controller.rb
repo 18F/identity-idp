@@ -15,8 +15,7 @@ module Users
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
-      analytics.track_event(
-        Analytics::SIGN_IN_PAGE_VISIT,
+      analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
@@ -54,7 +53,7 @@ module Users
     def keepalive
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
-      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+      analytics.session_kept_alive if alive?
 
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
@@ -156,13 +155,18 @@ module Users
     def track_authentication_attempt(email)
       user = User.find_with_email(email) || AnonymousUser.new
 
+      success = user_signed_in_and_not_locked_out?(user)
       analytics.email_and_password_auth(
-        success: user_signed_in_and_not_locked_out?(user),
+        success: success,
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
         stored_location: session['user_return_to'],
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
+      )
+      irs_attempts_api_tracker.email_and_password_auth(
+        email: email,
+        success: success,
       )
     end
 

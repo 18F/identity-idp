@@ -18,7 +18,6 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
-      confirmation: Ha cancelado la verificación de su identidad con %{app_name}
       prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:
       new: Enviar otro email de confirmación
@@ -64,6 +63,7 @@ es:
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}
     totp_setup:
       new: Agregar una aplicación de autenticación
+    verify: Verifica tus datos
     verify_email: Revise su email
     verify_personal_key: Verifica tu clave personal
     webauthn_platform_setup:

@@ -5,33 +5,55 @@ en:
       masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
       cancel: Cancel and return to your profile
+      change_address_label: Update address
+      change_label: Update
+      change_ssn_label: Update Social Security number
+      change_state_id_label: Update state ID
       continue_plain: Continue
       mail:
         resend: Send another letter
         send: Send a letter
       send_confirmation_code: Continue
     cancel:
+      actions:
+        account_page: Go to account page
+        exit: Exit %{app_name}
+        keep_going: No, keep going
+        start_over: Start over
+      description:
+        account_page: account page
+        exit:
+          with_sp_html:
+            - If you exit %{app_name} and return to %{sp_name}, we will not save
+              your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_link}.
+          without_sp:
+            - If you exit identity verification and go to your account page, we
+              will not save your personal information.
+            - You will still have a %{app_name} account. You can manage or
+              delete your account on your %{account_page_text}.
+        hybrid: If you cancel now, you will be prompted to switch back to your computer
+          to continue verifying your identity.
+        start_over: If you start over, you will restart this process from the beginning
+          and the information you entered will not be saved.
       headings:
         confirmation:
           hybrid: You have cancelled uploading photos of your ID on this phone
+        exit:
+          with_sp: Exit %{app_name} and return to %{sp_name}
+          without_sp: Exit identity verification and go to your account page
         prompt:
           hybrid: Are you sure you want to cancel uploading photos of your ID on this
             phone?
-      warnings:
-        hybrid: If you cancel now, you will be prompted to switch back to your computer
-          to continue verifying your identity.
-        warning_1: We won’t be able to verify your identity
-        warning_2: We won’t keep a record of your name, address, birth date, or Social
-          Security number
-        warning_3: You won’t be able to securely access your information using %{app_name}
-        warning_4: You’ll still have a %{app_name} account for your email address
-        warning_5: You can manage or delete that account on your profile page
+          standard: Cancel verifying your identity?
+        start_over: Start over verifying your identity
     errors:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
-        ssn: 'Your Social Security Number must be entered in as ###-##-####'
-        zipcode: Enter a 5 or 9 digit ZIP code
+        ssn: 'Your Social Security number must be entered in as ###-##-####'
+        zipcode: Enter a 5 or 9 digit ZIP Code
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
@@ -59,7 +81,7 @@ en:
           information online.'
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
-          are an incorrect Social Security number or ZIP code.
+          are an incorrect Social Security number or ZIP Code.
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
@@ -77,8 +99,13 @@ en:
       address1: Address
       address2: Address (optional)
       city: City
+      dob: Date of birth
+      first_name: First name
+      id_number: ID number
+      last_name: Last name
       password: Password
-      ssn_label_html: Social Security Number
+      ssn: Social Security number
+      ssn_label_html: Social Security number
       state: State
       zipcode: ZIP Code
     index:
@@ -137,11 +164,12 @@ en:
         read_more_encrypt: Read more about how %{app_name} protects your personal information
         review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it.
+      verifying: Verifying…
     review:
       dob: Date of birth
       full_name: Full name
       mailing_address: Mailing address
-      ssn: Social Security Number (SSN)
+      ssn: Social Security number (SSN)
     titles:
       activated: Your identity has already been verified
       come_back_later: Come back soon
@@ -161,6 +189,7 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
         still_having_trouble: Still having trouble?
       options:
+        add_new_photos: Add new photos of your state-issued ID
         change_phone_number: Use a different phone number
         contact_support: Contact %{app_name} Support
         doc_capture_tips: More tips for adding photos of your ID

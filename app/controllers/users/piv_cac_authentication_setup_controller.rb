@@ -18,6 +18,7 @@ module Users
       if params.key?(:token)
         process_piv_cac_setup
       else
+        track_piv_cac_setup_visit
         render_prompt
       end
     end
@@ -31,7 +32,7 @@ module Users
     end
 
     def delete
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
+      analytics.user_registration_piv_cac_disabled
       remove_piv_cac
       clear_piv_cac_information
       create_user_event(:piv_cac_disabled)
@@ -52,6 +53,13 @@ module Users
 
     private
 
+    def track_piv_cac_setup_visit
+      mfa_user = MfaContext.new(current_user)
+      analytics.user_registration_piv_cac_setup_visit(
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+    end
+
     def remove_piv_cac
       revoke_remember_device(current_user)
       current_user_id = current_user.id
@@ -61,7 +69,6 @@ module Users
     end
 
     def render_prompt
-      analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
       @presenter = PivCacAuthenticationSetupPresenter.new(
         current_user, user_fully_authenticated?, user_piv_cac_form
       )
@@ -103,10 +110,18 @@ module Users
         presented: true,
       )
       create_user_event(:piv_cac_enabled)
-      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
+      track_mfa_method_added
       session[:needs_to_setup_piv_cac_after_sign_in] = false
       final_path = after_sign_in_path_for(current_user)
       redirect_to next_setup_path || final_path
+    end
+
+    def track_mfa_method_added
+      mfa_user = MfaContext.new(current_user)
+      analytics.multi_factor_auth_added_piv_cac(
+        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+      )
+      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
     end
 
     def piv_cac_enabled?
