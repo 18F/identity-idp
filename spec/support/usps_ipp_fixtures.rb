@@ -15,6 +15,14 @@ class UspsIppFixtures
     load_response_fixture('request_failed_proofing_results_response.json')
   end
 
+  def self.request_expired_proofing_results_response
+    load_response_fixture('request_expired_proofing_results_response.json')
+  end
+
+  def self.request_no_post_office_proofing_results_response
+    load_response_fixture('request_no_post_office_proofing_results_response.json')
+  end
+
   def self.request_passed_proofing_results_response
     load_response_fixture('request_passed_proofing_results_response.json')
   end

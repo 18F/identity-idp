@@ -31,11 +31,8 @@ RSpec.describe GetUspsProofingResultsJob do
                 passing_response
                 
                 }
-            let(:failing_enrollment_expired){
-                passing_response[enrollment.status] = "Expired"
-                passing_response
-            }  
-
+            let(:failing_enrollment_expired){ JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_expired_proofing_results_response.json") }
+            let(:no_post_office_visit_response) { JSON.load_file (Rails.root.join "spec/fixtures/usps_ipp_responses/request_no_post_office_proofing_results_response.json") }
 
 
 
@@ -177,13 +174,95 @@ RSpec.describe GetUspsProofingResultsJob do
                     and_return([pending_enrollment])
 
                 err = Faraday::BadRequestError.new nil, nil
+    
 
                 allow(proofer).to receive(:request_proofing_results).
                     with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do |_,__|
                         raise err
+  
                     end
 
                 expect(IdentityJobLogSubscriber.logger).to receive(:warn).
+                    with(
+                        satisfy do |event|
+                            expect(event).to be_instance_of(String)
+                            parsed_event = JSON.parse(event)
+                            expect(parsed_event).to be_instance_of(Hash).
+                            and include(
+                                "name" => 'get_usps_proofing_results_job.errors.request_exception',
+                                "enrollment_id" => pending_enrollment.id,
+                                "exception" => include(
+                                    "class" => err.class.to_s,
+                                    "message" => err.message,
+                                    "backtrace" => instance_of(Array),
+                                ),
+                            )
+                        end
+                    )
+                
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "pending"
+            end
+
+            it 'marks enrollments as expired when USPS says they have expired' do
+                error = Faraday::BadRequestError.new({body:failing_enrollment_expired})
+                allow(proofer).to receive(:request_proofing_results).
+                with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
+                and_raise(error)
+
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                and_return([pending_enrollment])
+
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                pending_enrollment.reload
+
+                expect(pending_enrollment.status).to eq "expired"
+
+
+                
+            end
+
+            it 'ignores enrollments when USPS says the customer has not been to the post office' do
+                error = Faraday::BadRequestError.new({body:no_post_office_visit_response})
+                allow(proofer).to receive(:request_proofing_results).
+                with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
+                and_raise(error)
+
+                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                and_return([pending_enrollment])
+
+                start_time = Time.now
+
+                sut.perform Time.now
+
+                pending_enrollment.reload
+
+                #not sure if this should equal pending
+                expect(pending_enrollment.status).to eq "pending"
+            end
+
+            #not clear on the logic. How do you validate its mimicking a 5xx response
+            it 'reports a high-priority error on 5xx responses' do
+                    allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+                        and_return([pending_enrollment])
+    
+                    err = Faraday::ServerError.new nil, nil
+
+
+                    allow(proofer).to receive(:request_proofing_results).
+                    with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do |_,__|
+                        raise err
+                    end
+
+                expect(IdentityJobLogSubscriber.logger).to receive(:error).
                     with(
                         satisfy do |event|
                             expect(event).to be_instance_of(String)
@@ -208,26 +287,7 @@ RSpec.describe GetUspsProofingResultsJob do
                 pending_enrollment.reload
 
                 expect(pending_enrollment.status).to eq "pending"
-            end
-
-            it 'marks enrollments as expired when USPS says they have expired' do
-                allow(proofer).to receive(:request_proofing_results).
-                with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code).
-                and_return(failing_enrollment_expired)
-
-                allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-                and_return([pending_enrollment])
-                expect(pending_enrollments.status).to eq "expired"
-
-                
-            end
-
-            it 'ignores enrollments when USPS says the customer has not been to the post office' do
-                skip
-            end
-
-            it 'reports a high-priority error on 5xx responses' do
-                skip
+                    
             end
             
             it 'retroactively fails enrollment for unsupported ID types' do
@@ -249,13 +309,21 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         describe 'IPP disabled' do
+                let(:proofer) {
+                    uipp = instance_double(UspsInPersonProofer)
+                    expect(UspsInPersonProofer).to_not receive(:new)
+                    uipp
+                }
             before do
                 allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-                    and_return(true)
+                    and_return(false)
             end
 
             it 'does not request any enrollment records' do
-                skip
+                expect(proofer).to_not receive(:request_proofing_results)
+
+                sut.perform Time.now
+
             end
         end
     end
