@@ -327,6 +327,12 @@ describe('FormSteps', () => {
     expect(window.location.hash).to.equal('#second');
   });
 
+  it('resets hash in URL if there is no matching step', () => {
+    window.location.hash = '#example';
+    render(<FormSteps steps={STEPS} />);
+    expect(window.location.hash).to.equal('');
+  });
+
   it('syncs step by history events', async () => {
     const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 

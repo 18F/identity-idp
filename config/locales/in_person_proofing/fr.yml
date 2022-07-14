@@ -7,6 +7,33 @@ fr:
           d’identité, vous devrez apporter une preuve de votre adresse actuelle
           au bureau de poste.
         learn_more: Apprendre encore plus
+      prepare:
+        alert_selected_post_office: 'Vous avez sélectionné le bureau de poste %{name}.'
+        bring_barcode_header: Une copie de votre code-barres
+        bring_barcode_info: 'Nous vous donnerons un code unique qui expire dans les 30 jours.'
+        bring_id_header: 'Votre pièce d’identité délivrée par l’État'
+        bring_id_info_acceptable: 'Votre identifiant ne doit pas être expiré. Les pièces
+          d’identité acceptables sont:'
+        bring_id_info_dl: Permis de conduire d’état
+        bring_id_info_id_card: 'Carte d’identité de non-conducteur de l’État'
+        bring_id_info_no_other_forms: Nous n’acceptons actuellement aucune autre forme
+          d’identification, telle que les passeports et les cartes d’identité
+          militaires
+        bring_proof_header: Preuve de votre adresse actuelle
+        bring_proof_info_acceptable: 'Vous avez besoin d’un justificatif de domicile si
+          votre adresse actuelle est différente de l’adresse sur votre pièce
+          d’identité. Les justificatifs de domicile acceptés sont:'
+        bring_proof_info_card: Carte d’immatriculation du véhicule
+        bring_proof_info_lease: Bail, hypothèque ou acte de fiducie
+        bring_proof_info_policy: Police d’assurance habitation ou automobile
+        bring_proof_info_registration: Registre de vote
+        bring_title: 'Lors de votre passage à la Poste, munissez-vous de:'
+        verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
+          vous emporterez avec vous au bureau de poste:'
+        verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le plan.
+        verify_step_enter_pii: 'Entrez votre nom, date de naissance, numéro
+          d’identification délivré par l’État, adresse et numéro de sécurité
+          sociale.'
       state_id:
         info_html: 'Entrez les informations <strong>exactement telles qu’elles
           apparaissent sur votre pièce d’identité délivrée par l’État.</strong>
@@ -38,7 +65,7 @@ fr:
       address: Entrez votre adresse actuelle
       barcode: Vous êtes prêt à vérifier votre identité en personne
       location: Sélectionnez un emplacement pour vérifier votre identité
+      prepare: Vérifiez votre identité en personne
       state_id: Entrez les informations sur votre pièce d’identité
       update_address: Mettre à jour votre adresse actuelle
       update_state_id: Mettre à jour les informations sur votre id
-      welcome: Vérifiez votre identité en personne

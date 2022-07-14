@@ -27,18 +27,15 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('idv.troubleshooting.options.verify_in_person'), wait: 60)
 
     # start the IPP flow
-    # WILLFIX: temporarily block the "Leave site?" pop-up from appearing; this can be removed
-    #          when LG-6406 is resolved.
-    execute_script 'window.onbeforeunload = undefined;'
-    click_link t('idv.troubleshooting.options.verify_in_person')
+    find_button(t('idv.troubleshooting.options.verify_in_person')).click
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
     click_idv_continue
 
-    # welcome page
-    expect(page).to have_content(t('in_person_proofing.headings.welcome'))
-    click_idv_continue
+    # prepare page
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    click_link t('forms.buttons.continue')
 
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
@@ -91,6 +88,7 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('idv.titles.session.phone'))
     fill_out_phone_form_mfa_phone(user)
     click_idv_continue
+    verify_phone_otp
 
     # password confirm page
     expect(page).to have_content(
@@ -103,8 +101,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('titles.idv.personal_key'))
     acknowledge_and_confirm_personal_key
 
-    # returns to account page
-    expect(page).to have_content(t('headings.account.login_info'))
+    # ready to verify page
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
   end
 
   def attach_images_that_fail

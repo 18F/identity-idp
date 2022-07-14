@@ -7,6 +7,32 @@ es:
           documento de identidad, deberá presentar un comprobante de su
           dirección actual en la oficina de correos.'
         learn_more: Aprende más
+      prepare:
+        alert_selected_post_office: 'Ha seleccionado la oficina postal de %{name}.'
+        bring_barcode_header: Una copia de su código de barras
+        bring_barcode_info: 'Le daremos un código único que vence dentro de los 30 días.'
+        bring_id_header: 'Su identificación emitida por el estado'
+        bring_id_info_acceptable: 'Su identificación no debe estar vencida. Las formas
+          aceptables de identificación son:'
+        bring_id_info_dl: Licencia de conducir estatal
+        bring_id_info_id_card: 'Tarjeta de identificación estatal de no conductor'
+        bring_id_info_no_other_forms: Actualmente no aceptamos ninguna otra forma de
+          identificación, como pasaportes e identificaciones militares.
+        bring_proof_header: Prueba de su dirección actual
+        bring_proof_info_acceptable: 'Necesita un comprobante de domicilio si su
+          dirección actual es diferente a la dirección en su identificación. Las
+          formas aceptables de comprobante de domicilio son:'
+        bring_proof_info_card: Tarjeta de registro de vehículos
+        bring_proof_info_lease: Arrendamiento, Hipoteca o Escritura de Fideicomiso
+        bring_proof_info_policy: Póliza de Seguro de Hogar o Vehículo
+        bring_proof_info_registration: Registro de votantes
+        bring_title: 'Cuando vaya a la oficina de correos, por favor traiga:'
+        verify_step_about: 'Complete los pasos a continuación para generar el código de
+          barras que llevará con usted a la oficina de correos:'
+        verify_step_enter_phone: Introduce un número de teléfono con tu nombre en el plan.
+        verify_step_enter_pii: 'Ingrese su nombre, fecha de nacimiento, número de
+          identificación emitido por el estado, dirección y número de Seguro
+          Social.'
       state_id:
         info_html: 'Ingrese la información <strong>exactamente como aparece en su
           identificación emitida por el estado.</strong> Usaremos esta
@@ -37,7 +63,7 @@ es:
       address: Ingrese su dirección actual
       barcode: Estás listo para verificar tu identidad en persona
       location: Seleccione una ubicación para verificar su identificación
+      prepare: Verifica tu identidad en persona
       state_id: Introduce los datos de su documento de identidad
       update_address: Actualiza tu dirección actual
       update_state_id: Actualiza la información de tu DNI
-      welcome: Verifica tu identidad en persona
