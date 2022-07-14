@@ -79,7 +79,7 @@ module SignUp
     end
 
     def track_completion_event(last_page)
-      analytics.track_event(Analytics::USER_REGISTRATION_COMPLETE, analytics_attributes(last_page))
+      analytics.user_registration_complete(**analytics_attributes(last_page))
     end
 
     def pii
