@@ -183,7 +183,6 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(pending_enrollment.status).to eq 'pending'
       end
 
-      # todo does this mean all 4xx responses, or only the ones we don't cover?
       it 'reports a low-priority error on 4xx responses' do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return([pending_enrollment])
@@ -255,11 +254,9 @@ RSpec.describe GetUspsProofingResultsJob do
 
         pending_enrollment.reload
 
-        # not sure if this should equal pending
         expect(pending_enrollment.status).to eq 'pending'
       end
 
-      # not clear on the logic. How do you validate its mimicking a 5xx response
       it 'reports a high-priority error on 5xx responses' do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return([pending_enrollment])
