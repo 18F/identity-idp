@@ -25,6 +25,27 @@ module Idv
           profile: current_user.profiles.last,
           enrollment_code: '2048702198804358',
           created_at: Time.zone.now,
+          current_address_matches_id: true,
+          selected_location_details: {
+            'name' => 'BALTIMORE — Post Office™',
+            'streetAddress' => '900 E FAYETTE ST RM 118',
+            'city' => 'BALTIMORE',
+            'state' => 'MD',
+            'zip5' => '21233',
+            'zip4' => '9715',
+            'phone' => '555-123-6409',
+            'hours' => [
+              {
+                'weekdayHours' => '8:30 AM - 4:30 PM',
+              },
+              {
+                'saturdayHours' => '9:00 AM - 12:00 PM',
+              },
+              {
+                'sundayHours' => 'Closed',
+              },
+            ],
+          },
         )
       end
     end

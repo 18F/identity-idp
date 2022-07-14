@@ -12,6 +12,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       profile: profile,
       enrollment_code: enrollment_code,
       created_at: created_at,
+      current_address_matches_id: current_address_matches_id,
+      selected_location_details:
+        JSON.parse(UspsIppFixtures.request_facilities_response)['postOffices'].first,
     )
   end
 
@@ -48,17 +51,17 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     it 'returns a hash of location details associated with the enrollment' do
       expect(selected_location_details).to include(
-        name: kind_of(String),
-        streetAddress: kind_of(String),
-        city: kind_of(String),
-        state: kind_of(String),
-        zip5: kind_of(String),
-        zip4: kind_of(String),
-        phone: kind_of(String),
-        hours: array_including(
-          hash_including(weekdayHours: kind_of(String)),
-          hash_including(saturdayHours: kind_of(String)),
-          hash_including(sundayHours: kind_of(String)),
+        'name' => kind_of(String),
+        'streetAddress' => kind_of(String),
+        'city' => kind_of(String),
+        'state' => kind_of(String),
+        'zip5' => kind_of(String),
+        'zip4' => kind_of(String),
+        'phone' => kind_of(String),
+        'hours' => array_including(
+          hash_including('weekdayHours' => kind_of(String)),
+          hash_including('saturdayHours' => kind_of(String)),
+          hash_including('sundayHours' => kind_of(String)),
         ),
       )
     end
@@ -70,10 +73,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     before do
       allow(presenter).to receive(:selected_location_details).and_return(
-        hours: [
-          { weekdayHours: hours_open },
-          { saturdayHours: hours_open },
-          { sundayHours: hours_closed },
+        'hours' => [
+          { 'weekdayHours' => hours_open },
+          { 'saturdayHours' => hours_open },
+          { 'sundayHours' => hours_closed },
         ],
       )
     end
@@ -105,14 +108,13 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     context 'with current address matching id' do
       let(:current_address_matches_id) { true }
 
-      it { expect(needs_proof_of_address).to eq true }
+      it { expect(needs_proof_of_address).to eq false }
     end
 
     context 'with current address not matching id' do
       let(:current_address_matches_id) { false }
 
-      # WILLFIX: After LG-6708, unskip and initialize enrollment with current_address_matches_id
-      xit { expect(needs_proof_of_address).to eq false }
+      it { expect(needs_proof_of_address).to eq true }
     end
   end
 end

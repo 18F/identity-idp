@@ -5,6 +5,8 @@ require 'barby/outputter/png_outputter'
 module Idv
   module InPerson
     class ReadyToVerifyPresenter
+      delegate :selected_location_details, to: :enrollment
+
       def initialize(enrollment:)
         @enrollment = enrollment
       end
@@ -21,40 +23,15 @@ module Idv
         EnrollmentCodeFormatter.format(enrollment_code)
       end
 
-      def selected_location_details
-        # WILLFIX: After LG-6708, delegate this to enrollment.
-        {
-          name: 'BALTIMORE — Post Office™',
-          streetAddress: '900 E FAYETTE ST RM 118',
-          city: 'BALTIMORE',
-          state: 'MD',
-          zip5: '21233',
-          zip4: '9715',
-          phone: '555-123-6409',
-          hours: [
-            {
-              weekdayHours: '8:30 AM - 4:30 PM',
-            },
-            {
-              saturdayHours: '9:00 AM - 12:00 PM',
-            },
-            {
-              sundayHours: 'Closed',
-            },
-          ],
-        }
-      end
-
       def selected_location_hours(prefix)
-        selected_location_details[:hours].each do |hours_candidate|
-          hours = hours_candidate["#{prefix}Hours".to_sym]
+        selected_location_details['hours'].each do |hours_candidate|
+          hours = hours_candidate["#{prefix}Hours"]
           return localized_hours(hours) if hours
         end
       end
 
       def needs_proof_of_address?
-        # WILLFIX: After LG-6708, return negated enrollment.current_address_matches_id
-        true
+        !enrollment.current_address_matches_id
       end
 
       private

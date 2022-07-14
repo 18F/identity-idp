@@ -14,14 +14,15 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
       profile: profile,
       enrollment_code: enrollment_code,
       created_at: created_at,
+      current_address_matches_id: current_address_matches_id,
+      selected_location_details:
+        JSON.parse(UspsIppFixtures.request_facilities_response)['postOffices'].first,
     )
   end
   let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
 
   before do
     assign(:presenter, presenter)
-    # WILLFIX: After LG-6708, remove this and initialize enrollment with current_address_matches_id
-    allow(presenter).to receive(:needs_proof_of_address?).and_return(!current_address_matches_id)
   end
 
   context 'with enrollment where current address matches id' do
