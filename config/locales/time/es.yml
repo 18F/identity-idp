@@ -1,14 +1,14 @@
 ---
 es:
   date:
-    day_names_short:
-      - Lu
-      - Ma
-      - Mi
-      - Ju
-      - Vi
-      - Sa
-      - Do
+    day_names:
+      - Lunes
+      - Martes
+      - Miércoles
+      - Jueves
+      - Viernes
+      - Sábado
+      - Domingo
     month_names:
       - null
       - enero

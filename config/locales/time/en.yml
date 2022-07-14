@@ -1,14 +1,14 @@
 ---
 en:
   date:
-    day_names_short:
-      - Mon
-      - Tue
-      - Wed
-      - Thu
-      - Fri
-      - Sat
-      - Sun
+    day_names:
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+      - Saturday
+      - Sunday
     month_names:
       - null
       - January

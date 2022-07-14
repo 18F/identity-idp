@@ -1,14 +1,14 @@
 ---
 fr:
   date:
-    day_names_short:
-      - Lun
-      - Mar
-      - Mer
-      - Jeu
-      - Ven
-      - Sam
-      - Dim
+    day_names:
+      - Lundi
+      - Mardi
+      - Mercredi
+      - Jeudi
+      - Vendredi
+      - Samedi
+      - Dimanche
     month_names:
       - null
       - janvier
