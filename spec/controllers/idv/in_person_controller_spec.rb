@@ -46,7 +46,7 @@ describe Idv::InPersonController do
         it 'redirects to the first step' do
           get :index
 
-          expect(response).to redirect_to idv_in_person_step_url(step: :location)
+          expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
         end
 
         context 'with associated service provider' do
@@ -64,7 +64,7 @@ describe Idv::InPersonController do
             it 'redirects to the first step' do
               get :index
 
-              expect(response).to redirect_to idv_in_person_step_url(step: :location)
+              expect(response).to redirect_to idv_in_person_step_url(step: :state_id)
             end
           end
         end
