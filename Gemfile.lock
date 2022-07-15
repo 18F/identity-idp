@@ -163,6 +163,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    barby (0.6.8)
     base32-crockford (0.1.0)
     bcrypt (3.1.16)
     benchmark-ips (2.9.2)
@@ -706,6 +707,7 @@ DEPENDENCIES
   aws-sdk-ses (~> 1.6)
   aws-sdk-sns
   axe-core-rspec (~> 4.2)
+  barby (~> 0.6.8)
   base32-crockford
   better_errors (>= 2.5.1)
   binding_of_caller

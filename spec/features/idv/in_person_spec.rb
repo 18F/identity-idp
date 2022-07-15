@@ -99,10 +99,19 @@ RSpec.describe 'In Person Proofing' do
 
     # personal key page
     expect(page).to have_content(t('titles.idv.personal_key'))
-    acknowledge_and_confirm_personal_key
+    deadline = nil
+    freeze_time do
+      acknowledge_and_confirm_personal_key
+      deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
+        in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
+        strftime(t('time.formats.event_date'))
+    end
 
     # ready to verify page
+    enrollment_code = JSON.parse(UspsIppFixtures.request_enrollment_code_response)['enrollmentCode']
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
+    expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
+    expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
   end
 
   def attach_images_that_fail
