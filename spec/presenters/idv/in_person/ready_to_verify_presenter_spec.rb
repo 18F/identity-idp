@@ -20,14 +20,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
-  describe '#barcode_data_url' do
-    subject(:barcode_data_url) { presenter.barcode_data_url }
-
-    it 'returns a valid data URL' do
-      expect(barcode_data_url).to match URI::DEFAULT_PARSER.make_regexp('data')
-    end
-  end
-
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
 
@@ -37,16 +29,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     it 'returns a formatted due date' do
       expect(formatted_due_date).to eq 'August 12, 2022'
-    end
-  end
-
-  describe '#formatted_enrollment_code' do
-    subject(:formatted_enrollment_code) { presenter.formatted_enrollment_code }
-
-    it 'returns a formatted enrollment code' do
-      expect(formatted_enrollment_code).to eq(
-        Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code),
-      )
     end
   end
 
