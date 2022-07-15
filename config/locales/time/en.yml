@@ -23,6 +23,7 @@ en:
       - October
       - November
       - December
+    range: '%{from} to %{to}'
   time:
     am: AM
     formats:

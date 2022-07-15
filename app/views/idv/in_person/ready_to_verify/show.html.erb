@@ -87,7 +87,7 @@
     </div>
     <h3 class="font-sans-sm margin-y-0"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
     <div class="margin-bottom-2">
-      <%= t('date.day_names')[0] %>&ndash;<%= t('date.day_names')[4] %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+      <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
       <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
       <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
     </div>

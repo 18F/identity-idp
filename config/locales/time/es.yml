@@ -2,13 +2,13 @@
 es:
   date:
     day_names:
-      - Lunes
-      - Martes
-      - Miércoles
-      - Jueves
-      - Viernes
-      - Sábado
-      - Domingo
+      - lunes
+      - martes
+      - miércoles
+      - jueves
+      - viernes
+      - sábado
+      - domingo
     month_names:
       - null
       - enero
@@ -23,6 +23,7 @@ es:
       - octubre
       - noviembre
       - diciembre
+    range: 'De %{from} a %{to}'
   time:
     am: AM
     formats:

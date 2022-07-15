@@ -2,13 +2,13 @@
 fr:
   date:
     day_names:
-      - Lundi
-      - Mardi
-      - Mercredi
-      - Jeudi
-      - Vendredi
-      - Samedi
-      - Dimanche
+      - lundi
+      - mardi
+      - mercredi
+      - jeudi
+      - vendredi
+      - samedi
+      - dimanche
     month_names:
       - null
       - janvier
@@ -23,6 +23,7 @@ fr:
       - octobre
       - novembre
       - décembre
+    range: 'Du %{from} au %{to}'
   time:
     am: A.M.
     formats:
