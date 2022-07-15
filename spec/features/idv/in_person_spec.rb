@@ -103,6 +103,7 @@ RSpec.describe 'In Person Proofing' do
     freeze_time do
       acknowledge_and_confirm_personal_key
       deadline = (Time.zone.now + IdentityConfig.store.in_person_enrollment_validity_in_days.days).
+        in_time_zone(Idv::InPerson::ReadyToVerifyPresenter::USPS_SERVER_TIMEZONE).
         strftime(t('time.formats.event_date'))
     end
 
