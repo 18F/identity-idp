@@ -22,7 +22,6 @@ module Api
     end
 
     def usps_identity_verification?
-      binding.pry
       metadata[:in_person_proofing] == 'usps'
     end
 

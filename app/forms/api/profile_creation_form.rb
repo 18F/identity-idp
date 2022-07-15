@@ -1,4 +1,9 @@
 module Api
+  # todo: move this somewhere else
+  Applicant = Struct.new(
+    :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
+    :email, keyword_init: true
+  )
   class ProfileCreationForm
     include ActiveModel::Model
 
@@ -83,11 +88,27 @@ module Api
     end
 
     def create_usps_enrollment
-      binding.pry
       # create usps proofer
+      proofer = UspsInPersonProofer.new
       # get token
+      proofer.retrieve_token!
+      # create applicant object
+      applicant = Applicant.new(
+        {
+          unique_id: 'test',
+          first_name: 'mary',
+          last_name: 'klein',
+          address: '404 Not Found',
+          city: 'Hypertext City',
+          state: 'Undefined',
+          zip_code: '20002',
+          email: 'not-used@so-so.com',
+        },
+      )
       # create enrollment
-      # display error banner on failure
+      response = proofer.request_enroll(applicant)
+      binding.pry
+      # todo: display error banner on failure
     end
 
     def build_profile_maker
