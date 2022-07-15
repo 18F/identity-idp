@@ -2,8 +2,8 @@
 <%= content_tag(:figure, class: 'display-inline-block margin-0', **tag_options) do %>
   <%= barcode_html.html_safe %>
   <figcaption class="text-center margin-top-1">
-    <% if accessible_label.present? %>
-      <span class="usa-sr-only"><%= accessible_label %>:</span>
+    <% if data_label.present? %>
+      <span class="usa-sr-only"><%= data_label %>:</span>
     <% end %>
     <%= formatted_data %>
   </figcaption>

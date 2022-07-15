@@ -33,7 +33,7 @@
       <p><%= t('in_person_proofing.process.barcode.info') %></p>
       <%= render BarcodeComponent.new(
             data: @presenter.enrollment_code,
-            accessible_label: t('in_person_proofing.process.barcode.caption_label'),
+            data_label: t('in_person_proofing.process.barcode.caption_label'),
             data_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
           ) %>
     <% end %>

@@ -83,7 +83,6 @@ en:
       barcode:
         caption_label: Enrollment code
         heading: A copy of your barcode
-        image_alt: Barcode
         info: Print or scan from your mobile device.
       proof_of_address:
         acceptable_proof:

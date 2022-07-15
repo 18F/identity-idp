@@ -87,7 +87,6 @@ es:
       barcode:
         caption_label: Código de registro
         heading: Una copia de su código de barras
-        image_alt: Código de barras
         info: Imprima o escanee desde su dispositivo móvil.
       proof_of_address:
         acceptable_proof:

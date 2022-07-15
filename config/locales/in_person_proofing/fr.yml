@@ -91,7 +91,6 @@ fr:
       barcode:
         caption_label: Code d’inscription
         heading: Une copie de votre code-barres
-        image_alt: Code-barres
         info: Imprimez ou numérisez depuis votre appareil mobile.
       proof_of_address:
         acceptable_proof:
