@@ -44,6 +44,7 @@ module Idv
 
         doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
           discriminator: flow_session[document_capture_session_uuid_key],
+          analytics: @flow.analytics,
         )
 
         component_attributes = {
