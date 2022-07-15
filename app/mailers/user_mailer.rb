@@ -224,9 +224,10 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(user, email_address, enrollment:)
+  def in_person_ready_to_verify(user, email_address, first_name:, enrollment:)
     with_user_locale(user) do
       @header = t('in_person_proofing.headings.barcode')
+      @first_name = first_name
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment)
       mail(
         to: email_address.email,
