@@ -1,4 +1,4 @@
-# Helps route between various doc auth backends, provided by the identity-doc-auth gem
+# Helps route between various doc auth backends
 module DocAuthRouter
   ERROR_TRANSLATIONS = {
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_content_check')
@@ -151,9 +151,9 @@ module DocAuthRouter
 
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
-  def self.client(vendor_discriminator: nil, warn_notifier: nil)
-    case doc_auth_vendor(discriminator: vendor_discriminator)
-    when 'acuant'
+  def self.client(vendor_discriminator: nil, warn_notifier: nil, analytics: nil)
+    case doc_auth_vendor(discriminator: vendor_discriminator, analytics: analytics)
+    when Idp::Constants::Vendors::ACUANT
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Acuant::AcuantClient.new(
           assure_id_password: IdentityConfig.store.acuant_assure_id_password,
@@ -168,7 +168,7 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
-    when 'lexisnexis'
+    when Idp::Constants::Vendors::LEXIS_NEXIS
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::LexisNexisClient.new(
           account_id: IdentityConfig.store.lexisnexis_account_id,
@@ -188,7 +188,7 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
-    when 'mock'
+    when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
@@ -200,15 +200,11 @@ module DocAuthRouter
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor(discriminator: nil)
+  def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     if IdentityConfig.store.doc_auth_vendor_randomize
-      if discriminator.blank?
-        raise StandardError.new('doc_auth_vendor called without a discriminator when randomized!')
-      end
-
       target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
 
-      if randomize?(target_percent, discriminator)
+      if randomize?(target_percent, discriminator, analytics)
         return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
       end
     end
@@ -216,7 +212,12 @@ module DocAuthRouter
     IdentityConfig.store.doc_auth_vendor
   end
 
-  def self.randomize?(target_percent, discriminator)
+  def self.randomize?(target_percent, discriminator, analytics)
+    if discriminator.blank?
+      analytics&.idv_doc_auth_randomizer_defaulted
+      return false
+    end
+
     max_sha = (16 ** 64) - 1
     user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
 

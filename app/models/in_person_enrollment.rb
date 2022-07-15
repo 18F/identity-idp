@@ -2,11 +2,12 @@ class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
   enum status: {
-    pending: 0,
-    passed: 1,
-    failed: 2,
-    expired: 3,
-    canceled: 4,
+    establishing: 0,
+    pending: 1,
+    passed: 2,
+    failed: 3,
+    expired: 4,
+    canceled: 5,
   }
 
   validate :profile_belongs_to_user

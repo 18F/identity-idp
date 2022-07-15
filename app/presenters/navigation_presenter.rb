@@ -3,7 +3,7 @@ class NavigationPresenter
 
   NavItem = Struct.new(:title, :href, :children)
 
-  attr_reader :user
+  attr_reader :user, :url_options
 
   def initialize(user:, url_options:)
     @user = user
@@ -56,10 +56,6 @@ class NavigationPresenter
       ),
       NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
     ]
-  end
-
-  def url_options
-    @url_options
   end
 
   def backup_codes_path

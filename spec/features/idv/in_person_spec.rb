@@ -5,6 +5,10 @@ RSpec.describe 'In Person Proofing' do
   include IdvHelper
   include InPersonHelper
 
+  before do
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+  end
+
   it 'works for a happy path', js: true, allow_browser_log: true do
     user = sign_in_and_2fa_user
 
@@ -23,18 +27,15 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('idv.troubleshooting.options.verify_in_person'), wait: 60)
 
     # start the IPP flow
-    # WILLFIX: temporarily block the "Leave site?" pop-up from appearing; this can be removed
-    #          when LG-6406 is resolved.
-    execute_script 'window.onbeforeunload = undefined;'
-    click_link t('idv.troubleshooting.options.verify_in_person')
+    find_button(t('idv.troubleshooting.options.verify_in_person')).click
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
     click_idv_continue
 
-    # welcome page
-    expect(page).to have_content(t('in_person_proofing.headings.welcome'))
-    click_idv_continue
+    # prepare page
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    click_link t('forms.buttons.continue')
 
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
@@ -52,42 +53,42 @@ RSpec.describe 'In Person Proofing' do
     click_idv_continue
 
     # verify page
-    expect(page).to have_content(t('doc_auth.headings.verify'))
+    expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_DOB)
     expect(page).to have_text(InPersonHelper::GOOD_STATE_ID_NUMBER)
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).to have_text(InPersonHelper::GOOD_ADDRESS2)
     expect(page).to have_text(InPersonHelper::GOOD_CITY)
     expect(page).to have_text(InPersonHelper::GOOD_ZIPCODE)
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT[:state])
     expect(page).to have_text('9**-**-***4')
 
     # click update state ID button
-    click_button t('doc_auth.buttons.change_state_id_label')
+    click_button t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-    click_idv_continue
-    expect(page).to have_content(t('doc_auth.headings.verify'))
+    click_button t('forms.buttons.submit.update')
+    expect(page).to have_content(t('headings.verify'))
 
     # click update address button
-    click_button t('doc_auth.buttons.change_address_label')
+    click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-    click_idv_continue
-    expect(page).to have_content(t('doc_auth.headings.verify'))
+    click_button t('forms.buttons.submit.update')
+    expect(page).to have_content(t('headings.verify'))
 
     # click update ssn button
-    click_button t('doc_auth.buttons.change_ssn_label')
+    click_button t('idv.buttons.change_ssn_label')
     expect(page).to have_content(t('doc_auth.headings.ssn_update'))
     fill_out_ssn_form_ok
-    click_idv_continue
-    expect(page).to have_content(t('doc_auth.headings.verify'))
+    click_button t('forms.buttons.submit.update')
+    expect(page).to have_content(t('headings.verify'))
     click_idv_continue
 
     # phone page
     expect(page).to have_content(t('idv.titles.session.phone'))
     fill_out_phone_form_mfa_phone(user)
     click_idv_continue
+    verify_phone_otp
 
     # password confirm page
     expect(page).to have_content(
@@ -100,8 +101,8 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('titles.idv.personal_key'))
     acknowledge_and_confirm_personal_key
 
-    # returns to account page
-    expect(page).to have_content(t('headings.account.login_info'))
+    # ready to verify page
+    expect(page).to have_content(t('in_person_proofing.headings.barcode'))
   end
 
   def attach_images_that_fail

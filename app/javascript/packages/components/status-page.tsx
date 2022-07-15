@@ -90,7 +90,7 @@ function StatusPage({
       <PageHeading>{header}</PageHeading>
       {children}
       {actionButtons.length > 0 && (
-        <div className="margin-top-4">
+        <div className="margin-top-5">
           {actionButtons.map((actionButton, index) => (
             <div key={index} className="margin-top-2">
               {actionButton}

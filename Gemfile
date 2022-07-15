@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read('.ruby-version').strip}"
 
-gem 'rails', '~> 6.1.5.1'
+gem 'rails', '~> 6.1.6.1'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
@@ -81,7 +81,7 @@ group :development do
   gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
-  gem 'octokit'
+  gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end

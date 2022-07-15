@@ -22,7 +22,7 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.track_event(Analytics::WEBAUTHN_SETUP_VISIT, result.to_h)
+      analytics.webauthn_setup_visit(**result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       flash_error(result.errors) unless result.success?
@@ -116,8 +116,7 @@ module Users
 
     def track_delete(success)
       counts_hash = MfaContext.new(current_user.reload).enabled_two_factor_configuration_counts_hash
-      analytics.track_event(
-        Analytics::WEBAUTHN_DELETED,
+      analytics.webauthn_deleted(
         success: success,
         mfa_method_counts: counts_hash,
         pii_like_keypaths: [[:mfa_method_counts, :phone]],

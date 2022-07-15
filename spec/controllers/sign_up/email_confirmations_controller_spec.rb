@@ -15,7 +15,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: nil }
 
@@ -32,7 +32,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: '' }
 
@@ -49,7 +49,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: "''" }
 
@@ -66,7 +66,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: '""' }
 
@@ -80,11 +80,12 @@ describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { email: [t('errors.messages.already_confirmed')] },
+        error_details: nil,
         user_id: email_address.user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: 'foo' }
     end
@@ -108,7 +109,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -134,7 +135,7 @@ describe SignUp::EmailConfirmationsController do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -158,11 +159,12 @@ describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: true,
         errors: {},
+        error_details: nil,
         user_id: user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, analytics_hash)
+        with('User Registration: Email Confirmation', analytics_hash)
 
       get :create, params: { confirmation_token: 'foo' }
     end

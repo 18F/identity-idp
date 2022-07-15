@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_22_232047) do
+ActiveRecord::Schema.define(version: 2022_07_05_200821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -290,8 +290,10 @@ ActiveRecord::Schema.define(version: 2022_06_22_232047) do
     t.integer "status", default: 0, comment: "The status of the enrollment"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "current_address_matches_id", comment: "True if the user indicates that their current address matches the address on the ID they're bringing to the Post Office."
+    t.jsonb "selected_location_details", comment: "The location details of the Post Office the user selected (including title, address, hours of operation)"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
-    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 0)"
+    t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
     t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
   end
 
@@ -591,15 +593,14 @@ ActiveRecord::Schema.define(version: 2022_06_22_232047) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.string "unique_session_id"
-    t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
-    t.integer "totp_timestamp"
     t.string "encrypted_password_digest", default: ""
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.string "email_language", limit: 10
     t.datetime "accepted_terms_at"
     t.datetime "encrypted_recovery_code_digest_generated_at"
+    t.date "non_restricted_mfa_required_prompt_skip_date"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end

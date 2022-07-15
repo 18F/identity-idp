@@ -6,8 +6,7 @@ module TwoFactorAuthentication
       @other_mfa_options_url = other_options_mfa_url
       @cancel_url = cancel_url
 
-      analytics.track_event(
-        Analytics::SMS_OPT_IN_VISIT,
+      analytics.sms_opt_in_visit(
         new_user: new_user?,
         has_other_auth_methods: has_other_auth_methods?,
         phone_configuration_id: @phone_configuration.id,
@@ -17,9 +16,8 @@ module TwoFactorAuthentication
     def create
       response = opt_out_manager.opt_in_phone_number(@phone_configuration.formatted_phone)
 
-      analytics.track_event(
-        Analytics::SMS_OPT_IN_SUBMITTED,
-        response.to_h.merge(
+      analytics.sms_opt_in_submitted(
+        **response.to_h.merge(
           new_user: new_user?,
           has_other_auth_methods: has_other_auth_methods?,
           phone_configuration_id: @phone_configuration.id,

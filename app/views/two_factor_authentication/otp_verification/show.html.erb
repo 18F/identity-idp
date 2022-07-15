@@ -6,7 +6,7 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= validated_form_for('', method: :post) do |f| %>
+<%= simple_form_for('', method: :post) do |f| %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
@@ -14,11 +14,13 @@
     <%= label_tag :code, t('forms.two_factor.code'), class: 'display-block text-bold' %>
     <%= render(
           'shared/one_time_code_input',
+          form: f,
           name: :code,
           value: @presenter.code_value,
           required: true,
           autofocus: true,
-          numeric: false,
+          numeric: IdentityConfig.store.enable_numeric_authentication_otp_input,
+          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
         ) %>
   </div>
   <%= f.input(

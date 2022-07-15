@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 describe 'shared/_one_time_code_input.html.erb' do
+  include SimpleForm::ActionViewExtensions::FormHelper
+
   let(:params) { {} }
 
   before do
-    render('shared/one_time_code_input', **params)
+    simple_form_for('', url: '/') do |f|
+      render('shared/one_time_code_input', form: f, **params)
+    end
   end
 
   describe 'name' do
@@ -92,6 +96,27 @@ describe 'shared/_one_time_code_input.html.erb' do
 
     it 'merges data attributes' do
       expect(rendered).to have_selector('[data-transport][data-foo="bar"]')
+    end
+  end
+
+  describe 'maxlength' do
+    context 'no maxlength given' do
+      it 'renders input maxlength DIRECT_OTP_LENGTH' do
+        puts rendered
+        expect(rendered).to have_selector(
+          "[maxlength=\"#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}\"]",
+        )
+      end
+    end
+
+    context 'maxlength given' do
+      let(:params) { { maxlength: 10 } }
+
+      it 'renders input given maxlength' do
+        expect(rendered).to have_selector(
+          '[maxlength="10"]',
+        )
+      end
     end
   end
 end

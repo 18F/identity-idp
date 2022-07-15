@@ -3,41 +3,67 @@ es:
   in_person_proofing:
     body:
       address:
-        info: 'Si su dirección actual no coincide con la dirección que figura en su
-          documento de identidad, deberá presentar un comprobante de su
-          dirección actual en la oficina de correos.'
+        info: 'Si su dirección actual no coincide con la que figura en su cédula de
+          identidad, deberá llevar a la oficina de correos un comprobante de su
+          dirección actual.'
         learn_more: Aprende más
+      prepare:
+        alert_selected_post_office: 'Ha seleccionado la oficina de correos %{name}.'
+        bring_barcode_header: Una copia de su código de barras
+        bring_barcode_info: 'Le daremos un código único que caducará en 30 días.'
+        bring_id_header: 'Su cédula emitida por el estado'
+        bring_id_info_acceptable: 'Su cédula de identidad no debe estar caducada. Las
+          formas de identificación aceptables son:'
+        bring_id_info_dl: Licencia de conducir estatal
+        bring_id_info_id_card: 'Tarjeta de identificación estatal para no conductores'
+        bring_id_info_no_other_forms: Actualmente no aceptamos otras formas de
+          identificación, como pasaportes y cartillas militares.
+        bring_proof_header: Prueba de su dirección actual
+        bring_proof_info_acceptable: 'Necesita un justificante de domicilio si su
+          dirección actual es diferente a la que figura en su cédula de
+          identidad. Los comprobantes de domicilio aceptables son:'
+        bring_proof_info_card: Tarjeta de registro del vehículo
+        bring_proof_info_lease: Arrendamiento, hipoteca o escritura de fideicomiso
+        bring_proof_info_policy: Póliza de seguro del hogar o del vehículo
+        bring_proof_info_registration: Registro de votantes
+        bring_title: 'Cuando vaya a la oficina de correos, lleve:'
+        verify_step_about: 'Complete los siguientes pasos para generar el código de
+          barras que llevará a la oficina de correos:'
+        verify_step_enter_phone: Ingrese un número de teléfono con su nombre en el plan.
+        verify_step_enter_pii: 'Ingrese su nombre, fecha de nacimiento, número de
+          identificación emitido por el estado, dirección y número de la
+          Seguridad Social.'
       state_id:
-        info_html: 'Ingrese la información <strong>exactamente como aparece en su
-          identificación emitida por el estado.</strong> Usaremos esta
-          información para confirmar que coincida con su ID en persona.'
+        info_html: 'Ingrese la información <strong>exactamente como aparece en su cédula
+          de identidad emitida por el estado.</strong> Utilizaremos esta
+          información para confirmar que coincide con su cédula en persona.'
     form:
       address:
         address1: Dirección
         address2: Dirección (opcional)
         city: Ciudad
-        same_address: '¿Aparece esta dirección en la identificación emitida por el
-          estado que lleva a la oficina de correos?'
-        same_address_choice_no: Tengo una dirección diferente en mi identificación
-        same_address_choice_yes: Esta dirección está en mi identificación emitida por el estado
+        same_address: '¿Aparece esta dirección en la cédula de identidad emitido por el
+          Estado que va a llevar a la oficina de Correos?'
+        same_address_choice_no: Tengo una dirección diferente en mi cédula de identidad
+        same_address_choice_yes: Esta dirección aparece en mi cédula de identidad emitida por el estado
         state: Estado
         state_prompt: '- Seleccione -'
         zipcode: Código postal
       state_id:
         dob: Fecha de nacimiento
         dob_hint: 'Ejemplo: 4 28 1986'
-        first_name: Nombre de pila
+        first_name: Nombre
         last_name: Apellido
         state_id_jurisdiction: Estado
-        state_id_jurisdiction_hint: Seleccione el estado que se muestra en su identificación
+        state_id_jurisdiction_hint: Seleccione el estado que aparece en su cédula
         state_id_jurisdiction_prompt: '- Seleccione -'
-        state_id_number: Número de identificación
-        state_id_number_hint: Puede incluir números y letras.
+        state_id_number: Número de cédula
+        state_id_number_hint: Puede incluir letras y números
     headings:
       address: Ingrese su dirección actual
-      barcode: Estás listo para verificar tu identidad en persona
-      location: Seleccione una ubicación para verificar su identificación
-      state_id: Introduce los datos de su documento de identidad
-      update_address: Actualiza tu dirección actual
-      update_state_id: Actualiza la información de tu DNI
-      welcome: Verifica tu identidad en persona
+      barcode: Está listo para verificar su identidad en persona
+      location: Seleccione un lugar para verificar su cédula
+      prepare: Verifique su identidad en persona
+      state_id: Ingrese la información de su cédula
+      update_address: Actualizar su dirección actual
+      update_state_id: Actualizar la información de su cédula de identidad

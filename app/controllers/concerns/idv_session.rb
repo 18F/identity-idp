@@ -53,8 +53,7 @@ module IdvSession
 
   def redirect_if_sp_context_needed
     return if sp_from_sp_session.present?
-    return unless Identity::Hostdata.in_datacenter?
-    return if Identity::Hostdata.env != IdentityConfig.store.sp_context_needed_environment
+    return unless IdentityConfig.store.idv_sp_required
     return if effective_user.profiles.any?
 
     redirect_to account_url

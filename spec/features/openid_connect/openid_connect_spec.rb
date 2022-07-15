@@ -262,11 +262,7 @@ describe 'OpenID Connect' do
       scope: 'openid email profile',
       verified_within: '30d',
       proofing_steps: proc do
-        complete_all_doc_auth_steps
-
-        fill_out_phone_form_mfa_phone(user)
-        click_idv_continue
-
+        complete_all_doc_auth_steps_before_password_step
         fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
         click_continue
 

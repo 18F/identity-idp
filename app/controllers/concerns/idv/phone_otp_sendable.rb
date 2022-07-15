@@ -31,13 +31,12 @@ module Idv
     end
 
     def capture_analytics_for_telephony_error(telephony_error)
-      attributes = {
+      analytics.otp_phone_validation_failed(
         error: telephony_error.class.to_s,
         message: telephony_error.message,
         context: 'idv',
         country: Phonelib.parse(send_phone_confirmation_otp_service.phone).country,
-      }
-      analytics.track_event(Analytics::OTP_PHONE_VALIDATION_FAILED, attributes)
+      )
     end
   end
 end
