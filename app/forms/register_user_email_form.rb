@@ -131,7 +131,7 @@ class RegisterUserEmailForm
 
     if @throttled
       @analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        'Throttler Rate Limit Triggered',
         throttle_type: :reg_unconfirmed_email,
       )
     else
@@ -145,7 +145,7 @@ class RegisterUserEmailForm
 
     if @throttled
       @analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        'Throttler Rate Limit Triggered',
         throttle_type: :reg_confirmed_email,
       )
     else

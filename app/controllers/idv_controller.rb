@@ -12,7 +12,7 @@ class IdvController < ApplicationController
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
       analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        'Throttler Rate Limit Triggered',
         throttle_type: :idv_resolution,
       )
       redirect_to idv_session_errors_failure_url

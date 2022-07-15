@@ -395,7 +395,7 @@ describe Idv::PhoneController do
           allow(@analytics).to receive(:track_event)
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            'Throttler Rate Limit Triggered',
             throttle_type: :proof_address,
             step_name: a_kind_of(Symbol),
           )

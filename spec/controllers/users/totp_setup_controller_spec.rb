@@ -43,7 +43,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
 
@@ -77,7 +77,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
   end

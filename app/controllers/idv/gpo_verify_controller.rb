@@ -56,7 +56,7 @@ module Idv
 
     def render_throttled
       analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        'Throttler Rate Limit Triggered',
         throttle_type: :verify_gpo_key,
       )
 
