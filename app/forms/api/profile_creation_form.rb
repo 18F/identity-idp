@@ -1,5 +1,5 @@
 module Api
-  # todo: move this somewhere else
+  # todo: move this somewhere else, maybe the UspsInPersonProofer
   Applicant = Struct.new(
     :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
     :email, keyword_init: true
@@ -87,9 +87,17 @@ module Api
       @gpo_code = confirmation_maker.otp if FeatureManagement.reveal_gpo_code?
     end
 
+    def usps_proofer
+      if IdentityConfig.store.usps_mock_fallback
+        MockUspsInPersonProofer.new
+      else
+        UspsInPersonProofer.new
+      end
+    end
+
     def create_usps_enrollment
       # create usps proofer
-      proofer = UspsInPersonProofer.new
+      proofer = usps_proofer
       # get token
       proofer.retrieve_token!
       # create applicant object
@@ -105,9 +113,14 @@ module Api
           email: 'not-used@so-so.com',
         },
       )
-      # create enrollment
+      # create enrollment in usps
       response = proofer.request_enroll(applicant)
-      binding.pry
+      # create an enrollment in the db. if this fails we could conveivably retry by querying the enrollment code from the USPS api. So may be create an upsert-like helper function to get an existing enrollment or create one if it doesn't exist
+      enrollment_code = response['enrollmentCode']
+      InPersonEnrollment.create!(
+        user: profile.user, enrollment_code: enrollment_code,
+        status: :pending, profile: profile
+      )
       # todo: display error banner on failure
     end
 

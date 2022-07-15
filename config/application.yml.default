@@ -334,6 +334,7 @@ development:
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
   usps_upload_sftp_username: brady
+  usps_mock_fallback: true
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
