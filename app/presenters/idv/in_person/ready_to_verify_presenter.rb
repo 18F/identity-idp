@@ -4,7 +4,7 @@ module Idv
       # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
 
-      delegate :selected_location_details, :enrollment_code, to: :enrollment
+      delegate :selected_location_details, :enrollment_code, :profile, to: :enrollment
 
       def initialize(enrollment:)
         @enrollment = enrollment
