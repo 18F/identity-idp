@@ -1849,6 +1849,9 @@ module AnalyticsEvents
   end
 
   # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
