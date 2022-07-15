@@ -173,6 +173,11 @@ module AnalyticsEvents
     )
   end
 
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  def backup_code_setup_visit(form_submit)
+    track_event('Backup Code Setup Visited', form_submit)
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
