@@ -1,7 +1,7 @@
 import { Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
-interface LocationCollectionItemProps {
+export interface LocationCollectionItemProps {
   name: string;
   streetAddress: string;
   addressLine2: string;

@@ -1,9 +1,8 @@
 class UspsInPersonProofer
   attr_reader :token, :token_expires_at
 
-  # TODO: update struct so it has needed properties
   PostOffice = Struct.new(
-    :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
+    :distance, :address, :city, :phone, :name, :zip_code_4, :zip_code_5, :state, :hours keyword_init: true
   )
 
   # Makes a request to retrieve a new OAuth token
@@ -65,7 +64,6 @@ class UspsInPersonProofer
     )
 
     resp = faraday.post(url, body, headers)
-
     if resp.success?
       JSON.parse(resp.body)['postOffices'].map do |post_office|
         PostOffice.new(
@@ -74,8 +72,10 @@ class UspsInPersonProofer
           city: post_office['city'],
           phone: post_office['phone'],
           name: post_office['name'],
-          zip_code: post_office['zip5'],
+          zip_code_4: post_office['zip4'],
+          zip_code_5: post_office['zip5'],
           state: post_office['state'],
+          hours: post_office['hours']
         )
       end
     else

@@ -1,45 +1,50 @@
 import { useState, useEffect } from 'react';
-import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
-
-/**
- * @typedef InPersonLocationStepValue
- *
- * @prop {Blob|string|null|undefined} inPersonLocation InPersonLocation value.
- */
-
-/**
- * @param {import('@18f/identity-form-steps').FormStepComponentProps<InPersonLocationStepValue>} props Props object.
- */
+import {
+  PageHeading,
+  LocationCollectionItem,
+  LocationCollection,
+  LocationCollectionItemProps,
+} from '@18f/identity-components';
 
 const getResponse = async () => {
   const response = await fetch('http://localhost:3000/verify/in_person/usps_locations').then(
-    // TODO: error handling
-    // eslint-disable-next-line no-console
-    (res) => res.json().catch((error) => console.log('error', error)),
+    (res) =>
+      res.json().catch((error) => {
+        throw error;
+      }),
   );
   return response;
 };
 
-// TODO: should move object definition - it is the same as the locationItemProps interface
-function InPersonLocationStep() {
-  const [locationData, setLocationData] = useState(
-    [] as {
-      name: string;
-      streetAddress: string;
-      addressLine2: string;
-      weekdayHours: string;
-      saturdayHours: string;
-      sundayHours: string;
-    }[],
-  );
+const formatAddressline = (postOffice: { city: any; state: any; zip5: any; zip4: any }) =>
+  `${postOffice.city}, ${postOffice.state}, ${postOffice.zip5}-${postOffice.zip4}`;
 
+const formatLocation = (postOffices: { postOffices: LocationCollectionItemProps[] }) => {
+  const formattedLocations = [] as LocationCollectionItemProps[];
+  postOffices.postOffices.forEach((po) => {
+    const location = {
+      name: po.name,
+      streetAddress: po.streetAddress,
+      addressLine2: formatAddressline(po),
+      weekdayHours: po.hours[0].weekdayHours,
+      saturdayHours: po.hours[1].saturdayHours,
+      sundayHours: po.hours[2].sundayHours,
+    } as LocationCollectionItemProps;
+    formattedLocations.push(location);
+  });
+  return formattedLocations;
+};
+
+function InPersonLocationStep() {
   const { t } = useI18n();
+  const [locationData, setLocationData] = useState([] as LocationCollectionItemProps[]);
 
   useEffect(() => {
     (async () => {
       const fetchedPosts = await getResponse();
-      setLocationData(fetchedPosts);
+      const formattedLocations = formatLocation(fetchedPosts);
+      setLocationData(formattedLocations);
     })();
   }, []);
 
@@ -52,7 +57,7 @@ function InPersonLocationStep() {
         {locationData &&
           locationData.map((item) => (
             <LocationCollectionItem
-              name={`${item.name} ${t('in_person_proofing.body.location.post_office')}`}
+              name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
               streetAddress={item.streetAddress}
               addressLine2={item.addressLine2}
               weekdayHours={item.weekdayHours}
