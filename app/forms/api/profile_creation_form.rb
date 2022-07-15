@@ -54,6 +54,7 @@ module Api
     def complete_session
       complete_profile if phone_confirmed?
       create_gpo_entry if user_bundle.gpo_address_verification?
+      create_usps_enrollment if user_bundle.usps_identity_verification?
     end
 
     def phone_confirmed?
@@ -79,6 +80,14 @@ module Api
       )
       confirmation_maker.perform
       @gpo_code = confirmation_maker.otp if FeatureManagement.reveal_gpo_code?
+    end
+
+    def create_usps_enrollment
+      binding.pry
+      # create usps proofer
+      # get token
+      # create enrollment
+      # display error banner on failure
     end
 
     def build_profile_maker

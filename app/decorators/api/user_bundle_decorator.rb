@@ -21,6 +21,11 @@ module Api
       metadata[:address_verification_mechanism] == 'gpo'
     end
 
+    def usps_identity_verification?
+      binding.pry
+      metadata[:in_person_proofing] == 'usps'
+    end
+
     def pii
       HashWithIndifferentAccess.new(jwt_payload['pii'])
     end
