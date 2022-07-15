@@ -22,6 +22,12 @@ class BarcodeComponent < BaseComponent
     Barby::Code128.new(data).to_html(class_name: barcode_table_class_name_aria_label)
   end
 
+  def barcode_caption_id
+    "barcode-caption-#{unique_id}"
+  end
+
+  private
+
   def barcode_table_class_name_aria_label
     # Unfortunately, Barby doesn't support additional attributes on the table element. Fortunately,
     # it also doesn't sanitize its attribute values.
