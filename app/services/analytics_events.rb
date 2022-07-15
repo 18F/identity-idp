@@ -1852,7 +1852,7 @@ module AnalyticsEvents
   def totp_setup_visit(
     user_signed_up:,
     totp_secret_present:,
-    enabled_mfa_methods_count:,
+    enabled_mfa_methods_count:
   )
     track_event(
       'TOTP Setup Visited',
