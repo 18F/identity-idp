@@ -42,7 +42,9 @@ function InPersonLocationStep() {
 
   useEffect(() => {
     (async () => {
-      const fetchedPosts = await getResponse();
+      const fetchedPosts = await getResponse().catch((error) => {
+        throw error;
+      });
       const formattedLocations = formatLocation(fetchedPosts);
       setLocationData(formattedLocations);
     })();
@@ -65,6 +67,7 @@ function InPersonLocationStep() {
               sundayHours={item.sundayHours}
             />
           ))}
+        {locationData.length < 1 && <h4>No locations found.</h4>}
       </LocationCollection>
     </>
   );
