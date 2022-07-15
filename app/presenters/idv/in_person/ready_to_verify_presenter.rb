@@ -5,6 +5,9 @@ require 'barby/outputter/png_outputter'
 module Idv
   module InPerson
     class ReadyToVerifyPresenter
+      # WILLFIX: With LG-6881, confirm timezone or use deadline from enrollment response.
+      USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
+
       delegate :selected_location_details, to: :enrollment
 
       def initialize(enrollment:)
@@ -16,7 +19,7 @@ module Idv
       end
 
       def formatted_due_date
-        due_date.strftime(I18n.t('time.formats.event_date'))
+        due_date.in_time_zone(USPS_SERVER_TIMEZONE).strftime(I18n.t('time.formats.event_date'))
       end
 
       def formatted_enrollment_code

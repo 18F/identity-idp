@@ -5,7 +5,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:profile) { build(:profile, user: user) }
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
-  let(:created_at) { Time.zone.parse('2022-07-13') }
+  let(:created_at) do
+    ActiveSupport::TimeZone[described_class::USPS_SERVER_TIMEZONE].parse('2022-07-14T00:00:00Z')
+  end
   let(:enrollment) do
     InPersonEnrollment.new(
       user: user,
@@ -30,6 +32,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
+
+    around do |example|
+      Time.use_zone('UTC') { example.run }
+    end
 
     it 'returns a formatted due date' do
       expect(formatted_due_date).to eq 'August 12, 2022'
