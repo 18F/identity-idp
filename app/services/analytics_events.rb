@@ -550,6 +550,13 @@ module AnalyticsEvents
     )
   end
 
+  def idv_doc_auth_randomizer_defaulted
+    track_event(
+      'IdV: doc_auth random vendor error',
+      error: 'document_capture_session_uuid_key missing',
+    )
+  end
+
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [String] user_id

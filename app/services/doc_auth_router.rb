@@ -151,8 +151,8 @@ module DocAuthRouter
 
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
-  def self.client(vendor_discriminator: nil, warn_notifier: nil)
-    case doc_auth_vendor(discriminator: vendor_discriminator)
+  def self.client(vendor_discriminator: nil, warn_notifier: nil, analytics: nil)
+    case doc_auth_vendor(discriminator: vendor_discriminator, analytics: analytics)
     when 'acuant'
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Acuant::AcuantClient.new(
@@ -200,15 +200,11 @@ module DocAuthRouter
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor(discriminator: nil)
+  def self.doc_auth_vendor(discriminator: nil, analytics: nil)
     if IdentityConfig.store.doc_auth_vendor_randomize
-      if discriminator.blank?
-        raise StandardError.new('doc_auth_vendor called without a discriminator when randomized!')
-      end
-
       target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
 
-      if randomize?(target_percent, discriminator)
+      if randomize?(target_percent, discriminator, analytics)
         return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
       end
     end
@@ -216,7 +212,12 @@ module DocAuthRouter
     IdentityConfig.store.doc_auth_vendor
   end
 
-  def self.randomize?(target_percent, discriminator)
+  def self.randomize?(target_percent, discriminator, analytics)
+    if discriminator.blank?
+      analytics&.idv_doc_auth_randomizer_defaulted
+      return false
+    end
+
     max_sha = (16 ** 64) - 1
     user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
 

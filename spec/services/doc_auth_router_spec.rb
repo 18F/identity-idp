@@ -108,8 +108,25 @@ RSpec.describe DocAuthRouter do
           or match({ 'test2' => iterations })
       end
 
-      it 'doc_auth_vendor returns an exception when called without a session_id when randomized' do
-        expect { DocAuthRouter.doc_auth_vendor(discriminator: nil) }.to raise_error
+      it 'doc_auth_vendor returns the default when called without a session_id when randomized' do
+        doc_auth_vendor = 'acuant'
+        doc_auth_vendor_randomize_alternate_vendor = 'lexisnexis'
+        doc_auth_vendor_randomize_percent = 35
+
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
+          and_return(doc_auth_vendor_randomize_alternate_vendor)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        iterations.times do |i|
+          client = DocAuthRouter.client(vendor_discriminator: nil).client
+          results.push(client.class.to_s)
+        end
+
+        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient'] || 0).
+          to be_within(iterations * percent_variance).of(0)
       end
 
       it 'client returns randomized vendors when configured' do
