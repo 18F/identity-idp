@@ -5,9 +5,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:profile) { build(:profile, user: user) }
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
-  let(:created_at) do
-    ActiveSupport::TimeZone[described_class::USPS_SERVER_TIMEZONE].parse('2022-07-14T00:00:00Z')
-  end
+  let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:enrollment) do
     InPersonEnrollment.new(
       user: user,
