@@ -55,6 +55,7 @@ function InPersonLocationStep() {
         {locationData &&
           locationData.map((item) => (
             <LocationCollectionItem
+              key={item.name}
               name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
               streetAddress={item.streetAddress}
               addressLine2={item.addressLine2}
