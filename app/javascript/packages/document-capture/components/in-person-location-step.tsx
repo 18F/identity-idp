@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import {
-  PageHeading,
-  LocationCollectionItem,
-  LocationCollection,
-  LocationCollectionItemProps,
-} from '@18f/identity-components';
+import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
+import { LocationCollectionItemProps } from '@18f/identity-components/location-collection-item';
 
 const getResponse = async () => {
   const response = await fetch('http://localhost:3000/verify/in_person/usps_locations').then(
@@ -20,7 +16,7 @@ const getResponse = async () => {
 const formatAddressline = (postOffice: { city: any; state: any; zip5: any; zip4: any }) =>
   `${postOffice.city}, ${postOffice.state}, ${postOffice.zip5}-${postOffice.zip4}`;
 
-const formatLocation = (postOffices: { postOffices: LocationCollectionItemProps[] }) => {
+const formatLocation = (postOffices) => {
   const formattedLocations = [] as LocationCollectionItemProps[];
   postOffices.postOffices.forEach((po) => {
     const location = {
