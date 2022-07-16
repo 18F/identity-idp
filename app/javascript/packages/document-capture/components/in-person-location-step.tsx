@@ -3,6 +3,20 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
 import { LocationCollectionItemProps } from '@18f/identity-components/location-collection-item';
 
+interface PostOffice {
+  name: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  zip5: string;
+  zip4: string;
+  hours: {
+    weekdayHours: string;
+    saturdayHours: string;
+    sundayHours: string;
+  };
+}
+
 const getResponse = async () => {
   const response = await fetch('http://localhost:3000/verify/in_person/usps_locations').then(
     (res) =>
@@ -13,16 +27,13 @@ const getResponse = async () => {
   return response;
 };
 
-const formatAddressline = (postOffice: { city: any; state: any; zip5: any; zip4: any }) =>
-  `${postOffice.city}, ${postOffice.state}, ${postOffice.zip5}-${postOffice.zip4}`;
-
-const formatLocation = (postOffices) => {
+const formatLocation = (postOffices: { postOffices: PostOffice[] }) => {
   const formattedLocations = [] as LocationCollectionItemProps[];
   postOffices.postOffices.forEach((po) => {
     const location = {
       name: po.name,
       streetAddress: po.streetAddress,
-      addressLine2: formatAddressline(po),
+      addressLine2: `${po.city}, ${po.state}, ${po.zip5}-${po.zip4}`,
       weekdayHours: po.hours[0].weekdayHours,
       saturdayHours: po.hours[1].saturdayHours,
       sundayHours: po.hours[2].sundayHours,
