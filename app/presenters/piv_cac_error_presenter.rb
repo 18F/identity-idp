@@ -16,6 +16,9 @@ class PivCacErrorPresenter
 
   def heading
     case error
+    when 'piv_cac.certificate_error'
+      'NGINX FAILURE'
+      # t('headings.piv_cac.certificate_invalid')
     when 'piv_cac.already_associated'
       t('headings.piv_cac_setup.already_associated')
     when 'user.not_found'
