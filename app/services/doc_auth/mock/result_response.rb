@@ -12,7 +12,7 @@ module DocAuth
           errors: errors,
           pii_from_doc: pii_from_doc,
           extra: {
-            doc_auth_result: success? ? 'Passed' : 'Caution',
+            doc_auth_result: doc_auth_result,
             billed: true,
           },
         )
@@ -76,6 +76,18 @@ module DocAuth
         return @parsed_data_from_uploaded_file if defined?(@parsed_data_from_uploaded_file)
 
         @parsed_data_from_uploaded_file = parse_uri || parse_yaml
+      end
+
+      def doc_auth_result
+        doc_auth_result_from_uploaded_file || doc_auth_result_from_success
+      end
+
+      def doc_auth_result_from_uploaded_file
+        parsed_data_from_uploaded_file&.[]('doc_auth_result')
+      end
+
+      def doc_auth_result_from_success
+        success? ? 'Passed' : 'Caution'
       end
 
       def parse_uri
