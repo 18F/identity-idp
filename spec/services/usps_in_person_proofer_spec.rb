@@ -116,13 +116,13 @@ RSpec.describe UspsInPersonProofer do
         end,
       ).to raise_error(
         an_instance_of(Faraday::BadRequestError).
-        and having_attributes(
+        and(having_attributes(
           response: include(
             body: include(
               'responseMessage' => 'Customer has not been to a post office to complete IPP',
             ),
           ),
-        ),
+        )),
       )
     end
   end
