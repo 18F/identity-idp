@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'In Person Proofing' do
-  include DocAuthHelper
   include IdvHelper
   include InPersonHelper
 
@@ -10,24 +9,9 @@ RSpec.describe 'In Person Proofing' do
   end
 
   it 'works for a happy path', js: true, allow_browser_log: true do
-    user = sign_in_and_2fa_user
+    user = user_with_2fa
 
-    # welcome step
-    visit idv_doc_auth_welcome_step # only thing used from DocAuthHelper
-    click_idv_continue
-
-    # information step
-    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
-    click_idv_continue
-
-    # upload documents step
-    click_on t('doc_auth.info.upload_computer_link')
-    attach_images_that_fail
-    click_submit_default
-    expect(page).to have_content(t('idv.troubleshooting.options.verify_in_person'), wait: 60)
-
-    # start the IPP flow
-    find_button(t('idv.troubleshooting.options.verify_in_person')).click
+    begin_in_person_proofing_session(user)
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
@@ -112,20 +96,5 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
-  end
-
-  def attach_images_that_fail
-    Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
-      yml_file.rewind
-      yml_file.puts <<~YAML
-        failed_alerts:
-          - name: Document Classification
-            result: Attention
-      YAML
-      yml_file.close
-
-      attach_file t('doc_auth.headings.document_capture_front'), yml_file.path
-      attach_file t('doc_auth.headings.document_capture_back'), yml_file.path
-    end
   end
 end

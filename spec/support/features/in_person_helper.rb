@@ -1,4 +1,8 @@
+require_relative 'doc_auth_helper'
+
 module InPersonHelper
+  include DocAuthHelper
+
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
   GOOD_LAST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:last_name]
   GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob]
@@ -28,5 +32,14 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.address.zipcode'), with: GOOD_ZIPCODE
     select GOOD_STATE, from: t('in_person_proofing.form.address.state')
     choose t('in_person_proofing.form.address.same_address_choice_yes')
+  end
+
+  def begin_in_person_proofing_session(user = user_with_2fa)
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_document_capture_step
+    mock_doc_auth_attention_with_barcode
+    attach_and_submit_images
+
+    click_button t('idv.troubleshooting.options.verify_in_person')
   end
 end
