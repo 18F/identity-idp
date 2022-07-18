@@ -120,7 +120,7 @@ class SamlIdpController < ApplicationController
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
     )
-    analytics.saml_auth(analytics_payload)
+    analytics.saml_auth(**analytics_payload)
   end
 
   def log_external_saml_auth_request

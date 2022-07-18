@@ -20,7 +20,7 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics.backup_code_setup_visit(result.to_h)
+      analytics.backup_code_setup_visit(**result.to_h)
       save_backup_codes
       track_backup_codes_created
     end

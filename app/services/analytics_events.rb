@@ -174,8 +174,19 @@ module AnalyticsEvents
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
-  def backup_code_setup_visit(form_submit)
-    track_event('Backup Code Setup Visited', form_submit)
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra
+    )
   end
 
   # A user that has been banned from an SP has authenticated, they are redirected
@@ -1846,8 +1857,25 @@ module AnalyticsEvents
   end
 
   # Record SAML authentication payload Hash
-  def saml_auth(analytics_payload)
-    track_event('SAML Auth', analytics_payload)
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
+      **extra
+    )
   end
 
   # @param [Integer] requested_ial
