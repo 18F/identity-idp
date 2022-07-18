@@ -4,17 +4,15 @@ import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/id
 import { LocationCollectionItemProps } from '@18f/identity-components/location-collection-item';
 
 interface PostOffice {
-  name: string;
-  streetAddress: string;
+  address: string;
   city: string;
+  name: string;
+  saturday_hours: string;
   state: string;
-  zip5: string;
-  zip4: string;
-  hours: {
-    weekdayHours: string;
-    saturdayHours: string;
-    sundayHours: string;
-  };
+  sunday_hours: string;
+  weekday_hours: string;
+  zip_code_4: string;
+  zip_code_5: string;
 }
 
 const getResponse = async () => {
@@ -29,14 +27,14 @@ const getResponse = async () => {
 
 const formatLocation = (postOffices: { postOffices: PostOffice[] }) => {
   const formattedLocations = [] as LocationCollectionItemProps[];
-  postOffices.postOffices.forEach((po) => {
+  postOffices.forEach((po) => {
     const location = {
       name: po.name,
-      streetAddress: po.streetAddress,
-      addressLine2: `${po.city}, ${po.state}, ${po.zip5}-${po.zip4}`,
-      weekdayHours: po.hours[0].weekdayHours,
-      saturdayHours: po.hours[1].saturdayHours,
-      sundayHours: po.hours[2].sundayHours,
+      streetAddress: po.address,
+      addressLine2: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
+      weekdayHours: po.weekday_hours,
+      saturdayHours: po.saturday_hours,
+      sundayHours: po.sunday_hours,
     } as LocationCollectionItemProps;
     formattedLocations.push(location);
   });
@@ -49,10 +47,10 @@ function InPersonLocationStep() {
 
   useEffect(() => {
     (async () => {
-      const fetchedPosts = await getResponse().catch((error) => {
+      const fetchedLocations = await getResponse().catch((error) => {
         throw error;
       });
-      const formattedLocations = formatLocation(fetchedPosts);
+      const formattedLocations = formatLocation(fetchedLocations);
       setLocationData(formattedLocations);
     })();
   }, []);
