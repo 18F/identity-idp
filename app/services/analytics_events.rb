@@ -174,6 +174,9 @@ module AnalyticsEvents
   end
 
   # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
   def backup_code_setup_visit(
     success:,
     errors: nil,
@@ -1857,6 +1860,12 @@ module AnalyticsEvents
   end
 
   # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
   def saml_auth(
     success:,
     errors:,
