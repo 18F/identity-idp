@@ -94,6 +94,11 @@ export interface UploadErrorResponse {
    * Personally-identifiable information from OCR analysis.
    */
   ocr_pii?: PII;
+
+  /**
+   * Whether the unsuccessful result was the failure type.
+   */
+  result_failed: boolean;
 }
 
 export type UploadImplementation = (
