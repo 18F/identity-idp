@@ -25,7 +25,7 @@ const getResponse = async () => {
   return response;
 };
 
-const formatLocation = (postOffices: { postOffices: PostOffice[] }) => {
+const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as LocationCollectionItemProps[];
   postOffices.forEach((po: PostOffice) => {
     const location = {
