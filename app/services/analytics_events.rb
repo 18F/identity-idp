@@ -2014,7 +2014,6 @@ module AnalyticsEvents
   end
 
   # Tracks when user's piv cac setup
-  # @param [Integer] enabled_mfa_methods_count
   def user_registration_piv_cac_setup_visit(**extra)
     track_event(
       'User Registration: piv cac setup visited',
@@ -2144,7 +2143,6 @@ module AnalyticsEvents
   # @param [Boolean] throttled
   # @param [Hash] errors
   # @param [Hash] error_details
-  # @param [Boolean] email_already_exists
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(
