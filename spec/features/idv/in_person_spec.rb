@@ -91,7 +91,7 @@ RSpec.describe 'In Person Proofing', js: true do
   end
 
   context 'verify address by mail (GPO letter)' do
-    it 'concludes with "come back later" screen', allow_browser_log: true do
+    it 'requires address verification before showing instructions', allow_browser_log: true do
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
@@ -101,6 +101,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
+
+      # WILLFIX: After LG-6897, assert that "Ready to Verify" content is shown after code entry.
     end
   end
 end
