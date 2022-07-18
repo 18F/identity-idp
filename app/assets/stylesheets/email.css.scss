@@ -129,9 +129,11 @@ h4 {
 
   td {
     padding: units(1.5);
+    padding-right: units(1);
 
     & + td {
       padding-left: 0;
+      padding-right: units(1.5);
     }
   }
 }
