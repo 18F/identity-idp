@@ -6,11 +6,7 @@
 <table class="info-alert margin-y-4">
   <tr>
     <td width="16">
-      <%= image_tag(
-            asset_path('identity-style-guide/dist/assets/img/alerts/info.svg'),
-            width: 16,
-            height: 16,
-          ) %>
+      <%= image_tag('email/info.png', width: 16, height: 16, alt: '') %>
     </td>
     <td>
       <p class="font-sans-md margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
