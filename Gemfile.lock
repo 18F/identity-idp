@@ -338,7 +338,6 @@ GEM
     heapy (0.2.0)
       thor
     highline (2.0.3)
-    hiredis (0.6.3)
     html_tokenizer (0.0.7)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
@@ -511,7 +510,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     redacted_struct (1.1.0)
-    redis (4.6.0)
+    redis (4.7.1)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
     redis-session-store (0.11.4)
@@ -734,7 +733,6 @@ DEPENDENCIES
   good_job (~> 2.7.0)
   guard-rspec
   hashie (~> 4.1)
-  hiredis (~> 0.6.0)
   http_accept_language
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
