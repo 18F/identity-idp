@@ -17,7 +17,7 @@ class InPersonEnrollment < ApplicationRecord
     where(status: :pending).
     and(
       where(status_check_attempted_at: check_interval).
-      or where(status_check_attempted_at: nil),
+      or(where(status_check_attempted_at: nil)),
     ).
     order(status_check_attempted_at: :asc)
   end
