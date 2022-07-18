@@ -3,34 +3,36 @@ require 'barby/barcode/code_128'
 require 'barby/outputter/html_outputter'
 
 class BarcodeComponent < BaseComponent
-  attr_reader :data, :data_label, :data_formatter, :tag_options
+  attr_reader :barcode_data, :label, :label_formatter, :tag_options
 
-  def initialize(data:, data_label:, data_formatter: nil, **tag_options)
-    @data = data
-    @data_label = data_label
+  def initialize(barcode_data:, label:, label_formatter: nil, **tag_options)
+    @barcode_data = barcode_data
+    @label = label
+    @label_formatter = label_formatter
     @tag_options = tag_options
-    @data_formatter = data_formatter
   end
 
   def formatted_data
-    formatted_data = data
-    formatted_data = data_formatter.call(formatted_data) if data_formatter
+    formatted_data = barcode_data
+    formatted_data = label_formatter.call(formatted_data) if label_formatter
     formatted_data
   end
 
   def barcode_html
-    Barby::Code128.new(data).to_html(class_name: barcode_table_class_name_aria_label)
+    html = Barby::Code128.new(barcode_data).to_html(class_name: 'barcode')
+    # The Barby gem doesn't provide much control over rendered output, so we need to manually slice
+    # in accessibility features (label as substitute to illegible inner content).
+    html.gsub(
+      '><tbody>',
+      %( aria-label="#{t('components.barcode.table_label')}"><tbody aria-hidden="true">),
+    )
   end
 
   def barcode_caption_id
     "barcode-caption-#{unique_id}"
   end
 
-  private
-
-  def barcode_table_class_name_aria_label
-    # Unfortunately, Barby doesn't support additional attributes on the table element. Fortunately,
-    # it also doesn't sanitize its attribute values.
-    %(barcode" aria-label="#{t('components.barcode.table_label')})
+  def css_class
+    [*tag_options[:class], 'display-inline-block margin-0']
   end
 end

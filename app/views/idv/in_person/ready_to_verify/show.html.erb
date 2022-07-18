@@ -32,9 +32,9 @@
     <% c.item(heading: t('in_person_proofing.process.barcode.heading')) do %>
       <p><%= t('in_person_proofing.process.barcode.info') %></p>
       <%= render BarcodeComponent.new(
-            data: @presenter.enrollment_code,
-            data_label: t('in_person_proofing.process.barcode.caption_label'),
-            data_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+            barcode_data: @presenter.enrollment_code,
+            label: t('in_person_proofing.process.barcode.caption_label'),
+            label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
           ) %>
     <% end %>
     <% c.item(heading: t('in_person_proofing.process.state_id.heading')) do %>

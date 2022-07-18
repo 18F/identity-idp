@@ -31,9 +31,9 @@
         <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.barcode.heading') %></h3>
         <p><%= t('in_person_proofing.process.barcode.info') %></p>
         <%= render BarcodeComponent.new(
-              data: @presenter.enrollment_code,
-              data_label: nil,
-              data_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+              barcode_data: @presenter.enrollment_code,
+              label: nil,
+              label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
             ) %>
       </td>
     </tr>

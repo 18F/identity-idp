@@ -2,14 +2,14 @@
 <%= content_tag(
       :div,
       role: 'figure',
-      aria: { labelled_by: barcode_caption_id },
-      class: 'display-inline-block margin-0',
+      'aria-labelledby': barcode_caption_id,
+      class: css_class,
       **tag_options,
     ) do %>
   <%= barcode_html.html_safe %>
   <div id="<%= barcode_caption_id %>" class="text-center margin-top-1">
-    <% if data_label.present? %>
-      <span class="usa-sr-only"><%= data_label %>:</span>
+    <% if label.present? %>
+      <span class="usa-sr-only"><%= label %>:</span>
     <% end %>
     <%= formatted_data %>
   </div>
