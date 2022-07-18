@@ -206,3 +206,7 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 		--no-output \
 		--db $@ \
 		-- $<
+
+update: ## Run after a git pull perhaps
+	bundle install
+	bundle exec rails db:migrate
