@@ -19,7 +19,7 @@
   </tr>
 </table>
 
-<section class="border-1px border-primary-light radius-lg padding-4">
+<div class="border-1px border-primary-light radius-lg padding-4">
   <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
     <%= t('in_person_proofing.body.barcode.items_to_bring') %>
   </h2>
@@ -75,28 +75,26 @@
           ),
         ) %>
   </p>
-</section>
+</div>
 
-<section class="margin-y-4">
-  <address>
-    <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
-    <div class="margin-bottom-1">
-      <%= @presenter.selected_location_details['streetAddress'] %><br>
-      <%= @presenter.selected_location_details['city'] %>,
-      <%= @presenter.selected_location_details['state'] %>
-      <%= @presenter.selected_location_details['zip5'] %>-<%= @presenter.selected_location_details['zip4'] %>
-    </div>
-    <h3 class="font-sans-sm margin-y-0"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
-    <div class="margin-bottom-2">
-      <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
-      <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
-      <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
-    </div>
-    <div>
-      <%= @presenter.selected_location_details[:phone] %>
-    </div>
-  </address>
-</section>
+<div class="margin-y-4">
+  <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
+  <div class="margin-bottom-1">
+    <%= @presenter.selected_location_details['streetAddress'] %><br>
+    <%= @presenter.selected_location_details['city'] %>,
+    <%= @presenter.selected_location_details['state'] %>
+    <%= @presenter.selected_location_details['zip5'] %>-<%= @presenter.selected_location_details['zip4'] %>
+  </div>
+  <h3 class="font-sans-sm margin-y-0"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
+  <div class="margin-bottom-2">
+    <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+    <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+    <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
+  </div>
+  <div>
+    <%= @presenter.selected_location_details[:phone] %>
+  </div>
+</div>
 
 <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
 
