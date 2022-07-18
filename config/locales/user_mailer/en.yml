@@ -12,7 +12,7 @@ en:
     account_reset_cancel:
       intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
-      subject: Delete your account
+      subject: Your request has been cancelled
     account_reset_complete:
       intro_html: This email confirms you have deleted your %{app_name} account.
       subject: Account deleted
