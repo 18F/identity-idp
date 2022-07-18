@@ -185,7 +185,7 @@ module AnalyticsEvents
       success: success,
       errors: errors,
       error_details: error_details,
-      **extra
+      **extra,
     )
   end
 
@@ -1874,7 +1874,7 @@ module AnalyticsEvents
       authn_context: authn_context,
       authn_context_comparison: authn_context_comparison,
       service_provider: service_provider,
-      **extra
+      **extra,
     )
   end
 
