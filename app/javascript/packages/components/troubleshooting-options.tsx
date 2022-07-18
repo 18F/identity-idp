@@ -8,8 +8,6 @@ export type TroubleshootingOption = Omit<BlockLinkProps, 'href'> & {
 
   text: ReactNode;
 
-  isContinue?: boolean;
-
   isExternal?: boolean;
 };
 
