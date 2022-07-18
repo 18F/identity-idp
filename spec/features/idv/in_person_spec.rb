@@ -1,40 +1,37 @@
 require 'rails_helper'
 
-RSpec.describe 'In Person Proofing' do
-  include IdvHelper
+RSpec.describe 'In Person Proofing', js: true do
+  include IdvStepHelper
   include InPersonHelper
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
   end
 
-  it 'works for a happy path', js: true, allow_browser_log: true do
+  it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
-    begin_in_person_proofing_session(user)
+    begin_in_person_proofing(user)
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
-    click_idv_continue
+    complete_location_step(user)
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
-    click_link t('forms.buttons.continue')
+    complete_prepare_step(user)
 
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
-    fill_out_state_id_form_ok
-    click_idv_continue
+    complete_state_id_step(user)
 
     # address page
     expect(page).to have_content(t('in_person_proofing.headings.address'))
-    fill_out_address_form_ok
-    click_idv_continue
+    complete_address_step(user)
 
     # ssn page
     expect(page).to have_content(t('doc_auth.headings.ssn'))
-    fill_out_ssn_form_ok
-    click_idv_continue
+    complete_ssn_step(user)
 
     # verify page
     expect(page).to have_content(t('headings.verify'))
@@ -66,7 +63,7 @@ RSpec.describe 'In Person Proofing' do
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
-    click_idv_continue
+    complete_verify_step(user)
 
     # phone page
     expect(page).to have_content(t('idv.titles.session.phone'))
@@ -91,5 +88,19 @@ RSpec.describe 'In Person Proofing' do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+  end
+
+  context 'verify address by mail (GPO letter)' do
+    it 'concludes with "come back later" screen', allow_browser_log: true do
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.buttons.mail.send')
+      complete_review_step
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_content(t('idv.titles.come_back_later'))
+      expect(page).to have_current_path(idv_come_back_later_path)
+    end
   end
 end
