@@ -11,7 +11,7 @@ RSpec.describe GetUspsProofingResultsJob do
   describe '#perform' do
     describe 'IPP enabled' do
       let(:pending_enrollment) {
-        create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18))
+        create(:in_person_enrollment, status: :pending, enrollment_code: SecureRandom.hex(18))
       }
       let(:pending_enrollment_2) {
         create(:in_person_enrollment, enrollment_code: SecureRandom.hex(18))
