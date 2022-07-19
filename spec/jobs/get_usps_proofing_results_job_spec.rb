@@ -36,17 +36,17 @@ RSpec.describe GetUspsProofingResultsJob do
         JSON.parse(UspsIppFixtures.request_passed_proofing_results_response)
       end
       let(:failing_response) do
-          JSON.parse(UspsIppFixtures.request_failed_proofing_results_response)     
+        JSON.parse(UspsIppFixtures.request_failed_proofing_results_response)
       end
       let(:failing_unsupported_id_response) do
         passing_response['primaryIdType'] = 'Not supported'
         passing_response
       end
       let(:failing_enrollment_expired) do
-         JSON.parse(UspsIppFixtures.request_expired_proofing_results_response)
+        JSON.parse(UspsIppFixtures.request_expired_proofing_results_response)
       end
       let(:no_post_office_visit_response) do
-          JSON.parse(UspsIppFixtures.request_no_post_office_proofing_results_response)
+        JSON.parse(UspsIppFixtures.request_no_post_office_proofing_results_response)
       end
 
       # may need to switch to regular error with response double
