@@ -141,39 +141,6 @@ feature 'Multi Two Factor Authentication' do
     end
   end
 
-  scenario 'redirects to the second_mfa path with an error' do
-    sign_in_before_2fa
-
-    expect(current_path).to eq authentication_methods_setup_path
-
-    click_2fa_option('backup_code')
-
-    click_continue
-
-    expect(current_path).to eq backup_code_setup_path
-
-    click_continue
-
-    expect(page).to have_link(t('forms.backup_code.download'))
-
-    click_continue
-
-    expect(page).to have_content(t('notices.backup_codes_configured'))
-
-    expect(page).to have_current_path(
-      auth_method_confirmation_path,
-    )
-
-    click_link t('mfa.add')
-
-    expect(page).to have_current_path(second_mfa_setup_path)
-
-    click_continue
-
-    expect(page).
-      to have_content(t('errors.two_factor_auth_setup.must_select_additional_option'))
-  end
-
   describe 'user attempts to submit with only the phone MFA method selected', js: true do
     before do
       sign_in_before_2fa
