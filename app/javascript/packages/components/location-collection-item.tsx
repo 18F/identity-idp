@@ -24,7 +24,7 @@ function LocationCollectionItem({
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
           <h3 className="usa-collection__heading">{name}</h3>
-          <Button>{t('in_person_proofing.body.location.location_button')}</Button>
+          <Button type="submit">{t('in_person_proofing.body.location.location_button')}</Button>
         </div>
         <div>{streetAddress}</div>
         <div>{addressLine2}</div>
