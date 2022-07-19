@@ -33,26 +33,47 @@ RSpec.describe GetUspsProofingResultsJob do
       let(:passing_enrollment) { create(:in_person_enrollment, :passed) }
 
       let(:passing_response) {
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json')
+        JSON.load_file(
+          Rails.root.join(
+            'spec/fixtures/usps_ipp_responses/request_passed_proofing_results_response.json',
+          ),
+        )
       }
       let(:failing_response) {
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json')
+        JSON.load_file(
+          Rails.root.join(
+            'spec/fixtures/usps_ipp_responses/request_failed_proofing_results_response.json',
+          ),
+        )
       }
       let(:failing_unsupported_id_response) {
         passing_response['primaryIdType'] = 'Not supported'
         passing_response
       }
       let(:failing_enrollment_expired) {
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_expired_proofing_results_response.json')
+        JSON.load_file(
+          Rails.root.join(
+            'spec/fixtures/usps_ipp_responses/request_expired_proofing_results_response.json',
+          ),
+        )
       }
       let(:no_post_office_visit_response) {
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_no_post_office_proofing_results_response.json')
+        JSON.load_file(
+          Rails.root.join(
+            'spec/fixtures/usps_ipp_responses/' \
+            'request_no_post_office_proofing_results_response.json',
+          ),
+        )
       }
 
       # todo refactor to ensure usages are covering the correct lines;
       # may need to switch to regular error with response double
       let(:progress_response_body) {
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json')
+        JSON.load_file(
+          Rails.root.join(
+            'spec/fixtures/usps_ipp_responses/request_in_progress_proofing_results_response.json',
+          ),
+        )
       }
       let(:progress_response_error) {
         response = instance_double(Faraday::Response)
@@ -78,23 +99,24 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(IdentityJobLogSubscriber.logger).to receive(:error)
         allow(IdentityJobLogSubscriber.logger).to receive(:warn)
 
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
-        expect(InPersonEnrollment).to have_received(:needs_usps_status_check).
+        failure_message = 'expected call to InPersonEnrollment#needs_usps_status_check' \
+          ' with beginless range starting about 5 minutes ago'
+        expect(InPersonEnrollment).to(
+          have_received(:needs_usps_status_check).
             with(
-              satisfy do |v|
-                v.begin.nil? &&
-                    v.end > 5.25.minutes.ago &&
-                    v.end < 4.99.minutes.ago
-              end,
+              satisfy { |v| v.begin.nil? && v.end > 5.25.minutes.ago && v.end < 4.75.minutes.ago },
             ),
-                                      "expected call to InPersonEnrollment#needs_usps_status_check with beginless"\
-                                      " range starting about 5 minutes ago"
+          failure_message,
+        )
       end
 
       it 'records the last attempted status check regardless of response code and contents' do
-        expect(pending_enrollments.pluck(:status_check_attempted_at)).to all(eq nil),
-                                                                         'failed test precondition: pending enrollments must not have status check time set'
+        expect(pending_enrollments.pluck(:status_check_attempted_at)).to(
+          all(eq nil),
+          'failed test precondition: pending enrollments must not have status check time set',
+        )
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
             and_return(pending_enrollments)
@@ -120,20 +142,22 @@ RSpec.describe GetUspsProofingResultsJob do
 
         start_time = Time.zone.now
 
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         expected_range = start_time...(Time.zone.now)
 
+        failure_message = 'job must update status check time for all pending enrollments;' \
+          ' found exception(s): %s'
         expect(
           pending_enrollments.
             map(&:reload). # Force reload records from DB
             pluck(:status_check_attempted_at),
-        ).to all(
-          satisfy do |i|
-            expected_range.cover?(i)
-          end,
-        ),
-             "job must update status check time for all pending enrollments; found exception(s): #{pending_enrollments.inspect}"
+        ).to(
+          all(
+            satisfy { |i| expected_range.cover?(i) },
+          ),
+          failure_message % pending_enrollments.inspect,
+        )
       end
 
       it 'updates the enrollment record on 2xx responses with valid JSON' do
@@ -146,7 +170,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         start_time = Time.zone.now
 
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         expected_range = start_time...(Time.zone.now)
 
@@ -174,9 +198,7 @@ RSpec.describe GetUspsProofingResultsJob do
               }.to_json,
             )
 
-        start_time = Time.zone.now
-
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         pending_enrollment.reload
 
@@ -190,7 +212,7 @@ RSpec.describe GetUspsProofingResultsJob do
         err = Faraday::BadRequestError.new nil, nil
 
         allow(proofer).to receive(:request_proofing_results).
-            with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do |_, __|
+            with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do
               raise err
             end
 
@@ -212,9 +234,7 @@ RSpec.describe GetUspsProofingResultsJob do
               end,
             )
 
-        start_time = Time.zone.now
-
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         pending_enrollment.reload
 
@@ -230,9 +250,7 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
         and_return([pending_enrollment])
 
-        start_time = Time.zone.now
-
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         pending_enrollment.reload
 
@@ -248,9 +266,7 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
         and_return([pending_enrollment])
 
-        start_time = Time.zone.now
-
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         pending_enrollment.reload
 
@@ -261,10 +277,10 @@ RSpec.describe GetUspsProofingResultsJob do
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
               and_return([pending_enrollment])
 
-        err = Faraday::ServerError.new nil, nil
+        err = Faraday::ServerError.new(nil, nil)
 
         allow(proofer).to receive(:request_proofing_results).
-        with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do |_, __|
+        with(pending_enrollment.usps_unique_id, pending_enrollment.enrollment_code) do
           raise err
         end
 
@@ -286,9 +302,7 @@ RSpec.describe GetUspsProofingResultsJob do
               end,
             )
 
-        start_time = Time.zone.now
-
-        sut.perform Time.zone.now
+        sut.perform(Time.zone.now)
 
         pending_enrollment.reload
 

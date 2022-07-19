@@ -25,85 +25,101 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
       # Record and commit attempt to check enrollment status to database
-      enrollment.status_check_attempted_at = Time.now
-      enrollment.save
-
+      enrollment.update(status_check_attempted_at: Time.zone.now)
       unique_id = enrollment.usps_unique_id
-
       response = nil
+
       begin
-        response = proofer.request_proofing_results unique_id, enrollment.enrollment_code
+        response = proofer.request_proofing_results(unique_id, enrollment.enrollment_code)
       rescue Faraday::BadRequestError => err
-        case err.response&.[](:body)&.[]('responseMessage')
-        when IPP_INCOMPLETE_ERROR_MESSAGE
-          # Customer has not been to post office for IPP
-          next
-        when IPP_EXPIRED_ERROR_MESSAGE
-          # Customer's IPP enrollment has expired
-          enrollment.status = :expired
-          enrollment.save
-          next
-        else
-          IdentityJobLogSubscriber.logger.warn(
-            {
-              name: 'get_usps_proofing_results_job.errors.request_exception',
-              enrollment_id: enrollment.id,
-              exception: {
-                class: err.class.to_s,
-                message: err.message,
-                backtrace: err.backtrace,
-              },
-            }.to_json,
-          )
-          next
-        end
-      rescue Exception => err
-        IdentityJobLogSubscriber.logger.error(
-          {
-            name: 'get_usps_proofing_results_job.errors.request_exception',
-            enrollment_id: enrollment.id,
-            exception: {
-              class: err.class.to_s,
-              message: err.message,
-              backtrace: err.backtrace,
-            },
-          }.to_json,
-        )
+        handleBadRequestError(err, enrollment)
+        next
+      rescue StandardError => err
+        handleStandardError(err, enrollment)
         next
       end
 
-      unless response.is_a? Hash
-        IdentityJobLogSubscriber.logger.error(
-          {
-            name: 'get_usps_proofing_results_job.errors.bad_response_structure',
-            enrollment_id: enrollment.id,
-          }.to_json,
-        )
+      unless response.is_a?(Hash)
+        handleResponseIsAHash(enrollment)
         next
       end
 
-      case response['status']
-      when IPP_STATUS_PASSED
-        if SUPPORTED_ID_TYPES.include? response['primaryIdType']
-          enrollment.status = :passed
-        else
-          # Unsupported ID type
-          enrollment.status = :failed
-        end
-        enrollment.save
-      when IPP_STATUS_FAILED
-        enrollment.status = :failed
-        enrollment.save
-      else
-        IdentityJobLogSubscriber.logger.error(
-          {
-            name: 'get_usps_proofing_results_job.errors.unsupported_status',
-            enrollment_id: enrollment.id,
-            status: response['status'],
-          }.to_json,
-        )
-      end
+      updateEnrollmentStatus(enrollment, response['status'], response['primaryIdType'])
     end
+
     true
+  end
+
+  private
+
+  def handleBadRequestError(err, enrollment)
+    case err.response&.[](:body)&.[]('responseMessage')
+    when IPP_INCOMPLETE_ERROR_MESSAGE
+      # Customer has not been to post office for IPP
+    when IPP_EXPIRED_ERROR_MESSAGE
+      # Customer's IPP enrollment has expired
+      enrollment.update(status: :expired)
+    else
+      IdentityJobLogSubscriber.logger.warn(
+        {
+          name: 'get_usps_proofing_results_job.errors.request_exception',
+          enrollment_id: enrollment.id,
+          exception: {
+            class: err.class.to_s,
+            message: err.message,
+            backtrace: err.backtrace,
+          },
+        }.to_json,
+      )
+    end
+  end
+
+  def handleStandardError(err, enrollment)
+    IdentityJobLogSubscriber.logger.error(
+      {
+        name: 'get_usps_proofing_results_job.errors.request_exception',
+        enrollment_id: enrollment.id,
+        exception: {
+          class: err.class.to_s,
+          message: err.message,
+          backtrace: err.backtrace,
+        },
+      }.to_json,
+    )
+  end
+
+  def handleResponseIsAHash(enrollment)
+    IdentityJobLogSubscriber.logger.error(
+      {
+        name: 'get_usps_proofing_results_job.errors.bad_response_structure',
+        enrollment_id: enrollment.id,
+      }.to_json,
+    )
+  end
+
+  def handleUnsupportedStatus(enrollment, status)
+    IdentityJobLogSubscriber.logger.error(
+      {
+        name: 'get_usps_proofing_results_job.errors.unsupported_status',
+        enrollment_id: enrollment.id,
+        status: status,
+      }.to_json,
+    )
+  end
+
+  def updateEnrollmentStatus(enrollment, status, primary_id_type)
+    case status
+    when IPP_STATUS_PASSED
+      if SUPPORTED_ID_TYPES.include?(primary_id_type)
+        enrollment.update(status: :passed)
+      else
+        # Unsupported ID type
+        enrollment.update(status: :failed)
+      end
+    when IPP_STATUS_FAILED
+      enrollment.update(status: :failed)
+    else
+      handleUnsupportedStatus(enrollment, status)
+    end
   end
 end
