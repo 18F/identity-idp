@@ -173,6 +173,25 @@ module AnalyticsEvents
     )
   end
 
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -1847,6 +1866,34 @@ module AnalyticsEvents
     )
   end
 
+  # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
@@ -1868,6 +1915,11 @@ module AnalyticsEvents
   # tracks if the session is kept alive
   def session_kept_alive
     track_event('Session Kept Alive')
+  end
+
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
   end
 
   # tracks when a user's session is timed out
@@ -2014,7 +2066,6 @@ module AnalyticsEvents
   end
 
   # Tracks when user's piv cac setup
-  # @param [Integer] enabled_mfa_methods_count
   def user_registration_piv_cac_setup_visit(**extra)
     track_event(
       'User Registration: piv cac setup visited',
@@ -2144,7 +2195,6 @@ module AnalyticsEvents
   # @param [Boolean] throttled
   # @param [Hash] errors
   # @param [Hash] error_details
-  # @param [Boolean] email_already_exists
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(
