@@ -8,6 +8,12 @@ module MfaSetupConcern
       confirmation_path
     else
       user_session.delete(:mfa_selections)
+      analytics.user_registration_mfa_setup_complete(
+        mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        success: true,
+      )
       nil
     end
   end
@@ -47,8 +53,12 @@ module MfaSetupConcern
     mfa_selection_index < mfa_selection_count
   end
 
+  def mfa_context
+    @mfa_context ||= MfaContext.new(current_user)
+  end
+
   def suggest_second_mfa?
-    mfa_selection_count < 2 && MfaContext.new(current_user).enabled_mfa_methods_count < 2
+    mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
   end
 
   def mfa_selection_count
