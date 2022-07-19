@@ -13,9 +13,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   good_job_control_concurrency_with(
     total_limit: 1,
-    key: -> do
-      'get_usps_proofing_results'
-    end,
+    key: 'get_usps_proofing_results',
   )
 
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
