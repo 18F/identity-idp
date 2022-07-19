@@ -2060,6 +2060,30 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Hash] pii_like_keypaths
+  # Tracks when a user has completed MFA setup
+  def user_registration_mfa_setup_complete(
+    success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'User Registration: MFA Setup Complete',
+      {
+        success: success,
+        mfa_method_counts: mfa_method_counts,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
+        **extra,
+      }.compact,
+    )
+  end
+
   # Tracks when user's piv cac is disabled
   def user_registration_piv_cac_disabled
     track_event('User Registration: piv cac disabled')
