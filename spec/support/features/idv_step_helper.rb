@@ -24,6 +24,7 @@ module IdvStepHelper
   def complete_phone_step(user)
     fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
     click_idv_continue
+    verify_phone_otp
   end
 
   def complete_idv_steps_before_gpo_step(user = user_with_2fa)
@@ -59,7 +60,7 @@ module IdvStepHelper
     end
   end
 
-  def complete_review_step(user)
+  def complete_review_step(user = user_with_2fa)
     password = user.password || user_password
     fill_in 'Password', with: password
     click_idv_continue

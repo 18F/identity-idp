@@ -29,6 +29,7 @@
               autofocus: true,
               numeric: false,
               class: 'width-full',
+              maxlength: TwoFactorAuthenticatable::PROOFING_DIRECT_OTP_LENGTH,
             ) %>
       </div>
       <%= submit_tag t('forms.buttons.submit.default'),

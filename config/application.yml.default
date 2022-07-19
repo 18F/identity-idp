@@ -82,6 +82,8 @@ doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: false
+enable_numeric_authentication_otp: true
+enable_numeric_authentication_otp_input: true
 enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -105,6 +107,7 @@ idv_send_link_max_attempts: 5
 idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_proofing_enabled_issuers: '[]'
+in_person_enrollment_validity_in_days: 30
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -368,6 +371,8 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  enable_numeric_authentication_otp: false
+  enable_numeric_authentication_otp_input: false
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:

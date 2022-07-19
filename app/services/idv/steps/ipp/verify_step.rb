@@ -5,10 +5,9 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          # WILLFIX: (LG-6498) make a call to Instant Verify before allowing the user to continue
-          save_legacy_state
+          pii[:state_id_type] = 'drivers_license' unless invalid_state?
           add_proofing_component
-          delete_pii
+          enqueue_job
         end
 
         def extra_view_variables

@@ -9,9 +9,8 @@ module IdvFromSpHelper
 
   def create_ial2_user_from_sp(email, **options)
     visit_idp_from_sp_with_ial2(:oidc, **options)
-    register_user(email)
-    complete_all_doc_auth_steps
-    click_idv_continue
+    register_user_with_authenticator_app(email)
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key
@@ -19,8 +18,7 @@ module IdvFromSpHelper
   end
 
   def reproof_for_ial2_strict
-    complete_all_doc_auth_steps
-    click_idv_continue
+    complete_all_doc_auth_steps_before_password_step
     fill_in 'Password', with: password
     click_continue
     acknowledge_and_confirm_personal_key

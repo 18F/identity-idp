@@ -6,8 +6,6 @@ Rails.application.config.session_store(
   :redis_session_store,
   key: '_identity_idp_session',
   redis: {
-    driver: :hiredis,
-
     # cookie expires with browser close
     expire_after: nil,
 

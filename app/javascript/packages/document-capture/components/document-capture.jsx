@@ -2,9 +2,12 @@ import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
+import InPersonPrepareStep from './in-person-prepare-step';
+import InPersonLocationStep from './in-person-location-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
@@ -54,6 +57,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
+  const { inPersonURL } = useContext(FlowContext);
 
   /**
    * Clears error state and sets form values for submission.
@@ -93,6 +97,20 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     }
   }
 
+  const inPersonSteps =
+    inPersonURL === undefined
+      ? []
+      : [
+          {
+            name: 'location',
+            form: InPersonLocationStep,
+          },
+          {
+            name: 'prepare',
+            form: InPersonPrepareStep,
+          },
+        ];
+
   /** @type {FormStep[]} */
   const steps = submissionError
     ? [
@@ -108,6 +126,8 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
               : ReviewIssuesStep,
         },
       ]
+        .concat(inPersonSteps)
+        .filter(Boolean)
     : /** @type {FormStep[]} */ (
         [
           {

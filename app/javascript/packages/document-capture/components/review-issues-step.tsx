@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
@@ -79,7 +79,7 @@ function ReviewIssuesStep({
   const { addPageAction } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
-  const { onPageTransition } = useContext(FormStepsContext);
+  const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   function onWarningPageDismissed() {
@@ -87,6 +87,12 @@ function ReviewIssuesStep({
 
     setHasDismissed(true);
   }
+
+  // let FormSteps know, via FormStepsContext, whether this page
+  // is ready to submit form values
+  useEffect(() => {
+    changeStepCanComplete(!!hasDismissed);
+  }, [hasDismissed]);
 
   if (!hasDismissed) {
     if (pii) {

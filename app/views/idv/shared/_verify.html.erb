@@ -107,7 +107,7 @@ locals:
               form_steps_wait: '',
               error_message: t('idv.failure.exceptions.internal_error'),
               alert_target: '#form-steps-wait-alert',
-              wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
+              wait_step_path: step_url.call(step: :verify_wait),
               poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
             },
           },
