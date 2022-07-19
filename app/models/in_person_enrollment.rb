@@ -12,6 +12,8 @@ class InPersonEnrollment < ApplicationRecord
 
   validate :profile_belongs_to_user
 
+  before_save :set_status_updated_at, if: :will_save_change_to_status?
+
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check check_interval
     where(status: :pending).
@@ -35,12 +37,11 @@ class InPersonEnrollment < ApplicationRecord
     user_id.to_s
   end
 
-  def status=(value)
-    self.status_updated_at = Time.now
-    super(value)
-  end
-
   private
+
+  def set_status_updated_at
+    self.status_updated_at = Time.zone.now
+  end
 
   def profile_belongs_to_user
     unless profile&.user == user

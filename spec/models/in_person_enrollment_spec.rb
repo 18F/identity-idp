@@ -52,6 +52,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       }.not_to raise_error
       expect(InPersonEnrollment.pending.count).to eq 1
       expect(InPersonEnrollment.count).to eq(InPersonEnrollment.statuses.length * 2 - 1)
+      expect(InPersonEnrollment.pending.first.status_updated_at).to_not be_nil
     end
   end
 end
