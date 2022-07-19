@@ -12,7 +12,7 @@ class InPersonEnrollment < ApplicationRecord
 
   validate :profile_belongs_to_user
 
-  before_save :set_status_updated_at, if: :will_save_change_to_status?
+  before_save(:on_status_updated, if: :will_save_change_to_status?)
 
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check check_interval
@@ -39,7 +39,7 @@ class InPersonEnrollment < ApplicationRecord
 
   private
 
-  def set_status_updated_at
+  def on_status_updated
     self.status_updated_at = Time.zone.now
   end
 
