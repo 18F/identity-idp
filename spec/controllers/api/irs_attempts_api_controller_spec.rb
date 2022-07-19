@@ -35,6 +35,7 @@ RSpec.describe Api::IrsAttemptsApiController do
       around do |ex|
         ActionController::Base.allow_forgery_protection = true
         ex.run
+      ensure
         ActionController::Base.allow_forgery_protection = false
       end
 
