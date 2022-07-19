@@ -53,7 +53,7 @@ module Api
         # create applicant object
         applicant = Applicant.new(
           {
-            unique_id: 'test',
+            unique_id: user.uuid.delete('-').slice(0, 18),
             first_name: user_session['idv']['pii'].first_name,
             last_name: user_session['idv']['pii'].last_name,
             address: user_session['idv']['pii'].address1,
