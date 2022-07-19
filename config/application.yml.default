@@ -262,6 +262,7 @@ usps_ipp_root_url: ''
 usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
+usps_mock_fallback: true
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
@@ -334,7 +335,6 @@ development:
   usps_upload_sftp_host: localhost
   usps_upload_sftp_password: test
   usps_upload_sftp_username: brady
-  usps_mock_fallback: true
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.

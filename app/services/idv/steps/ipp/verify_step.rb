@@ -8,7 +8,6 @@ module Idv
           # WILLFIX: (LG-6498) make a call to Instant Verify before allowing the user to continue
           save_legacy_state
           add_proofing_component
-          idv_session[:in_person_proofing] = 'usps'
           delete_pii
         end
 

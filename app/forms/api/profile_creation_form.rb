@@ -59,7 +59,6 @@ module Api
     def complete_session
       complete_profile if phone_confirmed?
       create_gpo_entry if user_bundle.gpo_address_verification?
-      create_usps_enrollment if user_bundle.usps_identity_verification?
     end
 
     def phone_confirmed?
@@ -85,43 +84,6 @@ module Api
       )
       confirmation_maker.perform
       @gpo_code = confirmation_maker.otp if FeatureManagement.reveal_gpo_code?
-    end
-
-    def usps_proofer
-      if IdentityConfig.store.usps_mock_fallback
-        MockUspsInPersonProofer.new
-      else
-        UspsInPersonProofer.new
-      end
-    end
-
-    def create_usps_enrollment
-      # create usps proofer
-      proofer = usps_proofer
-      # get token
-      proofer.retrieve_token!
-      # create applicant object
-      applicant = Applicant.new(
-        {
-          unique_id: 'test',
-          first_name: 'mary',
-          last_name: 'klein',
-          address: '404 Not Found',
-          city: 'Hypertext City',
-          state: 'Undefined',
-          zip_code: '20002',
-          email: 'not-used@so-so.com',
-        },
-      )
-      # create enrollment in usps
-      response = proofer.request_enroll(applicant)
-      # create an enrollment in the db. if this fails we could conveivably retry by querying the enrollment code from the USPS api. So may be create an upsert-like helper function to get an existing enrollment or create one if it doesn't exist
-      enrollment_code = response['enrollmentCode']
-      InPersonEnrollment.create!(
-        user: profile.user, enrollment_code: enrollment_code,
-        status: :pending, profile: profile
-      )
-      # todo: display error banner on failure
     end
 
     def build_profile_maker
