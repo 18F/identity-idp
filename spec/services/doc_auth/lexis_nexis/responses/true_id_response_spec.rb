@@ -90,6 +90,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.to_h).to match(
         success: true,
         exception: nil,
+        failed_alert_results: a_hash_including(:'visible_pattern'),
         errors: {},
         attention_with_barcode: false,
         conversation_id: a_kind_of(String),
@@ -171,7 +172,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'it produces appropriate errors with liveness' do
       output = described_class.new(failure_response_with_liveness, true, config).to_h
       errors = output[:errors]
-
+      expect(output.to_h[:failed_alert_results]).to eq({ '1d_control_number_valid': 'Failed',
+                                                         '2d_barcode_content': 'Failed',
+                                                         control_number_crosscheck: 'Caution',
+                                                         document_expired: 'Attention',
+                                                         visible_pattern: 'Failed' })
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
@@ -180,10 +185,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
 
-    it 'it produces appropriate errors with liveness and everything failing' do
+    it 'produces appropriate errors with liveness and everything failing' do
       output = described_class.new(failure_response_with_all_failures, true, config).to_h
       errors = output[:errors]
-
+      expect(output.to_h[:failed_alert_results]).to eq({ '1d_control_number_valid': 'Failed',
+                                                         '2d_barcode_content': 'Failed',
+                                                         '2d_barcode_read': 'Attention',
+                                                         birth_date_crosscheck: 'Failed',
+                                                         birth_date_valid: 'Failed',
+                                                         control_number_crosscheck: 'Caution',
+                                                         document_classification: 'Failed',
+                                                         document_crosscheck_aggregation: 'Failed',
+                                                         document_expired: 'Attention',
+                                                         expiration_date_crosscheck: 'Failed',
+                                                         full_name_crosscheck: 'Failed',
+                                                         issue_date_crosscheck: 'Failed',
+                                                         issue_date_valid: 'Failed',
+                                                         sex_crosscheck: 'Failed',
+                                                         visible_color_response: 'Failed',
+                                                         visible_pattern: 'Failed',
+                                                         visible_photo_characteristics: 'Failed',
+                                                         layout_valid: 'Failed',
+                                                         expiration_date_valid: 'Failed',
+                                                         document_number_crosscheck: 'Failed',
+                                                       })
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_LIVENESS)
@@ -209,6 +234,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
+        failed_alert_results: a_hash_including(:'1d_control_number_valid'),
         liveness_enabled: true,
         transaction_status: 'failed',
         transaction_reason_code: 'failed_true_id',
