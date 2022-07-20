@@ -434,6 +434,28 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
+      context 'with an inherited_proofing_auth code' do
+        before do
+          params[inherited_proofing_auth_key] = inherited_proofing_auth_value
+          action
+        end
+
+        let(:inherited_proofing_auth_key) { 'inherited_proofing_auth' }
+        let(:inherited_proofing_auth_value) { SecureRandom.hex }
+        let(:decorated_session) { controller.view_context.decorated_session }
+
+        it 'persists the inherited_proofing_auth value' do
+          expect(decorated_session.request_url_params[inherited_proofing_auth_key]).to \
+            eq inherited_proofing_auth_value
+        end
+
+        it 'redirects to SP landing page with the request_id in the params' do
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
+
+          expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
+        end
+      end
+
       it 'redirects to SP landing page with the request_id in the params' do
         action
         sp_request_id = ServiceProviderRequestProxy.last.uuid
