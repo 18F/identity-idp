@@ -44,7 +44,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         next
       end
 
-      update_enrollment_status(enrollment, response['status'], response['primaryIdType'])
+      update_enrollment_status(enrollment, response)
     end
 
     true
@@ -107,19 +107,50 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def update_enrollment_status(enrollment, status, primary_id_type)
-    case status
+  def handle_unsupported_id_type(enrollment, primary_id_type)
+    IdentityJobLogSubscriber.logger.warn(
+      {
+        name: 'get_usps_proofing_results_job.errors.unsupported_id_type',
+        enrollment_id: enrollment.id,
+        primary_id_type: primary_id_type,
+      }.to_json,
+    )
+  end
+
+  def handle_failed_status(enrollment, response)
+    IdentityJobLogSubscriber.logger.warn(
+      {
+        name: 'get_usps_proofing_results_job.errors.failed_status',
+        enrollment_id: enrollment.id,
+        failure_reason: response['failureReason'],
+        fraud_suspected: response['fraudSuspected'],
+        primary_id_type: response['primaryIdType'],
+        proofing_city: response['proofingCity'],
+        proofing_confirmation_number: response['proofingConfirmationNumber'],
+        proofing_post_office: response['proofingPostOffice'],
+        proofing_state: response['proofingState'],
+        secondary_id_type: response['secondaryIdType'],
+        transaction_end_date_time: response['transactionEndDateTime'],
+        transaction_start_date_time: response['transactionStartDateTime'],
+      }.to_json,
+    )
+  end
+
+  def update_enrollment_status(enrollment, response)
+    case response['status']
     when IPP_STATUS_PASSED
-      if SUPPORTED_ID_TYPES.include?(primary_id_type)
+      if SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         enrollment.update(status: :passed)
       else
         # Unsupported ID type
         enrollment.update(status: :failed)
+        handle_unsupported_id_type(enrollment, response['primaryIdType'])
       end
     when IPP_STATUS_FAILED
       enrollment.update(status: :failed)
+      handle_failed_status(enrollment, response)
     else
-      handle_unsupported_status(enrollment, status)
+      handle_unsupported_status(enrollment, response['status'])
     end
   end
 end

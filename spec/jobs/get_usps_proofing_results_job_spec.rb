@@ -88,6 +88,45 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
+      it 'logs details about failed requests' do
+        stub_request_token
+        stub_request_failed_proofing_results
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+              and_return([pending_enrollment])
+
+        # see request_failed_proofing_supported_id_results_response.json
+        expect(IdentityJobLogSubscriber.logger).to receive(:warn).
+            with(
+              satisfy do |event|
+                expect(event).to be_instance_of(String)
+                parsed_event = JSON.parse(event)
+                expect(parsed_event).to be_instance_of(Hash).
+                and include(
+                  'name' => 'get_usps_proofing_results_job.errors.failed_status',
+                  'enrollment_id' => pending_enrollment.id,
+                  'failure_reason' => 'Clerk indicates that ID name or address' \
+                                      ' does not match source data.',
+                  'fraud_suspected' => false,
+                  'primary_id_type' => 'Uniformed Services identification card',
+                  'proofing_city' => 'WILKES BARRE',
+                  'proofing_confirmation_number' => '350040248346707',
+                  'proofing_post_office' => 'WILKES BARRE',
+                  'proofing_state' => 'PA',
+                  'secondary_id_type' => 'Deed of Trust',
+                  'transaction_end_date_time' => '12/17/2020 034055',
+                  'transaction_start_date_time' => '12/17/2020 033855',
+                )
+              end,
+            )
+
+        job.perform(Time.zone.now)
+
+        pending_enrollment.reload
+
+        expect(pending_enrollment.failed?).to be_truthy
+      end
+
       it 'updates enrollment records on 2xx responses with valid JSON' do
         stub_request_token
         stub_request_passed_proofing_results
@@ -131,7 +170,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         pending_enrollment.reload
 
-        expect(pending_enrollment.status).to eq 'pending'
+        expect(pending_enrollment.pending?).to be_truthy
       end
 
       it 'reports a low-priority error on 4xx responses' do
@@ -158,7 +197,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         pending_enrollment.reload
 
-        expect(pending_enrollment.status).to eq 'pending'
+        expect(pending_enrollment.pending?).to be_truthy
       end
 
       it 'marks enrollments as expired when USPS says they have expired' do
@@ -209,23 +248,35 @@ RSpec.describe GetUspsProofingResultsJob do
 
         pending_enrollment.reload
 
-        expect(pending_enrollment.status).to eq 'pending'
+        expect(pending_enrollment.pending?).to be_truthy
       end
 
-      it 'retroactively fails enrollment for unsupported ID types' do
+      it 'fails enrollment for unsupported ID types' do
         stub_request_token
         stub_request_passed_proofing_unsupported_id_results
 
-        pending_enrollments.each do |enrollment|
-          expect(enrollment.pending?).to be_truthy
-        end
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+              and_return([pending_enrollment])
+
+        expect(IdentityJobLogSubscriber.logger).to receive(:warn).
+            with(
+              satisfy do |event|
+                expect(event).to be_instance_of(String)
+                parsed_event = JSON.parse(event)
+                expect(parsed_event).to be_instance_of(Hash).
+                and include(
+                  'name' => 'get_usps_proofing_results_job.errors.unsupported_id_type',
+                  'enrollment_id' => pending_enrollment.id,
+                  'primary_id_type' => 'Not supported',
+                )
+              end,
+            )
+
+        expect(pending_enrollment.pending?).to be_truthy
 
         job.perform Time.zone.now
 
-        pending_enrollments.each do |enrollment|
-          enrollment.reload
-          expect(enrollment.failed?).to be_truthy
-        end
+        expect(pending_enrollment.reload.failed?).to be_truthy
       end
     end
 
