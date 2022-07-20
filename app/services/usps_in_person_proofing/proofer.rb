@@ -2,10 +2,6 @@ module UspsInPersonProofing
   class Proofer
     attr_reader :token, :token_expires_at
 
-    PostOffice = Struct.new(
-      :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
-    )
-
     # Makes a request to retrieve a new OAuth token
     # and modifies self to store the token and when
     # it expires (15 minutes).

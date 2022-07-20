@@ -37,7 +37,7 @@ module Api
 
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
-          UspsInPersonProofing::MockProofer.new
+          UspsInPersonProofing::Mock::Proofer.new
         else
           UspsInPersonProofing::Proofer.new
         end
@@ -51,7 +51,7 @@ module Api
         # get token
         proofer.retrieve_token!
         # create applicant object
-        applicant = Applicant.new(
+        applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: user.uuid.delete('-').slice(0, 18),
             first_name: user_session['idv']['pii'].first_name,
