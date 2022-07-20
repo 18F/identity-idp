@@ -39,9 +39,9 @@ RSpec::Matchers.define :have_actions do |kind, *names|
 
     actions = callbacks.each_with_object([]) do |f, result|
       result << f.filter
-      # result << [f.filter, only: parsed_only_action(f)] if action_has_only_option?(f)
-      # result << [f.filter, if: parsed_only_action(f)] if action_has_only_option?(f)
-      # result << [f.filter, except: parsed_except_action(f)] if action_has_except_option?(f)
+      result << [f.filter, only: parsed_only_action(f)] if action_has_only_option?(f)
+      result << [f.filter, if: parsed_only_action(f)] if action_has_only_option?(f)
+      result << [f.filter, except: parsed_except_action(f)] if action_has_except_option?(f)
     end
 
     names.all? { |name| actions.include?(name) }
@@ -67,9 +67,7 @@ def unless_option_for(action)
 end
 
 def parsed_only_action(action)
-  only_option = if_option_for(action)[0]
-
-  "#{only_option.class}OptionParser".constantize.new(only_option).parse
+  if_option_for(action)[0]
 end
 
 def parsed_except_action(action)
