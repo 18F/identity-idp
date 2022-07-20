@@ -53,21 +53,13 @@ RSpec.describe OpenidConnect::TokenController do
       it 'tracks a successful event in analytics' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token',
-               success: true,
-               client_id: client_id,
-               user_id: user.uuid,
-               errors: {})
-        action
-
-        expect(@analytics.events[Analytics::OPENID_CONNECT_TOKEN]).to eq(
-          [{
+          with('OpenID Connect: token', {
             success: true,
-            user_id: user.uuid,
             client_id: client_id,
+            user_id: user.uuid,
             errors: {},
-          }],
-        )
+          })
+        action
       end
     end
 
@@ -86,24 +78,15 @@ RSpec.describe OpenidConnect::TokenController do
       it 'tracks an unsuccessful event in analytics' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: token',
-               success: false,
-               client_id: client_id,
-               user_id: user.uuid,
-               errors: hash_including(:grant_type),
-               error_details: hash_including(:grant_type))
-
-        action
-
-        expect(@analytics.events[Analytics::OPENID_CONNECT_TOKEN]).to eq(
-          [{
+          with('OpenID Connect: token', {
             success: false,
             client_id: client_id,
             user_id: user.uuid,
-            errors: { grant_type: ['is not included in the list'] },
-            error_details: { grant_type: [:inclusion] },
-          }],
-        )
+            errors: hash_including(:grant_type),
+            error_details: hash_including(:grant_type),
+          })
+
+        action
       end
     end
 
