@@ -5,15 +5,13 @@ module PrivateKeyFileHelper
   def private_key_from_store_or(file_name:)
     file_name = force_tmp_private_key_file_name file_name: file_name
 
-    if Rails.env.test? && !File.exist?(file_name)
-      puts "WARNING: Private key file '#{file_name}' not found!"
-    end
+    raise "Private key file '#{file_name}' not found!" if Rails.env.test? && !File.exist?(file_name)
 
-    if File.exist?(file_name)
-      OpenSSL::PKey::RSA.new(File.read(file_name))
-    else
+    if Identity::Hostdata.in_datacenter? || !File.exist?(file_name)
       return AppArtifacts.store.oidc_private_key
     end
+
+    OpenSSL::PKey::RSA.new(File.read(file_name))
   end
 
   # Always ensure we're referencing files in the /tmp/ folder!
