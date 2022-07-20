@@ -13,9 +13,9 @@ en:
           locations.'
         post_office: 'Post Office ™'
         retail_hours_heading: 'Retail Hours'
-        retail_hours_sat: 'Sat: '
-        retail_hours_sun: 'Sun: '
-        retail_hours_weekday: 'Mon-Fri: '
+        retail_hours_sat: 'Sat:'
+        retail_hours_sun: 'Sun:'
+        retail_hours_weekday: 'Monday to Friday:'
       prepare:
         alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
         bring_barcode_header: A copy of your barcode
