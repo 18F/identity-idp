@@ -6,6 +6,21 @@ en:
         info: 'If your current address does not match the address on your ID, you will
           need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
+      barcode:
+        deadline: Your deadline to verify your identity in person is %{deadline}.
+        deadline_restart: If you go after the deadline, your information will not be
+          saved and you will need to restart the process.
+        emailed_info: We have emailed this information to the email you used to log in.
+        items_to_bring: 'Bring these items with you to the Post Office:'
+        items_to_bring_questions: Questions about what to bring?
+        learn_more: Learn more
+        location_details: Location details
+        no_appointment_required: No appointment is required.
+        retail_hours: Retail hours
+        retail_hours_closed: Closed
+        retail_phone_label: Phone number
+        speak_to_associate: You can speak with any retail associate at this Post Office
+          to verify your identity.
       location:
         location_button: 'Select'
         location_step_about: 'If you are having trouble adding your ID, you may be able
