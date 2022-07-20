@@ -154,9 +154,12 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
+      expect(response.to_h[:failed_alert_results]).to eq(document_classification: 'Failed')
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)
+
+      warn response
     end
 
     context 'when with an acuant error message' do
