@@ -40,7 +40,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       end
 
       unless response.is_a?(Hash)
-        handle_response_is_a_hash(enrollment)
+        handle_response_is_not_a_hash(enrollment)
         next
       end
 
@@ -88,7 +88,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def handle_response_is_a_hash(enrollment)
+  def handle_response_is_not_a_hash(enrollment)
     IdentityJobLogSubscriber.logger.error(
       {
         name: 'get_usps_proofing_results_job.errors.bad_response_structure',
