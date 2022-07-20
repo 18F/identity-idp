@@ -208,6 +208,7 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 		--db $@ \
 		-- $<
 
-update: ## Run after a git pull perhaps
+update: ## Update dependencies, useful after a git pull
 	bundle install
 	bundle exec rails db:migrate
+	yarn install
