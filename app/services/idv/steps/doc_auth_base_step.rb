@@ -80,8 +80,7 @@ module Idv
       end
 
       def throttled_response
-        @flow.analytics.track_event(
-          'Throttler Rate Limit Triggered',
+        @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_doc_auth,
         )
         redirect_to throttled_url

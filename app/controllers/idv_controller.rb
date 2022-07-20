@@ -11,8 +11,7 @@ class IdvController < ApplicationController
     elsif active_profile? && !strict_ial2_upgrade_required?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
-      analytics.track_event(
-        'Throttler Rate Limit Triggered',
+      analytics.throttler_rate_limit_triggered(
         throttle_type: :idv_resolution,
       )
       redirect_to idv_session_errors_failure_url
