@@ -37,9 +37,9 @@ module Api
 
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
-          MockUspsInPersonProofer.new
+          UspsInPersonProofing::MockProofer.new
         else
-          UspsInPersonProofer.new
+          UspsInPersonProofing::Proofer.new
         end
       end
 
