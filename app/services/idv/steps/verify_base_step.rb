@@ -119,8 +119,7 @@ module Idv
           )
 
           if throttle.throttled_else_increment?
-            @flow.analytics.track_event(
-              Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            @flow.analytics.throttler_rate_limit_triggered(
               throttle_type: :proof_ssn,
               step_name: self.class,
             )

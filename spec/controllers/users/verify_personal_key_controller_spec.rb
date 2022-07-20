@@ -58,7 +58,7 @@ describe Users::VerifyPersonalKeyController do
           'Personal key reactivation: Personal key form visited',
         ).once
         expect(@analytics).to receive(:track_event).with(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :verify_personal_key,
         ).once
 
@@ -140,7 +140,7 @@ describe Users::VerifyPersonalKeyController do
           pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
         ).once
         expect(@analytics).to receive(:track_event).with(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :verify_personal_key,
         ).once
 

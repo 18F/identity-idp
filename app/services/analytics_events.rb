@@ -1846,6 +1846,52 @@ module AnalyticsEvents
     track_event('SP inactive visited')
   end
 
+  # Tracks when a user is redirected back to the service provider
+  # @param [Integer] ial
+  # @param [Integer] billed_ial
+  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+    track_event(
+      'SP redirect initiated',
+      ial: ial,
+      billed_ial: billed_ial,
+      **extra,
+    )
+  end
+
+  # Tracks when a user triggered a rate limit throttle
+  # @param [String] throttle_type
+  def throttler_rate_limit_triggered(throttle_type:, **extra)
+    track_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: throttle_type,
+      **extra,
+    )
+  end
+
+  # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
+  def totp_setup_visit(
+    user_signed_up:,
+    totp_secret_present:,
+    enabled_mfa_methods_count:,
+    **extra
+  )
+    track_event(
+      'TOTP Setup Visited',
+      user_signed_up: user_signed_up,
+      totp_secret_present: totp_secret_present,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when a user disabled a TOTP device
+  def totp_user_disabled
+    track_event('TOTP: User Disabled')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
