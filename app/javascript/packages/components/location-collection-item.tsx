@@ -23,8 +23,10 @@ function LocationCollectionItem({
     <li className="location-collection-item">
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
-          <h3 className="usa-collection__heading">{name}</h3>
-          <Button type="submit">{t('in_person_proofing.body.location.location_button')}</Button>
+          <h3 className="usa-collection__heading wrap-name">{name}</h3>
+          <Button className="usa-button-mobile-hidden" type="submit">
+            {t('in_person_proofing.body.location.location_button')}
+          </Button>
         </div>
         <div>{streetAddress}</div>
         <div>{addressLine2}</div>
@@ -32,6 +34,9 @@ function LocationCollectionItem({
         <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
+        <Button className="usa-button-mobile usa-button-desktop-hidden" type="submit">
+          {t('in_person_proofing.body.location.location_button')}
+        </Button>
       </div>
     </li>
   );
