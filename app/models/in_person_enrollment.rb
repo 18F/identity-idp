@@ -15,7 +15,7 @@ class InPersonEnrollment < ApplicationRecord
   before_save(:on_status_updated, if: :will_save_change_to_status?)
 
   # Find enrollments that need a status check via the USPS API
-  def self.needs_usps_status_check check_interval
+  def self.needs_usps_status_check(check_interval)
     where(status: :pending).
     and(
       where(status_check_attempted_at: check_interval).
@@ -25,8 +25,8 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   # Does this enrollment need a status check via the USPS API?
-  def needs_usps_status_check? check_interval
-    status == :pending && (
+  def needs_usps_status_check?(check_interval)
+    pending? && (
       status_check_attempted_at.nil? ||
       check_interval.cover?(status_check_attempted_at)
     )
