@@ -35,7 +35,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           failed: all(a_hash_including(:name, :result)),
           passed: all(a_hash_including(:name, :result)),
         ),
-        failed_alert_results: {:visible_pattern=>"Failed"},
+        failed_alert_results: { visible_pattern: 'Failed' },
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
