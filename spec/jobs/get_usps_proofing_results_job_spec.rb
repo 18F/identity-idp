@@ -304,11 +304,11 @@ RSpec.describe GetUspsProofingResultsJob do
     end
 
     describe 'IPP disabled' do
-      let(:proofer) {
+      let(:proofer) do
         uipp = instance_double(UspsInPersonProofer)
         expect(UspsInPersonProofer).to_not receive(:new)
         uipp
-      }
+      end
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
             and_return(false)
