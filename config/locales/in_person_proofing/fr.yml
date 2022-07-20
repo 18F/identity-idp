@@ -7,6 +7,23 @@ fr:
           document d’identité, vous devrez apporter une preuve de votre adresse
           actuelle au bureau de poste.
         learn_more: Apprendre encore plus
+      barcode:
+        deadline: La date limite pour vérifier votre identité en personne est le
+          %{deadline}.
+        deadline_restart: Si vous partez après la date limite, vos informations ne
+          seront pas sauvegardées et vous devrez recommencer le processus.
+        emailed_info: Nous avons envoyé ces informations à l’adresse électronique que
+          vous avez utilisée pour vous connecter.
+        items_to_bring: 'Apportez ces articles avec vous au bureau de poste:'
+        items_to_bring_questions: Des questions sur ce qu’il faut apporter?
+        learn_more: En savoir plus
+        location_details: Détails de l’emplacement
+        no_appointment_required: Aucun rendez-vous n’est exigé.
+        retail_hours: Heures de vente au détail
+        retail_hours_closed: Fermé
+        retail_phone_label: Numéro de téléphone
+        speak_to_associate: Vous pouvez vous adresser à n’importe quel employé de ce
+          bureau de poste pour faire vérifier votre identité.
       prepare:
         alert_selected_post_office: 'Vous avez sélectionné le bureau de poste de %{name}.'
         bring_barcode_header: Une copie de votre code-barres
@@ -70,3 +87,29 @@ fr:
       state_id: Saisissez les informations figurant sur votre document d’identité
       update_address: Mettre à jour votre adresse actuelle
       update_state_id: Mettre à jour les informations figurant sur votre document d’identité
+    process:
+      barcode:
+        caption_label: Code d’inscription
+        heading: Une copie de votre code-barres
+        image_alt: Code-barres
+        info: Imprimez ou numérisez depuis votre appareil mobile.
+      proof_of_address:
+        acceptable_proof:
+          - Bail, hypothèque ou acte de fiducie
+          - Inscription sur les listes électorales
+          - Carte d’immatriculation du véhicule
+          - Police d’assurance habitation ou véhicule
+        heading: Preuve de votre adresse actuelle
+        info: 'Vous avez besoin d’un justificatif de domicile si votre adresse actuelle
+          est différente de l’adresse figurant sur votre document d’identité.
+          Les justificatifs d’adresse acceptés sont les suivants:'
+      state_id:
+        acceptable_documents:
+          - Permis de conduire d’État
+          - Document d’identité de non-conducteur d’État
+        heading: Votre document d’identité délivré par l’État
+        info: 'Votre pièce d’identité ne doit pas être expirée. Les formes
+          d’identification acceptables sont:'
+        no_other_documents: Nous n’acceptons actuellement aucune autre forme
+          d’identification, comme les passeports et les documents d’identité
+          militaires.

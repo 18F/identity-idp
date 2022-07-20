@@ -40,7 +40,7 @@ module SamlIdpAuthConcern
 
     return if @result.success?
 
-    analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
+    analytics.saml_auth(**@result.to_h)
     render 'saml_idp/auth/error', status: :bad_request
   end
 
