@@ -35,6 +35,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           failed: all(a_hash_including(:name, :result)),
           passed: all(a_hash_including(:name, :result)),
         ),
+        failed_alert_results: {:visible_pattern=>"Failed"},
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
@@ -154,6 +155,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
+      expect(response.to_h[:failed_alert_results]).to eq(document_classification: 'Failed')
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)

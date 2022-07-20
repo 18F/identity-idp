@@ -152,9 +152,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is not a success' do
     it 'it produces appropriate errors without liveness' do
+
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       errors = output[:errors]
-
+      expect(output.to_h[:failed_alert_results]).to eq({ '1d_control_number_valid': 'Failed',
+                                                         '2d_barcode_content': 'Failed',
+                                                         control_number_crosscheck: 'Caution',
+                                                         document_expired: 'Attention',
+                                                         visible_pattern: 'Failed' })
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
       expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS)

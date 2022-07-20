@@ -125,6 +125,10 @@ module DocAuth
         def create_response_info
           alerts = parsed_alerts
 
+          failed_alert_results = alerts[:failed].each_with_object({}) do |alert, results|
+            results[alert[:name].downcase.parameterize(separator: '_').to_sym] = alert[:result]
+          end
+
           {
             liveness_enabled: @liveness_checking_enabled,
             transaction_status: transaction_status,
@@ -133,6 +137,7 @@ module DocAuth
             doc_auth_result: doc_auth_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
+            failed_alert_results: failed_alert_results,
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
           }
