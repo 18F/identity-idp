@@ -40,11 +40,11 @@ class GetUspsProofingResultsJob < ApplicationJob
       end
 
       unless response.is_a?(Hash)
-        handleResponseIsAHash(enrollment)
+        handle_response_is_a_hash(enrollment)
         next
       end
 
-      updateEnrollmentStatus(enrollment, response['status'], response['primaryIdType'])
+      update_enrollment_status(enrollment, response['status'], response['primaryIdType'])
     end
 
     true
@@ -88,7 +88,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def handleResponseIsAHash(enrollment)
+  def handle_response_is_a_hash(enrollment)
     IdentityJobLogSubscriber.logger.error(
       {
         name: 'get_usps_proofing_results_job.errors.bad_response_structure',
@@ -97,7 +97,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def handleUnsupportedStatus(enrollment, status)
+  def handle_unsupported_status(enrollment, status)
     IdentityJobLogSubscriber.logger.error(
       {
         name: 'get_usps_proofing_results_job.errors.unsupported_status',
@@ -107,7 +107,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def updateEnrollmentStatus(enrollment, status, primary_id_type)
+  def update_enrollment_status(enrollment, status, primary_id_type)
     case status
     when IPP_STATUS_PASSED
       if SUPPORTED_ID_TYPES.include?(primary_id_type)
@@ -119,7 +119,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_STATUS_FAILED
       enrollment.update(status: :failed)
     else
-      handleUnsupportedStatus(enrollment, status)
+      handle_unsupported_status(enrollment, status)
     end
   end
 end
