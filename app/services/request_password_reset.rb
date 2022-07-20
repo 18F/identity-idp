@@ -58,10 +58,11 @@ RequestPasswordReset = RedactedStruct.new(
     @user ||= email_address_record&.user
   end
 
+  # We want to find the EmailAddress with preferring to find the confirmed one first
+  # if both a confirmed and aunconfirmed row exists
   def email_address_record
     @email_address_record ||= begin
-      EmailAddress.confirmed.find_with_email(email) ||
-        EmailAddress.unconfirmed.find_with_email(email)
+      EmailAddress.find_with_confirmed_or_unconfirmed_email(email)
     end
   end
 end
