@@ -10,7 +10,7 @@ module Api
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
           store_session_last_gpo_code(form.gpo_code)
-          save_in_person_enrollment(user)
+          save_in_person_enrollment(user, form.profile)
           render json: {
             personal_key: personal_key,
             completion_url: completion_url(result, user),
@@ -43,7 +43,7 @@ module Api
         end
       end
 
-      def save_in_person_enrollment(user)
+      def save_in_person_enrollment(user, profile)
         return unless in_person_enrollment?(user)
 
         # create usps proofer
@@ -54,13 +54,13 @@ module Api
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: user.uuid.delete('-').slice(0, 18),
-            first_name: user_session['idv']['pii'].first_name,
-            last_name: user_session['idv']['pii'].last_name,
-            address: user_session['idv']['pii'].address1,
+            first_name: user_session[:idv][:pii].first_name,
+            last_name: user_session[:idv][:pii].last_name,
+            address: user_session[:idv][:pii].address1,
             # do we need address2?
-            city: user_session['idv']['pii'].city,
-            state: user_session['idv']['pii'].state,
-            zip_code: user_session['idv']['pii'].zipcode,
+            city: user_session[:idv][:pii].city,
+            state: user_session[:idv][:pii].state,
+            zip_code: user_session[:idv][:pii].zipcode,
             email: 'not-used@so-so.com',
           },
         )
@@ -70,7 +70,7 @@ module Api
         enrollment_code = response['enrollmentCode']
         InPersonEnrollment.create!(
           user: user, enrollment_code: enrollment_code,
-          status: :pending, profile: user.active_profile
+          status: :pending, profile: profile
         )
         # todo: display error banner on failure
       end
