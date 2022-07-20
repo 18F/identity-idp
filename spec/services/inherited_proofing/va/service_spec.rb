@@ -1,0 +1,44 @@
+require 'rails_helper'
+
+RSpec.shared_examples 'an invalid auth code error is raised' do
+  it 'raises an error' do
+    expect { subject.execute }.to raise_error 'The provided auth_code is blank?'
+  end
+end
+
+RSpec.describe InheritedProofing::Va::Service do
+  subject(:service) { described_class.new auth_code }
+
+  before do
+    allow(service).to receive(:private_key).and_return(private_key)
+  end
+
+  let(:auth_code) {}
+  let(:private_key) { private_key_from_store_or(file_name: 'va_ip.key') }
+
+  it { respond_to :execute }
+
+  it do
+    expect(service.send(:private_key)).to eq private_key
+  end
+
+  describe '#execute' do
+    context 'when the auth code is valid' do
+      it 'does something awesome'
+    end
+
+    context 'when the auth code is invalid' do
+      context 'when an empty? string' do
+        let(:auth_code) { '' }
+
+        it_behaves_like 'an invalid auth code error is raised'
+      end
+
+      context 'when an nil?' do
+        let(:auth_code) { nil }
+
+        it_behaves_like 'an invalid auth code error is raised'
+      end
+    end
+  end
+end
