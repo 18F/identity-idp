@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UspsInPersonProofer do
+  include UspsIppHelper
+
   let(:subject) { UspsInPersonProofer.new }
 
   describe '#retrieve_token!' do
@@ -140,49 +142,5 @@ RSpec.describe UspsInPersonProofer do
       expect(enrollment['enrollmentCode']).to be_present
       expect(enrollment['responseMessage']).to be_present
     end
-  end
-
-  def stub_request_token
-    stub_request(:post, %r{/oauth/authenticate}).to_return(
-      status: 200, body: UspsIppFixtures.request_token_response,
-    )
-  end
-
-  def stub_request_facilities
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList}).to_return(
-      status: 200, body: UspsIppFixtures.request_facilities_response,
-    )
-  end
-
-  def stub_request_enroll
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
-      status: 200, body: UspsIppFixtures.request_enroll_response,
-    )
-  end
-
-  def stub_request_failed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 200, body: UspsIppFixtures.request_failed_proofing_results_response,
-    )
-  end
-
-  def stub_request_passed_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 200, body: UspsIppFixtures.request_passed_proofing_results_response,
-    )
-  end
-
-  def stub_request_in_progress_proofing_results
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
-      status: 400, body: UspsIppFixtures.request_in_progress_proofing_results_response,
-      headers: { 'content-type' => 'application/json' }
-    )
-  end
-
-  def stub_request_enrollment_code
-    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode}).to_return(
-      status: 200, body: UspsIppFixtures.request_enrollment_code_response,
-      headers: { 'content-type' => 'application/json' }
-    )
   end
 end
