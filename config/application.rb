@@ -155,5 +155,7 @@ module Identity
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
     end
+
+    config.inherited_proofing = config_for(:inherited_proofing)
   end
 end
