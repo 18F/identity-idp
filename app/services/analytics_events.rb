@@ -2311,5 +2311,35 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_exception(
+    reason:, enrollment_id:, exception_class: nil, exception_message: nil, **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that fail during GetUspsProofingResultsJob
+  # @param [String] reason why did this enrollment fail?
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment failed proofing',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
