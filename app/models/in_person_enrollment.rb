@@ -34,7 +34,7 @@ class InPersonEnrollment < ApplicationRecord
 
   # Returns the value to use for the USPS enrollment ID
   def usps_unique_id
-    user_id.to_s
+    user.uuid.delete('-').slice(0, 18)
   end
 
   private

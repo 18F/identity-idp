@@ -286,7 +286,7 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'does not request any enrollment records' do
-        # no stubbing means this test will fail if the UspsInPersonProofer
+        # no stubbing means this test will fail if the UspsInPersonProofing::Proofer
         # tries to connect to the USPS API
         job.perform Time.zone.now
       end

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe UspsInPersonProofer do
+RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
 
-  let(:subject) { UspsInPersonProofer.new }
+  let(:subject) { UspsInPersonProofing::Proofer.new }
 
   describe '#retrieve_token!' do
     it 'sets token and token_expires_at' do
