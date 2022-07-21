@@ -180,7 +180,7 @@ describe Users::SessionsController, devise: true do
       stub_analytics
       sign_in_as_user
 
-      expect(@analytics).to receive(:track_event).with(Analytics::SESSION_TIMED_OUT)
+      expect(@analytics).to receive(:track_event).with('Session Timed Out')
 
       get :timeout
     end

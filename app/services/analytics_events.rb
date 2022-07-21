@@ -173,6 +173,25 @@ module AnalyticsEvents
     )
   end
 
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -463,6 +482,11 @@ module AnalyticsEvents
   # The user visited the "come back later" page shown during the GPO mailing flow
   def idv_come_back_later_visit
     track_event('IdV: come back later visited')
+  end
+
+  # The user visited the "ready to verify" page for the in person proofing flow
+  def idv_in_person_ready_to_verify_visit
+    track_event('IdV: in person ready to verify visited')
   end
 
   # @param [String] step_name which step the user was on
@@ -1842,6 +1866,34 @@ module AnalyticsEvents
     )
   end
 
+  # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
@@ -1863,6 +1915,11 @@ module AnalyticsEvents
   # tracks if the session is kept alive
   def session_kept_alive
     track_event('Session Kept Alive')
+  end
+
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
   end
 
   # tracks when a user's session is timed out
@@ -2003,13 +2060,36 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Hash] pii_like_keypaths
+  # Tracks when a user has completed MFA setup
+  def user_registration_mfa_setup_complete(
+    success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'User Registration: MFA Setup Complete',
+      {
+        success: success,
+        mfa_method_counts: mfa_method_counts,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
+        **extra,
+      }.compact,
+    )
+  end
+
   # Tracks when user's piv cac is disabled
   def user_registration_piv_cac_disabled
     track_event('User Registration: piv cac disabled')
   end
 
   # Tracks when user's piv cac setup
-  # @param [Integer] enabled_mfa_methods_count
   def user_registration_piv_cac_setup_visit(**extra)
     track_event(
       'User Registration: piv cac setup visited',
@@ -2089,6 +2169,99 @@ module AnalyticsEvents
     track_event(
       'User Registration: phone setup visited',
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when user cancels registration
+  # @param [String] request_came_from the controller/action the request came from
+  def user_registration_cancellation(request_came_from:, **extra)
+    track_event(
+      'User registration: cancellation visited',
+      request_came_from: request_came_from,
+      **extra,
+    )
+  end
+
+  # Tracks when user completes registration
+  # @param [Boolean] ial2
+  # @param [Boolean] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_complete(
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+  )
+    track_event(
+      'User registration: complete',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
+  # Tracks when user submits registration email
+  # @param [Boolean] success
+  # @param [Boolean] throttled
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  # @param [String] domain_name
+  def user_registration_email(
+    success:,
+    throttled:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    domain_name: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Submitted',
+      {
+        success: success,
+        throttled: throttled,
+        errors: errors,
+        error_details: error_details,
+        user_id: user_id,
+        domain_name: domain_name,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user confirms registration email
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  def user_registration_email_confirmation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Confirmation',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
       **extra,
     )
   end

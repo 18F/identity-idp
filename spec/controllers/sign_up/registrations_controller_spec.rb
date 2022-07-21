@@ -51,7 +51,7 @@ describe SignUp::RegistrationsController, devise: true do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+          with('User Registration: Email Submitted', analytics_hash)
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
@@ -99,7 +99,7 @@ describe SignUp::RegistrationsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+        with('User Registration: Email Submitted', analytics_hash)
       expect(subject).to_not receive(:create_user_event)
 
       post :create, params: { user: { email: 'TEST@example.com ', terms_accepted: '1' } }
@@ -119,7 +119,7 @@ describe SignUp::RegistrationsController, devise: true do
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+        with('User Registration: Email Submitted', analytics_hash)
 
       post :create, params: { user: { email: 'invalid@', request_id: '', terms_accepted: '1' } }
     end

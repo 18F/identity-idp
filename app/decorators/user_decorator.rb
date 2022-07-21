@@ -79,9 +79,9 @@ class UserDecorator
 
   def qrcode(otp_secret_key)
     options = {
-      issuer: 'Login.gov',
+      issuer: APP_NAME,
       otp_secret_key: otp_secret_key,
-      digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+      digits: TwoFactorAuthenticatable::OTP_LENGTH,
       interval: IdentityConfig.store.totp_code_interval,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)

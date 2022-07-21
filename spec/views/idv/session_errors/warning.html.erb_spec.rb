@@ -3,15 +3,12 @@ require 'rails_helper'
 describe 'idv/session_errors/warning.html.erb' do
   let(:sp_name) { nil }
   let(:remaining_attempts) { 5 }
-  let(:in_person_proofing_enabled) { false }
   let(:user_session) { {} }
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     allow(view).to receive(:user_session).and_return(user_session)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
-      and_return(in_person_proofing_enabled)
 
     assign(:remaining_attempts, remaining_attempts)
 

@@ -59,7 +59,7 @@ module Users
     end
 
     def timeout
-      analytics.track_event(Analytics::SESSION_TIMED_OUT)
+      analytics.session_timed_out
       request_id = sp_session[:request_id]
       sign_out
       flash[:info] = t(

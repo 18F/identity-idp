@@ -135,22 +135,10 @@ class Analytics
     Time.zone.parse(value)
   end
 
-  # rubocop:disable Layout/LineLength
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  BACKUP_CODE_DELETED = 'Backup Code Delete'
-  BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'
-  BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'
-  SAML_AUTH = 'SAML Auth'
-  SESSION_TIMED_OUT = 'Session Timed Out'
   SP_REDIRECT_INITIATED = 'SP redirect initiated'
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'
   THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'
-  USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'
-  USER_REGISTRATION_COMPLETE = 'User registration: complete'
-  USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'
-  USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
-  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'
 end
-# rubocop:enable Layout/LineLength

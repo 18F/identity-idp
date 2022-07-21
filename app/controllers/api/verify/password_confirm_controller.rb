@@ -12,7 +12,7 @@ module Api
           store_session_last_gpo_code(form.gpo_code)
           render json: {
             personal_key: personal_key,
-            completion_url: completion_url(result),
+            completion_url: completion_url(result, user),
           }
         else
           render_errors(result.errors)
@@ -42,14 +42,22 @@ module Api
         ProofingComponent.create_or_find_by(user: user).update(verified_at: Time.zone.now)
       end
 
-      def completion_url(result)
+      def completion_url(result, user)
         if result.extra[:profile_pending]
           idv_come_back_later_url
+        elsif in_person_enrollment?(user)
+          idv_in_person_ready_to_verify_url
         elsif current_sp
           sign_up_completed_url
         else
           account_url
         end
+      end
+
+      def in_person_enrollment?(user)
+        return false unless IdentityConfig.store.in_person_proofing_enabled
+        # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
+        ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
     end
   end

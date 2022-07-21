@@ -82,6 +82,8 @@ doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: false
+enable_numeric_authentication_otp: true
+enable_numeric_authentication_otp_input: true
 enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -103,7 +105,9 @@ idv_private_key: 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlCT2dJQkFBSkJBS3
 idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_sp_required: false
-in_person_proofing_enabled: true
+in_person_proofing_enabled: false
+in_person_proofing_enabled_issuers: '[]'
+in_person_enrollment_validity_in_days: 30
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -298,6 +302,7 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
+  in_person_proofing_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
@@ -365,12 +370,13 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
+  enable_numeric_authentication_otp: false
+  enable_numeric_authentication_otp_input: false
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
-  in_person_proofing_enabled: false
   irs_attempt_api_public_key: change-me-pls
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false

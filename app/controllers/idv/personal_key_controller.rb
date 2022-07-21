@@ -33,10 +33,12 @@ module Idv
     end
 
     def next_step
-      if session[:sp] && !pending_profile?
-        sign_up_completed_url
-      elsif pending_profile? && idv_session.address_verification_mechanism == 'gpo'
+      if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
         idv_come_back_later_url
+      elsif in_person_enrollment?
+        idv_in_person_ready_to_verify_url
+      elsif session[:sp] && !pending_profile?
+        sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
       end
@@ -70,6 +72,12 @@ module Idv
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def pending_profile?

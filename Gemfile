@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby "~> #{File.read('.ruby-version').strip}"
 
-gem 'rails', '~> 6.1.5.1'
+gem 'rails', '~> 6.1.6.1'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'aws-sdk-kms', '~> 1.4'
@@ -11,6 +11,7 @@ gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-sns'
+gem 'barby', '~> 0.6.8'
 gem 'base32-crockford'
 gem 'blueprinter', '~> 0.25.3'
 gem 'bootsnap', '~> 1.9.0', require: false
@@ -23,7 +24,6 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'good_job', '~> 2.7.0'
 gem 'hashie', '~> 4.1'
-gem 'hiredis', '~> 0.6.0'
 gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v3.4.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
@@ -80,7 +80,7 @@ group :development do
   gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
-  gem 'octokit'
+  gem 'octokit', '>= 4.25.0'
   gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end

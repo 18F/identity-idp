@@ -214,6 +214,10 @@ module Features
       create(:user, :signed_up, with: { phone: '+1 202-555-1212' }, password: VALID_PASSWORD)
     end
 
+    def user_with_totp_2fa
+      create(:user, :signed_up, :with_authentication_app, password: VALID_PASSWORD)
+    end
+
     def user_with_aal3_2fa
       create(:user, :signed_up, :with_webauthn, password: VALID_PASSWORD)
     end
@@ -264,6 +268,11 @@ module Features
     def fill_in_code_with_last_phone_otp
       accept_rules_of_use_and_continue_if_displayed
       fill_in I18n.t('forms.two_factor.code'), with: last_phone_otp
+    end
+
+    def fill_in_code_with_last_totp(user)
+      accept_rules_of_use_and_continue_if_displayed
+      fill_in I18n.t('forms.two_factor.code'), with: last_totp(user)
     end
 
     def accept_rules_of_use_and_continue_if_displayed

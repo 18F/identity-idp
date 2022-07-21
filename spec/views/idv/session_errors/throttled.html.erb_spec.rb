@@ -2,15 +2,23 @@ require 'rails_helper'
 
 describe 'idv/session_errors/throttled.html.erb' do
   let(:sp_name) { nil }
+  let(:sp_issuer) { nil }
   let(:liveness_checking_enabled) { false }
   let(:in_person_proofing_enabled) { false }
+  let(:in_person_proofing_enabled_issuers) { [] }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
+    decorated_session = instance_double(
+      ServiceProviderSessionDecorator,
+      sp_name: sp_name,
+      sp_issuer: sp_issuer,
+    )
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     allow(view).to receive(:liveness_checking_enabled?).and_return(liveness_checking_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
+      and_return(in_person_proofing_enabled_issuers)
 
     render
   end
@@ -23,10 +31,22 @@ describe 'idv/session_errors/throttled.html.erb' do
       )
       expect(rendered).not_to have_link(href: return_to_sp_cancel_path)
     end
+
+    context 'with in person proofing enabled' do
+      let(:in_person_proofing_enabled) { true }
+
+      it 'renders an in person proofing link' do
+        expect(rendered).to have_link(
+          t('idv.troubleshooting.options.verify_in_person'),
+          href: idv_in_person_url,
+        )
+      end
+    end
   end
 
   context 'with an SP' do
     let(:sp_name) { 'Example SP' }
+    let(:sp_issuer) { 'example-issuer' }
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
@@ -37,6 +57,25 @@ describe 'idv/session_errors/throttled.html.erb' do
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
         href: return_to_sp_failure_to_proof_path(step: 'verify_info', location: 'throttled'),
       )
+    end
+
+    context 'with in person proofing enabled' do
+      let(:in_person_proofing_enabled) { true }
+
+      it 'does not render an in person proofing link' do
+        expect(rendered).not_to have_link(href: idv_in_person_url)
+      end
+
+      context 'with in person proofing enabled for SP' do
+        let(:in_person_proofing_enabled_issuers) { [sp_issuer] }
+
+        it 'renders an in person proofing link' do
+          expect(rendered).to have_link(
+            t('idv.troubleshooting.options.verify_in_person'),
+            href: idv_in_person_url,
+          )
+        end
+      end
     end
   end
 
@@ -61,17 +100,6 @@ describe 'idv/session_errors/throttled.html.erb' do
 
     it 'does not render an in person proofing link' do
       expect(rendered).not_to have_link(href: idv_in_person_url)
-    end
-  end
-
-  context 'with in person proofing enabled' do
-    let(:in_person_proofing_enabled) { true }
-
-    it 'renders an in person proofing link' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.verify_in_person'),
-        href: idv_in_person_url,
-      )
     end
   end
 end
