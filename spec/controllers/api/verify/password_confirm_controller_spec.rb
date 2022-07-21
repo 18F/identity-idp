@@ -89,7 +89,6 @@ describe Api::Verify::PasswordConfirmController do
           proofer = UspsInPersonProofing::Mock::Proofer.new
           mock = double
 
-          allow(mock).to receive(:retrieve_token!)
           expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
           expect(mock).to receive(:request_enroll) do |applicant|
             expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
