@@ -43,7 +43,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
 
@@ -77,7 +77,7 @@ describe Users::TotpSetupController, devise: true do
         }
 
         expect(@analytics).
-          to have_received(:track_event).with(Analytics::TOTP_SETUP_VISIT, properties)
+          to have_received(:track_event).with('TOTP Setup Visited', properties)
       end
     end
   end
@@ -334,7 +334,7 @@ describe Users::TotpSetupController, devise: true do
         expect(user.reload.auth_app_configurations.any?).to eq false
         expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
-        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
+        expect(@analytics).to have_received(:track_event).with('TOTP: User Disabled')
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
     end

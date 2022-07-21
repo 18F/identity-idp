@@ -173,6 +173,25 @@ module AnalyticsEvents
     )
   end
 
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -552,6 +571,13 @@ module AnalyticsEvents
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
       **extra,
+    )
+  end
+
+  def idv_doc_auth_randomizer_defaulted
+    track_event(
+      'IdV: doc_auth random vendor error',
+      error: 'document_capture_session_uuid_key missing',
     )
   end
 
@@ -1820,6 +1846,52 @@ module AnalyticsEvents
     track_event('SP inactive visited')
   end
 
+  # Tracks when a user is redirected back to the service provider
+  # @param [Integer] ial
+  # @param [Integer] billed_ial
+  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+    track_event(
+      'SP redirect initiated',
+      ial: ial,
+      billed_ial: billed_ial,
+      **extra,
+    )
+  end
+
+  # Tracks when a user triggered a rate limit throttle
+  # @param [String] throttle_type
+  def throttler_rate_limit_triggered(throttle_type:, **extra)
+    track_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: throttle_type,
+      **extra,
+    )
+  end
+
+  # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
+  def totp_setup_visit(
+    user_signed_up:,
+    totp_secret_present:,
+    enabled_mfa_methods_count:,
+    **extra
+  )
+    track_event(
+      'TOTP Setup Visited',
+      user_signed_up: user_signed_up,
+      totp_secret_present: totp_secret_present,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when a user disabled a TOTP device
+  def totp_user_disabled
+    track_event('TOTP: User Disabled')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1836,6 +1908,34 @@ module AnalyticsEvents
     track_event(
       'SP Revoke Consent: Visited',
       issuer: issuer,
+      **extra,
+    )
+  end
+
+  # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
       **extra,
     )
   end
@@ -1861,6 +1961,11 @@ module AnalyticsEvents
   # tracks if the session is kept alive
   def session_kept_alive
     track_event('Session Kept Alive')
+  end
+
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
   end
 
   # tracks when a user's session is timed out
@@ -2001,13 +2106,36 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Hash] pii_like_keypaths
+  # Tracks when a user has completed MFA setup
+  def user_registration_mfa_setup_complete(
+    success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'User Registration: MFA Setup Complete',
+      {
+        success: success,
+        mfa_method_counts: mfa_method_counts,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
+        **extra,
+      }.compact,
+    )
+  end
+
   # Tracks when user's piv cac is disabled
   def user_registration_piv_cac_disabled
     track_event('User Registration: piv cac disabled')
   end
 
   # Tracks when user's piv cac setup
-  # @param [Integer] enabled_mfa_methods_count
   def user_registration_piv_cac_setup_visit(**extra)
     track_event(
       'User Registration: piv cac setup visited',
@@ -2137,7 +2265,6 @@ module AnalyticsEvents
   # @param [Boolean] throttled
   # @param [Hash] errors
   # @param [Hash] error_details
-  # @param [Boolean] email_already_exists
   # @param [String] user_id
   # @param [String] domain_name
   def user_registration_email(

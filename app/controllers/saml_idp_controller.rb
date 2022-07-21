@@ -120,7 +120,7 @@ class SamlIdpController < ApplicationController
       finish_profile: profile_needs_verification?,
       requested_ial: requested_ial,
     )
-    analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+    analytics.saml_auth(**analytics_payload)
   end
 
   def log_external_saml_auth_request
@@ -162,8 +162,7 @@ class SamlIdpController < ApplicationController
   end
 
   def track_events
-    analytics.track_event(
-      Analytics::SP_REDIRECT_INITIATED,
+    analytics.sp_redirect_initiated(
       ial: ial_context.ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
     )

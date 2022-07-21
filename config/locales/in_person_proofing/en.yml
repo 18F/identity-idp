@@ -89,3 +89,26 @@ en:
       state_id: Enter the information on your ID
       update_address: Update your current address
       update_state_id: Update the information on your ID
+    process:
+      barcode:
+        caption_label: Enrollment code
+        heading: A copy of your barcode
+        image_alt: Barcode
+        info: Print or scan from your mobile device.
+      proof_of_address:
+        acceptable_proof:
+          - Lease, Mortgage, or Deed of Trust
+          - Voter Registration
+          - Vehicle Registration Card
+          - Home or Vehicle Insurance Policy
+        heading: Proof of your current address
+        info: 'You need a proof of address if your current address is different than the
+          address on your ID. Acceptable forms of proof of address are:'
+      state_id:
+        acceptable_documents:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
+        heading: Your state-issued ID
+        info: 'Your ID must not be expired. Acceptable forms of ID are:'
+        no_other_documents: We do not currently accept any other forms of
+          identification, such as passports and military IDs.

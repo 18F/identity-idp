@@ -94,6 +94,19 @@ describe Api::Verify::PasswordConfirmController do
 
           expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
         end
+
+        context 'with in person profile' do
+          before do
+            ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          end
+
+          it 'creates a profile and returns completion url' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+          end
+        end
       end
 
       context 'with gpo_code returned from form submission and reveal gpo feature enabled' do

@@ -43,10 +43,10 @@ module Api
       end
 
       def completion_url(result, user)
-        if in_person_enrollment?(user)
-          idv_in_person_ready_to_verify_url
-        elsif result.extra[:profile_pending]
+        if result.extra[:profile_pending]
           idv_come_back_later_url
+        elsif in_person_enrollment?(user)
+          idv_in_person_ready_to_verify_url
         elsif current_sp
           sign_up_completed_url
         else
@@ -56,7 +56,7 @@ module Api
 
       def in_person_enrollment?(user)
         return false unless IdentityConfig.store.in_person_proofing_enabled
-        # WILLFIX: After LG-6708 and we have enrollment saved, reference enrollment instead.
+        # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
     end
