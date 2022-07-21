@@ -65,7 +65,17 @@ describe Api::Verify::PasswordConfirmController do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        # todo add specs here too
+        context 'when in-person mocking is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+          end
+
+          it 'uses a real proofer' do
+            expect(UspsInPersonProofing::Proofer).to receive(:new).
+              and_return(UspsInPersonProofing::Mock::Proofer.new)
+            post :create, params: { password: password, user_bundle_token: jwt }
+          end
+        end
 
         it 'creates a profile and returns completion url' do
           post :create, params: { password: password, user_bundle_token: jwt }
@@ -73,6 +83,39 @@ describe Api::Verify::PasswordConfirmController do
           expect(JSON.parse(response.body)['completion_url']).to eq(
             idv_in_person_ready_to_verify_url,
           )
+        end
+
+        it 'creates a USPS enrollment' do
+          proofer = UspsInPersonProofing::Mock::Proofer.new
+          mock = double
+
+          allow(mock).to receive(:retrieve_token!)
+          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+          expect(mock).to receive(:request_enroll) do |applicant|
+            expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+            expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+            expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+            expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
+            expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+            expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
+            expect(applicant.email).to eq('no-reply@login.gov')
+            expect(applicant.unique_id).to be_a(String)
+
+            proofer.request_enroll(applicant)
+          end
+
+          post :create, params: { password: password, user_bundle_token: jwt }
+        end
+
+        it 'creates an in-person enrollment record' do
+          expect(InPersonEnrollment.count).to be(0)
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(InPersonEnrollment.count).to be(1)
+          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          expect(enrollment.status).to eq('pending')
+          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.enrollment_code).to be_a(String)
         end
       end
 
@@ -103,45 +146,10 @@ describe Api::Verify::PasswordConfirmController do
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           end
 
-          it 'uses a real proofer when the mock is disabled'
-
           it 'creates a profile and returns completion url' do
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
-          end
-
-          it 'creates a USPS enrollment' do
-            proofer = UspsInPersonProofing::Mock::Proofer.new
-            mock = double
-
-            allow(mock).to receive(:retrieve_token!)
-            expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
-            expect(mock).to receive(:request_enroll) do |applicant|
-              expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-              expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
-              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
-              expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
-              expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-              expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
-              expect(applicant.email).to eq('no-reply@login.gov')
-              expect(applicant.unique_id).to be_a(String)
-
-              proofer.request_enroll(applicant)
-            end
-
-            post :create, params: { password: password, user_bundle_token: jwt }
-          end
-
-          it 'creates an in-person enrollment record' do
-            expect(InPersonEnrollment.count).to be(0)
-            post :create, params: { password: password, user_bundle_token: jwt }
-
-            expect(InPersonEnrollment.count).to be(1)
-            enrollment = InPersonEnrollment.where(user_id: user.id).first
-            expect(enrollment.status).to eq('pending')
-            expect(enrollment.user_id).to eq(user.id)
-            expect(enrollment.enrollment_code).to be_a(String)
           end
         end
       end

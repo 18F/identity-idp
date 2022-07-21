@@ -69,20 +69,11 @@ module Api
         end
       end
 
-      def save_in_person_enrollment(user, profile)
-        return unless in_person_enrollment?(user)
-
-        # create an enrollment in the db
-        enrollment = InPersonEnrollment.create!(
-          profile: profile,
-          user: user,
-        )
-
-        # create enrollment in usps
+      def create_usps_enrollment(unique_id)
         pii = user_session[:idv][:pii]
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: enrollment.usps_unique_id,
+            unique_id: unique_id,
             first_name: pii.first_name,
             last_name: pii.last_name,
             address: pii.address1,
@@ -97,9 +88,21 @@ module Api
         proofer.retrieve_token!
         # todo: any error handling?
         response = proofer.request_enroll(applicant)
+        response['enrollmentCode']
+      end
+
+      def save_in_person_enrollment(user, profile)
+        return unless in_person_enrollment?(user)
+
+        enrollment = InPersonEnrollment.create!(
+          profile: profile,
+          user: user,
+        )
+
+        enrollment_code = create_usps_enrollment(enrollment.usps_unique_id)
 
         # update the enrollment to status pending
-        enrollment.enrollment_code = response['enrollmentCode']
+        enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
         enrollment.save!
 
