@@ -155,6 +155,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'produces appropriate errors without liveness' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       errors = output[:errors]
+
       expect(output.to_h[:failed_alert_results]).to eq(
         '1d_control_number_valid': 'Failed',
         '2d_barcode_content': 'Failed',
