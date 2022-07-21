@@ -117,6 +117,21 @@ describe Api::Verify::PasswordConfirmController do
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)
         end
+
+        it 'leaves the enrollment in establishing when no enrollment code is returned' do
+          proofer = UspsInPersonProofing::Mock::Proofer.new
+          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
+          expect(proofer).to receive(:request_enroll).and_return({})
+          expect(InPersonEnrollment.count).to be(0)
+
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(InPersonEnrollment.count).to be(1)
+          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          expect(enrollment.status).to eq('establishing')
+          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.enrollment_code).to be_nil
+        end
       end
 
       context 'with associated sp session' do

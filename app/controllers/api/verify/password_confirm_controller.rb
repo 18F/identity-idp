@@ -85,8 +85,7 @@ module Api
           },
         )
         proofer = usps_proofer
-        proofer.retrieve_token!
-        # todo: any error handling?
+
         response = proofer.request_enroll(applicant)
         response['enrollmentCode']
       end
@@ -100,14 +99,12 @@ module Api
         )
 
         enrollment_code = create_usps_enrollment(enrollment.usps_unique_id)
+        return unless enrollment_code
 
         # update the enrollment to status pending
         enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
         enrollment.save!
-
-        # todo: display error banner on failure? check if raised exception rolls back the profile
-        # creation
       end
     end
   end
