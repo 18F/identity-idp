@@ -206,6 +206,12 @@ else
         cron: cron_1m,
         args: -> { [Time.zone.now] },
       },
+      # Queue usps proofing job to GoodJob
+      get_usps_proofing_results_job: {
+        class: 'GetUspsProofingResultsJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
     }
   end
   # rubocop:enable Metrics/BlockLength

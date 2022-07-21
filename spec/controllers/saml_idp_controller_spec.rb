@@ -554,7 +554,7 @@ describe SamlIdpController do
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
           with(
-            Analytics::SP_REDIRECT_INITIATED,
+            'SP redirect initiated',
             ial: ial,
             billed_ial: [ial, 2].min,
           )
@@ -711,7 +711,7 @@ describe SamlIdpController do
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
           with(
-            Analytics::SP_REDIRECT_INITIATED,
+            'SP redirect initiated',
             ial: 0,
             billed_ial: 2,
           )
@@ -1876,7 +1876,7 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(
-            Analytics::SP_REDIRECT_INITIATED,
+            'SP redirect initiated',
             ial: 1,
             billed_ial: 1,
           )
@@ -1913,7 +1913,7 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).with('SAML Auth', analytics_hash)
         expect(@analytics).to receive(:track_event).
           with(
-            Analytics::SP_REDIRECT_INITIATED,
+            'SP redirect initiated',
             ial: 1,
             billed_ial: 1,
           )

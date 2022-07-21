@@ -6,6 +6,7 @@
 #
 module Api
   class IrsAttemptsApiController < ApplicationController
+    skip_before_action :verify_authenticity_token
     before_action :render_404_if_disabled
     before_action :authenticate_client
 

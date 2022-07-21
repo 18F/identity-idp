@@ -43,8 +43,7 @@ module Idv
     end
 
     def max_attempts_reached
-      analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      analytics.throttler_rate_limit_triggered(
         throttle_type: :proof_address,
         step_name: step_name,
       )

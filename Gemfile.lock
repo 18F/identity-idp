@@ -266,7 +266,7 @@ GEM
       smart_properties
     errbase (0.2.1)
     erubi (1.10.0)
-    et-orbi (1.2.6)
+    et-orbi (1.2.7)
       tzinfo
     execjs (2.8.1)
     factory_bot (6.2.0)
@@ -295,21 +295,23 @@ GEM
     faraday-net_http_persistent (1.2.0)
     faraday-patron (1.0.0)
     faraday-rack (1.0.0)
+    faraday_middleware (1.2.0)
+      faraday (~> 1.0)
     ffi (1.15.4)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
-    fugit (1.5.2)
-      et-orbi (~> 1.1, >= 1.1.8)
+    fugit (1.5.3)
+      et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
     geocoder (1.7.0)
     get_process_mem (0.2.7)
       ffi (~> 1.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
-    good_job (2.7.4)
+    good_job (2.99.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -341,7 +343,7 @@ GEM
     html_tokenizer (0.0.7)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    i18n (1.11.0)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.35)
       activesupport (>= 4.0.2)
@@ -633,7 +635,7 @@ GEM
     tpm-key_attestation (0.10.0)
       bindata (~> 2.4)
       openssl-signature_algorithm (~> 1.0)
-    tzinfo (2.0.4)
+    tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
@@ -690,7 +692,7 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.26)
-    zeitwerk (2.5.4)
+    zeitwerk (2.6.0)
     zonebie (0.6.1)
     zxcvbn (0.1.7)
 
@@ -729,8 +731,9 @@ DEPENDENCIES
   factory_bot_rails (>= 5.2.0)
   faker
   faraday
+  faraday_middleware
   foundation_emails
-  good_job (~> 2.7.0)
+  good_job (~> 2.99.0)
   guard-rspec
   hashie (~> 4.1)
   http_accept_language
