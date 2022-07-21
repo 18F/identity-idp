@@ -69,11 +69,11 @@ module Api
         end
       end
 
-      def create_usps_enrollment(unique_id)
+      def create_usps_enrollment(enrollment)
         pii = user_session[:idv][:pii]
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: unique_id,
+            unique_id: enrollment.usps_unique_id,
             first_name: pii.first_name,
             last_name: pii.last_name,
             address: pii.address1,
@@ -98,7 +98,7 @@ module Api
           user: user,
         )
 
-        enrollment_code = create_usps_enrollment(enrollment.usps_unique_id)
+        enrollment_code = create_usps_enrollment(enrollment)
         return unless enrollment_code
 
         # update the enrollment to status pending
