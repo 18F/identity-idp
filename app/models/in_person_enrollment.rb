@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
@@ -35,6 +37,10 @@ class InPersonEnrollment < ApplicationRecord
   # Returns the value to use for the USPS enrollment ID
   def usps_unique_id
     user.uuid.delete('-').slice(0, 18)
+  end
+
+  def self.generate_unique_id
+    SecureRandom.hex(9)
   end
 
   private

@@ -26,7 +26,9 @@ class GetUspsProofingResultsJob < ApplicationJob
     InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
       # Record and commit attempt to check enrollment status to database
       enrollment.update(status_check_attempted_at: Time.zone.now)
-      unique_id = enrollment.usps_unique_id
+      unique_id = enrollment.generate_unique_id
+      new_enrollment = InPersonEnrollment.new(unique_id: unique_id,)
+      
       response = nil
 
       begin
