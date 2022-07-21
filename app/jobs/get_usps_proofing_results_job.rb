@@ -52,8 +52,8 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   private
 
-  def analytics
-    @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, session: {}, sp: nil)
+  def analytics(user: AnonymousUser.new)
+    Analytics.new(user: user, request: nil, session: {}, sp: nil)
   end
 
   def handle_bad_request_error(err, enrollment)
@@ -64,7 +64,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # Customer's IPP enrollment has expired
       enrollment.update(status: :expired)
     else
-      analytics.idv_in_person_usps_proofing_results_job_exception(
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         reason: 'Request exception',
         enrollment_id: enrollment.id,
         exception_class: err.class.to_s,
@@ -74,7 +74,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_standard_error(err, enrollment)
-    analytics.idv_in_person_usps_proofing_results_job_exception(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       reason: 'Request exception',
       enrollment_id: enrollment.id,
       exception_class: err.class.to_s,
@@ -83,14 +83,14 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_response_is_not_a_hash(enrollment)
-    analytics.idv_in_person_usps_proofing_results_job_exception(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       reason: 'Bad response structure',
       enrollment_id: enrollment.id,
     )
   end
 
   def handle_unsupported_status(enrollment, status)
-    analytics.idv_in_person_usps_proofing_results_job_enrollment_failure(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Unsupported status',
       enrollment_id: enrollment.id,
       status: status,
@@ -98,7 +98,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_unsupported_id_type(enrollment, primary_id_type)
-    analytics.idv_in_person_usps_proofing_results_job_enrollment_failure(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Unsupported ID type',
       enrollment_id: enrollment.id,
       primary_id_type: primary_id_type,
@@ -106,7 +106,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_failed_status(enrollment, response)
-    analytics.idv_in_person_usps_proofing_results_job_enrollment_failure(
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Failed status',
       enrollment_id: enrollment.id,
       failure_reason: response['failureReason'],
