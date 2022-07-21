@@ -192,6 +192,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_pending_in_person_enrollment do
+      after :build do |user|
+        create(:in_person_enrollment, :pending, user: user)
+      end
+    end
+
     trait :deactivated_password_reset_profile do
       signed_up
 
