@@ -4,6 +4,11 @@ RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
 
   let(:job) { GetUspsProofingResultsJob.new }
+  let(:job_analytics) { FakeAnalytics.new }
+
+  before do
+    allow(job).to receive(:analytics).and_return(job_analytics)
+  end
 
   describe '#perform' do
     describe 'IPP enabled' do
@@ -93,38 +98,28 @@ RSpec.describe GetUspsProofingResultsJob do
         stub_request_failed_proofing_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return([pending_enrollment])
-
-        # see request_failed_proofing_supported_id_results_response.json
-        expect(IdentityJobLogSubscriber.logger).to receive(:warn).
-            with(
-              satisfy do |event|
-                expect(event).to be_instance_of(String)
-                parsed_event = JSON.parse(event)
-                expect(parsed_event).to be_instance_of(Hash).
-                and include(
-                  'name' => 'get_usps_proofing_results_job.errors.failed_status',
-                  'enrollment_id' => pending_enrollment.id,
-                  'failure_reason' => 'Clerk indicates that ID name or address' \
-                                      ' does not match source data.',
-                  'fraud_suspected' => false,
-                  'primary_id_type' => 'Uniformed Services identification card',
-                  'proofing_city' => 'WILKES BARRE',
-                  'proofing_confirmation_number' => '350040248346707',
-                  'proofing_post_office' => 'WILKES BARRE',
-                  'proofing_state' => 'PA',
-                  'secondary_id_type' => 'Deed of Trust',
-                  'transaction_end_date_time' => '12/17/2020 034055',
-                  'transaction_start_date_time' => '12/17/2020 033855',
-                )
-              end,
-            )
+          and_return([pending_enrollment])
 
         job.perform(Time.zone.now)
 
         pending_enrollment.reload
 
         expect(pending_enrollment.failed?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Enrollment failed proofing',
+          reason: 'Failed status',
+          enrollment_id: pending_enrollment.id,
+          failure_reason: 'Clerk indicates that ID name or address does not match source data.',
+          fraud_suspected: false,
+          primary_id_type: 'Uniformed Services identification card',
+          proofing_city: 'WILKES BARRE',
+          proofing_post_office: 'WILKES BARRE',
+          proofing_state: 'PA',
+          secondary_id_type: 'Deed of Trust',
+          transaction_end_date_time: '12/17/2020 034055',
+          transaction_start_date_time: '12/17/2020 033855',
+        )
       end
 
       it 'updates enrollment records on 2xx responses with valid JSON' do
@@ -146,31 +141,58 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
-      it 'reports a high-priority error on 2xx responses with invalid JSON' do
+      it 'receives a non-hash value' do
         stub_request_token
-        stub_request_proofing_results_with_invalid_response
+        stub_request_proofing_results_with_responses({})
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Exception raised',
+          reason: 'Bad response structure',
+          enrollment_id: pending_enrollment.id,
+        )
+      end
+
+      it 'receives an unsupported status' do
+        stub_request_token
+        stub_request_passed_proofing_unsupported_status_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return([pending_enrollment])
-
-        expect(IdentityJobLogSubscriber.logger).to receive(:error).
-            with(
-              satisfy do |event|
-                expect(event).to be_instance_of(String)
-                parsed_event = JSON.parse(event)
-                expect(parsed_event).to be_instance_of(Hash).
-                and include(
-                  'name' => 'get_usps_proofing_results_job.errors.request_exception',
-                  'enrollment_id' => pending_enrollment.id,
-                )
-              end,
-            )
+          and_return([pending_enrollment])
 
         job.perform(Time.zone.now)
 
         pending_enrollment.reload
 
         expect(pending_enrollment.pending?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Enrollment failed proofing',
+          reason: 'Unsupported status',
+          enrollment_id: pending_enrollment.id,
+          status: 'Not supported',
+        )
+      end
+
+      it 'reports a high-priority error on 2xx responses with invalid JSON' do
+        stub_request_token
+        stub_request_proofing_results_with_invalid_response
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        job.perform(Time.zone.now)
+
+        pending_enrollment.reload
+
+        expect(pending_enrollment.pending?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Exception raised',
+          reason: 'Request exception',
+          enrollment_id: pending_enrollment.id,
+        )
       end
 
       it 'reports a low-priority error on 4xx responses' do
@@ -178,26 +200,19 @@ RSpec.describe GetUspsProofingResultsJob do
         stub_request_proofing_results_with_responses({ status: 400 })
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return([pending_enrollment])
-
-        expect(IdentityJobLogSubscriber.logger).to receive(:warn).
-            with(
-              satisfy do |event|
-                expect(event).to be_instance_of(String)
-                parsed_event = JSON.parse(event)
-                expect(parsed_event).to be_instance_of(Hash).
-                and include(
-                  'name' => 'get_usps_proofing_results_job.errors.request_exception',
-                  'enrollment_id' => pending_enrollment.id,
-                )
-              end,
-            )
+          and_return([pending_enrollment])
 
         job.perform(Time.zone.now)
 
         pending_enrollment.reload
 
         expect(pending_enrollment.pending?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Exception raised',
+          reason: 'Request exception',
+          enrollment_id: pending_enrollment.id,
+        )
       end
 
       it 'marks enrollments as expired when USPS says they have expired' do
@@ -229,26 +244,19 @@ RSpec.describe GetUspsProofingResultsJob do
         stub_request_proofing_results_with_responses({ status: 500 })
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return([pending_enrollment])
-
-        expect(IdentityJobLogSubscriber.logger).to receive(:error).
-            with(
-              satisfy do |event|
-                expect(event).to be_instance_of(String)
-                parsed_event = JSON.parse(event)
-                expect(parsed_event).to be_instance_of(Hash).
-                and include(
-                  'name' => 'get_usps_proofing_results_job.errors.request_exception',
-                  'enrollment_id' => pending_enrollment.id,
-                )
-              end,
-            )
+          and_return([pending_enrollment])
 
         job.perform(Time.zone.now)
 
         pending_enrollment.reload
 
         expect(pending_enrollment.pending?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Exception raised',
+          reason: 'Request exception',
+          enrollment_id: pending_enrollment.id,
+        )
       end
 
       it 'fails enrollment for unsupported ID types' do
@@ -256,27 +264,20 @@ RSpec.describe GetUspsProofingResultsJob do
         stub_request_passed_proofing_unsupported_id_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-              and_return([pending_enrollment])
-
-        expect(IdentityJobLogSubscriber.logger).to receive(:warn).
-            with(
-              satisfy do |event|
-                expect(event).to be_instance_of(String)
-                parsed_event = JSON.parse(event)
-                expect(parsed_event).to be_instance_of(Hash).
-                and include(
-                  'name' => 'get_usps_proofing_results_job.errors.unsupported_id_type',
-                  'enrollment_id' => pending_enrollment.id,
-                  'primary_id_type' => 'Not supported',
-                )
-              end,
-            )
+          and_return([pending_enrollment])
 
         expect(pending_enrollment.pending?).to be_truthy
 
         job.perform Time.zone.now
 
         expect(pending_enrollment.reload.failed?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Enrollment failed proofing',
+          reason: 'Unsupported ID type',
+          enrollment_id: pending_enrollment.id,
+          primary_id_type: 'Not supported',
+        )
       end
     end
 

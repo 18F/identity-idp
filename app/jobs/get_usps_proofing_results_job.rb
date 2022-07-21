@@ -52,6 +52,10 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   private
 
+  def analytics(user: AnonymousUser.new)
+    Analytics.new(user: user, request: nil, session: {}, sp: nil)
+  end
+
   def handle_bad_request_error(err, enrollment)
     case err.response&.[](:body)&.[]('responseMessage')
     when IPP_INCOMPLETE_ERROR_MESSAGE
@@ -60,79 +64,60 @@ class GetUspsProofingResultsJob < ApplicationJob
       # Customer's IPP enrollment has expired
       enrollment.update(status: :expired)
     else
-      IdentityJobLogSubscriber.logger.warn(
-        {
-          name: 'get_usps_proofing_results_job.errors.request_exception',
-          enrollment_id: enrollment.id,
-          exception: {
-            class: err.class.to_s,
-            message: err.message,
-            backtrace: err.backtrace,
-          },
-        }.to_json,
+      analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+        reason: 'Request exception',
+        enrollment_id: enrollment.id,
+        exception_class: err.class.to_s,
+        exception_message: err.message,
       )
     end
   end
 
   def handle_standard_error(err, enrollment)
-    IdentityJobLogSubscriber.logger.error(
-      {
-        name: 'get_usps_proofing_results_job.errors.request_exception',
-        enrollment_id: enrollment.id,
-        exception: {
-          class: err.class.to_s,
-          message: err.message,
-          backtrace: err.backtrace,
-        },
-      }.to_json,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      reason: 'Request exception',
+      enrollment_id: enrollment.id,
+      exception_class: err.class.to_s,
+      exception_message: err.message,
     )
   end
 
   def handle_response_is_not_a_hash(enrollment)
-    IdentityJobLogSubscriber.logger.error(
-      {
-        name: 'get_usps_proofing_results_job.errors.bad_response_structure',
-        enrollment_id: enrollment.id,
-      }.to_json,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      reason: 'Bad response structure',
+      enrollment_id: enrollment.id,
     )
   end
 
   def handle_unsupported_status(enrollment, status)
-    IdentityJobLogSubscriber.logger.error(
-      {
-        name: 'get_usps_proofing_results_job.errors.unsupported_status',
-        enrollment_id: enrollment.id,
-        status: status,
-      }.to_json,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
+      reason: 'Unsupported status',
+      enrollment_id: enrollment.id,
+      status: status,
     )
   end
 
   def handle_unsupported_id_type(enrollment, primary_id_type)
-    IdentityJobLogSubscriber.logger.warn(
-      {
-        name: 'get_usps_proofing_results_job.errors.unsupported_id_type',
-        enrollment_id: enrollment.id,
-        primary_id_type: primary_id_type,
-      }.to_json,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
+      reason: 'Unsupported ID type',
+      enrollment_id: enrollment.id,
+      primary_id_type: primary_id_type,
     )
   end
 
   def handle_failed_status(enrollment, response)
-    IdentityJobLogSubscriber.logger.warn(
-      {
-        name: 'get_usps_proofing_results_job.errors.failed_status',
-        enrollment_id: enrollment.id,
-        failure_reason: response['failureReason'],
-        fraud_suspected: response['fraudSuspected'],
-        primary_id_type: response['primaryIdType'],
-        proofing_city: response['proofingCity'],
-        proofing_confirmation_number: response['proofingConfirmationNumber'],
-        proofing_post_office: response['proofingPostOffice'],
-        proofing_state: response['proofingState'],
-        secondary_id_type: response['secondaryIdType'],
-        transaction_end_date_time: response['transactionEndDateTime'],
-        transaction_start_date_time: response['transactionStartDateTime'],
-      }.to_json,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
+      reason: 'Failed status',
+      enrollment_id: enrollment.id,
+      failure_reason: response['failureReason'],
+      fraud_suspected: response['fraudSuspected'],
+      primary_id_type: response['primaryIdType'],
+      proofing_city: response['proofingCity'],
+      proofing_post_office: response['proofingPostOffice'],
+      proofing_state: response['proofingState'],
+      secondary_id_type: response['secondaryIdType'],
+      transaction_end_date_time: response['transactionEndDateTime'],
+      transaction_start_date_time: response['transactionStartDateTime'],
     )
   end
 

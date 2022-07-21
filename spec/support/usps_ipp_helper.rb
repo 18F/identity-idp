@@ -39,6 +39,13 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_passed_proofing_unsupported_status_results
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      status: 200,
+      body: UspsIppFixtures.request_passed_proofing_unsupported_status_results_response,
+    )
+  end
+
   def stub_request_passed_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 200, body: UspsIppFixtures.request_passed_proofing_results_response,
