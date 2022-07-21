@@ -30,6 +30,10 @@ module IdvHelper
     click_spinner_button_and_wait t('forms.buttons.continue')
   end
 
+  def click_idv_select
+    click_select_button_and_wait t('in_person_proofing.body.location.location_button')
+  end
+  
   def choose_idv_otp_delivery_method_sms
     page.find(
       'label',
