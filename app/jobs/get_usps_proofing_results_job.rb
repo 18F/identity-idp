@@ -21,7 +21,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def perform(_now)
     return true unless IdentityConfig.store.in_person_proofing_enabled
 
-    proofer = UspsInPersonProofer.new
+    proofer = UspsInPersonProofing::Proofer.new
 
     InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
       # Record and commit attempt to check enrollment status to database
