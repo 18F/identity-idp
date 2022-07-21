@@ -152,7 +152,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when response is not a success' do
-    it 'it produces appropriate errors without liveness' do
+    it 'produces appropriate errors without liveness' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       errors = output[:errors]
       expect(output.to_h[:failed_alert_results]).to eq(
@@ -170,7 +170,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
 
-    it 'it produces appropriate errors with liveness' do
+    it 'produces appropriate errors with liveness' do
       output = described_class.new(failure_response_with_liveness, true, config).to_h
       errors = output[:errors]
 
@@ -268,7 +268,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when response is unexpected' do
-    it 'it produces reasonable output for communications error' do
+    it 'produces reasonable output for communications error' do
       output = described_class.new(communications_error_response, false, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -277,7 +277,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:vendor]).to eq('TrueID')
     end
 
-    it 'it produces reasonable output for internal application error' do
+    it 'produces reasonable output for internal application error' do
       output = described_class.new(internal_application_error_response, false, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -285,7 +285,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
     end
 
-    it 'it produces reasonable output for a TrueID failure without details' do
+    it 'produces reasonable output for a TrueID failure without details' do
       output = described_class.new(failure_response_empty, false, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -297,7 +297,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:vendor]).to eq('TrueID')
     end
 
-    it 'it produces reasonable output for a malformed TrueID response' do
+    it 'produces reasonable output for a malformed TrueID response' do
       output = described_class.new(failure_response_malformed, false, config).to_h
 
       expect(output[:success]).to eq(false)
