@@ -23,7 +23,9 @@ module UspsInPersonProofing
       # it expires (15 minutes).
       # @return [Hash] API response
       def request_token
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_token_response.json')
+        JSON.load_file(
+          Rails.root.join('spec/fixtures/usps_ipp_responses/request_token_response.json'),
+        )
       end
 
       # Makes HTTP request to get nearby in-person proofing facilities
@@ -37,8 +39,8 @@ module UspsInPersonProofing
       end
 
       # Makes HTTP request to enroll an applicant in in-person proofing.
-      # Requires first name, last name, address, city, state, zip code, email address and a generated
-      # unique ID. The unique ID must be no longer than 18 characters.
+      # Requires first name, last name, address, city, state, zip code, email address and a
+      # generated unique ID. The unique ID must be no longer than 18 characters.
       # USPS sends an email to the email address with instructions and the enrollment code.
       # The API response also includes the enrollment code which should be
       # stored with the unique ID to be able to request the status of proofing.
@@ -46,7 +48,9 @@ module UspsInPersonProofing
       # @return [Hash] API response
       def request_enroll(_applicant)
         # todo: return fake results here, including test error cases
-        JSON.load_file(Rails.root.join 'spec/fixtures/usps_ipp_responses/request_enroll_response.json')
+        JSON.load_file(
+          Rails.root.join('spec/fixtures/usps_ipp_responses/request_enroll_response.json'),
+        )
       end
 
       # Makes HTTP request to retrieve proofing status
@@ -86,8 +90,8 @@ module UspsInPersonProofing
 
       # Makes HTTP request to retrieve enrollment code
       # If an applicant has a currently valid enrollment code, it will be returned.
-      # If they do not, a new one will be generated and returned. USPS sends the applicant an email with
-      # instructions and the enrollment code.
+      # If they do not, a new one will be generated and returned. USPS sends the applicant an email
+      # with instructions and the enrollment code.
       # Requires the applicant's unique ID.
       # @param unique_id [String]
       # @return [Hash] API response

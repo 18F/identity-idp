@@ -93,13 +93,16 @@ module Api
         response = proofer.request_enroll(applicant)
 
         # create an enrollment in the db
-        # todo: if this fails we could conveivably retry by querying the enrollment code from the USPS api. So may be create an upsert-like helper function to get an existing enrollment or create one if it doesn't exist
+        # todo: if this fails we could conveivably retry by querying the enrollment code from the
+        # USPS api. So may be create an upsert-like helper function to get an existing enrollment
+        # or create one if it doesn't exist
         enrollment_code = response['enrollmentCode']
         InPersonEnrollment.create!(
           user: user, enrollment_code: enrollment_code,
           status: :pending, profile: profile
         )
-        # todo: display error banner on failure? check if raised exception rolls back the profile creation
+        # todo: display error banner on failure? check if raised exception rolls back the profile
+        # creation
       end
     end
   end

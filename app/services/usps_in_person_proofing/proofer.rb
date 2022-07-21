@@ -80,8 +80,8 @@ module UspsInPersonProofing
 
     # Makes HTTP request to retrieve enrollment code
     # If an applicant has a currently valid enrollment code, it will be returned.
-    # If they do not, a new one will be generated and returned. USPS sends the applicant an email with
-    # instructions and the enrollment code.
+    # If they do not, a new one will be generated and returned. USPS sends the applicant an email
+    # with instructions and the enrollment code.
     # Requires the applicant's unique ID.
     # @param unique_id [String]
     # @return [Hash] API response
