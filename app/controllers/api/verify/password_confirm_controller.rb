@@ -35,46 +35,6 @@ module Api
         session[:last_gpo_confirmation_code] = code if code && FeatureManagement.reveal_gpo_code?
       end
 
-      def usps_proofer
-        if IdentityConfig.store.usps_mock_fallback
-          UspsInPersonProofing::Mock::Proofer.new
-        else
-          UspsInPersonProofing::Proofer.new
-        end
-      end
-
-      def save_in_person_enrollment(user, profile)
-        return unless in_person_enrollment?(user)
-
-        # create usps proofer
-        proofer = usps_proofer
-        # get token
-        proofer.retrieve_token!
-        # create applicant object
-        applicant = UspsInPersonProofing::Applicant.new(
-          {
-            unique_id: user.uuid.delete('-').slice(0, 18),
-            first_name: user_session[:idv][:pii].first_name,
-            last_name: user_session[:idv][:pii].last_name,
-            address: user_session[:idv][:pii].address1,
-            # do we need address2?
-            city: user_session[:idv][:pii].city,
-            state: user_session[:idv][:pii].state,
-            zip_code: user_session[:idv][:pii].zipcode,
-            email: 'not-used@so-so.com',
-          },
-        )
-        # create enrollment in usps
-        response = proofer.request_enroll(applicant)
-        # create an enrollment in the db. if this fails we could conveivably retry by querying the enrollment code from the USPS api. So may be create an upsert-like helper function to get an existing enrollment or create one if it doesn't exist
-        enrollment_code = response['enrollmentCode']
-        InPersonEnrollment.create!(
-          user: user, enrollment_code: enrollment_code,
-          status: :pending, profile: profile
-        )
-        # todo: display error banner on failure
-      end
-
       def verify_params
         params.permit(:password, :user_bundle_token)
       end
@@ -99,6 +59,47 @@ module Api
         return false unless IdentityConfig.store.in_person_proofing_enabled
         # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
+      end
+
+      def usps_proofer
+        if IdentityConfig.store.usps_mock_fallback
+          UspsInPersonProofing::Mock::Proofer.new
+        else
+          UspsInPersonProofing::Proofer.new
+        end
+      end
+
+      def save_in_person_enrollment(user, profile)
+        return unless in_person_enrollment?(user)
+
+        # create enrollment in usps
+        pii = user_session[:idv][:pii]
+        applicant = UspsInPersonProofing::Applicant.new(
+          {
+            unique_id: user.uuid.delete('-').slice(0, 18),
+            first_name: pii.first_name,
+            last_name: pii.last_name,
+            address: pii.address1,
+            # do we need address2?
+            city: pii.city,
+            state: pii.state,
+            zip_code: pii.zipcode,
+            email: 'no-reply@login.gov',
+          },
+        )
+        proofer = usps_proofer
+        proofer.retrieve_token!
+        # todo: any error handling?
+        response = proofer.request_enroll(applicant)
+
+        # create an enrollment in the db
+        # todo: if this fails we could conveivably retry by querying the enrollment code from the USPS api. So may be create an upsert-like helper function to get an existing enrollment or create one if it doesn't exist
+        enrollment_code = response['enrollmentCode']
+        InPersonEnrollment.create!(
+          user: user, enrollment_code: enrollment_code,
+          status: :pending, profile: profile
+        )
+        # todo: display error banner on failure? check if raised exception rolls back the profile creation
       end
     end
   end
