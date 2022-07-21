@@ -6,7 +6,6 @@ module Idv
       go_back_path
       idv_phone_step_document_capture_session_uuid
       idv_gpo_document_capture_session_uuid
-      in_person_proofing
       vendor_phone_confirmation
       user_phone_confirmation
       pii
