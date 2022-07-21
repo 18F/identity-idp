@@ -72,11 +72,17 @@ module Api
       def save_in_person_enrollment(user, profile)
         return unless in_person_enrollment?(user)
 
+        # create an enrollment in the db
+        enrollment = InPersonEnrollment.create!(
+          profile: profile,
+          user: user,
+        )
+
         # create enrollment in usps
         pii = user_session[:idv][:pii]
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: user.uuid.delete('-').slice(0, 18),
+            unique_id: enrollment.usps_unique_id,
             first_name: pii.first_name,
             last_name: pii.last_name,
             address: pii.address1,
@@ -92,15 +98,11 @@ module Api
         # todo: any error handling?
         response = proofer.request_enroll(applicant)
 
-        # create an enrollment in the db
-        # todo: if this fails we could conveivably retry by querying the enrollment code from the
-        # USPS api. So may be create an upsert-like helper function to get an existing enrollment
-        # or create one if it doesn't exist
-        enrollment_code = response['enrollmentCode']
-        InPersonEnrollment.create!(
-          user: user, enrollment_code: enrollment_code,
-          status: :pending, profile: profile
-        )
+        # update the enrollment to status pending
+        enrollment.enrollment_code = response['enrollmentCode']
+        enrollment.status = :pending
+        enrollment.save!
+
         # todo: display error banner on failure? check if raised exception rolls back the profile
         # creation
       end
