@@ -141,6 +141,40 @@ RSpec.describe GetUspsProofingResultsJob do
         end
       end
 
+      it 'receives a non-hash value' do
+        stub_request_token
+        stub_request_proofing_results_with_responses({})
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Exception raised',
+          reason: 'Bad response structure',
+          enrollment_id: pending_enrollment.id,
+        )
+      end
+
+      it 'receives an unsupported status' do
+        stub_request_token
+        stub_request_passed_proofing_unsupported_status_results
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        job.perform(Time.zone.now)
+
+        pending_enrollment.reload
+
+        expect(pending_enrollment.pending?).to be_truthy
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Enrollment failed proofing',
+          reason: 'Unsupported status',
+          enrollment_id: pending_enrollment.id,
+          status: 'Not supported',
+        )
+      end
+
       it 'reports a high-priority error on 2xx responses with invalid JSON' do
         stub_request_token
         stub_request_proofing_results_with_invalid_response
