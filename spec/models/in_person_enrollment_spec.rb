@@ -34,6 +34,16 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(InPersonEnrollment.pending.count).to eq 1
     end
 
+    it 'does not allow duplicate unique ids' do
+      user = create(:user)
+      profile = create(:profile, :verification_pending, user: user)
+      unique_id = InPersonEnrollment.generate_unique_id
+      create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id)
+      expect { create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id) }.
+        to raise_error ActiveRecord::RecordNotUnique
+      expect(InPersonEnrollment.count).to eq 1
+    end
+
     it 'does not constrain enrollments for non-pending status' do
       user = create(:user)
       expect {

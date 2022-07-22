@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_05_200821) do
+ActiveRecord::Schema.define(version: 2022_07_21_170157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -292,7 +292,9 @@ ActiveRecord::Schema.define(version: 2022_07_05_200821) do
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "current_address_matches_id", comment: "True if the user indicates that their current address matches the address on the ID they're bringing to the Post Office."
     t.jsonb "selected_location_details", comment: "The location details of the Post Office the user selected (including title, address, hours of operation)"
+    t.string "unique_id", comment: "Unique ID to use with the USPS service"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
+    t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
     t.index ["user_id"], name: "index_in_person_enrollments_on_user_id"
   end
