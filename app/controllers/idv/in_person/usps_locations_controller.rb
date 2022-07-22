@@ -3,9 +3,10 @@ require 'json'
 module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
+      include UspsInPersonProofing
       def index
         begin
-          usps_response = UspsInPersonProofer.new.request_pilot_facilities
+          usps_response = Proofer.new.request_pilot_facilities
         rescue Faraday::ConnectionFailed => error
           print error
         end
