@@ -87,10 +87,15 @@ module TwoFactorAuthentication
     end
 
     def analytics_properties
+      parsed_phone = Phonelib.parse(phone)
+
       {
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         phone_configuration_id: user_session[:phone_id] ||
           current_user.default_phone_configuration&.id,
       }
