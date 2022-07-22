@@ -21,6 +21,16 @@ en:
         retail_phone_label: Phone number
         speak_to_associate: You can speak with any retail associate at this Post Office
           to verify your identity.
+      location:
+        location_button: 'Select'
+        location_step_about: 'If you are having trouble adding your ID, you may be able
+          to verify in person at a local United States Post Office in select
+          locations.'
+        post_office: 'Post Office ™'
+        retail_hours_heading: 'Retail Hours'
+        retail_hours_sat: 'Sat:'
+        retail_hours_sun: 'Sun:'
+        retail_hours_weekday: 'Monday to Friday:'
       prepare:
         alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
         bring_barcode_header: A copy of your barcode
