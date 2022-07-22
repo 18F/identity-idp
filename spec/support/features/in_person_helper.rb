@@ -44,7 +44,7 @@ module InPersonHelper
   end
 
   def complete_location_step(_user = user_with_2fa)
-    click_idv_continue
+    click_idv_select
   end
 
   def complete_prepare_step(_user = user_with_2fa)
