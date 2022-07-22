@@ -16,21 +16,25 @@ module UspsInPersonProofing
         city: location.city,
         state: location.state,
         zipCode: location.zip_code,
-      }
+      }.to_json
 
-      resp = faraday.post(url, body, dynamic_headers)
+      headers = request_headers.merge(
+        'Authorization' => @token,
+        'RequestID' => request_id,
+      )
 
-      resp.body['postOffices'].map do |post_office|
-        PostOffice.new(
-          distance: post_office['distance'],
-          address: post_office['streetAddress'],
-          city: post_office['city'],
-          phone: post_office['phone'],
-          name: post_office['name'],
-          zip_code: post_office['zip5'],
-          state: post_office['state'],
-        )
+      resp = faraday.post(url, body, headers)
+      if resp.success?
+        parse_facilities(resp.body)
+      else
+        { error: 'failed to get facilities', response: resp }
       end
+    end
+
+    # Temporary function to return a static set of facilities
+    def request_pilot_facilities
+      resp = File.read('spec/fixtures/usps_ipp_responses/request_facilities_response.json')
+      parse_facilities(resp)
     end
 
     # Makes HTTP request to enroll an applicant in in-person proofing.
@@ -177,6 +181,31 @@ module UspsInPersonProofing
 
     def request_headers
       { 'Content-Type' => 'application/json; charset=utf-8' }
+    end
+
+    def parse_facilities(facilities)
+      JSON.parse(facilities)['postOffices'].map do |post_office|
+        hours = {}
+        post_office['hours'].each do |hour_details|
+          hour_details.keys.each do |key|
+            hours[key] = hour_details[key]
+          end
+        end
+
+        PostOffice.new(
+          address: post_office['streetAddress'],
+          city: post_office['city'],
+          distance: post_office['distance'],
+          name: post_office['name'],
+          phone: post_office['phone'],
+          saturday_hours: hours['saturdayHours'],
+          state: post_office['state'],
+          sunday_hours: hours['sundayHours'],
+          weekday_hours: hours['weekdayHours'],
+          zip_code_4: post_office['zip4'],
+          zip_code_5: post_office['zip5'],
+        )
+      end
     end
   end
 end
