@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :in_person_enrollment do
     user { association :user, :signed_up }
     profile { association :profile, user: user }
-
+    unique_id { Faker::Number.number(digits: 18) }
     trait :pending do
       after :build do |enrollment|
         enrollment.status = :pending

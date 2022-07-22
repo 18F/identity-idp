@@ -26,13 +26,15 @@ class GetUspsProofingResultsJob < ApplicationJob
     InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
       # Record and commit attempt to check enrollment status to database
       enrollment.update(status_check_attempted_at: Time.zone.now)
-      unique_id = enrollment.generate_unique_id
-      new_enrollment = InPersonEnrollment.new(unique_id: unique_id,)
+
+      if enrollment.unique_id.blank? 
+        enrollment.update(unique_id: enrollment.usps_unique_id)
+      end
       
       response = nil
 
       begin
-        response = proofer.request_proofing_results(unique_id, enrollment.enrollment_code)
+        response = proofer.request_proofing_results(enrollment.unique_id, enrollment.enrollment_code)
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
         next
