@@ -191,7 +191,6 @@ describe Users::SessionsController, devise: true do
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
       subject.session['user_return_to'] = 'http://example.com'
-      email = user.email.upcase
 
       stub_analytics
       analytics_hash = {
@@ -207,9 +206,9 @@ describe Users::SessionsController, devise: true do
         with('Email and Password Authentication', analytics_hash)
 
       expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:email_and_password_auth).
-        with(email: email, success: true)
+        with(email: user.email, success: true)
 
-      post :create, params: { user: { email: email, password: user.password } }
+      post :create, params: { user: { email: user.email, password: user.password } }
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
