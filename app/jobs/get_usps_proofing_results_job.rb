@@ -27,10 +27,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       # Record and commit attempt to check enrollment status to database
       enrollment.update(status_check_attempted_at: Time.zone.now)
 
-      if enrollment.unique_id.blank? 
+      if enrollment.unique_id.blank?
         enrollment.update(unique_id: enrollment.usps_unique_id)
       end
-      
       response = nil
 
       begin
