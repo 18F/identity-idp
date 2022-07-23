@@ -32,8 +32,9 @@ module UspsInPersonProofing
     end
 
     # Temporary function to return a static set of facilities
+    # @return [Array<PostOffice>] Facility locations
     def request_pilot_facilities
-      resp = File.read('spec/fixtures/usps_ipp_responses/request_facilities_response.json')
+      resp = File.read(Rails.root.join('config', 'ipp_pilot_usps_facilities.json'))
       parse_facilities(resp)
     end
 
