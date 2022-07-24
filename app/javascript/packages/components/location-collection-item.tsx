@@ -1,30 +1,39 @@
 import { Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
-export interface LocationCollectionItemProps {
-  name: string;
-  streetAddress: string;
+interface LocationCollectionItemProps {
   addressLine2: string;
-  weekdayHours: string;
+  handleSelect: (selection: number) => void;
+  name: string;
   saturdayHours: string;
+  selectId: number;
+  streetAddress: string;
   sundayHours: string;
+  weekdayHours: string;
 }
 
 function LocationCollectionItem({
-  name,
-  streetAddress,
   addressLine2,
-  weekdayHours,
+  handleSelect,
+  name,
   saturdayHours,
+  selectId,
+  streetAddress,
   sundayHours,
+  weekdayHours,
 }: LocationCollectionItemProps) {
   const { t } = useI18n();
+
   return (
     <li className="location-collection-item">
       <div className="usa-collection__body">
         <div className="display-flex flex-justify">
           <h3 className="usa-collection__heading wrap-name">{name}</h3>
-          <Button className="usa-button-mobile-hidden" type="submit">
+          <Button
+            className="usa-button-mobile-hidden"
+            onClick={() => handleSelect(selectId)}
+            type="submit"
+          >
             {t('in_person_proofing.body.location.location_button')}
           </Button>
         </div>
@@ -34,7 +43,11 @@ function LocationCollectionItem({
         <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
-        <Button className="usa-button-mobile usa-button-desktop-hidden" type="submit">
+        <Button
+          className="usa-button-mobile usa-button-desktop-hidden"
+          onClick={() => handleSelect(selectId)}
+          type="submit"
+        >
           {t('in_person_proofing.body.location.location_button')}
         </Button>
       </div>
