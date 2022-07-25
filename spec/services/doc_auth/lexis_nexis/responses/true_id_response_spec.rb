@@ -162,7 +162,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
             birth_date_valid: { no_side: 'Passed' },
             document_classification: { no_side: 'Passed' },
             document_crosscheck_aggregation: { no_side: 'Passed' },
-            document_number_crosschec: { no_side: 'Passed' },
+            document_number_crosscheck: { no_side: 'Passed' },
             expiration_date_crosscheck: { no_side: 'Passed' },
             expiration_date_valid: { no_side: 'Passed' },
             full_name_crosscheck: { no_side: 'Passed' },
