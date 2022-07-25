@@ -39,6 +39,7 @@ class InPersonEnrollment < ApplicationRecord
     user.uuid.delete('-').slice(0, 18)
   end
 
+ # Generates a random 18-digit string, the hex returns a string of length n*2
   def self.generate_unique_id
     SecureRandom.hex(9)
   end
