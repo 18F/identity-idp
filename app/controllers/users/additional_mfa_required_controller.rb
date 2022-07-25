@@ -1,5 +1,6 @@
 module Users
   class AdditionalMfaRequiredController < ApplicationController
+    include SecureHeadersConcern
     extend ActiveSupport::Concern
 
     def show
