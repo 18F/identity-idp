@@ -6,6 +6,7 @@ import {
   PageHeading,
   ProcessList,
   ProcessListItem,
+  SpinnerDots,
 } from '@18f/identity-components';
 import { removeUnloadProtection } from '@18f/identity-url';
 import { useContext, useEffect, useState } from 'react';
@@ -38,11 +39,15 @@ function InPersonPrepareStep() {
 
   return (
     <>
-      <Alert type="success" className="margin-bottom-4">
-        {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-          name: selectedLocationName,
-        })}
-      </Alert>
+      {selectedLocationName ? (
+        <Alert type="success" className="margin-bottom-4">
+          {t('in_person_proofing.body.prepare.alert_selected_post_office', {
+            name: selectedLocationName,
+          })}
+        </Alert>
+      ) : (
+        <SpinnerDots />
+      )}
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
