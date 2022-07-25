@@ -21,16 +21,30 @@ module Idv
       # save the Post Office location the user selected to the session
       def update
         idv_session.applicant ||= {}
-        idv_session.applicant[:selected_location_details] = params['usps_location'].as_json
+        idv_session.applicant[:selected_location_details] = permitted_params.as_json
 
         render json: { success: true }, status: :ok
       end
 
       # return the Post Office location the user selected from the session
       def show
-        selected_location = idv_session.applicant&.[](:selected_location_details)&.to_json
+        selected_location = idv_session.applicant&.[](:selected_location_details)&.to_json || {}
 
         render json: selected_location, status: :ok
+      end
+
+      protected
+
+      def permitted_params
+        params.require(:usps_location).permit(
+          :addressLine2,
+          :name,
+          :phone,
+          :saturdayHours,
+          :streetAddress,
+          :sundayHours,
+          :weekdayHours,
+        )
       end
     end
   end
