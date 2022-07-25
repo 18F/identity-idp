@@ -3,14 +3,12 @@ require 'rails_helper'
 describe Idv::InPerson::ReadyToVerifyController do
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
-  let(:enrollment) { nil }
 
   before do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
-    allow(controller).to receive(:enrollment).and_return(enrollment)
   end
 
   describe 'before_actions' do
@@ -34,15 +32,8 @@ describe Idv::InPerson::ReadyToVerifyController do
       end
 
       context 'with enrollment' do
+        let(:user) { create(:user, :with_pending_in_person_enrollment) }
         let(:profile) { create(:profile, :with_pii, user: user) }
-        let(:enrollment) do
-          InPersonEnrollment.new(
-            user: user,
-            profile: profile,
-            enrollment_code: '2048702198804358',
-            created_at: Time.zone.now,
-          )
-        end
 
         it 'renders show template' do
           expect(response).to render_template :show

@@ -205,7 +205,10 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      post :create, params: { user: { email: user.email.upcase, password: user.password } }
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:email_and_password_auth).
+        with(email: user.email, success: true)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
