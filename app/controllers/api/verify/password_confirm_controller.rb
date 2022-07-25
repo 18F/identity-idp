@@ -85,12 +85,39 @@ module Api
         )
         proofer = usps_proofer
 
-        response = proofer.request_enroll(applicant)
-        response['enrollmentCode']
+        begin
+          response = proofer.request_enroll(applicant)
+        rescue Faraday::BadRequestError => err
+          handle_bad_request_error(err, enrollment)
+        rescue StandardError => err
+          handle_standard_error(err, enrollment)
+        end
+
+        response.enrollment_code
+      end
+
+      def handle_bad_request_error(err, enrollment)
+        analytics.idv_in_person_usps_request_enroll_exception(
+          reason: 'Request exception',
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.dig('body', 'responseMessage') || err.message,
+        )
+      end
+
+      def handle_standard_error(err, enrollment)
+        analytics.idv_in_person_usps_request_enroll_exception(
+          reason: 'Request exception',
+          enrollment_id: enrollment.id,
+          exception_class: err.class.to_s,
+          exception_message: err.message,
+        )
       end
 
       def save_in_person_enrollment(user, profile)
         return unless in_person_enrollment?(user)
+
+        # add analytics event saying we are engaging in IPP enrollment
 
         enrollment = InPersonEnrollment.create!(
           profile: profile,

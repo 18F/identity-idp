@@ -56,7 +56,8 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      res = faraday.post(url, body, dynamic_headers).body
+      RequestEnrollResponse.new(res)
     end
 
     # Makes HTTP request to retrieve proofing status
