@@ -82,9 +82,7 @@
       <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
       <div class="margin-bottom-1">
         <%= @presenter.selected_location_details['streetAddress'] %><br>
-        <%= @presenter.selected_location_details['city'] %>,
-        <%= @presenter.selected_location_details['state'] %>
-        <%= @presenter.selected_location_details['zip5'] %>-<%= @presenter.selected_location_details['zip4'] %>
+        <%= @presenter.selected_location_details['addressLine2'] %>
       </div>
       <h3 class="font-sans-sm margin-y-0"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
       <div class="margin-bottom-2">

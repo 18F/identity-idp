@@ -7,6 +7,10 @@ class UspsIppFixtures
     load_response_fixture('request_facilities_response.json')
   end
 
+  def self.request_show_usps_location_response
+    load_response_fixture('request_show_usps_location_response.json')
+  end
+
   def self.request_enroll_response
     load_response_fixture('request_enroll_response.json')
   end
