@@ -105,7 +105,7 @@ function InPersonLocationStep() {
               sundayHours={item.sundayHours}
             />
           ))}
-        {locationData.length < 1 && <h4>No locations found.</h4>}
+        {locationData.length < 1 && <h4>{t('in_person_proofing.body.location.none_found')}</h4>}
       </LocationCollection>
     </>
   );
