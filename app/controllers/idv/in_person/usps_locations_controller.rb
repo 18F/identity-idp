@@ -8,10 +8,10 @@ module Idv
 
       # get the list of all pilot Post Office locations
       def index
+        usps_response = []
         begin
           usps_response = Proofer.new.request_pilot_facilities
         rescue Faraday::ConnectionFailed => _error
-          # TODO: handle this error and show "No locations found" on the front end
           nil
         end
 
