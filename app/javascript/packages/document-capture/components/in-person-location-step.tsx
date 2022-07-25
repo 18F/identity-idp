@@ -90,7 +90,7 @@ function InPersonLocationStep() {
         headers['X-CSRF-Token'] = csrf;
       }
       setInProgress(true);
-      const response = await fetch(locationUrl, {
+      await fetch(locationUrl, {
         method: 'PUT',
         body: JSON.stringify(selected),
         headers,
@@ -113,8 +113,6 @@ function InPersonLocationStep() {
           }
           setInProgress(false);
         });
-
-      return response;
     },
     [locationData, inProgress],
   );
