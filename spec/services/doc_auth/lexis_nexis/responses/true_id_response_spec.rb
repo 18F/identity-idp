@@ -90,7 +90,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.to_h).to match(
         success: true,
         exception: nil,
-        failed_alert_results: a_hash_including(:visible_pattern),
         errors: {},
         attention_with_barcode: false,
         conversation_id: a_kind_of(String),
@@ -98,6 +97,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         vendor: 'TrueID',
         billed: true,
         liveness_enabled: false,
+        log_alert_results: a_hash_including(:passed, :failed),
         transaction_status: 'passed',
         transaction_reason_code: 'trueid_pass',
         product_status: 'pass',
@@ -155,13 +155,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'produces appropriate errors without liveness' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       errors = output[:errors]
-
-      expect(output.to_h[:failed_alert_results]).to eq(
-        '1d_control_number_valid': 'Failed',
-        '2d_barcode_content': 'Failed',
-        control_number_crosscheck: 'Caution',
-        document_expired: 'Attention',
-        visible_pattern: 'Failed',
+      expect(output.to_h[:log_alert_results]).to eq(
+        :passed=>
+          {:"2d_barcode_read"=>{:no_side=>"Passed"},
+           :birth_date_crosscheck=>{:no_side=>"Passed"},
+           :birth_date_valid=>{:no_side=>"Passed"},
+           :document_classification=>{:no_side=>"Passed"},
+           :document_crosscheck_aggregation=>{:no_side=>"Passed"},
+           :document_number_crosscheck=>{:no_side=>"Passed"},
+           :expiration_date_crosscheck=>{:no_side=>"Passed"},
+           :expiration_date_valid=>{:no_side=>"Passed"},
+           :full_name_crosscheck=>{:no_side=>"Passed"},
+           :issue_date_crosscheck=>{:no_side=>"Passed"},
+           :issue_date_valid=>{:no_side=>"Passed"},
+           :layout_valid=>{:no_side=>"Passed"},
+           :sex_crosscheck=>{:no_side=>"Passed"},
+           :visible_color_response=>{:no_side=>"Passed"},
+           :visible_pattern=>{:no_side=>"Passed"},
+           :visible_photo_characteristics=>{:no_side=>"Passed"}},
+        :failed=>
+          {:visible_pattern=>{:no_side=>"Failed"},
+           :"1d_control_number_valid"=>{:no_side=>"Failed"},
+           :"2d_barcode_content"=>{:no_side=>"Failed"},
+           :control_number_crosscheck=>{:no_side=>"Caution"},
+           :document_expired=>{:no_side=>"Attention"}}
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -175,12 +192,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_with_liveness, true, config).to_h
       errors = output[:errors]
 
-      expect(output.to_h[:failed_alert_results]).to eq(
-        '1d_control_number_valid': 'Failed',
-        '2d_barcode_content': 'Failed',
-        control_number_crosscheck: 'Caution',
-        document_expired: 'Attention',
-        visible_pattern: 'Failed',
+      expect(output.to_h[:log_alert_results]).to eq(
+        :passed=>
+          {:"2d_barcode_read"=>{:no_side=>"Passed"},
+           :birth_date_crosscheck=>{:no_side=>"Passed"},
+           :birth_date_valid=>{:no_side=>"Passed"},
+           :document_classification=>{:no_side=>"Passed"},
+           :document_crosscheck_aggregation=>{:no_side=>"Passed"},
+           :document_number_crosscheck=>{:no_side=>"Passed"},
+           :expiration_date_crosscheck=>{:no_side=>"Passed"},
+           :expiration_date_valid=>{:no_side=>"Passed"},
+           :full_name_crosscheck=>{:no_side=>"Passed"},
+           :issue_date_crosscheck=>{:no_side=>"Passed"},
+           :issue_date_valid=>{:no_side=>"Passed"},
+           :layout_valid=>{:no_side=>"Passed"},
+           :sex_crosscheck=>{:no_side=>"Passed"},
+           :visible_color_response=>{:no_side=>"Passed"},
+           :visible_pattern=>{:no_side=>"Passed"},
+           :visible_photo_characteristics=>{:no_side=>"Passed"}},
+        :failed=>
+          {:visible_pattern=>{:no_side=>"Failed"},
+           :"1d_control_number_valid"=>{:no_side=>"Failed"},
+           :"2d_barcode_content"=>{:no_side=>"Failed"},
+           :control_number_crosscheck=>{:no_side=>"Caution"},
+           :document_expired=>{:no_side=>"Attention"}}
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -194,27 +229,29 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_with_all_failures, true, config).to_h
       errors = output[:errors]
 
-      expect(output.to_h[:failed_alert_results]).to eq(
-        '1d_control_number_valid': 'Failed',
-        '2d_barcode_content': 'Failed',
-        '2d_barcode_read': 'Attention',
-        birth_date_crosscheck: 'Failed',
-        birth_date_valid: 'Failed',
-        control_number_crosscheck: 'Caution',
-        document_classification: 'Failed',
-        document_crosscheck_aggregation: 'Failed',
-        document_expired: 'Attention',
-        expiration_date_crosscheck: 'Failed',
-        full_name_crosscheck: 'Failed',
-        issue_date_crosscheck: 'Failed',
-        issue_date_valid: 'Failed',
-        sex_crosscheck: 'Failed',
-        visible_color_response: 'Failed',
-        visible_pattern: 'Failed',
-        visible_photo_characteristics: 'Failed',
-        layout_valid: 'Failed',
-        expiration_date_valid: 'Failed',
-        document_number_crosscheck: 'Failed',
+      expect(output.to_h[:log_alert_results]).to eq({
+        :passed=>{},
+        :failed=>
+          {:visible_pattern=>{:no_side=>"Failed"},
+           :"1d_control_number_valid"=>{:no_side=>"Failed"},
+           :"2d_barcode_content"=>{:no_side=>"Failed"},
+           :control_number_crosscheck=>{:no_side=>"Caution"},
+           :document_expired=>{:no_side=>"Attention"},
+           :"2d_barcode_read"=>{:no_side=>"Attention"},
+           :birth_date_crosscheck=>{:no_side=>"Failed"},
+           :birth_date_valid=>{:no_side=>"Failed"},
+           :document_classification=>{:no_side=>"Failed"},
+           :document_crosscheck_aggregation=>{:no_side=>"Failed"},
+           :document_number_crosscheck=>{:no_side=>"Failed"},
+           :expiration_date_crosscheck=>{:no_side=>"Failed"},
+           :expiration_date_valid=>{:no_side=>"Failed"},
+           :full_name_crosscheck=>{:no_side=>"Failed"},
+           :issue_date_crosscheck=>{:no_side=>"Failed"},
+           :issue_date_valid=>{:no_side=>"Failed"},
+           :layout_valid=>{:no_side=>"Failed"},
+           :sex_crosscheck=>{:no_side=>"Failed"},
+           :visible_color_response=>{:no_side=>"Failed"},
+           :visible_photo_characteristics=>{:no_side=>"Failed"}}},
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -241,7 +278,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         reference: a_kind_of(String),
         vendor: 'TrueID',
         billed: true,
-        failed_alert_results: a_hash_including(:'1d_control_number_valid'),
+        log_alert_results: a_hash_including(:passed, :failed),
         liveness_enabled: true,
         transaction_status: 'failed',
         transaction_reason_code: 'failed_true_id',

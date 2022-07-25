@@ -22,7 +22,6 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.exception).to be_nil
 
       response_hash = response.to_h
-
       expected_hash = {
         success: true,
         errors: {},
@@ -35,7 +34,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           failed: all(a_hash_including(:name, :result)),
           passed: all(a_hash_including(:name, :result)),
         ),
-        failed_alert_results: { visible_pattern: 'Failed' },
+        log_alert_results: a_hash_including(:passed, :failed),
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
@@ -155,7 +154,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
-      expect(response.to_h[:failed_alert_results]).to eq(document_classification: 'Failed')
+      expect(response.to_h[:log_alert_results]).to eq({:passed=>{}, :failed=>{:document_classification=>{:no_side=>"Failed"}}})
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)
@@ -193,6 +192,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       end
 
       it 'only returns one copy of the each error' do
+
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
           general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],

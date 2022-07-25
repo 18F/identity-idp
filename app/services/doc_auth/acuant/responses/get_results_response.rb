@@ -53,17 +53,13 @@ module DocAuth
         def create_response_info
           alerts = processed_alerts
 
-          failed_alert_results = alerts[:failed].each_with_object({}) do |alert, results|
-            results[alert[:name].downcase.parameterize(separator: '_').to_sym] = alert[:result]
-          end
-
           {
             vendor: 'Acuant',
             billed: result_code.billed,
             doc_auth_result: result_code.name,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
-            failed_alert_results: failed_alert_results,
+            log_alert_results: log_alerts(alerts),
             image_metrics: processed_image_metrics,
             tamper_result: tamper_result_code&.name,
           }
@@ -97,6 +93,17 @@ module DocAuth
 
         def processed_alerts
           @processed_alerts ||= process_raw_alerts(raw_alerts)
+        end
+
+        def log_alerts(alerts)
+          log_alert_results = {passed: {}, failed: {}}
+          alerts.keys.each do |key|
+            alerts[key.to_sym].each_with_object({}) do |alert|
+              side = alert[:side] || 'no_side'
+              log_alert_results[key.to_sym][alert[:name].downcase.parameterize(separator: '_').to_sym] = { "#{side}": alert[:result] }
+            end
+          end
+          log_alert_results
         end
 
         def processed_image_metrics
