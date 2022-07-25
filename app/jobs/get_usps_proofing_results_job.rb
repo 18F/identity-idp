@@ -27,13 +27,13 @@ class GetUspsProofingResultsJob < ApplicationJob
       # Record and commit attempt to check enrollment status to database
       enrollment.update(status_check_attempted_at: Time.zone.now)
 
-      if enrollment.unique_id.blank?
-        enrollment.update(unique_id: enrollment.usps_unique_id)
-      end
+      enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
       response = nil
 
       begin
-        response = proofer.request_proofing_results(enrollment.unique_id, enrollment.enrollment_code)
+        response = proofer.request_proofing_results(
+          enrollment.unique_id, enrollment.enrollment_code
+        )
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
         next
