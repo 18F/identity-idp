@@ -154,7 +154,12 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
-      expect(response.to_h[:log_alert_results]).to eq({:passed=>{}, :failed=>{:document_classification=>{:no_side=>"Failed"}}})
+      expect(response.to_h[:log_alert_results]).to eq(
+        passed: {},
+        failed: {
+          document_classification: { no_side: 'Failed' },
+        },
+      )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)
@@ -192,7 +197,6 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       end
 
       it 'only returns one copy of the each error' do
-
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
           general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS],

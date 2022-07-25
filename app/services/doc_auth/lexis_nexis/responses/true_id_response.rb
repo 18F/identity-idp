@@ -123,11 +123,13 @@ module DocAuth
         end
 
         def log_alerts(alerts)
-          log_alert_results = {passed: {}, failed: {}}
+          log_alert_results = { passed: {}, failed: {} }
           alerts.keys.each do |key|
-            alerts[key.to_sym].each_with_object({}) do |alert|
+            alerts[key.to_sym].each do |alert|
               side = alert[:side] || 'no_side'
-              log_alert_results[key.to_sym][alert[:name].downcase.parameterize(separator: '_').to_sym] = { "#{side}": alert[:result] }
+              log_alert_results[key.to_sym][alert[:name].
+                downcase.
+                parameterize(separator: '_').to_sym] = { "#{side}": alert[:result] }
             end
           end
           log_alert_results

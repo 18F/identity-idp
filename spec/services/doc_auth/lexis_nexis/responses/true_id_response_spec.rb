@@ -156,29 +156,29 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to eq(
-        :passed=>
-          {:"2d_barcode_read"=>{:no_side=>"Passed"},
-           :birth_date_crosscheck=>{:no_side=>"Passed"},
-           :birth_date_valid=>{:no_side=>"Passed"},
-           :document_classification=>{:no_side=>"Passed"},
-           :document_crosscheck_aggregation=>{:no_side=>"Passed"},
-           :document_number_crosscheck=>{:no_side=>"Passed"},
-           :expiration_date_crosscheck=>{:no_side=>"Passed"},
-           :expiration_date_valid=>{:no_side=>"Passed"},
-           :full_name_crosscheck=>{:no_side=>"Passed"},
-           :issue_date_crosscheck=>{:no_side=>"Passed"},
-           :issue_date_valid=>{:no_side=>"Passed"},
-           :layout_valid=>{:no_side=>"Passed"},
-           :sex_crosscheck=>{:no_side=>"Passed"},
-           :visible_color_response=>{:no_side=>"Passed"},
-           :visible_pattern=>{:no_side=>"Passed"},
-           :visible_photo_characteristics=>{:no_side=>"Passed"}},
-        :failed=>
-          {:visible_pattern=>{:no_side=>"Failed"},
-           :"1d_control_number_valid"=>{:no_side=>"Failed"},
-           :"2d_barcode_content"=>{:no_side=>"Failed"},
-           :control_number_crosscheck=>{:no_side=>"Caution"},
-           :document_expired=>{:no_side=>"Attention"}}
+        passed:
+          { '2d_barcode_read': { no_side: 'Passed' },
+            birth_date_crosscheck: { no_side: 'Passed' },
+            birth_date_valid: { no_side: 'Passed' },
+            document_classification: { no_side: 'Passed' },
+            document_crosscheck_aggregation: { no_side: 'Passed' },
+            document_number_crosschec: { no_side: 'Passed' },
+            expiration_date_crosscheck: { no_side: 'Passed' },
+            expiration_date_valid: { no_side: 'Passed' },
+            full_name_crosscheck: { no_side: 'Passed' },
+            issue_date_crosscheck: { no_side: 'Passed' },
+            issue_date_valid: { no_side: 'Passed' },
+            layout_valid: { no_side: 'Passed' },
+            sex_crosscheck: { no_side: 'Passed' },
+            visible_color_response: { no_side: 'Passed' },
+            visible_pattern: { no_side: 'Passed' },
+            visible_photo_characteristics: { no_side: 'Passed' } },
+        failed:
+          { visible_pattern: { no_side: 'Failed' },
+            '1d_control_number_valid': { no_side: 'Failed' },
+            '2d_barcode_content': { no_side: 'Failed' },
+            control_number_crosscheck: { no_side: 'Caution' },
+            document_expired: { no_side: 'Attention' } },
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -193,29 +193,31 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       errors = output[:errors]
 
       expect(output.to_h[:log_alert_results]).to eq(
-        :passed=>
-          {:"2d_barcode_read"=>{:no_side=>"Passed"},
-           :birth_date_crosscheck=>{:no_side=>"Passed"},
-           :birth_date_valid=>{:no_side=>"Passed"},
-           :document_classification=>{:no_side=>"Passed"},
-           :document_crosscheck_aggregation=>{:no_side=>"Passed"},
-           :document_number_crosscheck=>{:no_side=>"Passed"},
-           :expiration_date_crosscheck=>{:no_side=>"Passed"},
-           :expiration_date_valid=>{:no_side=>"Passed"},
-           :full_name_crosscheck=>{:no_side=>"Passed"},
-           :issue_date_crosscheck=>{:no_side=>"Passed"},
-           :issue_date_valid=>{:no_side=>"Passed"},
-           :layout_valid=>{:no_side=>"Passed"},
-           :sex_crosscheck=>{:no_side=>"Passed"},
-           :visible_color_response=>{:no_side=>"Passed"},
-           :visible_pattern=>{:no_side=>"Passed"},
-           :visible_photo_characteristics=>{:no_side=>"Passed"}},
-        :failed=>
-          {:visible_pattern=>{:no_side=>"Failed"},
-           :"1d_control_number_valid"=>{:no_side=>"Failed"},
-           :"2d_barcode_content"=>{:no_side=>"Failed"},
-           :control_number_crosscheck=>{:no_side=>"Caution"},
-           :document_expired=>{:no_side=>"Attention"}}
+        passed: {
+          '2d_barcode_read': { no_side: 'Passed' },
+          birth_date_crosscheck: { no_side: 'Passed' },
+          birth_date_valid: { no_side: 'Passed' },
+          document_classification: { no_side: 'Passed' },
+          document_crosscheck_aggregation: { no_side: 'Passed' },
+          document_number_crosscheck: { no_side: 'Passed' },
+          expiration_date_crosscheck: { no_side: 'Passed' },
+          expiration_date_valid: { no_side: 'Passed' },
+          full_name_crosscheck: { no_side: 'Passed' },
+          issue_date_crosscheck: { no_side: 'Passed' },
+          issue_date_valid: { no_side: 'Passed' },
+          layout_valid: { no_side: 'Passed' },
+          sex_crosscheck: { no_side: 'Passed' },
+          visible_color_response: { no_side: 'Passed' },
+          visible_pattern: { no_side: 'Passed' },
+          visible_photo_characteristics: { no_side: 'Passed' },
+        },
+        failed: {
+          visible_pattern: { no_side: 'Failed' },
+          '1d_control_number_valid': { no_side: 'Failed' },
+          '2d_barcode_content': { no_side: 'Failed' },
+          control_number_crosscheck: { no_side: 'Caution' },
+          document_expired: { no_side: 'Attention' },
+        },
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
@@ -229,29 +231,30 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       output = described_class.new(failure_response_with_all_failures, true, config).to_h
       errors = output[:errors]
 
-      expect(output.to_h[:log_alert_results]).to eq({
-        :passed=>{},
-        :failed=>
-          {:visible_pattern=>{:no_side=>"Failed"},
-           :"1d_control_number_valid"=>{:no_side=>"Failed"},
-           :"2d_barcode_content"=>{:no_side=>"Failed"},
-           :control_number_crosscheck=>{:no_side=>"Caution"},
-           :document_expired=>{:no_side=>"Attention"},
-           :"2d_barcode_read"=>{:no_side=>"Attention"},
-           :birth_date_crosscheck=>{:no_side=>"Failed"},
-           :birth_date_valid=>{:no_side=>"Failed"},
-           :document_classification=>{:no_side=>"Failed"},
-           :document_crosscheck_aggregation=>{:no_side=>"Failed"},
-           :document_number_crosscheck=>{:no_side=>"Failed"},
-           :expiration_date_crosscheck=>{:no_side=>"Failed"},
-           :expiration_date_valid=>{:no_side=>"Failed"},
-           :full_name_crosscheck=>{:no_side=>"Failed"},
-           :issue_date_crosscheck=>{:no_side=>"Failed"},
-           :issue_date_valid=>{:no_side=>"Failed"},
-           :layout_valid=>{:no_side=>"Failed"},
-           :sex_crosscheck=>{:no_side=>"Failed"},
-           :visible_color_response=>{:no_side=>"Failed"},
-           :visible_photo_characteristics=>{:no_side=>"Failed"}}},
+      expect(output.to_h[:log_alert_results]).to eq(
+        passed: {},
+        failed: {
+          visible_pattern: { no_side: 'Failed' },
+          '1d_control_number_valid': { no_side: 'Failed' },
+          '2d_barcode_content': { no_side: 'Failed' },
+          control_number_crosscheck: { no_side: 'Caution' },
+          document_expired: { no_side: 'Attention' },
+          '2d_barcode_read': { no_side: 'Attention' },
+          birth_date_crosscheck: { no_side: 'Failed' },
+          birth_date_valid: { no_side: 'Failed' },
+          document_classification: { no_side: 'Failed' },
+          document_crosscheck_aggregation: { no_side: 'Failed' },
+          document_number_crosscheck: { no_side: 'Failed' },
+          expiration_date_crosscheck: { no_side: 'Failed' },
+          expiration_date_valid: { no_side: 'Failed' },
+          full_name_crosscheck: { no_side: 'Failed' },
+          issue_date_crosscheck: { no_side: 'Failed' },
+          issue_date_valid: { no_side: 'Failed' },
+          layout_valid: { no_side: 'Failed' },
+          sex_crosscheck: { no_side: 'Failed' },
+          visible_color_response: { no_side: 'Failed' },
+          visible_photo_characteristics: { no_side: 'Failed' },
+        },
       )
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
