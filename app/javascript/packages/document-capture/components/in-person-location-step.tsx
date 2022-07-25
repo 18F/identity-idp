@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
 
@@ -58,28 +58,75 @@ const formatLocation = (postOffices: PostOffice[]) => {
 function InPersonLocationStep() {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
+  const [inProgress, setInProgress] = useState(false);
+  const [autoSubmit, setAutoSubmit] = useState(false);
 
-  const handleLocationSelect = async (id: number) => {
-    const selected = locationData[id];
-    const headers = { 'Content-Type': 'application/json' };
-    const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
-    const csrf = meta?.content;
-    if (csrf) {
-      headers['X-CSRF-Token'] = csrf;
-    }
+  // ref allows us to avoid a memory leak
+  const mountedRef = useRef(false);
 
-    await fetch(locationUrl, {
-      method: 'PUT',
-      body: JSON.stringify(selected),
-      headers,
-    });
-  };
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  // useCallBack here prevents unnecessary rerenders due to changing function identity
+  const handleLocationSelect = useCallback(
+    async (e: any, id: number) => {
+      if (autoSubmit) {
+        return;
+      }
+      // prevent navigation from continuing
+      e.preventDefault();
+      if (inProgress) {
+        return;
+      }
+      const selected = locationData[id];
+      const headers = { 'Content-Type': 'application/json' };
+      const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
+      const csrf = meta?.content;
+      if (csrf) {
+        headers['X-CSRF-Token'] = csrf;
+      }
+      setInProgress(true);
+      const response = await fetch(locationUrl, {
+        method: 'PUT',
+        body: JSON.stringify(selected),
+        headers,
+      })
+        .then(() => {
+          if (!mountedRef.current) {
+            return;
+          }
+          setAutoSubmit(true);
+          setImmediate(() => {
+            // continue with navigation
+            e.target.click();
+            // allow process to be re-triggered in case submission did not work as expected
+            setAutoSubmit(false);
+          });
+        })
+        .finally(() => {
+          if (!mountedRef.current) {
+            return;
+          }
+          setInProgress(false);
+        });
+
+      return response;
+    },
+    [locationData, inProgress],
+  );
 
   useEffect(() => {
     (async () => {
       const fetchedLocations = await getResponse().catch((error) => {
         throw error;
       });
+      if (!mountedRef.current) {
+        return;
+      }
       const formattedLocations = formatLocation(fetchedLocations);
       setLocationData(formattedLocations);
     })();

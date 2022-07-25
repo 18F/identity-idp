@@ -34,7 +34,8 @@ module UspsInPersonProofing
     # Temporary function to return a static set of facilities
     # @return [Array<PostOffice>] Facility locations
     def request_pilot_facilities
-      resp = File.read(Rails.root.join('config', 'ipp_pilot_usps_facilities.json'))
+      resp = File.read(Rails.root.join('spec/fixtures/usps_ipp_responses/request_pilot_facilities_response.json'))
+      puts "resp in proofer: #{resp}"
       parse_facilities(resp)
     end
 

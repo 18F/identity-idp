@@ -3,7 +3,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 
 interface LocationCollectionItemProps {
   addressLine2: string;
-  handleSelect: (selection: number) => void;
+  handleSelect: (event: React.FormEvent<HTMLInputElement>, selection: number) => void;
   name: string;
   saturdayHours: string;
   selectId: number;
@@ -30,8 +30,11 @@ function LocationCollectionItem({
         <div className="display-flex flex-justify">
           <h3 className="usa-collection__heading wrap-name">{name}</h3>
           <Button
+            id="location_button"
             className="usa-button-mobile-hidden"
-            onClick={() => handleSelect(selectId)}
+            onClick={(event) => {
+              handleSelect(event, selectId);
+            }}
             type="submit"
           >
             {t('in_person_proofing.body.location.location_button')}
@@ -44,8 +47,9 @@ function LocationCollectionItem({
         <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sun')} ${sundayHours}`}</div>
         <Button
+          id="location_button"
           className="usa-button-mobile usa-button-desktop-hidden"
-          onClick={() => handleSelect(selectId)}
+          onClick={(event) => handleSelect(event, selectId)}
           type="submit"
         >
           {t('in_person_proofing.body.location.location_button')}
