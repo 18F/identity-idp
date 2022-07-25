@@ -97,26 +97,7 @@ module Api
           profile: profile,
           user: user,
           current_address_matches_id: user_session.dig(:idv, :applicant, :same_address_as_id),
-          selected_location_details: {
-            'name' => 'BALTIMORE — Post Office™',
-            'streetAddress' => '900 E FAYETTE ST RM 118',
-            'city' => 'BALTIMORE',
-            'state' => 'MD',
-            'zip5' => '21233',
-            'zip4' => '9715',
-            'phone' => '555-123-6409',
-            'hours' => [
-              {
-                'weekdayHours' => '8:30 AM - 4:30 PM',
-              },
-              {
-                'saturdayHours' => '9:00 AM - 12:00 PM',
-              },
-              {
-                'sundayHours' => 'Closed',
-              },
-            ],
-          },
+          selected_location_details: user_session.dig(:idv, :applicant, :selected_location_details),
         )
 
         enrollment_code = create_usps_enrollment(enrollment)
