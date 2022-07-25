@@ -36,6 +36,20 @@ describe TwoFactorOptionsForm do
       end
     end
 
+    it 'is unsuccessful if the selection is empty' do
+      result = subject.submit(selection: [])
+
+      expect(result.success?).to eq false
+      expect(result.errors).to include :selection
+    end
+
+    it 'is successful if user has existing method and does not select any options' do
+      create(:phone_configuration, user: user)
+
+      result = subject.submit(selection: [])
+      expect(result.success?).to eq true
+    end
+
     it 'includes analytics hash with a methods count of zero' do
       result = subject.submit(selection: 'piv_cac')
 

@@ -1,56 +1,42 @@
 require 'rails_helper'
 
-RSpec.describe 'In Person Proofing' do
-  include DocAuthHelper
-  include IdvHelper
+RSpec.describe 'In Person Proofing', js: true do
+  include IdvStepHelper
   include InPersonHelper
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(
+      ['password_confirm',
+       'personal_key',
+       'personal_key_confirm'],
+    )
   end
 
-  it 'works for a happy path', js: true, allow_browser_log: true do
-    user = sign_in_and_2fa_user
+  it 'works for a happy path', allow_browser_log: true do
+    user = user_with_2fa
 
-    # welcome step
-    visit idv_doc_auth_welcome_step # only thing used from DocAuthHelper
-    click_idv_continue
-
-    # information step
-    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
-    click_idv_continue
-
-    # upload documents step
-    click_on t('doc_auth.info.upload_computer_link')
-    attach_images_that_fail
-    click_submit_default
-    expect(page).to have_content(t('idv.troubleshooting.options.verify_in_person'), wait: 60)
-
-    # start the IPP flow
-    find_button(t('idv.troubleshooting.options.verify_in_person')).click
+    begin_in_person_proofing(user)
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
-    click_idv_continue
+    complete_location_step(user)
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
-    click_link t('forms.buttons.continue')
+    complete_prepare_step(user)
 
     # state ID page
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
-    fill_out_state_id_form_ok
-    click_idv_continue
+    complete_state_id_step(user)
 
     # address page
     expect(page).to have_content(t('in_person_proofing.headings.address'))
-    fill_out_address_form_ok
-    click_idv_continue
+    complete_address_step(user)
 
     # ssn page
     expect(page).to have_content(t('doc_auth.headings.ssn'))
-    fill_out_ssn_form_ok
-    click_idv_continue
+    complete_ssn_step(user)
 
     # verify page
     expect(page).to have_content(t('headings.verify'))
@@ -82,20 +68,15 @@ RSpec.describe 'In Person Proofing' do
     fill_out_ssn_form_ok
     click_button t('forms.buttons.submit.update')
     expect(page).to have_content(t('headings.verify'))
-    click_idv_continue
+    complete_verify_step(user)
 
     # phone page
     expect(page).to have_content(t('idv.titles.session.phone'))
-    fill_out_phone_form_mfa_phone(user)
-    click_idv_continue
-    verify_phone_otp
+    complete_phone_step(user)
 
     # password confirm page
-    expect(page).to have_content(
-      t('idv.titles.session.review', app_name: APP_NAME),
-    )
-    fill_in t('idv.form.password'), with: Features::SessionHelper::VALID_PASSWORD
-    click_idv_continue
+    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
+    complete_review_step(user)
 
     # personal key page
     expect(page).to have_content(t('titles.idv.personal_key'))
@@ -108,24 +89,25 @@ RSpec.describe 'In Person Proofing' do
     end
 
     # ready to verify page
-    enrollment_code = JSON.parse(UspsIppFixtures.request_enrollment_code_response)['enrollmentCode']
+    enrollment_code = JSON.parse(UspsIppFixtures.request_enroll_response)['enrollmentCode']
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
   end
 
-  def attach_images_that_fail
-    Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
-      yml_file.rewind
-      yml_file.puts <<~YAML
-        failed_alerts:
-          - name: Document Classification
-            result: Attention
-      YAML
-      yml_file.close
+  context 'verify address by mail (GPO letter)' do
+    it 'requires address verification before showing instructions', allow_browser_log: true do
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.buttons.mail.send')
+      complete_review_step
+      acknowledge_and_confirm_personal_key
 
-      attach_file t('doc_auth.headings.document_capture_front'), yml_file.path
-      attach_file t('doc_auth.headings.document_capture_back'), yml_file.path
+      expect(page).to have_content(t('idv.titles.come_back_later'))
+      expect(page).to have_current_path(idv_come_back_later_path)
+
+      # WILLFIX: After LG-6897, assert that "Ready to Verify" content is shown after code entry.
     end
   end
 end

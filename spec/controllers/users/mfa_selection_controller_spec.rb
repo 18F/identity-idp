@@ -173,23 +173,41 @@ describe Users::MfaSelectionController do
     end
 
     context 'when the form is empty' do
-      before do
-        stub_sign_in
+      let(:user) { build(:user, :signed_up) }
 
-        patch :update, params: {
-          two_factor_options_form: {
-          },
-        }
+      before do
+        stub_sign_in(user)
       end
-      it 'renders the index page' do
-        expect(response).to redirect_to two_factor_options_path
+
+      context 'with no active MFA' do
+        it 'redirects to the index page with a flash error' do
+          patch :update, params: {
+            two_factor_options_form: {
+            },
+          }
+
+          expect(response).to redirect_to two_factor_options_path
+          expect(flash[:error]).to eq(
+            t('errors.two_factor_auth_setup.must_select_option'),
+          )
+        end
       end
-      it 'contains a flash message' do
-        expect(flash[:error]).to eq(
-          t('errors.two_factor_auth_setup.must_select_option'),
-        )
+
+      context 'with an active MFA' do
+        it 'redirects to after_mfa_setup_path' do
+          create(:phone_configuration, user: user)
+
+          patch :update, params: {
+            two_factor_options_form: {
+              selection: [''],
+            },
+          }
+
+          expect(response).to redirect_to account_path
+        end
       end
     end
+
     context 'when the selection is not valid' do
       it 'renders the index page' do
         stub_sign_in

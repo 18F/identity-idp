@@ -17,8 +17,7 @@ module Idv
       def idv_failure(result)
         throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
         if throttle.throttled?
-          @flow.analytics.track_event(
-            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          @flow.analytics.throttler_rate_limit_triggered(
             throttle_type: :idv_resolution,
             step_name: self.class.name,
           )
@@ -81,8 +80,7 @@ module Idv
       end
 
       def throttled_response
-        @flow.analytics.track_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_doc_auth,
         )
         redirect_to throttled_url

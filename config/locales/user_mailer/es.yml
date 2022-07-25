@@ -12,7 +12,7 @@ es:
     account_reset_cancel:
       intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name}.
-      subject: Eliminar su cuenta
+      subject: Solicitud cancelada
     account_reset_complete:
       intro_html: Este correo electrónico confirma que ha eliminado su cuenta de
         %{app_name}.

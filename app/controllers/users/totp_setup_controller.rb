@@ -66,12 +66,11 @@ module Users
 
     def track_event
       mfa_user = MfaContext.new(current_user)
-      properties = {
+      analytics.totp_setup_visit(
         user_signed_up: MfaPolicy.new(current_user).two_factor_enabled?,
         totp_secret_present: new_totp_secret.present?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      }
-      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
+      )
     end
 
     def store_totp_secret_in_session
@@ -102,7 +101,7 @@ module Users
     end
 
     def process_successful_disable
-      analytics.track_event(Analytics::TOTP_USER_DISABLED)
+      analytics.totp_user_disabled
       create_user_event(:authenticator_disabled)
       revoke_remember_device(current_user)
       revoke_otp_secret_key
