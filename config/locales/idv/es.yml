@@ -6,10 +6,10 @@ es:
         %{last_number}
     buttons:
       cancel: Cancele y regrese a su perfil
-      change_address_label: Cambiar dirección
-      change_label: Cambio
-      change_ssn_label: Cambiar número de Seguridad Social
-      change_state_id_label: Cambiar ID de estado
+      change_address_label: Actualizar su dirección actual
+      change_label: Actualizar
+      change_ssn_label: Actualizar su número de la Seguridad Social
+      change_state_id_label: Actualizar la información de su cédula de identidad
       continue_plain: Continuar
       mail:
         resend: Enviar otra carta
@@ -106,7 +106,7 @@ es:
       city: Ciudad
       dob: Fecha de nacimiento
       first_name: Nombre de pila
-      id_number: Número de identificación
+      id_number: Número de cédula
       last_name: Apellido
       password: Contraseña
       ssn: Número de seguridad social
@@ -190,7 +190,7 @@ es:
         review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
-        are_you_near: '¿Se encuentra cerca de Washington D. C.?'
+        are_you_near: '¿Se encuentra cerca de la ciudad de Washington?'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
         still_having_trouble: '¿Sigue teniendo dificultades?'
@@ -208,7 +208,7 @@ es:
         supported_documents: Vea la lista de documentos de identidad emitidos por el
           estado que son aceptados
         verify_by_mail: Verifique su dirección por correo
-        verify_in_person: Verifique su identificación de manera presencial en una
+        verify_in_person: Verifique su cédula de identidad en persona en una
           oficina de correos
     welcome:
       no_js_header: Debe habilitar JavaScript para verificar su identidad.
