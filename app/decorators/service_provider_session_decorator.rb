@@ -77,6 +77,10 @@ class ServiceProviderSessionDecorator
     sp.friendly_name || sp.agency&.name
   end
 
+  def sp_issuer
+    sp.issuer
+  end
+
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
@@ -114,7 +118,17 @@ class ServiceProviderSessionDecorator
   end
 
   def irs_attempts_api_session_id
-    @irs_attempts_api_session_id ||= request_params['irs_attempts_api_session_id']
+    @irs_attempts_api_session_id ||= request_url_params['irs_attempts_api_session_id']
+  end
+
+  def request_url_params
+    @request_url_params ||= begin
+      if request_url.present?
+        UriService.params(request_url)
+      else
+        {}
+      end
+    end
   end
 
   private
@@ -138,16 +152,6 @@ class ServiceProviderSessionDecorator
   end
 
   def authorize_form
-    OpenidConnectAuthorizeForm.new(request_params)
-  end
-
-  def request_params
-    @request_params ||= begin
-      if request_url.present?
-        UriService.params(request_url)
-      else
-        {}
-      end
-    end
+    OpenidConnectAuthorizeForm.new(request_url_params)
   end
 end

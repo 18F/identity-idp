@@ -40,7 +40,7 @@ describe RegisterUserEmailForm do
         end
 
         expect(analytics).to have_logged_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :reg_confirmed_email,
         )
       end
@@ -78,7 +78,7 @@ describe RegisterUserEmailForm do
         end
 
         expect(analytics).to have_logged_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          'Throttler Rate Limit Triggered',
           throttle_type: :reg_unconfirmed_email,
         )
       end

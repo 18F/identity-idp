@@ -1,0 +1,4 @@
+<%= content_for(:meta_refresh) { @meta_refresh.to_s } %>
+<% title t('titles.doc_auth.processing_images') %>
+
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.info.interstitial_eta')) %>

@@ -163,6 +163,35 @@ module AnalyticsEvents
     track_event('Authentication Confirmation: Reset selected')
   end
 
+  # Tracks when the user creates a set of backup mfa codes.
+  # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+  def backup_code_created(enabled_mfa_methods_count:, **extra)
+    track_event(
+      'Backup Code Created',
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Track user creating new BackupCodeSetupForm, record form submission Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  def backup_code_setup_visit(
+    success:,
+    errors: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      'Backup Code Setup Visited',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      **extra,
+    )
+  end
+
   # A user that has been banned from an SP has authenticated, they are redirected
   # to a page showing them that they have been banned
   def banned_user_redirect
@@ -455,6 +484,11 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # The user visited the "ready to verify" page for the in person proofing flow
+  def idv_in_person_ready_to_verify_visit
+    track_event('IdV: in person ready to verify visited')
+  end
+
   # @param [String] step_name which step the user was on
   # @param [Integer] remaining_attempts how many attempts the user has left before we throttle them
   # The user visited an error page due to an encountering an exception talking to a proofing vendor
@@ -537,6 +571,13 @@ module AnalyticsEvents
       client_image_metrics: client_image_metrics,
       flow_path: flow_path,
       **extra,
+    )
+  end
+
+  def idv_doc_auth_randomizer_defaulted
+    track_event(
+      'IdV: doc_auth random vendor error',
+      error: 'document_capture_session_uuid_key missing',
     )
   end
 
@@ -1020,6 +1061,9 @@ module AnalyticsEvents
   # @param [Integer] webauthn_configuration_id
   # @param [Integer] phone_configuration_id
   # @param [Boolean] confirmation_for_add_phone
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -1033,6 +1077,9 @@ module AnalyticsEvents
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
     **extra
   )
     track_event(
@@ -1048,6 +1095,9 @@ module AnalyticsEvents
       confirmation_for_add_phone: confirmation_for_add_phone,
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
       **extra,
     )
   end
@@ -1790,6 +1840,67 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when a user is bounced back from the service provider due to an integration issue.
+  def sp_handoff_bounced_detected
+    track_event('SP handoff bounced detected')
+  end
+
+  # Tracks when a user visits the bounced page.
+  def sp_handoff_bounced_visit
+    track_event('SP handoff bounced visited')
+  end
+
+  # Tracks when a user vists the "This agency no longer uses Login.gov" page.
+  def sp_inactive_visit
+    track_event('SP inactive visited')
+  end
+
+  # Tracks when a user is redirected back to the service provider
+  # @param [Integer] ial
+  # @param [Integer] billed_ial
+  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+    track_event(
+      'SP redirect initiated',
+      ial: ial,
+      billed_ial: billed_ial,
+      **extra,
+    )
+  end
+
+  # Tracks when a user triggered a rate limit throttle
+  # @param [String] throttle_type
+  def throttler_rate_limit_triggered(throttle_type:, **extra)
+    track_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: throttle_type,
+      **extra,
+    )
+  end
+
+  # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
+  def totp_setup_visit(
+    user_signed_up:,
+    totp_secret_present:,
+    enabled_mfa_methods_count:,
+    **extra
+  )
+    track_event(
+      'TOTP Setup Visited',
+      user_signed_up: user_signed_up,
+      totp_secret_present: totp_secret_present,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when a user disabled a TOTP device
+  def totp_user_disabled
+    track_event('TOTP: User Disabled')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -1810,6 +1921,34 @@ module AnalyticsEvents
     )
   end
 
+  # Record SAML authentication payload Hash
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [String] nameid_format
+  # @param [Array] authn_context
+  # @param [String] authn_context_comparison
+  # @param [String] service_provider
+  def saml_auth(
+    success:,
+    errors:,
+    nameid_format:,
+    authn_context:,
+    authn_context_comparison:,
+    service_provider:,
+    **extra
+  )
+    track_event(
+      'SAML Auth',
+      success: success,
+      errors: errors,
+      nameid_format: nameid_format,
+      authn_context: authn_context,
+      authn_context_comparison: authn_context_comparison,
+      service_provider: service_provider,
+      **extra,
+    )
+  end
+
   # @param [Integer] requested_ial
   # @param [String] service_provider
   # An external request for SAML Authentication was received
@@ -1825,6 +1964,74 @@ module AnalyticsEvents
         service_provider: service_provider,
         **extra,
       }.compact,
+    )
+  end
+
+  # tracks if the session is kept alive
+  def session_kept_alive
+    track_event('Session Kept Alive')
+  end
+
+  # tracks if the session timed out
+  def session_timed_out
+    track_event('Session Timed Out')
+  end
+
+  # tracks when a user's session is timed out
+  def session_total_duration_timeout
+    track_event('User Maximum Session Length Exceeded')
+  end
+
+  # @param [String] flash
+  # @param [String] stored_location
+  # tracks when a user visits the sign in page
+  def sign_in_page_visit(flash:, stored_location:, **extra)
+    track_event(
+      'Sign in page visited',
+      flash: flash,
+      stored_location: stored_location,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user opts into SMS
+  def sms_opt_in_submitted(
+    success:,
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Submitted',
+      success: success,
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] new_user
+  # @param [Boolean] has_other_auth_methods
+  # @param [Integer] phone_configuration_id
+  # tracks when a user visits the sms opt in page
+  def sms_opt_in_visit(
+    new_user:,
+    has_other_auth_methods:,
+    phone_configuration_id:,
+    **extra
+  )
+    track_event(
+      'SMS Opt-In: Visited',
+      new_user: new_user,
+      has_other_auth_methods: has_other_auth_methods,
+      phone_configuration_id: phone_configuration_id,
+      **extra,
     )
   end
 
@@ -1908,6 +2115,43 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param [Hash] mfa_method_counts
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Hash] pii_like_keypaths
+  # Tracks when a user has completed MFA setup
+  def user_registration_mfa_setup_complete(
+    success:,
+    mfa_method_counts:,
+    enabled_mfa_methods_count:,
+    pii_like_keypaths:,
+    **extra
+  )
+    track_event(
+      'User Registration: MFA Setup Complete',
+      {
+        success: success,
+        mfa_method_counts: mfa_method_counts,
+        enabled_mfa_methods_count: enabled_mfa_methods_count,
+        pii_like_keypaths: pii_like_keypaths,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user's piv cac is disabled
+  def user_registration_piv_cac_disabled
+    track_event('User Registration: piv cac disabled')
+  end
+
+  # Tracks when user's piv cac setup
+  def user_registration_piv_cac_setup_visit(**extra)
+    track_event(
+      'User Registration: piv cac setup visited',
+      **extra,
+    )
+  end
+
   # Tracks when user visits Suggest Another MFA Page
   def user_registration_suggest_another_mfa_notice_visited
     track_event('User Registration: Suggest Another MFA Notice visited')
@@ -1923,6 +2167,52 @@ module AnalyticsEvents
     track_event('User Registration: 2FA Setup visited')
   end
 
+  # @param [String] redirect_from
+  # @param [Hash] vendor_status
+  # Tracks when vendor has outage
+  def vendor_outage(
+    redirect_from:,
+    vendor_status:,
+    **extra
+  )
+    track_event(
+      'Vendor Outage',
+      redirect_from: redirect_from,
+      vendor_status: vendor_status,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [Integer] mfa_method_counts
+  # Tracks when WebAuthn is deleted
+  def webauthn_deleted(success:, mfa_method_counts:, pii_like_keypaths:, **extra)
+    track_event(
+      'WebAuthn Deleted',
+      success: success,
+      mfa_method_counts: mfa_method_counts,
+      pii_like_keypaths: pii_like_keypaths,
+      **extra,
+    )
+  end
+
+  # @param [Hash] platform_authenticator
+  # @param [Hash] errors
+  # @param [Integer] enabled_mfa_methods_count
+  # @param [Boolean] success
+  # Tracks when WebAuthn setup is visited
+  def webauthn_setup_visit(platform_authenticator:, errors:, enabled_mfa_methods_count:, success:,
+                           **extra)
+    track_event(
+      'WebAuthn Setup Visited',
+      platform_authenticator: platform_authenticator,
+      errors: errors,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      success: success,
+      **extra,
+    )
+  end
+
   # Tracks when user visits enter email page
   def user_registration_enter_email_visit
     track_event('User Registration: enter email visited')
@@ -1934,6 +2224,129 @@ module AnalyticsEvents
     track_event(
       'User Registration: phone setup visited',
       enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when user cancels registration
+  # @param [String] request_came_from the controller/action the request came from
+  def user_registration_cancellation(request_came_from:, **extra)
+    track_event(
+      'User registration: cancellation visited',
+      request_came_from: request_came_from,
+      **extra,
+    )
+  end
+
+  # Tracks when user completes registration
+  # @param [Boolean] ial2
+  # @param [Boolean] ialmax
+  # @param [String] service_provider_name
+  # @param [String] page_occurence
+  # @param [String] needs_completion_screen_reason
+  # @param [Array] sp_request_requested_attributes
+  # @param [Array] sp_session_requested_attributes
+  def user_registration_complete(
+    ial2:,
+    service_provider_name:,
+    page_occurence:,
+    needs_completion_screen_reason:,
+    sp_session_requested_attributes:,
+    sp_request_requested_attributes: nil,
+    ialmax: nil,
+    **extra
+  )
+    track_event(
+      'User registration: complete',
+      ial2: ial2,
+      ialmax: ialmax,
+      service_provider_name: service_provider_name,
+      page_occurence: page_occurence,
+      needs_completion_screen_reason: needs_completion_screen_reason,
+      sp_request_requested_attributes: sp_request_requested_attributes,
+      sp_session_requested_attributes: sp_session_requested_attributes,
+      **extra,
+    )
+  end
+
+  # Tracks when user submits registration email
+  # @param [Boolean] success
+  # @param [Boolean] throttled
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  # @param [String] domain_name
+  def user_registration_email(
+    success:,
+    throttled:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    domain_name: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Submitted',
+      {
+        success: success,
+        throttled: throttled,
+        errors: errors,
+        error_details: error_details,
+        user_id: user_id,
+        domain_name: domain_name,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # Tracks when user confirms registration email
+  # @param [Boolean] success
+  # @param [Hash] errors
+  # @param [Hash] error_details
+  # @param [String] user_id
+  def user_registration_email_confirmation(
+    success:,
+    errors:,
+    error_details: nil,
+    user_id: nil,
+    **extra
+  )
+    track_event(
+      'User Registration: Email Confirmation',
+      success: success,
+      errors: errors,
+      error_details: error_details,
+      user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_exception(
+    reason:, enrollment_id:, exception_class: nil, exception_message: nil, **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that fail during GetUspsProofingResultsJob
+  # @param [String] reason why did this enrollment fail?
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment failed proofing',
+      reason: reason,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end

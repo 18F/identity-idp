@@ -13,7 +13,7 @@ fr:
     account_reset_cancel:
       intro_html: Cet e-mail confirme que vous avez annulé votre demande de
         suppression de votre compte %{app_name}.
-      subject: Supprimer votre compte
+      subject: Demande annulée
     account_reset_complete:
       intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name}.
       subject: Compte supprimé

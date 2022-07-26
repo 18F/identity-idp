@@ -109,7 +109,7 @@ describe Idv::PhoneController do
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
       get :new
-      expect(response).to redirect_to idv_review_path
+      expect(response).to redirect_to idv_otp_delivery_method_path
     end
 
     it 'shows waiting interstitial if async process is in progress' do
@@ -218,12 +218,12 @@ describe Idv::PhoneController do
           stub_verify_steps_one_and_two(user)
         end
 
-        it 'redirects to review page and sets phone_confirmed_at' do
+        it 'redirects to otp delivery page' do
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_path
           get :new
-          expect(response).to redirect_to idv_review_path
+          expect(response).to redirect_to idv_otp_delivery_method_path
 
           expected_applicant = {
             'first_name' => 'Some',
@@ -234,7 +234,7 @@ describe Idv::PhoneController do
 
           expect(subject.idv_session.applicant).to eq expected_applicant
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
-          expect(subject.idv_session.user_phone_confirmation).to eq true
+          expect(subject.idv_session.user_phone_confirmation).to eq false
         end
 
         context 'with full vendor outage' do
@@ -243,12 +243,12 @@ describe Idv::PhoneController do
               and_return(true)
           end
 
-          it 'redirects to review page' do
+          it 'redirects to vendor outage page' do
             put :create, params: { idv_phone_form: { phone: good_phone } }
 
             expect(response).to redirect_to idv_phone_path
             get :new
-            expect(response).to redirect_to idv_review_path
+            expect(response).to redirect_to vendor_outage_path(from: :idv_phone)
           end
         end
       end
@@ -395,7 +395,7 @@ describe Idv::PhoneController do
           allow(@analytics).to receive(:track_event)
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            'Throttler Rate Limit Triggered',
             throttle_type: :proof_address,
             step_name: a_kind_of(Symbol),
           )

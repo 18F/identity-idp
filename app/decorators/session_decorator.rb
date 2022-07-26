@@ -29,6 +29,8 @@ class SessionDecorator
 
   def sp_name; end
 
+  def sp_issuer; end
+
   def sp_logo; end
 
   def sp_logo_url; end

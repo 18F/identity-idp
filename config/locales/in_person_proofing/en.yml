@@ -6,6 +6,45 @@ en:
         info: 'If your current address does not match the address on your ID, you will
           need to bring proof of your current address to the Post Office.'
         learn_more: Learn more
+      barcode:
+        deadline: Your deadline to verify your identity in person is %{deadline}.
+        deadline_restart: If you go after the deadline, your information will not be
+          saved and you will need to restart the process.
+        emailed_info: We have emailed this information to the email you used to log in.
+        items_to_bring: 'Bring these items with you to the Post Office:'
+        items_to_bring_questions: Questions about what to bring?
+        learn_more: Learn more
+        location_details: Location details
+        no_appointment_required: No appointment is required.
+        retail_hours: Retail hours
+        retail_hours_closed: Closed
+        retail_phone_label: Phone number
+        speak_to_associate: You can speak with any retail associate at this Post Office
+          to verify your identity.
+      prepare:
+        alert_selected_post_office: 'You’ve selected the %{name} Post Office.'
+        bring_barcode_header: A copy of your barcode
+        bring_barcode_info: 'We will give you a unique code that expires within 30 days.'
+        bring_id_header: 'Your state-issued ID'
+        bring_id_info_acceptable: 'Your ID must not be expired. Acceptable forms of ID are:'
+        bring_id_info_dl: State Driver’s License
+        bring_id_info_id_card: 'State Non-Driver’s Identification Card'
+        bring_id_info_no_other_forms: We do not currently accept any other forms of
+          Identification, such as passports and military IDs
+        bring_proof_header: Proof of your current address
+        bring_proof_info_acceptable: 'You need a proof of address if your current
+          address is different than the address on your ID. Acceptable forms of
+          proof of address are:'
+        bring_proof_info_card: Vehicle Registration Card
+        bring_proof_info_lease: Lease, Mortgage, or Deed of Trust
+        bring_proof_info_policy: Home or Vehicle Insurance Policy
+        bring_proof_info_registration: Voter Registration
+        bring_title: 'When you go to the Post Office, please bring:'
+        verify_step_about: 'Complete the steps below to generate the barcode you’ll take
+          with you to the Post Office:'
+        verify_step_enter_phone: Enter a phone number with your name on the plan.
+        verify_step_enter_pii: 'Enter your name, date of birth, state-issued ID number,
+          address and Social Security number.'
       state_id:
         info_html: 'Enter information <strong>exactly as it appears on your state-issued
           ID.</strong> We will use this information to confirm it matches your
@@ -36,7 +75,30 @@ en:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person
       location: Select a location to verify your ID
+      prepare: Verify your identity in person
       state_id: Enter the information on your ID
       update_address: Update your current address
       update_state_id: Update the information on your ID
-      welcome: Verify your identity in person
+    process:
+      barcode:
+        caption_label: Enrollment code
+        heading: A copy of your barcode
+        image_alt: Barcode
+        info: Print or scan from your mobile device.
+      proof_of_address:
+        acceptable_proof:
+          - Lease, Mortgage, or Deed of Trust
+          - Voter Registration
+          - Vehicle Registration Card
+          - Home or Vehicle Insurance Policy
+        heading: Proof of your current address
+        info: 'You need a proof of address if your current address is different than the
+          address on your ID. Acceptable forms of proof of address are:'
+      state_id:
+        acceptable_documents:
+          - State Driver’s License
+          - State Non-Driver’s Identification Card
+        heading: Your state-issued ID
+        info: 'Your ID must not be expired. Acceptable forms of ID are:'
+        no_other_documents: We do not currently accept any other forms of
+          identification, such as passports and military IDs.

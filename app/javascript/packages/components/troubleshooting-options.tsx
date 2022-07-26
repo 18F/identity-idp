@@ -1,14 +1,15 @@
 import type { ReactNode } from 'react';
-import { BlockLink } from '@18f/identity-components';
+import { BlockLink, BlockSubmitButton } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
+import { BlockLinkProps } from './block-link';
 
-export interface TroubleshootingOption {
-  url: string;
+export type TroubleshootingOption = Omit<BlockLinkProps, 'href'> & {
+  url?: string;
 
   text: ReactNode;
 
   isExternal?: boolean;
-}
+};
 
 interface TroubleshootingOptionsProps {
   headingTag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
@@ -45,11 +46,15 @@ function TroubleshootingOptions({
         {heading ?? t('components.troubleshooting_options.default_heading')}
       </HeadingTag>
       <ul className="troubleshooting-options__options">
-        {options.map(({ url, text, isExternal }) => (
-          <li key={url}>
-            <BlockLink href={url} isExternal={isExternal}>
-              {text}
-            </BlockLink>
+        {options.map(({ url, text, ...extraProps }, index) => (
+          <li key={`tso-${index}`}>
+            {url !== undefined ? (
+              <BlockLink {...extraProps} href={url}>
+                {text}
+              </BlockLink>
+            ) : (
+              <BlockSubmitButton>{text}</BlockSubmitButton>
+            )}
           </li>
         ))}
       </ul>

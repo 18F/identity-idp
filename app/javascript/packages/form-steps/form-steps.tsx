@@ -241,6 +241,7 @@ function FormSteps({
   const [stepName, setStepName] = useHistoryParam(initialStep, { basePath });
   const [stepErrors, setStepErrors] = useState([] as Error[]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stepCanComplete, setStepCanComplete] = useState<boolean | undefined>(undefined);
   const fields = useRef({} as Record<string, FieldsRefEntry>);
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
@@ -258,6 +259,14 @@ function FormSteps({
 
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
+
+  useEffect(() => {
+    // reset stepName if it doesn't correspond to an existing step
+    const stepsCheck = steps.map((step) => step?.name).filter(Boolean);
+    if (stepName && !stepsCheck.includes(stepName)) {
+      setStepName(undefined);
+    }
+  }, [stepName, steps]);
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
@@ -338,8 +347,8 @@ function FormSteps({
   const { form: Form, submit, name } = step;
 
   /**
-   * Increments state to the next step, or calls onComplete callback if the current step is the last
-   * step.
+   * Increments state to the next step, or calls onComplete callback
+   * if the current step is the last step.
    */
   const toNextStep: FormEventHandler = async (event) => {
     event.preventDefault();
@@ -376,19 +385,27 @@ function FormSteps({
     onStepSubmit(step?.name);
 
     const nextStepIndex = stepIndex + 1;
-    const isComplete = nextStepIndex === steps.length;
+    const isComplete =
+      stepCanComplete !== undefined ? stepCanComplete : nextStepIndex === steps.length;
     if (isComplete) {
       onComplete(values);
     } else {
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
+    // unset stepCanComplete so the next step that needs to can set it
+    setStepCanComplete(undefined);
   };
 
   const toPreviousStep = () => {
     const previousStepIndex = Math.max(stepIndex - 1, 0);
     const { name: nextStepName } = steps[previousStepIndex];
     setStepName(nextStepName);
+  };
+
+  // wrap setter in a function to pass to FormStepsContext
+  const changeStepCanComplete = (isComplete: boolean) => {
+    setStepCanComplete(isComplete);
   };
 
   const isLastStep = stepIndex + 1 === steps.length;
@@ -401,7 +418,9 @@ function FormSteps({
           {error.message}
         </Alert>
       ))}
-      <FormStepsContext.Provider value={{ isLastStep, isSubmitting, onPageTransition }}>
+      <FormStepsContext.Provider
+        value={{ isLastStep, changeStepCanComplete, isSubmitting, onPageTransition }}
+      >
         <Form
           key={name}
           value={values}

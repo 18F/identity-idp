@@ -34,6 +34,7 @@ module IdvHelper
     page.find(
       'label',
       text: t('two_factor_authentication.otp_delivery_preference.sms'),
+      wait: 5,
     ).click
     click_on t('idv.buttons.send_confirmation_code')
   end

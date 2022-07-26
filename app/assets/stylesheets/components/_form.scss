@@ -59,14 +59,6 @@ input::-webkit-inner-spin-button {
   [aria-invalid='true'] ~ & {
     display: block;
   }
-
-  [aria-invalid='value-missing'] ~ &.display-if-invalid--value-missing {
-    display: block;
-  }
-
-  [aria-invalid='pattern-mismatch'] ~ &.display-if-invalid--pattern-mismatch {
-    display: block;
-  }
 }
 
 // ===============================================

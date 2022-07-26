@@ -176,7 +176,7 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
-      track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_doc_auth)
+      analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
@@ -227,8 +227,8 @@ module Idv
     end
 
     def acuant_sdk_capture?
-      image_metadata.dig(:front, :source) == 'acuant' &&
-        image_metadata.dig(:back, :source) == 'acuant'
+      image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
+        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
     end
 
     def image_metadata

@@ -28,8 +28,10 @@ feature 'doc auth redo document capture action', js: true do
       complete_upload_step
       DocAuth::Mock::DocAuthMockClient.reset!
       attach_and_submit_images
-      complete_ssn_step
 
+      expect(current_path).to eq(idv_doc_auth_verify_step)
+      check t('forms.ssn.show')
+      expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
       expect(page).not_to have_css('[role="status"]')
     end
 
@@ -59,8 +61,10 @@ feature 'doc auth redo document capture action', js: true do
         expect(current_path).to eq(idv_doc_auth_document_capture_step)
         DocAuth::Mock::DocAuthMockClient.reset!
         attach_and_submit_images
-        complete_ssn_step
 
+        expect(current_path).to eq(idv_doc_auth_verify_step)
+        check t('forms.ssn.show')
+        expect(page).to have_content(DocAuthHelper::SSN_THAT_FAILS_RESOLUTION)
         expect(page).not_to have_css('[role="status"]')
       end
     end

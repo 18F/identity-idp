@@ -20,7 +20,7 @@ module Users
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
-      analytics.track_event(Analytics::BACKUP_CODE_SETUP_VISIT, result.to_h)
+      analytics.backup_code_setup_visit(**result.to_h)
       save_backup_codes
       track_backup_codes_created
     end
@@ -51,8 +51,7 @@ module Users
     private
 
     def track_backup_codes_created
-      analytics.track_event(
-        Analytics::BACKUP_CODE_CREATED,
+      analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')

@@ -180,7 +180,7 @@ describe Users::SessionsController, devise: true do
       stub_analytics
       sign_in_as_user
 
-      expect(@analytics).to receive(:track_event).with(Analytics::SESSION_TIMED_OUT)
+      expect(@analytics).to receive(:track_event).with('Session Timed Out')
 
       get :timeout
     end
@@ -205,7 +205,10 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      post :create, params: { user: { email: user.email.upcase, password: user.password } }
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:email_and_password_auth).
+        with(email: user.email, success: true)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
@@ -536,7 +539,7 @@ describe Users::SessionsController, devise: true do
         subject.session['user_return_to'] = 'http://example.com'
         properties = { flash: 'hello', stored_location: 'http://example.com' }
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT, properties)
+        expect(@analytics).to receive(:track_event).with('Sign in page visited', properties)
 
         get :new
       end
@@ -646,7 +649,7 @@ describe Users::SessionsController, devise: true do
         controller.session[:session_expires_at] = Time.zone.now + 10
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
+        expect(@analytics).to receive(:track_event).with('Session Kept Alive')
 
         post :keepalive
       end

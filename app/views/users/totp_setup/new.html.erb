@@ -46,6 +46,7 @@
             aria: { label: t('forms.totp_setup.totp_step_4') },
             size: 18,
             class: 'width-auto',
+            maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
           ) %>
     <% end %>
   <% end %>

@@ -15,8 +15,7 @@ module Users
     before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
-      analytics.track_event(
-        Analytics::SIGN_IN_PAGE_VISIT,
+      analytics.sign_in_page_visit(
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
@@ -54,13 +53,13 @@ module Users
     def keepalive
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:session_expires_at] = now + Devise.timeout_in if alive?
-      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+      analytics.session_kept_alive if alive?
 
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
     def timeout
-      analytics.track_event(Analytics::SESSION_TIMED_OUT)
+      analytics.session_timed_out
       request_id = sp_session[:request_id]
       sign_out
       flash[:info] = t(

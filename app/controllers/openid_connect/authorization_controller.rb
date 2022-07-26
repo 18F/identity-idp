@@ -6,6 +6,7 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
+    include InheritedProofingConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -37,7 +38,7 @@ module OpenidConnect
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)
-      analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
+      analytics.sp_handoff_bounced_detected
       redirect_to bounced_url
       true
     end
@@ -151,8 +152,7 @@ module OpenidConnect
         user: current_user,
       )
 
-      analytics.track_event(
-        Analytics::SP_REDIRECT_INITIATED,
+      analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )
