@@ -155,6 +155,22 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
         expect(ippButton).to.exist();
       });
     });
+
+    context('hasErrors and inPersonURL but showInPersonOption is false', () => {
+      const wrapper = ({ children }) => (
+        <FlowContext.Provider value={{ inPersonURL }}>{children}</FlowContext.Provider>
+      );
+
+      it('does not have link to IPP flow', () => {
+        const { queryAllByText, queryAllByRole } = render(
+          <DocumentCaptureTroubleshootingOptions hasErrors showInPersonOption={false} />,
+          { wrapper },
+        );
+
+        expect(queryAllByText('components.troubleshooting_options.new_feature').length).to.equal(0);
+        expect(queryAllByRole('button').length).to.equal(0);
+      });
+    });
   });
 
   context('with document tips hidden', () => {
