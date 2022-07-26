@@ -1061,6 +1061,9 @@ module AnalyticsEvents
   # @param [Integer] webauthn_configuration_id
   # @param [Integer] phone_configuration_id
   # @param [Boolean] confirmation_for_add_phone
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -1074,6 +1077,9 @@ module AnalyticsEvents
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
     **extra
   )
     track_event(
@@ -1089,6 +1095,9 @@ module AnalyticsEvents
       confirmation_for_add_phone: confirmation_for_add_phone,
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
       **extra,
     )
   end

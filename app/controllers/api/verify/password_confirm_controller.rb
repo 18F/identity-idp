@@ -98,6 +98,7 @@ module Api
           user: user,
           current_address_matches_id: user_session.dig(:idv, :applicant, :same_address_as_id),
           selected_location_details: user_session.dig(:idv, :applicant, :selected_location_details),
+          unique_id: InPersonEnrollment.generate_unique_id,
         )
 
         enrollment_code = create_usps_enrollment(enrollment)
