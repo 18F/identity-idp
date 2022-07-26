@@ -1,15 +1,19 @@
 import { render } from '@testing-library/react';
+import sinon from 'sinon';
 import LocationCollectionItem from './location-collection-item';
 
 describe('LocationCollectionItem', () => {
   it('renders the component with expected class and children', () => {
+    const onClick = sinon.stub();
     const { container } = render(
       <LocationCollectionItem
         name=""
         streetAddress=""
         addressLine2=""
+        handleSelect={onClick}
         weekdayHours=""
         saturdayHours=""
+        selectId={0}
         sundayHours=""
       />,
     );
@@ -26,13 +30,16 @@ describe('LocationCollectionItem', () => {
   });
 
   it('renders the component with expected data', () => {
+    const onClick = sinon.stub();
     const { getByText } = render(
       <LocationCollectionItem
         name="test name"
         streetAddress="123 Test Address"
         addressLine2="City, State 12345-1234"
+        handleSelect={onClick}
         weekdayHours="9 AM - 5 PM"
         saturdayHours="9 AM - 6 PM"
+        selectId={0}
         sundayHours="Closed"
       />,
     );
