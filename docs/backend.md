@@ -7,3 +7,78 @@ The IDP is a Rails application, that follows many typical Rails conventions.
 For consistency, we use [Faraday](https://github.com/lostisland/faraday)
 when making HTTP requests. We also wire in notifications so we can
 [log metrics on these requests](../config/initializers/faraday.rb)
+
+
+## Forms, FormResponse, Analytics, and Controllers
+
+We aim to keep Controllers simple and lean, and put business logic in Form
+classes, and hand those results (FormResponse) to our Analytics class to get
+logged in a consistent way.
+
+### FormResponse
+
+The [FormResponse](../app/services/form_response.rb) is a simple structure to help
+bundle up properties for logging. **Do not put PII or sensitive information
+inside these** because they are intended to be logged.
+
+```ruby
+FormResponse.new(
+  success: true | false,
+  errors: Hash | ActiveModel::Errors,
+  extra: Hash,
+)
+```
+
+### Forms
+
+We use `ActiveModel::Model` validations to help build useful error structures.
+
+Forms should have a `#submit` method that returns a `FormResponse`.
+- `success:` is usually `#valid?` from ActiveModel
+- `errors:` is usually `errors` from ActiveModel
+- `extra:` is, by convention, a method called `extra_analytics_attributes` that
+  returns a Hash
+
+```ruby
+def submit
+  FormResponse.new(
+    success: valid?,
+    errors: errors,
+    extra: extra_analytics_attributes,
+  )
+end
+```
+
+For sensitive properties, or results that are not meant to be logged, add
+properties to the Form object that get written during `#submit`
+
+### Analytics
+
+At the end of the day, analytics events get dumped into `events.log` and contain
+information like user ID, service provider, user agent, etc.
+
+Event names are strings. Events correspond to methods in the
+[AnalyticsEvents](../app/services/analytics_events.rb) mixin. We document these
+with YARD so that we can auto-generate
+[documentation on them in our handbook][analytics-handbook]
+
+[analytics-handbook]: https://handbook.login.gov/articles/analytics-events.html
+
+### Controllers
+
+These tie everything together
+
+```ruby
+def index
+  form = MyForm.new(params)
+
+  result = form.submit
+  analytics.my_event(**result.to_h)
+
+  if result.success?
+    do_something(form.sensitive_value_here)
+  else
+    do_something_else
+  end
+end
+```
