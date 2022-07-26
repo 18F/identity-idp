@@ -113,8 +113,6 @@ RSpec.describe GetUspsProofingResultsJob do
           failure_reason: 'Clerk indicates that ID name or address does not match source data.',
           fraud_suspected: false,
           primary_id_type: 'Uniformed Services identification card',
-          proofing_city: 'WILKES BARRE',
-          proofing_post_office: 'WILKES BARRE',
           proofing_state: 'PA',
           secondary_id_type: 'Deed of Trust',
           transaction_end_date_time: '12/17/2020 034055',
