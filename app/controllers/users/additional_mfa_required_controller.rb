@@ -3,7 +3,7 @@ module Users
     include SecureHeadersConcern
     extend ActiveSupport::Concern
 
-    before_action :confirm_user_fully_uathenticated
+    before_action :confirm_user_fully_authenticated
 
     def show
       @content = AdditionalMfaRequiredPresenter.new(current_user: current_user)
@@ -28,7 +28,7 @@ module Users
       @enforcement_date ||= IdentityConfig.store.kantara_restriction_enforcement_date
     end
 
-    def confirm_user_fully_uathenticated
+    def confirm_user_fully_authenticated
       unless user_fully_authenticated?
         return confirm_two_factor_authenticated(sp_session[:request_id])
       end
