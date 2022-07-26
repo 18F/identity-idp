@@ -58,7 +58,8 @@ module MfaSetupConcern
   end
 
   def suggest_second_mfa?
-    mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2
+    return false unless user_session[:mfa_selections]
+    mfa_selection_count < 2 && mfa_context.enabled_mfa_methods_count < 2 
   end
 
   def mfa_selection_count
