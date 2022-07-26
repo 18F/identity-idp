@@ -87,7 +87,11 @@ module DocAuth
       end
 
       def doc_auth_result_from_success
-        success? ? 'Passed' : 'Caution'
+        if success?
+          DocAuth::Acuant::ResultCodes::PASSED.name
+        else
+          DocAuth::Acuant::ResultCodes::CAUTION.name
+        end
       end
 
       def parse_uri
