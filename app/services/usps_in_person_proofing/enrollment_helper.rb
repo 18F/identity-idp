@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class EnrollmentHelper
-    def self.save_in_person_enrollment(user, profile, pii)
+    def save_in_person_enrollment(user, profile, pii)
       enrollment = InPersonEnrollment.create!(
         profile: profile,
         user: user,
@@ -17,7 +17,7 @@ module UspsInPersonProofing
       enrollment.save!
     end
 
-    def self.usps_proofer
+    def usps_proofer
       if IdentityConfig.store.usps_mock_fallback
         UspsInPersonProofing::Mock::Proofer.new
       else
@@ -25,7 +25,7 @@ module UspsInPersonProofing
       end
     end
 
-    def self.create_usps_enrollment(enrollment, pii)
+    def create_usps_enrollment(enrollment, pii)
       applicant = UspsInPersonProofing::Applicant.new(
         {
           unique_id: enrollment.usps_unique_id,
@@ -44,29 +44,29 @@ module UspsInPersonProofing
       response = proofer.request_enroll(applicant)
       response['enrollmentCode']
     end
-  end
 
-  def selected_location_details
-    # temporary hard-coded value until the user's selection is saved to the session
-    {
-      'name' => 'BALTIMORE — Post Office™',
-      'streetAddress' => '900 E FAYETTE ST RM 118',
-      'city' => 'BALTIMORE',
-      'state' => 'MD',
-      'zip5' => '21233',
-      'zip4' => '9715',
-      'phone' => '555-123-6409',
-      'hours' => [
-        {
-          'weekdayHours' => '8:30 AM - 4:30 PM',
-        },
-        {
-          'saturdayHours' => '9:00 AM - 12:00 PM',
-        },
-        {
-          'sundayHours' => 'Closed',
-        },
-      ],
-    }
+    def selected_location_details
+      # temporary hard-coded value until the user's selection is saved to the session
+      {
+        'name' => 'BALTIMORE — Post Office™',
+        'streetAddress' => '900 E FAYETTE ST RM 118',
+        'city' => 'BALTIMORE',
+        'state' => 'MD',
+        'zip5' => '21233',
+        'zip4' => '9715',
+        'phone' => '555-123-6409',
+        'hours' => [
+          {
+            'weekdayHours' => '8:30 AM - 4:30 PM',
+          },
+          {
+            'saturdayHours' => '9:00 AM - 12:00 PM',
+          },
+          {
+            'sundayHours' => 'Closed',
+          },
+        ],
+      }
+    end
   end
 end

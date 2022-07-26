@@ -81,8 +81,7 @@ module Idv
       create_gpo_entry if address_verification_mechanism == 'gpo'
       if in_person_enrollment?
         profile = current_user.pending_profile
-        applicant = user_session[:idv][:applicant]
-        UspsInPersonProofing::EnrollmentHelper.save_in_person_enrollment(
+        UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
           current_user,
           profile,
           applicant,
