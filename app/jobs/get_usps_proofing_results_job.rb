@@ -115,8 +115,6 @@ class GetUspsProofingResultsJob < ApplicationJob
       failure_reason: response['failureReason'],
       fraud_suspected: response['fraudSuspected'],
       primary_id_type: response['primaryIdType'],
-      proofing_city: response['proofingCity'],
-      proofing_post_office: response['proofingPostOffice'],
       proofing_state: response['proofingState'],
       secondary_id_type: response['secondaryIdType'],
       transaction_end_date_time: response['transactionEndDateTime'],
