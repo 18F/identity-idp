@@ -1,6 +1,5 @@
 require 'rails_helper'
 
-RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
 describe Idv::DocAuthController do
   include DocAuthHelper
 
