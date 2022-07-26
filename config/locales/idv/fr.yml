@@ -9,7 +9,7 @@ fr:
       change_address_label: Mettre à jour votre adresse actuelle
       change_label: Mettre à jour
       change_ssn_label: Mettre à jour votre numéro de Sécurité Sociale
-      change_state_id_label: Mettre à jour les informations figurant sur votre document d'identité
+      change_state_id_label: Mettre à jour les informations figurant sur votre document d’identité
       continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
@@ -111,7 +111,7 @@ fr:
       city: Ville
       dob: Date de naissance
       first_name: Prénom
-      id_number: Numéro d'identification
+      id_number: Numéro d’identification
       last_name: Nom de famille
       password: Mot de passe
       ssn: Numéro de sécurité sociale
