@@ -3,6 +3,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :redirect_if_mail_bounced
     before_action :redirect_if_pending_profile
+    before_action :redirect_if_pending_in_person_enrollment
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
     include IdvSession # remove if we retire the non docauth LOA3 flow
@@ -34,6 +35,10 @@ module Idv
       return if sp_session[:ial2_strict] &&
                 !IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
+    end
+
+    def redirect_if_pending_in_person_enrollment
+      redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
     end
 
     def update_if_skipping_upload

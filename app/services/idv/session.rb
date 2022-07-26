@@ -72,12 +72,17 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      # TBD: Enrollment isn't created yet. Read from proofing component?
+    end
+
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
     end
 
     def complete_session
-      complete_profile if phone_confirmed?
+      complete_profile if phone_confirmed? && !pending_in_person_enrollment?
       create_gpo_entry if address_verification_mechanism == 'gpo'
     end
 

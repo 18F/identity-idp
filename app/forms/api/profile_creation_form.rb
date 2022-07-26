@@ -52,8 +52,13 @@ module Api
     end
 
     def complete_session
-      complete_profile if phone_confirmed?
+      complete_profile if phone_confirmed? && !pending_in_person_enrollment?
       create_gpo_entry if user_bundle.gpo_address_verification?
+    end
+
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      # TBD: Enrollment isn't created yet. Read from proofing component?
     end
 
     def phone_confirmed?
