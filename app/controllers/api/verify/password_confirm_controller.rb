@@ -70,13 +70,14 @@ module Api
 
       def create_usps_enrollment(enrollment)
         pii = user_session[:idv][:pii]
+        address = pii.address1
+        address += " #{pii.address2}" unless pii.address2.blank?
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: enrollment.usps_unique_id,
             first_name: pii.first_name,
             last_name: pii.last_name,
-            address: pii.address1,
-            # do we need address2?
+            address: address,
             city: pii.city,
             state: pii.state,
             zip_code: pii.zipcode,

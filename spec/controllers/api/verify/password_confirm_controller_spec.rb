@@ -218,6 +218,23 @@ describe Api::Verify::PasswordConfirmController do
           post :create, params: { password: password, user_bundle_token: jwt }
         end
 
+        context 'when user enters an address2 value' do
+          let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
+
+          it 'provides address2 if the user entered it' do
+            proofer = UspsInPersonProofing::Mock::Proofer.new
+            mock = double
+
+            expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+            expect(mock).to receive(:request_enroll) do |applicant|
+              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+              proofer.request_enroll(applicant)
+            end
+
+            post :create, params: { password: password, user_bundle_token: jwt }
+          end
+        end
+
         it 'creates an in-person enrollment record' do
           expect(InPersonEnrollment.count).to be(0)
           post :create, params: { password: password, user_bundle_token: jwt }
