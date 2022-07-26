@@ -47,6 +47,20 @@ module ControllerHelper
     allow(subject).to receive(:user_session).and_return(user_session)
   end
 
+  def stub_user_with_applicant_data(user, _applicant)
+    user_session = {}
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(
+      user_session: user_session, current_user: user,
+      service_provider: nil
+    )
+    idv_session.applicant = applicant.with_indifferent_access
+    idv_session.profile_confirmation = true
+    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+    allow(subject).to receive(:user_session).and_return(user_session)
+  end
+
   def stub_decorated_user_with_pending_profile(user)
     decorated_user = instance_double(UserDecorator)
     allow(user).to receive(:decorate).and_return(decorated_user)
