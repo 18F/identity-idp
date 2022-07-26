@@ -47,7 +47,7 @@ module ControllerHelper
     allow(subject).to receive(:user_session).and_return(user_session)
   end
 
-  def stub_user_with_applicant_data(user, _applicant)
+  def stub_user_with_applicant_data(user, applicant)
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(

@@ -1,8 +1,9 @@
 require 'rails_helper'
 
 describe Idv::Session do
-  let(:user) { build(:user) }
+  let(:user) { create(:user, :with_pending_profile) }
   let(:user_session) { {} }
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
 
   subject {
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
@@ -53,6 +54,16 @@ describe Idv::Session do
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
+        subject.complete_session
+
+        expect(subject).not_to have_received(:complete_profile)
+      end
+
+      it 'does not complete the profile if the user has completed OTP phone confirmation and is proofing in-person' do
+        subject.applicant = applicant.with_indifferent_access
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        subject.user_phone_confirmation = true
         subject.complete_session
 
         expect(subject).not_to have_received(:complete_profile)
