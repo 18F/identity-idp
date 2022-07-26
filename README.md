@@ -59,7 +59,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
 
-  Note: If you didn't explicitly install `openssl@3` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
+  Note: If you didn't explicitly install `openssl@1.1` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
