@@ -3,6 +3,8 @@ module Users
     include SecureHeadersConcern
     extend ActiveSupport::Concern
 
+    before_action :confirm_user_fully_uathenticated
+
     def show
       @content = AdditionalMfaRequiredPresenter.new(current_user: current_user)
       analytics.non_restricted_mfa_required_prompt_visited

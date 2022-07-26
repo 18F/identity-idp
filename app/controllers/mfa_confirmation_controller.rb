@@ -1,5 +1,6 @@
 class MfaConfirmationController < ApplicationController
   include MfaSetupConcern
+  include SecureHeadersConcern
   before_action :confirm_two_factor_authenticated
 
   def show
