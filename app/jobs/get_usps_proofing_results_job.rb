@@ -125,6 +125,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     case response['status']
     when IPP_STATUS_PASSED
       if SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
+        enrollment.profile.activate
         enrollment.update(status: :passed)
       else
         # Unsupported ID type
