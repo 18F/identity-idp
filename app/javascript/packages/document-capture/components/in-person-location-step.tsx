@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { PageHeading, LocationCollectionItem, LocationCollection } from '@18f/identity-components';
+import {
+  PageHeading,
+  LocationCollectionItem,
+  LocationCollection,
+  SpinnerDots,
+} from '@18f/identity-components';
 
 interface PostOffice {
   address: string;
@@ -60,6 +65,7 @@ function InPersonLocationStep() {
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -120,6 +126,7 @@ function InPersonLocationStep() {
   useEffect(() => {
     (async () => {
       const fetchedLocations = await getResponse().catch((error) => {
+        setIsError(true);
         throw error;
       });
       if (!mountedRef.current) {
@@ -150,7 +157,10 @@ function InPersonLocationStep() {
               sundayHours={item.sundayHours}
             />
           ))}
-        {locationData.length < 1 && <h4>{t('in_person_proofing.body.location.none_found')}</h4>}
+        {locationData.length < 1 && !isError && <SpinnerDots />}
+        {locationData.length < 1 && isError && (
+          <h4>{t('in_person_proofing.body.location.none_found')}</h4>
+        )}
       </LocationCollection>
     </>
   );
