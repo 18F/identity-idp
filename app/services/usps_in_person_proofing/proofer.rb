@@ -23,12 +23,9 @@ module UspsInPersonProofing
         'RequestID' => request_id,
       )
 
-      resp = faraday.post(url, body, headers)
-      if resp.success?
-        parse_facilities(resp.body)
-      else
-        { error: 'failed to get facilities', response: resp }
-      end
+      parse_facilities(
+        faraday.post(url, body, headers).body,
+      )
     end
 
     # Temporary function to return a static set of facilities
