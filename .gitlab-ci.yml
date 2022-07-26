@@ -105,7 +105,7 @@ install:
 
 specs:
   stage: test
-  parallel: 9
+  parallel: 8
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
