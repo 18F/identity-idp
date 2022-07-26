@@ -14,40 +14,54 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
+const fetchSelectedLocation = () =>
+  fetch('/verify/in_person/usps_locations/selected').then((response) =>
+    response.json().catch((error) => {
+      throw error;
+    }),
+  );
+
 function InPersonPrepareStep() {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
-  const [selectedLocationName, setSelectedLocationName] = useState<string>();
-
-  const fetchSelectedLocation = async () => {
-    const location = await fetch('/verify/in_person/usps_locations/selected').then((response) =>
-      response.json().catch((error) => {
-        throw error;
-      }),
-    );
-    return location;
-  };
+  const [selectedLocationName, setSelectedLocationName] = useState<string>('');
+  const [hasFetchError, setHasFetchError] = useState<boolean>(false);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
       const fetchedLocation = await fetchSelectedLocation().catch((error) => {
+        if (cancelled) {
+          return;
+        }
+        setHasFetchError(true);
         throw error;
       });
       setSelectedLocationName(fetchedLocation.name);
     })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  let selectedLocationElement: React.ReactNode;
+  if (hasFetchError) {
+    selectedLocationElement = null;
+  } else if (selectedLocationName) {
+    selectedLocationElement = (
+      <Alert type="success" className="margin-bottom-4">
+        {t('in_person_proofing.body.prepare.alert_selected_post_office', {
+          name: selectedLocationName,
+        })}
+      </Alert>
+    );
+  } else {
+    selectedLocationElement = <SpinnerDots />;
+  }
 
   return (
     <>
-      {selectedLocationName ? (
-        <Alert type="success" className="margin-bottom-4">
-          {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-            name: selectedLocationName,
-          })}
-        </Alert>
-      ) : (
-        <SpinnerDots />
-      )}
+      {selectedLocationElement}
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
