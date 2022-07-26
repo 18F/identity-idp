@@ -122,7 +122,7 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'updates enrollment records on 2xx responses with valid JSON' do
+      it 'updates enrollment records and activates profiles on 2xx responses with valid JSON' do
         stub_request_token
         stub_request_passed_proofing_results
 
@@ -138,6 +138,7 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(enrollment.status_updated_at).to satisfy do |timestamp|
             expected_range.cover?(timestamp)
           end
+          expect(enrollment.profile.active).to be(true)
         end
       end
 
