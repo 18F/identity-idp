@@ -34,7 +34,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
           failed: all(a_hash_including(:name, :result)),
           passed: all(a_hash_including(:name, :result)),
         ),
-        log_alert_results: a_hash_including(:passed, :failed),
+        log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         tamper_result: 'Passed',
@@ -155,10 +155,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         hints: true,
       )
       expect(response.to_h[:log_alert_results]).to eq(
-        passed: {},
-        failed: {
-          document_classification: { no_side: 'Failed' },
-        },
+        document_classification: { no_side: 'Failed' },
       )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
