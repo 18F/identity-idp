@@ -97,6 +97,7 @@ module Api
           profile: profile,
           user: user,
           current_address_matches_id: user_session.dig(:idv, :applicant, :same_address_as_id),
+          unique_id: InPersonEnrollment.generate_unique_id,
           selected_location_details: {
             'name' => 'BALTIMORE — Post Office™',
             'streetAddress' => '900 E FAYETTE ST RM 118',
