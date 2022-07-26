@@ -50,7 +50,7 @@ class ImageUploadResponsePresenter
   private
 
   def doc_auth_result_failed?
-    @form_response.to_h[:doc_auth_result] == 'Failed'
+    @form_response.to_h[:doc_auth_result] == DocAuth::Acuant::ResultCodes::FAILED.name
   end
 
   def show_hints?
