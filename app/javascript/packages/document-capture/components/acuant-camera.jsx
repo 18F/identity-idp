@@ -11,7 +11,8 @@ import AcuantContext from '../context/acuant';
 export const AcuantDocumentState = {
   NO_DOCUMENT: 0,
   SMALL_DOCUMENT: 1,
-  GOOD_DOCUMENT: 2,
+  BIG_DOCUMENT: 2,
+  GOOD_DOCUMENT: 3,
 };
 
 /**
