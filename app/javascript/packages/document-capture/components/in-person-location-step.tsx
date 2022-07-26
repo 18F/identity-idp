@@ -65,7 +65,7 @@ function InPersonLocationStep() {
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [inProgress, setInProgress] = useState(false);
   const [autoSubmit, setAutoSubmit] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 
   // ref allows us to avoid a memory leak
   const mountedRef = useRef(false);
@@ -124,44 +124,52 @@ function InPersonLocationStep() {
   );
 
   useEffect(() => {
+    let mounted = true;
     (async () => {
-      const fetchedLocations = await getResponse().catch((error) => {
-        setIsError(true);
-        throw error;
-      });
-      if (!mountedRef.current) {
-        return;
+      try {
+        const fetchedLocations = await getResponse();
+        if (mounted) {
+          const formattedLocations = formatLocation(fetchedLocations);
+          setLocationData(formattedLocations);
+        }
+      } finally {
+        if (mounted) {
+          setIsLoadingComplete(true);
+        }
       }
-      const formattedLocations = formatLocation(fetchedLocations);
-      setLocationData(formattedLocations);
     })();
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  let locationItems: React.ReactNode;
+  if (!isLoadingComplete) {
+    locationItems = <SpinnerDots />;
+  } else if (locationData.length < 1) {
+    locationItems = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
+  } else {
+    locationItems = locationData.map((item, index) => (
+      <LocationCollectionItem
+        key={`${index}-${item.name}`}
+        handleSelect={handleLocationSelect}
+        name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
+        streetAddress={item.streetAddress}
+        selectId={item.id}
+        addressLine2={item.addressLine2}
+        weekdayHours={item.weekdayHours}
+        saturdayHours={item.saturdayHours}
+        sundayHours={item.sundayHours}
+      />
+    ));
+  }
 
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
 
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      <LocationCollection>
-        {locationData &&
-          locationData.map((item, index) => (
-            <LocationCollectionItem
-              key={`${index}-${item.name}`}
-              handleSelect={handleLocationSelect}
-              name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
-              streetAddress={item.streetAddress}
-              selectId={item.id}
-              addressLine2={item.addressLine2}
-              weekdayHours={item.weekdayHours}
-              saturdayHours={item.saturdayHours}
-              sundayHours={item.sundayHours}
-            />
-          ))}
-        {locationData.length < 1 && !isError && <SpinnerDots />}
-        {locationData.length < 1 && isError && (
-          <h4>{t('in_person_proofing.body.location.none_found')}</h4>
-        )}
-      </LocationCollection>
+      <LocationCollection>{locationItems}</LocationCollection>
     </>
   );
 }
