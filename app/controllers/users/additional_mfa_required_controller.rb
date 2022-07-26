@@ -27,5 +27,11 @@ module Users
     def enforcement_date
       @enforcement_date ||= IdentityConfig.store.kantara_restriction_enforcement_date
     end
+
+    def confirm_user_fully_uathenticated
+      unless user_fully_authenticated?
+        return confirm_two_factor_authenticated(sp_session[:request_id])
+      end
+    end
   end
 end
