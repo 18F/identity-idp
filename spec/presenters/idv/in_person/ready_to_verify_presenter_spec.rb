@@ -11,6 +11,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       user: user,
       profile: profile,
       enrollment_code: enrollment_code,
+      unique_id: InPersonEnrollment.generate_unique_id,
       created_at: created_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details:
