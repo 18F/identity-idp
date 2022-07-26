@@ -329,11 +329,9 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} image upload vendor pii validation".downcase, include(
+        "IdV: #{Analytics::DOC_AUTH.downcase} image upload vendor pii validation", include(
           errors: include(
-            pii: satisfy do |v|
-              expect(v&.[](0)).to eq(I18n.t('doc_auth.errors.general.no_liveness'))
-            end,
+            pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           attention_with_barcode: false,
@@ -346,11 +344,9 @@ describe Idv::DocAuthController do
       )
 
       expect(@analytics).to receive(:track_event).with(
-        'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, include(
+        "IdV: #{Analytics::DOC_AUTH.downcase} verify_document_status submitted", include(
           errors: include(
-            pii: satisfy do |v|
-              expect(v&.[](0)).to eq(I18n.t('doc_auth.errors.general.no_liveness'))
-            end,
+            pii: [I18n.t('doc_auth.errors.general.no_liveness')],
           ),
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           attention_with_barcode: false,
