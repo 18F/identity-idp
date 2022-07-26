@@ -13,11 +13,11 @@ when making HTTP requests. We also wire in notifications so we can
 
 We aim to keep Controllers simple and lean, and put business logic in Form
 classes, and hand those results (FormResponse) to our Analytics class to get
-logged in a consitent way.
+logged in a consistent way.
 
 ### FormResponse
 
-The [FormResponse](../app/services/form_response.rb) simple structure to help
+The [FormResponse](../app/services/form_response.rb) is a simple structure to help
 bundle up properties for logging. **Do not put PII or sensitive information
 inside these** because they are intended to be logged.
 
