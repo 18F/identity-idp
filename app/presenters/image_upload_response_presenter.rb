@@ -38,6 +38,7 @@ class ImageUploadResponsePresenter
       json[:redirect] = idv_session_errors_throttled_url if remaining_attempts&.zero?
       json[:hints] = true if show_hints?
       json[:ocr_pii] = ocr_pii
+      json[:result_failed] = doc_auth_result_failed?
       json
     end
   end
@@ -47,6 +48,10 @@ class ImageUploadResponsePresenter
   end
 
   private
+
+  def doc_auth_result_failed?
+    @form_response.to_h[:doc_auth_result] == DocAuth::Acuant::ResultCodes::FAILED.name
+  end
 
   def show_hints?
     @form_response.errors[:hints].present? || attention_with_barcode?
