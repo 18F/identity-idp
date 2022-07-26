@@ -83,4 +83,10 @@ module UspsIppHelper
       headers: { 'content-type' => 'application/json' }
     )
   end
+
+  def stub_request_enroll_with_responses(*responses)
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
+      responses,
+    )
+  end
 end

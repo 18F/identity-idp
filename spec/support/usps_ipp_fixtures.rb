@@ -11,6 +11,10 @@ class UspsIppFixtures
     load_response_fixture('request_enroll_response.json')
   end
 
+  def self.request_enroll_failed_response
+    load_response_fixture('request_enroll_failed_response.json')
+  end
+
   def self.request_failed_proofing_results_response
     load_response_fixture('request_failed_proofing_results_response.json')
   end

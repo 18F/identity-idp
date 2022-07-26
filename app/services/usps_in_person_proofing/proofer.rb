@@ -57,7 +57,7 @@ module UspsInPersonProofing
       }
 
       res = faraday.post(url, body, dynamic_headers).body
-      RequestEnrollResponse.new(res)
+      Response::RequestEnrollResponse.new(res)
     end
 
     # Makes HTTP request to retrieve proofing status

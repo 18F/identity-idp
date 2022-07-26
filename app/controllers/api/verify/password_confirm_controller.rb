@@ -83,8 +83,9 @@ module Api
             email: 'no-reply@login.gov',
           },
         )
-        proofer = usps_proofer
 
+        proofer = usps_proofer
+        response = nil
         begin
           response = proofer.request_enroll(applicant)
         rescue Faraday::BadRequestError => err
@@ -93,24 +94,26 @@ module Api
           handle_standard_error(err, enrollment)
         end
 
-        response.enrollment_code
+        response&.enrollment_code
       end
 
       def handle_bad_request_error(err, enrollment)
         analytics.idv_in_person_usps_request_enroll_exception(
-          reason: 'Request exception',
+          context: context,
           enrollment_id: enrollment.id,
           exception_class: err.class.to_s,
-          exception_message: err.dig('body', 'responseMessage') || err.message,
+          exception_message: err.response.dig(:body, 'responseMessage') || err.message,
+          reason: 'Request exception',
         )
       end
 
       def handle_standard_error(err, enrollment)
         analytics.idv_in_person_usps_request_enroll_exception(
-          reason: 'Request exception',
+          context: context,
           enrollment_id: enrollment.id,
           exception_class: err.class.to_s,
           exception_message: err.message,
+          reason: 'Request exception',
         )
       end
 
