@@ -16,7 +16,6 @@ describe Idv::InPerson::UspsLocationsController do
 
     it 'gets successful pilot response' do
       response = get :index
-      puts "resp: #{response}"
       json = response.body
       facilities = JSON.parse(json)
       expect(facilities.length).to eq 7
