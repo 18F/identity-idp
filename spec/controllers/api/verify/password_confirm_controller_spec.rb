@@ -191,6 +191,12 @@ describe Api::Verify::PasswordConfirmController do
           )
         end
 
+        it 'logs a message' do
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(@analytics).to have_logged_event('USPS IPPaaS enrollment')
+        end
+
         it 'creates a USPS enrollment' do
           proofer = UspsInPersonProofing::Mock::Proofer.new
           mock = double

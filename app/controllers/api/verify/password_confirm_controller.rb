@@ -120,7 +120,9 @@ module Api
       def save_in_person_enrollment(user, profile)
         return unless in_person_enrollment?(user)
 
-        # add analytics event saying we are engaging in IPP enrollment
+        analytics.idv_in_person_usps_request_enroll(
+          context: context,
+        )
 
         enrollment = InPersonEnrollment.create!(
           profile: profile,
