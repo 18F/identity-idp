@@ -35,7 +35,7 @@ module UspsInPersonProofing
     # @return [Array<PostOffice>] Facility locations
     def request_pilot_facilities
       resp = File.read(Rails.root.join('config', 'ipp_pilot_usps_facilities.json'))
-      parse_facilities(resp)
+      parse_facilities(JSON.parse(resp))
     end
 
     # Makes HTTP request to enroll an applicant in in-person proofing.
@@ -185,7 +185,7 @@ module UspsInPersonProofing
     end
 
     def parse_facilities(facilities)
-      JSON.parse(facilities)['postOffices'].map do |post_office|
+      facilities['postOffices'].map do |post_office|
         hours = {}
         post_office['hours'].each do |hour_details|
           hour_details.keys.each do |key|
