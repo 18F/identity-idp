@@ -18,7 +18,7 @@ module Idv
         errors: errors,
         extra: {
           remaining_attempts: remaining_attempts,
-          doc_auth_result: @async_state.result[:doc_auth_result],
+          doc_auth_result: @async_state&.result&.[](:doc_auth_result),
         },
       )
     end
