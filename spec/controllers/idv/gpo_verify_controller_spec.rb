@@ -109,10 +109,9 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       context 'with pending in person enrollment' do
-        let(:user) { create(:user, :with_pending_in_person_enrollment) }
-
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         end
 
         it 'redirects to ready to verify screen' do
