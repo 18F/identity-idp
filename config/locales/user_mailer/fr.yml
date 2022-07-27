@@ -109,6 +109,11 @@ fr:
         veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
+    in_person_ready_to_verify:
+      greeting: Bonjour %{name},
+      intro: Voici les détails pour vérifier votre identité en personne dans un bureau
+        de poste des États-Unis près de chez vous.
+      subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
         de confirmation nous permettant de vérifier votre adresse. Vous pouvez
