@@ -15,10 +15,8 @@ module Idv
       end
 
       def selected_location_hours(prefix)
-        selected_location_details['hours'].each do |hours_candidate|
-          hours = hours_candidate["#{prefix}Hours"]
-          return localized_hours(hours) if hours
-        end
+        hours = selected_location_details["#{prefix}_hours"]
+        return localized_hours(hours) if hours
       end
 
       def needs_proof_of_address?

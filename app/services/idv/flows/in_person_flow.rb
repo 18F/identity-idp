@@ -42,6 +42,9 @@ module Idv
         super(controller, STEPS, ACTIONS, session[name])
         @flow_session ||= {}
         @flow_session[:pii_from_user] ||= {}
+        # there may be data in @idv_session to copy to @flow_session
+        applicant = @idv_session['applicant'] || {}
+        @flow_session[:pii_from_user] = @flow_session[:pii_from_user].to_h.merge(applicant)
       end
 
       def self.session_idv(session)

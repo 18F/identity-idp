@@ -15,7 +15,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       created_at: created_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details:
-        JSON.parse(UspsIppFixtures.request_facilities_response)['postOffices'].first,
+        JSON.parse(UspsIppFixtures.enrollment_selected_location_details),
     )
   end
 
@@ -38,18 +38,13 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     it 'returns a hash of location details associated with the enrollment' do
       expect(selected_location_details).to include(
+        'formatted_city_state_zip' => kind_of(String),
         'name' => kind_of(String),
-        'streetAddress' => kind_of(String),
-        'city' => kind_of(String),
-        'state' => kind_of(String),
-        'zip5' => kind_of(String),
-        'zip4' => kind_of(String),
         'phone' => kind_of(String),
-        'hours' => array_including(
-          hash_including('weekdayHours' => kind_of(String)),
-          hash_including('saturdayHours' => kind_of(String)),
-          hash_including('sundayHours' => kind_of(String)),
-        ),
+        'saturday_hours' => kind_of(String),
+        'street_address' => kind_of(String),
+        'sunday_hours' => kind_of(String),
+        'weekday_hours' => kind_of(String),
       )
     end
   end
@@ -60,11 +55,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     before do
       allow(presenter).to receive(:selected_location_details).and_return(
-        'hours' => [
-          { 'weekdayHours' => hours_open },
-          { 'saturdayHours' => hours_open },
-          { 'sundayHours' => hours_closed },
-        ],
+        {
+          'weekday_hours' => hours_open,
+          'saturday_hours' => hours_open,
+          'sunday_hours' => hours_closed,
+        },
       )
     end
 
