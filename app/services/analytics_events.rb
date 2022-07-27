@@ -2350,5 +2350,17 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
+  # @param [String] reason why did this enrollment pass?
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_enrollment_success(reason:, enrollment_id:, **extra)
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment passed proofing',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
 end
 # rubocop:enable Metrics/ModuleLength
