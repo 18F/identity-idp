@@ -68,8 +68,8 @@ with YARD so that we can auto-generate
 
 These tie everything together! We aim for lean, "RESTful" controllers
 
-* Keep as much business logic as possible out of controllers, such as Forms or
-  Services
+* Keep as much business logic as possible out of controllers moving that logic
+  into Forms or Services
 
 * Prefer adding a new controller with one of the CRUD methods over creating a
   custom method in an existing controller. For example, if your app allows a
