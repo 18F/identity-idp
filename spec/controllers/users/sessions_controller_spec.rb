@@ -128,6 +128,12 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        user_uuid: controller.current_user.uuid,
+        unique_session_id: controller.current_user.unique_session_id,
+        success: true,
+      )
+
       get :destroy
       expect(controller.current_user).to be nil
     end
@@ -145,6 +151,12 @@ describe Users::SessionsController, devise: true do
       )
 
       sign_in_as_user
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        user_uuid: controller.current_user.uuid,
+        unique_session_id: controller.current_user.unique_session_id,
+        success: true,
+      )
 
       delete :destroy
       expect(controller.current_user).to be nil
