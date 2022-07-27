@@ -72,19 +72,27 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
     end
 
     def complete_session
-      if in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
-          current_user,
-          current_user.pending_profile,
-          applicant,
-        )
-      elsif phone_confirmed?
-        complete_profile
+      if phone_confirmed?
+        if pending_in_person_enrollment?
+          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+            current_user,
+            current_user.pending_profile,
+            applicant,
+          )
+          current_user.pending_profile&.deactivate(:in_person_verification_pending)
+        else
+          complete_profile
+        end
       end
 
       create_gpo_entry if address_verification_mechanism == 'gpo'

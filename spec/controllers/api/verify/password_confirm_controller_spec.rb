@@ -153,7 +153,13 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with pending profile' do
-        let(:jwt_metadata) { { vendor_phone_confirmation: false, user_phone_confirmation: false } }
+        let(:jwt_metadata) do
+          {
+            vendor_phone_confirmation: false,
+            user_phone_confirmation: false,
+            address_verification_mechanism: 'gpo',
+          }
+        end
 
         it 'creates a profile and returns completion url' do
           post :create, params: { password: password, user_bundle_token: jwt }

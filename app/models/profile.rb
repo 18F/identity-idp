@@ -15,6 +15,7 @@ class Profile < ApplicationRecord
     encryption_error: 2,
     verification_pending: 3,
     verification_cancelled: 4,
+    in_person_verification_pending: 5,
   }
 
   attr_reader :personal_key

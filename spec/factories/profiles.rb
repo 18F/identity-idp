@@ -6,10 +6,6 @@ FactoryBot.define do
       pii { false }
     end
 
-    trait :pending do
-      deactivation_reason { :verification_pending }
-    end
-
     trait :active do
       active { true }
       activated_at { Time.zone.now }

@@ -95,9 +95,18 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+
+    # re-entering flow
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_welcome_step
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
   context 'verify address by mail (GPO letter)' do
+    before do
+      allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
+    end
+
     it 'requires address verification before showing instructions', allow_browser_log: true do
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
@@ -109,7 +118,28 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
-      # WILLFIX: After LG-6897, assert that "Ready to Verify" content is shown after code entry.
+      click_idv_continue
+      expect(page).to have_current_path(account_path)
+      expect(page).not_to have_content(t('headings.account.verified_account'))
+      click_on t('account.index.verification.reactivate_button')
+      click_button t('forms.verify_profile.submit')
+
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      expect(page).not_to have_content(t('account.index.verification.success'))
+    end
+
+    it 'lets the user clear and start over from gpo confirmation', allow_browser_log: true do
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.buttons.mail.send')
+      complete_review_step
+      acknowledge_and_confirm_personal_key
+      click_idv_continue
+      click_on t('account.index.verification.reactivate_button')
+      click_on t('idv.messages.clear_and_start_over')
+
+      expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
   end
 end

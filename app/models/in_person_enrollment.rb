@@ -9,7 +9,7 @@ class InPersonEnrollment < ApplicationRecord
     passed: 2,
     failed: 3,
     expired: 4,
-    canceled: 5,
+    cancelled: 5,
   }
 
   validate :profile_belongs_to_user

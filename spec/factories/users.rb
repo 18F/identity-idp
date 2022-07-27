@@ -194,14 +194,8 @@ FactoryBot.define do
 
     trait :with_pending_in_person_enrollment do
       after :build do |user|
-        profile = create(:profile, :with_pii, :pending, user: user)
+        profile = create(:profile, :with_pii, user: user)
         create(:in_person_enrollment, :pending, user: user, profile: profile)
-      end
-    end
-
-    trait :with_pending_profile do
-      after :build do |user|
-        create(:profile, :with_pii, :pending, user: user)
       end
     end
 
