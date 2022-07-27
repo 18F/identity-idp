@@ -1,132 +1,125 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-//import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
 
-/** @typedef {import('react').ReactNode} ReactNode */
-
 /**
- * @typedef AcuantConfig
- *
- * @prop {string=} path Path from which to load SDK service worker.
- *
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
  */
+interface AcuantConfig {
+  path: string;
+}
 
+interface AcuantCameraInterface {
+  isCameraSupported: boolean;
+}
 /**
- * @typedef AcuantCamera
- *
- * @prop {boolean} isCameraSupported Whether camera is supported.
- */
-
-/**
- * @typedef {1|2|400|401|403} AcuantInitializeCode Acuant initialization callback code.
- *
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-L1353
  */
+type AcuantInitializeCode = 1 | 2 | 400 | 401 | 403;
+
+interface AcuantCallbackOptions {
+  onSuccess: () => void;
+  onFail: (code: AcuantInitializeCode, description: string) => void;
+}
+
+type AcuantInitialize = (
+  credentials: string,
+  endpoint: string,
+  callbackOptions?: AcuantCallbackOptions,
+) => void;
+
+type AcuantWorkersInitialize = (callback: () => void) => void;
+
+declare global {
+  interface AcuantJavascriptWebSdkInterface {
+    initialize: AcuantInitialize;
+    startWorkers: AcuantWorkersInitialize;
+    START_FAIL_CODE: string;
+    REPEAT_FAIL_CODE: string;
+    SEQUENCE_BREAK_CODE: string;
+  }
+}
 
 /**
- * @typedef AcuantCallbackOptions
- *
- * @prop {()=>void} onSuccess Success callback.
- * @prop {(code: AcuantInitializeCode, description: string)=>void} onFail Failure callback.
+ * Start liveness capture
  */
+type AcuantStartSelfieCapture = (callback: (nextImageData: string) => void) => void;
+interface AcuantPassiveLivenessInterface {
+  startSelfieCapture: AcuantStartSelfieCapture;
+}
 
-/**
- * @typedef {(
- *   credentials: string?,
- *   endpoint: string?,
- *   callback: AcuantCallbackOptions,
- * )=>void} AcuantInitialize
- */
+declare global {
+  interface Window {
+    /* Document load callback to assign Javascript Web SDK globals */
+    loadAcuantSdk: () => void;
+    /* Acuant configuration */
+    acuantConfig: AcuantConfig;
+    /* Acuant Passive Liveness API */
+    AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
+  }
+}
 
-/**
- * @typedef {(callback: () => void)=>void} AcuantWorkersInitialize
- */
-
-/**
- * @typedef AcuantJavaScriptWebSDK
- * @global
- * @prop {AcuantInitialize} initialize Acuant SDK initializer.
- * @prop {AcuantWorkersInitialize} startWorkers Acuant SDK workers initializer.
- * @prop {string} START_FAIL_CODE Error code when camera failed to start.
- * @prop {string} REPEAT_FAIL_CODE Error code if starting capture after a failure already occurred.
- * @prop {string} SEQUENCE_BREAK_CODE Error code when failure due to iOS 15 GPU Highwater.
- */
-
-/**
- * @typedef AcuantPassiveLiveness
- *
- * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
- */
-
-/**
- * @typedef AcuantGlobals
- * @prop {() => void} loadAcuantSdk Document load callback to assign JavaScript Web SDK globals.
- * @prop {AcuantConfig=} acuantConfig Acuant configuration.
- * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
- */
-
-/**
- * @typedef {typeof window & AcuantGlobals} AcuantGlobal
- */
-
-/**
- * @typedef AcuantContextProviderProps
- *
- * @prop {string=} sdkSrc SDK source URL.
- * @prop {string=} cameraSrc Camera JavaScript source URL.
- * @prop {string?=} credentials SDK credentials.
- * @prop {string?=} endpoint Endpoint to submit payload.
- * @prop {number=} glareThreshold Minimum acceptable glare score for images.
- * @prop {number=} sharpnessThreshold Minimum acceptable sharpness score for images.
- * @prop {ReactNode} children Child element.
- */
+interface AcuantContextProviderProps {
+  sdkSrc: string; // SDK source URL.
+  cameraSrc: string; // Camera JavaScript source URL.
+  credentials: string; // SDK credentials.
+  endpoint: string; // Endpoint to submit payload.
+  glareThreshold: number; // Minimum acceptable glare score for images.
+  sharpnessThreshold: number; // Minimum acceptable sharpness score for images.
+  children: ReactNode; // Child element
+}
 
 /**
  * The minimum glare score value to be considered acceptable.
  *
- * @type {number}
  */
 export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
- * @type {number}
  */
 export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
 
 /**
  * Returns the containing directory of the given file, including a trailing slash.
- *
- * @param {string} file
- *
- * @return {string}
  */
-export const dirname = (file) => file.split('/').slice(0, -1).concat('').join('/');
+export const dirname = (file: string): string => {
+  return file.split('/').slice(0, -1).concat('').join('/');
+};
 
-const AcuantContext = createContext({
+interface AcuantContextInterface {
+  isReady: boolean;
+  isAcuantLoaded: boolean;
+  isError: boolean;
+  isCameraSupported: boolean | null;
+  isActive: boolean;
+  setIsActive: (nextIsActive: boolean) => void;
+  credentials: string | null;
+  glareThreshold: number;
+  sharpnessThreshold: number;
+  endpoint: string | null;
+}
+
+const AcuantContext = createContext<AcuantContextInterface>({
   isReady: false,
   isAcuantLoaded: false,
   isError: false,
-  isCameraSupported: /** @type {boolean?} */ (null),
+  isCameraSupported: /** @type {boolean?} */ null,
   isActive: false,
-  setIsActive: /** @type {(nextIsActive: boolean) => void} */ (() => {}),
-  credentials: /** @type {string?} */ (null),
+  setIsActive: () => {},
+  credentials: null,
   glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-  endpoint: /** @type {string?} */ (null),
+  endpoint: /** @type {string?} */ null,
 });
 
 AcuantContext.displayName = 'AcuantContext';
 
-/**
- * @param {AcuantContextProviderProps} props Props object.
- */
-function AcuantContextProvider({
+function AcuantContextProvider<AcuantContextProviderProps>({
   sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
   cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
   credentials = null,
@@ -168,8 +161,9 @@ function AcuantContextProvider({
     // Acuant SDK expects this global to be assigned at the time the script is
     // loaded, which is why the script element is manually appended to the DOM.
     function onAcuantSdkLoaded() {
-      const { loadAcuantSdk } = /** @type {AcuantGlobal} */ (window);
-
+      const { loadAcuantSdk } = window;
+      declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
+      declare let AcuantCamera: AcuantCameraInterface;
       // Normally, Acuant SDK would call this itself, but because it does so as part of a
       // DOMContentLoaded event handler, it wouldn't be called if the page is already loaded.
       if (!AcuantJavascriptWebSdk) {
@@ -183,9 +177,7 @@ function AcuantContextProvider({
       AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
           AcuantJavascriptWebSdk.startWorkers(() => {
-            const { isCameraSupported: nextIsCameraSupported } =
-              /** @type {AcuantCamera} */ AcuantCamera;
-
+            const { isCameraSupported: nextIsCameraSupported } = AcuantCamera;
             addPageAction('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,
@@ -208,8 +200,8 @@ function AcuantContextProvider({
       });
     }
 
-    const originalAcuantConfig = /** @type {AcuantGlobal} */ (window).acuantConfig;
-    /** @type {AcuantGlobal} */ (window).acuantConfig = { path: dirname(sdkSrc) };
+    const originalAcuantConfig = window.acuantConfig;
+    window.acuantConfig = { path: dirname(sdkSrc) };
 
     const sdkScript = document.createElement('script');
     sdkScript.src = sdkSrc;
@@ -224,7 +216,7 @@ function AcuantContextProvider({
     document.body.appendChild(cameraScript);
 
     return () => {
-      /** @type {AcuantGlobal} */ (window).acuantConfig = originalAcuantConfig;
+      window.acuantConfig = originalAcuantConfig;
       sdkScript.onload = null;
       document.body.removeChild(sdkScript);
       document.body.removeChild(cameraScript);
