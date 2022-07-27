@@ -5,12 +5,20 @@ describe GpoVerifyForm do
     GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
 
-  let(:user) { pending_profile.user }
+  let(:user) { create(:user, :signed_up) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
-  let(:pending_profile) { create(:profile, deactivation_reason: :gpo_verification_pending) }
+  let(:pending_profile) {
+    create(
+      :profile,
+      user: user,
+      deactivation_reason: :gpo_verification_pending,
+      proofing_components: proofing_components,
+    )
+  }
+  let(:proofing_components) { nil }
 
   before do
     next if pending_profile.blank?
@@ -104,8 +112,10 @@ describe GpoVerifyForm do
       end
 
       context 'pending in person enrollment' do
-        before do
+        let(:proofing_components) {
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        }
+        before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 

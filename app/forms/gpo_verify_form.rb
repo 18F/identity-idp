@@ -21,10 +21,10 @@ class GpoVerifyForm
       if pending_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
           user,
-          user.pending_profile,
+          pending_profile,
           pii,
         )
-        user.pending_profile&.deactivate(:in_person_verification_pending)
+        pending_profile&.deactivate(:in_person_verification_pending)
       else
         activate_profile
       end
@@ -78,7 +78,7 @@ class GpoVerifyForm
 
   def pending_in_person_enrollment?
     return false unless IdentityConfig.store.in_person_proofing_enabled
-    ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
+    pending_profile.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def activate_profile
