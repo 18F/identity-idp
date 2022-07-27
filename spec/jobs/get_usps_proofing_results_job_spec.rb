@@ -110,6 +110,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Failed status',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           failure_reason: 'Clerk indicates that ID name or address does not match source data.',
           fraud_suspected: false,
           primary_id_type: 'Uniformed Services identification card',
@@ -137,6 +138,13 @@ RSpec.describe GetUspsProofingResultsJob do
             expected_range.cover?(timestamp)
           end
           expect(enrollment.profile.active).to be(true)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment passed proofing',
+            reason: 'Successful status update',
+            enrollment_id: enrollment.id,
+            enrollment_code: enrollment.enrollment_code,
+          )
         end
       end
 
@@ -150,6 +158,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Bad response structure',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -170,6 +179,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Unsupported status',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           status: 'Not supported',
         )
       end
@@ -191,6 +201,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -211,6 +222,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -255,6 +267,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -275,6 +288,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Unsupported ID type',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           primary_id_type: 'Not supported',
         )
       end
