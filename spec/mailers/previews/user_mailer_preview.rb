@@ -168,7 +168,7 @@ class UserMailerPreview < ActionMailer::Preview
         selected_location_details: {
           'name' => 'BALTIMORE',
           'streetAddress' => '900 E FAYETTE ST RM 118',
-          'addressLine2' => 'BALTIMORE, MD 21233-9715',
+          'formattedCityStateZip' => 'BALTIMORE, MD 21233-9715',
           'phone' => '555-123-6409',
           'weekdayHours' => '8:30 AM - 4:30 PM',
           'saturdayHours' => '9:00 AM - 12:00 PM',

@@ -68,7 +68,7 @@ describe Idv::InPerson::UspsLocationsController do
     let(:selected_location) do
       {
         usps_location: {
-          addressLine2: 'BALTIMORE, MD, 21233-9715',
+          formattedCityStateZip: 'BALTIMORE, MD, 21233-9715',
           name: 'BALTIMORE',
           phone: '410-555-1212',
           saturdayHours: '8:30 AM - 5:00 PM',

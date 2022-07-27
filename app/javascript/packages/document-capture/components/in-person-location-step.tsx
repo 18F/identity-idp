@@ -21,7 +21,7 @@ interface PostOffice {
 }
 
 interface FormattedLocation {
-  addressLine2: string;
+  formattedCityStateZip: string;
   id: number;
   name: string;
   phone: string;
@@ -46,7 +46,7 @@ const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
   postOffices.forEach((po: PostOffice, index) => {
     const location = {
-      addressLine2: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
+      formattedCityStateZip: `${po.city}, ${po.state}, ${po.zip_code_5}-${po.zip_code_4}`,
       id: index,
       name: po.name,
       phone: po.phone,
@@ -156,7 +156,7 @@ function InPersonLocationStep() {
         name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
         streetAddress={item.streetAddress}
         selectId={item.id}
-        addressLine2={item.addressLine2}
+        formattedCityStateZip={item.formattedCityStateZip}
         weekdayHours={item.weekdayHours}
         saturdayHours={item.saturdayHours}
         sundayHours={item.sundayHours}

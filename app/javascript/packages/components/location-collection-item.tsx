@@ -2,7 +2,7 @@ import { Button } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 
 interface LocationCollectionItemProps {
-  addressLine2: string;
+  formattedCityStateZip: string;
   handleSelect: (event: React.FormEvent<HTMLInputElement>, selection: number) => void;
   name: string;
   saturdayHours: string;
@@ -13,7 +13,7 @@ interface LocationCollectionItemProps {
 }
 
 function LocationCollectionItem({
-  addressLine2,
+  formattedCityStateZip,
   handleSelect,
   name,
   saturdayHours,
@@ -41,7 +41,7 @@ function LocationCollectionItem({
           </Button>
         </div>
         <div>{streetAddress}</div>
-        <div>{addressLine2}</div>
+        <div>{formattedCityStateZip}</div>
         <h4>{t('in_person_proofing.body.location.retail_hours_heading')}</h4>
         <div>{`${t('in_person_proofing.body.location.retail_hours_weekday')} ${weekdayHours}`}</div>
         <div>{`${t('in_person_proofing.body.location.retail_hours_sat')} ${saturdayHours}`}</div>

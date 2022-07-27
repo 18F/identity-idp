@@ -9,7 +9,7 @@ describe('LocationCollectionItem', () => {
       <LocationCollectionItem
         name=""
         streetAddress=""
-        addressLine2=""
+        formattedCityStateZip=""
         handleSelect={onClick}
         weekdayHours=""
         saturdayHours=""
@@ -35,7 +35,7 @@ describe('LocationCollectionItem', () => {
       <LocationCollectionItem
         name="test name"
         streetAddress="123 Test Address"
-        addressLine2="City, State 12345-1234"
+        formattedCityStateZip="City, State 12345-1234"
         handleSelect={onClick}
         weekdayHours="9 AM - 5 PM"
         saturdayHours="9 AM - 6 PM"
@@ -44,12 +44,10 @@ describe('LocationCollectionItem', () => {
       />,
     );
 
-    const name = getByText('123 Test Address').parentElement!;
-    expect(name.textContent).to.contain('test name');
-    const streetAddress = getByText('123 Test Address').parentElement!;
-    expect(streetAddress.textContent).to.contain('123 Test Address');
-    const addressLine2 = getByText('123 Test Address').parentElement!;
-    expect(addressLine2.textContent).to.contain('City, State 12345-1234');
+    const addressParent = getByText('123 Test Address').parentElement!;
+    expect(addressParent.textContent).to.contain('test name');
+    expect(addressParent.textContent).to.contain('123 Test Address');
+    expect(addressParent.textContent).to.contain('City, State 12345-1234');
     const wkDayHours = getByText(
       'in_person_proofing.body.location.retail_hours_weekday 9 AM - 5 PM',
     ).parentElement!;

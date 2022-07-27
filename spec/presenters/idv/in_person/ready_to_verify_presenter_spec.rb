@@ -38,7 +38,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     it 'returns a hash of location details associated with the enrollment' do
       expect(selected_location_details).to include(
-        'addressLine2' => kind_of(String),
+        'formattedCityStateZip' => kind_of(String),
         'name' => kind_of(String),
         'phone' => kind_of(String),
         'saturdayHours' => kind_of(String),

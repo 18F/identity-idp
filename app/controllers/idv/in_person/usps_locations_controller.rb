@@ -37,7 +37,7 @@ module Idv
 
       def permitted_params
         params.require(:usps_location).permit(
-          :addressLine2,
+          :formattedCityStateZip,
           :name,
           :phone,
           :saturdayHours,

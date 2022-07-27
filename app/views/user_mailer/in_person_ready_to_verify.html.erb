@@ -78,7 +78,7 @@
     <h2 class="font-sans-md margin-bottom-1 text-normal text-bold"><%= @presenter.selected_location_details['name'] %></h2>
     <div class="margin-bottom-1">
       <%= @presenter.selected_location_details['streetAddress'] %><br>
-      <%= @presenter.selected_location_details['addressLine2'] %>
+      <%= @presenter.selected_location_details['formattedCityStateZip'] %>
     </div>
     <div><strong><%= t('in_person_proofing.body.barcode.retail_hours') %></strong></div>
     <div class="margin-bottom-2">
