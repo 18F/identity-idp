@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Users::AdditionalMfaRequiredController do
-  render_views
   let(:user) { build(:user, :with_phone) }
 
   before do
