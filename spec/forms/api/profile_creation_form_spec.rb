@@ -13,14 +13,7 @@ RSpec.describe Api::ProfileCreationForm do
   let(:bundle) do
     JWT.encode({ pii: pii, metadata: metadata }, key, 'RS256', sub: uuid.to_s)
   end
-  let(:user_session) { { idv: { applicant: applicant } }.with_indifferent_access }
-
-  let(:applicant) {
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-  }
-  let(:stub_idv_session) do
-    stub_user_with_applicant_data(user, applicant)
-  end
+  let(:user_session) { {} }
 
   subject do
     Api::ProfileCreationForm.new(
