@@ -1,6 +1,7 @@
 module Users
   class MfaSelectionController < ApplicationController
     include UserAuthenticator
+    include SecureHeadersConcern
     include MfaSetupConcern
 
     before_action :authenticate_user
