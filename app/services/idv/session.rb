@@ -77,16 +77,17 @@ module Idv
     end
 
     def complete_session
-      complete_profile if phone_confirmed? && !in_person_enrollment?
-      create_gpo_entry if address_verification_mechanism == 'gpo'
       if in_person_enrollment?
-        profile = current_user.pending_profile
         UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
           current_user,
-          profile,
+          current_user.pending_profile,
           applicant,
         )
+      elsif phone_confirmed?
+        complete_profile
       end
+
+      create_gpo_entry if address_verification_mechanism == 'gpo'
     end
 
     def complete_profile

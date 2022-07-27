@@ -3,7 +3,6 @@ require 'rails_helper'
 describe Idv::Session do
   let(:user) { create(:user, :with_pending_profile) }
   let(:user_session) { {} }
-  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
 
   subject {
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
@@ -59,14 +58,43 @@ describe Idv::Session do
         expect(subject).not_to have_received(:complete_profile)
       end
 
-      it 'does not complete the profile if in-person user has completed OTP phone confirmation' do
-        subject.applicant = applicant.with_indifferent_access
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-        subject.user_phone_confirmation = true
-        subject.complete_session
+      context 'when the user is proofing in-person' do
+        before do
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
+            same_address_as_id: true,
+          ).with_indifferent_access
+          expect(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
 
-        expect(subject).not_to have_received(:complete_profile)
+        it 'creates a USPS enrollment' do
+          proofer = UspsInPersonProofing::Mock::Proofer.new
+          mock = double
+
+          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+          expect(mock).to receive(:request_enroll) do |applicant|
+            expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+            expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+            expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+            expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
+            expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+            expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
+            expect(applicant.email).to eq('no-reply@login.gov')
+            expect(applicant.unique_id).to be_a(String)
+
+            proofer.request_enroll(applicant)
+          end
+
+          subject.complete_session
+        end
+
+        it 'does not complete the profile if the user has completed OTP phone confirmation' do
+          subject.user_phone_confirmation = true
+
+          subject.complete_session
+
+          expect(subject).not_to have_received(:complete_profile)
+        end
       end
     end
 
@@ -80,6 +108,37 @@ describe Idv::Session do
         allow(subject).to receive(:complete_profile)
         subject.complete_session
         expect(subject).not_to have_received(:complete_profile)
+      end
+
+      context 'when the user is proofing in-person' do
+        before do
+          subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
+            same_address_as_id: true,
+          ).with_indifferent_access
+          expect(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        end
+
+        it 'creates a USPS enrollment' do
+          proofer = UspsInPersonProofing::Mock::Proofer.new
+          mock = double
+
+          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+          expect(mock).to receive(:request_enroll) do |applicant|
+            expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+            expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+            expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+            expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
+            expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+            expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
+            expect(applicant.email).to eq('no-reply@login.gov')
+            expect(applicant.unique_id).to be_a(String)
+
+            proofer.request_enroll(applicant)
+          end
+
+          subject.complete_session
+        end
       end
     end
   end
