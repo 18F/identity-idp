@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+//import type { ReactNode } from 'react';
 import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
@@ -47,7 +48,7 @@ import AnalyticsContext from './analytics';
 
 /**
  * @typedef AcuantJavaScriptWebSDK
- *
+ * @global
  * @prop {AcuantInitialize} initialize Acuant SDK initializer.
  * @prop {AcuantWorkersInitialize} startWorkers Acuant SDK workers initializer.
  * @prop {string} START_FAIL_CODE Error code when camera failed to start.
@@ -63,11 +64,8 @@ import AnalyticsContext from './analytics';
 
 /**
  * @typedef AcuantGlobals
- *
  * @prop {() => void} loadAcuantSdk Document load callback to assign JavaScript Web SDK globals.
  * @prop {AcuantConfig=} acuantConfig Acuant configuration.
- * @prop {AcuantCamera} AcuantCamera Acuant camera API.
- * @prop {AcuantJavaScriptWebSDK} AcuantJavascriptWebSdk Acuant web SDK.
  * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
  */
 
@@ -170,7 +168,7 @@ function AcuantContextProvider({
     // Acuant SDK expects this global to be assigned at the time the script is
     // loaded, which is why the script element is manually appended to the DOM.
     function onAcuantSdkLoaded() {
-      const { loadAcuantSdk, AcuantJavascriptWebSdk } = /** @type {AcuantGlobal} */ (window);
+      const { loadAcuantSdk } = /** @type {AcuantGlobal} */ (window);
 
       // Normally, Acuant SDK would call this itself, but because it does so as part of a
       // DOMContentLoaded event handler, it wouldn't be called if the page is already loaded.
@@ -182,37 +180,32 @@ function AcuantContextProvider({
         loadAcuantSdk();
       }
 
-      /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.initialize(
-        credentials,
-        endpoint,
-        {
-          onSuccess: () => {
-            /** @type {AcuantGlobal} */ (window).AcuantJavascriptWebSdk.startWorkers(() => {
-              const { isCameraSupported: nextIsCameraSupported } = /** @type {AcuantGlobal} */ (
-                window
-              ).AcuantCamera;
+      AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
+        onSuccess: () => {
+          AcuantJavascriptWebSdk.startWorkers(() => {
+            const { isCameraSupported: nextIsCameraSupported } =
+              /** @type {AcuantCamera} */ AcuantCamera;
 
-              addPageAction('IdV: Acuant SDK loaded', {
-                success: true,
-                isCameraSupported: nextIsCameraSupported,
-              });
-
-              setIsCameraSupported(nextIsCameraSupported);
-              setIsReady(true);
-              setIsAcuantLoaded(true);
-            });
-          },
-          onFail(code, description) {
             addPageAction('IdV: Acuant SDK loaded', {
-              success: false,
-              code,
-              description,
+              success: true,
+              isCameraSupported: nextIsCameraSupported,
             });
 
-            setIsError(true);
-          },
+            setIsCameraSupported(nextIsCameraSupported);
+            setIsReady(true);
+            setIsAcuantLoaded(true);
+          });
         },
-      );
+        onFail(code, description) {
+          addPageAction('IdV: Acuant SDK loaded', {
+            success: false,
+            code,
+            description,
+          });
+
+          setIsError(true);
+        },
+      });
     }
 
     const originalAcuantConfig = /** @type {AcuantGlobal} */ (window).acuantConfig;

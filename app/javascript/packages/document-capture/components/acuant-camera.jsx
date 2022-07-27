@@ -87,7 +87,6 @@ export const AcuantUIState = {
  *
  * @prop {AcuantCameraUI} AcuantCameraUI Acuant camera UI API.
  * @prop {AcuantCamera} AcuantCamera Acuant camera API.
- * @prop {AcuantJavaScriptWebSDK} AcuantJavascriptWebSdk Acuant web SDK.
  */
 
 /**
@@ -198,7 +197,7 @@ function AcuantCamera({
 
   useEffect(() => {
     if (isReady) {
-      /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
+      AcuantCameraUI.start(
         {
           onCaptured: onCropStart,
           onCropped,
@@ -219,7 +218,7 @@ function AcuantCamera({
 
     return () => {
       if (isReady) {
-        /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
+        AcuantCameraUI.end();
         setIsActive(false);
       }
     };
