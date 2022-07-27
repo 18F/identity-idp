@@ -6,11 +6,12 @@ class GpoVerifyForm
   validate :validate_otp_not_expired
   validate :validate_pending_profile
 
-  attr_accessor :otp, :pii_attributes
+  attr_accessor :otp, :pii, :pii_attributes
   attr_reader :user
 
-  def initialize(user:, otp: nil)
+  def initialize(user:, pii:, otp: nil)
     @user = user
+    @pii = pii
     @otp = otp
   end
 
@@ -18,7 +19,12 @@ class GpoVerifyForm
     result = valid?
     if result
       if pending_in_person_enrollment?
-        user.pending_profile&.deactivate(:in_person_verification_pending)
+        UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+          user,
+          pending_profile,
+          pii,
+        )
+        pending_profile&.deactivate(:in_person_verification_pending)
       else
         activate_profile
       end
@@ -72,7 +78,7 @@ class GpoVerifyForm
 
   def pending_in_person_enrollment?
     return false unless IdentityConfig.store.in_person_proofing_enabled
-    user.pending_in_person_enrollment.present?
+    pending_profile.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def activate_profile

@@ -57,6 +57,11 @@ module Api
         create_gpo_entry
       elsif phone_confirmed?
         if pending_in_person_enrollment?
+          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+            user,
+            profile,
+            session[:pii],
+          )
           profile.deactivate(:in_person_verification_pending)
         else
           complete_profile
@@ -162,6 +167,11 @@ module Api
       end
 
       key
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end

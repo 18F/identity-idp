@@ -60,6 +60,13 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with in person profile' do
+        let(:applicant) {
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+        }
+        let(:stub_idv_session) do
+          stub_user_with_applicant_data(user, applicant)
+        end
+
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -128,7 +135,7 @@ describe Api::Verify::PasswordConfirmController do
           expect(InPersonEnrollment.count).to be(1)
           enrollment = InPersonEnrollment.where(user_id: user.id).first
           expect(enrollment.status).to eq('establishing')
-          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.user_id).to be(user.id)
           expect(enrollment.enrollment_code).to be_nil
         end
 
@@ -177,6 +184,13 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         context 'with in person profile' do
+          let(:applicant) {
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+          }
+          let(:stub_idv_session) do
+            stub_user_with_applicant_data(user, applicant)
+          end
+
           before do
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

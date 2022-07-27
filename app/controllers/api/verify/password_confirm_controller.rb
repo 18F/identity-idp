@@ -10,7 +10,7 @@ module Api
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
           store_session_last_gpo_code(form.gpo_code)
-          save_in_person_enrollment(user, form.profile)
+
           render json: {
             personal_key: personal_key,
             completion_url: completion_url(result, user),
@@ -57,70 +57,7 @@ module Api
 
       def in_person_enrollment?(user)
         return false unless IdentityConfig.store.in_person_proofing_enabled
-        # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
-      end
-
-      def usps_proofer
-        if IdentityConfig.store.usps_mock_fallback
-          UspsInPersonProofing::Mock::Proofer.new
-        else
-          UspsInPersonProofing::Proofer.new
-        end
-      end
-
-      def create_usps_enrollment(enrollment)
-        pii = user_session[:idv][:pii]
-        applicant = UspsInPersonProofing::Applicant.new(
-          {
-            unique_id: enrollment.usps_unique_id,
-            first_name: pii.first_name,
-            last_name: pii.last_name,
-            address: pii.address1,
-            # do we need address2?
-            city: pii.city,
-            state: pii.state,
-            zip_code: pii.zipcode,
-            email: 'no-reply@login.gov',
-          },
-        )
-        proofer = usps_proofer
-
-        response = proofer.request_enroll(applicant)
-        response['enrollmentCode']
-      end
-
-      def save_in_person_enrollment(user, profile)
-        return unless in_person_enrollment?(user)
-
-        enrollment = InPersonEnrollment.create!(
-          profile: profile,
-          user: user,
-          current_address_matches_id: user_session.dig(:idv, :applicant, :same_address_as_id),
-          selected_location_details: user_session.dig(:idv, :applicant, :selected_location_details),
-          unique_id: InPersonEnrollment.generate_unique_id,
-        )
-
-        enrollment_code = create_usps_enrollment(enrollment)
-        return unless enrollment_code
-
-        # update the enrollment to status pending
-        enrollment.enrollment_code = enrollment_code
-        enrollment.status = :pending
-        enrollment.save!
-
-        send_ready_to_verify_email(user, enrollment)
-      end
-
-      def send_ready_to_verify_email(user, enrollment)
-        user.confirmed_email_addresses.each do |email_address|
-          UserMailer.in_person_ready_to_verify(
-            user,
-            email_address,
-            first_name: user_session.dig(:idv, :pii, :first_name),
-            enrollment: enrollment,
-          ).deliver_now_or_later
-        end
       end
     end
   end

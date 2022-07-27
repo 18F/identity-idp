@@ -9,7 +9,7 @@ module Idv
       analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
       @mail_spammed = gpo_mail.mail_spammed?
-      @gpo_verify_form = GpoVerifyForm.new(user: current_user)
+      @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
       if throttle.throttled?
@@ -17,6 +17,10 @@ module Idv
       else
         render :index
       end
+    end
+
+    def pii
+      Pii::Cacher.new(current_user, user_session).fetch
     end
 
     def create
@@ -70,6 +74,7 @@ module Idv
     def build_gpo_verify_form
       GpoVerifyForm.new(
         user: current_user,
+        pii: pii,
         otp: params_otp,
       )
     end
