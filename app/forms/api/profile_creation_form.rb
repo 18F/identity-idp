@@ -52,7 +52,17 @@ module Api
     end
 
     def complete_session
-      complete_profile if phone_confirmed?
+      if in_person_enrollment?
+        applicant = user_session[:idv][:applicant]
+        UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+          user,
+          user.pending_profile,
+          applicant,
+        )
+      elsif phone_confirmed?
+        complete_profile
+      end
+
       create_gpo_entry if user_bundle.gpo_address_verification?
     end
 
@@ -149,6 +159,11 @@ module Api
       end
 
       key
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end
