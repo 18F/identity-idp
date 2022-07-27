@@ -131,7 +131,7 @@ describe Users::SessionsController, devise: true do
       expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
         user_uuid: controller.current_user.uuid,
         unique_session_id: controller.current_user.unique_session_id,
-        success: true
+        success: true,
       )
 
       get :destroy
@@ -155,7 +155,7 @@ describe Users::SessionsController, devise: true do
       expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
         user_uuid: controller.current_user.uuid,
         unique_session_id: controller.current_user.unique_session_id,
-        success: true
+        success: true,
       )
 
       delete :destroy

@@ -20,7 +20,7 @@ module IrsAttemptsApi
         :logout_initiated,
         user_uuid: user_uuid,
         unique_session_id: unique_session_id,
-        success: success
+        success: success,
       )
     end
   end
