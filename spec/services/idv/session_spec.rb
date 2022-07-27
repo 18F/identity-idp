@@ -59,7 +59,7 @@ describe Idv::Session do
         expect(subject).not_to have_received(:complete_profile)
       end
 
-      it 'does not complete the profile if the user has completed OTP phone confirmation and is proofing in-person' do
+      it 'does not complete the profile if in-person user has completed OTP phone confirmation' do
         subject.applicant = applicant.with_indifferent_access
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
