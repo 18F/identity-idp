@@ -51,7 +51,7 @@ feature 'Strict IAL2 with usps upload disallowed', js: true do
   it 'does not prompt a pending user for a mailed code' do
     user = create(
       :profile,
-      deactivation_reason: :verification_pending,
+      deactivation_reason: :gpo_verification_pending,
       pii: { first_name: 'John', ssn: '111223333' },
     ).user
 

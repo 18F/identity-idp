@@ -39,7 +39,7 @@ describe Idv::Session do
   describe '#complete_session' do
     context 'with phone verifed by vendor' do
       before do
-        subject.address_verification_mechanism = :phone
+        subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = true
         allow(subject).to receive(:complete_profile)
       end
@@ -57,11 +57,47 @@ describe Idv::Session do
 
         expect(subject).not_to have_received(:complete_profile)
       end
+
+      context 'with pending in person enrollment' do
+        let(:user) { create(:user, :with_pending_in_person_enrollment) }
+
+        before do
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          subject.user_phone_confirmation = true
+        end
+
+        it 'sets profile to pending in person verification' do
+          subject.applicant = {}
+          subject.create_profile_from_applicant_with_password(user.password)
+          subject.complete_session
+
+          expect(subject).not_to have_received(:complete_profile)
+          expect(subject.profile.deactivation_reason).to eq('in_person_verification_pending')
+        end
+      end
+    end
+
+    context 'with gpo address verification' do
+      before do
+        subject.address_verification_mechanism = 'gpo'
+        subject.vendor_phone_confirmation = false
+        allow(subject).to receive(:complete_profile)
+      end
+
+      it 'sets profile to pending gpo verification' do
+        subject.applicant = {}
+        subject.create_profile_from_applicant_with_password(user.password)
+        subject.complete_session
+
+        expect(subject).not_to have_received(:complete_profile)
+        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
+      end
     end
 
     context 'without a confirmed phone number' do
       before do
-        subject.address_verification_mechanism = :phone
+        subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = false
       end
 

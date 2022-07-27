@@ -17,7 +17,11 @@ class GpoVerifyForm
   def submit
     result = valid?
     if result
-      activate_profile
+      if pending_in_person_enrollment?
+        user.pending_profile&.deactivate(:in_person_verification_pending)
+      else
+        activate_profile
+      end
     else
       reset_sensitive_fields
     end
@@ -26,6 +30,7 @@ class GpoVerifyForm
       errors: errors,
       extra: {
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+        pending_in_person_enrollment: pending_in_person_enrollment?,
       },
     )
   end
@@ -63,6 +68,11 @@ class GpoVerifyForm
 
   def reset_sensitive_fields
     self.otp = nil
+  end
+
+  def pending_in_person_enrollment?
+    return false unless IdentityConfig.store.in_person_proofing_enabled
+    user.pending_in_person_enrollment.present?
   end
 
   def activate_profile
