@@ -35,7 +35,7 @@ We use `ActiveModel::Model` validations to help build useful error structures.
 
 Forms should have a `#submit` method that returns a `FormResponse`.
 - `success:` is usually `#valid?` from ActiveModel
-- `errors:` is usually `errors` from ActiveModel
+- `errors:` is usually `#errors` from ActiveModel
 - `extra:` is, by convention, a method called `extra_analytics_attributes` that
   returns a Hash
 
@@ -66,19 +66,34 @@ with YARD so that we can auto-generate
 
 ### Controllers
 
-These tie everything together
+These tie everything together! We aim for lean, "RESTful" controllers
+
+* Keep as much business logic as possible out of controllers, such as Forms or
+  Services
+
+* Prefer adding a new controller with one of the CRUD methods over creating a
+  custom method in an existing controller. For example, if your app allows a
+  user to update their email and their password on two different pages, instead of
+  using a single controller with methods called `update_email` and
+  `update_password`, create two controllers and name the methods `update`, i.e.
+  `EmailsController#update` and `PasswordsController#update`. See
+  http://jeromedalbert.com/how-dhh-organizes-his-rails-controllers/ for more about
+  this design pattern.
+
 
 ```ruby
-def index
-  form = MyForm.new(params)
+class MyController < ApplicationController
+  def update
+    form = MyForm.new(params)
 
-  result = form.submit
-  analytics.my_event(**result.to_h)
+    result = form.submit
+    analytics.my_event(**result.to_h)
 
-  if result.success?
-    do_something(form.sensitive_value_here)
-  else
-    do_something_else
+    if result.success?
+      do_something(form.sensitive_value_here)
+    else
+      do_something_else
+    end
   end
 end
 ```
