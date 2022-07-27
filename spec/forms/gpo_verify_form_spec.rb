@@ -2,10 +2,11 @@ require 'rails_helper'
 
 describe GpoVerifyForm do
   subject(:form) do
-    GpoVerifyForm.new(user: user, otp: entered_otp)
+    GpoVerifyForm.new(user: user, pii: applicant, otp: entered_otp)
   end
 
   let(:user) { pending_profile.user }
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true) }
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
@@ -104,7 +105,7 @@ describe GpoVerifyForm do
 
       context 'pending in person enrollment' do
         before do
-          create(:in_person_enrollment, :pending, user: user, profile: pending_profile)
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
@@ -114,6 +115,15 @@ describe GpoVerifyForm do
 
           expect(pending_profile).not_to be_active
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+        end
+
+        it 'creates an in-person enrollment' do
+          subject.submit
+
+          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          expect(enrollment.status).to eq('pending')
+          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.enrollment_code).to be_a(String)
         end
       end
     end
