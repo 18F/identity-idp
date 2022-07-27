@@ -39,7 +39,7 @@ describe Idv::Session do
   describe '#complete_session' do
     context 'with phone verifed by vendor' do
       before do
-        subject.address_verification_mechanism = :phone
+        subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = true
         allow(subject).to receive(:complete_profile)
       end
@@ -69,11 +69,12 @@ describe Idv::Session do
         end
 
         it 'sets profile to pending in person verification' do
-          profile = create(:profile, deactivation_reason: :verification_pending, user: user)
+          subject.applicant = {}
+          subject.create_profile_from_applicant_with_password(user.password)
           subject.complete_session
 
           expect(subject).not_to have_received(:complete_profile)
-          expect(profile.reload.deactivation_reason).to eq('in_person_verification_pending')
+          expect(subject.profile.deactivation_reason).to eq('in_person_verification_pending')
         end
 
         it 'creates a USPS enrollment' do
@@ -100,9 +101,26 @@ describe Idv::Session do
       end
     end
 
+    context 'with gpo address verification' do
+      before do
+        subject.address_verification_mechanism = 'gpo'
+        subject.vendor_phone_confirmation = false
+        allow(subject).to receive(:complete_profile)
+      end
+
+      it 'sets profile to pending gpo verification' do
+        subject.applicant = {}
+        subject.create_profile_from_applicant_with_password(user.password)
+        subject.complete_session
+
+        expect(subject).not_to have_received(:complete_profile)
+        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
+      end
+    end
+
     context 'without a confirmed phone number' do
       before do
-        subject.address_verification_mechanism = :phone
+        subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = false
       end
 

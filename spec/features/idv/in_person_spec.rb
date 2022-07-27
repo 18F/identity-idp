@@ -96,7 +96,7 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
 
-    # re-entering flow
+    # signing in again before completing in-person proofing at a post office
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_welcome_step
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)

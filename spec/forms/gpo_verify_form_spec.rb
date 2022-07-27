@@ -10,7 +10,7 @@ describe GpoVerifyForm do
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
-  let(:pending_profile) { create(:profile, deactivation_reason: :verification_pending) }
+  let(:pending_profile) { create(:profile, deactivation_reason: :gpo_verification_pending) }
 
   before do
     next if pending_profile.blank?

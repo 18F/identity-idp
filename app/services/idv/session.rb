@@ -82,24 +82,25 @@ module Idv
     end
 
     def complete_session
-      if phone_confirmed?
+      if address_verification_mechanism == 'gpo'
+        profile.deactivate(:gpo_verification_pending)
+        create_gpo_entry
+      elsif phone_confirmed?
         if pending_in_person_enrollment?
+          profile.deactivate(:in_person_verification_pending)
           UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
             current_user,
             current_user.pending_profile,
             applicant,
           )
-          current_user.pending_profile&.deactivate(:in_person_verification_pending)
         else
           complete_profile
         end
       end
-
-      create_gpo_entry if address_verification_mechanism == 'gpo'
     end
 
     def complete_profile
-      current_user.pending_profile&.activate
+      profile.activate
       move_pii_to_user_session
     end
 

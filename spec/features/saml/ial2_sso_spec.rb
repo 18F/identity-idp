@@ -85,7 +85,7 @@ feature 'IAL2 Single Sign On' do
     let(:profile) do
       create(
         :profile,
-        deactivation_reason: :verification_pending,
+        deactivation_reason: :gpo_verification_pending,
         pii: { ssn: '6666', dob: '1920-01-01' },
       )
     end

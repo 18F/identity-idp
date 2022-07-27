@@ -52,9 +52,12 @@ module Api
     end
 
     def complete_session
-      if phone_confirmed?
+      if user_bundle.gpo_address_verification?
+        profile.deactivate(:gpo_verification_pending)
+        create_gpo_entry
+      elsif phone_confirmed?
         if pending_in_person_enrollment?
-          user.pending_profile&.deactivate(:in_person_verification_pending)
+          profile.deactivate(:in_person_verification_pending)
           applicant = user_session[:idv][:applicant]
           UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
             user,
@@ -65,8 +68,6 @@ module Api
           complete_profile
         end
       end
-
-      create_gpo_entry if user_bundle.gpo_address_verification?
     end
 
     def pending_in_person_enrollment?
@@ -79,7 +80,7 @@ module Api
     end
 
     def complete_profile
-      user.pending_profile&.activate
+      profile.activate
       move_pii_to_user_session
     end
 
@@ -145,7 +146,7 @@ module Api
     def extra_attributes
       if user.present?
         @extra_attributes ||= {
-          profile_pending: user.pending_profile? && user_bundle.gpo_address_verification?,
+          profile_pending: user_bundle.gpo_address_verification?,
           user_uuid: user.uuid,
         }
       else
