@@ -141,6 +141,15 @@ lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
+# LexisNexis ThreatMatrix##########################################
+lexisnexis_threatmatrix_base_url: https://www.example.com
+lexisnexis_threatmatrix_request_mode: testing
+lexisnexis_threatmatrix_account_id: test_account
+lexisnexis_threatmatrix_username: test_username
+lexisnexis_threatmatrix_password: test_password
+lexisnexis_threatmatrix_instant_verify_timeout: 1.0
+lexisnexis_threatmatrix_instant_verify_workflow: customers.gsa.instant.verify.workflow
+###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
 logins_per_email_and_ip_bantime: 60
