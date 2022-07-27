@@ -167,12 +167,12 @@ class UserMailerPreview < ActionMailer::Preview
         current_address_matches_id: true,
         selected_location_details: {
           'name' => 'BALTIMORE',
-          'streetAddress' => '900 E FAYETTE ST RM 118',
-          'formattedCityStateZip' => 'BALTIMORE, MD 21233-9715',
+          'street_address' => '900 E FAYETTE ST RM 118',
+          'formatted_city_state_zip' => 'BALTIMORE, MD 21233-9715',
           'phone' => '555-123-6409',
-          'weekdayHours' => '8:30 AM - 4:30 PM',
-          'saturdayHours' => '9:00 AM - 12:00 PM',
-          'sundayHours' => 'Closed',
+          'weekday_hours' => '8:30 AM - 4:30 PM',
+          'saturday_hours' => '9:00 AM - 12:00 PM',
+          'sunday_hours' => 'Closed',
         },
       ),
     )

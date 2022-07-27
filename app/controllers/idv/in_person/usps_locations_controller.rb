@@ -28,22 +28,28 @@ module Idv
 
       # return the Post Office location the user selected from the session
       def show
-        selected_location = idv_session.applicant&.[](:selected_location_details)&.to_json || {}
+        selected_location = idv_session.applicant&.[](:selected_location_details) || {}
 
-        render json: selected_location, status: :ok
+        # camel case keys
+        returned_location = {}
+        selected_location.keys.each do |key|
+          returned_location[key.camelize(:lower)] = selected_location[key]
+        end
+
+        render json: returned_location.to_json, status: :ok
       end
 
       protected
 
       def permitted_params
         params.require(:usps_location).permit(
-          :formattedCityStateZip,
+          :formatted_city_state_zip,
           :name,
           :phone,
-          :saturdayHours,
-          :streetAddress,
-          :sundayHours,
-          :weekdayHours,
+          :saturday_hours,
+          :street_address,
+          :sunday_hours,
+          :weekday_hours,
         )
       end
     end

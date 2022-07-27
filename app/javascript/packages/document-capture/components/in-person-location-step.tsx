@@ -60,6 +60,21 @@ const formatLocation = (postOffices: PostOffice[]) => {
   return formattedLocations;
 };
 
+const snakeCase = (value: string) =>
+  value
+    .split(/(?=[A-Z])/)
+    .join('_')
+    .toLowerCase();
+
+// snake case the keys of the location
+const prepToSend = (location: object) => {
+  const sendObject = {};
+  Object.keys(location).forEach((key) => {
+    sendObject[snakeCase(key)] = location[key];
+  });
+  return sendObject;
+};
+
 function InPersonLocationStep() {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
@@ -88,7 +103,7 @@ function InPersonLocationStep() {
       if (inProgress) {
         return;
       }
-      const selected = locationData[id];
+      const selected = prepToSend(locationData[id]);
       const headers = { 'Content-Type': 'application/json' };
       const meta: HTMLMetaElement | null = document.querySelector('meta[name="csrf-token"]');
       const csrf = meta?.content;

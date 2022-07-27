@@ -15,7 +15,7 @@ module Idv
       end
 
       def selected_location_hours(prefix)
-        hours = selected_location_details["#{prefix}Hours"]
+        hours = selected_location_details["#{prefix}_hours"]
         return localized_hours(hours) if hours
       end
 

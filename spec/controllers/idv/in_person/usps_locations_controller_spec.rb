@@ -68,13 +68,13 @@ describe Idv::InPerson::UspsLocationsController do
     let(:selected_location) do
       {
         usps_location: {
-          formattedCityStateZip: 'BALTIMORE, MD, 21233-9715',
+          formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
           name: 'BALTIMORE',
           phone: '410-555-1212',
-          saturdayHours: '8:30 AM - 5:00 PM',
-          streetAddress: '123 Fake St.',
-          sundayHours: 'Closed',
-          weekdayHours: '8:30 AM - 7:00 PM',
+          saturday_hours: '8:30 AM - 5:00 PM',
+          street_address: '123 Fake St.',
+          sunday_hours: 'Closed',
+          weekday_hours: '8:30 AM - 7:00 PM',
         },
       }
     end
@@ -101,7 +101,7 @@ describe Idv::InPerson::UspsLocationsController do
         response = get :show
         body = JSON.parse(response.body)
         selected_location[:usps_location].keys.each do |key|
-          expect(body[key.to_s]).
+          expect(body[key.to_s.camelize(:lower)]).
             to eq(selected_location[:usps_location][key])
         end
       end
