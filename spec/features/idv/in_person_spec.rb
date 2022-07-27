@@ -119,6 +119,8 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(idv_come_back_later_path)
 
       click_idv_continue
+      expect(page).to have_current_path(account_path)
+      expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
       click_button t('forms.verify_profile.submit')
 
