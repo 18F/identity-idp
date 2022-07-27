@@ -1,3 +1,11 @@
+^^^
+spec/forms/gpo_verify_form_spec.rb:143:3: E: Lint/Syntax: unexpected token kEND
+(Using Ruby 2.7 parser; configure using TargetRubyVersion parameter, under AllCops)
+  end
+  ^^^
+
+1 file inspected, 3 offenses detected
+====================
 require 'rails_helper'
 
 describe GpoVerifyForm do

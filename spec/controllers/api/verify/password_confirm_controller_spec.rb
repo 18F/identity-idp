@@ -138,6 +138,22 @@ describe Api::Verify::PasswordConfirmController do
           expect(enrollment.user_id).to be(user.id)
           expect(enrollment.enrollment_code).to be_nil
         end
+
+        it 'sends ready to verify email' do
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          user.email_addresses.each do |email_address|
+            expect(UserMailer).to receive(:in_person_ready_to_verify).
+              with(
+                user,
+                email_address,
+                enrollment: instance_of(InPersonEnrollment),
+                first_name: kind_of(String),
+              ).
+              and_return(mailer)
+          end
+
+          post :create, params: { password: password, user_bundle_token: jwt }
+        end
       end
 
       context 'with associated sp session' do

@@ -24,6 +24,17 @@ fr:
         retail_phone_label: Numéro de téléphone
         speak_to_associate: Vous pouvez vous adresser à n’importe quel employé de ce
           bureau de poste pour faire vérifier votre identité.
+      location:
+        location_button: Sélectionner
+        location_step_about: Si vous ne parvenez pas à ajouter votre pièce d’identité,
+          vous pourrez peut-être vérifier en personne dans un bureau de poste
+          américain local dans certains endroits.
+        none_found: Aucun endroit trouvé.
+        post_office: Bureau de Poste
+        retail_hours_heading: Heures de vente au détail
+        retail_hours_sat: 'Sam:'
+        retail_hours_sun: 'Dim:'
+        retail_hours_weekday: 'Lundi à Vendredi:'
       prepare:
         alert_selected_post_office: 'Vous avez sélectionné le bureau de poste de %{name}.'
         bring_barcode_header: Une copie de votre code-barres
@@ -91,7 +102,6 @@ fr:
       barcode:
         caption_label: Code d’inscription
         heading: Une copie de votre code-barres
-        image_alt: Code-barres
         info: Imprimez ou numérisez depuis votre appareil mobile.
       proof_of_address:
         acceptable_proof:

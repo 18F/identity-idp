@@ -44,7 +44,8 @@ module InPersonHelper
   end
 
   def complete_location_step(_user = user_with_2fa)
-    click_idv_continue
+    first('.location-collection-item').
+      click_button(t('in_person_proofing.body.location.location_button'))
   end
 
   def complete_prepare_step(_user = user_with_2fa)
