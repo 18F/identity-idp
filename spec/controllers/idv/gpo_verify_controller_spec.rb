@@ -5,7 +5,7 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
-  let(:pending_profile) { build(:profile) }
+  let(:pending_profile) { build(:profile, :with_pii, user: user) }
   let(:user) { create(:user) }
 
   before do
@@ -112,6 +112,8 @@ RSpec.describe Idv::GpoVerifyController do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+          allow(controller).to receive(:pii).
+            and_return(user.pending_profile.decrypt_pii(user.password).to_h)
         end
 
         it 'redirects to ready to verify screen' do
