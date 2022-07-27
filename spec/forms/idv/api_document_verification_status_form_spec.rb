@@ -86,5 +86,18 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
       response = form.submit
       expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
     end
+
+    it 'includes doc_auth_result' do
+      response = form.submit
+      expect(response.extra[:doc_auth_result]).to be_nil
+
+      expect(async_state).to receive(:result).and_return(doc_auth_result: nil)
+      response = form.submit
+      expect(response.extra[:doc_auth_result]).to be_nil
+
+      expect(async_state).to receive(:result).and_return(doc_auth_result: 'Failed')
+      response = form.submit
+      expect(response.extra[:doc_auth_result]).to eq('Failed')
+    end
   end
 end

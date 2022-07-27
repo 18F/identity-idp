@@ -108,6 +108,19 @@ module Api
         enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
         enrollment.save!
+
+        send_ready_to_verify_email(user, enrollment)
+      end
+
+      def send_ready_to_verify_email(user, enrollment)
+        user.confirmed_email_addresses.each do |email_address|
+          UserMailer.in_person_ready_to_verify(
+            user,
+            email_address,
+            first_name: user_session.dig(:idv, :pii, :first_name),
+            enrollment: enrollment,
+          ).deliver_now_or_later
+        end
       end
     end
   end

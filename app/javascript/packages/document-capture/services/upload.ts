@@ -36,6 +36,8 @@ export class UploadFormEntriesError extends FormError {
 
   remainingAttempts = Infinity;
 
+  isFailedResult = false;
+
   pii?: PII;
 
   hints = false;
@@ -110,6 +112,8 @@ const upload: UploadImplementation = async function (payload, { method = 'POST',
     if (result.hints) {
       error.hints = result.hints;
     }
+
+    error.isFailedResult = !!result.result_failed;
 
     throw error;
   }
