@@ -1,11 +1,3 @@
-^^^
-app/forms/gpo_verify_form.rb:85:1: E: Lint/Syntax: unexpected token tRSHFT
-(Using Ruby 2.7 parser; configure using TargetRubyVersion parameter, under AllCops)
->>>>>>> origin/main
-^^
-
-1 file inspected, 3 offenses detected
-====================
 class GpoVerifyForm
   include ActiveModel::Model
 
