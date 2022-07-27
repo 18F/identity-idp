@@ -38,6 +38,7 @@ module Idv
     end
 
     def redirect_if_pending_in_person_enrollment
+      return if !IdentityConfig.store.in_person_proofing_enabled
       redirect_to idv_in_person_ready_to_verify_url if current_user.pending_in_person_enrollment
     end
 
