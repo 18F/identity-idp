@@ -64,7 +64,6 @@ module Api
 
       def in_person_enrollment?(user)
         return false unless IdentityConfig.store.in_person_proofing_enabled
-        # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
     end
