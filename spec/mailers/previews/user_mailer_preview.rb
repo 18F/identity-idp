@@ -166,24 +166,13 @@ class UserMailerPreview < ActionMailer::Preview
         created_at: Time.zone.now,
         current_address_matches_id: true,
         selected_location_details: {
-          'name' => 'BALTIMORE — Post Office™',
+          'name' => 'BALTIMORE',
           'streetAddress' => '900 E FAYETTE ST RM 118',
-          'city' => 'BALTIMORE',
-          'state' => 'MD',
-          'zip5' => '21233',
-          'zip4' => '9715',
+          'addressLine2' => 'BALTIMORE, MD 21233-9715',
           'phone' => '555-123-6409',
-          'hours' => [
-            {
-              'weekdayHours' => '8:30 AM - 4:30 PM',
-            },
-            {
-              'saturdayHours' => '9:00 AM - 12:00 PM',
-            },
-            {
-              'sundayHours' => 'Closed',
-            },
-          ],
+          'weekdayHours' => '8:30 AM - 4:30 PM',
+          'saturdayHours' => '9:00 AM - 12:00 PM',
+          'sundayHours' => 'Closed',
         },
       ),
     )
