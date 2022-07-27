@@ -181,6 +181,7 @@ fr:
       capture_status_capturing: Prendre la photo
       capture_status_none: Alignez
       capture_status_small_document: Approchez-vous
+      capture_status_big_document: Trop près
       capture_status_tap_to_capture: Appuyez pour capturer
       document_capture_intro_acknowledgment: Nous collecterons des informations sur
         vous en lisant votre pièce d’identité officielle. Nous ne stockons pas

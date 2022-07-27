@@ -207,6 +207,7 @@ function AcuantCamera({
           text: {
             NONE: t('doc_auth.info.capture_status_none'),
             SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+            BIG_DOCUMENT: t('doc_auth.info.capture_status_big_document'),
             GOOD_DOCUMENT: null,
             CAPTURING: t('doc_auth.info.capture_status_capturing'),
             TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
