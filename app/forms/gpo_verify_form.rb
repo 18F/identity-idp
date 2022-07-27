@@ -18,7 +18,7 @@ class GpoVerifyForm
     result = valid?
     if result
       if pending_in_person_enrollment?
-        # TBD: Need to redirect back to IDV initial step.
+        user.pending_profile&.deactivate(:in_person_verification_pending)
       else
         activate_profile
       end
@@ -30,6 +30,7 @@ class GpoVerifyForm
       errors: errors,
       extra: {
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+        pending_in_person_enrollment: pending_in_person_enrollment?,
       },
     )
   end
@@ -71,7 +72,7 @@ class GpoVerifyForm
 
   def pending_in_person_enrollment?
     return false unless IdentityConfig.store.in_person_proofing_enabled
-    # TBD
+    user.pending_in_person_enrollment.present?
   end
 
   def activate_profile

@@ -52,13 +52,20 @@ module Api
     end
 
     def complete_session
-      complete_profile if phone_confirmed? && !pending_in_person_enrollment?
+      if phone_confirmed?
+        if pending_in_person_enrollment?
+          user.pending_profile&.deactivate(:in_person_verification_pending)
+        else
+          complete_profile
+        end
+      end
+
       create_gpo_entry if user_bundle.gpo_address_verification?
     end
 
     def pending_in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
-      # TBD: Enrollment isn't created yet. Read from proofing component?
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def phone_confirmed?
@@ -132,7 +139,7 @@ module Api
     def extra_attributes
       if user.present?
         @extra_attributes ||= {
-          profile_pending: user.pending_profile?,
+          profile_pending: user.pending_profile? && user_bundle.gpo_address_verification?,
           user_uuid: user.uuid,
         }
       else

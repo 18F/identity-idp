@@ -74,7 +74,7 @@ module Idv
 
     def pending_in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
-      # TBD: Enrollment isn't created yet. Read from proofing component?
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def phone_confirmed?
@@ -82,7 +82,14 @@ module Idv
     end
 
     def complete_session
-      complete_profile if phone_confirmed? && !pending_in_person_enrollment?
+      if phone_confirmed?
+        if pending_in_person_enrollment?
+          current_user.pending_profile&.deactivate(:in_person_verification_pending)
+        else
+          complete_profile
+        end
+      end
+
       create_gpo_entry if address_verification_mechanism == 'gpo'
     end
 

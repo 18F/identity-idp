@@ -101,6 +101,21 @@ describe GpoVerifyForm do
 
         expect(pending_profile.reload).to be_active
       end
+
+      context 'pending in person enrollment' do
+        before do
+          create(:in_person_enrollment, :pending, user: user, profile: pending_profile)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        it 'sets profile to pending in person verification' do
+          subject.submit
+          pending_profile.reload
+
+          expect(pending_profile).not_to be_active
+          expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
+        end
+      end
     end
 
     context 'incorrect OTP' do
