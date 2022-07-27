@@ -129,26 +129,8 @@ module Api
           profile: profile,
           user: user,
           current_address_matches_id: user_session.dig(:idv, :applicant, :same_address_as_id),
-          selected_location_details: {
-            'name' => 'BALTIMORE — Post Office™',
-            'streetAddress' => '900 E FAYETTE ST RM 118',
-            'city' => 'BALTIMORE',
-            'state' => 'MD',
-            'zip5' => '21233',
-            'zip4' => '9715',
-            'phone' => '555-123-6409',
-            'hours' => [
-              {
-                'weekdayHours' => '8:30 AM - 4:30 PM',
-              },
-              {
-                'saturdayHours' => '9:00 AM - 12:00 PM',
-              },
-              {
-                'sundayHours' => 'Closed',
-              },
-            ],
-          },
+          selected_location_details: user_session.dig(:idv, :applicant, :selected_location_details),
+          unique_id: InPersonEnrollment.generate_unique_id,
         )
 
         enrollment_code = create_usps_enrollment(enrollment)
@@ -158,6 +140,19 @@ module Api
         enrollment.enrollment_code = enrollment_code
         enrollment.status = :pending
         enrollment.save!
+
+        send_ready_to_verify_email(user, enrollment)
+      end
+
+      def send_ready_to_verify_email(user, enrollment)
+        user.confirmed_email_addresses.each do |email_address|
+          UserMailer.in_person_ready_to_verify(
+            user,
+            email_address,
+            first_name: user_session.dig(:idv, :pii, :first_name),
+            enrollment: enrollment,
+          ).deliver_now_or_later
+        end
       end
     end
   end

@@ -12,6 +12,8 @@ export { default as IconListItem } from './icon-list/icon-list-item';
 export { default as IconListTitle } from './icon-list/icon-list-title';
 export { default as Link } from './link';
 export { default as PageFooter } from './page-footer';
+export { default as LocationCollection } from './location-collection';
+export { default as LocationCollectionItem } from './location-collection-item';
 export { default as PageHeading } from './page-heading';
 export { default as ProcessList } from './process-list/process-list';
 export { default as ProcessListHeading } from './process-list/process-list-heading';

@@ -245,6 +245,22 @@ describe Api::Verify::PasswordConfirmController do
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)
         end
+
+        it 'sends ready to verify email' do
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          user.email_addresses.each do |email_address|
+            expect(UserMailer).to receive(:in_person_ready_to_verify).
+              with(
+                user,
+                email_address,
+                enrollment: instance_of(InPersonEnrollment),
+                first_name: kind_of(String),
+              ).
+              and_return(mailer)
+          end
+
+          post :create, params: { password: password, user_bundle_token: jwt }
+        end
       end
 
       context 'with associated sp session' do
@@ -260,7 +276,13 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with pending profile' do
-        let(:jwt_metadata) { { vendor_phone_confirmation: false, user_phone_confirmation: false } }
+        let(:jwt_metadata) do
+          {
+            vendor_phone_confirmation: false,
+            user_phone_confirmation: false,
+            address_verification_mechanism: 'gpo',
+          }
+        end
 
         it 'creates a profile and returns completion url' do
           post :create, params: { password: password, user_bundle_token: jwt }

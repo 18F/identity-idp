@@ -36,8 +36,12 @@ module Idv
             sp_name: decorated_session.sp_name,
             disavowal_token: event.disavowal_token,
           )
-          flash[:success] = t('account.index.verification.success')
-          redirect_to sign_up_completed_url
+          if result.extra[:pending_in_person_enrollment]
+            redirect_to idv_in_person_ready_to_verify_url
+          else
+            flash[:success] = t('account.index.verification.success')
+            redirect_to sign_up_completed_url
+          end
         else
           flash[:error] = @gpo_verify_form.errors.first.message
           redirect_to idv_gpo_verify_url

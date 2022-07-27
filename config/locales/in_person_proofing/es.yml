@@ -23,6 +23,17 @@ es:
         retail_phone_label: Número de teléfono
         speak_to_associate: Puedes hablar con cualquier socio de ventas en esta oficina
           de correos para verificar tu identidad.
+      location:
+        location_button: Seleccionar
+        location_step_about: Si tiene problemas para añadir su cédula de identidad, es
+          posible que pueda realizar la verificación en persona en una oficina
+          de correos local de los Estados Unidos en determinadas localidades.
+        none_found: No se encontraron localidades.
+        post_office: Oficina de Correos
+        retail_hours_heading: Horario de atención al público
+        retail_hours_sat: 'Sáb:'
+        retail_hours_sun: 'Dom:'
+        retail_hours_weekday: 'De Lunes a Viernes:'
       prepare:
         alert_selected_post_office: 'Ha seleccionado la oficina de correos %{name}.'
         bring_barcode_header: Una copia de su código de barras
@@ -87,7 +98,6 @@ es:
       barcode:
         caption_label: Código de registro
         heading: Una copia de su código de barras
-        image_alt: Código de barras
         info: Imprima o escanee desde su dispositivo móvil.
       proof_of_address:
         acceptable_proof:

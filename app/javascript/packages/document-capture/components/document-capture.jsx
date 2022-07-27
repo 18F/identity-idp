@@ -120,6 +120,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
             submissionError instanceof UploadFormEntriesError
               ? withProps({
                   remainingAttempts: submissionError.remainingAttempts,
+                  isFailedResult: submissionError.isFailedResult,
                   captureHints: submissionError.hints,
                   pii: submissionError.pii,
                 })(ReviewIssuesStep)

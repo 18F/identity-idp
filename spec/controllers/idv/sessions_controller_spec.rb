@@ -49,7 +49,7 @@ describe Idv::SessionsController do
       let(:user) do
         create(
           :user,
-          profiles: [create(:profile, deactivation_reason: :verification_pending)],
+          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
         )
       end
 
