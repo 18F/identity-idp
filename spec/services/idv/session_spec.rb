@@ -68,7 +68,7 @@ describe Idv::Session do
         end
 
         it 'sets profile to pending in person verification' do
-          profile = create(:profile, deactivation_reason: :verification_pending, user: user)
+          profile = create(:profile, deactivation_reason: :gpo_verification_pending, user: user)
           subject.complete_session
 
           expect(subject).not_to have_received(:complete_profile)

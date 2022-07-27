@@ -107,7 +107,7 @@ RSpec.describe Api::ProfileCreationForm do
           profile = user.profiles.first
 
           expect(profile.active?).to be false
-          expect(profile.deactivation_reason).to eq('verification_pending')
+          expect(profile.deactivation_reason).to eq('gpo_verification_pending')
         end
 
         it 'moves the pii to the user_session' do
@@ -149,7 +149,7 @@ RSpec.describe Api::ProfileCreationForm do
             profile = user.profiles.first
 
             expect(profile.active?).to be false
-            expect(profile.deactivation_reason).to eq('verification_pending')
+            expect(profile.deactivation_reason).to eq('gpo_verification_pending')
           end
         end
       end

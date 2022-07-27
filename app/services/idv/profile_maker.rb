@@ -10,7 +10,7 @@ module Idv
 
     def save_profile
       profile = Profile.new(
-        deactivation_reason: :verification_pending,
+        deactivation_reason: :gpo_verification_pending,
         user: user,
       )
       profile.encrypt_pii(pii_attributes, user_password)

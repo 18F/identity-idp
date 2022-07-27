@@ -17,7 +17,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     it 'requires the profile to be associated with the user' do
       user1 = create(:user)
       user2 = create(:user)
-      profile2 = create(:profile, :verification_pending, user: user2)
+      profile2 = create(:profile, :gpo_verification_pending, user: user2)
       expect { create(:in_person_enrollment, user: user1, profile: profile2) }.
         to raise_error ActiveRecord::RecordInvalid
       expect(InPersonEnrollment.count).to eq 0
@@ -25,8 +25,8 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'does not allow more than one pending enrollment per user' do
       user = create(:user)
-      profile = create(:profile, :verification_pending, user: user)
-      profile2 = create(:profile, :verification_pending, user: user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      profile2 = create(:profile, :gpo_verification_pending, user: user)
       create(:in_person_enrollment, user: user, profile: profile, status: :pending)
       expect(InPersonEnrollment.pending.count).to eq 1
       expect { create(:in_person_enrollment, user: user, profile: profile2, status: :pending) }.
@@ -36,7 +36,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'does not allow duplicate unique ids' do
       user = create(:user)
-      profile = create(:profile, :verification_pending, user: user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
       unique_id = InPersonEnrollment.generate_unique_id
       create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id)
       expect { create(:in_person_enrollment, user: user, profile: profile, unique_id: unique_id) }.
@@ -49,13 +49,13 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect {
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
-          profile = create(:profile, :verification_pending, user: user)
+          profile = create(:profile, :gpo_verification_pending, user: user)
           create(:in_person_enrollment, user: user, profile: profile, status: status)
         end
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
           if status != InPersonEnrollment.statuses[:pending]
-            profile = create(:profile, :verification_pending, user: user)
+            profile = create(:profile, :gpo_verification_pending, user: user)
             create(:in_person_enrollment, user: user, profile: profile, status: status)
           end
         end
