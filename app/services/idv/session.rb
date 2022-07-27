@@ -87,12 +87,12 @@ module Idv
         create_gpo_entry
       elsif phone_confirmed?
         if pending_in_person_enrollment?
-          profile.deactivate(:in_person_verification_pending)
           UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
             current_user,
-            current_user.pending_profile,
+            profile,
             applicant,
           )
+          profile.deactivate(:in_person_verification_pending)
         else
           complete_profile
         end

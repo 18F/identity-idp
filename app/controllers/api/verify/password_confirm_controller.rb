@@ -44,10 +44,10 @@ module Api
       end
 
       def completion_url(result, user)
-        if in_person_enrollment?(user)
-          idv_in_person_ready_to_verify_url
-        elsif result.extra[:profile_pending]
+        if result.extra[:profile_pending]
           idv_come_back_later_url
+        elsif in_person_enrollment?(user)
+          idv_in_person_ready_to_verify_url
         elsif current_sp
           sign_up_completed_url
         else

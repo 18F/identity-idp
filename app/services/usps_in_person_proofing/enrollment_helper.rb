@@ -16,15 +16,15 @@ module UspsInPersonProofing
       enrollment.status = :pending
       enrollment.save!
 
-      send_ready_to_verify_email(user, enrollment)
+      send_ready_to_verify_email(user, pii, enrollment)
     end
 
-    def send_ready_to_verify_email(user, enrollment)
+    def send_ready_to_verify_email(user, pii, enrollment)
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.in_person_ready_to_verify(
           user,
           email_address,
-          first_name: user_session.dig(:idv, :pii, :first_name),
+          first_name: pii['first_name'],
           enrollment: enrollment,
         ).deliver_now_or_later
       end

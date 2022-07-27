@@ -66,11 +66,10 @@ describe Idv::Session do
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
             same_address_as_id: true,
           ).with_indifferent_access
+          subject.create_profile_from_applicant_with_password(user.password)
         end
 
         it 'sets profile to pending in person verification' do
-          subject.applicant = {}
-          subject.create_profile_from_applicant_with_password(user.password)
           subject.complete_session
 
           expect(subject).not_to have_received(:complete_profile)
@@ -94,7 +93,6 @@ describe Idv::Session do
 
             proofer.request_enroll(applicant)
           end
-          create(:profile, deactivation_reason: :verification_pending, user: user)
 
           subject.complete_session
         end
