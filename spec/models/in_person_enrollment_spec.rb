@@ -9,7 +9,7 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'Status' do
     it 'defines enum correctly' do
       should define_enum_for(:status).
-        with_values([:establishing, :pending, :passed, :failed, :expired, :canceled])
+        with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled])
     end
   end
 
