@@ -4,7 +4,7 @@ module UspsInPersonProofing
       enrollment = InPersonEnrollment.create!(
         profile: profile,
         user: user,
-        current_address_matches_id: pii[:same_address_as_id],
+        current_address_matches_id: pii['same_address_as_id'],
         selected_location_details: selected_location_details,
       )
 

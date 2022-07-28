@@ -59,12 +59,15 @@ describe Idv::Session do
       end
 
       context 'with pending in person enrollment' do
+        let(:selected_location_details) { { name: 'Example' } }
+
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
             same_address_as_id: true,
+            selected_location_details: selected_location_details,
           ).with_indifferent_access
           subject.create_profile_from_applicant_with_password(user.password)
         end
@@ -77,22 +80,15 @@ describe Idv::Session do
         end
 
         it 'creates a USPS enrollment' do
-          proofer = UspsInPersonProofing::Mock::Proofer.new
-          mock = double
-
-          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
-          expect(mock).to receive(:request_enroll) do |applicant|
-            expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-            expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
-            expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
-            expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
-            expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-            expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
-            expect(applicant.email).to eq('no-reply@login.gov')
-            expect(applicant.unique_id).to be_a(String)
-
-            proofer.request_enroll(applicant)
-          end
+          enrollment_helper = instance_double(UspsInPersonProofing::EnrollmentHelper)
+          allow(UspsInPersonProofing::EnrollmentHelper).to receive(:new).
+            and_return(enrollment_helper)
+          expect(enrollment_helper).to receive(:save_in_person_enrollment).with(
+            user,
+            kind_of(Profile),
+            subject.applicant.transform_keys(&:to_s),
+            selected_location_details,
+          )
 
           subject.complete_session
         end

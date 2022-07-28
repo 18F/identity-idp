@@ -6,6 +6,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
+  let(:enrollment_selected_location_details) do
+    JSON.parse(UspsIppFixtures.enrollment_selected_location_details)
+  end
   let(:enrollment) do
     InPersonEnrollment.new(
       user: user,
@@ -14,8 +17,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       unique_id: InPersonEnrollment.generate_unique_id,
       created_at: created_at,
       current_address_matches_id: current_address_matches_id,
-      selected_location_details:
-        JSON.parse(UspsIppFixtures.enrollment_selected_location_details),
+      selected_location_details: enrollment_selected_location_details,
     )
   end
 
@@ -46,6 +48,14 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
         'sunday_hours' => kind_of(String),
         'weekday_hours' => kind_of(String),
       )
+    end
+
+    context 'with blank selected_location_details' do
+      let(:enrollment_selected_location_details) { nil }
+
+      it 'returns nil' do
+        expect(selected_location_details).to be_nil
+      end
     end
   end
 
