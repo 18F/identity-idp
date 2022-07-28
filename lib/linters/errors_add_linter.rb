@@ -10,7 +10,7 @@ module RuboCop
       #   errors.add(:iss, 'invalid issuer')
       #
       #   #good
-      #   errors.add(:iss, 'invalid issuer', type: issue)
+      #   errors.add(:iss, 'invalid issuer', type: :invalid_issuer)
       #
       class ErrorsAddLinter < RuboCop::Cop::Cop
         MSG = 'Please set a unique key for this error'.freeze
