@@ -21,7 +21,8 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
-    complete_location_step(user)
+    bethesda_location = page.find_all('.location-collection-item')[1]
+    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
@@ -95,6 +96,10 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+    expect(page).to have_content('BETHESDA')
+    expect(page).to have_content(
+      "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
+    )
 
     # signing in again before completing in-person proofing at a post office
     sign_in_and_2fa_user(user)
