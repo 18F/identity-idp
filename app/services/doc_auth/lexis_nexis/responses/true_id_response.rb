@@ -132,8 +132,11 @@ module DocAuth
                 downcase.
                 parameterize(separator: '_')
               side = alert[:side] || 'no_side'
-              log_alert_results[alert_name_key.to_sym] = { "#{side}": alert[:result] } unless has_failed[alert_name_key.to_sym]
-              has_failed[alert_name_key.to_sym] = key == 'passed'.to_sym ? false : true
+              unless has_failed[alert_name_key.to_sym]
+                log_alert_results[alert_name_key.to_sym] =
+                  { "#{side}": alert[:result] }
+              end
+              has_failed[alert_name_key.to_sym] = !(key == :passed)
             end
           end
           log_alert_results

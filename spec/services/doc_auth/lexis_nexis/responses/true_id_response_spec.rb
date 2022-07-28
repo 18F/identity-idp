@@ -187,7 +187,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'returns log_alert_results, visible_pattern as false when alerts has it as true and false' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
-      expect(output.to_h[:log_alert_results]).to match(a_hash_including('visible_pattern': { no_side: 'Failed' }))
+      expect(output.to_h[:log_alert_results]).
+        to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
     end
 
     it 'produces appropriate errors with liveness' do
