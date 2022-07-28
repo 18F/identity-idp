@@ -4,7 +4,9 @@ import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
 
-/** Global declarations */
+/**
+ * Global declarations
+ */
 declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
 declare let AcuantCamera: AcuantCameraInterface;
 
@@ -57,38 +59,67 @@ interface AcuantPassiveLivenessInterface {
 
 declare global {
   interface Window {
-    /* Document load callback to assign Javascript Web SDK globals */
+    /**
+     * Document load callback to assign Javascript Web SDK globals
+     */
     loadAcuantSdk: () => void;
-    /* Acuant configuration */
+    /**
+     * Acuant configuration
+     */
     acuantConfig: AcuantConfig;
-    /* Acuant Passive Liveness API */
+    /**
+     * Acuant Passive Liveness API
+     */
     AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
-    /* Possible AcuantJavascriptWebSdk on the window object (11.5.0) */
+    /**
+     * Possible AcuantJavascriptWebSdk on the window object (11.5.0)
+     */
     AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface;
-    /* Possible AcuantCamera on the window object (11.5.0) */
+    /**
+     * Possible AcuantCamera on the window object (11.5.0)
+     */
     AcuantCamera: AcuantCameraInterface;
   }
 }
 
 interface AcuantContextProviderProps {
-  sdkSrc: string; // SDK source URL.
-  cameraSrc: string; // Camera JavaScript source URL.
-  credentials: string | null; // SDK credentials.
-  endpoint: string; // Endpoint to submit payload.
-  glareThreshold: number; // Minimum acceptable glare score for images.
-  sharpnessThreshold: number; // Minimum acceptable sharpness score for images.
-  children: ReactNode; // Child element
+  /**
+   * SDK source URL.
+   */
+  sdkSrc: string;
+  /**
+   * Camera JavaScript source URL.
+   */
+  cameraSrc: string;
+  /**
+   * SDK credentials.
+   */
+  credentials: string | null;
+  /**
+   * Endpoint to submit payload.
+   */
+  endpoint: string | null;
+  /**
+   * Minimum acceptable glare score for images.
+   */
+  glareThreshold: number;
+  /**
+   * Minimum acceptable sharpness score for images.
+   */
+  sharpnessThreshold: number;
+  /**
+   * Child element
+   */
+  children: ReactNode;
 }
 
 /**
  * The minimum glare score value to be considered acceptable.
- *
  */
 export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
- *
  */
 export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
 
@@ -116,13 +147,13 @@ const AcuantContext = createContext<AcuantContextInterface>({
   isReady: false,
   isAcuantLoaded: false,
   isError: false,
-  isCameraSupported: /** @type {boolean?} */ null,
+  isCameraSupported: null as boolean | null,
   isActive: false,
   setIsActive: () => {},
   credentials: null,
   glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-  endpoint: /** @type {string?} */ null,
+  endpoint: null as string | null,
 });
 
 AcuantContext.displayName = 'AcuantContext';
@@ -136,11 +167,13 @@ AcuantContext.displayName = 'AcuantContext';
  * sets the object in the global (but non-window)
  * scope.
  */
-const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
+const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface | void => {
   if (window.AcuantJavascriptWebSdk) {
     return window.AcuantJavascriptWebSdk;
   }
-  return AcuantJavascriptWebSdk;
+  if (typeof AcuantJavascriptWebSdk !== 'undefined') {
+    return AcuantJavascriptWebSdk;
+  }
 };
 
 /**
@@ -152,14 +185,16 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
  * sets the object in the global (but non-window)
  * scope.
  */
-const getActualAcuantCamera = (): AcuantCameraInterface => {
+const getActualAcuantCamera = (): AcuantCameraInterface | void => {
   if (window.AcuantCamera) {
     return window.AcuantCamera;
   }
-  return AcuantCamera;
+  if (typeof AcuantCamera !== 'undefined') {
+    return AcuantCamera;
+  }
 };
 
-function AcuantContextProvider<AcuantContextProviderProps>({
+function AcuantContextProvider({
   sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
   cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
   credentials = null,
@@ -167,7 +202,7 @@ function AcuantContextProvider<AcuantContextProviderProps>({
   glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
   sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   children,
-}) {
+}: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
   const { addPageAction } = useContext(AnalyticsContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
