@@ -154,7 +154,6 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
-
       expect(response.to_h[:log_alert_results]).to eq(
         document_classification: { no_side: 'Failed' },
       )
