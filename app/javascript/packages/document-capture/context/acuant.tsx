@@ -4,6 +4,10 @@ import useObjectMemo from '@18f/identity-react-hooks/use-object-memo';
 import DeviceContext from './device';
 import AnalyticsContext from './analytics';
 
+/** Global declarations */
+declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
+declare let AcuantCamera: AcuantCameraInterface;
+
 /**
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
@@ -26,8 +30,8 @@ interface AcuantCallbackOptions {
 }
 
 type AcuantInitialize = (
-  credentials: string,
-  endpoint: string,
+  credentials: string | null,
+  endpoint: string | null,
   callbackOptions?: AcuantCallbackOptions,
 ) => void;
 
@@ -59,13 +63,17 @@ declare global {
     acuantConfig: AcuantConfig;
     /* Acuant Passive Liveness API */
     AcuantPassiveLiveness: AcuantPassiveLivenessInterface;
+    /* Possible AcuantJavascriptWebSdk on the window object (11.5.0) */
+    AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface;
+    /* Possible AcuantCamera on the window object (11.5.0) */
+    AcuantCamera: AcuantCameraInterface;
   }
 }
 
 interface AcuantContextProviderProps {
   sdkSrc: string; // SDK source URL.
   cameraSrc: string; // Camera JavaScript source URL.
-  credentials: string; // SDK credentials.
+  credentials: string | null; // SDK credentials.
   endpoint: string; // Endpoint to submit payload.
   glareThreshold: number; // Minimum acceptable glare score for images.
   sharpnessThreshold: number; // Minimum acceptable sharpness score for images.
@@ -119,6 +127,38 @@ const AcuantContext = createContext<AcuantContextInterface>({
 
 AcuantContext.displayName = 'AcuantContext';
 
+/**
+ * Returns a found AcuantJavascriptWebSdk
+ * object, if one is available.
+ * This function normalizes differences between
+ * the 11.5.0 and 11.7.0 SDKs. The former attached
+ * the object to the global window, while the latter
+ * sets the object in the global (but non-window)
+ * scope.
+ */
+const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
+  if (window.AcuantJavascriptWebSdk) {
+    return window.AcuantJavascriptWebSdk;
+  }
+  return AcuantJavascriptWebSdk;
+};
+
+/**
+ * Returns a found AcuantCamera
+ * object, if one is available.
+ * This function normalizes differences between
+ * the 11.5.0 and 11.7.0 SDKs. The former attached
+ * the object to the global window, while the latter
+ * sets the object in the global (but non-window)
+ * scope.
+ */
+const getActualAcuantCamera = (): AcuantCameraInterface => {
+  if (window.AcuantCamera) {
+    return window.AcuantCamera;
+  }
+  return AcuantCamera;
+};
+
 function AcuantContextProvider<AcuantContextProviderProps>({
   sdkSrc = '/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
   cameraSrc = '/acuant/11.7.0/AcuantCamera.min.js',
@@ -162,22 +202,21 @@ function AcuantContextProvider<AcuantContextProviderProps>({
     // loaded, which is why the script element is manually appended to the DOM.
     function onAcuantSdkLoaded() {
       const { loadAcuantSdk } = window;
-      declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
-      declare let AcuantCamera: AcuantCameraInterface;
       // Normally, Acuant SDK would call this itself, but because it does so as part of a
       // DOMContentLoaded event handler, it wouldn't be called if the page is already loaded.
-      if (!AcuantJavascriptWebSdk) {
+      if (!window.AcuantJavascriptWebSdk) {
         if (typeof loadAcuantSdk !== 'function') {
           return;
         }
 
         loadAcuantSdk();
       }
-
-      AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
+      window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
+      window.AcuantCamera = getActualAcuantCamera();
+      window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
-          AcuantJavascriptWebSdk.startWorkers(() => {
-            const { isCameraSupported: nextIsCameraSupported } = AcuantCamera;
+          window.AcuantJavascriptWebSdk.startWorkers(() => {
+            const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             addPageAction('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,

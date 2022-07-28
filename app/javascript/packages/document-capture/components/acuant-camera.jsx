@@ -38,6 +38,7 @@ export const AcuantUIState = {
  *
  * @prop {string} NONE No document detected.
  * @prop {string} SMALL_DOCUMENT Document does not fill frame.
+ * @prop {string} BIF_DOCUMENT Document is too close to the frame.
  * @prop {string?} GOOD_DOCUMENT Document is good and capture is pending.
  * @prop {string} CAPTURING Document is being captured.
  * @prop {string} TAP_TO_CAPTURE Explicit user action to capture after delay.
@@ -197,7 +198,7 @@ function AcuantCamera({
 
   useEffect(() => {
     if (isReady) {
-      AcuantCameraUI.start(
+      /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
           onCaptured: onCropStart,
           onCropped,
@@ -219,7 +220,7 @@ function AcuantCamera({
 
     return () => {
       if (isReady) {
-        AcuantCameraUI.end();
+        /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
         setIsActive(false);
       }
     };
