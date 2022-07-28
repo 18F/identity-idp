@@ -138,7 +138,7 @@ feature 'doc auth verify step', :js do
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
     expect(fake_analytics).to have_logged_event(
-      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      'Throttler Rate Limit Triggered',
       throttle_type: :idv_resolution,
       step_name: 'Idv::Steps::VerifyWaitStepShow',
     )

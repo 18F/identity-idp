@@ -31,6 +31,22 @@ RSpec.describe Api::IrsAttemptsApiController do
   let(:existing_event_jtis) { existing_events.map(&:first) }
 
   describe '#create' do
+    context 'with CSRF protection enabled' do
+      around do |ex|
+        ActionController::Base.allow_forgery_protection = true
+        ex.run
+      ensure
+        ActionController::Base.allow_forgery_protection = false
+      end
+
+      it 'allows authentication without error' do
+        request.headers['Authorization'] = "Bearer #{auth_token}"
+        post :create, params: {}
+
+        expect(response.status).to eq(200)
+      end
+    end
+
     it 'renders a 404 if disabled' do
       allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(false)
 

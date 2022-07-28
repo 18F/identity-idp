@@ -136,9 +136,4 @@ class Analytics
   end
 
   DOC_AUTH = 'Doc Auth' # visited or submitted is appended
-  SP_REDIRECT_INITIATED = 'SP redirect initiated'
-  TELEPHONY_OTP_SENT = 'Telephony: OTP sent'
-  THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'
-  TOTP_SETUP_VISIT = 'TOTP Setup Visited'
-  TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'
 end

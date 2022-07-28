@@ -1,0 +1,15 @@
+{
+    "status": "Customer has not been to post office",
+    "proofingPostOffice": "WILKES BARRE",
+    "proofingCity": "WILKES BARRE",
+    "proofingState": "PA",
+    "enrollmentCode": "2090002197604352",
+    "primaryIdType": "Uniformed Services identification card",
+    "transactionStartDateTime": "12/17/2020 033855",
+    "transactionEndDateTime": "12/17/2020 034055",
+    "secondaryIdType": "Deed of Trust",
+    "responseMessage": "Customer has not been to a post office to complete IPP",
+    "fraudSuspected": false,
+    "proofingConfirmationNumber": "350040248346707",
+    "ippAssuranceLevel": "1.5"
+}

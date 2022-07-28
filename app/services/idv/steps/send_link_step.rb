@@ -14,8 +14,7 @@ module Idv
       private
 
       def throttled_failure
-        @flow.analytics.track_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_send_link,
         )
         message = I18n.t(

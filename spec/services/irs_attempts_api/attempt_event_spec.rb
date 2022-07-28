@@ -5,9 +5,9 @@ RSpec.describe IrsAttemptsApi::AttemptEvent do
   let(:irs_attempt_api_public_key) { irs_attempt_api_private_key.public_key }
 
   before do
-    encoded_pubic_key = Base64.strict_encode64(irs_attempt_api_public_key.to_der)
+    encoded_public_key = Base64.strict_encode64(irs_attempt_api_public_key.to_der)
     allow(IdentityConfig.store).to receive(:irs_attempt_api_public_key).
-                                   and_return(encoded_pubic_key)
+                                   and_return(encoded_public_key)
   end
 
   let(:jti) { 'test-unique-id' }

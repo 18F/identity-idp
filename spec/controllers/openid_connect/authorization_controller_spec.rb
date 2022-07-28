@@ -60,7 +60,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  scope: 'openid')
           expect(@analytics).to receive(:track_event).
             with(
-              Analytics::SP_REDIRECT_INITIATED,
+              'SP redirect initiated',
               ial: 1,
               billed_ial: 1,
             )
@@ -119,7 +119,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
                 with(
-                  Analytics::SP_REDIRECT_INITIATED,
+                  'SP redirect initiated',
                   ial: 2,
                   billed_ial: 2,
                 )
@@ -218,7 +218,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
                 with(
-                  Analytics::SP_REDIRECT_INITIATED,
+                  'SP redirect initiated',
                   ial: 0,
                   billed_ial: 2,
                 )
@@ -259,7 +259,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
                 with(
-                  Analytics::SP_REDIRECT_INITIATED,
+                  'SP redirect initiated',
                   ial: 0,
                   billed_ial: 1,
                 )
@@ -301,7 +301,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                      scope: 'openid profile')
               expect(@analytics).to receive(:track_event).
                 with(
-                  Analytics::SP_REDIRECT_INITIATED,
+                  'SP redirect initiated',
                   ial: 0,
                   billed_ial: 1,
                 )
@@ -377,7 +377,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  scope: 'openid')
-          expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+          expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
 
@@ -405,7 +405,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  user_fully_authenticated: true,
                  acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
                  scope: 'openid')
-          expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+          expect(@analytics).to_not receive(:track_event).with('SP redirect initiated')
 
           action
 
@@ -431,6 +431,28 @@ RSpec.describe OpenidConnect::AuthorizationController do
         it 'renders the error page' do
           action
           expect(controller).to render_template('openid_connect/authorization/error')
+        end
+      end
+
+      context 'with an inherited_proofing_auth code' do
+        before do
+          params[inherited_proofing_auth_key] = inherited_proofing_auth_value
+          action
+        end
+
+        let(:inherited_proofing_auth_key) { 'inherited_proofing_auth' }
+        let(:inherited_proofing_auth_value) { SecureRandom.hex }
+        let(:decorated_session) { controller.view_context.decorated_session }
+
+        it 'persists the inherited_proofing_auth value' do
+          expect(decorated_session.request_url_params[inherited_proofing_auth_key]).to \
+            eq inherited_proofing_auth_value
+        end
+
+        it 'redirects to SP landing page with the request_id in the params' do
+          sp_request_id = ServiceProviderRequestProxy.last.uuid
+
+          expect(response).to redirect_to new_user_session_url(request_id: sp_request_id)
         end
       end
 

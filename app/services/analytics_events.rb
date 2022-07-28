@@ -1061,6 +1061,9 @@ module AnalyticsEvents
   # @param [Integer] webauthn_configuration_id
   # @param [Integer] phone_configuration_id
   # @param [Boolean] confirmation_for_add_phone
+  # @param [String] area_code
+  # @param [String] country_code
+  # @param [String] phone_fingerprint the hmac fingerprint of the phone number formatted as e164
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -1074,6 +1077,9 @@ module AnalyticsEvents
     confirmation_for_add_phone: nil,
     phone_configuration_id: nil,
     pii_like_keypaths: nil,
+    area_code: nil,
+    country_code: nil,
+    phone_fingerprint: nil,
     **extra
   )
     track_event(
@@ -1089,6 +1095,9 @@ module AnalyticsEvents
       confirmation_for_add_phone: confirmation_for_add_phone,
       phone_configuration_id: phone_configuration_id,
       pii_like_keypaths: pii_like_keypaths,
+      area_code: area_code,
+      country_code: country_code,
+      phone_fingerprint: phone_fingerprint,
       **extra,
     )
   end
@@ -1846,6 +1855,52 @@ module AnalyticsEvents
     track_event('SP inactive visited')
   end
 
+  # Tracks when a user is redirected back to the service provider
+  # @param [Integer] ial
+  # @param [Integer] billed_ial
+  def sp_redirect_initiated(ial:, billed_ial:, **extra)
+    track_event(
+      'SP redirect initiated',
+      ial: ial,
+      billed_ial: billed_ial,
+      **extra,
+    )
+  end
+
+  # Tracks when a user triggered a rate limit throttle
+  # @param [String] throttle_type
+  def throttler_rate_limit_triggered(throttle_type:, **extra)
+    track_event(
+      'Throttler Rate Limit Triggered',
+      throttle_type: throttle_type,
+      **extra,
+    )
+  end
+
+  # Tracks when a user visits TOTP device setup
+  # @param [Boolean] user_signed_up
+  # @param [Boolean] totp_secret_present
+  # @param [Integer] enabled_mfa_methods_count
+  def totp_setup_visit(
+    user_signed_up:,
+    totp_secret_present:,
+    enabled_mfa_methods_count:,
+    **extra
+  )
+    track_event(
+      'TOTP Setup Visited',
+      user_signed_up: user_signed_up,
+      totp_secret_present: totp_secret_present,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
+      **extra,
+    )
+  end
+
+  # Tracks when a user disabled a TOTP device
+  def totp_user_disabled
+    track_event('TOTP: User Disabled')
+  end
+
   # Tracks when service provider consent is revoked
   # @param [String] issuer issuer of the service provider consent to be revoked
   def sp_revoke_consent_revoked(issuer:, **extra)
@@ -2262,6 +2317,36 @@ module AnalyticsEvents
       errors: errors,
       error_details: error_details,
       user_id: user_id,
+      **extra,
+    )
+  end
+
+  # Tracks exceptions that are raised when running GetUspsProofingResultsJob
+  # @param [String] reason why was the exception raised?
+  # @param [String] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_proofing_results_job_exception(
+    reason:, enrollment_id:, exception_class: nil, exception_message: nil, **extra
+  )
+    track_event(
+      'GetUspsProofingResultsJob: Exception raised',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that fail during GetUspsProofingResultsJob
+  # @param [String] reason why did this enrollment fail?
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment failed proofing',
+      reason: reason,
+      enrollment_id: enrollment_id,
       **extra,
     )
   end
