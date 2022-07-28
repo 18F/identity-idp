@@ -3,7 +3,7 @@ shared_examples 'gpo otp verification step' do |sp|
   let(:profile) do
     create(
       :profile,
-      deactivation_reason: :verification_pending,
+      deactivation_reason: :gpo_verification_pending,
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
     )
   end

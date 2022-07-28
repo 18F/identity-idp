@@ -52,8 +52,26 @@ module Api
     end
 
     def complete_session
-      complete_profile if phone_confirmed?
-      create_gpo_entry if user_bundle.gpo_address_verification?
+      if user_bundle.gpo_address_verification?
+        profile.deactivate(:gpo_verification_pending)
+        create_gpo_entry
+      elsif phone_confirmed?
+        if pending_in_person_enrollment?
+          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+            user,
+            profile,
+            session[:pii],
+          )
+          profile.deactivate(:in_person_verification_pending)
+        else
+          complete_profile
+        end
+      end
+    end
+
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def phone_confirmed?
@@ -61,7 +79,7 @@ module Api
     end
 
     def complete_profile
-      user.pending_profile&.activate
+      profile.activate
       move_pii_to_user_session
     end
 
@@ -127,7 +145,7 @@ module Api
     def extra_attributes
       if user.present?
         @extra_attributes ||= {
-          profile_pending: user.pending_profile?,
+          profile_pending: user_bundle.gpo_address_verification?,
           user_uuid: user.uuid,
         }
       else
@@ -149,6 +167,11 @@ module Api
       end
 
       key
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end

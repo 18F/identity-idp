@@ -197,7 +197,7 @@ RSpec.describe User do
       create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     }
     let(:profile2) {
-      create(:profile, :verification_pending, user: user, pii: { first_name: 'Susan' })
+      create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
     }
 
     let!(:enrollment1) { create(:in_person_enrollment, :failed, user: user, profile: profile1) }
@@ -425,18 +425,18 @@ RSpec.describe User do
   end
 
   describe '#pending_profile' do
-    context 'when a profile with a verification_pending deactivation_reason exists' do
+    context 'when a profile with a gpo_verification_pending deactivation_reason exists' do
       it 'returns the most recent profile' do
         user = User.new
         _old_profile = create(
           :profile,
-          :verification_pending,
+          :gpo_verification_pending,
           created_at: 1.day.ago,
           user: user,
         )
         new_profile = create(
           :profile,
-          :verification_pending,
+          :gpo_verification_pending,
           user: user,
         )
 
@@ -444,7 +444,7 @@ RSpec.describe User do
       end
     end
 
-    context 'when a verification_pending profile does not exist' do
+    context 'when a gpo_verification_pending profile does not exist' do
       it 'returns nil' do
         user = User.new
         create(

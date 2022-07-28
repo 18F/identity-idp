@@ -14,6 +14,7 @@
       width: 136,
       height: 136,
       class: 'display-block margin-x-auto margin-bottom-4',
+      alt: '',
     ) %>
 
 <%= render PageHeadingComponent.new(class: 'text-center') do %>
@@ -21,7 +22,7 @@
 <% end %>
 
 <%= render AlertComponent.new(class: 'margin-y-4', text_tag: :div) do %>
-  <p class="font-sans-md margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
+  <p class="margin-bottom-1"><strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong></p>
   <p class="margin-bottom-0"><%= t('in_person_proofing.body.barcode.deadline_restart') %></p>
 <% end %>
 
@@ -31,18 +32,11 @@
   <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
     <% c.item(heading: t('in_person_proofing.process.barcode.heading')) do %>
       <p><%= t('in_person_proofing.process.barcode.info') %></p>
-      <figure class="display-inline-block margin-0">
-        <%= image_tag(
-              @presenter.barcode_data_url,
-              skip_pipeline: true,
-              alt: t('in_person_proofing.process.barcode.image_alt'),
-              class: 'display-block margin-bottom-1',
-            ) %>
-        <figcaption class="text-center">
-          <span class="usa-sr-only"><%= t('in_person_proofing.process.barcode.caption_label') %>:</span>
-          <%= @presenter.formatted_enrollment_code %>
-        </figcaption>
-      </figure>
+      <%= render BarcodeComponent.new(
+            barcode_data: @presenter.enrollment_code,
+            label: t('in_person_proofing.process.barcode.caption_label'),
+            label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
+          ) %>
     <% end %>
     <% c.item(heading: t('in_person_proofing.process.state_id.heading')) do %>
       <p class="margin-bottom-105"><%= t('in_person_proofing.process.state_id.info') %></p>
@@ -76,29 +70,29 @@
   </p>
 </section>
 
-<section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>" class="margin-y-4">
-  <address>
-    <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
-    <div class="margin-bottom-1">
-      <%= @presenter.selected_location_details['streetAddress'] %><br>
-      <%= @presenter.selected_location_details['city'] %>,
-      <%= @presenter.selected_location_details['state'] %>
-      <%= @presenter.selected_location_details['zip5'] %>-<%= @presenter.selected_location_details['zip4'] %>
-    </div>
-    <h3 class="font-sans-sm margin-y-0"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
-    <div class="margin-bottom-2">
-      <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
-      <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
-      <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
-    </div>
-    <div>
-      <span class="usa-sr-only"><%= t('in_person_proofing.body.barcode.retail_phone_label') %>: </span>
-      <%= @presenter.selected_location_details['phone'] %>
-    </div>
-  </address>
-</section>
+<% if @presenter.selected_location_details.present? %>
+  <section aria-label="<%= t('in_person_proofing.body.barcode.location_details') %>" class="margin-y-4">
+    <address>
+      <h2 class="font-sans-md margin-bottom-1"><%= @presenter.selected_location_details['name'] %></h2>
+      <div class="margin-bottom-1">
+        <%= @presenter.selected_location_details['street_address'] %><br>
+        <%= @presenter.selected_location_details['formatted_city_state_zip'] %>
+      </div>
+      <h3 class="margin-y-0 h4"><%= t('in_person_proofing.body.barcode.retail_hours') %></h3>
+      <div class="margin-bottom-2">
+        <%= t('date.range', from: t('date.day_names')[0], to: t('date.day_names')[4]) %>: <%= @presenter.selected_location_hours(:weekday) %><br>
+        <%= t('date.day_names')[5] %>: <%= @presenter.selected_location_hours(:saturday) %><br>
+        <%= t('date.day_names')[6] %>: <%= @presenter.selected_location_hours(:sunday) %>
+      </div>
+      <div>
+        <span class="usa-sr-only"><%= t('in_person_proofing.body.barcode.retail_phone_label') %>: </span>
+        <%= @presenter.selected_location_details['phone'] %>
+      </div>
+    </address>
+  </section>
 
-<p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
+  <p><%= t('in_person_proofing.body.barcode.speak_to_associate') %></p>
+<% end %>
 
 <p>
   <strong><%= t('in_person_proofing.body.barcode.deadline', deadline: @presenter.formatted_due_date) %></strong>

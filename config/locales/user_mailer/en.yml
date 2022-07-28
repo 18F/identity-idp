@@ -12,7 +12,7 @@ en:
     account_reset_cancel:
       intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
-      subject: Delete your account
+      subject: Request canceled
     account_reset_complete:
       intro_html: This email confirms you have deleted your %{app_name} account.
       subject: Account deleted
@@ -100,6 +100,11 @@ en:
         %{app_name} %{help_link} or %{contact_link}.
       subject: Email address deleted
     help_link_text: Help Center
+    in_person_ready_to_verify:
+      greeting: Hi %{name},
+      intro: Here are the details to verify your identity in person at a United States
+        Post Office near you.
+      subject: You’re ready to verify your identity with %{app_name} in person
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity

@@ -11,22 +11,15 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       user: user,
       profile: profile,
       enrollment_code: enrollment_code,
+      unique_id: InPersonEnrollment.generate_unique_id,
       created_at: created_at,
       current_address_matches_id: current_address_matches_id,
       selected_location_details:
-        JSON.parse(UspsIppFixtures.request_facilities_response)['postOffices'].first,
+        JSON.parse(UspsIppFixtures.enrollment_selected_location_details),
     )
   end
 
   subject(:presenter) { described_class.new(enrollment: enrollment) }
-
-  describe '#barcode_data_url' do
-    subject(:barcode_data_url) { presenter.barcode_data_url }
-
-    it 'returns a valid data URL' do
-      expect(barcode_data_url).to match URI::DEFAULT_PARSER.make_regexp('data')
-    end
-  end
 
   describe '#formatted_due_date' do
     subject(:formatted_due_date) { presenter.formatted_due_date }
@@ -40,33 +33,18 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     end
   end
 
-  describe '#formatted_enrollment_code' do
-    subject(:formatted_enrollment_code) { presenter.formatted_enrollment_code }
-
-    it 'returns a formatted enrollment code' do
-      expect(formatted_enrollment_code).to eq(
-        Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code),
-      )
-    end
-  end
-
   describe '#selected_location_details' do
     subject(:selected_location_details) { presenter.selected_location_details }
 
     it 'returns a hash of location details associated with the enrollment' do
       expect(selected_location_details).to include(
+        'formatted_city_state_zip' => kind_of(String),
         'name' => kind_of(String),
-        'streetAddress' => kind_of(String),
-        'city' => kind_of(String),
-        'state' => kind_of(String),
-        'zip5' => kind_of(String),
-        'zip4' => kind_of(String),
         'phone' => kind_of(String),
-        'hours' => array_including(
-          hash_including('weekdayHours' => kind_of(String)),
-          hash_including('saturdayHours' => kind_of(String)),
-          hash_including('sundayHours' => kind_of(String)),
-        ),
+        'saturday_hours' => kind_of(String),
+        'street_address' => kind_of(String),
+        'sunday_hours' => kind_of(String),
+        'weekday_hours' => kind_of(String),
       )
     end
   end
@@ -77,11 +55,11 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     before do
       allow(presenter).to receive(:selected_location_details).and_return(
-        'hours' => [
-          { 'weekdayHours' => hours_open },
-          { 'saturdayHours' => hours_open },
-          { 'sundayHours' => hours_closed },
-        ],
+        {
+          'weekday_hours' => hours_open,
+          'saturday_hours' => hours_open,
+          'sunday_hours' => hours_closed,
+        },
       )
     end
 

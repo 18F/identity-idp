@@ -6,6 +6,7 @@ module Idv
 
     def destroy
       cancel_verification_attempt_if_pending_profile
+      cancel_in_person_enrollment_if_exists
       analytics.idv_start_over(
         step: location_params[:step],
         location: location_params[:location],
@@ -19,8 +20,13 @@ module Idv
     private
 
     def cancel_verification_attempt_if_pending_profile
-      return if current_user.profiles.verification_pending.blank?
+      return if current_user.profiles.gpo_verification_pending.blank?
       Idv::CancelVerificationAttempt.new(user: current_user).call
+    end
+
+    def cancel_in_person_enrollment_if_exists
+      return if !IdentityConfig.store.in_person_proofing_enabled
+      current_user.pending_in_person_enrollment&.update(status: :cancelled)
     end
 
     def location_params

@@ -110,7 +110,7 @@ feature 'doc auth send link step' do
       expect(page).to have_content(I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout))
     end
     expect(fake_analytics).to have_logged_event(
-      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      'Throttler Rate Limit Triggered',
       throttle_type: :idv_send_link,
     )
 

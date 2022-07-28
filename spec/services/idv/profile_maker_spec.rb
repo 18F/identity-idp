@@ -13,7 +13,8 @@ describe Idv::ProfileMaker do
         user_password: user_password,
       )
     end
-    it 'creates a Profile with encrypted PII' do
+
+    it 'creates an inactive Profile with encrypted PII' do
       proofing_component = ProofingComponent.create(user_id: user.id, document_check: 'acuant')
       profile = subject.save_profile
       pii = subject.pii_attributes
@@ -23,6 +24,8 @@ describe Idv::ProfileMaker do
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Some'
       expect(profile.proofing_components).to match proofing_component.as_json
+      expect(profile.active).to eq false
+      expect(profile.deactivation_reason).to be_nil
 
       expect(pii).to be_a Pii::Attributes
       expect(pii.first_name).to eq 'Some'

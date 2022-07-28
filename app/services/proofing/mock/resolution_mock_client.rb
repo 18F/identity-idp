@@ -3,9 +3,17 @@ module Proofing
     class ResolutionMockClient < Proofing::Base
       vendor_name 'ResolutionMock'
 
-      required_attributes :first_name, :ssn, :zipcode
+      required_attributes :uuid,
+                          :first_name,
+                          :last_name,
+                          :dob,
+                          :ssn,
+                          :address1,
+                          :city,
+                          :state,
+                          :zipcode
 
-      optional_attributes :uuid, :uuid_prefix
+      optional_attributes :address2, :uuid_prefix, :dob_year_only
 
       stage :resolution
 

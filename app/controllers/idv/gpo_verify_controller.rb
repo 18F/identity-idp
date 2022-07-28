@@ -9,7 +9,7 @@ module Idv
       analytics.idv_gpo_verification_visited
       gpo_mail = Idv::GpoMail.new(current_user)
       @mail_spammed = gpo_mail.mail_spammed?
-      @gpo_verify_form = GpoVerifyForm.new(user: current_user)
+      @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
       if throttle.throttled?
@@ -17,6 +17,10 @@ module Idv
       else
         render :index
       end
+    end
+
+    def pii
+      Pii::Cacher.new(current_user, user_session).fetch
     end
 
     def create
@@ -36,8 +40,12 @@ module Idv
             sp_name: decorated_session.sp_name,
             disavowal_token: event.disavowal_token,
           )
-          flash[:success] = t('account.index.verification.success')
-          redirect_to sign_up_completed_url
+          if result.extra[:pending_in_person_enrollment]
+            redirect_to idv_in_person_ready_to_verify_url
+          else
+            flash[:success] = t('account.index.verification.success')
+            redirect_to sign_up_completed_url
+          end
         else
           flash[:error] = @gpo_verify_form.errors.first.message
           redirect_to idv_gpo_verify_url
@@ -55,8 +63,7 @@ module Idv
     end
 
     def render_throttled
-      analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      analytics.throttler_rate_limit_triggered(
         throttle_type: :verify_gpo_key,
       )
 
@@ -67,6 +74,7 @@ module Idv
     def build_gpo_verify_form
       GpoVerifyForm.new(
         user: current_user,
+        pii: pii,
         otp: params_otp,
       )
     end

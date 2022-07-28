@@ -152,8 +152,7 @@ module OpenidConnect
         user: current_user,
       )
 
-      analytics.track_event(
-        Analytics::SP_REDIRECT_INITIATED,
+      analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )

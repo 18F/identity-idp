@@ -10,6 +10,7 @@ module Api
           user = User.find_by(uuid: result.extra[:user_uuid])
           add_proofing_component(user)
           store_session_last_gpo_code(form.gpo_code)
+
           render json: {
             personal_key: personal_key,
             completion_url: completion_url(result, user),
@@ -56,7 +57,6 @@ module Api
 
       def in_person_enrollment?(user)
         return false unless IdentityConfig.store.in_person_proofing_enabled
-        # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
     end

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe UspsInPersonProofer do
+RSpec.describe UspsInPersonProofing::Proofer do
   include UspsIppHelper
 
-  let(:subject) { UspsInPersonProofer.new }
+  let(:subject) { UspsInPersonProofing::Proofer.new }
 
   describe '#retrieve_token!' do
     it 'sets token and token_expires_at' do
@@ -13,6 +13,20 @@ RSpec.describe UspsInPersonProofer do
       expect(subject.token).to be_present
       expect(subject.token_expires_at).to be_present
     end
+  end
+
+  def check_facility(facility)
+    expect(facility.address).to be_present
+    expect(facility.city).to be_present
+    expect(facility.distance).to be_present
+    expect(facility.name).to be_present
+    expect(facility.phone).to be_present
+    expect(facility.saturday_hours).to be_present
+    expect(facility.state).to be_present
+    expect(facility.sunday_hours).to be_present
+    expect(facility.weekday_hours).to be_present
+    expect(facility.zip_code_4).to be_present
+    expect(facility.zip_code_5).to be_present
   end
 
   describe '#request_facilities' do
@@ -29,14 +43,16 @@ RSpec.describe UspsInPersonProofer do
 
       facilities = subject.request_facilities(location)
 
-      facility = facilities[0]
-      expect(facility.distance).to be_present
-      expect(facility.address).to be_present
-      expect(facility.city).to be_present
-      expect(facility.phone).to be_present
-      expect(facility.name).to be_present
-      expect(facility.zip_code).to be_present
-      expect(facility.state).to be_present
+      check_facility(facilities[0])
+    end
+  end
+
+  describe '#request_pilot_facilities' do
+    it 'returns facilities' do
+      facilities = subject.request_pilot_facilities
+      expect(facilities.length).to eq(7)
+
+      check_facility(facilities[0])
     end
   end
 

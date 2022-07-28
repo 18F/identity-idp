@@ -45,6 +45,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     it 'tracks the page visit and context' do
       user = build_stubbed(:user, :with_phone, with: { phone: '+1 (703) 555-0100' })
       stub_sign_in_before_2fa(user)
+      parsed_phone = Phonelib.parse(subject.current_user.default_phone_configuration.phone)
 
       stub_analytics
       analytics_hash = {
@@ -52,6 +53,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
         phone_configuration_id: subject.current_user.default_phone_configuration.id,
+        area_code: parsed_phone.area_code,
+        country_code: parsed_phone.country,
+        phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
       }
 
       expect(@analytics).to receive(:track_event).
@@ -81,6 +85,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
   end
 
   describe '#create' do
+    let(:parsed_phone) { Phonelib.parse(subject.current_user.default_phone_configuration.phone) }
     context 'when the user enters an invalid OTP during authentication context' do
       before do
         sign_in_before_2fa
@@ -94,6 +99,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         }
         stub_analytics
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -140,6 +148,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         }
 
         stub_analytics
@@ -192,6 +203,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'sms',
           phone_configuration_id: subject.current_user.default_phone_configuration.id,
+          area_code: parsed_phone.area_code,
+          country_code: parsed_phone.country,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         }
 
         stub_analytics
@@ -306,7 +320,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
-            phone_id = MfaContext.new(subject.current_user).phone_configurations.last.id
+            phone_configuration = MfaContext.new(subject.current_user).phone_configurations.last
+            phone_id = phone_configuration.id
+            parsed_phone = Phonelib.parse(phone_configuration.phone)
 
             properties = {
               success: true,
@@ -315,6 +331,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: phone_id,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             }
 
             expect(@analytics).to receive(:track_event).
@@ -378,6 +397,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               phone_configuration_id: subject.current_user.default_phone_configuration.id,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -415,6 +437,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'tracks the confirmation event' do
+            parsed_phone = Phonelib.parse('+1 (703) 555-5555')
             properties = {
               success: true,
               errors: {},
@@ -422,6 +445,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
               multi_factor_auth_method: 'sms',
               confirmation_for_add_phone: false,
               phone_configuration_id: nil,
+              area_code: parsed_phone.area_code,
+              country_code: parsed_phone.country,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             }
 
             expect(@analytics).to have_received(:track_event).
