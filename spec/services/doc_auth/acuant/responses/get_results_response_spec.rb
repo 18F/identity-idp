@@ -165,31 +165,19 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     context 'when visiual_pattern fails and passes' do
       let(:http_response) do
         parsed_response_body['Alerts'] << {
-          Actions: 'Check the visible (white) document image...',
-          DataFieldReferences: [],
           Description: 'Verified the presence of a pattern on the visible image.',
           Disposition: 'A visible pattern was not found',
-          FieldReferences: [],
           Id: '4add9651-27ed-40a2-90eb-7fa46a694156',
-          ImageReferences: [],
-          Information: 'Verified that a security feature...',
           Key: 'Visible Pattern',
           Name: 'Visible Pattern',
-          RegionReferences: [],
           Result: 2,
         }
         parsed_response_body['Alerts'] << {
-          Actions: 'Check the visible (white) document image...',
-          DataFieldReferences: [],
           Description: 'Verified the presence of a pattern on the visible image.',
           Disposition: 'A visible pattern was not found',
-          FieldReferences: [],
           Id: '4add9651-27ed-40a2-90eb-7fa46a694156',
-          ImageReferences: [],
-          Information: 'Verified that a security feature...',
           Key: 'Visible Pattern',
           Name: 'Visible Pattern',
-          RegionReferences: [],
           Result: 1,
         }
 
