@@ -154,12 +154,66 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         back: [DocAuth::Errors::FALLBACK_FIELD_LEVEL],
         hints: true,
       )
+
       expect(response.to_h[:log_alert_results]).to eq(
         document_classification: { no_side: 'Failed' },
       )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
       expect(response.result_code.billed?).to eq(false)
+    end
+
+    context 'when visiual_pattern fails and passes' do
+      let(:http_response) do
+        parsed_response_body['Alerts'] <<  {
+          "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+          "DataFieldReferences": [],
+          "Description": "Verified the presence of a pattern on the visible image.",
+          "Disposition": "A visible pattern was not found",
+          "FieldReferences": [],
+          "Id": "4add9651-27ed-40a2-90eb-7fa46a694156",
+          "ImageReferences": [],
+          "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+          "Key": "Visible Pattern",
+          "Name": "Visible Pattern",
+          "RegionReferences": [],
+          "Result": 2,
+        }
+        parsed_response_body['Alerts'] <<  {
+          "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+          "DataFieldReferences": [],
+          "Description": "Verified the presence of a pattern on the visible image.",
+          "Disposition": "A visible pattern was not found",
+          "FieldReferences": [],
+          "Id": "4add9651-27ed-40a2-90eb-7fa46a694156",
+          "ImageReferences": [],
+          "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+          "Key": "Visible Pattern",
+          "Name": "Visible Pattern",
+          "RegionReferences": [],
+          "Result": 1,
+        }
+
+        instance_double(
+          Faraday::Response,
+          body: parsed_response_body.to_json,
+        )
+      end
+
+      it 'returns log_alert_results for visible_pattern as false' do
+        expect(response.to_h[:processed_alerts]).to eq(
+          passed: [{ name: 'Visible Pattern', result: 'Passed' }],
+          failed:
+            [{ name: 'Document Classification',
+               result:'Failed' },
+             { name: 'Visible Pattern',
+               result: 'Failed' }]
+        )
+
+        expect(response.to_h[:log_alert_results]).to eq(
+          { visible_pattern: { no_side: 'Failed' }, :document_classification=>{ no_side: 'Failed' } }
+        )
+      end
     end
 
     context 'when with an acuant error message' do
