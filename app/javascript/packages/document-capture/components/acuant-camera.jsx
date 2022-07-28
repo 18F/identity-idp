@@ -38,7 +38,7 @@ export const AcuantUIState = {
  *
  * @prop {string} NONE No document detected.
  * @prop {string} SMALL_DOCUMENT Document does not fill frame.
- * @prop {string} BIF_DOCUMENT Document is too close to the frame.
+ * @prop {string} BIG_DOCUMENT Document is too close to the frame.
  * @prop {string?} GOOD_DOCUMENT Document is good and capture is pending.
  * @prop {string} CAPTURING Document is being captured.
  * @prop {string} TAP_TO_CAPTURE Explicit user action to capture after delay.
@@ -175,6 +175,22 @@ export const AcuantUIState = {
  */
 
 /**
+ * Returns a found AcuantCameraUI
+ * object, if one is available.
+ * This function normalizes differences between
+ * the 11.5.0 and 11.7.0 SDKs. The former attached
+ * the object to the global window, while the latter
+ * sets the object in the global (but non-window)
+ * scope.
+ */
+const getActualAcuantCameraUI = () => {
+  if (window.AcuantCameraUI) {
+    return window.AcuantCameraUI;
+  }
+  return AcuantCameraUI;
+};
+
+/**
  * @param {AcuantCameraContextProps} props
  */
 function AcuantCamera({
@@ -198,6 +214,7 @@ function AcuantCamera({
 
   useEffect(() => {
     if (isReady) {
+      window.AcuantCameraUI = getActualAcuantCameraUI();
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
           onCaptured: onCropStart,

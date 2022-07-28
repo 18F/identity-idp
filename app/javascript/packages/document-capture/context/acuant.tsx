@@ -212,10 +212,10 @@ function AcuantContextProvider<AcuantContextProviderProps>({
         loadAcuantSdk();
       }
       window.AcuantJavascriptWebSdk = getActualAcuantJavascriptWebSdk();
-      window.AcuantCamera = getActualAcuantCamera();
       window.AcuantJavascriptWebSdk.initialize(credentials, endpoint, {
         onSuccess: () => {
           window.AcuantJavascriptWebSdk.startWorkers(() => {
+            window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
             addPageAction('IdV: Acuant SDK loaded', {
               success: true,
