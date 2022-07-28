@@ -124,12 +124,16 @@ module DocAuth
 
         def log_alerts(alerts)
           log_alert_results = {}
+          has_failed = {}
+
           alerts.keys.each do |key|
             alerts[key.to_sym].each do |alert|
-              side = alert[:side] || 'no_side'
-              log_alert_results[alert[:name].
+              alert_name_key = alert[:name].
                 downcase.
-                parameterize(separator: '_').to_sym] = { "#{side}": alert[:result] }
+                parameterize(separator: '_')
+              side = alert[:side] || 'no_side'
+              log_alert_results[alert_name_key.to_sym] = { "#{side}": alert[:result] } unless has_failed[alert_name_key.to_sym]
+              has_failed[alert_name_key.to_sym] = key == 'passed'.to_sym ? false : true
             end
           end
           log_alert_results
