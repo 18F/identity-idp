@@ -165,19 +165,15 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     context 'when visiual_pattern fails and passes' do
       let(:http_response) do
         parsed_response_body['Alerts'] << {
-          Description: 'Verified the presence of a pattern on the visible image.',
-          Disposition: 'A visible pattern was not found',
-          Id: '4add9651-27ed-40a2-90eb-7fa46a694156',
           Key: 'Visible Pattern',
           Name: 'Visible Pattern',
+          RegionReferences: [],
           Result: 2,
         }
         parsed_response_body['Alerts'] << {
-          Description: 'Verified the presence of a pattern on the visible image.',
-          Disposition: 'A visible pattern was not found',
-          Id: '4add9651-27ed-40a2-90eb-7fa46a694156',
           Key: 'Visible Pattern',
           Name: 'Visible Pattern',
+          RegionReferences: [],
           Result: 1,
         }
 
