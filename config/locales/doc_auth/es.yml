@@ -173,7 +173,7 @@ es:
       capture_status_capturing: Capturando
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
-      captuire_status_big_document: Demasiado cerca
+      capture_status_big_document: Demasiado cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su identificación emitida por el estado. No almacenamos las
