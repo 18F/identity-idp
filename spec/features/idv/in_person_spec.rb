@@ -149,6 +149,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'lets the user clear and start over from gpo confirmation', allow_browser_log: true do
+      sign_in_and_2fa_user
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
