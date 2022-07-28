@@ -22,6 +22,8 @@ Rails.application.config.content_security_policy do |policy|
     '*.nr-data.net',
     'dap.digitalgov.gov',
     '*.google-analytics.com',
+    'h-api.online-metrix.net',
+    'h.online-metrix.net',
     IdentityConfig.store.asset_host.presence,
   ].compact
 
