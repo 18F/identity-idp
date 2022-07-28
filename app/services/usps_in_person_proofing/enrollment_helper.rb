@@ -1,6 +1,6 @@
 module UspsInPersonProofing
   class EnrollmentHelper
-    def save_in_person_enrollment(user, profile, pii)
+    def save_in_person_enrollment(user, profile, pii, selected_location_details = nil)
       enrollment = InPersonEnrollment.create!(
         profile: profile,
         user: user,
@@ -56,30 +56,6 @@ module UspsInPersonProofing
 
       response = proofer.request_enroll(applicant)
       response['enrollmentCode']
-    end
-
-    def selected_location_details
-      # temporary hard-coded value until the user's selection is saved to the session
-      {
-        'name' => 'BALTIMORE — Post Office™',
-        'streetAddress' => '900 E FAYETTE ST RM 118',
-        'city' => 'BALTIMORE',
-        'state' => 'MD',
-        'zip5' => '21233',
-        'zip4' => '9715',
-        'phone' => '555-123-6409',
-        'hours' => [
-          {
-            'weekdayHours' => '8:30 AM - 4:30 PM',
-          },
-          {
-            'saturdayHours' => '9:00 AM - 12:00 PM',
-          },
-          {
-            'sundayHours' => 'Closed',
-          },
-        ],
-      }
     end
   end
 end
