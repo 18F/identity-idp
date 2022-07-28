@@ -1,7 +1,7 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      # This lint helps make sure that we have language-agnostic identitifers
+      # This lint helps make sure that we have language-agnostic identifiers
       # for errors that we log. The error strings are different in each locale
       # so this helps us compare them more directly.
       #
