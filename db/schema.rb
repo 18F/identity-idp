@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_21_170157) do
+ActiveRecord::Schema.define(version: 2022_07_27_112113) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -453,6 +453,10 @@ ActiveRecord::Schema.define(version: 2022_07_21_170157) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "liveness_check"
+    t.boolean "threatmetrix"
+    t.string "threatmetrix_review_status"
+    t.string "threatmetrix_risk_rating"
+    t.string "threatmetrix_policy_score"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
