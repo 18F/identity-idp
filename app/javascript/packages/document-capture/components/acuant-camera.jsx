@@ -187,7 +187,7 @@ const getActualAcuantCameraUI = () => {
   if (window.AcuantCameraUI) {
     return window.AcuantCameraUI;
   }
-  if (AcuantCameraUI !== 'undefined') {
+  if (typeof AcuantCameraUI !== 'undefined') {
     return AcuantCameraUI;
   }
 };
