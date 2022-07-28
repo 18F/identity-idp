@@ -75,16 +75,18 @@ describe Api::Verify::DocumentCaptureController do
       it 'returns inprogress status when create is called' do
         agent = instance_double(Idv::Agent)
         allow(Idv::Agent).to receive(:new).with(
-          user_uuid: user.uuid,
-          uuid_prefix: nil,
-          document_arguments: {
-            'encryption_key' => encryption_key,
-            'front_image_iv' => front_image_iv,
-            'back_image_iv' => back_image_iv,
-            'selfie_image_iv' => selfie_image_iv,
-            'front_image_url' => front_image_url,
-            'back_image_url' => back_image_url,
-            'selfie_image_url' => selfie_image_url,
+          {
+            user_uuid: user.uuid,
+            uuid_prefix: nil,
+            document_arguments: {
+              'encryption_key' => encryption_key,
+              'front_image_iv' => front_image_iv,
+              'back_image_iv' => back_image_iv,
+              'selfie_image_iv' => selfie_image_iv,
+              'front_image_url' => front_image_url,
+              'back_image_url' => back_image_url,
+              'selfie_image_url' => selfie_image_url,
+            },
           },
         ).and_return(agent)
 

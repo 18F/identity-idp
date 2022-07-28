@@ -44,7 +44,7 @@ module Users
       if good_nickname
         user_session[:piv_cac_nickname] = params[:name]
         create_piv_cac_nonce
-        redirect_to piv_cac_service_url_with_redirect
+        redirect_to piv_cac_service_url_with_redirect, allow_other_host: true
       else
         flash[:error] = I18n.t('errors.piv_cac_setup.unique_name')
         render_prompt

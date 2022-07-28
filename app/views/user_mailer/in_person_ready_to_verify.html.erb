@@ -19,7 +19,6 @@
   <h2 class="margin-top-0 margin-bottom-2 font-heading-lg text-bold">
     <%= t('in_person_proofing.body.barcode.items_to_bring') %>
   </h2>
-  <p><%= t('in_person_proofing.body.barcode.emailed_info') %></p>
   <table class="process-list">
     <tr>
       <td><div class="process-list__circle">1</div></td>
@@ -48,7 +47,7 @@
     </tr>
     <% if @presenter.needs_proof_of_address? %>
       <tr>
-        <td><div class="process-list__circle">4</div></td>
+        <td><div class="process-list__circle">3</div></td>
         <td>
           <h3 class="font-heading-md text-bold"><%= t('in_person_proofing.process.proof_of_address.heading') %></h3>
           <p class="margin-bottom-105"><%= t('in_person_proofing.process.proof_of_address.info') %></p>

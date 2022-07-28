@@ -21,7 +21,10 @@ module SignUp
       if decider.go_back_to_mobile_app?
         sign_user_out_and_instruct_to_go_back_to_mobile_app
       else
-        redirect_to(sp_session_request_url_with_updated_params || account_url)
+        redirect_to(
+          sp_session_request_url_with_updated_params || account_url,
+          allow_other_host: true,
+        )
       end
     end
 

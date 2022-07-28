@@ -68,6 +68,7 @@ describe Users::WebauthnSetupController do
 
       before do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
 
@@ -86,21 +87,19 @@ describe Users::WebauthnSetupController do
           with('Multi-Factor Authentication Setup', result)
 
         expect(@analytics).to receive(:track_event).
-          with(
-            'Multi-Factor Authentication: Added webauthn',
+          with('Multi-Factor Authentication: Added webauthn', {
             enabled_mfa_methods_count: 3,
             method_name: :webauthn,
             platform_authenticator: false,
-          )
+          })
 
         expect(@analytics).to receive(:track_event).
-          with(
-            'User Registration: MFA Setup Complete',
+          with('User Registration: MFA Setup Complete', {
             enabled_mfa_methods_count: 3,
             mfa_method_counts: { auth_app: 1, phone: 1, webauthn: 1 },
             pii_like_keypaths: [[:mfa_method_counts, :phone]],
             success: true,
-          )
+          })
 
         patch :confirm, params: params
       end
@@ -172,6 +171,7 @@ describe Users::WebauthnSetupController do
       stub_analytics
       stub_sign_in(user)
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+      request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
     context ' Multiple MFA options turned on' do

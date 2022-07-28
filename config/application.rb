@@ -48,7 +48,9 @@ module Identity
       end
     end
 
-    config.load_defaults '6.1'
+    config.load_defaults '7.0'
+    # Delete after deploying once
+    config.active_support.cache_format_version = 6.1
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
@@ -77,12 +79,6 @@ module Identity
     GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
 
     config.time_zone = 'UTC'
-
-    # Generate CSRF tokens that are encoded in URL-safe Base64.
-    #
-    # This change is not backwards compatible with earlier Rails versions.
-    # It's best enabled when your entire app is migrated and stable on 6.1.
-    Rails.application.config.action_controller.urlsafe_csrf_tokens = false
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = %w[en es fr]

@@ -43,9 +43,9 @@ RSpec.describe ScriptHelper do
           'script[type="application/json"][data-asset-map]',
           visible: :all,
           text: {
-            'clock.svg' => '/clock.svg',
+            'clock.svg' => 'http://test.host/clock.svg',
             'identity-style-guide/dist/assets/img/sprite.svg' =>
-              '/identity-style-guide/dist/assets/img/sprite.svg',
+              'http://test.host/identity-style-guide/dist/assets/img/sprite.svg',
           }.to_json,
         )
       end

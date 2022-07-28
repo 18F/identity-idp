@@ -187,14 +187,12 @@ RSpec.describe UspsInPersonProofing::Proofer do
         enrollment_code: '123456789',
       )
 
-      expect(
-        -> do
-          subject.request_proofing_results(
-            applicant.unique_id,
-            applicant.enrollment_code,
-          )
-        end,
-      ).to raise_error(
+      expect do
+        subject.request_proofing_results(
+          applicant.unique_id,
+          applicant.enrollment_code,
+        )
+      end.to raise_error(
         an_instance_of(Faraday::BadRequestError).
         and(having_attributes(
           response: include(
