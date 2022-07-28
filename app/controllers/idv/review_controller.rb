@@ -90,7 +90,7 @@ module Idv
       idv_session.cache_encrypted_pii(password)
       idv_session.complete_session
 
-      if idv_session.phone_confirmed?
+      if idv_session.profile.active?
         event = create_user_event_with_disavowal(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
           user: current_user,
