@@ -14,6 +14,7 @@ RSpec.describe InheritedProofing::Va::Service do
   end
 
   let(:auth_code) {}
+  let(:key) { OpenSSL::PKey::RSA.new(2048) }
   let(:private_key) { private_key_from_store_or(file_name: 'va_ip.key') }
   let(:payload) { { inherited_proofing_auth: auth_code, exp: 1.day.from_now.to_i } }
   let(:jwt_token) { JWT.encode(payload, private_key, 'RS256') }
@@ -21,6 +22,8 @@ RSpec.describe InheritedProofing::Va::Service do
     "#{InheritedProofing::Va::Service::BASE_URI}/inherited_proofing/user_attributes"
   }
   let(:request_headers) { { Authorization: "Bearer #{jwt_token}" } }
+  let(:user_attributes) { "{ first_name: 'Steven', last_name: 'Universe' }" }
+  let(:encrypted_user_attributes) { JWE.encrypt(user_attributes, private_key, alg: 'RSA-OAEP', enc: 'A128CBC-HS256') }
 
   it { respond_to :execute }
 
@@ -35,9 +38,9 @@ RSpec.describe InheritedProofing::Va::Service do
       it 'makes an authenticated request' do
         stub = stub_request(:get, request_uri).
           with(headers: request_headers).
-          to_return(status: 200, body: '{}', headers: {})
+          to_return(status: 200, body: "", headers: {})
 
-        service.execute
+        pp service.execute
 
         expect(stub).to have_been_requested.once
       end
