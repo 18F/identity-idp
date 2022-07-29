@@ -92,6 +92,7 @@ es:
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula
+      success: Verificó correctamente su identidad con Login.gov
       update_address: Actualizar su dirección actual
       update_state_id: Actualizar la información de su cédula de identidad
     process:

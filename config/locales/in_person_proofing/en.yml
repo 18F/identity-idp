@@ -88,6 +88,7 @@ en:
       location: Select a location to verify your ID
       prepare: Verify your identity in person
       state_id: Enter the information on your ID
+      success: You successfully verified your identity with Login.gov
       update_address: Update your current address
       update_state_id: Update the information on your ID
     process:
