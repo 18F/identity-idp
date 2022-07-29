@@ -14,6 +14,7 @@ module UspsInPersonProofing
       # update the enrollment to status pending
       enrollment.enrollment_code = enrollment_code
       enrollment.status = :pending
+      enrollment.enrollment_established_at = Time.zone.now
       enrollment.save!
 
       send_ready_to_verify_email(user, pii, enrollment)
