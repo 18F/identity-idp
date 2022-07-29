@@ -71,22 +71,10 @@ module UspsInPersonProofing
         response['enrollmentCode']
       end
 
-      private
-
       def cancel_stale_establishing_enrollments_for_user(user)
-        # cancel any establishing enrollments that have profiles
         user.
           in_person_enrollments.
           where(status: :establishing).
-          where.not(profile: nil).
-          each(&:cancelled!)
-        # and all but the most recent without profiles
-        user.
-          in_person_enrollments.
-          where(status: :establishing).
-          where(profile: nil).
-          order(created_at: :desc).
-          drop(1).
           each(&:cancelled!)
       end
     end
