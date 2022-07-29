@@ -194,6 +194,9 @@ describe Users::ResetPasswordsController, devise: true do
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
 
+          security_event = PushNotification::PasswordResetEvent.new(user: user)
+          expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
           stub_user_mailer(user)
 
           password = 'a really long passw0rd'
@@ -235,6 +238,9 @@ describe Users::ResetPasswordsController, devise: true do
         )
         _profile = create(:profile, :active, :verified, user: user)
 
+        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
         stub_user_mailer(user)
 
         get :edit, params: { reset_password_token: raw_reset_token }
@@ -273,6 +279,9 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now,
         )
+
+        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
 
         stub_user_mailer(user)
 
