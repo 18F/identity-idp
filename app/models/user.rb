@@ -51,7 +51,7 @@ class User < ApplicationRecord
           dependent: :destroy
 
   has_one :establishing_in_person_enrollment,
-          -> { where(status: :establishing).order(created_at: :desc) },
+          -> { where(status: :establishing, profile: nil).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
 

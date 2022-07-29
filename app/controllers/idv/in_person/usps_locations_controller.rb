@@ -3,7 +3,6 @@ require 'json'
 module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
-      include IdvSession
       include UspsInPersonProofing
 
       # get the list of all pilot Post Office locations
@@ -18,17 +17,16 @@ module Idv
         render json: usps_response.to_json
       end
 
-      # save the Post Office location the user selected to the session
+      # save the Post Office location the user selected to an enrollment
       def update
-        idv_session.applicant ||= {}
-        idv_session.applicant[:selected_location_details] = permitted_params.as_json
+        enrollment.update!(selected_location_details: permitted_params.as_json)
 
         render json: { success: true }, status: :ok
       end
 
-      # return the Post Office location the user selected from the session
+      # return the Post Office location the user selected from the establishing enrollment
       def show
-        selected_location = idv_session.applicant&.[](:selected_location_details) || {}
+        selected_location = enrollment.selected_location_details
 
         # camel case keys
         returned_location = {}
@@ -40,6 +38,11 @@ module Idv
       end
 
       protected
+
+      def enrollment
+        UspsInPersonProofing::EnrollmentHelper.
+          establishing_in_person_enrollment_for_user(current_user)
+      end
 
       def permitted_params
         params.require(:usps_location).permit(
