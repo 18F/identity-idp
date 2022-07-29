@@ -36,7 +36,7 @@ feature 'Analytics Regression', js: true do
       'IdV: final resolution' => { success: true },
       'IdV: personal key visited' => {},
       'IdV: personal key submitted' => {},
-      'IdV: USPS address letter requested' => { requested_at: Time.zone.now },
+      'IdV: USPS address letter requested' => { enqueued_at: Time.zone.now },
     }
     {
       FSMv1: common_events.merge(
