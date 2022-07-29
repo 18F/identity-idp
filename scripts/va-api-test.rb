@@ -18,12 +18,10 @@ class VaApiTest
 
   def jwt_token
     payload = { inherited_proofing_auth: 'mocked-auth-code-for-testing', exp: 1.day.from_now.to_i }
-    binding.pry
     JWT.encode(payload, private_key, 'RS256')
   end
 
   def decrypt_payload(response)
-    binding.pry
     payload = JSON.parse(response.body)['data']
     JWE.decrypt(payload, private_key) if payload
   end
