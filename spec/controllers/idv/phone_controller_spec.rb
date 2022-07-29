@@ -389,17 +389,18 @@ describe Idv::PhoneController do
         end
 
         it 'tracks throttled event' do
-          put :create, params: { idv_phone_form: { phone: bad_phone } }
-
           stub_analytics
           allow(@analytics).to receive(:track_event)
 
           expect(@analytics).to receive(:track_event).with(
             'Throttler Rate Limit Triggered',
-            throttle_type: :proof_address,
-            step_name: a_kind_of(Symbol),
+            {
+              throttle_type: :proof_address,
+              step_name: :phone,
+            },
           )
 
+          put :create, params: { idv_phone_form: { phone: bad_phone } }
           get :new
         end
       end

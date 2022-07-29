@@ -17,6 +17,7 @@ RSpec.describe 'In Person Proofing', js: true do
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
+    sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
     # location page
@@ -107,12 +108,26 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
   end
 
+  it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps
+
+    click_link t('links.cancel')
+    click_on t('idv.cancel.actions.start_over')
+
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps
+  end
+
   context 'verify address by mail (GPO letter)' do
     before do
       allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
     end
 
     it 'requires address verification before showing instructions', allow_browser_log: true do
+      sign_in_and_2fa_user
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
@@ -134,6 +149,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'lets the user clear and start over from gpo confirmation', allow_browser_log: true do
+      sign_in_and_2fa_user
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
