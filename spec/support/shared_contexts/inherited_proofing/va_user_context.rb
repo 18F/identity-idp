@@ -1,12 +1,5 @@
-RSpec.shared_context 'inherited_proofing' do
-  let(:auth_code) {}
-  let(:private_key) { private_key_from_store_or(file_name: 'va_ip.key') }
-  let(:payload) { { inherited_proofing_auth: auth_code, exp: 1.day.from_now.to_i } }
-  let(:jwt_token) { JWT.encode(payload, private_key, 'RS256') }
-  let(:request_uri) {
-    "#{InheritedProofing::Va::Service::BASE_URI}/inherited_proofing/user_attributes"
-  }
-  let(:request_headers) { { Authorization: "Bearer #{jwt_token}" } }
+RSpec.shared_context 'va_user_context' do
+  # As given to us from VA
   let(:user_attributes) {
     { first_name: 'Fakey',
       last_name: 'Fakerson',
@@ -20,6 +13,7 @@ RSpec.shared_context 'inherited_proofing' do
       birth_date: '2022-1-31',
       ssn: '123456789' }
   }
+  # As given to us from VA
   let(:encrypted_user_attributes) {
     '{"data":"eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkExMjhHQ00ifQ.aE7sR9_LEg3fJsM6OGZovCn1HgNnmOb5j5oY_'\
     'KCW5Ps1nBtUKIstX5R6jUzoDz9S33SFJOz0co4Ni5P-n5Nz3poy4euG1VkfvBU5tgeOESQlRZAa1MaHltQ5cvCwzhgzxV'\
