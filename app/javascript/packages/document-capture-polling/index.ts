@@ -6,49 +6,49 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
   DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL,
 );
 
-/**
- * @typedef DocumentCapturePollingElements
- *
- * @prop {HTMLFormElement} form
- * @prop {HTMLAnchorElement} backLink
- */
+interface DocumentCapturePollingElements {
+  form: HTMLFormElement;
 
-/**
- * @typedef DocumentCapturePollingOptions
- *
- * @prop {string} statusEndpoint
- * @prop {DocumentCapturePollingElements} elements
- * @prop {typeof defaultTrackEvent=} trackEvent
- */
+  backLink: HTMLAnchorElement;
+}
 
-/**
- * @enum {number}
- */
-const StatusCodes = {
-  SUCCESS: 200,
-  GONE: 410,
-  TOO_MANY_REQUESTS: 429,
-};
+interface DocumentCapturePollingOptions {
+  statusEndpoint: string;
 
-/**
- * @enum {string}
- */
-const ResultType = {
-  SUCCESS: 'SUCCESS',
-  CANCELLED: 'CANCELLED',
-  THROTTLED: 'THROTTLED',
-};
+  elements: DocumentCapturePollingElements;
+
+  trackEvent?: typeof defaultTrackEvent;
+}
+
+enum StatusCodes {
+  SUCCESS = 200,
+  GONE = 410,
+  TOO_MANY_REQUESTS = 429,
+}
+
+enum ResultType {
+  SUCCESS = 'SUCCESS',
+  CANCELLED = 'CANCELLED',
+  THROTTLED = 'THROTTLED',
+}
 
 /**
  * Manages polling requests for document capture hybrid flow.
  */
 export class DocumentCapturePolling {
+  elements: DocumentCapturePollingElements;
+
+  statusEndpoint: string;
+
+  trackEvent: typeof defaultTrackEvent;
+
   pollAttempts = 0;
 
-  /**
-   * @param {DocumentCapturePollingOptions} options
-   */
-  constructor({ elements, statusEndpoint, trackEvent = defaultTrackEvent }) {
+  constructor({
+    elements,
+    statusEndpoint,
+    trackEvent = defaultTrackEvent,
+  }: DocumentCapturePollingOptions) {
     this.elements = elements;
     this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;
@@ -62,10 +62,7 @@ export class DocumentCapturePolling {
     this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
   }
 
-  /**
-   * @param {boolean} isVisible
-   */
-  toggleFormVisible(isVisible) {
+  toggleFormVisible(isVisible: boolean) {
     this.elements.form.classList.toggle('display-none', !isVisible);
   }
 
@@ -85,10 +82,10 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  /**
-   * @param {{ result?: ResultType, redirect?: string }} params
-   */
-  async onComplete({ result = ResultType.SUCCESS, redirect } = {}) {
+  async onComplete({
+    result = ResultType.SUCCESS,
+    redirect,
+  }: { result?: ResultType; redirect?: string } = {}) {
     await this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isThrottled: result === ResultType.THROTTLED,
