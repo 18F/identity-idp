@@ -143,6 +143,15 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_verified
+    UserMailer.in_person_verified(
+      user,
+      email_address_record,
+      first_name: 'Michael',
+      enrollment: verified_enrollment,
+    )
+  end
+
   private
 
   def user
@@ -178,6 +187,20 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def verified_enrollment 
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        status_updated_at: Time.zone.now,
+        status: 2,
+        selected_location_details: {
+          'name' => 'Baltimore',
+        }
+      )
+    )
+  end
+  
   # Remove #save and #save! to make sure we can't write these made-up records
   def unsaveable(record)
     class << record
