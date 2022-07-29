@@ -10,35 +10,6 @@ import AnalyticsContext from './analytics';
 declare let AcuantJavascriptWebSdk: AcuantJavascriptWebSdkInterface; // As of 11.7.0, this is now a global object that is not on the window object.
 declare let AcuantCamera: AcuantCameraInterface;
 
-/**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
- */
-interface AcuantConfig {
-  path: string;
-}
-
-interface AcuantCameraInterface {
-  isCameraSupported: boolean;
-}
-/**
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-L1353
- */
-type AcuantInitializeCode = 1 | 2 | 400 | 401 | 403;
-
-interface AcuantCallbackOptions {
-  onSuccess: () => void;
-  onFail: (code: AcuantInitializeCode, description: string) => void;
-}
-
-type AcuantInitialize = (
-  credentials: string | null,
-  endpoint: string | null,
-  callbackOptions?: AcuantCallbackOptions,
-) => void;
-
-type AcuantWorkersInitialize = (callback: () => void) => void;
-
 declare global {
   interface AcuantJavascriptWebSdkInterface {
     initialize: AcuantInitialize;
@@ -47,14 +18,6 @@ declare global {
     REPEAT_FAIL_CODE: string;
     SEQUENCE_BREAK_CODE: string;
   }
-}
-
-/**
- * Start liveness capture
- */
-type AcuantStartSelfieCapture = (callback: (nextImageData: string) => void) => void;
-interface AcuantPassiveLivenessInterface {
-  startSelfieCapture: AcuantStartSelfieCapture;
 }
 
 declare global {
@@ -80,6 +43,51 @@ declare global {
      */
     AcuantCamera: AcuantCameraInterface;
   }
+}
+
+/**
+ * Some of the other modules still refer to
+ * AcuantGlobal, which should be equivalent to the
+ * Window
+ */
+type AcuantGlobal = Window;
+
+/**
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1049
+ */
+interface AcuantConfig {
+  path: string;
+}
+
+interface AcuantCameraInterface {
+  isCameraSupported: boolean;
+}
+
+/**
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-L1353
+ */
+type AcuantInitializeCode = 1 | 2 | 400 | 401 | 403;
+
+interface AcuantCallbackOptions {
+  onSuccess: () => void;
+  onFail: (code: AcuantInitializeCode, description: string) => void;
+}
+
+type AcuantInitialize = (
+  credentials: string | null,
+  endpoint: string | null,
+  callbackOptions?: AcuantCallbackOptions,
+) => void;
+
+type AcuantWorkersInitialize = (callback: () => void) => void;
+
+/**
+ * Start liveness capture
+ */
+type AcuantStartSelfieCapture = (callback: (nextImageData: string) => void) => void;
+interface AcuantPassiveLivenessInterface {
+  startSelfieCapture: AcuantStartSelfieCapture;
 }
 
 interface AcuantContextProviderProps {
@@ -165,13 +173,15 @@ AcuantContext.displayName = 'AcuantContext';
  * sets the object in the global (but non-window)
  * scope.
  */
-const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface | void => {
+const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface => {
   if (window.AcuantJavascriptWebSdk) {
     return window.AcuantJavascriptWebSdk;
   }
-  if (typeof AcuantJavascriptWebSdk !== 'undefined') {
-    return AcuantJavascriptWebSdk;
+  if (typeof AcuantJavascriptWebSdk === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.error('AcuantJavascriptWebSdk is not defined in the global scope');
   }
+  return AcuantJavascriptWebSdk;
 };
 
 /**
@@ -183,13 +193,15 @@ const getActualAcuantJavascriptWebSdk = (): AcuantJavascriptWebSdkInterface | vo
  * sets the object in the global (but non-window)
  * scope.
  */
-const getActualAcuantCamera = (): AcuantCameraInterface | void => {
+const getActualAcuantCamera = (): AcuantCameraInterface => {
   if (window.AcuantCamera) {
     return window.AcuantCamera;
   }
-  if (typeof AcuantCamera !== 'undefined') {
-    return AcuantCamera;
+  if (typeof AcuantCamera === 'undefined') {
+    // eslint-disable-next-line no-console
+    console.error('AcuantCamera is not defined in the global scope');
   }
+  return AcuantCamera;
 };
 
 function AcuantContextProvider({
@@ -299,5 +311,5 @@ function AcuantContextProvider({
 }
 
 export const Provider = AcuantContextProvider;
-
 export default AcuantContext;
+export type { AcuantGlobal };
