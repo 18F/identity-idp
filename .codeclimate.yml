@@ -62,4 +62,3 @@ exclude_patterns:
   - 'config/initializers/jwt.rb'
   - 'spec/'
   - 'public/acuant/'
-  - 'public/fr/acuant/'
