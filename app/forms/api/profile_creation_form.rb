@@ -57,7 +57,7 @@ module Api
         create_gpo_entry
       elsif phone_confirmed?
         if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
+          UspsInPersonProofing::EnrollmentHelper.new.schedule_in_person_enrollment(
             user,
             profile,
             session[:pii],
