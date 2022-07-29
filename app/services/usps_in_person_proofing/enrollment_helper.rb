@@ -35,6 +35,14 @@ module UspsInPersonProofing
         end
       end
 
+      def establishing_in_person_enrollment_for_user(user)
+        cancel_stale_establishing_enrollments_for_user(user)
+        enrollment = user.establishing_in_person_enrollment
+        return enrollment if enrollment.present?
+
+        InPersonEnrollment.create!(user: user)
+      end
+
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
@@ -61,6 +69,25 @@ module UspsInPersonProofing
 
         response = proofer.request_enroll(applicant)
         response['enrollmentCode']
+      end
+
+      private
+
+      def cancel_stale_establishing_enrollments_for_user(user)
+        # cancel any establishing enrollments that have profiles
+        user.
+          in_person_enrollments.
+          where(status: :establishing).
+          where.not(profile: nil).
+          each(&:cancelled!)
+        # and all but the most recent without profiles
+        user.
+          in_person_enrollments.
+          where(status: :establishing).
+          where(profile: nil).
+          order(created_at: :desc).
+          drop(1).
+          each(&:cancelled!)
       end
     end
   end
