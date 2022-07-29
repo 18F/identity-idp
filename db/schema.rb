@@ -453,6 +453,7 @@ ActiveRecord::Schema.define(version: 2022_07_27_112113) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "liveness_check"
+    t.string "device_fingerprinting_vendor"
     t.boolean "threatmetrix"
     t.string "threatmetrix_review_status"
     t.string "threatmetrix_risk_rating"
