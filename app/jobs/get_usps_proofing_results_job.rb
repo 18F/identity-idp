@@ -143,6 +143,8 @@ class GetUspsProofingResultsJob < ApplicationJob
         enrollment.profile.activate
         enrollment.update(status: :passed)
         handle_successful_status_update(enrollment)
+        # move this somewhere it will trigger to test
+        send_verified_email(user, enrollment)
       else
         # Unsupported ID type
         enrollment.update(status: :failed)
