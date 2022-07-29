@@ -99,15 +99,14 @@ RSpec.describe Api::ProfileCreationForm do
           end
 
           it 'saves in person enrollment' do
-            enrollment_helper = instance_double(UspsInPersonProofing::EnrollmentHelper)
-            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:new).
-              and_return(enrollment_helper)
-            expect(enrollment_helper).to receive(:schedule_in_person_enrollment).with(
-              user,
-              kind_of(Profile),
-              Pii::Attributes.new_from_hash(pii),
-              selected_location_details,
-            )
+            expect(UspsInPersonProofing::EnrollmentHelper).
+              to receive(:schedule_in_person_enrollment).
+              with(
+                user,
+                kind_of(Profile),
+                Pii::Attributes.new_from_hash(pii),
+                selected_location_details,
+              )
 
             subject.submit
           end

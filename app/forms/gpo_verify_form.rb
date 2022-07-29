@@ -19,7 +19,7 @@ class GpoVerifyForm
     result = valid?
     if result
       if pending_in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.new.schedule_in_person_enrollment(
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user,
           pending_profile,
           pii,
