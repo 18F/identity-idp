@@ -4,6 +4,7 @@ module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
       include UspsInPersonProofing
+      include EffectiveUser
 
       # get the list of all pilot Post Office locations
       def index
@@ -28,7 +29,7 @@ module Idv
 
       def enrollment
         UspsInPersonProofing::EnrollmentHelper.
-          establishing_in_person_enrollment_for_user(current_user)
+          establishing_in_person_enrollment_for_user(effective_user)
       end
 
       def permitted_params
