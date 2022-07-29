@@ -24,7 +24,8 @@ module Users
     def confirm
       result = totp_setup_form.submit
 
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
 
       if result.success?
         process_valid_code
@@ -97,7 +98,7 @@ module Users
       analytics.multi_factor_auth_added_totp(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app')
+      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics)
     end
 
     def process_successful_disable
@@ -139,6 +140,10 @@ module Users
 
     def current_auth_app_count
       current_user.auth_app_configurations.count
+    end
+
+    def analytics_properties
+      { in_mfa_selection: in_multi_mfa_selection_flow? }
     end
   end
 end

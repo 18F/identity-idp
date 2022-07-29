@@ -29,6 +29,7 @@ module Users
 
     def continue
       flash[:success] = t('notices.backup_codes_configured')
+      analytics.multi_factor_auth_setup(analytics_properties)
       redirect_to next_setup_path || after_mfa_setup_path
     end
 
@@ -54,7 +55,7 @@ module Users
       analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes')
+      Funnel::Registration::AddMfa.call(current_user.id, 'backup_codes', analytics)
     end
 
     def mfa_user
@@ -110,6 +111,15 @@ module Users
     def authorize_backup_code_disable
       return if MfaPolicy.new(current_user).multiple_non_restricted_factors_enabled?
       redirect_to account_two_factor_authentication_path
+    end
+
+    def analytics_properties
+      {
+        success: true,
+        multi_factor_auth_method: 'backup_codes',
+        in_mfa_selection: in_multi_mfa_selection_flow?,
+        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      }
     end
   end
 end

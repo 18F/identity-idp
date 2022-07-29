@@ -84,7 +84,8 @@ module Users
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
       if result.success?
         process_valid_submission
       else
@@ -121,7 +122,7 @@ module Users
       analytics.multi_factor_auth_added_piv_cac(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac')
+      Funnel::Registration::AddMfa.call(current_user.id, 'piv_cac', analytics)
     end
 
     def piv_cac_enabled?
@@ -148,6 +149,13 @@ module Users
     def good_nickname
       name = params[:name]
       name.present? && !PivCacConfiguration.exists?(user_id: current_user.id, name: name)
+    end
+
+    def analytics_properties
+      {
+        in_mfa_selection: in_multi_mfa_selection_flow?,
+        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+      }
     end
 
     def cap_piv_cac_count
