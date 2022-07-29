@@ -1,12 +1,14 @@
 module UspsInPersonProofing
   class EnrollmentHelper
-    def save_in_person_enrollment(user, profile, pii, selected_location_details = nil)
-      enrollment = InPersonEnrollment.create!(
-        profile: profile,
-        user: user,
-        current_address_matches_id: pii['same_address_as_id'],
-        selected_location_details: selected_location_details,
-      )
+    def schedule_in_person_enrollment(user, profile, pii, selected_location_details = nil)
+      enrollment = user.establishing_in_person_enrollment || InPersonEnrollment.create!(user: user)
+
+      enrollment.profile = profile
+      enrollment.current_address_matches_id = pii['same_address_as_id']
+      if enrollment.selected_location_details.blank?
+        enrollment.selected_location_details = selected_location_details
+      end
+      enrollment.save!
 
       enrollment_code = create_usps_enrollment(enrollment, pii)
       return unless enrollment_code
