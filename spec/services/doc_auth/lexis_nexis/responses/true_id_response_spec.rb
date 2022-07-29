@@ -170,7 +170,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         layout_valid: { no_side: 'Passed' },
         sex_crosscheck: { no_side: 'Passed' },
         visible_color_response: { no_side: 'Passed' },
-        visible_pattern: { no_side: 'Failed' },
+        visible_pattern: { no_side: 'Passed, Failed' },
         visible_photo_characteristics: { no_side: 'Passed' },
         '1d_control_number_valid': { no_side: 'Failed' },
         '2d_barcode_content': { no_side: 'Failed' },
@@ -185,10 +185,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
 
-    it 'returns log_alert_results, visible_pattern as false when alerts has it as true and false' do
+    it 'returns all of the alerts for log_alert_results, comma delimited' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       expect(output.to_h[:log_alert_results]).
-        to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
+        to match(a_hash_including(visible_pattern: { no_side: 'Passed, Failed' }))
     end
 
     it 'produces appropriate errors with liveness' do
@@ -210,7 +210,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         layout_valid: { no_side: 'Passed' },
         sex_crosscheck: { no_side: 'Passed' },
         visible_color_response: { no_side: 'Passed' },
-        visible_pattern: { no_side: 'Failed' },
+        visible_pattern: { no_side: 'Passed, Failed' },
         visible_photo_characteristics: { no_side: 'Passed' },
         '1d_control_number_valid': { no_side: 'Failed' },
         '2d_barcode_content': { no_side: 'Failed' },

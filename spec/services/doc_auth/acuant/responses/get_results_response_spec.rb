@@ -162,20 +162,16 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.result_code.billed?).to eq(false)
     end
 
-    context 'when visiual_pattern fails and passes' do
+    context 'when visiual_pattern fails with multiple results' do
       let(:http_response) do
-        parsed_response_body['Alerts'] << {
-          Key: 'Visible Pattern',
-          Name: 'Visible Pattern',
-          RegionReferences: [],
-          Result: 2,
-        }
-        parsed_response_body['Alerts'] << {
-          Key: 'Visible Pattern',
-          Name: 'Visible Pattern',
-          RegionReferences: [],
-          Result: 1,
-        }
+        [1, 2, 3, 4].each do |index|
+          parsed_response_body['Alerts'] << {
+            Key: 'Visible Pattern',
+            Name: 'Visible Pattern',
+            RegionReferences: [],
+            Result: index,
+          }
+        end
 
         instance_double(
           Faraday::Response,
@@ -183,18 +179,22 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         )
       end
 
-      it 'returns log_alert_results for visible_pattern as false' do
+      it 'returns log_alert_results for visible_pattern with multiple results comma separated' do
         expect(response.to_h[:processed_alerts]).to eq(
           passed: [{ name: 'Visible Pattern', result: 'Passed' }],
           failed:
             [{ name: 'Document Classification',
                result: 'Failed' },
              { name: 'Visible Pattern',
-               result: 'Failed' }],
+               result: 'Failed' },
+             { name: 'Visible Pattern',
+               result: 'Skipped' },
+             { name: 'Visible Pattern',
+               result: 'Caution' }],
         )
 
         expect(response.to_h[:log_alert_results]).to eq(
-          { visible_pattern: { no_side: 'Failed' },
+          { visible_pattern: { no_side: 'Passed, Failed, Skipped, Caution' },
             document_classification: { no_side: 'Failed' } },
         )
       end

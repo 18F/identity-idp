@@ -95,6 +95,14 @@ module DocAuth
           @processed_alerts ||= process_raw_alerts(raw_alerts)
         end
 
+        def get_alert_result(log_alert_results, side, alert_name_key, result)
+          if log_alert_results.dig(alert_name_key, side.to_sym).present?
+            log_alert_results[alert_name_key][side.to_sym] + ", #{result}"
+          else
+            result
+          end
+        end
+
         def log_alerts(alerts)
           log_alert_results = {}
           has_failed = {}
@@ -103,13 +111,18 @@ module DocAuth
             alerts[key.to_sym].each do |alert|
               alert_name_key = alert[:name].
                 downcase.
-                parameterize(separator: '_')
+                parameterize(separator: '_').to_sym
               side = alert[:side] || 'no_side'
-              unless has_failed[alert_name_key.to_sym]
-                log_alert_results[alert_name_key.to_sym] =
-                  { "#{side}": alert[:result] }
-              end
-              has_failed[alert_name_key.to_sym] = !(key == :passed)
+
+              log_alert_results[alert_name_key] =
+                { "#{side}": get_alert_result(
+                  log_alert_results,
+                  side,
+                  alert_name_key,
+                  alert[:result],
+                  ).
+                    split(', ').uniq.join(', ') }
+              has_failed[alert_name_key] = !(key == :passed)
             end
           end
           log_alert_results
