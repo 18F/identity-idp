@@ -105,6 +105,16 @@ en:
       intro: Here are the details to verify your identity in person at a United States
         Post Office near you.
       subject: You’re ready to verify your identity with %{app_name} in person
+    in_person_verified:
+      greeting: Hi %{name},
+      intro: You successfully verified your identity at the %{location} Post Office on %{date}.
+      link: http://www.secure.login.gov/verify
+      next_sign_in: Next, click the button or copy the link below to sign in to Login.gov.
+      sign_in: Sign in
+      subject: You successfully verified your identity with Login.gov
+      warning_contact_us_html: If you did not attempt to verify your identity in person, 
+        please <a href="%{contact_us}">contact us</a> and <a href="%{sign_in}">sign in</a> to 
+        change your password.
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity

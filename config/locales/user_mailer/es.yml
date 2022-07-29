@@ -111,6 +111,17 @@ es:
       intro: Estos son los detalles para verificar su identidad en persona en una
         oficina de correos de los Estados Unidos cercana a usted.
       subject: Está listo para verificar su identidad con %{app_name} en persona
+    in_person_verified:
+      greeting: 'Hola, %{name}:'
+      intro: El %{date}, verificó correctamente su identidad en la oficina de correos de %{location}.
+      link: http://www.secure.login.gov/verify
+      next_sign_in: Luego, haga clic en el botón o copie el enlace que aparece a continuación para
+       iniciar sesión en Login.gov.
+      sign_in: Iniciar sesión
+      subject: Verificó correctamente su identidad con Login.gov
+      warning_contact_us_html: Si usted no intentó verificar su identidad en persona, por favor, 
+        póngase en <a href="%{contact_us}">contacto con nosotros</a> e 
+        <a href="%{sign_in}">inicie sesión</a> para cambiar su contraseña.
     letter_reminder:
       info_html: La carta que está a punto de recibir contendrá un código de
         confirmación que nos ayudará a verificar su dirección. Puede completar
