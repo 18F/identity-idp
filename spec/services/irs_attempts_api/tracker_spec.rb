@@ -5,13 +5,29 @@ RSpec.describe IrsAttemptsApi::Tracker do
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(
       irs_attempt_api_enabled,
     )
+    allow(request).to receive(:headers).and_return(
+      "User-Agent" => 'bananas/1.0',
+      "Referer" => 'google.com',
+    )
+    allow(request).to receive(:remote_ip).and_return('192.0.2.1')
   end
 
   let(:irs_attempt_api_enabled) { true }
   let(:session_id) { 'test-session-id' }
   let(:enabled_for_session) { true }
+  let(:request) { instance_double(ActionDispatch::Request) }
+  let(:service_provider) { build(:service_provider) }
+  let(:user) { build(:user) }
 
-  subject { described_class.new(session_id: session_id, enabled_for_session: enabled_for_session) }
+  subject do
+    described_class.new(
+      session_id: session_id,
+      request: request,
+      user: user,
+      sp: service_provider,
+      enabled_for_session: enabled_for_session,
+    )
+  end
 
   describe '#track_event' do
     it 'records the event in redis' do
