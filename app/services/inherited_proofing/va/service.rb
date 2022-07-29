@@ -72,7 +72,6 @@ module InheritedProofing
       end
 
       def decrypt_payload(response)
-        binding.pry
         payload = JSON.parse(response.body)['data']
         JWE.decrypt(payload, private_key) if payload
       end
