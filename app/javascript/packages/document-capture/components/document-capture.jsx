@@ -8,6 +8,7 @@ import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
 import InPersonPrepareStep from './in-person-prepare-step';
 import InPersonLocationStep from './in-person-location-step';
+import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
@@ -109,7 +110,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
             name: 'prepare',
             form: InPersonPrepareStep,
           },
-        ];
+          flowPath === 'hybrid' && {
+            name: 'switch_back',
+            form: InPersonSwitchBackStep,
+          },
+        ].filter(Boolean);
 
   /** @type {FormStep[]} */
   const steps = submissionError
