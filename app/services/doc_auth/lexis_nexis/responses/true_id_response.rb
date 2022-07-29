@@ -132,7 +132,6 @@ module DocAuth
 
         def log_alerts(alerts)
           log_alert_results = {}
-          has_failed = {}
 
           alerts.keys.each do |key|
             alerts[key.to_sym].each do |alert|
@@ -149,7 +148,6 @@ module DocAuth
                   alert[:result],
                 ).
                 split(', ').uniq.join(', ') }
-              has_failed[alert_name_key] = !(key == :passed)
             end
           end
           log_alert_results
