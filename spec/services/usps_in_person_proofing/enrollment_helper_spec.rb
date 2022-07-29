@@ -9,7 +9,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
       merge(same_address_as_id: current_address_matches_id).
       transform_keys(&:to_s)
   end
-  let(:subject) { described_class.new }
+  let(:subject) { described_class }
 
   describe '#schedule_in_person_enrollment' do
     context 'no establishing enrollment record exists for the user' do

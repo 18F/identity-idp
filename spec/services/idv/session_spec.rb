@@ -80,15 +80,14 @@ describe Idv::Session do
         end
 
         it 'creates a USPS enrollment' do
-          enrollment_helper = instance_double(UspsInPersonProofing::EnrollmentHelper)
-          allow(UspsInPersonProofing::EnrollmentHelper).to receive(:new).
-            and_return(enrollment_helper)
-          expect(enrollment_helper).to receive(:schedule_in_person_enrollment).with(
-            user,
-            kind_of(Profile),
-            subject.applicant.transform_keys(&:to_s),
-            selected_location_details,
-          )
+          expect(UspsInPersonProofing::EnrollmentHelper).
+            to receive(:schedule_in_person_enrollment).
+            with(
+              user,
+              kind_of(Profile),
+              subject.applicant.transform_keys(&:to_s),
+              selected_location_details,
+            )
 
           subject.complete_session
         end

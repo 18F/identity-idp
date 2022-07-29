@@ -1,64 +1,67 @@
 module UspsInPersonProofing
   class EnrollmentHelper
-    def schedule_in_person_enrollment(user, profile, pii, selected_location_details = nil)
-      enrollment = user.establishing_in_person_enrollment || InPersonEnrollment.create!(user: user)
+    class << self
+      def schedule_in_person_enrollment(user, profile, pii, selected_location_details = nil)
+        enrollment = user.establishing_in_person_enrollment ||
+                     InPersonEnrollment.create!(user: user)
 
-      enrollment.profile = profile
-      enrollment.current_address_matches_id = pii['same_address_as_id']
-      if enrollment.selected_location_details.blank?
-        enrollment.selected_location_details = selected_location_details
+        enrollment.profile = profile
+        enrollment.current_address_matches_id = pii['same_address_as_id']
+        if enrollment.selected_location_details.blank?
+          enrollment.selected_location_details = selected_location_details
+        end
+        enrollment.save!
+
+        enrollment_code = create_usps_enrollment(enrollment, pii)
+        return unless enrollment_code
+
+        # update the enrollment to status pending
+        enrollment.enrollment_code = enrollment_code
+        enrollment.status = :pending
+        enrollment.enrollment_established_at = Time.zone.now
+        enrollment.save!
+
+        send_ready_to_verify_email(user, pii, enrollment)
       end
-      enrollment.save!
 
-      enrollment_code = create_usps_enrollment(enrollment, pii)
-      return unless enrollment_code
-
-      # update the enrollment to status pending
-      enrollment.enrollment_code = enrollment_code
-      enrollment.status = :pending
-      enrollment.enrollment_established_at = Time.zone.now
-      enrollment.save!
-
-      send_ready_to_verify_email(user, pii, enrollment)
-    end
-
-    def send_ready_to_verify_email(user, pii, enrollment)
-      user.confirmed_email_addresses.each do |email_address|
-        UserMailer.in_person_ready_to_verify(
-          user,
-          email_address,
-          first_name: pii['first_name'],
-          enrollment: enrollment,
-        ).deliver_now_or_later
+      def send_ready_to_verify_email(user, pii, enrollment)
+        user.confirmed_email_addresses.each do |email_address|
+          UserMailer.in_person_ready_to_verify(
+            user,
+            email_address,
+            first_name: pii['first_name'],
+            enrollment: enrollment,
+          ).deliver_now_or_later
+        end
       end
-    end
 
-    def usps_proofer
-      if IdentityConfig.store.usps_mock_fallback
-        UspsInPersonProofing::Mock::Proofer.new
-      else
-        UspsInPersonProofing::Proofer.new
+      def usps_proofer
+        if IdentityConfig.store.usps_mock_fallback
+          UspsInPersonProofing::Mock::Proofer.new
+        else
+          UspsInPersonProofing::Proofer.new
+        end
       end
-    end
 
-    def create_usps_enrollment(enrollment, pii)
-      applicant = UspsInPersonProofing::Applicant.new(
-        {
-          unique_id: enrollment.usps_unique_id,
-          first_name: pii['first_name'],
-          last_name: pii['last_name'],
-          address: pii['address1'],
-          # do we need address2?
-          city: pii['city'],
-          state: pii['state'],
-          zip_code: pii['zipcode'],
-          email: 'no-reply@login.gov',
-        },
-      )
-      proofer = usps_proofer
+      def create_usps_enrollment(enrollment, pii)
+        applicant = UspsInPersonProofing::Applicant.new(
+          {
+            unique_id: enrollment.usps_unique_id,
+            first_name: pii['first_name'],
+            last_name: pii['last_name'],
+            address: pii['address1'],
+            # do we need address2?
+            city: pii['city'],
+            state: pii['state'],
+            zip_code: pii['zipcode'],
+            email: 'no-reply@login.gov',
+          },
+        )
+        proofer = usps_proofer
 
-      response = proofer.request_enroll(applicant)
-      response['enrollmentCode']
+        response = proofer.request_enroll(applicant)
+        response['enrollmentCode']
+      end
     end
   end
 end

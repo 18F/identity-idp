@@ -87,7 +87,7 @@ module Idv
         create_gpo_entry
       elsif phone_confirmed?
         if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.new.schedule_in_person_enrollment(
+          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
             current_user,
             profile,
             applicant,
