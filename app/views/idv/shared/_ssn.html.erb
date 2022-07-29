@@ -5,6 +5,7 @@ locals:
 * success_alert_enabled: whether or not to display a "We've successfully verified your ID" success alert
 * updating_ssn: true if the user is updating their SSN instead of providing it for the first time. This
                 will render a different page heading and different navigation buttons in the page footer
+* flow: Current flow; used to go to the previous state in the correct flow with "Back" link
 %>
 <% title t('titles.doc_auth.ssn') %>
 
@@ -60,7 +61,7 @@ locals:
 <% end %>
 
 <% if updating_ssn %>
-  <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
+  <%= render 'idv/shared/back', flow: flow, action: 'cancel_update_ssn' %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
 <% end %>

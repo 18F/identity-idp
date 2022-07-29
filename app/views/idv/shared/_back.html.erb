@@ -5,13 +5,16 @@ path can be passed in case the HTTP header is not specified or is invalid. If no
 yield a useable URL, nothing will be rendered.
 
 locals:
+* flow: (Optional, but required with step/action) Name of the flow for the action/step
 * action: (Optional) Flow action to call to return to the previous step.
 * step: (Optional) Name of step to which user should be returned.
 * fallback_path: (Optional) Path to redirect absent action, step, and HTTP referer.
 %>
 <% text = '‹ ' + t('forms.buttons.back')
+   flow = local_assigns[:flow]
    step = local_assigns[:action] || local_assigns[:step]
-   path = step ? idv_doc_auth_step_path(step: step) : go_back_path
+  #  path = step ? idv_doc_auth_step_path(step: step) : go_back_path
+   path = (flow && step) ? method(:"idv_#{flow}_step_path").call(step: step) : go_back_path
    path ||= local_assigns[:fallback_path]
    classes = []
    classes << local_assigns[:class] if local_assigns[:class] %>

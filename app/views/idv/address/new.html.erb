@@ -69,5 +69,5 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/back', step: 'verify' %>
+<%= render 'idv/shared/back', flow: :doc_auth, step: 'verify' %>
 <%= javascript_packs_tag_once('formatted-fields') %>
