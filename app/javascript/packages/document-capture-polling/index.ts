@@ -82,10 +82,7 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  async onComplete({
-    result = ResultType.SUCCESS,
-    redirect,
-  }: { result?: ResultType; redirect?: string } = {}) {
+  async onComplete({ result, redirect }: { result: ResultType; redirect?: string }) {
     await this.trackEvent('IdV: Link sent capture doc polling complete', {
       isCancelled: result === ResultType.CANCELLED,
       isThrottled: result === ResultType.THROTTLED,
@@ -109,10 +106,11 @@ export class DocumentCapturePolling {
 
   async poll() {
     const response = await window.fetch(this.statusEndpoint);
+    const { redirect } = (await response.json()) as { redirect?: string };
 
     switch (response.status) {
       case StatusCodes.SUCCESS:
-        this.onComplete();
+        this.onComplete({ result: ResultType.SUCCESS, redirect });
         break;
 
       case StatusCodes.GONE:
@@ -120,7 +118,6 @@ export class DocumentCapturePolling {
         break;
 
       case StatusCodes.TOO_MANY_REQUESTS: {
-        const { redirect } = await response.json();
         this.onComplete({ result: ResultType.THROTTLED, redirect });
         break;
       }
