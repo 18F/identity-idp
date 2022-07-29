@@ -32,6 +32,11 @@
   line-height: 10px;
 }
 
+.s16 {
+  font-size: 16px;
+  line-height: 24px;
+}
+
 .s30 {
   font-size: 30px;
   line-height: 30px;
@@ -45,6 +50,16 @@
 h4 {
   font-weight: bold;
   margin-bottom: 16px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.button.big table a {
+  padding: 16px 20px;
+  font-size: 20px;
+  border-radius: 8px;
 }
 
 .button.large.expanded table a {
