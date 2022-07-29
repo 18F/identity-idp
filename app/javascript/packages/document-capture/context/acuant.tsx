@@ -126,9 +126,7 @@ export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
 /**
  * Returns the containing directory of the given file, including a trailing slash.
  */
-export const dirname = (file: string): string => {
-  return file.split('/').slice(0, -1).concat('').join('/');
-};
+export const dirname = (file: string): string => file.split('/').slice(0, -1).concat('').join('/');
 
 interface AcuantContextInterface {
   isReady: boolean;

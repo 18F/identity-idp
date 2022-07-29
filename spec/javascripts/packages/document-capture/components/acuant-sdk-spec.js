@@ -4,27 +4,22 @@
  */
 import { JSDOM } from 'jsdom';
 import AcuantJavascriptWebSdk from '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js';
-import fs from 'fs';
-import path from 'path';
 
 const sdkPaths = {
   '11.7.0': '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js',
 };
 
-const scriptContent = fs
-  .readFileSync(
-    path.resolve(__dirname, '../../../../../public/acuant/11.7.0/AcuantJavascriptWebSdk.min.js'),
-  )
-  .toString();
-
 const TEST_URL = `file://${__dirname}/index.html`;
 
-let window = new JSDOM('<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>', {
-  url: TEST_URL,
-  runScripts: 'dangerously',
-  resources: 'usable',
-}).window;
-let document = window.document;
+const { window } = new JSDOM(
+  '<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>',
+  {
+    url: TEST_URL,
+    runScripts: 'dangerously',
+    resources: 'usable',
+  },
+);
+const { document } = window;
 
 describe('Acuant SDK Loading Tests', () => {
   it('Can load something from the SDK file', () => {
@@ -32,7 +27,7 @@ describe('Acuant SDK Loading Tests', () => {
   });
   describe('DOM Loading 11.7.0', () => {
     before((done) => {
-      let scriptEl = document.createElement('script');
+      const scriptEl = document.createElement('script');
       scriptEl.id = 'test-acuant-sdk-script';
       scriptEl.onload = () => {
         done();
@@ -41,7 +36,7 @@ describe('Acuant SDK Loading Tests', () => {
       document.body.append(scriptEl);
     });
     it('There is a script element in the DOM', () => {
-      let found = document.getElementById('test-acuant-sdk-script');
+      const found = document.getElementById('test-acuant-sdk-script');
       expect(found).to.exist();
     });
     it('Has a global loadAcuantSdk object on the window', () => {

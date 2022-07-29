@@ -188,6 +188,7 @@ const getActualAcuantCameraUI = () => {
     return window.AcuantCameraUI;
   }
   if (typeof AcuantCameraUI !== 'undefined') {
+    // eslint-disable-next-line no-undef
     return AcuantCameraUI;
   }
 };
