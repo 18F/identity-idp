@@ -36,6 +36,10 @@ module IdvStepHelper
     enter_gpo_flow
   end
 
+  def gpo_step
+    click_on t('idv.buttons.mail.send')
+  end
+
   def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok('2342255432')
@@ -88,7 +92,7 @@ module IdvStepHelper
       visit idv_app_path(step: :password_confirm)
     else
       complete_idv_steps_before_gpo_step(user)
-      click_on t('idv.buttons.mail.send')
+      gpo_step
     end
   end
 

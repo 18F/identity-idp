@@ -140,7 +140,7 @@ feature 'Analytics Regression', js: true do
           complete_ssn_step
           complete_verify_step
           enter_gpo_flow
-          click_on t('idv.buttons.mail.send')
+          gpo_step
         end
 
         it 'records all of the events' do
