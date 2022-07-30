@@ -637,7 +637,10 @@ module AnalyticsEvents
 
   # GPO address letter requested
   def idv_gpo_address_letter_requested(enqueued_at:)
-    track_event('IdV: USPS address letter requested')
+    track_event(
+      'IdV: USPS address letter requested',
+      enqueued_at: enqueued_at
+    )
   end
 
   # @param [Boolean] success
