@@ -245,6 +245,7 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)).to include('redirect' => idv_in_person_url)
       end
     end
   end
