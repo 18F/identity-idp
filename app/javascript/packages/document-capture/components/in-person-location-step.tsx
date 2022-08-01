@@ -75,7 +75,7 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep() {
+function InPersonLocationStep({ onChange }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [inProgress, setInProgress] = useState(false);
@@ -95,6 +95,7 @@ function InPersonLocationStep() {
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
     async (e: any, id: number) => {
+      onChange({ selectedLocationName: locationData[id].name });
       if (autoSubmit) {
         return;
       }

@@ -93,18 +93,5 @@ describe Idv::InPerson::UspsLocationsController do
         end
       end
     end
-
-    describe '#show' do
-      it 'loads the saved location from session' do
-        put :update, params: selected_location
-
-        response = get :show
-        body = JSON.parse(response.body)
-        selected_location[:usps_location].keys.each do |key|
-          expect(body[key.to_s.camelize(:lower)]).
-            to eq(selected_location[:usps_location][key])
-        end
-      end
-    end
   end
 end
