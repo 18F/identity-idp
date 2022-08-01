@@ -119,9 +119,9 @@ fr:
       intro: Vous avez vérifié avec succès votre identité au bureau de poste de
         %{location} le %{date}.
       next_sign_in: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
-        vous connecter à Login.gov.
+        vous connecter à %{app_name}.
       sign_in: Se connecter
-      subject: Vous avez vérifié avec succès votre identité avec Login.gov
+      subject: Vous avez vérifié avec succès votre identité avec %{app_name}
       warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en
         personne, veuillez <a href="%{contact_us_url}">nous contacter</a> et
         vous <a href="%{sign_in_url}">connecter</a> pour changer votre mot de

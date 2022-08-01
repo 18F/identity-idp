@@ -96,7 +96,6 @@ fr:
       location: Sélectionnez un lieu pour vérifier votre identité
       prepare: Vérifiez votre identité en personne
       state_id: Saisissez les informations figurant sur votre document d’identité
-      success: Vous avez vérifié avec succès votre identité avec Login.gov
       update_address: Mettre à jour votre adresse actuelle
       update_state_id: Mettre à jour les informations figurant sur votre document d’identité
     process:

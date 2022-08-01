@@ -116,9 +116,9 @@ es:
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos
         de %{location}.
       next_sign_in: Luego, haga clic en el botón o copie el enlace que aparece a
-        continuación para iniciar sesión en Login.gov.
+        continuación para iniciar sesión en %{app_name}.
       sign_in: Iniciar sesión
-      subject: Verificó correctamente su identidad con Login.gov
+      subject: Verificó correctamente su identidad con %{app_name}
       warning_contact_us_html: Si usted no intentó verificar su identidad en persona,
         por favor, póngase en <a href="%{contact_us_url}">contacto con
         nosotros</a> e <a href="%{sign_in_url}">inicie sesión</a> para cambiar

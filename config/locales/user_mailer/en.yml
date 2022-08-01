@@ -109,9 +109,9 @@ en:
       greeting: Hello,
       intro: You successfully verified your identity at the %{location} Post Office on
         %{date}.
-      next_sign_in: Next, click the button or copy the link below to sign in to Login.gov.
+      next_sign_in: Next, click the button or copy the link below to sign in to %{app_name}.
       sign_in: Sign in
-      subject: You successfully verified your identity with Login.gov
+      subject: You successfully verified your identity with %{app_name}
       warning_contact_us_html: If you did not attempt to verify your identity in
         person, please <a href="%{contact_us_url}">contact us</a> and <a
         href="%{sign_in_url}">sign in</a> to change your password.
