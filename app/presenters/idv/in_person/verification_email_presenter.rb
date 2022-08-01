@@ -1,6 +1,6 @@
 module Idv
   module InPerson
-    class VerifiedPresenter
+    class VerificationEmailPresenter
       # update to user's time zone when out of pilot
       USPS_SERVER_TIMEZONE = ActiveSupport::TimeZone['America/New_York']
 
