@@ -150,7 +150,7 @@ module Users
 
     def analytics_properties
       {
-        in_mfa_selection: in_multi_mfa_selection_flow?,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
       }
     end
 

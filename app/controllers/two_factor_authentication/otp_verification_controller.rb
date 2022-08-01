@@ -98,7 +98,7 @@ module TwoFactorAuthentication
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
         phone_configuration_id: user_session[:phone_id] ||
           current_user.default_phone_configuration&.id,
-        in_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
     end

@@ -1328,12 +1328,12 @@ module AnalyticsEvents
   # @param [Boolean] in_registration_flow
   # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(multi_factor_auth_method:,
-                              enabled_mfa_methods_count:, in_registration_flow:,
+                              enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
                               **extra)
     track_event(
       'Multi-Factor Authentication Setup',
       multi_factor_auth_method: multi_factor_auth_method,
-      in_registration_flow: in_registration_flow,
+      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
       enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
@@ -2131,7 +2131,7 @@ module AnalyticsEvents
     track_event(
       'User Registration: User Fully Registered',
       {
-        mfa_method: mfa_method
+        mfa_method: mfa_method,
       }.compact,
     )
   end
