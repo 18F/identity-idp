@@ -101,7 +101,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const inPersonSteps =
     inPersonURL === undefined
       ? []
-      : [
+      : /** @type {FormStep[]} */ ([
           {
             name: 'location',
             form: InPersonLocationStep,
@@ -114,11 +114,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
             name: 'switch_back',
             form: InPersonSwitchBackStep,
           },
-        ].filter(Boolean);
+        ]).filter(Boolean);
 
   /** @type {FormStep[]} */
   const steps = submissionError
-    ? [
+    ? /** @type {FormStep[]} */ ([
         {
           name: 'review',
           form:
@@ -131,7 +131,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
                 })(ReviewIssuesStep)
               : ReviewIssuesStep,
         },
-      ]
+      ])
         .concat(inPersonSteps)
         .filter(Boolean)
     : /** @type {FormStep[]} */ (
