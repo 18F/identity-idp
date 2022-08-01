@@ -170,10 +170,10 @@ es:
       welcome: Empiece con la verificación de su identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
+      capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
-      capture_status_big_document: Demasiado cerca
       capture_status_tap_to_capture: Toque para capturar
       document_capture_intro_acknowledgment: Recopilaremos información sobre usted
         leyendo su identificación emitida por el estado. No almacenamos las

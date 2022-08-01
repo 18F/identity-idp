@@ -141,10 +141,10 @@ en:
       welcome: Get started verifying your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser.
+      capture_status_big_document: Too Close
       capture_status_capturing: Capturing
       capture_status_none: Align
       capture_status_small_document: Move Closer
-      capture_status_big_document: Too Close
       capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state-issued ID. We do not store images you upload. We only
