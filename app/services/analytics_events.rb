@@ -639,7 +639,7 @@ module AnalyticsEvents
   def idv_gpo_address_letter_requested(enqueued_at:)
     track_event(
       'IdV: USPS address letter requested',
-      enqueued_at: enqueued_at
+      enqueued_at: enqueued_at,
     )
   end
 

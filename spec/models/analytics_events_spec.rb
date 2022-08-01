@@ -10,7 +10,7 @@ describe Analytics do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: USPS address letter requested',
-        enqueued_at: enqueued_at
+        enqueued_at: enqueued_at,
       )
     end
   end

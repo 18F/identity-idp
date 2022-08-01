@@ -77,13 +77,8 @@ feature 'Analytics Regression', js: true do
       'IdV: USPS address letter requested' => { enqueued_at: Time.zone.now },
     }
     {
-      FSMv1: common_events.merge(
-        # 'Frontend: IdV: show personal key modal' => {},
-      ),
-      FSMv2: common_events.merge(
-        # 'IdV: personal key confirm visited' => {},
-        # 'IdV: personal key confirm submitted' => {},
-      ),
+      FSMv1: common_events,
+      FSMv2: common_events,
     }
   end
   # rubocop:enable Layout/LineLength
