@@ -77,6 +77,24 @@ describe Idv::SessionErrorsController do
 
         expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
       end
+
+      it 'assigns URL to try again' do
+        get action
+
+        expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
+      end
+
+      context 'referrer is page from In-Person Proofing flow' do
+        before do
+          request.headers['HTTP_REFERER'] = idv_in_person_ready_to_verify_url
+        end
+
+        it 'assigns URL to try again' do
+          get action
+
+          expect(assigns(:try_again_path)).to eq(idv_in_person_path)
+        end
+      end
     end
   end
 
