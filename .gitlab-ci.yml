@@ -185,6 +185,17 @@ js_tests:
     - *yarn_install
     - yarn test
 
+
+pinpoint-check:
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint_country_dialing_codes
+
 coverage:
   stage: after_test
   cache:
