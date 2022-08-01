@@ -70,8 +70,7 @@ module Users
 
     def analytics_properties
       {
-        in_multi_mfa_selection_flow: false,
-        enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
+        in_multi_mfa_selection_flow: false
       }
     end
   end
