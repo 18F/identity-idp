@@ -49,12 +49,16 @@ describe('DocumentCapturePolling', () => {
   });
 
   it('polls', async () => {
-    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 202 });
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 202, json: () => Promise.resolve({}) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(window.fetch).to.have.been.calledOnce();
 
-    await flushPromises();
+    await flushPromises(); // Flush `fetch`
+    await flushPromises(); // Flush `json`
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(window.fetch).to.have.been.calledTwice();
@@ -64,11 +68,15 @@ describe('DocumentCapturePolling', () => {
 
   it('submits when done', async () => {
     sandbox.stub(subject.elements.form, 'submit');
-    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 200 });
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 200, json: () => Promise.resolve({}) });
     subject.bind();
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    await flushPromises();
+    await flushPromises(); // Flush `fetch`
+    await flushPromises(); // Flush `json`
 
     expect(subject.elements.form.submit).to.have.been.called();
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
@@ -78,12 +86,31 @@ describe('DocumentCapturePolling', () => {
     });
   });
 
-  it('submits when cancelled', async () => {
+  it('redirects if given redirect URL on success', async () => {
     sandbox.stub(subject.elements.form, 'submit');
-    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 410 });
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 200, json: () => Promise.resolve({ redirect: '#redirect' }) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    await flushPromises();
+    await flushPromises(); // Flush `fetch`
+    await flushPromises(); // Flush `json`
+
+    expect(window.location.hash).to.equal('#redirect');
+    expect(subject.elements.form.submit).not.to.have.been.called();
+  });
+
+  it('submits when cancelled', async () => {
+    sandbox.stub(subject.elements.form, 'submit');
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 410, json: () => Promise.resolve({}) });
+
+    sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
+    await flushPromises(); // Flush `fetch`
+    await flushPromises(); // Flush `json`
 
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
@@ -100,7 +127,8 @@ describe('DocumentCapturePolling', () => {
       .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#throttled' }) });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    await flushPromises();
+    await flushPromises(); // Flush `fetch`
+    await flushPromises(); // Flush `json`
 
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
@@ -111,12 +139,17 @@ describe('DocumentCapturePolling', () => {
   });
 
   it('polls until max, then showing form to submit', async () => {
-    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 202 });
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 202, json: () => Promise.resolve({}) });
 
     for (let i = MAX_DOC_CAPTURE_POLL_ATTEMPTS; i; i--) {
       sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
       // eslint-disable-next-line no-await-in-loop
-      await flushPromises();
+      await flushPromises(); // Flush `fetch`
+      // eslint-disable-next-line no-await-in-loop
+      await flushPromises(); // Flush `json`
     }
 
     expect(screen.getByText('Submit').closest('.display-none')).to.not.be.ok();
@@ -143,10 +176,14 @@ describe('DocumentCapturePolling', () => {
 
     it('does not prompt by navigating away via form submission', async () => {
       sandbox.stub(subject.elements.form, 'submit');
-      sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 200 });
+      sandbox
+        .stub(window, 'fetch')
+        .withArgs('/status')
+        .resolves({ status: 200, json: () => Promise.resolve({}) });
       subject.bind();
       sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-      await flushPromises();
+      await flushPromises(); // Flush `fetch`
+      await flushPromises(); // Flush `json`
       window.dispatchEvent(event);
 
       expect(event.defaultPrevented).to.be.false();
