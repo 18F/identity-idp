@@ -36,7 +36,6 @@ module UspsInPersonProofing
       end
 
       def establishing_in_person_enrollment_for_user(user)
-        cancel_stale_establishing_enrollments_for_user(user)
         enrollment = user.establishing_in_person_enrollment
         return enrollment if enrollment.present?
 
