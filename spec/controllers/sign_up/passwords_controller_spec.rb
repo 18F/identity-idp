@@ -20,6 +20,13 @@ describe SignUp::PasswordsController do
           'User Registration: Email Confirmation',
           { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: user.email_addresses.first.email,
+        success: true,
+        errors: {},
+        error_details: nil,
+      )
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
 
@@ -83,6 +90,14 @@ describe SignUp::PasswordsController do
           'User Registration: Email Confirmation',
           { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: user.email_addresses.first.email,
+        success: true,
+        errors: {},
+        error_details: nil,
+      )
 
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
