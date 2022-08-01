@@ -283,6 +283,7 @@ voice_otp_speech_rate: 'slow'
 voip_check: true
 voip_block: true
 voip_allowed_phones: '[]'
+inherited_proofing_va_base_url: 'https://staging-api.va.gov'
 
 development:
   aamva_private_key: 123abc
