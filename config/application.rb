@@ -76,6 +76,7 @@ module Identity
 
     GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
     GoodJob.retry_on_unhandled_error = false
+    GoodJob.preserve_job_records = false
     GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
 
     config.time_zone = 'UTC'
