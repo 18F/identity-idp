@@ -80,11 +80,6 @@ RSpec.describe Api::ProfileCreationForm do
         end
 
         context 'with pending in person enrollment' do
-          let(:selected_location_details) { { name: 'Example' } }
-          let(:user_session) do
-            { idv: { applicant: { selected_location_details: selected_location_details } } }
-          end
-
           before do
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -105,7 +100,6 @@ RSpec.describe Api::ProfileCreationForm do
                 user,
                 kind_of(Profile),
                 Pii::Attributes.new_from_hash(pii),
-                selected_location_details,
               )
 
             subject.submit

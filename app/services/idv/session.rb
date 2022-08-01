@@ -91,7 +91,6 @@ module Idv
             current_user,
             profile,
             applicant,
-            session.dig(:applicant, :selected_location_details),
           )
           profile.deactivate(:in_person_verification_pending)
         else

@@ -19,7 +19,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         enrollment = user.in_person_enrollments.first
         expect(enrollment.profile).to eq(profile)
         expect(enrollment.current_address_matches_id).to eq(current_address_matches_id)
-        expect(enrollment.selected_location_details).to be_nil
       end
     end
 
@@ -34,24 +33,6 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
 
         expect(enrollment.profile).to eq(profile)
         expect(enrollment.current_address_matches_id).to eq(current_address_matches_id)
-        expect(enrollment.selected_location_details).to be_nil
-      end
-
-      it 'does not overwrite selected_location_details' do
-        enrollment.update!(selected_location_details: { name: 'BALTIMORE' })
-
-        subject.schedule_in_person_enrollment(user, profile, pii)
-        enrollment.reload
-
-        expect(enrollment.selected_location_details).to_not be_nil
-      end
-
-      it 'does write selected_location_details if none are already set' do
-        selected_location_details = { name: 'FRIENDSHIP' }
-        subject.schedule_in_person_enrollment(user, profile, pii, selected_location_details)
-        enrollment.reload
-
-        expect(enrollment.selected_location_details).to_not be_nil
       end
     end
 

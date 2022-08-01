@@ -59,15 +59,12 @@ describe Idv::Session do
       end
 
       context 'with pending in person enrollment' do
-        let(:selected_location_details) { { name: 'Example' } }
-
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
             same_address_as_id: true,
-            selected_location_details: selected_location_details,
           ).with_indifferent_access
           subject.create_profile_from_applicant_with_password(user.password)
         end
@@ -86,7 +83,6 @@ describe Idv::Session do
               user,
               kind_of(Profile),
               subject.applicant.transform_keys(&:to_s),
-              selected_location_details,
             )
 
           subject.complete_session
