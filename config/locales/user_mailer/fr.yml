@@ -115,7 +115,7 @@ fr:
         de poste des États-Unis près de chez vous.
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
     in_person_verified:
-      greeting: 'Bonjour %{name},'
+      greeting: Bonjour,
       intro: Vous avez vérifié avec succès votre identité au bureau de poste de
         %{location} le %{date}.
       next_sign_in: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour

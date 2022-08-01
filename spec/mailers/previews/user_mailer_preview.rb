@@ -147,7 +147,6 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.in_person_verified(
       user,
       email_address_record,
-      first_name: 'Michael',
       enrollment: in_person_enrollment,
     )
   end

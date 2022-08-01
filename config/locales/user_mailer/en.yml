@@ -106,7 +106,7 @@ en:
         Post Office near you.
       subject: You’re ready to verify your identity with %{app_name} in person
     in_person_verified:
-      greeting: Hi %{name},
+      greeting: Hello,
       intro: You successfully verified your identity at the %{location} Post Office on
         %{date}.
       next_sign_in: Next, click the button or copy the link below to sign in to Login.gov.

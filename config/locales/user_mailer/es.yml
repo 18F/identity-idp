@@ -112,7 +112,7 @@ es:
         oficina de correos de los Estados Unidos cercana a usted.
       subject: Está listo para verificar su identidad con %{app_name} en persona
     in_person_verified:
-      greeting: 'Hola, %{name}:'
+      greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos
         de %{location}.
       next_sign_in: Luego, haga clic en el botón o copie el enlace que aparece a
