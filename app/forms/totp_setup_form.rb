@@ -51,7 +51,6 @@ class TotpSetupForm
       totp_secret_present: secret.present?,
       multi_factor_auth_method: 'totp',
       auth_app_configuration_id: @auth_app_config&.id,
-      mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
   end
