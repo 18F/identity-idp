@@ -9,7 +9,11 @@
 <p>
 <div class="s16">
   <%= t('user_mailer.in_person_verified.greeting') %><br>
-  <%= t('user_mailer.in_person_verified.intro', location: @presenter.location, date: @presenter.date) %><br /><br />
+  <%= t(
+        'user_mailer.in_person_verified.intro',
+        location: @presenter.location_name,
+        date: @presenter.formatted_verified_date,
+      ) %><br /><br />
   <%= t('user_mailer.in_person_verified.next_sign_in') %>
 </div>
 </p>
