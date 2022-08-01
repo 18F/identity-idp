@@ -50,7 +50,7 @@ declare global {
  * AcuantGlobal, which should be equivalent to the
  * Window
  */
-type AcuantGlobal = Window;
+export type AcuantGlobal = Window;
 
 /**
  * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.3/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1025-L1027
@@ -312,4 +312,3 @@ function AcuantContextProvider({
 
 export const Provider = AcuantContextProvider;
 export default AcuantContext;
-export type { AcuantGlobal };

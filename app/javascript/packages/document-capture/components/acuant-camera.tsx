@@ -18,7 +18,7 @@ type AcuantGlobals = {
   AcuantCameraUI: AcuantCameraUIInterface;
   AcuantCamera: AcuantCameraInterface;
 };
-type AcuantGlobal = Window & AcuantGlobals;
+export type AcuantGlobal = Window & AcuantGlobals;
 
 enum AcuantDocumentStateEnum {
   NO_DOCUMENT = 0,
@@ -100,9 +100,9 @@ interface AcuantCameraUIOptions {
  * 1 = ID
  * 2 = Passport
  */
-type AcuantDocumentType = 0 | 1 | 2;
+export type AcuantDocumentType = 0 | 1 | 2;
 
-type AcuantCaptureFailureError =
+export type AcuantCaptureFailureError =
   | undefined // Cropping failure (SDK v11.5.0, L1171)
   | 'Camera not supported.' // Camera not supported (SDK v11.5.0, L978)
   | 'already started.' // Capture already started (SDK v11.5.0, L724)
@@ -204,7 +204,7 @@ interface AcuantDetectedResult {
 /**
  * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
  */
-interface AcuantSuccessResponse {
+export interface AcuantSuccessResponse {
   /**
    * Image object
    */
@@ -332,9 +332,3 @@ function AcuantCamera({
 }
 
 export default AcuantCamera;
-export type {
-  AcuantSuccessResponse,
-  AcuantDocumentType,
-  AcuantGlobal, // fill this in
-  AcuantCaptureFailureError,
-};
