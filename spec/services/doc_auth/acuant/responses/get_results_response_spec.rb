@@ -162,9 +162,9 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.result_code.billed?).to eq(false)
     end
 
-    context 'when visiual_pattern fails with multiple results' do
+    context 'when visiual_pattern passes and fails' do
       let(:http_response) do
-        [1, 2, 3, 4].each do |index|
+        [1, 2].each do |index|
           parsed_response_body['Alerts'] << {
             Key: 'Visible Pattern',
             Name: 'Visible Pattern',
@@ -186,15 +186,11 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
             [{ name: 'Document Classification',
                result: 'Failed' },
              { name: 'Visible Pattern',
-               result: 'Failed' },
-             { name: 'Visible Pattern',
-               result: 'Skipped' },
-             { name: 'Visible Pattern',
-               result: 'Caution' }],
+               result: 'Failed' }],
         )
 
         expect(response.to_h[:log_alert_results]).to eq(
-          { visible_pattern: { no_side: 'Passed, Failed, Skipped, Caution' },
+          { visible_pattern: { no_side: 'Failed' },
             document_classification: { no_side: 'Failed' } },
         )
       end

@@ -97,10 +97,10 @@ module DocAuth
 
         def get_alert_result(log_alert_results, side, alert_name_key, result)
           if log_alert_results.dig(alert_name_key, side.to_sym).present?
-            log_alert_results[alert_name_key][side.to_sym] + ", #{result}"
-          else
-            result
+            Rails.logger.
+              info("ALERT ALREADY HAS A VALUE: #{log_alert_results[alert_name_key][side.to_sym]}, #{result}")
           end
+          result
         end
 
         def log_alerts(alerts)
@@ -119,8 +119,7 @@ module DocAuth
                   side,
                   alert_name_key,
                   alert[:result],
-                  ).
-                    split(', ').uniq.join(', ') }
+                  ) }
             end
           end
           log_alert_results

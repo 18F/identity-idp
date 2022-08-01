@@ -102,7 +102,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         transaction_reason_code: 'trueid_pass',
         product_status: 'pass',
         doc_auth_result: 'Passed',
-        processed_alerts: a_hash_including(:passed, :failed),
+        processed_alerts: a_hash_including(:failed),
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front, :back),
@@ -170,7 +170,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         layout_valid: { no_side: 'Passed' },
         sex_crosscheck: { no_side: 'Passed' },
         visible_color_response: { no_side: 'Passed' },
-        visible_pattern: { no_side: 'Passed, Failed' },
+        visible_pattern: { no_side: 'Failed' },
         visible_photo_characteristics: { no_side: 'Passed' },
         '1d_control_number_valid': { no_side: 'Failed' },
         '2d_barcode_content': { no_side: 'Failed' },
@@ -185,10 +185,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:hints]).to eq(true)
     end
 
-    it 'returns all of the alerts for log_alert_results, comma delimited' do
+    it 'returns Failed for visible_pattern when it gets passed and failed value ' do
       output = described_class.new(failure_response_no_liveness, false, config).to_h
       expect(output.to_h[:log_alert_results]).
-        to match(a_hash_including(visible_pattern: { no_side: 'Passed, Failed' }))
+        to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
     end
 
     it 'produces appropriate errors with liveness' do
@@ -210,7 +210,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         layout_valid: { no_side: 'Passed' },
         sex_crosscheck: { no_side: 'Passed' },
         visible_color_response: { no_side: 'Passed' },
-        visible_pattern: { no_side: 'Passed, Failed' },
+        visible_pattern: { no_side: 'Failed' },
         visible_photo_characteristics: { no_side: 'Passed' },
         '1d_control_number_valid': { no_side: 'Failed' },
         '2d_barcode_content': { no_side: 'Failed' },
