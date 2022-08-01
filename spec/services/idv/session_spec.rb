@@ -59,6 +59,10 @@ describe Idv::Session do
       end
 
       context 'with pending in person enrollment' do
+        let!(:enrollment) do
+          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        end
+
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -79,13 +83,11 @@ describe Idv::Session do
         it 'creates a USPS enrollment' do
           expect(UspsInPersonProofing::EnrollmentHelper).
             to receive(:schedule_in_person_enrollment).
-            with(
-              user,
-              kind_of(Profile),
-              subject.applicant.transform_keys(&:to_s),
-            )
+            with(user, subject.applicant.transform_keys(&:to_s))
 
           subject.complete_session
+
+          expect(enrollment.reload.profile).to eq(user.profiles.last)
         end
       end
     end

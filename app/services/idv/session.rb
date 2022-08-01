@@ -82,6 +82,8 @@ module Idv
     end
 
     def complete_session
+      associate_in_person_enrollment_with_profile
+
       if address_verification_mechanism == 'gpo'
         profile.deactivate(:gpo_verification_pending)
         create_gpo_entry
@@ -89,7 +91,6 @@ module Idv
         if pending_in_person_enrollment?
           UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
             current_user,
-            profile,
             applicant,
           )
           profile.deactivate(:in_person_verification_pending)
@@ -97,6 +98,11 @@ module Idv
           complete_profile
         end
       end
+    end
+
+    def associate_in_person_enrollment_with_profile
+      return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
+      current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
     def complete_profile

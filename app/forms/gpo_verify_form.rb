@@ -19,11 +19,7 @@ class GpoVerifyForm
     result = valid?
     if result
       if pending_in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-          user,
-          pending_profile,
-          pii,
-        )
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
       else
         activate_profile

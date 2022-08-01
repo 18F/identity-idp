@@ -1,11 +1,10 @@
 module UspsInPersonProofing
   class EnrollmentHelper
     class << self
-      def schedule_in_person_enrollment(user, profile, pii)
-        enrollment = user.establishing_in_person_enrollment ||
-                     InPersonEnrollment.create!(user: user)
+      def schedule_in_person_enrollment(user, pii)
+        enrollment = user.establishing_in_person_enrollment
+        return unless enrollment
 
-        enrollment.profile = profile
         enrollment.current_address_matches_id = pii['same_address_as_id']
         enrollment.save!
 
@@ -36,7 +35,7 @@ module UspsInPersonProofing
         enrollment = user.establishing_in_person_enrollment
         return enrollment if enrollment.present?
 
-        InPersonEnrollment.create!(user: user)
+        InPersonEnrollment.create!(user: user, profile: nil)
       end
 
       def usps_proofer
