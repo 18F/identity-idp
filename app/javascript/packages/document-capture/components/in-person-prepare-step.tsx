@@ -20,11 +20,13 @@ function InPersonPrepareStep({ value }) {
 
   return (
     <>
-      <Alert type="success" className="margin-bottom-4">
-        {t('in_person_proofing.body.prepare.alert_selected_post_office', {
-          name: selectedLocationName,
-        })}
-      </Alert>
+      {selectedLocationName && (
+        <Alert type="success" className="margin-bottom-4">
+          {t('in_person_proofing.body.prepare.alert_selected_post_office', {
+            name: selectedLocationName,
+          })}
+        </Alert>
+      )}
       <PageHeading>{t('in_person_proofing.headings.prepare')}</PageHeading>
 
       <p>{t('in_person_proofing.body.prepare.verify_step_about')}</p>
