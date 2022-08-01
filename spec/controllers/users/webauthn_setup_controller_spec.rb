@@ -81,6 +81,7 @@ describe Users::WebauthnSetupController do
           multi_factor_auth_method: 'webauthn',
           success: true,
           errors: {},
+          in_multi_mfa_selection_flow: false,
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
         expect(@analytics).to receive(:track_event).
