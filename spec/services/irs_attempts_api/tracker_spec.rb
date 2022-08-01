@@ -6,8 +6,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
       irs_attempt_api_enabled,
     )
     allow(request).to receive(:headers).and_return(
-      "User-Agent" => 'bananas/1.0',
-      "Referer" => 'google.com',
+      'User-Agent' => 'example/1.0',
+      'Referer' => 'example.com',
     )
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
   end

@@ -16,7 +16,7 @@ module IrsAttemptsApi
       event_metadata = {
         user_agent: request&.headers['User-Agent'],
         unique_session_id: user&.unique_session_id,
-        user_uuid: ServiceProviderIdentity.where(service_provider: sp.issuer, user_id: user.id).take&.uuid,
+        user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp),
         user_ip_address: request&.remote_ip,
         irs_application_url: request&.headers['Referer'],
       }.merge(metadata)
