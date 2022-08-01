@@ -54,20 +54,35 @@ type AcuantFrameState = AcuantDocumentStateEnum & AcuantUIStateEnum;
 
 type AcuantCaptureType = 'AUTO' | 'TAP';
 
-/**
- * @prop NONE No document detected.
- * @prop SMALL_DOCUMENT Document does not fill frame.
- * @prop BIG_DOCUMENT Document is too close to the frame.
- * @prop GOOD_DOCUMENT Document is good and capture is pending.
- * @prop CAPTURING Document is being captured.
- * @prop TAP_TO_CAPTURE Explicit user action to capture after delay.
- */
 interface AcuantCameraUIText {
+  /**
+   * No document detected.
+   */
   NONE: string;
+
+  /**
+   * Document does not fill frame.
+   */
   SMALL_DOCUMENT: string;
+
+  /**
+   * Document is too close to the frame.
+   */
   BIG_DOCUMENT: string;
+
+  /**
+   * Document is good and capture is pending.
+   */
   GOOD_DOCUMENT: string | null;
+
+  /**
+   * Document is being captured.
+   */
   CAPTURING: string;
+
+  /**
+   * Explicit user action to capture after delay.
+   */
   TAP_TO_CAPTURE: string;
 }
 
