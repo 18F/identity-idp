@@ -58,7 +58,7 @@ describe Idv::Session do
         expect(subject).not_to have_received(:complete_profile)
       end
 
-      context 'with pending in person enrollment' do
+      context 'with establishing in person enrollment' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, user: user, profile: nil)
         end

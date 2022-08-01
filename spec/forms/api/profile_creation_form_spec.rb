@@ -79,7 +79,7 @@ RSpec.describe Api::ProfileCreationForm do
           expect(stored_pii['first_name']).to eq 'Ada'
         end
 
-        context 'with pending in person enrollment' do
+        context 'with establishing in person enrollment' do
           let!(:enrollment) do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
           end
@@ -152,7 +152,7 @@ RSpec.describe Api::ProfileCreationForm do
           end
         end
 
-        context 'with pending in person enrollment' do
+        context 'with establishing in person enrollment' do
           before do
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
