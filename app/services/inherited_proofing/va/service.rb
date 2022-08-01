@@ -4,7 +4,7 @@ module InheritedProofing
     # the VA service to gain PII for a particular user that will be subsequently
     # used to proof the user using inherited proofing.
     class Service
-      BASE_URI = Rails.configuration.inherited_proofing[:va][:base_uri].freeze
+      BASE_URI = IdentityConfig.store.inherited_proofing_va_base_url
 
       attr_reader :auth_code
 
