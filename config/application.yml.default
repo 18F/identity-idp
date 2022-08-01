@@ -383,8 +383,6 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
-  enable_numeric_authentication_otp: false
-  enable_numeric_authentication_otp_input: false
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:
