@@ -143,7 +143,10 @@ module Users
     end
 
     def analytics_properties
-      { in_multi_mfa_selection_flow: in_multi_mfa_selection_flow? }
+      { 
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
+      }
     end
   end
 end
