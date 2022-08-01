@@ -17,6 +17,14 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
 
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: nil,
+        success: false,
+        errors: { confirmation_token: ['not found'] },
+        error_details: { confirmation_token: [:not_found] },
+      )
+
       get :create, params: { confirmation_token: nil }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
@@ -33,6 +41,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: nil,
+        success: false,
+        errors: { confirmation_token: ['not found'] },
+        error_details: { confirmation_token: [:not_found] },
+      )
 
       get :create, params: { confirmation_token: '' }
 
@@ -51,6 +67,14 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
 
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: nil,
+        success: false,
+        errors: { confirmation_token: ['not found'] },
+        error_details: { confirmation_token: [:not_found] },
+      )
+
       get :create, params: { confirmation_token: "''" }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
@@ -67,6 +91,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: nil,
+        success: false,
+        errors: { confirmation_token: ['not found'] },
+        error_details: { confirmation_token: [:not_found] },
+      )
 
       get :create, params: { confirmation_token: '""' }
 
@@ -86,6 +118,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: email_address.email,
+        success: false,
+        errors: { email: [t('errors.messages.already_confirmed')] },
+        error_details: { email: [t('errors.messages.already_confirmed')] },
+      )
 
       get :create, params: { confirmation_token: 'foo' }
     end
@@ -110,6 +150,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: email_address.email,
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: [:expired] },
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -136,6 +184,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: email_address.email,
+        success: false,
+        errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: [:expired] },
+      )
 
       get :create, params: { confirmation_token: 'foo' }
 
@@ -165,6 +221,14 @@ describe SignUp::EmailConfirmationsController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: Email Confirmation', analytics_hash)
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+        :user_registration_email_confirmation,
+        email: email_address.email,
+        success: true,
+        errors: {},
+        error_details: nil,
+      )
 
       get :create, params: { confirmation_token: 'foo' }
     end
