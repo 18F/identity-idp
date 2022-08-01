@@ -31,6 +31,8 @@ module Idv
     end
 
     def redirect_url
+      return unless flow_session && document_capture_session
+
       if throttled?
         idv_session_errors_throttled_url
       elsif user_has_establishing_in_person_enrollment?
