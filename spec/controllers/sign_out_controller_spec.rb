@@ -27,6 +27,10 @@ describe SignOutController do
       expect(@analytics).
         to receive(:track_event).with('Logout Initiated', hash_including(method: 'cancel link'))
 
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
+
       get :destroy
     end
   end

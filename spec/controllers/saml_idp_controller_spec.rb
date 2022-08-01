@@ -11,6 +11,9 @@ describe SamlIdpController do
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout
     end
@@ -21,6 +24,9 @@ describe SamlIdpController do
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
@@ -30,6 +36,9 @@ describe SamlIdpController do
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end

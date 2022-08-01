@@ -51,7 +51,7 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
         end
 
-        it 'tracks analytics' do
+        it 'tracks events' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
             with(
@@ -65,6 +65,10 @@ RSpec.describe OpenidConnect::LogoutController do
               ),
             )
 
+          expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).
+            with(
+              success: true,
+            )
           action
         end
       end
@@ -84,7 +88,7 @@ RSpec.describe OpenidConnect::LogoutController do
           action
         end
 
-        it 'tracks analytics' do
+        it 'tracks events' do
           stub_analytics
 
           errors = {
@@ -102,6 +106,10 @@ RSpec.describe OpenidConnect::LogoutController do
               method: nil,
               saml_request_valid: nil,
             )
+          expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).
+            with(
+              success: false,
+            )
 
           action
         end
@@ -109,7 +117,7 @@ RSpec.describe OpenidConnect::LogoutController do
 
       context 'with a bad id_token_hint' do
         let(:id_token_hint) { { id_token_hint: 'abc123' } }
-        it 'tracks analytics' do
+        it 'tracks events' do
           stub_analytics
           errors_keys = [:id_token_hint, :redirect_uri]
 
@@ -124,6 +132,10 @@ RSpec.describe OpenidConnect::LogoutController do
               oidc: true,
               method: nil,
               saml_request_valid: nil,
+            )
+          expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).
+            with(
+              success: false,
             )
 
           action
