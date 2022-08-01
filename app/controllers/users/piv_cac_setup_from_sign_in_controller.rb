@@ -70,7 +70,7 @@ module Users
 
     def analytics_properties
       {
-        in_multi_mfa_selection_flow: false
+        in_multi_mfa_selection_flow: false,
       }
     end
   end
