@@ -148,7 +148,7 @@ class UserMailerPreview < ActionMailer::Preview
       user,
       email_address_record,
       first_name: 'Michael',
-      enrollment: verified_enrollment,
+      enrollment: in_person_enrollment,
     )
   end
 
@@ -172,7 +172,8 @@ class UserMailerPreview < ActionMailer::Preview
         user: user,
         profile: unsaveable(Profile.new(user: user)),
         enrollment_code: '2048702198804358',
-        created_at: Time.zone.now,
+        created_at: Time.zone.now - 2.hours,
+        status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: true,
         selected_location_details: {
           'name' => 'BALTIMORE',
@@ -183,18 +184,6 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
-      ),
-    )
-  end
-
-  def verified_enrollment
-    unsaveable(
-      InPersonEnrollment.new(
-        user: user,
-        profile: unsaveable(Profile.new(user: user)),
-        status_updated_at: Time.zone.now - 1.hour,
-        status: :passed,
-        selected_location_details: { 'name' => 'Baltimore' }.to_json,
       ),
     )
   end
