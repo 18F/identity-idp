@@ -2100,6 +2100,7 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
@@ -2126,12 +2127,14 @@ module AnalyticsEvents
   # @param [String] mfa_method
   # Tracks when the the user fully registered by submitting their first MFA method into the system
   def user_registration_user_fully_registered(
-    mfa_method:
+    mfa_method:,
+    **extra
   )
     track_event(
       'User Registration: User Fully Registered',
       {
         mfa_method: mfa_method,
+        **extra,
       }.compact,
     )
   end
