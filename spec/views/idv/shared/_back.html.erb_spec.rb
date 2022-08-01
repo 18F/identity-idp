@@ -9,7 +9,7 @@ describe 'idv/doc_auth/_back.html.erb' do
 
   subject do
     render 'idv/shared/back', {
-      flow: flow, 
+      flow: flow,
       action: action,
       step: step,
       class: classes,
