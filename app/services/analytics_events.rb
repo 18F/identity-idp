@@ -1325,7 +1325,7 @@ module AnalyticsEvents
 
   # Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
-  # @param [Boolean] in_registration_flow
+  # @param [Boolean] in_multi_mfa_selection_flow
   # @param [integer] enabled_mfa_methods_count
   def multi_factor_auth_setup(multi_factor_auth_method:,
                               enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,

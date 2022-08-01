@@ -56,6 +56,10 @@ class TotpSetupForm
     }
   end
 
+  def mfa_user
+    MfaContext.new(user)
+  end
+
   def create_auth_app(user, secret, new_timestamp, name)
     @auth_app_config = Db::AuthAppConfiguration.create(user, secret, new_timestamp, name)
   end
