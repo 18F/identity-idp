@@ -31,7 +31,9 @@ describe 'idv/doc_auth/_back.html.erb' do
       let(:action) { 'redo_ssn' }
 
       it 'renders' do
-        expect(subject).to have_selector("form[action='#{idv_doc_auth_step_path(step: 'redo_ssn')}']")
+        expect(subject).to have_selector(
+          "form[action='#{idv_doc_auth_step_path(step: 'redo_ssn')}']",
+        )
         expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
         expect(subject).to have_selector("[type='submit']")
         expect(subject).to have_selector('button', text: '‹ ' + t('forms.buttons.back'))
