@@ -7,8 +7,7 @@ module Idv
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
 
-    def exception
-    end
+    def exception; end
 
     def warning
       @remaining_attempts = Throttle.new(
@@ -57,7 +56,7 @@ module Idv
     end
 
     def set_try_again_path
-      if request.referer&.starts_with? idv_in_person_url
+      if params[:from]&.starts_with? idv_in_person_url
         @try_again_path = idv_in_person_path
       else
         @try_again_path = idv_doc_auth_path

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'idv/doc_auth/_back.html.erb' do
-  let(:flow) { nil }
+  let(:step_url) { nil }
   let(:action) { nil }
   let(:step) { nil }
   let(:classes) { nil }
@@ -9,7 +9,7 @@ describe 'idv/doc_auth/_back.html.erb' do
 
   subject do
     render 'idv/shared/back', {
-      flow: flow,
+      step_url: step_url,
       action: action,
       step: step,
       class: classes,
@@ -25,14 +25,15 @@ describe 'idv/doc_auth/_back.html.erb' do
     end
   end
 
-  context 'with flow' do
-    let(:flow) { 'doc_auth' }
+  context 'with step URL in locals' do
+    let(:step_url) { :idv_doc_auth_step_url }
+
     context 'with action' do
       let(:action) { 'redo_ssn' }
 
       it 'renders' do
         expect(subject).to have_selector(
-          "form[action='#{idv_doc_auth_step_path(step: 'redo_ssn')}']",
+          "form[action='#{send(:idv_doc_auth_step_url, step: 'redo_ssn')}']",
         )
         expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
         expect(subject).to have_selector("[type='submit']")
@@ -46,7 +47,12 @@ describe 'idv/doc_auth/_back.html.erb' do
       let(:step) { 'verify' }
 
       it 'renders' do
-        expect(subject).to have_selector("a[href='#{idv_doc_auth_step_path(step: 'verify')}']")
+        expect(subject).to have_selector(
+          "a[href='#{send(
+            :idv_doc_auth_step_url,
+            step: 'verify',
+          )}']",
+        )
         expect(subject).to have_content('‹ ' + t('forms.buttons.back'))
       end
 
@@ -54,25 +60,40 @@ describe 'idv/doc_auth/_back.html.erb' do
     end
   end
 
-  context 'without flow' do
+  context 'with step URL in instance variable' do
+    before do
+      assign(:step_url, :idv_doc_auth_step_url)
+    end
+
     context 'with action' do
       let(:action) { 'redo_ssn' }
 
-      it 'renders nothing' do
-        render 'idv/shared/back'
-
-        expect(subject).to be_empty
+      it 'renders' do
+        expect(subject).to have_selector(
+          "form[action='#{send(:idv_doc_auth_step_url, step: 'redo_ssn')}']",
+        )
+        expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
+        expect(subject).to have_selector("[type='submit']")
+        expect(subject).to have_selector('button', text: '‹ ' + t('forms.buttons.back'))
       end
+
+      it_behaves_like 'back link with class'
     end
 
     context 'with step' do
       let(:step) { 'verify' }
 
-      it 'renders nothing' do
-        render 'idv/shared/back'
-
-        expect(subject).to be_empty
+      it 'renders' do
+        expect(subject).to have_selector(
+          "a[href='#{send(
+            :idv_doc_auth_step_url,
+            step: 'verify',
+          )}']",
+        )
+        expect(subject).to have_content('‹ ' + t('forms.buttons.back'))
       end
+
+      it_behaves_like 'back link with class'
     end
   end
 
