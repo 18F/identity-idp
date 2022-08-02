@@ -13,7 +13,8 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
-import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
+// WILLFIX: Hiding this component until help links are finalized; see LG-6875
+// import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
 function InPersonPrepareStep({ value }) {
   const { t } = useI18n();
