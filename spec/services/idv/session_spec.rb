@@ -104,8 +104,6 @@ describe Idv::Session do
       end
 
       it 'sets profile to pending gpo verification' do
-        subject.applicant = {}
-        subject.create_profile_from_applicant_with_password(user.password)
         subject.create_profile_from_applicant_with_password(user.password)
 
         expect(subject).not_to have_received(:complete_profile)
