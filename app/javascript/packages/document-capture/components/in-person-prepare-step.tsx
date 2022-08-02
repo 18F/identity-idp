@@ -90,7 +90,10 @@ function InPersonPrepareStep({ value }) {
           </Button>
         </div>
       )}
+      {/*
+      WILLFIX: Hiding this component until help links are finalized; see LG-6875
       <InPersonTroubleshootingOptions />
+      */}
     </>
   );
 }
