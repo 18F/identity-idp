@@ -108,6 +108,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -137,6 +140,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: next_auth_app_id,
+            enabled_mfa_methods_count: 2,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -167,6 +173,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 1,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -198,6 +207,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 1,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -228,6 +240,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
@@ -259,6 +274,9 @@ describe Users::TotpSetupController, devise: true do
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: true,
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -269,7 +287,7 @@ describe Users::TotpSetupController, devise: true do
         context 'when user has multiple MFA methods left in user session' do
           let(:mfa_selections) { ['auth_app', 'voice'] }
 
-          it 'redirects to mfa confirmation path with a success message and still logs analytics' do
+          it 'redirects to next mfa path with a success message and still logs analytics' do
             expect(response).to redirect_to(phone_setup_url)
 
             result = {
@@ -278,6 +296,9 @@ describe Users::TotpSetupController, devise: true do
               totp_secret_present: true,
               multi_factor_auth_method: 'totp',
               auth_app_configuration_id: next_auth_app_id,
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: true,
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -306,6 +327,9 @@ describe Users::TotpSetupController, devise: true do
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
             auth_app_configuration_id: nil,
+            enabled_mfa_methods_count: 0,
+            in_multi_mfa_selection_flow: false,
+            pii_like_keypaths: [[:mfa_method_counts, :phone]],
           }
 
           expect(@analytics).to have_received(:track_event).
