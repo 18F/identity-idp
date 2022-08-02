@@ -106,21 +106,26 @@ es:
         %{app_name} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
+    in_person_failed:
+      body: Haga clic en el botón o copie el enlace siguiente para volver a intentar
+        verificar su identidad en línea con Login.gov. Si sigue teniendo
+        problemas, póngase en contacto con la agencia a la que intenta acceder.
+      intro: El %{date}, no se pudo verificar su identidad en la oficina de correos de
+        %{location}.
+      subject: No se pudo verificar su identidad en persona
+      verifying_identity: 'Al verificar su identidad:'
+      verifying_step_not_expired: Su documento de identidad o permiso de conducir
+        emitido por el estado debe estar vigente. Por el momento, no aceptamos
+        otras formas de identificación, como pasaportes o cartillas militares.
+      verifying_step_proof_of_address: Si vuelve a intentar verificar su identidad en
+        persona, deberá llevar un comprobante de domicilio vigente si su
+        dirección actual es distinta de la que aparece en su documento de
+        identidad.
     in_person_ready_to_verify:
       greeting: 'Hola, %{name}:'
       intro: Estos son los detalles para verificar su identidad en persona en una
         oficina de correos de los Estados Unidos cercana a usted.
       subject: Está listo para verificar su identidad con %{app_name} en persona
-    in_person_failed:
-      body: Haga clic en el botón o copie el enlace siguiente para volver a intentar verificar 
-        su identidad en línea con Login.gov. Si sigue teniendo problemas, póngase en contacto con 
-        la agencia a la que intenta acceder.
-      verifying_identity: 'Al verificar su identidad:'
-      verifying_identity_options:
-        - Su documento de identidad o permiso de conducir emitido por el estado debe estar vigente. Por el momento, no aceptamos otras formas de identificación, como pasaportes o cartillas militares.
-        - Si vuelve a intentar verificar su identidad en persona, deberá llevar un comprobante de domicilio vigente si su dirección actual es distinta de la que aparece en su documento de identidad.
-      intro: El %{date}, no se pudo verificar su identidad en la oficina de correos de %{location}.
-      subject: No se pudo verificar su identidad en persona
     in_person_verified:
       greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos

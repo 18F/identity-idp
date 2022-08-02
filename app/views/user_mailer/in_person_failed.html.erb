@@ -17,10 +17,9 @@
   <%= t('user_mailer.in_person_failed.body') %><br><br />
   <%= t('user_mailer.in_person_failed.verifying_identity') %><br>
   <ul class="usa-list">
-          <% t('user_mailer.in_person_failed.verifying_identity_options').each do |document| %>
-            <li><%= document %></li>
-          <% end %>
-        </ul>
+    <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
+    <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>
+  </ul>
 </div>
 </p>
 

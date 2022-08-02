@@ -109,25 +109,28 @@ fr:
         veuillez visiter le %{help_link} de %{app_name} ou %{contact_link}.
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
+    in_person_failed:
+      body: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
+        vérifier à nouveau votre identité en ligne par le biais de Login.gov. Si
+        vous rencontrez toujours des problèmes, veuillez contacter l’agence à
+        laquelle vous essayez d’accéder.
+      intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location}
+        le %{date}.
+      subject: Votre identité n’a pas pu être vérifiée en personne
+      verifying_identity: 'Lors de la vérification de votre identité :'
+      verifying_step_not_expired: Votre carte d’identité ou votre permis de conduire
+        délivré par l’État ne doit pas être périmé. Nous n’acceptons
+        actuellement aucune autre forme d’identification, comme les passeports
+        et les cartes d’identité militaires.
+      verifying_step_proof_of_address: Si vous tentez à nouveau de vérifier votre
+        identité en personne, vous devez apporter un justificatif de domicile
+        valable si votre adresse actuelle est différente de celle figurant sur
+        votre pièce d’identité.
     in_person_ready_to_verify:
       greeting: Bonjour %{name},
       intro: Voici les détails pour vérifier votre identité en personne dans un bureau
         de poste des États-Unis près de chez vous.
       subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
-    in_person_failed:
-      body: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de vérifier à 
-        nouveau votre identité en ligne par le biais de Login.gov. Si vous rencontrez toujours 
-        des problèmes, veuillez contacter l’agence à laquelle vous essayez d’accéder.
-      verifying_identity: 'Lors de la vérification de votre identité :'
-      verifying_identity_options: 
-        - Votre carte d’identité ou votre permis de conduire délivré par l’État ne doit pas 
-          être périmé. Nous n’acceptons actuellement aucune autre forme d’identification, comme 
-          les passeports et les cartes d’identité militaires.
-        - Si vous tentez à nouveau de vérifier votre identité en personne, vous devez apporter 
-          un justificatif de domicile valable si votre adresse actuelle est différente de celle 
-          figurant sur votre pièce d’identité.
-      intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location} le %{date}.
-      subject: Votre identité n’a pas pu être vérifiée en personne
     in_person_verified:
       greeting: Bonjour,
       intro: Vous avez vérifié avec succès votre identité au bureau de poste de
