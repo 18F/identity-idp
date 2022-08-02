@@ -56,7 +56,7 @@ module Idv
     end
 
     def set_try_again_path
-      if params[:from]&.starts_with? idv_in_person_url
+      if params[:from]&.starts_with? idv_in_person_path
         @try_again_path = idv_in_person_path
       else
         @try_again_path = idv_doc_auth_path

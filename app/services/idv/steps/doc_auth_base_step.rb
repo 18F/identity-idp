@@ -28,7 +28,7 @@ module Idv
             remaining_attempts: throttle.remaining_count,
           )
           redirect_to idv_session_errors_exception_url(
-            from: request.original_url,
+            from: request.path,
           )
         else
           @flow.analytics.idv_doc_auth_warning_visited(
@@ -36,7 +36,7 @@ module Idv
             remaining_attempts: throttle.remaining_count,
           )
           redirect_to idv_session_errors_warning_url(
-            from: request.original_url,
+            from: request.path,
           )
         end
         result

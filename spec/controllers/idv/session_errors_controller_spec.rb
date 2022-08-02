@@ -86,7 +86,7 @@ describe Idv::SessionErrorsController do
 
       context 'referrer is page from In-Person Proofing flow' do
         it 'assigns URL to try again' do
-          get action, params: { from: idv_in_person_ready_to_verify_url }
+          get action, params: { from: idv_in_person_ready_to_verify_path }
 
           expect(assigns(:try_again_path)).to eq(idv_in_person_path)
         end
