@@ -113,7 +113,7 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'logs details about failed requests' do
+      it 'logs details about a failed proofing' do
         stub_request_token
         stub_request_failed_proofing_results
 
@@ -141,7 +141,29 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'updates enrollment records and activates profiles on 2xx responses with valid JSON' do
+      it 'sends proofing failed email on response with failed status' do
+        stub_request_token
+        stub_request_failed_proofing_results
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+        user = pending_enrollment.user
+        user.email_addresses.each do |email_address|
+          expect(UserMailer).to receive(:in_person_failed).
+            with(
+              user,
+              email_address,
+              enrollment: instance_of(InPersonEnrollment),
+            ).
+            and_return(mailer)
+        end
+
+        job.perform(Time.zone.now)
+      end
+
+      it 'updates enrollment records and activates profiles on response with passed status' do
         stub_request_token
         stub_request_passed_proofing_results
 
