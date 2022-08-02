@@ -152,7 +152,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_STATUS_FAILED
       enrollment.update(status: :failed)
       handle_failed_status(enrollment, response)
-      send_failure_email(enrollment.user, enrollment)
+      send_failed_email(enrollment.user, enrollment)
     else
       handle_unsupported_status(enrollment, response['status'])
     end
@@ -168,7 +168,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def send_failure_email(user, enrollment)
+  def send_failed_email(user, enrollment)
     user.confirmed_email_addresses.each do |email_address|
       UserMailer.in_person_failed(
         user,
