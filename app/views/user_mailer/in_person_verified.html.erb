@@ -6,8 +6,7 @@
       class: 'float-center padding-bottom-4',
     ) %>
 <h4><%= message.subject %></h4>
-<p>
-<div class="s16">
+<p class="s16">
   <%= t('user_mailer.in_person_verified.greeting') %><br>
   <%= t(
         'user_mailer.in_person_verified.intro',
@@ -15,7 +14,6 @@
         date: @presenter.formatted_verified_date,
       ) %><br /><br />
   <%= t('user_mailer.in_person_verified.next_sign_in', app_name: APP_NAME) %>
-</div>
 </p>
 
 <%= render 'shared/in-person-verification-results-email-lower' %>
