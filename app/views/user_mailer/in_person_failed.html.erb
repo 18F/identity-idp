@@ -5,7 +5,7 @@
         location: @presenter.location_name,
         date: @presenter.formatted_verified_date,
       ) %><br /><br />
-  <%= t('user_mailer.in_person_failed.body') %><br><br />
+  <%= t('user_mailer.in_person_failed.body', app_name: APP_NAME) %><br><br />
   <strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong><br>
   <ul class="usa-list">
     <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>

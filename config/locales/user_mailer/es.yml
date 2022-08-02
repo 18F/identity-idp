@@ -108,7 +108,7 @@ es:
     help_link_text: Centro de Ayuda
     in_person_failed:
       body: Haga clic en el botón o copie el enlace siguiente para volver a intentar
-        verificar su identidad en línea con Login.gov. Si sigue teniendo
+        verificar su identidad en línea con %{app_name}. Si sigue teniendo
         problemas, póngase en contacto con la agencia a la que intenta acceder.
       intro: El %{date}, no se pudo verificar su identidad en la oficina de correos de
         %{location}.

@@ -111,8 +111,8 @@ fr:
     help_link_text: Centre d’aide
     in_person_failed:
       body: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
-        vérifier à nouveau votre identité en ligne par le biais de Login.gov. Si
-        vous rencontrez toujours des problèmes, veuillez contacter l’agence à
+        vérifier à nouveau votre identité en ligne par le biais de %{app_name}.
+        Si vous rencontrez toujours des problèmes, veuillez contacter l’agence à
         laquelle vous essayez d’accéder.
       intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location}
         le %{date}.
