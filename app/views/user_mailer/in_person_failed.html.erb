@@ -1,12 +1,3 @@
-<%= image_tag(
-      'email/user-signup-ial2.png',
-      width: 140,
-      height: 177,
-      alt: '',
-      class: 'float-center padding-bottom-4',
-    ) %>
-<h4><%= message.subject %></h4>
-<p>
 <div class="s16">
   <%= t('user_mailer.in_person_verified.greeting') %><br>
   <%= t(
@@ -15,7 +6,7 @@
         date: @presenter.formatted_verified_date,
       ) %><br /><br />
   <%= t('user_mailer.in_person_failed.body') %><br><br />
-  <%= t('user_mailer.in_person_failed.verifying_identity') %><br>
+  <strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong><br>
   <ul class="usa-list">
     <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
     <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>

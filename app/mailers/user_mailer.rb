@@ -249,7 +249,6 @@ class UserMailer < ActionMailer::Base
 
   def in_person_failed(user, email_address, enrollment:)
     with_user_locale(user) do
-      @hide_title = true
       @presenter = Idv::InPerson::VerificationEmailPresenter.new(enrollment: enrollment)
       mail(
         to: email_address.email,
