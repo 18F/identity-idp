@@ -18,12 +18,7 @@ module Api
 
     def submit
       @form_valid = valid?
-
-      if form_valid?
-        create_profile
-        cache_encrypted_pii
-        complete_session
-      end
+      create_profile if form_valid?
 
       response = FormResponse.new(
         success: form_valid?,
@@ -39,32 +34,37 @@ module Api
 
     def create_profile
       profile_maker = build_profile_maker
-      profile = profile_maker.save_profile
+      profile = profile_maker.save_profile(deactivation_reason: deactivation_reason)
       @profile = profile
       session[:pii] = profile_maker.pii_attributes
       session[:profile_id] = profile.id
       session[:personal_key] = profile.personal_key
+
+      cache_encrypted_pii
+      associate_in_person_enrollment_with_profile
+
+      if user_bundle.gpo_address_verification?
+        create_gpo_entry
+      elsif phone_confirmed?
+        if pending_in_person_enrollment?
+          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
+        else
+          complete_profile
+        end
+      end
+    end
+
+    def deactivation_reason
+      if user_bundle.gpo_address_verification?
+        :gpo_verification_pending
+      elsif phone_confirmed? && pending_in_person_enrollment?
+        :in_person_verification_pending
+      end
     end
 
     def cache_encrypted_pii
       cacher = Pii::Cacher.new(user, session)
       cacher.save(password, profile)
-    end
-
-    def complete_session
-      associate_in_person_enrollment_with_profile
-
-      if user_bundle.gpo_address_verification?
-        profile.deactivate(:gpo_verification_pending)
-        create_gpo_entry
-      elsif phone_confirmed?
-        if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
-          profile.deactivate(:in_person_verification_pending)
-        else
-          complete_profile
-        end
-      end
     end
 
     def associate_in_person_enrollment_with_profile

@@ -36,24 +36,29 @@ describe Idv::Session do
     end
   end
 
-  describe '#complete_session' do
+  describe '#create_profile_from_applicant_with_password' do
+    before do
+      subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+    end
+
     context 'with phone verifed by vendor' do
       before do
         subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = true
+        subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
         allow(subject).to receive(:complete_profile)
       end
 
       it 'completes the profile if the user has completed OTP phone confirmation' do
         subject.user_phone_confirmation = true
-        subject.complete_session
+        subject.create_profile_from_applicant_with_password(user.password)
 
         expect(subject).to have_received(:complete_profile)
       end
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
-        subject.complete_session
+        subject.create_profile_from_applicant_with_password(user.password)
 
         expect(subject).not_to have_received(:complete_profile)
       end
@@ -70,11 +75,10 @@ describe Idv::Session do
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
             same_address_as_id: true,
           ).with_indifferent_access
-          subject.create_profile_from_applicant_with_password(user.password)
         end
 
         it 'sets profile to pending in person verification' do
-          subject.complete_session
+          subject.create_profile_from_applicant_with_password(user.password)
 
           expect(subject).not_to have_received(:complete_profile)
           expect(subject.profile.deactivation_reason).to eq('in_person_verification_pending')
@@ -85,7 +89,7 @@ describe Idv::Session do
             to receive(:schedule_in_person_enrollment).
             with(user, subject.applicant.transform_keys(&:to_s))
 
-          subject.complete_session
+          subject.create_profile_from_applicant_with_password(user.password)
 
           expect(enrollment.reload.profile).to eq(user.profiles.last)
         end
@@ -102,7 +106,7 @@ describe Idv::Session do
       it 'sets profile to pending gpo verification' do
         subject.applicant = {}
         subject.create_profile_from_applicant_with_password(user.password)
-        subject.complete_session
+        subject.create_profile_from_applicant_with_password(user.password)
 
         expect(subject).not_to have_received(:complete_profile)
         expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
@@ -117,7 +121,7 @@ describe Idv::Session do
 
       it 'does not complete the user profile' do
         allow(subject).to receive(:complete_profile)
-        subject.complete_session
+        subject.create_profile_from_applicant_with_password(user.password)
         expect(subject).not_to have_received(:complete_profile)
       end
     end

@@ -87,8 +87,6 @@ module Idv
 
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
-      idv_session.cache_encrypted_pii(password)
-      idv_session.complete_session
 
       if idv_session.profile.active?
         event = create_user_event_with_disavowal(:account_verified)

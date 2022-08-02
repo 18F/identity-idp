@@ -49,10 +49,34 @@ module Idv
 
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
-      profile = profile_maker.save_profile
+      profile = profile_maker.save_profile(deactivation_reason: deactivation_reason)
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
+
+      cache_encrypted_pii(user_password)
+      associate_in_person_enrollment_with_profile
+
+      if address_verification_mechanism == 'gpo'
+        create_gpo_entry
+      elsif phone_confirmed?
+        if pending_in_person_enrollment?
+          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+            current_user,
+            applicant,
+          )
+        else
+          complete_profile
+        end
+      end
+    end
+
+    def deactivation_reason
+      if address_verification_mechanism == 'gpo'
+        :gpo_verification_pending
+      elsif phone_confirmed? && pending_in_person_enrollment?
+        :in_person_verification_pending
+      end
     end
 
     def cache_encrypted_pii(password)
@@ -79,25 +103,6 @@ module Idv
 
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
-    end
-
-    def complete_session
-      associate_in_person_enrollment_with_profile
-
-      if address_verification_mechanism == 'gpo'
-        profile.deactivate(:gpo_verification_pending)
-        create_gpo_entry
-      elsif phone_confirmed?
-        if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-            current_user,
-            applicant,
-          )
-          profile.deactivate(:in_person_verification_pending)
-        else
-          complete_profile
-        end
-      end
     end
 
     def associate_in_person_enrollment_with_profile
