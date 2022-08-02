@@ -122,7 +122,7 @@ RSpec.describe Idv::GpoVerifyController do
         action
       end
 
-      context 'with pending in person enrollment' do
+      context 'with establishing in person enrollment' do
         let(:proofing_components) {
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         }

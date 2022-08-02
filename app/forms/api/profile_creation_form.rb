@@ -52,22 +52,24 @@ module Api
     end
 
     def complete_session
+      associate_in_person_enrollment_with_profile
+
       if user_bundle.gpo_address_verification?
         profile.deactivate(:gpo_verification_pending)
         create_gpo_entry
       elsif phone_confirmed?
         if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
-            user,
-            profile,
-            session[:pii],
-            session.dig(:applicant, :selected_location_details),
-          )
+          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
           profile.deactivate(:in_person_verification_pending)
         else
           complete_profile
         end
       end
+    end
+
+    def associate_in_person_enrollment_with_profile
+      return unless pending_in_person_enrollment? && user.establishing_in_person_enrollment
+      user.establishing_in_person_enrollment.update(profile: profile)
     end
 
     def pending_in_person_enrollment?

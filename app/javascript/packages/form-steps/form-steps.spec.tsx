@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useCallback } from 'react';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
@@ -248,6 +248,43 @@ describe('FormSteps', () => {
     expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'o' });
     expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'on' });
     expect(onChange).to.have.been.calledWith({ changed: true, secondInputOne: 'one' });
+  });
+
+  it('provides set onChange option for non-patch value change', async () => {
+    const steps = [
+      {
+        name: 'first',
+        title: 'First Title',
+        form: ({ onChange, value }) => (
+          <>
+            <button
+              type="button"
+              onClick={useCallback(
+                sinon
+                  .stub()
+                  .onFirstCall()
+                  .callsFake(() => onChange({ a: 1 }))
+                  .onSecondCall()
+                  .callsFake(() => onChange({ b: 2 }, { patch: false })),
+                [],
+              )}
+            >
+              Change Value
+            </button>
+            <span data-testid="value">{JSON.stringify(value)}</span>
+          </>
+        ),
+      },
+    ];
+
+    const { getByRole, getByTestId } = render(<FormSteps steps={steps} />);
+
+    const button = getByRole('button', { name: 'Change Value' });
+    await userEvent.click(button);
+    await userEvent.click(button);
+
+    const value = getByTestId('value');
+    expect(value.textContent).to.equal('{"b":2}');
   });
 
   it('submits with form values', async () => {

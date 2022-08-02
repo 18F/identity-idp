@@ -121,6 +121,56 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_all_in_person_proofing_steps
   end
 
+  context 'with hybrid document capture' do
+    before do
+      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+      allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        @sms_link = config[:link]
+        impl.call(**config)
+      end
+    end
+
+    it 'resumes desktop session with in-person proofing', allow_browser_log: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_send_link_step
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+      end
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        mock_doc_auth_attention_with_barcode
+        attach_and_submit_images
+
+        click_button t('idv.troubleshooting.options.verify_in_person')
+
+        bethesda_location = page.find_all('.location-collection-item')[1]
+        bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+
+        click_idv_continue
+
+        expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        complete_state_id_step(user)
+        complete_address_step(user)
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_review_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_content('BETHESDA')
+      end
+    end
+  end
+
   context 'verify address by mail (GPO letter)' do
     before do
       allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)

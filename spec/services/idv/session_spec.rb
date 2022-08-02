@@ -58,8 +58,10 @@ describe Idv::Session do
         expect(subject).not_to have_received(:complete_profile)
       end
 
-      context 'with pending in person enrollment' do
-        let(:selected_location_details) { { name: 'Example' } }
+      context 'with establishing in person enrollment' do
+        let!(:enrollment) do
+          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        end
 
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -67,7 +69,6 @@ describe Idv::Session do
           subject.user_phone_confirmation = true
           subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
             same_address_as_id: true,
-            selected_location_details: selected_location_details,
           ).with_indifferent_access
           subject.create_profile_from_applicant_with_password(user.password)
         end
@@ -80,17 +81,13 @@ describe Idv::Session do
         end
 
         it 'creates a USPS enrollment' do
-          enrollment_helper = instance_double(UspsInPersonProofing::EnrollmentHelper)
-          allow(UspsInPersonProofing::EnrollmentHelper).to receive(:new).
-            and_return(enrollment_helper)
-          expect(enrollment_helper).to receive(:save_in_person_enrollment).with(
-            user,
-            kind_of(Profile),
-            subject.applicant.transform_keys(&:to_s),
-            selected_location_details,
-          )
+          expect(UspsInPersonProofing::EnrollmentHelper).
+            to receive(:schedule_in_person_enrollment).
+            with(user, subject.applicant.transform_keys(&:to_s))
 
           subject.complete_session
+
+          expect(enrollment.reload.profile).to eq(user.profiles.last)
         end
       end
     end

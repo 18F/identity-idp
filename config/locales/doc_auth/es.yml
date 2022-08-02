@@ -251,6 +251,7 @@ es:
         trasera de su identificación.
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.
+      switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
       text1a: como un teléfono o una computadora.
