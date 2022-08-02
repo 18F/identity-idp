@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Idv::InPerson::VerificationEmailPresenter do
+RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
   let(:location_name) { 'FRIENDSHIP' }
   let(:status_updated_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let!(:enrollment) do
