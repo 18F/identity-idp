@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'idv/session_errors/warning.html.erb' do
   let(:sp_name) { nil }
+  let(:try_again_path) { '/example/path' }
   let(:remaining_attempts) { 5 }
   let(:user_session) { {} }
 
@@ -11,12 +12,13 @@ describe 'idv/session_errors/warning.html.erb' do
     allow(view).to receive(:user_session).and_return(user_session)
 
     assign(:remaining_attempts, remaining_attempts)
+    assign(:try_again_path, try_again_path)
 
     render
   end
 
   it 'shows a primary action' do
-    expect(rendered).to have_link(t('idv.failure.button.warning'), href: idv_doc_auth_path)
+    expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
   end
 
   it 'shows remaining attempts' do
