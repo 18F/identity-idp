@@ -200,18 +200,25 @@ RSpec.describe User do
       create(:profile, :gpo_verification_pending, user: user, pii: { first_name: 'Susan' })
     }
 
-    let!(:enrollment1) { create(:in_person_enrollment, :failed, user: user, profile: profile1) }
-    let!(:enrollment2) { create(:in_person_enrollment, :pending, user: user, profile: profile2) }
+    let!(:failed_enrollment) do
+      create(:in_person_enrollment, :failed, user: user, profile: profile1)
+    end
+    let!(:pending_enrollment) do
+      create(:in_person_enrollment, :pending, user: user, profile: profile2)
+    end
+    let!(:establishing_enrollment) do
+      create(:in_person_enrollment, :establishing, user: user, profile: profile2)
+    end
 
     describe '#in_person_enrollments' do
       it 'returns multiple IPP enrollments' do
-        expect(user.in_person_enrollments).to eq [enrollment1, enrollment2]
+        expect(user.in_person_enrollments).to eq [failed_enrollment, pending_enrollment]
       end
 
       it 'deletes everything and does not result in an error when'\
       ' the user is deleted before the profile' do
-        enrollment_id1 = enrollment1.id
-        enrollment_id2 = enrollment2.id
+        enrollment_id1 = failed_enrollment.id
+        enrollment_id2 = pending_enrollment.id
         profile_id1 = profile1.id
         profile_id2 = profile2.id
         user_id = user.id
@@ -219,8 +226,8 @@ RSpec.describe User do
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: profile_id1)).to eq profile1
         expect(Profile.find_by(id: profile_id2)).to eq profile2
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq failed_enrollment
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq pending_enrollment
         user.destroy
         expect(User.find_by(id: user_id)).to eq nil
         expect(Profile.find_by(id: profile_id1)).to eq nil
@@ -232,8 +239,8 @@ RSpec.describe User do
 
       it 'deletes everything under the profile and does not result in an'\
       ' error when the profile is deleted before the user' do
-        enrollment_id1 = enrollment1.id
-        enrollment_id2 = enrollment2.id
+        enrollment_id1 = failed_enrollment.id
+        enrollment_id2 = pending_enrollment.id
         profile_id1 = profile1.id
         profile_id2 = profile2.id
         user_id = user.id
@@ -241,21 +248,27 @@ RSpec.describe User do
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: profile_id1)).to eq profile1
         expect(Profile.find_by(id: profile_id2)).to eq profile2
-        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq enrollment1
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq failed_enrollment
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq pending_enrollment
         profile1.destroy
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: profile_id1)).to eq nil
         expect(Profile.find_by(id: profile_id2)).to eq profile2
         expect(InPersonEnrollment.find_by(id: enrollment_id1)).to eq nil
-        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq enrollment2
+        expect(InPersonEnrollment.find_by(id: enrollment_id2)).to eq pending_enrollment
         user.destroy # Should work even though first profile was deleted after user was loaded
       end
     end
 
     describe '#pending_in_person_enrollment' do
       it 'returns the pending IPP enrollment' do
-        expect(user.pending_in_person_enrollment).to eq enrollment2
+        expect(user.pending_in_person_enrollment).to eq pending_enrollment
+      end
+    end
+
+    describe '#establishing_in_person_enrollment' do
+      it 'returns the establishing IPP enrollment' do
+        expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
     end
   end
