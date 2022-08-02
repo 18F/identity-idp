@@ -141,6 +141,7 @@ en:
       welcome: Get started verifying your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser.
+      capture_status_big_document: Too Close
       capture_status_capturing: Capturing
       capture_status_none: Align
       capture_status_small_document: Move Closer
