@@ -28,6 +28,7 @@ describe('document-capture/components/acuant-camera', () => {
       text: {
         CAPTURING: 'doc_auth.info.capture_status_capturing',
         GOOD_DOCUMENT: null,
+        BIG_DOCUMENT: 'doc_auth.info.capture_status_big_document',
         NONE: 'doc_auth.info.capture_status_none',
         SMALL_DOCUMENT: 'doc_auth.info.capture_status_small_document',
         TAP_TO_CAPTURE: 'doc_auth.info.capture_status_tap_to_capture',
