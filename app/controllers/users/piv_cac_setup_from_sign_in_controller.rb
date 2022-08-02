@@ -71,6 +71,7 @@ module Users
     def analytics_properties
       {
         in_multi_mfa_selection_flow: false,
+        enabled_mfa_methods_count: MfaContext.new(current_user).enabled_mfa_methods_count,
       }
     end
   end
