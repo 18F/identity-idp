@@ -565,6 +565,27 @@ describe UserMailer, type: :mailer do
     it_behaves_like 'an email that respects user email locale preference'
   end
 
+  describe '#in_person_failed' do
+    let(:enrollment) {
+      create(
+        :in_person_enrollment,
+        selected_location_details: { name: 'FRIENDSHIP' },
+        status_updated_at: Time.zone.now - 2.hours,
+      )
+    }
+
+    let(:mail) do
+      UserMailer.in_person_failed(
+        user,
+        user.email_addresses.first,
+        enrollment: enrollment,
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+  end
+
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end
