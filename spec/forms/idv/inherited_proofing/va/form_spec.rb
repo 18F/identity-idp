@@ -127,7 +127,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
             'Address city field is missing',
             'Address state field is missing',
             'Address country field is missing',
-            'Address zip field is missing'
+            'Address zip field is missing',
           ]
         end
 
@@ -137,9 +137,11 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
 
         it 'adds the correct error messages for missing fields' do
           subject.validate
-          expect(expected_error_messages.all? do |error_message|
-            subject.errors.full_messages.include? error_message
-          end).to eq true
+          expect(
+            expected_error_messages.all? do |error_message|
+              subject.errors.full_messages.include? error_message
+            end,
+          ).to eq true
         end
       end
 
@@ -170,7 +172,7 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
             'Birth date Please fill in this field.',
             'Ssn Please fill in this field.',
             'Address street Please fill in this field.',
-            'Address zip Please fill in this field.'
+            'Address zip Please fill in this field.',
           ]
         end
 
