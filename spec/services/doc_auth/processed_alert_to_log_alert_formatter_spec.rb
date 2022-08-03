@@ -1,3 +1,6 @@
+# Take the proccessed alerts and reformat them in a hash so that its easier to search and collect stats
+# through cloudwatch.
+
 require 'rails_helper'
 
 RSpec.describe DocAuth::ProcessedAlertToLogAlertFormatter do
