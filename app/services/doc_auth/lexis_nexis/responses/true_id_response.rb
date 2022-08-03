@@ -122,21 +122,9 @@ module DocAuth
           @response_info ||= create_response_info
         end
 
-        def log_alerts(alerts)
-          log_alert_results = {}
-          alerts.keys.each do |key|
-            alerts[key.to_sym].each do |alert|
-              side = alert[:side] || 'no_side'
-              log_alert_results[alert[:name].
-                downcase.
-                parameterize(separator: '_').to_sym] = { "#{side}": alert[:result] }
-            end
-          end
-          log_alert_results
-        end
-
         def create_response_info
           alerts = parsed_alerts
+          log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
             liveness_enabled: @liveness_checking_enabled,
@@ -146,7 +134,7 @@ module DocAuth
             doc_auth_result: doc_auth_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
-            log_alert_results: log_alerts(alerts),
+            log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
           }
