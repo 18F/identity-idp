@@ -1,5 +1,5 @@
-# Take the proccessed alerts and reformat them in a hash so that its easier to search and collect stats
-# through cloudwatch.
+# Take the proccessed alerts and reformat them in a hash so that its easier to search and collect
+# stats through cloudwatch.
 
 require 'rails_helper'
 
@@ -18,7 +18,7 @@ RSpec.describe DocAuth::ProcessedAlertToLogAlertFormatter do
 
   context('when ProcessedAlertToLogAlertFormatter is called') do
     subject {
-        DocAuth::ProcessedAlertToLogAlertFormatter.new.log_alerts(alerts)
+      DocAuth::ProcessedAlertToLogAlertFormatter.new.log_alerts(alerts)
     }
 
     it('returns failed if both passed and failed are returned by the alert') do
