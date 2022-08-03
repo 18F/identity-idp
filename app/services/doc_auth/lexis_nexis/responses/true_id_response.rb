@@ -260,9 +260,7 @@ module DocAuth
         end
 
         def parse_date(year:, month:, day:)
-          if year.to_i.positive?
-            Date.new(year.to_i, month.to_i, day.to_i).to_s
-          end
+          Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
         rescue ArgumentError
           message = {
             event: 'Failure to parse TrueID date',
