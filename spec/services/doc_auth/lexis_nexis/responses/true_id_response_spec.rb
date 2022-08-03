@@ -382,7 +382,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'handles a day past the end of the month' do
       expect(Rails.logger).to receive(:info)
-      expect(response.send(:parse_date, year: 2022, month: 4, day: 31) }).to eq(nil)
+      expect(response.send(:parse_date, year: 2022, month: 4, day: 31)).to eq(nil)
     end
   end
 

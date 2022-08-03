@@ -263,7 +263,7 @@ module DocAuth
           if year.to_i.positive?
             Date.new(year.to_i, month.to_i, day.to_i).to_s
           end
-        rescue
+        rescue ArgumentError
           message = {
             event: 'Failure to parse TrueID date',
           }.to_json
