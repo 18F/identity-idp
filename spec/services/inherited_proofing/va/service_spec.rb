@@ -27,21 +27,25 @@ RSpec.describe InheritedProofing::Va::Service do
       let(:auth_code) { 'mocked-auth-code-for-testing' }
 
       it 'makes an authenticated request' do
-        stub = stub_request(:get, request_uri).
-          with(headers: request_headers).
-          to_return(status: 200, body: '{}', headers: {})
+        freeze_time do
+          stub = stub_request(:get, request_uri).
+            with(headers: request_headers).
+            to_return(status: 200, body: '{}', headers: {})
 
-        service.execute
+          service.execute
 
-        expect(stub).to have_been_requested.once
+          expect(stub).to have_been_requested.once
+        end
       end
 
       it 'decrypts the response' do
-        stub_request(:get, request_uri).
-          with(headers: request_headers).
-          to_return(status: 200, body: encrypted_user_attributes, headers: {})
+        freeze_time do
+          stub_request(:get, request_uri).
+            with(headers: request_headers).
+            to_return(status: 200, body: encrypted_user_attributes, headers: {})
 
-        expect(service.execute).to eq user_attributes
+          expect(service.execute).to eq user_attributes
+        end
       end
     end
 
