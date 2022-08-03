@@ -22,10 +22,10 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     Proofing::LexisNexis::Ddp::VerificationRequest.new(
       applicant: applicant,
       config: LexisNexisFixtures.example_config,
-      )
+    )
   end
 
-  #it_behaves_like 'a lexisnexis proofer'
+  # it_behaves_like 'a lexisnexis proofer'
 
   describe '#send' do
     context 'when the request times out' do
@@ -33,9 +33,9 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         stub_request(:post, verification_request.url).to_timeout
 
         expect { verification_request.send }.to raise_error(
-                                                  Proofing::TimeoutError,
-                                                  'LexisNexis timed out waiting for verification response',
-                                                  )
+          Proofing::TimeoutError,
+          'LexisNexis timed out waiting for verification response',
+        )
       end
     end
 

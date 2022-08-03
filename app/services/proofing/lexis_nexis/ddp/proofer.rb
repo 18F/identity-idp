@@ -24,7 +24,7 @@ module Proofing
         end
 
         def send_verification_request(applicant)
-          VerificationRequest.new(config: config, applicant: applicant).send()
+          VerificationRequest.new(config: config, applicant: applicant).send
         end
       end
     end

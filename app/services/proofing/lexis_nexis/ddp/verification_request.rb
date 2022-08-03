@@ -10,16 +10,18 @@ module Proofing
             account_address_street2: applicant[:address2] || '',
             account_address_city: applicant[:city],
             account_address_state: applicant[:state],
-            account_address_country: "US",
+            account_address_country: 'US',
             account_address_zip: applicant[:zipcode].match(/^\d{5}/).to_s,
             account_date_of_birth: Date.parse(applicant[:dob]).strftime('%Y%m%d'),
             account_email: applicant[:email],
             account_first_name: applicant[:first_name],
             account_last_name: applicant[:last_name],
             account_telephone: applicant[:phone],
-            drivers_license_number_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:state_id_number].gsub(/\D/, '')),
-            event_type: "ACCOUNT_CREATION",
-            service_type: "all",
+            drivers_license_number_hash: OpenSSL::Digest::SHA256.hexdigest(
+              applicant[:state_id_number].gsub(/\D/, '')
+            ),
+            event_type: 'ACCOUNT_CREATION',
+            service_type: 'all',
             session_id: applicant[:session_id],
             ssn_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:ssn].gsub(/\D/, '')),
           }.to_json
