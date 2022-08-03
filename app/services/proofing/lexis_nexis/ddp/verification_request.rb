@@ -18,7 +18,7 @@ module Proofing
             account_last_name: applicant[:last_name],
             account_telephone: applicant[:phone],
             drivers_license_number_hash: OpenSSL::Digest::SHA256.hexdigest(
-              applicant[:state_id_number].gsub(/\D/, '')
+              applicant[:state_id_number].gsub(/\D/, ''),
             ),
             event_type: 'ACCOUNT_CREATION',
             service_type: 'all',
