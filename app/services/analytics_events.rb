@@ -997,6 +997,25 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
   # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [String] set_errors JSON encoded representation of SET errors from the client
