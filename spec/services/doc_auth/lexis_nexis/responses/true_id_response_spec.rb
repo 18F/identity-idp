@@ -373,6 +373,25 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
+  describe '#parse_date' do
+    let(:response) { described_class.new(success_response, false, config) }
+
+    it 'handles an invalid month' do
+      expect(Rails.logger).to receive(:info)
+      expect(response.send(:parse_date, year: 2022, month: 13, day: 1)).to eq(nil)
+    end
+
+    it 'handles an invalid leap day' do
+      expect(Rails.logger).to receive(:info)
+      expect(response.send(:parse_date, year: 2022, month: 2, day: 29)).to eq(nil)
+    end
+
+    it 'handles a day past the end of the month' do
+      expect(Rails.logger).to receive(:info)
+      expect(response.send(:parse_date, year: 2022, month: 4, day: 31)).to eq(nil)
+    end
+  end
+
   describe '#attention_with_barcode?' do
     let(:response) { described_class.new(success_response, false, config) }
     subject(:attention_with_barcode) { response.attention_with_barcode? }
