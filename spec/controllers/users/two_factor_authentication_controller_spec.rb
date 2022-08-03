@@ -297,7 +297,7 @@ describe Users::TwoFactorAuthenticationController do
         )
       end
 
-      it 'tracks the events' do
+      it 'tracks the analytics events' do
         stub_analytics
 
         analytics_hash = {
@@ -322,6 +322,13 @@ describe Users::TwoFactorAuthenticationController do
 
         get :send_code, params: { otp_delivery_selection_form:
                                   { otp_delivery_preference: 'sms', resend: 'true' } }
+      end
+
+      it 'tracks the verification attempt event' do
+        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_sent)
+
+        get :send_code, params: { otp_delivery_selection_form:
+          { otp_delivery_preference: 'sms' } }
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -493,6 +500,16 @@ describe Users::TwoFactorAuthenticationController do
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
         )
+      end
+
+      it 'tracks the enrollment attempt event' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+
+        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_enrollment_otp_sent)
+        
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
 
       it 'rate limits confirmation OTPs on sign up' do

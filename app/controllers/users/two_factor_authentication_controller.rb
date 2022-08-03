@@ -210,6 +210,19 @@ module Users
         telephony_response: @telephony_result.to_h,
         success: @telephony_result.success?,
       )
+
+      # Should reauthentication fire a different attempt event?
+      if UserSessionContext.authentication_context?(context) || UserSessionContext.reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_phone_verification_otp_sent(
+          phone_number: parsed_phone.e164,
+          success: @telephony_result.success?,
+        )
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_phone_enrollment_otp_sent(
+          phone_number: parsed_phone.e164,
+          success: @telephony_result.success?,
+        )
+      end
     end
 
     def exceeded_otp_send_limit?
