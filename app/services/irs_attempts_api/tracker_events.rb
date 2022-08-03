@@ -24,6 +24,15 @@ module IrsAttemptsApi
       )
     end
 
+        # Tracks when the user has attempted to enroll the MFA method TOTP to their account
+    # @param [Integer] enabled_mfa_methods_count number of registered mfa methods for the user
+    def multi_factor_auth_enroll_totp(success:)
+      track_event(
+        :totp_enroll,
+        success: success,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
@@ -38,7 +47,6 @@ module IrsAttemptsApi
         success: success,
         email: email,
         failure_reason: failure_reason,
-      )
-    end
+
   end
 end

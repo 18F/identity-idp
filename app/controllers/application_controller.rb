@@ -80,7 +80,10 @@ class ApplicationController < ActionController::Base
     effective_user || AnonymousUser.new
   end
 
+  attr_writer :irs_attempts_api_tracker
+
   def irs_attempts_api_tracker
+    return @irs_attempts_api_tracker if @irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
       session_id: irs_attempts_api_session_id,
       enabled_for_session: irs_attempt_api_enabled_for_session?,
