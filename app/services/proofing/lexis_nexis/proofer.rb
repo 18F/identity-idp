@@ -4,6 +4,7 @@ module Proofing
   module LexisNexis
     class Proofer < Proofing::Base
       Config = RedactedStruct.new(
+        :ddp_workflow,
         :instant_verify_workflow,
         :phone_finder_workflow,
         :account_id,

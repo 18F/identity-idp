@@ -123,6 +123,8 @@ lexisnexis_base_url: https://www.example.com
 lexisnexis_request_mode: testing
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
+lexisnexis_ddp_timeout: 1.0
+lexisnexis_ddp_workflow: customers.gsa.ddp.workflow
 lexisnexis_username: test_username
 lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
