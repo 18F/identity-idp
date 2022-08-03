@@ -11,6 +11,7 @@ module LexisNexisFixtures
         password: 'test_password',
         instant_verify_workflow: 'customers.gsa.instant.verify.workflow',
         phone_finder_workflow: 'customers.gsa.phonefinder.workflow',
+        ddp_workflow: 'customers.gsa.ddp.workflow',
       )
     end
 
