@@ -36,9 +36,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:failure_response_malformed) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_malformed)
   end
-  let(:failure_response_bad_dob) do
-    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_bad_dob)
-  end
   let(:attention_barcode_read) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
   end
@@ -338,12 +335,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output).to include(:backtrace)
     end
 
-    it 'produces reasonable output for a bad DOB in the TrueID response' do
-      bad_response = described_class.new(failure_response_bad_dob, false, config)
-
-      expect { bad_response.pii_from_doc }.not_to raise_error
-    end
-
     it 'is not billed' do
       output = described_class.new(failure_response_empty, false, config).to_h
 
@@ -373,6 +364,22 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'does not throw an exception when getting pii from doc' do
       allow(response).to receive(:pii).and_return(bad_pii)
       expect { response.pii_from_doc }.not_to raise_error
+    end
+  end
+
+  describe '#parse_date' do
+    let(:response) { described_class.new(success_response, false, config) }
+
+    it 'has an invalid month' do
+      expect { response.send(:parse_date, year: 2022, month: 13, day: 1) }.not_to raise_error
+    end
+
+    it 'has an invalid leap day' do
+      expect { response.send(:parse_date, year: 2022, month: 2, day: 29) }.not_to raise_error
+    end
+
+    it 'has a day past the end of the month' do
+      expect { response.send(:parse_date, year: 2022, month: 4, day: 31) }.not_to raise_error
     end
   end
 
