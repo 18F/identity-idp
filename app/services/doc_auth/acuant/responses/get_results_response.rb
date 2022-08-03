@@ -53,13 +53,14 @@ module DocAuth
         def create_response_info
           alerts = processed_alerts
 
+          log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
           {
             vendor: 'Acuant',
             billed: result_code.billed,
             doc_auth_result: result_code.name,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
-            log_alert_results: log_alerts(alerts),
+            log_alert_results: log_alert_formatter.log_alerts(alerts),
             image_metrics: processed_image_metrics,
             tamper_result: tamper_result_code&.name,
           }
@@ -93,37 +94,6 @@ module DocAuth
 
         def processed_alerts
           @processed_alerts ||= process_raw_alerts(raw_alerts)
-        end
-
-        def get_alert_result(log_alert_results, side, alert_name_key, result)
-          if log_alert_results.dig(alert_name_key, side.to_sym).present?
-            alert_value = log_alert_results[alert_name_key][side.to_sym]
-            Rails.logger.
-              info("ALERT ALREADY HAS A VALUE: #{alert_value}, #{result}")
-          end
-          result
-        end
-
-        def log_alerts(alerts)
-          log_alert_results = {}
-
-          alerts.keys.each do |key|
-            alerts[key.to_sym].each do |alert|
-              alert_name_key = alert[:name].
-                downcase.
-                parameterize(separator: '_').to_sym
-              side = alert[:side] || 'no_side'
-
-              log_alert_results[alert_name_key] =
-                { "#{side}": get_alert_result(
-                  log_alert_results,
-                  side,
-                  alert_name_key,
-                  alert[:result],
-                ) }
-            end
-          end
-          log_alert_results
         end
 
         def processed_image_metrics
