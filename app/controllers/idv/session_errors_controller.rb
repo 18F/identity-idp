@@ -7,7 +7,9 @@ module Idv
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
 
-    def exception; end
+    def exception
+      @in_person_flow = in_person_flow?
+    end
 
     def warning
       @remaining_attempts = Throttle.new(
@@ -56,11 +58,15 @@ module Idv
     end
 
     def set_try_again_path
-      if params[:from]&.starts_with? idv_in_person_path
+      if in_person_flow?
         @try_again_path = idv_in_person_path
       else
         @try_again_path = idv_doc_auth_path
       end
+    end
+
+    def in_person_flow?
+      params[:flow] == 'in_person'
     end
   end
 end

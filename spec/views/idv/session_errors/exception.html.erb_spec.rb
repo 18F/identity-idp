@@ -6,6 +6,7 @@ describe 'idv/session_errors/exception.html.erb' do
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuers) { [] }
   let(:try_again_path) { '/example/path' }
+  let(:in_person_flow) { false }
 
   before do
     decorated_session = instance_double(
@@ -20,6 +21,7 @@ describe 'idv/session_errors/exception.html.erb' do
       and_return(in_person_proofing_enabled_issuers)
 
     assign(:try_again_path, try_again_path)
+    assign(:in_person_flow, in_person_flow)
 
     render
   end
@@ -47,6 +49,14 @@ describe 'idv/session_errors/exception.html.erb' do
         t('idv.troubleshooting.options.verify_in_person'),
         href: idv_in_person_url,
       )
+    end
+
+    context 'while already in in-person flow' do
+      let(:in_person_flow) { true }
+
+      it 'does not render an in person proofing link' do
+        expect(rendered).not_to have_link(href: idv_in_person_url)
+      end
     end
   end
 

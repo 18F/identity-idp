@@ -64,6 +64,45 @@ module Idv
         flow_session.delete(:pii_from_user)
       end
 
+      def throttle
+        @throttle ||= Throttle.new(
+          user: current_user,
+          throttle_type: :idv_resolution,
+        )
+      end
+
+      def idv_failure(result)
+        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
+        if throttle.throttled?
+          @flow.analytics.throttler_rate_limit_triggered(
+            throttle_type: :idv_resolution,
+            step_name: self.class.name,
+          )
+          redirect_to idv_session_errors_failure_url
+        elsif result.extra.dig(:proofing_results, :exception).present?
+          @flow.analytics.idv_doc_auth_exception_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          redirect_to exception_url
+        else
+          @flow.analytics.idv_doc_auth_warning_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          redirect_to warning_url
+        end
+        result
+      end
+
+      def exception_url
+        idv_session_errors_exception_url
+      end
+
+      def warning_url
+        idv_session_errors_warning_url
+      end
+
       def idv_success(idv_result)
         idv_result[:success]
       end

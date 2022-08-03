@@ -99,9 +99,7 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 4,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_warning_path)
 
     click_on t('idv.failure.button.warning')
 
@@ -120,9 +118,14 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 5,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_exception_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_exception_path)
+
+    # Cheap check to ensure the in-person proofing option should be visible, but only if the feature
+    # is enabled.
+    expect(page).not_to have_link(href: idv_in_person_url)
+    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    visit current_path
+    expect(page).to have_link(href: idv_in_person_url)
 
     click_on t('idv.failure.button.warning')
 
@@ -136,9 +139,7 @@ feature 'doc auth verify step', :js do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(
-        idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-      )
+      expect(page).to have_current_path(idv_session_errors_warning_path)
       visit idv_doc_auth_verify_step
     end
     click_idv_continue
