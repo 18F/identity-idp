@@ -12,6 +12,7 @@ module Idv
       def extra_view_variables
         {
           updating_ssn: flow_session.dig(:pii_from_doc, :ssn).present?,
+          threatmetrix_session_id: threatmetrix_session_id,
         }
       end
 
@@ -28,6 +29,12 @@ module Idv
       def invalid_state_response
         mark_step_incomplete(:document_capture)
         FormResponse.new(success: false)
+      end
+
+      private
+
+      def threatmetrix_session_id
+        SecureRandom.uuid
       end
     end
   end
