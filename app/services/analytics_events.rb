@@ -642,7 +642,7 @@ module AnalyticsEvents
     track_event(
       'IdV: USPS address letter requested',
       enqueued_at: enqueued_at,
-      **extra
+      **extra,
     )
   end
 
