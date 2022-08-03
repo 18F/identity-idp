@@ -47,6 +47,7 @@ feature 'Analytics Regression', js: true do
       ),
     }
   end
+  let(:now) { Time.zone.now }
   let(:gpo_path_events) do
     common_events = {
       'IdV: intro visited' => {},
@@ -72,7 +73,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth verify_wait visited' => { flow_path: 'standard', step: 'verify_wait', step_count: 1 },
       'IdV: doc auth optional verify_wait submitted' => { success: true, errors: {}, address_edited: false, proofing_results: { messages: [], exception: nil, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc', timed_out: false, context: { dob_year_only: false, should_proof_state_id: true, stages: { resolution: { client: 'ResolutionMock', errors: {}, exception: nil, success: true, timed_out: false, transaction_id: 'resolution-mock-transaction-id-123', reference: 'aaa-bbb-ccc' }, state_id: { client: 'StateIdMock', errors: {}, success: true, timed_out: false, exception: nil, transaction_id: 'state-id-mock-transaction-id-456', state: 'MT', state_id_jurisdiction: 'ND' } } } }, ssn_is_unique: true, step: 'verify_wait_step_show' },
       'IdV: phone of record visited' => {},
-      'IdV: USPS address letter requested' => { enqueued_at: Time.zone.now },
+      'IdV: USPS address letter requested' => { enqueued_at: now },
     }
     {
       FSMv1: common_events,
