@@ -260,7 +260,7 @@ module DocAuth
         end
 
         def parse_date(year:, month:, day:)
-          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
+          if year.to_i.positive?
             Date.new(year.to_i, month.to_i, day.to_i).to_s
           end
         rescue
