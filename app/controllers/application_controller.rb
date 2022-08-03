@@ -270,14 +270,9 @@ class ApplicationController < ActionController::Base
     flash[:error] = t('errors.general')
     begin
       redirect_back fallback_location: new_user_session_url, allow_other_host: false
-    rescue
+    rescue ActionController::Redirecting::UnsafeRedirectError => err
       # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
-      analytics.unsafe_redirect_error(
-        controller: controller_info,
-        user_signed_in: user_signed_in?,
-        referer: request.referer,
-      )
-      redirect_to new_user_session_url
+      unsafe_redirect_error(err)
     end
   end
 
