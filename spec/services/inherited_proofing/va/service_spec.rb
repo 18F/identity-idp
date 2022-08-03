@@ -7,20 +7,14 @@ RSpec.shared_examples 'an invalid auth code error is raised' do
 end
 
 RSpec.describe InheritedProofing::Va::Service do
+  include_context 'va_api_context'
+  include_context 'va_user_context'
+
   subject(:service) { described_class.new auth_code }
 
   before do
     allow(service).to receive(:private_key).and_return(private_key)
   end
-
-  let(:auth_code) {}
-  let(:private_key) { private_key_from_store_or(file_name: 'va_ip.key') }
-  let(:payload) { { inherited_proofing_auth: auth_code, exp: 1.day.from_now.to_i } }
-  let(:jwt_token) { JWT.encode(payload, private_key, 'RS256') }
-  let(:request_uri) {
-    "#{InheritedProofing::Va::Service::BASE_URI}/inherited_proofing/user_attributes"
-  }
-  let(:request_headers) { { Authorization: "Bearer #{jwt_token}" } }
 
   it { respond_to :execute }
 
@@ -40,6 +34,14 @@ RSpec.describe InheritedProofing::Va::Service do
         service.execute
 
         expect(stub).to have_been_requested.once
+      end
+
+      it 'decrypts the response' do
+        stub_request(:get, request_uri).
+          with(headers: request_headers).
+          to_return(status: 200, body: encrypted_user_attributes, headers: {})
+
+        expect(service.execute).to eq user_attributes
       end
     end
 
