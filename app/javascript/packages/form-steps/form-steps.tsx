@@ -39,9 +39,9 @@ type FormValues = Record<string, any>;
 
 export interface FormStepComponentProps<V> {
   /**
-   * Update values, merging with existing values.
+   * Update values, merging with existing values if configured as a patch.
    */
-  onChange: (nextValues: Partial<V>) => void;
+  onChange: (nextValues: Partial<V>, options?: { patch: boolean }) => void;
 
   /**
    * Trigger a field error.
@@ -426,11 +426,15 @@ function FormSteps({
           value={values}
           errors={activeErrors}
           unknownFieldErrors={unknownFieldErrors}
-          onChange={ifStillMounted((nextValuesPatch) => {
+          onChange={ifStillMounted((nextValues, { patch } = { patch: true }) => {
             setActiveErrors((prevActiveErrors) =>
-              prevActiveErrors.filter(({ field }) => !field || !(field in nextValuesPatch)),
+              prevActiveErrors.filter(({ field }) => !field || !(field in nextValues)),
             );
-            setPatchValues(nextValuesPatch);
+            if (patch) {
+              setPatchValues(nextValues);
+            } else {
+              setValues(nextValues);
+            }
           })}
           onError={ifStillMounted((error, { field } = {}) => {
             if (field) {

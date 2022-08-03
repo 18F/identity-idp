@@ -116,7 +116,13 @@ RSpec.describe Idv::GpoVerifyController do
         expect(response).to redirect_to(sign_up_completed_url)
       end
 
-      context 'with pending in person enrollment' do
+      it 'dispatches account verified alert' do
+        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+        action
+      end
+
+      context 'with establishing in person enrollment' do
         let(:proofing_components) {
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         }
@@ -139,6 +145,12 @@ RSpec.describe Idv::GpoVerifyController do
           action
 
           expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+        end
+
+        it 'does not dispatch account verified alert' do
+          expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
+
+          action
         end
       end
     end

@@ -17,6 +17,7 @@ describe Idv::SessionsController do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/doc_auth'] = flow_session
+      controller.user_session['idv/in_person'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
 
@@ -26,6 +27,7 @@ describe Idv::SessionsController do
       delete :destroy
 
       expect(controller.user_session['idv/doc_auth']).to be_blank
+      expect(controller.user_session['idv/in_person']).to be_blank
       expect(controller.user_session[:decrypted_pii]).to be_blank
     end
 

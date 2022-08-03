@@ -12,6 +12,7 @@ module Idv
         location: location_params[:location],
       )
       user_session['idv/doc_auth'] = {}
+      user_session['idv/in_person'] = {}
       idv_session.clear
       Pii::Cacher.new(current_user, user_session).delete
       redirect_to idv_url

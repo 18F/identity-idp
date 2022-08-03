@@ -5,6 +5,7 @@ describe 'idv/session_errors/exception.html.erb' do
   let(:sp_issuer) { nil }
   let(:in_person_proofing_enabled) { false }
   let(:in_person_proofing_enabled_issuers) { [] }
+  let(:try_again_path) { '/example/path' }
 
   before do
     decorated_session = instance_double(
@@ -18,11 +19,13 @@ describe 'idv/session_errors/exception.html.erb' do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled_issuers).
       and_return(in_person_proofing_enabled_issuers)
 
+    assign(:try_again_path, try_again_path)
+
     render
   end
 
   it 'shows a primary action' do
-    expect(rendered).to have_link(t('idv.failure.button.warning'), href: idv_doc_auth_path)
+    expect(rendered).to have_link(t('idv.failure.button.warning'), href: try_again_path)
   end
 
   it 'renders a list of troubleshooting options' do

@@ -278,6 +278,8 @@ class IdentityConfig
     config.add(:platform_authentication_enabled, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(:proofing_device_profiling_collecting_enabled, type: :boolean)
+    config.add(:proofing_device_profiling_decisioning_enabled, type: :boolean)
     config.add(:proofing_send_partial_dob, type: :boolean)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
@@ -373,6 +375,7 @@ class IdentityConfig
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
+    config.add(:inherited_proofing_va_base_url, type: :string)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)

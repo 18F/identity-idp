@@ -35,6 +35,7 @@ class TwoFactorOptionsForm
   def extra_analytics_attributes
     {
       selection: selection,
+      selected_mfa_count: selection.count,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
   end

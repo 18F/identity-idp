@@ -196,6 +196,8 @@ piv_cac_verify_token_url: https://localhost:8443/
 platform_authentication_enabled: true
 poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
+proofing_device_profiling_collecting_enabled: false
+proofing_device_profiling_decisioning_enabled: false
 proofing_send_partial_dob: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
@@ -281,6 +283,7 @@ voice_otp_speech_rate: 'slow'
 voip_check: true
 voip_block: true
 voip_allowed_phones: '[]'
+inherited_proofing_va_base_url: 'https://staging-api.va.gov'
 
 development:
   aamva_private_key: 123abc
@@ -380,8 +383,6 @@ production:
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
-  enable_numeric_authentication_otp: false
-  enable_numeric_authentication_otp_input: false
   enable_test_routes: false
   enable_usps_verification: false
   hmac_fingerprinter_key:

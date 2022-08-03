@@ -68,6 +68,7 @@ describe Api::Verify::PasswordConfirmController do
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
+        let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
@@ -246,23 +247,25 @@ describe Api::Verify::PasswordConfirmController do
           expect(InPersonEnrollment.count).to be(0)
           post :create, params: { password: password, user_bundle_token: jwt }
 
-          expect(InPersonEnrollment.count).to be(1)
-          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          enrollment.reload
+
           expect(enrollment.status).to eq('pending')
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)
+          expect(enrollment.profile).to eq(user.profiles.last)
+          expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
         end
 
         it 'leaves the enrollment in establishing when no enrollment code is returned' do
           proofer = UspsInPersonProofing::Mock::Proofer.new
           expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
           expect(proofer).to receive(:request_enroll).and_return({})
-          expect(InPersonEnrollment.count).to be(0)
 
           post :create, params: { password: password, user_bundle_token: jwt }
 
+          enrollment.reload
+
           expect(InPersonEnrollment.count).to be(1)
-          enrollment = InPersonEnrollment.where(user_id: user.id).first
           expect(enrollment.status).to eq('establishing')
           expect(enrollment.user_id).to be(user.id)
           expect(enrollment.enrollment_code).to be_nil
