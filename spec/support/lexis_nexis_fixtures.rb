@@ -103,6 +103,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness_low_dpi.json')
     end
 
+    def true_id_response_bad_dob
+      read_fixture_file_at_path('true_id/true_id_response_bad_dob.json')
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)

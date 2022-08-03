@@ -260,9 +260,32 @@ module DocAuth
         end
 
         def parse_date(year:, month:, day:)
-          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
-            Date.new(year.to_i, month.to_i, day.to_i).to_s
-          end
+          year_i = year.to_i
+          month_i = month.to_i
+          day_i = day.to_i
+
+          year_valid = year_i.positive?
+          month_valid = month_i > 0 && month_i <= 12
+          day_valid = case month_i
+                      when 4, 6, 9, 11
+                        day_i > 0 && day_i <= 30
+                      when 1, 3, 5, 7, 8, 10, 12
+                        day_i > 0 && day_i <= 31
+                      else
+                        max_day = Date.leap?(year_i) ? 29 : 28
+                        day_i > 0 && day_i <= max_day
+                      end
+
+          return Date.new(year_i, month_i, day_i).to_s if year_valid && month_valid && day_valid
+
+          message = {
+            event: 'Failure to parse TrueID date',
+            year_valid: year_valid,
+            month_valid: month_valid,
+            day_valid: day_valid,
+          }.to_json
+          Rails.logger.info(message)
+          nil
         end
       end
     end

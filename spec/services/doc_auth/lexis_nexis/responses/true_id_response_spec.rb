@@ -36,6 +36,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:failure_response_malformed) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_malformed)
   end
+  let(:failure_response_bad_dob) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_bad_dob)
+  end
   let(:attention_barcode_read) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
   end
@@ -333,6 +336,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
+    end
+
+    it 'produces reasonable output for a bad DOB in the TrueID response' do
+      bad_response = described_class.new(failure_response_bad_dob, false, config)
+
+      expect { bad_response.pii_from_doc }.not_to raise_error
     end
 
     it 'is not billed' do
