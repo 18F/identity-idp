@@ -18,7 +18,6 @@ describe 'idv/shared/_ssn.html.erb' do
     "https://#{js_domain}/fp/tags?org_id=#{lexisnexis_threatmetrix_account_id}&session_id=#{session_id}"
   }
 
-
   let (:script_tag_rendered) {
     expect(rendered).to have_css("script[src='#{tags_js_url}']", :visible => false)    
   }
@@ -28,7 +27,7 @@ describe 'idv/shared/_ssn.html.erb' do
   }
 
   let (:session_id_input_rendered) {
-    expect(rendered).to have_css("input[type=hidden][name='session_id'][value='#{session_id}']", :visible => false)
+    expect(rendered).to have_css("input[type=hidden][name='doc_auth[threatmetrix_session_id]'][value='#{session_id}']", :visible => false)
   }
 
   let (:script_tag_not_rendered) {
@@ -40,19 +39,19 @@ describe 'idv/shared/_ssn.html.erb' do
   }
 
   let (:session_id_input_not_rendered) {
-    expect(rendered).not_to have_css('input[name="session_id"]', :visible => false)
+    expect(rendered).not_to have_css('input[name="doc_auth[threatmetrix_session_id]"]', :visible => false)
   }
 
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')
-    allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled?).and_return(proofing_device_profiling_collecting_enabled)
+    
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).and_return(proofing_device_profiling_collecting_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_account_id).and_return(lexisnexis_threatmetrix_account_id)
 
     render partial: 'idv/shared/ssn', locals: {
       flow_session: {},
       success_alert_enabled: false,
-
-      session_id: session_id,
+      threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
     }
   end
