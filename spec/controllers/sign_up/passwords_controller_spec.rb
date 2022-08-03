@@ -24,8 +24,7 @@ describe SignUp::PasswordsController do
         :user_registration_email_confirmation,
         email: user.email_addresses.first.email,
         success: true,
-        errors: {},
-        error_details: nil,
+        failure_reason: nil,
       )
       expect(@analytics).to receive(:track_event).
         with('Password Creation', analytics_hash)
@@ -95,8 +94,7 @@ describe SignUp::PasswordsController do
         :user_registration_email_confirmation,
         email: user.email_addresses.first.email,
         success: true,
-        errors: {},
-        error_details: nil,
+        failure_reason: nil,
       )
 
       expect(@analytics).to receive(:track_event).

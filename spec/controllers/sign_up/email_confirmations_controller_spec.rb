@@ -21,8 +21,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: nil,
         success: false,
-        errors: { confirmation_token: ['not found'] },
-        error_details: { confirmation_token: [:not_found] },
+        failure_reason: { confirmation_token: [:not_found] },
       )
 
       get :create, params: { confirmation_token: nil }
@@ -46,8 +45,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: nil,
         success: false,
-        errors: { confirmation_token: ['not found'] },
-        error_details: { confirmation_token: [:not_found] },
+        failure_reason: { confirmation_token: [:not_found] },
       )
 
       get :create, params: { confirmation_token: '' }
@@ -71,8 +69,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: nil,
         success: false,
-        errors: { confirmation_token: ['not found'] },
-        error_details: { confirmation_token: [:not_found] },
+        failure_reason: { confirmation_token: [:not_found] },
       )
 
       get :create, params: { confirmation_token: "''" }
@@ -96,8 +93,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: nil,
         success: false,
-        errors: { confirmation_token: ['not found'] },
-        error_details: { confirmation_token: [:not_found] },
+        failure_reason: { confirmation_token: [:not_found] },
       )
 
       get :create, params: { confirmation_token: '""' }
@@ -123,8 +119,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: email_address.email,
         success: false,
-        errors: { email: [t('errors.messages.already_confirmed')] },
-        error_details: { email: [t('errors.messages.already_confirmed')] },
+        failure_reason: { email: [:already_confirmed] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -155,8 +150,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: email_address.email,
         success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: { confirmation_token: [:expired] },
+        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -189,8 +183,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: email_address.email,
         success: false,
-        errors: { confirmation_token: [t('errors.messages.expired')] },
-        error_details: { confirmation_token: [:expired] },
+        failure_reason: { confirmation_token: [:expired] },
       )
 
       get :create, params: { confirmation_token: 'foo' }
@@ -226,8 +219,7 @@ describe SignUp::EmailConfirmationsController do
         :user_registration_email_confirmation,
         email: email_address.email,
         success: true,
-        errors: {},
-        error_details: nil,
+        failure_reason: nil,
       )
 
       get :create, params: { confirmation_token: 'foo' }

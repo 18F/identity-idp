@@ -28,8 +28,7 @@ module UnconfirmedUserConcern
     irs_attempts_api_tracker.user_registration_email_confirmation(
       email: @email_address.email,
       success: false,
-      errors: { email: [t('errors.messages.already_confirmed')] },
-      error_details: { email: [t('errors.messages.already_confirmed')] },
+      failure_reason: { email: [:already_confirmed] },
     )
   end
 
@@ -39,8 +38,7 @@ module UnconfirmedUserConcern
     irs_attempts_api_tracker.user_registration_email_confirmation(
       email: @email_address&.email,
       success: result.success?,
-      errors: result.errors,
-      error_details: result.to_h[:error_details],
+      failure_reason: result.to_h[:error_details],
     )
     return if result.success?
     process_unsuccessful_confirmation
