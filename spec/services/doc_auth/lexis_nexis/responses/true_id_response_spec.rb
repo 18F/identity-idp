@@ -377,17 +377,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     let(:response) { described_class.new(success_response, false, config) }
 
     it 'handles an invalid month' do
-      expect(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
       expect(response.send(:parse_date, year: 2022, month: 13, day: 1)).to eq(nil)
     end
 
     it 'handles an invalid leap day' do
-      expect(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
       expect(response.send(:parse_date, year: 2022, month: 2, day: 29)).to eq(nil)
     end
 
     it 'handles a day past the end of the month' do
-      expect(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
       expect(response.send(:parse_date, year: 2022, month: 4, day: 31)).to eq(nil)
     end
   end
