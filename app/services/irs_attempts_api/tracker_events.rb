@@ -27,7 +27,7 @@ module IrsAttemptsApi
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
-    # @param [String] failure_reason
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def user_registration_email_confirmation(
       success:,
       email: nil,
