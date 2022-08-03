@@ -636,7 +636,7 @@ module AnalyticsEvents
   end
 
   # GPO address letter requested
-  # @param [Datetime] enqueued_at
+  # @param [DateTime] enqueued_at
   # GPO letter was requested and time was recorded
   def idv_gpo_address_letter_requested(enqueued_at:)
     track_event(
