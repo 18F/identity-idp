@@ -68,26 +68,6 @@ describe Idv::SessionErrorsController do
     subject(:response) { get action, params: params }
 
     it_behaves_like 'an idv session errors controller action'
-
-    context 'signed in' do
-      let(:user) { build(:user) }
-
-      it 'sets in_person_flow local assign' do
-        response
-
-        expect(assigns(:in_person_flow)).to eq(false)
-      end
-
-      context 'in in-person proofing flow' do
-        let(:params) { { flow: 'in_person' } }
-
-        it 'sets in_person_flow local assign' do
-          response
-
-          expect(assigns(:in_person_flow)).to eq(true)
-        end
-      end
-    end
   end
 
   describe '#warning' do
