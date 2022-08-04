@@ -1,6 +1,5 @@
 module IrsAttemptsApiTrackingHelper
   class FakeAttemptsTracker
-
     include IrsAttemptsApi::TrackerEvents
 
     attr_reader :events

@@ -117,7 +117,7 @@ describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-          
+
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:totp_enroll, success: false)
         end
@@ -154,7 +154,7 @@ describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-          
+
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:totp_enroll, success: true)
         end
@@ -192,7 +192,7 @@ describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-          
+
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:totp_enroll, success: false)
         end
@@ -231,7 +231,7 @@ describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-          
+
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:totp_enroll, success: false)
         end
@@ -333,7 +333,7 @@ describe Users::TotpSetupController, devise: true do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', result)
-            
+
             expect(@irs_attempts_api_tracker).to have_received(:track_event).
               with(:totp_enroll, success:  true)
           end
@@ -369,7 +369,7 @@ describe Users::TotpSetupController, devise: true do
 
           expect(@analytics).to have_received(:track_event).
             with('Multi-Factor Authentication Setup', result)
-          
+
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
             with(:totp_enroll, success: false)
         end

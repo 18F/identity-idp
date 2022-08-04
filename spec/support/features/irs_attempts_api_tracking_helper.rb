@@ -30,7 +30,7 @@ module IrsAttemptsApiTrackingHelper
     irs_attempts_api_tracker = FakeAttemptsTracker.new
 
     allow(controller).to receive(:irs_attempts_api_tracker).and_return(irs_attempts_api_tracker)
-    
+
     @irs_attempts_api_tracker = irs_attempts_api_tracker
   end
 end

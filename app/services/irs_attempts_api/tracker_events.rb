@@ -47,6 +47,7 @@ module IrsAttemptsApi
         success: success,
         email: email,
         failure_reason: failure_reason,
-
+      )
+    end
   end
 end
