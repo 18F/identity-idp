@@ -2,8 +2,12 @@ module Idv
   class InPersonController < ApplicationController
     before_action :render_404_if_disabled
     before_action :confirm_two_factor_authenticated
+    before_action :redirect_unless_enrollment
 
+    include IdvSession
     include Flow::FlowStateMachine
+
+    before_action :redirect_if_session_applicant
 
     FSM_SETTINGS = {
       step_url: :idv_in_person_step_url,
@@ -16,6 +20,14 @@ module Idv
 
     def render_404_if_disabled
       render_not_found unless InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
+    end
+
+    def redirect_unless_enrollment
+      redirect_to idv_url unless current_user.establishing_in_person_enrollment
+    end
+
+    def redirect_if_session_applicant
+      flow_finish if idv_session.applicant
     end
   end
 end
