@@ -59,17 +59,17 @@ SimpleForm.setup do |config|
     b.wrapper :memorable_date, tag: 'div', class:'usa-memorable-date' do |md|
       md.wrapper :memorable_month, tag: 'div', class: 'usa-form-group usa-form-group--month' do |mdl|
         mdl.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :label_text 
+          ba.use :month_label
         end
       end
       md.wrapper :memorable_day, tag: 'div', class: 'usa-form-group usa-form-group--day' do |mdd|
         mdd.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :label_text
+          ba.use :day_label
         end
       end
       md.wrapper :memorable_year, tag: 'div', class: 'usa-form-group usa-form-group--year' do |mdy|
         mdy.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :label_text
+          ba.use :year_label
         end
       end
     end
