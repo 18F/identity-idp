@@ -6,6 +6,7 @@ import {
   LocationCollection,
   SpinnerDots,
 } from '@18f/identity-components';
+import BackLink from './back-link';
 
 interface PostOffice {
   address: string;
@@ -186,6 +187,7 @@ function InPersonLocationStep({ onChange }) {
 
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       <LocationCollection>{locationItems}</LocationCollection>
+      <BackLink/>
     </>
   );
 }
