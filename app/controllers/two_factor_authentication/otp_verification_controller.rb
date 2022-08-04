@@ -84,6 +84,21 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_setup(**properties) if context == 'confirmation'
 
       analytics.track_mfa_submit_event(properties)
+
+#      puts "############ Was the MFA Successful? - #{properties[:success]} ###########"
+#      puts "############ IS UserSessionContext authentication? - #{UserSessionContext.authentication_context?(context)} ##########"
+#      puts "############ IS UserSessionContext confirmation? - #{UserSessionContext.confirmation_context?(context)} ##########"
+#      puts "############ IS UserSessionContext reauthentication? - #{UserSessionContext.reauthentication_context?(context)} ##########"
+
+      if UserSessionContext.authentication_context?(context) || UserSessionContext.reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_phone_verification_otp_submitted(
+          success: properties[:success]
+        )
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_phone_enrollment_otp_submitted(
+          success: properties[:success]
+        )
+      end
     end
 
     def analytics_properties

@@ -98,6 +98,15 @@ module IrsAttemptsApi
         success: success,
       )
     end
+    
+    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # During a login attempt, the user, having previously been sent an OTP code via SMS, has entered an OTP code.
+    def mfa_phone_verification_otp_submitted(success:)
+      track_event(
+        :mfa_phone_verification_otp_submitted,
+        success: success,
+      )
+    end
 
     # Tracks when user has attempted to verify via the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
@@ -165,6 +174,15 @@ module IrsAttemptsApi
         success: success,
         email: email,
         failure_reason: failure_reason,
+      )
+    end
+    
+    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # The user, after having previously been sent an OTP code during phone enrollment, has been asked to submit that code.
+    def mfa_phone_enrollment_otp_submitted(success:)
+      track_event(
+        :mfa_phone_enrollment_otp_submitted,
+        success: success,
       )
     end
   end

@@ -372,6 +372,11 @@ describe TwoFactorAuthentication::OtpVerificationController do
             end
             expect(@mailer).to have_received(:deliver_now_or_later)
           end
+
+          it 'tracks the appropriate attempt event with success: true' do
+            expect(subject.user_session[:context]).to eq 'authentication'
+            expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted)
+          end
         end
 
         context 'user enters an invalid code' do
