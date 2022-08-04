@@ -31,9 +31,8 @@ module Idv
         FormResponse.new(success: false)
       end
 
-      private
-
       def threatmetrix_session_id
+        return nil if !IdentityConfig.store.proofing_device_profiling_collecting_enabled
         SecureRandom.uuid
       end
     end

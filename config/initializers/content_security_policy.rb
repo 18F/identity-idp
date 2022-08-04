@@ -22,10 +22,12 @@ Rails.application.config.content_security_policy do |policy|
     '*.nr-data.net',
     'dap.digitalgov.gov',
     '*.google-analytics.com',
-    'h-api.online-metrix.net',
-    'h.online-metrix.net',
     IdentityConfig.store.asset_host.presence,
   ].compact
+
+  if IdentityConfig.store.proofing_device_profiling_collecting_enabled
+    script_src << 'h.online-metrix.net'
+  end
 
   script_src = [:self, :unsafe_eval] if !Rails.env.production?
 
