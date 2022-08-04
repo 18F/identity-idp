@@ -28,8 +28,8 @@ locals:
   <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
-<% if IdentityConfig.store.proofing_device_profiling_collecting_enabled && !updating_ssn %>
-  <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? %>
+<% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
+  <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? || updating_ssn %>
     <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_account_id %>&session_id=<%= threatmetrix_session_id %>">
     </script>
     <noscript>
@@ -56,8 +56,8 @@ locals:
       html: { autocomplete: 'off' },
     ) do |f| %>
   <div class="tablet:grid-col-8">
-    <% if IdentityConfig.store.proofing_device_profiling_collecting_enabled && !updating_ssn %>
-      <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? %>
+    <% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
+      <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? || updating_ssn %>
         <%= f.hidden_field :threatmetrix_session_id, value: threatmetrix_session_id %>
       <% end %>
     <% end %>
