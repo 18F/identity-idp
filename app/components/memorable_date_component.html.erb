@@ -1,53 +1,76 @@
-<fieldset class='usa-fieldset'>
+<lg-validated-field class='usa-fieldset'>
+<%= content_tag(
+        :script,
+        error_messages.to_json,
+        {
+          type: 'application/json',
+          class: 'validated-field__error-strings',
+        },
+        false,
+      ) %>
     <label class="usa-label">     
         <%= @label %>
     </label>
     <span class="usa-hint" id="dob_hint">
         <%= @hint %>
     </span>
-    <div class="usa-memorable-date">
-        <div class="usa-form-group usa-form-group--month">
-            <label class="usa-label" for="dob_month">
-                <%= t('in_person_proofing.form.state_id.month') %>
-            </label>
-            <input
-            class="usa-input"
-            aria-describedby="dob_hint"
-            id="dob_month"
-            name="dob_month"
-            maxlength="2"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            />
+    <%# this forms memorable date layout as expected using form #%>
+          <div class="usa-memorable-date">
+          <%= f.input(
+            :month,
+            pattern: '^\d{2}$',
+            maxlength: 2,
+            wrapper_html: { class: 'usa-form-group usa-form-group--month'},
+            label_html: { class: 'usa-label' },
+            input_html: {
+                type: 'number',
+                class: 'usa-input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+            error: { id: "validated-field-error-#{unique_id}" },
+        ) %>
+        <%= f.input(
+            :day,
+            pattern: '^\d{2}$',
+            maxlength: 2,
+            wrapper_html: { class: 'usa-form-group usa-form-group--day'},
+            label_html: { class: 'usa-label' },
+            input_html: {
+                class: 'usa-input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+            error: { id: "validated-field-error-#{unique_id}" },
+        ) %>
+        <%= f.input(
+            :year,
+            pattern: '^\d{2}$',
+            maxlength: 2,
+            wrapper_html: { class: 'usa-form-group usa-form-group--year'},
+            label_html: { class: 'usa-label' },
+            input_html: {
+                class: 'usa-input',
+            aria: {
+                invalid: false,
+                describedby: "validated-field-error-#{unique_id}",
+            },
+            },
+            error: { id: "validated-field-error-#{unique_id}" },
+        ) %>
         </div>
-        <div class="usa-form-group usa-form-group--day">
-            <label class="usa-label" for="dob_day">
-                <%= t('in_person_proofing.form.state_id.day') %>
-            </label>
-            <input
-            class="usa-input"
-            aria-describedby="dob_hint"
-            id="dob_day"
-            name="dob_day"
-            maxlength="2"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            />
-        </div>
-        <div class="usa-form-group usa-form-group--year">
-            <label class="usa-label" for="dob_year">
-                <%= t('in_person_proofing.form.state_id.year') %>
-            </label>
-            <input
-            class="usa-input"
-            aria-describedby="dob_hint"
-            id="dob_year"
-            name="dob_year"
-            minlength="4"
-            maxlength="4"
-            pattern="[0-9]*"
-            inputmode="numeric"
-            />
-        </div>
-    </div>
-</fieldset>
+        <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
+
+        <%# this is the wrapper that's in progress #%>
+        <%= f.input(
+            :date,
+            label: t("in_person_proofing.form.state_id.month"),
+            wrapper: :uswds_memorable_date, 
+        ) %>
+        <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
+       
+</lg-validated-field>

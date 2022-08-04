@@ -9,3 +9,8 @@ en:
       mark: ''
       text: This field is required
     'yes': 'Yes'
+    labels:
+      uswds_memorable_date:
+        memorable_month: 'Month'
+        memorable_day: 'Day'
+        memorable_year: 'Year'

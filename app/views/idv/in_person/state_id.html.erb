@@ -39,6 +39,14 @@
         ) %>
   </div>
 
+  <%= render MemorableDateComponent.new( 
+        day: :day, 
+        month: :month, 
+        year: :year, 
+        hint: t('in_person_proofing.form.state_id.dob_hint'), 
+        label:t('in_person_proofing.form.state_id.dob'), 
+        form: f,
+       ) %>
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
           name: :dob,
