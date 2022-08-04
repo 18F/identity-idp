@@ -211,9 +211,15 @@ module Users
         success: @telephony_result.success?,
       )
 
-      # Should reauthentication fire a different attempt event?
-      if UserSessionContext.authentication_context?(context) || UserSessionContext.reauthentication_context?(context)
+      if UserSessionContext.authentication_context?(context)
         irs_attempts_api_tracker.mfa_phone_verification_otp_sent(
+          reauthentication: false,
+          phone_number: parsed_phone.e164,
+          success: @telephony_result.success?,
+        )
+      elsif UserSessionContext.reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_phone_verification_otp_sent(
+          reauthentication: true,
           phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
         )
