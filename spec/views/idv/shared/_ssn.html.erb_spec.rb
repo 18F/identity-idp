@@ -56,9 +56,10 @@ describe 'idv/shared/_ssn.html.erb' do
       to receive(:lexisnexis_threatmetrix_account_id).and_return(lexisnexis_threatmetrix_account_id)
 
     render partial: 'idv/shared/ssn', locals: {
-      flow_session: {},
+      flow_session: {
+        threatmetrix_session_id: session_id,
+      },
       success_alert_enabled: false,
-      threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
     }
   end
@@ -79,12 +80,6 @@ describe 'idv/shared/_ssn.html.erb' do
             noscript_tag_rendered
           end
         end
-
-        describe 'session_id input' do
-          it 'is rendered' do
-            session_id_input_rendered
-          end
-        end
       end
 
       context 'updating ssn already entered' do
@@ -95,9 +90,6 @@ describe 'idv/shared/_ssn.html.erb' do
         end
         it 'does not render <noscript> tag' do
           noscript_tag_not_rendered
-        end
-        it 'does not render session_id input' do
-          session_id_input_not_rendered
         end
       end
     end
@@ -111,9 +103,6 @@ describe 'idv/shared/_ssn.html.erb' do
       it 'does not render <noscript> tag' do
         noscript_tag_not_rendered
       end
-      it 'does not render session_id input' do
-        session_id_input_not_rendered
-      end
     end
   end
 
@@ -125,9 +114,6 @@ describe 'idv/shared/_ssn.html.erb' do
     end
     it 'does not render <noscript> tag' do
       noscript_tag_not_rendered
-    end
-    it 'does not render session_id input' do
-      session_id_input_not_rendered
     end
   end
 end

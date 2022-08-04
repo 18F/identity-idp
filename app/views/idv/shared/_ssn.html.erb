@@ -30,10 +30,10 @@ locals:
 
 <% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
   <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? || updating_ssn %>
-    <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_account_id %>&session_id=<%= threatmetrix_session_id %>">
+    <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_account_id %>&session_id=<%= flow_session[:threatmetrix_session_id] %>">
     </script>
     <noscript>
-      <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/fp/tags?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_account_id %>&session_id=<%= threatmetrix_session_id %>">
+      <iframe style="width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;" src="https://h.online-metrix.net/fp/tags?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_account_id %>&session_id=<%= flow_session[:threatmetrix_session_id] %>">
       </iframe>
     </noscript>
   <% end %>
@@ -56,11 +56,6 @@ locals:
       html: { autocomplete: 'off' },
     ) do |f| %>
   <div class="tablet:grid-col-8">
-    <% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
-      <% unless IdentityConfig.store.lexisnexis_threatmetrix_account_id.empty? || updating_ssn %>
-        <%= f.hidden_field :threatmetrix_session_id, value: threatmetrix_session_id %>
-      <% end %>
-    <% end %>
     <%= render 'shared/ssn_field', f: f %>
   </div>
 
