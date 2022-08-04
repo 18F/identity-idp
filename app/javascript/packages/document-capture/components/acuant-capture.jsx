@@ -282,9 +282,8 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
-  const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
-    FailedCaptureAttemptsContext,
-  );
+  const { failedCaptureAttempts, onFailedCaptureAttempt, onResetFailedCaptureAttempts } =
+    useContext(FailedCaptureAttemptsContext);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -390,6 +389,9 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
+      if (failedCaptureAttempts >= 2) {
+        return forceUpload();
+      }
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
         isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
