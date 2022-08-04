@@ -70,6 +70,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
         reason: 'Request exception',
         enrollment_id: enrollment.id,
+        enrollment_code: enrollment.enrollment_code,
         exception_class: err.class.to_s,
         exception_message: err.message,
       )
@@ -80,6 +81,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       reason: 'Request exception',
       enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
       exception_class: err.class.to_s,
       exception_message: err.message,
     )
@@ -89,6 +91,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       reason: 'Bad response structure',
       enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
     )
   end
 
@@ -96,6 +99,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Unsupported status',
       enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
       status: status,
     )
   end
@@ -104,6 +108,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Unsupported ID type',
       enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
       primary_id_type: primary_id_type,
     )
   end
@@ -112,15 +117,22 @@ class GetUspsProofingResultsJob < ApplicationJob
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
       reason: 'Failed status',
       enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
       failure_reason: response['failureReason'],
       fraud_suspected: response['fraudSuspected'],
       primary_id_type: response['primaryIdType'],
-      proofing_city: response['proofingCity'],
-      proofing_post_office: response['proofingPostOffice'],
       proofing_state: response['proofingState'],
       secondary_id_type: response['secondaryIdType'],
       transaction_end_date_time: response['transactionEndDateTime'],
       transaction_start_date_time: response['transactionStartDateTime'],
+    )
+  end
+
+  def handle_successful_status_update(enrollment)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_success(
+      reason: 'Successful status update',
+      enrollment_id: enrollment.id,
+      enrollment_code: enrollment.enrollment_code,
     )
   end
 
@@ -130,6 +142,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       if SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         enrollment.profile.activate
         enrollment.update(status: :passed)
+        handle_successful_status_update(enrollment)
+        send_verified_email(enrollment.user, enrollment)
       else
         # Unsupported ID type
         enrollment.update(status: :failed)
@@ -138,8 +152,29 @@ class GetUspsProofingResultsJob < ApplicationJob
     when IPP_STATUS_FAILED
       enrollment.update(status: :failed)
       handle_failed_status(enrollment, response)
+      send_failed_email(enrollment.user, enrollment)
     else
       handle_unsupported_status(enrollment, response['status'])
+    end
+  end
+
+  def send_verified_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.in_person_verified(
+        user,
+        email_address,
+        enrollment: enrollment,
+      ).deliver_now_or_later
+    end
+  end
+
+  def send_failed_email(user, enrollment)
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.in_person_failed(
+        user,
+        email_address,
+        enrollment: enrollment,
+      ).deliver_now_or_later
     end
   end
 end

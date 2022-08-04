@@ -9,7 +9,7 @@ class InPersonEnrollment < ApplicationRecord
     passed: 2,
     failed: 3,
     expired: 4,
-    canceled: 5,
+    cancelled: 5,
   }
 
   validate :profile_belongs_to_user
@@ -51,7 +51,9 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def profile_belongs_to_user
-    unless profile&.user == user
+    return unless profile.present?
+
+    unless profile.user == user
       errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
                  type: :in_person_enrollment_user_profile_mismatch
     end

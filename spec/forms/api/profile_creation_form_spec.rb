@@ -78,6 +78,35 @@ RSpec.describe Api::ProfileCreationForm do
 
           expect(stored_pii['first_name']).to eq 'Ada'
         end
+
+        context 'with establishing in person enrollment' do
+          let!(:enrollment) do
+            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          end
+
+          before do
+            ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          end
+
+          it 'sets profile to pending in person verification' do
+            subject.submit
+            profile = user.profiles.first
+
+            expect(profile.active?).to be false
+            expect(profile.deactivation_reason).to eq('in_person_verification_pending')
+          end
+
+          it 'saves in person enrollment' do
+            expect(UspsInPersonProofing::EnrollmentHelper).
+              to receive(:schedule_in_person_enrollment).
+              with(user, Pii::Attributes.new_from_hash(pii))
+
+            subject.submit
+
+            expect(enrollment.reload.profile).to eq(user.profiles.last)
+          end
+        end
       end
 
       context 'with the user having verified their address via GPO letter' do
@@ -92,6 +121,7 @@ RSpec.describe Api::ProfileCreationForm do
           profile = user.profiles.first
 
           expect(profile.active?).to be false
+          expect(profile.deactivation_reason).to eq('gpo_verification_pending')
         end
 
         it 'moves the pii to the user_session' do
@@ -119,6 +149,21 @@ RSpec.describe Api::ProfileCreationForm do
             gpo_code = GpoConfirmation.last.entry[:otp]
 
             expect(subject.gpo_code).to eq(gpo_code)
+          end
+        end
+
+        context 'with establishing in person enrollment' do
+          before do
+            ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          end
+
+          it 'does not activate the user profile' do
+            subject.submit
+            profile = user.profiles.first
+
+            expect(profile.active?).to be false
+            expect(profile.deactivation_reason).to eq('gpo_verification_pending')
           end
         end
       end

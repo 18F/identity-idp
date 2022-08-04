@@ -128,6 +128,12 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        user_uuid: controller.current_user.uuid,
+        unique_session_id: controller.current_user.unique_session_id,
+        success: true,
+      )
+
       get :destroy
       expect(controller.current_user).to be nil
     end
@@ -145,6 +151,12 @@ describe Users::SessionsController, devise: true do
       )
 
       sign_in_as_user
+
+      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+        user_uuid: controller.current_user.uuid,
+        unique_session_id: controller.current_user.unique_session_id,
+        success: true,
+      )
 
       delete :destroy
       expect(controller.current_user).to be nil
@@ -316,7 +328,7 @@ describe Users::SessionsController, devise: true do
         user = create(:user, :signed_up)
         create(
           :profile,
-          deactivation_reason: :verification_pending,
+          deactivation_reason: :gpo_verification_pending,
           user: user, pii: { ssn: '1234' }
         )
 
@@ -564,7 +576,7 @@ describe Users::SessionsController, devise: true do
       it 'redirects to the verify profile page' do
         profile = create(
           :profile,
-          deactivation_reason: :verification_pending,
+          deactivation_reason: :gpo_verification_pending,
           pii: { ssn: '6666', dob: '1920-01-01' },
         )
         user = profile.user

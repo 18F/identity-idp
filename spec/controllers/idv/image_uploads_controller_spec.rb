@@ -159,6 +159,7 @@ describe Idv::ImageUploadsController do
             success: false,
             errors: [{ field: 'front', message: 'Please fill in this field.' }],
             remaining_attempts: Throttle.max_attempts(:idv_doc_auth) - 2,
+            result_failed: false,
             ocr_pii: nil,
           },
         )
@@ -176,6 +177,7 @@ describe Idv::ImageUploadsController do
             errors: [{ field: 'limit', message: 'We could not verify your ID' }],
             redirect: idv_session_errors_throttled_url,
             remaining_attempts: 0,
+            result_failed: false,
             ocr_pii: nil,
           },
         )

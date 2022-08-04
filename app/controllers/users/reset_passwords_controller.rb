@@ -111,9 +111,15 @@ module Users
     end
 
     def handle_successful_password_reset
+      send_password_reset_risc_event
       create_reset_event_and_send_notification
       flash[:info] = t('devise.passwords.updated_not_active') if is_flashing_format?
       redirect_to new_user_session_url
+    end
+
+    def send_password_reset_risc_event
+      event = PushNotification::PasswordResetEvent.new(user: resource)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def handle_unsuccessful_password_reset(result)

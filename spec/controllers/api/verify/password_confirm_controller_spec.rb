@@ -60,6 +60,14 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with in person profile' do
+        let(:applicant) {
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+        }
+        let(:stub_idv_session) do
+          stub_user_with_applicant_data(user, applicant)
+        end
+        let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+
         before do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -106,30 +114,47 @@ describe Api::Verify::PasswordConfirmController do
           post :create, params: { password: password, user_bundle_token: jwt }
         end
 
-        it 'creates an in-person enrollment record' do
-          expect(InPersonEnrollment.count).to be(0)
+        it 'updates in-person enrollment record to associate profile' do
           post :create, params: { password: password, user_bundle_token: jwt }
 
-          expect(InPersonEnrollment.count).to be(1)
-          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          enrollment.reload
+
           expect(enrollment.status).to eq('pending')
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)
+          expect(enrollment.profile).to eq(user.profiles.last)
+          expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
         end
 
         it 'leaves the enrollment in establishing when no enrollment code is returned' do
           proofer = UspsInPersonProofing::Mock::Proofer.new
           expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
           expect(proofer).to receive(:request_enroll).and_return({})
-          expect(InPersonEnrollment.count).to be(0)
 
           post :create, params: { password: password, user_bundle_token: jwt }
 
+          enrollment.reload
+
           expect(InPersonEnrollment.count).to be(1)
-          enrollment = InPersonEnrollment.where(user_id: user.id).first
           expect(enrollment.status).to eq('establishing')
-          expect(enrollment.user_id).to eq(user.id)
+          expect(enrollment.user_id).to be(user.id)
           expect(enrollment.enrollment_code).to be_nil
+        end
+
+        it 'sends ready to verify email' do
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          user.email_addresses.each do |email_address|
+            expect(UserMailer).to receive(:in_person_ready_to_verify).
+              with(
+                user,
+                email_address,
+                enrollment: instance_of(InPersonEnrollment),
+                first_name: kind_of(String),
+              ).
+              and_return(mailer)
+          end
+
+          post :create, params: { password: password, user_bundle_token: jwt }
         end
       end
 
@@ -146,7 +171,13 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with pending profile' do
-        let(:jwt_metadata) { { vendor_phone_confirmation: false, user_phone_confirmation: false } }
+        let(:jwt_metadata) do
+          {
+            vendor_phone_confirmation: false,
+            user_phone_confirmation: false,
+            address_verification_mechanism: 'gpo',
+          }
+        end
 
         it 'creates a profile and returns completion url' do
           post :create, params: { password: password, user_bundle_token: jwt }
@@ -155,6 +186,13 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         context 'with in person profile' do
+          let(:applicant) {
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+          }
+          let(:stub_idv_session) do
+            stub_user_with_applicant_data(user, applicant)
+          end
+
           before do
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

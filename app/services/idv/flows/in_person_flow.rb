@@ -16,6 +16,7 @@ module Idv
       }.freeze
 
       ACTIONS = {
+        cancel_update_ssn: Idv::Actions::Ipp::CancelUpdateSsnAction,
         redo_state_id: Idv::Actions::Ipp::RedoStateIdAction,
         redo_address: Idv::Actions::Ipp::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
@@ -41,7 +42,10 @@ module Idv
         @idv_session = self.class.session_idv(session)
         super(controller, STEPS, ACTIONS, session[name])
         @flow_session ||= {}
-        @flow_session[:pii_from_user] ||= {}
+        @flow_session[:pii_from_user] ||= { uuid: current_user.uuid }
+        # there may be data in @idv_session to copy to @flow_session
+        applicant = @idv_session['applicant'] || {}
+        @flow_session[:pii_from_user] = @flow_session[:pii_from_user].to_h.merge(applicant)
       end
 
       def self.session_idv(session)

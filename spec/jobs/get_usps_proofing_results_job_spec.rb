@@ -17,16 +17,36 @@ RSpec.describe GetUspsProofingResultsJob do
       let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
 
       let!(:pending_enrollment) do
-        create(:in_person_enrollment, status: :pending, enrollment_code: SecureRandom.hex(16))
+        create(
+          :in_person_enrollment,
+          status: :pending,
+          enrollment_code: SecureRandom.hex(16),
+          selected_location_details: { name: 'FRIENDSHIP' },
+        )
       end
       let!(:pending_enrollment_2) do
-        create(:in_person_enrollment, status: :pending, enrollment_code: SecureRandom.hex(16))
+        create(
+          :in_person_enrollment,
+          status: :pending,
+          enrollment_code: SecureRandom.hex(16),
+          selected_location_details: { name: 'BALTIMORE' },
+        )
       end
       let!(:pending_enrollment_3) do
-        create(:in_person_enrollment, status: :pending, enrollment_code: SecureRandom.hex(16))
+        create(
+          :in_person_enrollment,
+          status: :pending,
+          enrollment_code: SecureRandom.hex(16),
+          selected_location_details: { name: 'WASHINGTON' },
+        )
       end
       let!(:pending_enrollment_4) do
-        create(:in_person_enrollment, status: :pending, enrollment_code: SecureRandom.hex(16))
+        create(
+          :in_person_enrollment,
+          status: :pending,
+          enrollment_code: SecureRandom.hex(16),
+          selected_location_details: { name: 'ARLINGTON' },
+        )
       end
       let(:pending_enrollments) do
         [
@@ -93,7 +113,7 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'logs details about failed requests' do
+      it 'logs details about a failed proofing' do
         stub_request_token
         stub_request_failed_proofing_results
 
@@ -110,11 +130,10 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Failed status',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           failure_reason: 'Clerk indicates that ID name or address does not match source data.',
           fraud_suspected: false,
           primary_id_type: 'Uniformed Services identification card',
-          proofing_city: 'WILKES BARRE',
-          proofing_post_office: 'WILKES BARRE',
           proofing_state: 'PA',
           secondary_id_type: 'Deed of Trust',
           transaction_end_date_time: '12/17/2020 034055',
@@ -122,7 +141,29 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'updates enrollment records and activates profiles on 2xx responses with valid JSON' do
+      it 'sends proofing failed email on response with failed status' do
+        stub_request_token
+        stub_request_failed_proofing_results
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+        user = pending_enrollment.user
+        user.email_addresses.each do |email_address|
+          expect(UserMailer).to receive(:in_person_failed).
+            with(
+              user,
+              email_address,
+              enrollment: instance_of(InPersonEnrollment),
+            ).
+            and_return(mailer)
+        end
+
+        job.perform(Time.zone.now)
+      end
+
+      it 'updates enrollment records and activates profiles on response with passed status' do
         stub_request_token
         stub_request_passed_proofing_results
 
@@ -139,7 +180,36 @@ RSpec.describe GetUspsProofingResultsJob do
             expected_range.cover?(timestamp)
           end
           expect(enrollment.profile.active).to be(true)
+
+          expect(job_analytics).to have_logged_event(
+            'GetUspsProofingResultsJob: Enrollment passed proofing',
+            reason: 'Successful status update',
+            enrollment_id: enrollment.id,
+            enrollment_code: enrollment.enrollment_code,
+          )
         end
+      end
+
+      it 'sends verifed email on 2xx responses with valid JSON' do
+        stub_request_token
+        stub_request_passed_proofing_results
+
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+        user = pending_enrollment.user
+        user.email_addresses.each do |email_address|
+          expect(UserMailer).to receive(:in_person_verified).
+            with(
+              user,
+              email_address,
+              enrollment: instance_of(InPersonEnrollment),
+            ).
+            and_return(mailer)
+        end
+
+        job.perform(Time.zone.now)
       end
 
       it 'receives a non-hash value' do
@@ -152,6 +222,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Bad response structure',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -172,6 +243,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Unsupported status',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           status: 'Not supported',
         )
       end
@@ -193,6 +265,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -213,6 +286,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -257,6 +331,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Exception raised',
           reason: 'Request exception',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
         )
       end
 
@@ -277,6 +352,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment failed proofing',
           reason: 'Unsupported ID type',
           enrollment_id: pending_enrollment.id,
+          enrollment_code: pending_enrollment.enrollment_code,
           primary_id_type: 'Not supported',
         )
       end

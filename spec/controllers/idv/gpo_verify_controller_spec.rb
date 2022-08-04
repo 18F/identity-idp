@@ -5,7 +5,15 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
-  let(:pending_profile) { build(:profile) }
+  let(:pending_profile) {
+    create(
+      :profile,
+      :with_pii,
+      user: user,
+      proofing_components: proofing_components,
+    )
+  }
+  let(:proofing_components) { nil }
   let(:user) { create(:user) }
 
   before do
@@ -96,6 +104,7 @@ RSpec.describe Idv::GpoVerifyController do
           'IdV: GPO verification submitted',
           success: true,
           errors: {},
+          pending_in_person_enrollment: false,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
 
@@ -105,6 +114,44 @@ RSpec.describe Idv::GpoVerifyController do
           where.not(disavowal_token_fingerprint: nil).count
         expect(disavowal_event_count).to eq 1
         expect(response).to redirect_to(sign_up_completed_url)
+      end
+
+      it 'dispatches account verified alert' do
+        expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+        action
+      end
+
+      context 'with establishing in person enrollment' do
+        let(:proofing_components) {
+          ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+        }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(controller).to receive(:pii).
+            and_return(user.pending_profile.decrypt_pii(user.password).to_h)
+        end
+
+        it 'redirects to ready to verify screen' do
+          expect(@analytics).to receive(:track_event).with(
+            'IdV: GPO verification submitted',
+            success: true,
+            errors: {},
+            pending_in_person_enrollment: true,
+            pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+          )
+
+          action
+
+          expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+        end
+
+        it 'does not dispatch account verified alert' do
+          expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
+
+          action
+        end
       end
     end
 
@@ -116,6 +163,7 @@ RSpec.describe Idv::GpoVerifyController do
           'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          pending_in_person_enrollment: false,
           error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
@@ -142,6 +190,7 @@ RSpec.describe Idv::GpoVerifyController do
           'IdV: GPO verification submitted',
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
+          pending_in_person_enrollment: false,
           error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times

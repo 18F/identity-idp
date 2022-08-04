@@ -997,6 +997,25 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
   # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
   # @param [Integer] rendered_event_count how many events were rendered in the API response
   # @param [String] set_errors JSON encoded representation of SET errors from the client
@@ -1325,10 +1344,16 @@ module AnalyticsEvents
 
   # Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
-  def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [integer] enabled_mfa_methods_count
+  def multi_factor_auth_setup(multi_factor_auth_method:,
+                              enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                              **extra)
     track_event(
       'Multi-Factor Authentication Setup',
       multi_factor_auth_method: multi_factor_auth_method,
+      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
   end
@@ -2094,11 +2119,13 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
     errors: nil,
+    selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
     **extra
@@ -2108,8 +2135,24 @@ module AnalyticsEvents
       {
         success: success,
         errors: errors,
+        selected_mfa_count: selected_mfa_count,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         selection: selection,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # @param [String] mfa_method
+  # Tracks when the the user fully registered by submitting their first MFA method into the system
+  def user_registration_user_fully_registered(
+    mfa_method:,
+    **extra
+  )
+    track_event(
+      'User Registration: User Fully Registered',
+      {
+        mfa_method: mfa_method,
         **extra,
       }.compact,
     )
@@ -2345,6 +2388,18 @@ module AnalyticsEvents
   def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
     track_event(
       'GetUspsProofingResultsJob: Enrollment failed proofing',
+      reason: reason,
+      enrollment_id: enrollment_id,
+      **extra,
+    )
+  end
+
+  # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
+  # @param [String] reason why did this enrollment pass?
+  # @param [String] enrollment_id
+  def idv_in_person_usps_proofing_results_job_enrollment_success(reason:, enrollment_id:, **extra)
+    track_event(
+      'GetUspsProofingResultsJob: Enrollment passed proofing',
       reason: reason,
       enrollment_id: enrollment_id,
       **extra,

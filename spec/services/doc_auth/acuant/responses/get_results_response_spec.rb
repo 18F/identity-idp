@@ -162,6 +162,40 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       expect(response.result_code.billed?).to eq(false)
     end
 
+    context 'when visiual_pattern passes and fails' do
+      let(:http_response) do
+        [1, 2].each do |index|
+          parsed_response_body['Alerts'] << {
+            Key: 'Visible Pattern',
+            Name: 'Visible Pattern',
+            RegionReferences: [],
+            Result: index,
+          }
+        end
+
+        instance_double(
+          Faraday::Response,
+          body: parsed_response_body.to_json,
+        )
+      end
+
+      it 'returns log_alert_results for visible_pattern with multiple results comma separated' do
+        expect(response.to_h[:processed_alerts]).to eq(
+          passed: [{ name: 'Visible Pattern', result: 'Passed' }],
+          failed:
+            [{ name: 'Document Classification',
+               result: 'Failed' },
+             { name: 'Visible Pattern',
+               result: 'Failed' }],
+        )
+
+        expect(response.to_h[:log_alert_results]).to eq(
+          { visible_pattern: { no_side: 'Failed' },
+            document_classification: { no_side: 'Failed' } },
+        )
+      end
+    end
+
     context 'when with an acuant error message' do
       let(:http_response) do
         parsed_response_body['Alerts'].first['Disposition'] = 'This message does not have a key'

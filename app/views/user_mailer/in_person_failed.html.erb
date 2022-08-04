@@ -1,0 +1,20 @@
+<div class="s16">
+  <%= t('user_mailer.in_person_verified.greeting') %><br>
+  <p class="s16">
+    <%= t(
+          'user_mailer.in_person_failed.intro',
+          location: @presenter.location_name,
+          date: @presenter.formatted_verified_date,
+        ) %>
+  </p>
+  <p class="s16">
+    <%= t('user_mailer.in_person_failed.body', app_name: APP_NAME) %><br><br />
+  </p>
+  <strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong><br>
+  <ul class="usa-list">
+    <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
+    <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>
+  </ul>
+</div>
+
+<%= render 'shared/in-person-verification-results-email-lower' %>

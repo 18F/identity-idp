@@ -1,5 +1,16 @@
 module UspsInPersonProofing
   PostOffice = Struct.new(
-    :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
+    :address,
+    :city,
+    :distance,
+    :name,
+    :phone,
+    :saturday_hours,
+    :state,
+    :sunday_hours,
+    :weekday_hours,
+    :zip_code_4,
+    :zip_code_5,
+    keyword_init: true,
   )
 end
