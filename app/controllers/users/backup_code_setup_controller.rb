@@ -49,6 +49,11 @@ module Users
       redirect_to account_two_factor_authentication_path
     end
 
+    def reminder
+      @presenter = BackupCodeReminderPresenter.new
+      flash.now[:success] = t('notices.authenticated_successfully')
+    end
+
     private
 
     def track_backup_codes_created
