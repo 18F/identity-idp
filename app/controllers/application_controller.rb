@@ -80,8 +80,6 @@ class ApplicationController < ActionController::Base
     effective_user || AnonymousUser.new
   end
 
-  attr_writer :irs_attempts_api_tracker
-
   def irs_attempts_api_tracker
     return @irs_attempts_api_tracker if @irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(

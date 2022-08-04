@@ -23,28 +23,4 @@ module IrsAttemptsApiTrackingHelper
       {}
     end
   end
-
-  RSpec::Matchers.define :have_logged_event do |event_name, attributes|
-    attributes ||= {}
-
-    match do |actual|
-      expect(actual).to be_kind_of(FakeAttemptsTracker)
-
-      if RSpec::Support.is_a_matcher?(attributes)
-        expect(actual.events[event_name]).to include(attributes)
-      else
-        expect(actual.events[event_name]).to(be_any { |event| attributes <= event })
-      end
-    end
-
-    failure_message do |actual|
-      <<~MESSAGE
-        Expected that FakeAttemptsTracker would have received event #{event_name.inspect}
-        with #{attributes.inspect}.
-
-        Events received:
-        #{actual.events.pretty_inspect}
-      MESSAGE
-    end
-  end
 end
