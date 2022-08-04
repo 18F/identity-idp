@@ -213,21 +213,4 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
   end
-
-  context 'with verify step exception' do
-    it 'does not present the option to proof in-person', allow_browser_log: true do
-      sign_in_and_2fa_user
-      begin_in_person_proofing
-      complete_location_step
-      complete_prepare_step
-      complete_state_id_step
-      complete_address_step
-      fill_out_ssn_form_with_ssn_that_raises_exception
-      click_idv_continue
-      click_idv_continue
-
-      expect(page).to have_current_path(idv_session_errors_exception_path(flow: :in_person))
-      expect(page).not_to have_link(href: idv_in_person_url)
-    end
-  end
 end

@@ -7,9 +7,7 @@ module Idv
     before_action :confirm_idv_session_step_needed
     before_action :set_try_again_path, only: [:warning, :exception]
 
-    def exception
-      @in_person_flow = in_person_flow?
-    end
+    def exception; end
 
     def warning
       @remaining_attempts = Throttle.new(

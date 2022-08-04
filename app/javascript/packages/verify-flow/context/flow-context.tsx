@@ -9,7 +9,7 @@ export interface FlowContextValue {
   /**
    * URL to in-person proofing alternative flow, if enabled.
    */
-  inPersonURL: string | null;
+  inPersonURL?: string | null;
 
   /**
    * Current step name.

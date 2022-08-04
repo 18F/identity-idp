@@ -120,13 +120,6 @@ feature 'doc auth verify step', :js do
     )
     expect(page).to have_current_path(idv_session_errors_exception_path)
 
-    # Cheap check to ensure the in-person proofing option should be visible, but only if the feature
-    # is enabled.
-    expect(page).not_to have_link(href: idv_in_person_url)
-    allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    visit current_path
-    expect(page).to have_link(href: idv_in_person_url)
-
     click_on t('idv.failure.button.warning')
 
     expect(page).to have_current_path(idv_doc_auth_verify_step)
