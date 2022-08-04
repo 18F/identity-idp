@@ -79,6 +79,7 @@ Rails.application.routes.draw do
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
 
+      get '/account_reset/recovery_options' => 'account_reset/recovery_options#show'
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
       get '/account_reset/cancel' => 'account_reset/cancel#show'

@@ -1,0 +1,36 @@
+<% title t('account_reset.recovery_options.headers') %>
+<%= render PageHeadingComponent.new.with_content(t('account_reset.recovery_options.headers')) %>
+
+<p>
+  <%= t('account_reset.recovery_options.help_text') %>
+</p>
+
+<ol class="usa-process-list">
+  <li class="usa-process-list__item">
+    <h4 class="usa-process-list__heading"><%= t('account_reset.recovery_options.try_method_again') %> </h4>
+  </li>
+  <li class="usa-process-list__item">
+    <h4 class="usa-process-list__heading"><%= t('account_reset.recovery_options.use_device') %></h4>
+    <p>
+      <%= t('account_reset.recovery_options.try_another_device') %>
+    </p>
+  </li>
+  <li class="usa-process-list__item">
+    <h4 class="usa-process-list__heading"><%= t('account_reset.recovery_options.check_webauthn_platform') %></h4>
+    <p>
+      <%= t('account_reset.recovery_options.check_webauthn_platform_info') %>
+    </p>
+  </li>
+</ol>
+
+<%= button_to(
+      root_url,
+      method: :get,
+      class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
+    ) { t('account_reset.request.no_cancel') } %>
+<%= button_to(
+      account_reset_delete_account_path,
+      method: :delete,
+      class: 'usa-button usa-button--unstyled',
+    ) { t('account_reset.request.yes_continue') } %>
+
