@@ -227,4 +227,18 @@ describe Analytics do
       analytics.track_event('Trackable Event')
     end
   end
+
+  describe '#idv_gpo_address_letter_requested' do
+    let(:analytics) { FakeAnalytics.new }
+
+    it 'logs letter requested with enqueued at' do
+      enqueued_at = Time.zone.now
+      analytics.idv_gpo_address_letter_requested(enqueued_at: enqueued_at)
+
+      expect(analytics).to have_logged_event(
+        'IdV: USPS address letter requested',
+        enqueued_at: enqueued_at,
+      )
+    end
+  end
 end
