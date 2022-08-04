@@ -21,7 +21,7 @@ class UpdateUser
 
   def manage_phone_configuration
     if attributes[:phone_id].present?
-      update_phone_configuration
+      update_phone_configuration unless phone_configuration.nil?
     else
       create_phone_configuration
     end
