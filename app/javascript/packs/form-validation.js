@@ -7,8 +7,10 @@ import { t } from '@18f/identity-i18n';
  */
 function disableFormSubmit(event) {
   const form = /** @type {HTMLFormElement} */ (event.target);
-  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((submit) => {
-    /** @type {HTMLInputElement|HTMLButtonElement} */ (submit).disabled = true;
+  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((element) => {
+    const submit = /** @type {HTMLInputElement|HTMLButtonElement} */ (element);
+    submit.disabled = true;
+    submit.classList.add('usa-button--active');
   });
 }
 

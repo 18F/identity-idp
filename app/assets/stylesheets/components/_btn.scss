@@ -23,3 +23,11 @@
     background-color: transparent;
   }
 }
+
+.usa-button:disabled,
+.usa-button--disabled {
+  &.usa-button--active,
+  &:active {
+    @include set-text-and-bg('primary-darker', $context: 'Button');
+  }
+}
