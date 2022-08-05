@@ -16,7 +16,7 @@ class AgencyIdentityLinker
     return ai if ai.present?
 
     spi = ServiceProviderIdentity.where(
-      user: user, service_provider: service_provider.issuer
+      user: user, service_provider: service_provider.issuer,
     ).take
 
     return nil unless spi.present?
