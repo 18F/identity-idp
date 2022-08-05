@@ -1,12 +1,16 @@
 module IrsAttemptsApi
   class Tracker
-    attr_reader :session_id, :enabled_for_session, :request, :user, :sp
+    attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :device_fingerprint,
+                :sp_request_uri
 
-    def initialize(session_id:, request:, user:, sp:, enabled_for_session:)
+    def initialize(session_id:, request:, user:, sp:, device_fingerprint:,
+                   sp_request_uri:, enabled_for_session:)
       @session_id = session_id # IRS session ID
       @request = request
       @user = user
       @sp = sp
+      @device_fingerprint = device_fingerprint
+      @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
     end
 
@@ -14,12 +18,12 @@ module IrsAttemptsApi
       return unless enabled?
 
       event_metadata = {
-        user_agent: request&.headers['User-Agent'],
+        user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
-        user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp),
-        device_uuid: "FIXME", #user&.device&.cookie_uuid,
+        user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
+        device_fingerprint: device_fingerprint,
         user_ip_address: request&.remote_ip,
-        irs_application_url: "FIXME", #request&.headers['Referer'],
+        irs_application_url: sp_request_uri,
       }.merge(metadata)
 
       event = AttemptEvent.new(

@@ -86,6 +86,8 @@ class ApplicationController < ActionController::Base
       request: request,
       user: effective_user,
       sp: current_sp,
+      device_fingerprint: cookies[:device],
+      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
     )
   end

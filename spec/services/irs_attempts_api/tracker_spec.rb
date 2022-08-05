@@ -5,10 +5,7 @@ RSpec.describe IrsAttemptsApi::Tracker do
     allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(
       irs_attempt_api_enabled,
     )
-    allow(request).to receive(:headers).and_return(
-      'User-Agent' => 'example/1.0',
-      'Referer' => 'example.com',
-    )
+    allow(request).to receive(:user_agent).and_return('example/1.0')
     allow(request).to receive(:remote_ip).and_return('192.0.2.1')
   end
 
@@ -17,6 +14,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
   let(:enabled_for_session) { true }
   let(:request) { instance_double(ActionDispatch::Request) }
   let(:service_provider) { create(:service_provider) }
+  let(:device_fingerprint) { 'device_id' }
+  let(:sp_request_uri) { 'https://example.com/auth_page' }
   let(:user) { create(:user) }
 
   subject do
@@ -25,6 +24,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
       request: request,
       user: user,
       sp: service_provider,
+      device_fingerprint: device_fingerprint,
+      sp_request_uri: sp_request_uri,
       enabled_for_session: enabled_for_session,
     )
   end
