@@ -46,21 +46,25 @@ describe Idv::Session do
         subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = true
         subject.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
-        allow(subject).to receive(:complete_profile)
+        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'completes the profile if the user has completed OTP phone confirmation' do
         subject.user_phone_confirmation = true
         subject.create_profile_from_applicant_with_password(user.password)
 
-        expect(subject).to have_received(:complete_profile)
+        expect(subject).to have_received(:move_pii_to_user_session)
+        expect(subject.profile.active?).to eq(true)
+        expect(subject.profile.deactivation_reason).to be_nil
       end
 
       it 'does not complete the profile if the user has not completed OTP phone confirmation' do
         subject.user_phone_confirmation = nil
         subject.create_profile_from_applicant_with_password(user.password)
 
-        expect(subject).not_to have_received(:complete_profile)
+        expect(subject).not_to have_received(:move_pii_to_user_session)
+        expect(subject.profile.active?).to eq(false)
+        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
       end
 
       context 'with establishing in person enrollment' do
@@ -80,7 +84,8 @@ describe Idv::Session do
         it 'sets profile to pending in person verification' do
           subject.create_profile_from_applicant_with_password(user.password)
 
-          expect(subject).not_to have_received(:complete_profile)
+          expect(subject).not_to have_received(:move_pii_to_user_session)
+          expect(subject.profile.active?).to eq(false)
           expect(subject.profile.deactivation_reason).to eq('in_person_verification_pending')
         end
 
@@ -100,13 +105,14 @@ describe Idv::Session do
       before do
         subject.address_verification_mechanism = 'gpo'
         subject.vendor_phone_confirmation = false
-        allow(subject).to receive(:complete_profile)
+        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'sets profile to pending gpo verification' do
         subject.create_profile_from_applicant_with_password(user.password)
 
-        expect(subject).not_to have_received(:complete_profile)
+        expect(subject).to have_received(:move_pii_to_user_session)
+        expect(subject.profile.active?).to eq(false)
         expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
       end
     end
@@ -115,12 +121,15 @@ describe Idv::Session do
       before do
         subject.address_verification_mechanism = 'phone'
         subject.vendor_phone_confirmation = false
+        allow(subject).to receive(:move_pii_to_user_session)
       end
 
       it 'does not complete the user profile' do
-        allow(subject).to receive(:complete_profile)
         subject.create_profile_from_applicant_with_password(user.password)
-        expect(subject).not_to have_received(:complete_profile)
+
+        expect(subject).not_to have_received(:move_pii_to_user_session)
+        expect(subject.profile.active?).to eq(false)
+        expect(subject.profile.deactivation_reason).to eq('gpo_verification_pending')
       end
     end
   end

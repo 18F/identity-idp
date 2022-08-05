@@ -34,7 +34,10 @@ module Api
 
     def create_profile
       profile_maker = build_profile_maker
-      profile = profile_maker.save_profile(deactivation_reason: deactivation_reason)
+      profile = profile_maker.save_profile(
+        active: deactivation_reason.nil?,
+        deactivation_reason: deactivation_reason,
+      )
       @profile = profile
       session[:pii] = profile_maker.pii_attributes
       session[:profile_id] = profile.id
@@ -43,21 +46,19 @@ module Api
       cache_encrypted_pii
       associate_in_person_enrollment_with_profile
 
-      if user_bundle.gpo_address_verification?
+      if profile.active
+        move_pii_to_user_session
+      elsif user_bundle.gpo_address_verification?
         create_gpo_entry
-      elsif phone_confirmed?
-        if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
-        else
-          complete_profile
-        end
+      elsif pending_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
       end
     end
 
     def deactivation_reason
-      if user_bundle.gpo_address_verification?
+      if !phone_confirmed? || user_bundle.gpo_address_verification?
         :gpo_verification_pending
-      elsif phone_confirmed? && pending_in_person_enrollment?
+      elsif pending_in_person_enrollment?
         :in_person_verification_pending
       end
     end
@@ -79,11 +80,6 @@ module Api
 
     def phone_confirmed?
       user_bundle.vendor_phone_confirmation? && user_bundle.user_phone_confirmation?
-    end
-
-    def complete_profile
-      profile.activate
-      move_pii_to_user_session
     end
 
     def move_pii_to_user_session

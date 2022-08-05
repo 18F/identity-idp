@@ -49,7 +49,10 @@ module Idv
 
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
-      profile = profile_maker.save_profile(deactivation_reason: deactivation_reason)
+      profile = profile_maker.save_profile(
+        active: deactivation_reason.nil?,
+        deactivation_reason: deactivation_reason,
+      )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
@@ -57,24 +60,22 @@ module Idv
       cache_encrypted_pii(user_password)
       associate_in_person_enrollment_with_profile
 
-      if address_verification_mechanism == 'gpo'
+      if profile.active?
+        move_pii_to_user_session
+      elsif address_verification_mechanism == 'gpo'
         create_gpo_entry
-      elsif phone_confirmed?
-        if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
-            current_user,
-            applicant,
-          )
-        else
-          complete_profile
-        end
+      elsif pending_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+          current_user,
+          applicant,
+        )
       end
     end
 
     def deactivation_reason
-      if address_verification_mechanism == 'gpo'
+      if !phone_confirmed? || address_verification_mechanism == 'gpo'
         :gpo_verification_pending
-      elsif phone_confirmed? && pending_in_person_enrollment?
+      elsif pending_in_person_enrollment?
         :in_person_verification_pending
       end
     end
@@ -108,11 +109,6 @@ module Idv
     def associate_in_person_enrollment_with_profile
       return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
       current_user.establishing_in_person_enrollment.update(profile: profile)
-    end
-
-    def complete_profile
-      profile.activate
-      move_pii_to_user_session
     end
 
     def create_gpo_entry
