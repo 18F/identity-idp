@@ -4,6 +4,8 @@ describe Idv::Steps::SsnStep do
   include Rails.application.routes.url_helpers
 
   let(:user) { build(:user) }
+  let(:params) { { doc_auth: {} } }
+  let(:session) { { sp: { issuer: service_provider.issuer } } }
   let(:service_provider) do
     create(
       :service_provider,
@@ -14,9 +16,9 @@ describe Idv::Steps::SsnStep do
   let(:controller) do
     instance_double(
       'controller',
-      session: { sp: { issuer: service_provider.issuer } },
+      session: session,
       current_user: user,
-      params: {},
+      params: params,
       analytics: FakeAnalytics.new,
       url_options: {},
       request: double(
@@ -46,6 +48,27 @@ describe Idv::Steps::SsnStep do
   end
 
   describe '#call' do
+    context 'with valid ssn' do
+      let(:ssn) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn] }
+      let(:params) { { doc_auth: { ssn: ssn } } }
+
+      it 'merges ssn into pii session value' do
+        step.call
+
+        expect(flow.flow_session[:pii_from_doc][:ssn]).to eq(ssn)
+      end
+
+      context 'with existing session applicant' do
+        let(:session) { super().merge(idv: { 'applicant' => {} }) }
+
+        it 'clears applicant' do
+          step.call
+
+          expect(session[:idv]['applicant']).to be_blank
+        end
+      end
+    end
+
     context 'when pii_from_doc is not present' do
       let(:flow) do
         Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
