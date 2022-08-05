@@ -13,6 +13,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
       'onFailedCaptureAttempt',
       'onResetFailedCaptureAttempts',
       'maxFailedAttemptsBeforeTips',
+      'maxAttemptsBeforeNativeCamera',
       'lastAttemptMetadata',
     ]);
     expect(result.current.failedCaptureAttempts).to.equal(0);

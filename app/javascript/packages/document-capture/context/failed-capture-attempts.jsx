@@ -32,8 +32,8 @@ const FailedCaptureAttemptsContext = createContext(
     failedCaptureAttempts: 0,
     onFailedCaptureAttempt: () => {},
     onResetFailedCaptureAttempts: () => {},
-    maxFailedAttemptsBeforeTips: Infinity,
     maxAttemptsBeforeNativeCamera: Infinity,
+    maxFailedAttemptsBeforeTips: Infinity,
     lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   }),
 );
@@ -71,8 +71,8 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
         failedCaptureAttempts,
         onFailedCaptureAttempt,
         onResetFailedCaptureAttempts,
-        maxFailedAttemptsBeforeTips,
         maxAttemptsBeforeNativeCamera,
+        maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
       }}
     >
