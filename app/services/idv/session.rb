@@ -146,8 +146,7 @@ module Idv
     attr_accessor :user_session
 
     def set_idv_session
-      return if session.present?
-      user_session[:idv] = new_idv_session
+      user_session[:idv] = new_idv_session unless user_session.key?(:idv)
     end
 
     def new_idv_session
