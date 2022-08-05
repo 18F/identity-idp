@@ -41,8 +41,6 @@ module Users
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
       irs_attempts_api_tracker.logout_initiated(
-        user_uuid: current_user.uuid,
-        unique_session_id: current_user.unique_session_id,
         success: true,
       )
       super
