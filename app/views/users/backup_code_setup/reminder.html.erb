@@ -1,0 +1,21 @@
+<% title @presenter.title %>
+
+<%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
+
+<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+
+<p class='margin-top-1 margin-bottom-4'>
+  <%= @presenter.body_info %>
+</p>
+
+<div class="col-12">
+  <%= button_to(
+        account_path,
+        method: :get,
+        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+      ) do %>
+    <%= @presenter.button %>
+  <% end %>
+</div>
+
+<%= link_to @presenter.need_new_codes_link_text, backup_code_regenerate_path %>
