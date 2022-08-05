@@ -31,7 +31,6 @@ module UspsInPersonProofing
         end
       end
 
-      # todo: don't need this anymore
       def create_usps_enrollment(enrollment, pii)
         address = pii['address1']
         address += " #{pii['address2']}" unless pii['address2'].blank?
@@ -59,27 +58,16 @@ module UspsInPersonProofing
           handle_standard_error(err, enrollment)
         end
 
-        response&.enrollmentCode
+        response&.enrollment_code
       end
 
       def handle_bad_request_error(err, enrollment)
-        analytics.idv_in_person_usps_request_enroll_exception(
-          context: context,
-          enrollment_id: enrollment.id,
-          exception_class: err.class.to_s,
-          exception_message: err.response.dig(:body, 'responseMessage') || err.message,
-          reason: 'Request exception',
-        )
+        message = err.response.dig(:body, 'responseMessage') || err.message
+        raise Exception::RequestEnrollException.new(message, err, enrollment.id)
       end
 
       def handle_standard_error(err, enrollment)
-        analytics.idv_in_person_usps_request_enroll_exception(
-          context: context,
-          enrollment_id: enrollment.id,
-          exception_class: err.class.to_s,
-          exception_message: err.message,
-          reason: 'Request exception',
-        )
+        raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
       end
 
       def establishing_in_person_enrollment_for_user(user)
