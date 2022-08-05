@@ -29,6 +29,12 @@ module UspsIppHelper
     )
   end
 
+  def stub_request_enroll_invalid_response
+    stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
+      status: 200, body: UspsIppFixtures.request_enroll_invalid_response,
+    )
+  end
+
   def stub_request_expired_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
       status: 400, body: UspsIppFixtures.request_expired_proofing_results_response,

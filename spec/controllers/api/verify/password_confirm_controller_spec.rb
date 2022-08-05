@@ -20,6 +20,7 @@ describe Api::Verify::PasswordConfirmController do
 
   before do
     stub_analytics
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])
   end
 
@@ -68,34 +69,37 @@ describe Api::Verify::PasswordConfirmController do
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
+        let(:stub_usps_response) do
+          stub_request_enroll
+        end
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 
-        before do
+        before(:each) do
+          stub_request_token
+          stub_usps_response
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        context 'when in-person mocking is disabled' do
+        context 'when in-person mocking is enabled' do
           before do
-            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(true)
           end
 
-          it 'uses a real proofer' do
-            expect(UspsInPersonProofing::Proofer).to receive(:new).
-              and_return(UspsInPersonProofing::Mock::Proofer.new)
+          it 'uses a mock proofer' do
+            expect(UspsInPersonProofing::Mock::Proofer).to receive(:new)
+
             post :create, params: { password: password, user_bundle_token: jwt }
           end
         end
 
         context 'when there is a 4xx error' do
+          let(:stub_usps_response) do
+            stub_request_enroll_bad_request_response
+          end
+
           before do
             stub_request_token
-            stub_request_enroll_with_responses(
-              { status: 400,
-                body: UspsIppFixtures.request_enroll_failed_response },
-            )
-
-            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
           end
 
           it 'logs the response message' do
@@ -103,15 +107,16 @@ describe Api::Verify::PasswordConfirmController do
 
             expect(@analytics).to have_logged_event(
               'USPS IPPaaS enrollment failed',
-              reason: 'Request exception',
-              exception_class: 'Faraday::BadRequestError',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
               exception_message: 'Sponsor for sponsorID 5 not found',
+              original_exception_class: 'Faraday::BadRequestError',
+              reason: 'Request exception',
             )
           end
 
           it 'leaves the enrollment in establishing when no enrollment code is returned' do
-            expect(InPersonEnrollment.count).to be(0)
-
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
@@ -137,15 +142,15 @@ describe Api::Verify::PasswordConfirmController do
 
             expect(@analytics).to have_logged_event(
               'USPS IPPaaS enrollment failed',
-              reason: 'Request exception',
-              exception_class: 'Faraday::ServerError',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
               exception_message: 'the server responded with status 500',
+              original_exception_class: 'Faraday::ServerError',
+              reason: 'Request exception',
             )
           end
 
           it 'leaves the enrollment in establishing when no enrollment code is returned' do
-            expect(InPersonEnrollment.count).to be(0)
-
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
@@ -157,13 +162,12 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         context 'when the USPS response is missing an enrollment code' do
+          let(:stub_usps_response) do
+            stub_request_enroll_invalid_response
+          end
+
           before do
             stub_request_token
-            stub_request_enroll_with_responses(
-              { status: 200,
-                body: UspsIppFixtures.request_enroll_failed_response },
-            )
-
             allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
           end
 
@@ -172,15 +176,16 @@ describe Api::Verify::PasswordConfirmController do
 
             expect(@analytics).to have_logged_event(
               'USPS IPPaaS enrollment failed',
-              reason: 'Request exception',
-              exception_class: 'StandardError',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
               exception_message: 'Expected to receive an enrollment code',
+              original_exception_class: 'StandardError',
+              reason: 'Request exception',
             )
           end
 
           it 'leaves the enrollment in establishing when no enrollment code is returned' do
-            expect(InPersonEnrollment.count).to be(0)
-
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
@@ -199,17 +204,11 @@ describe Api::Verify::PasswordConfirmController do
           )
         end
 
-        it 'logs a message' do
-          post :create, params: { password: password, user_bundle_token: jwt }
-
-          expect(@analytics).to have_logged_event('USPS IPPaaS enrollment')
-        end
-
         it 'creates a USPS enrollment' do
-          proofer = UspsInPersonProofing::Mock::Proofer.new
+          proofer = UspsInPersonProofing::Proofer.new
           mock = double
 
-          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+          expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
           expect(mock).to receive(:request_enroll) do |applicant|
             expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
             expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
@@ -230,10 +229,10 @@ describe Api::Verify::PasswordConfirmController do
           let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
 
           it 'provides address2 if the user entered it' do
-            proofer = UspsInPersonProofing::Mock::Proofer.new
+            proofer = UspsInPersonProofing::Proofer.new
             mock = double
 
-            expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+            expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
             expect(mock).to receive(:request_enroll) do |applicant|
               expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
               proofer.request_enroll(applicant)
@@ -244,7 +243,6 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         it 'creates an in-person enrollment record' do
-          expect(InPersonEnrollment.count).to be(0)
           post :create, params: { password: password, user_bundle_token: jwt }
 
           enrollment.reload
@@ -254,21 +252,6 @@ describe Api::Verify::PasswordConfirmController do
           expect(enrollment.enrollment_code).to be_a(String)
           expect(enrollment.profile).to eq(user.profiles.last)
           expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
-        end
-
-        it 'leaves the enrollment in establishing when no enrollment code is returned' do
-          proofer = UspsInPersonProofing::Mock::Proofer.new
-          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
-          expect(proofer).to receive(:request_enroll).and_return({})
-
-          post :create, params: { password: password, user_bundle_token: jwt }
-
-          enrollment.reload
-
-          expect(InPersonEnrollment.count).to be(1)
-          expect(enrollment.status).to eq('establishing')
-          expect(enrollment.user_id).to be(user.id)
-          expect(enrollment.enrollment_code).to be_nil
         end
 
         it 'sends ready to verify email' do
