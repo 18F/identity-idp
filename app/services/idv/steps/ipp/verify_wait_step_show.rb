@@ -9,6 +9,16 @@ module Idv
 
           process_async_state(async_state)
         end
+
+        private
+
+        def exception_url
+          idv_session_errors_exception_url(flow: :in_person)
+        end
+
+        def warning_url
+          idv_session_errors_warning_url(flow: :in_person)
+        end
       end
     end
   end
