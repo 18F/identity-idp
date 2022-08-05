@@ -15,10 +15,11 @@ module IrsAttemptsApi
 
       event_metadata = {
         user_agent: request&.headers['User-Agent'],
-        unique_session_id: user&.unique_session_id,
+        unique_session_id: hashed_session_id,
         user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp),
+        device_uuid: "FIXME", #user&.device&.cookie_uuid,
         user_ip_address: request&.remote_ip,
-        irs_application_url: request&.headers['Referer'],
+        irs_application_url: "FIXME", #request&.headers['Referer'],
       }.merge(metadata)
 
       event = AttemptEvent.new(
@@ -35,6 +36,11 @@ module IrsAttemptsApi
     include TrackerEvents
 
     private
+
+    def hashed_session_id
+      return nil unless user&.unique_session_id
+      Digest::SHA1.hexdigest(user&.unique_session_id)
+    end
 
     def enabled?
       IdentityConfig.store.irs_attempt_api_enabled && @enabled_for_session

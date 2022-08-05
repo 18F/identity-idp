@@ -16,8 +16,8 @@ RSpec.describe IrsAttemptsApi::Tracker do
   let(:session_id) { 'test-session-id' }
   let(:enabled_for_session) { true }
   let(:request) { instance_double(ActionDispatch::Request) }
-  let(:service_provider) { build(:service_provider) }
-  let(:user) { build(:user) }
+  let(:service_provider) { create(:service_provider) }
+  let(:user) { create(:user) }
 
   subject do
     described_class.new(
