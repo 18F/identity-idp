@@ -25,10 +25,6 @@ Rails.application.config.content_security_policy do |policy|
     IdentityConfig.store.asset_host.presence,
   ].compact
 
-  if IdentityConfig.store.proofing_device_profiling_collecting_enabled
-    script_src << 'h.online-metrix.net'
-  end
-
   script_src = [:self, :unsafe_eval] if !Rails.env.production?
 
   style_src = [:self, IdentityConfig.store.asset_host.presence].compact
