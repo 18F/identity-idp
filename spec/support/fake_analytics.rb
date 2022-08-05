@@ -95,11 +95,7 @@ RSpec::Matchers.define :have_logged_event do |event_name, attributes|
   attributes ||= {}
 
   match do |actual|
-    if actual.instance_of? FakeAnalytics
-      expect(actual).to be_kind_of(FakeAnalytics)
-    else
-      expect(actual).to be_kind_of(IrsAttemptsApiTrackingHelper::FakeAttemptsTracker)
-    end
+    expect(actual).to be_kind_of(FakeAnalytics)
 
     if RSpec::Support.is_a_matcher?(attributes)
       expect(actual.events[event_name]).to include(attributes)
