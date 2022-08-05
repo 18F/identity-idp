@@ -19,6 +19,14 @@ module Idv
         def warning_url
           idv_session_errors_warning_url(flow: :in_person)
         end
+
+        def pii
+          flow_session[:pii_from_user]
+        end
+
+        def delete_pii
+          flow_session.delete(:pii_from_user)
+        end
       end
     end
   end
