@@ -56,6 +56,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        enabled_mfa_methods_count: 1,
+        in_multi_mfa_selection_flow: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -102,6 +104,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
         stub_analytics
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -151,6 +155,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
 
         stub_analytics
@@ -206,6 +212,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           area_code: parsed_phone.area_code,
           country_code: parsed_phone.country,
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          enabled_mfa_methods_count: 1,
+          in_multi_mfa_selection_flow: false,
         }
 
         stub_analytics
@@ -334,6 +342,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to receive(:track_event).
@@ -400,6 +410,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 1,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -448,6 +460,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               area_code: parsed_phone.area_code,
               country_code: parsed_phone.country,
               phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+              enabled_mfa_methods_count: 0,
+              in_multi_mfa_selection_flow: false,
             }
 
             expect(@analytics).to have_received(:track_event).

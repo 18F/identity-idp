@@ -11,11 +11,15 @@ import { removeUnloadProtection } from '@18f/identity-url';
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
-import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
+import { FormStepsButton } from '@18f/identity-form-steps';
+import UploadContext from '../context/upload';
+// WILLFIX: Hiding this component until help links are finalized; see LG-6875
+// import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
 function InPersonPrepareStep({ value }) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
+  const { flowPath } = useContext(UploadContext);
   const { selectedLocationName } = value;
 
   return (
@@ -79,14 +83,18 @@ function InPersonPrepareStep({ value }) {
           </ul>
         </IconListItem>
       </IconList>
-      {inPersonURL && (
+      {flowPath === 'hybrid' && <FormStepsButton.Continue />}
+      {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
           <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide>
             {t('forms.buttons.continue')}
           </Button>
         </div>
       )}
+      {/*
+      WILLFIX: Hiding this component until help links are finalized; see LG-6875
       <InPersonTroubleshootingOptions />
+      */}
     </>
   );
 }

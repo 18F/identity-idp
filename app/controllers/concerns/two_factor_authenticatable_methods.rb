@@ -161,7 +161,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     mfa_user = MfaContext.new(current_user)
     mfa_count = mfa_user.enabled_mfa_methods_count
     analytics.multi_factor_auth_added_phone(enabled_mfa_methods_count: mfa_count)
-    Funnel::Registration::AddMfa.call(current_user.id, 'phone')
+    Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics)
   end
 
   def handle_valid_otp_for_authentication_context

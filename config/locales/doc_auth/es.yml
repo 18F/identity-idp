@@ -170,6 +170,7 @@ es:
       welcome: Empiece con la verificación de su identidad
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web.
+      capture_status_big_document: Demasiado cerca
       capture_status_capturing: Capturando
       capture_status_none: Alinea
       capture_status_small_document: Muévete mas cerca
@@ -251,6 +252,7 @@ es:
         trasera de su identificación.
       switch_back: Regrese a su computadora para continuar con la verificación de su
         identidad.
+      switch_back_image: Flecha que apunta del teléfono a la computadora
       test_ssn: En el entorno de prueba solo los SSN que comienzan con “900-” o “666-”
         se consideran válidos. No ingrese PII real en este campo.
       text1a: como un teléfono o una computadora.

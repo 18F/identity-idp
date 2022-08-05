@@ -5,6 +5,19 @@ describe Idv::InPerson::UspsLocationsController do
 
   let(:user) { create(:user) }
   let(:in_person_proofing_enabled) { false }
+  let(:selected_location) do
+    {
+      usps_location: {
+        formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
+        name: 'BALTIMORE',
+        phone: '410-555-1212',
+        saturday_hours: '8:30 AM - 5:00 PM',
+        street_address: '123 Fake St.',
+        sunday_hours: 'Closed',
+        weekday_hours: '8:30 AM - 7:00 PM',
+      },
+    }
+  end
 
   before do
     stub_analytics
@@ -57,40 +70,29 @@ describe Idv::InPerson::UspsLocationsController do
     end
   end
 
-  context 'with a session' do
-    let(:idv_session) do
-      Idv::Session.new(
-        user_session: {},
-        current_user: user,
-        service_provider: nil,
+  describe '#update' do
+    it 'writes the passed location to in-person enrollment' do
+      put :update, params: selected_location
+
+      expect(user.reload.establishing_in_person_enrollment.selected_location_details).to eq(
+        selected_location[:usps_location].as_json,
       )
     end
-    let(:selected_location) do
-      {
-        usps_location: {
-          formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
-          name: 'BALTIMORE',
-          phone: '410-555-1212',
-          saturday_hours: '8:30 AM - 5:00 PM',
-          street_address: '123 Fake St.',
-          sunday_hours: 'Closed',
-          weekday_hours: '8:30 AM - 7:00 PM',
-        },
-      }
-    end
 
-    before do
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-    end
+    context 'with hybrid user' do
+      let(:user) { nil }
+      let(:effective_user) { create(:user) }
 
-    describe '#update' do
-      it 'writes the passed location to session' do
+      before do
+        session[:doc_capture_user_id] = effective_user.id
+      end
+
+      it 'writes the passed location to in-person enrollment associated with effective user' do
         put :update, params: selected_location
 
-        selected_location[:usps_location].keys.each do |key|
-          expect(idv_session.applicant[:selected_location_details][key.to_s]).
-            to eq(selected_location[:usps_location][key])
-        end
+        expect(
+          effective_user.reload.establishing_in_person_enrollment.selected_location_details,
+        ).to eq(selected_location[:usps_location].as_json)
       end
     end
   end
