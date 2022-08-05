@@ -118,6 +118,7 @@ describe Users::SessionsController, devise: true do
   describe 'GET /logout' do
     it 'tracks a logout event' do
       stub_analytics
+      stub_attempts_tracker
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
         hash_including(
@@ -128,7 +129,7 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
         success: true,
       )
 
@@ -140,6 +141,7 @@ describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
+      stub_attempts_tracker
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
         hash_including(
@@ -150,7 +152,7 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
         success: true,
       )
 
@@ -201,6 +203,7 @@ describe Users::SessionsController, devise: true do
       subject.session['user_return_to'] = 'http://example.com'
 
       stub_analytics
+      stub_attempts_tracker
       analytics_hash = {
         success: true,
         user_id: user.uuid,
@@ -213,7 +216,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:email_and_password_auth).
+      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }

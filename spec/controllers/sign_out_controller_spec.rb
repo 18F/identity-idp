@@ -22,12 +22,13 @@ describe SignOutController do
     it 'tracks the event' do
       stub_sign_in_before_2fa
       stub_analytics
+      stub_attempts_tracker
       allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
 
       expect(@analytics).
         to receive(:track_event).with('Logout Initiated', hash_including(method: 'cancel link'))
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
         success: true,
       )
 
