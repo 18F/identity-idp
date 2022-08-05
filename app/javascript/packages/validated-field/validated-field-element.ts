@@ -30,8 +30,10 @@ class ValidatedFieldElement extends HTMLElement {
   connectedCallback() {
     this.input = this.querySelector('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
-    this.errorMessage = this.querySelector('.usa-error-message');
     this.descriptorId = this.input?.getAttribute('aria-describedby');
+    this.errorMessage =
+      (this.descriptorId && this.ownerDocument.getElementById(this.descriptorId)) ||
+      this.querySelector('.usa-error-message');
     try {
       Object.assign(
         this.errorStrings,
