@@ -92,7 +92,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
           </Button>
         </div>
       )}
-      <BackButton onClick={toPreviousStep} />
+      <BackButton includeBorder onClick={toPreviousStep} />
       {/*
       WILLFIX: Hiding this component until help links are finalized; see LG-6875
       <InPersonTroubleshootingOptions />
