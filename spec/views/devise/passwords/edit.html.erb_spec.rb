@@ -27,6 +27,6 @@ describe 'devise/passwords/edit.html.erb' do
   it 'has information about the password key' do
     render
 
-    expect (rendered).to have_selector('p', text: t('instructions.password.password_key'))
+    expect(rendered).to have_selector('p', text: t('instructions.password.password_key'))
   end
 end
