@@ -6,7 +6,7 @@ RSpec.shared_examples 'an invalid auth code error is raised' do
   end
 end
 
-RSpec.describe InheritedProofing::Va::Service do
+RSpec.describe Idv::InheritedProofing::Va::Service do
   include_context 'va_api_context'
   include_context 'va_user_context'
 
