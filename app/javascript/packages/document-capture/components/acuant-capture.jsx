@@ -282,7 +282,7 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
-  const { failedCaptureAttempts, onFailedCaptureAttempt, onResetFailedCaptureAttempts } =
+  const { failedCaptureAttempts, maxAttemptsBeforeNativeCamera, onFailedCaptureAttempt, onResetFailedCaptureAttempts } =
     useContext(FailedCaptureAttemptsContext);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -389,7 +389,11 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      if (failedCaptureAttempts >= 2) {
+
+      if (failedCaptureAttempts >= maxAttemptsBeforeNativeCamera) {
+        addPageAction(`IdV: Force native camera. Failed attempts: ${failedCaptureAttempts}`, {
+          field: name,
+        });
         return forceUpload();
       }
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;

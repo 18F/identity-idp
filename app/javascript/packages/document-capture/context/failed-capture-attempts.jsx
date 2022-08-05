@@ -33,6 +33,7 @@ const FailedCaptureAttemptsContext = createContext(
     onFailedCaptureAttempt: () => {},
     onResetFailedCaptureAttempts: () => {},
     maxFailedAttemptsBeforeTips: Infinity,
+    maxAttemptsBeforeNativeCamera: Infinity,
     lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   }),
 );
@@ -49,7 +50,7 @@ FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
 /**
  * @param {FailedCaptureAttemptsContextProviderProps} props
  */
-function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBeforeTips }) {
+function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBeforeTips, maxAttemptsBeforeNativeCamera }) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState(
     /** @type {CaptureAttemptMetadata} */ (DEFAULT_LAST_ATTEMPT_METADATA),
   );
@@ -71,6 +72,7 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
         onFailedCaptureAttempt,
         onResetFailedCaptureAttempts,
         maxFailedAttemptsBeforeTips,
+        maxAttemptsBeforeNativeCamera,
         lastAttemptMetadata,
       }}
     >

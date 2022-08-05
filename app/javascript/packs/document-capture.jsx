@@ -131,6 +131,7 @@ function addPageAction(event, payload) {
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
+    maxAttemptsBeforeNativeCamera,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -180,6 +181,7 @@ function addPageAction(event, payload) {
       FailedCaptureAttemptsContextProvider,
       {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+        maxAttemptsBeforeNativeCamera: Number(maxAttemptsBeforeNativeCamera),
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
