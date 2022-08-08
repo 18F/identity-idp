@@ -284,6 +284,7 @@ voip_check: true
 voip_block: true
 voip_allowed_phones: '[]'
 inherited_proofing_va_base_url: 'https://staging-api.va.gov'
+suppress_content_security_policy: false
 
 development:
   aamva_private_key: 123abc

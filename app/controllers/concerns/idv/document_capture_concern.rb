@@ -2,6 +2,7 @@ module Idv
   module DocumentCaptureConcern
     def override_document_capture_step_csp
       return if params[:step] != 'document_capture'
+      return if IdentityConfig.store.suppress_content_security_policy
 
       policy = current_content_security_policy
       policy.script_src(*policy.script_src, :unsafe_eval)
