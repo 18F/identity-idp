@@ -212,7 +212,7 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string)
     config.add(:lexisnexis_threatmetrix_request_mode, type: :string)
-    config.add(:lexisnexis_threatmetrix_account_id, type: :string)
+    config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_username, type: :string)
     config.add(:lexisnexis_threatmetrix_password, type: :string)
     config.add(:lexisnexis_threatmetrix_instant_verify_timeout, type: :float)

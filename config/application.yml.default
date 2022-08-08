@@ -144,7 +144,7 @@ lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 # LexisNexis ThreatMetrix ##########################################
 lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_request_mode: testing
-lexisnexis_threatmetrix_account_id: test_account
+lexisnexis_threatmetrix_org_id: test_account
 lexisnexis_threatmetrix_username: test_username
 lexisnexis_threatmetrix_password: test_password
 lexisnexis_threatmetrix_instant_verify_timeout: 1.0
