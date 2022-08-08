@@ -123,8 +123,10 @@ lexisnexis_base_url: https://www.example.com
 lexisnexis_request_mode: testing
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
+lexisnexis_ddp_api_key: test_api_key
+lexisnexis_ddp_base_url: https://www.example.com
+lexisnexis_ddp_org_id: test_org_id
 lexisnexis_ddp_timeout: 1.0
-lexisnexis_ddp_workflow: customers.gsa.ddp.workflow
 lexisnexis_username: test_username
 lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
@@ -219,6 +221,7 @@ reg_unconfirmed_email_max_attempts: 20
 reg_unconfirmed_email_window_in_minutes: 60
 remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_hours_aal_2: 12
+replace_lexisnexis_rdp_instant_verify_with_ddp: false
 report_timeout: 0
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300

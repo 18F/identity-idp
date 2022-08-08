@@ -11,7 +11,14 @@ module LexisNexisFixtures
         password: 'test_password',
         instant_verify_workflow: 'customers.gsa.instant.verify.workflow',
         phone_finder_workflow: 'customers.gsa.phonefinder.workflow',
-        ddp_workflow: 'customers.gsa.ddp.workflow',
+      )
+    end
+
+    def example_ddp_config
+      Proofing::LexisNexis::Proofer::Config.new(
+        api_key: 'test_api_key',
+        base_url: 'https://example.com',
+        org_id: 'test_org_id',
       )
     end
 

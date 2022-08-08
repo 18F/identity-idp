@@ -21,12 +21,12 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
   end
 
   let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
-  subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_config) }
-
-  it_behaves_like 'a lexisnexis request'
+  subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config) }
 
   describe '#body' do
     it 'returns a properly formed request body' do
+      puts subject.body
+      puts
       expect(subject.body).to eq(LexisNexisFixtures.ddp_request_json)
     end
 
@@ -45,8 +45,8 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
   end
 
   describe '#url' do
-    it 'returns a url for the Instant Verify endpoint' do
-      expect(subject.url).to eq('https://example.com/restws/identity/v2/test_account/customers.gsa.ddp.workflow/conversation')
+    it 'returns a url for the DDP session query endpoint' do
+      expect(subject.url).to eq('https://example.com/api/session-query')
     end
   end
 end

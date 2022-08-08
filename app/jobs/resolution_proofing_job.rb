@@ -190,6 +190,12 @@ class ResolutionProofingJob < ApplicationJob
     @resolution_proofer ||=
       if IdentityConfig.store.proofer_mock_fallback
         Proofing::Mock::ResolutionMockClient.new
+      elsif IdentityConfig.store.replace_lexisnexis_rdp_instant_verify_with_ddp
+        Proofing::LexisNexis::Ddp::Proofer.new(
+          api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
+          org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
+          base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
+        )
       else
         Proofing::LexisNexis::InstantVerify::Proofer.new(
           instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
