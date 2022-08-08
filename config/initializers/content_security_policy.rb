@@ -2,6 +2,8 @@ require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
+  return nil if IdentityConfig.store.suppress_content_security_policy
+
   connect_src = ["'self'", '*.nr-data.net']
 
   font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
@@ -56,6 +58,7 @@ Rails.application.config.content_security_policy do |policy|
   policy.base_uri :self
 end
 # rubocop:enable Metrics/BlockLength
+
 Rails.application.configure do
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
   config.content_security_policy_nonce_directives = ['script-src']

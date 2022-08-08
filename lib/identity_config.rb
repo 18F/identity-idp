@@ -374,6 +374,7 @@ class IdentityConfig
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
+    config.add(:suppress_content_security_policy, type: :boolean)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)

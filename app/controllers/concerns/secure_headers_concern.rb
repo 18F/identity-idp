@@ -11,6 +11,8 @@ module SecureHeadersConcern
   end
 
   def override_form_action_csp(uris)
+    return if IdentityConfig.store.suppress_content_security_policy
+
     policy = current_content_security_policy
     policy.form_action(*uris)
     request.content_security_policy = policy
