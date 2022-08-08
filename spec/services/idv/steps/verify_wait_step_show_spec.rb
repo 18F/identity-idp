@@ -136,11 +136,7 @@ describe Idv::Steps::VerifyWaitStepShow do
       end
 
       it 'marks the verify step incomplete and redirects to the warning page' do
-        expect(step).to receive(:redirect_to).with(
-          idv_session_errors_warning_url(
-            from: request.path,
-          ),
-        )
+        expect(step).to receive(:redirect_to).with(idv_session_errors_warning_url)
         expect(flow.flow_session['Idv::Steps::VerifyStep']).to be true
         step.call
 
@@ -159,11 +155,7 @@ describe Idv::Steps::VerifyWaitStepShow do
       end
 
       it 'marks the verify step incomplete and redirects to the exception page' do
-        expect(step).to receive(:redirect_to).with(
-          idv_session_errors_exception_url(
-            from: request.path,
-          ),
-        )
+        expect(step).to receive(:redirect_to).with(idv_session_errors_exception_url)
         expect(flow.flow_session['Idv::Steps::VerifyStep']).to be true
         step.call
 
