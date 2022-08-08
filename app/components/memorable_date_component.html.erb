@@ -4,6 +4,9 @@
     <span class="usa-hint" id="dob_hint">
         <%= @hint %>
     </span>
+    <%= content_tag(
+        'memorable-date',
+      ) do %>
        <div class="usa-memorable-date">
        <lg-validated-field>
        <%= content_tag(
@@ -22,7 +25,9 @@
             label_html: { class: 'usa-label' },
             input_html: {
                 type: 'number',
-                class: 'validated-field__input',
+                class: 'validated-field__input memorable-date__month',
+                min: 1,
+                max: 12,
             aria: {
                 invalid: false,
                 describedby: "validated-field-error-#{unique_id}",
@@ -48,7 +53,8 @@
             label_html: { class: 'usa-label' },
             input_html: {
                 type: 'number',
-                class: 'validated-field__input',
+                class: 'validated-field__input memorable-date__day',
+                min: 1,
                 max: 31,
             aria: {
                 invalid: false,
@@ -61,7 +67,6 @@
         <lg-validated-field>
         <%= content_tag(
             :script,
-            { valueMissing: 'Year is required' }.to_json,
             {
               type: 'application/json',
               class: 'validated-field__error-strings',
@@ -75,7 +80,7 @@
             label_html: { class: 'usa-label' },
             input_html: {
                 type: 'number',
-                class: 'validated-field__input',
+                class: 'validated-field__input memorable-date__year',
             aria: {
                 invalid: false,
                 describedby: "validated-field-error-#{unique_id}",
@@ -85,4 +90,5 @@
         ) %>
         </lg-validated-field>
         </div>
+        <% end %>
      <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
