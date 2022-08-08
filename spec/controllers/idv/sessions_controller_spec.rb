@@ -68,5 +68,19 @@ describe Idv::SessionsController do
         )
       end
     end
+
+    context 'with pending in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'cancels in person enrollment' do
+        delete :destroy
+
+        expect(user.reload.pending_in_person_enrollment).to be_blank
+      end
+    end
   end
 end

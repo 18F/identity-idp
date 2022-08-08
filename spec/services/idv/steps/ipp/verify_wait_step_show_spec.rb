@@ -7,6 +7,8 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
   let(:issuer) { 'test_issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
 
+  let(:request) { FakeRequest.new }
+
   let(:controller) do
     instance_double(
       'controller',
@@ -16,6 +18,7 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
       flash: {},
       poll_with_meta_refresh: nil,
       url_options: {},
+      request: request,
     )
   end
 
@@ -126,7 +129,29 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
         }
       end
 
-      it 'marks the verify step incomplete' do
+      it 'marks the verify step incomplete and redirects to the warning page' do
+        expect(step).to receive(:redirect_to).with(idv_session_errors_warning_url(flow: :in_person))
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
+        step.call
+
+        expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be_nil
+      end
+    end
+
+    context 'when verification encounters an exception' do
+      let(:idv_result) do
+        {
+          context: { stages: { resolution: {} } },
+          errors: {},
+          exception: StandardError.new('testing'),
+          success: false,
+        }
+      end
+
+      it 'marks the verify step incomplete and redirects to the exception page' do
+        expect(step).to receive(:redirect_to).with(
+          idv_session_errors_exception_url(flow: :in_person),
+        )
         expect(flow.flow_session['Idv::Steps::Ipp::VerifyStep']).to be true
         step.call
 

@@ -1,18 +1,19 @@
 class TwoFactorOptionsForm
   include ActiveModel::Model
 
-  attr_reader :selection
-  attr_reader :configuration_id
+  attr_accessor :selection, :user, :aal3_required, :piv_cac_required
 
   validates :selection, inclusion: { in: %w[phone sms voice auth_app piv_cac
                                             webauthn webauthn_platform
                                             backup_code] }
 
-  validates :selection, length: { minimum: 1 }, if: :has_no_configured_mfa?
+  validates :selection, length: { minimum: 1 }, if: :has_no_mfa_or_in_required_flow?
   validates :selection, length: { minimum: 2, message: 'phone' }, if: :phone_validations?
 
-  def initialize(user)
+  def initialize(user:, aal3_required:, piv_cac_required:)
     self.user = user
+    self.aal3_required = aal3_required
+    self.piv_cac_required = piv_cac_required
   end
 
   def submit(params)
@@ -25,9 +26,6 @@ class TwoFactorOptionsForm
 
   private
 
-  attr_accessor :user
-  attr_writer :selection
-
   def mfa_user
     @mfa_user ||= MfaContext.new(user)
   end
@@ -38,6 +36,10 @@ class TwoFactorOptionsForm
       selected_mfa_count: selection.count,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
     }
+  end
+
+  def in_aal3_or_piv_cac_required_flow?
+    aal3_required || piv_cac_required
   end
 
   def user_needs_updating?
@@ -57,6 +59,10 @@ class TwoFactorOptionsForm
 
   def has_no_configured_mfa?
     mfa_user.enabled_mfa_methods_count == 0
+  end
+
+  def has_no_mfa_or_in_required_flow?
+    has_no_configured_mfa? || in_aal3_or_piv_cac_required_flow?
   end
 
   def kantara_2fa_phone_restricted?

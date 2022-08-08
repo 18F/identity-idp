@@ -134,7 +134,7 @@ function addPageAction(event, payload) {
     appName,
     flowPath,
     cancelUrl: cancelURL,
-    idvInPersonUrl: inPersonURL = null,
+    idvInPersonUrl: inPersonURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(

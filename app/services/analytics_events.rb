@@ -636,8 +636,14 @@ module AnalyticsEvents
   end
 
   # GPO address letter requested
-  def idv_gpo_address_letter_requested
-    track_event('IdV: USPS address letter requested')
+  # @param [DateTime] enqueued_at
+  # GPO letter was requested and time was recorded
+  def idv_gpo_address_letter_requested(enqueued_at: Time.zone.now, **extra)
+    track_event(
+      'IdV: USPS address letter requested',
+      enqueued_at: enqueued_at,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -992,6 +998,25 @@ module AnalyticsEvents
     track_event(
       'Invalid Authenticity Token',
       controller: controller,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
       user_signed_in: user_signed_in,
       **extra,
     )
