@@ -6,6 +6,8 @@ module Idv
       include UspsInPersonProofing
       include EffectiveUser
 
+      before_action :redirect_unless_effective_user, only: [:update]
+
       # get the list of all pilot Post Office locations
       def index
         usps_response = []
@@ -20,16 +22,26 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
-        enrollment.update!(selected_location_details: permitted_params.as_json)
+        enrollment.update!(
+          selected_location_details: permitted_params.as_json,
+          issuer: current_sp&.issuer,
+        )
 
         render json: { success: true }, status: :ok
       end
 
       protected
 
+      def redirect_unless_effective_user
+        redirect_to root_url if !effective_user
+      end
+
       def enrollment
-        UspsInPersonProofing::EnrollmentHelper.
-          establishing_in_person_enrollment_for_user(effective_user)
+        InPersonEnrollment.find_or_initialize_by(
+          user: effective_user,
+          status: :establishing,
+          profile: nil,
+        )
       end
 
       def permitted_params
