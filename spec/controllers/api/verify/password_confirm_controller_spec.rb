@@ -159,6 +159,26 @@ describe Api::Verify::PasswordConfirmController do
             expect(enrollment.user_id).to eq(user.id)
             expect(enrollment.enrollment_code).to be_nil
           end
+
+          it 'allows the user to retry the request' do
+            stub_request_enroll
+
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            parsed_body = JSON.parse(response.body)
+            expect(parsed_body).to include(
+              'personal_key' => kind_of(String),
+              'completion_url' => idv_in_person_ready_to_verify_url,
+            )
+            expect(response.status).to eq 200
+
+            enrollment.reload
+            expect(enrollment.status).to eq('pending')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_a(String)
+            expect(enrollment.profile).to eq(user.profiles.last)
+            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+          end
         end
 
         context 'when the USPS response is missing an enrollment code' do
