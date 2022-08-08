@@ -116,6 +116,10 @@ class UserDecorator
     !recent_devices.empty?
   end
 
+  def last_signed_in_at
+    user.devices.order(last_used_at: :desc).first&.last_used_at
+  end
+
   def connected_apps
     user.identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
   end
