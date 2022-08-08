@@ -25,6 +25,11 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
+    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+      proofer_result = proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
+      return proofer_result if proofer_result.failed?
+    end
+
     callback_log_data = if dob_year_only && should_proof_state_id
                           proof_aamva_then_lexisnexis_dob_only(
                             timer: timer,
@@ -54,6 +59,10 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   private
+
+  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
+    lexisnexis_ddp_proofer.proof(applicant_pii)
+  end
 
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
@@ -191,11 +200,7 @@ class ResolutionProofingJob < ApplicationJob
       if IdentityConfig.store.proofer_mock_fallback
         Proofing::Mock::ResolutionMockClient.new
       elsif IdentityConfig.store.replace_lexisnexis_rdp_instant_verify_with_ddp
-        Proofing::LexisNexis::Ddp::Proofer.new(
-          api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
-          org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
-          base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
-        )
+        lexisnexis_ddp_proofer
       else
         Proofing::LexisNexis::InstantVerify::Proofer.new(
           instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
@@ -206,6 +211,14 @@ class ResolutionProofingJob < ApplicationJob
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
         )
       end
+  end
+
+  def lexisnexis_ddp_proofer
+    Proofing::LexisNexis::Ddp::Proofer.new(
+      api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
+      org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
+      base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
+    )
   end
 
   def state_id_proofer
@@ -223,5 +236,10 @@ class ResolutionProofingJob < ApplicationJob
           verification_url: IdentityConfig.store.aamva_verification_url,
         )
       end
+  end
+
+  def use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+    IdentityConfig.store.lexisnexis_ddp_with_threatmetrix_enabled &&
+      !IdentityConfig.store.replace_lexisnexis_rdp_instant_verify_with_ddp
   end
 end

@@ -196,6 +196,7 @@ class IdentityConfig
     config.add(:lexisnexis_ddp_base_url, type: :string)
     config.add(:lexisnexis_ddp_org_id, type: :string)
     config.add(:lexisnexis_ddp_timeout, type: :float)
+    config.add(:lexisnexis_ddp_with_threatmetrix_enabled, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_username, type: :string)

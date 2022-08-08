@@ -127,6 +127,7 @@ lexisnexis_ddp_api_key: test_api_key
 lexisnexis_ddp_base_url: https://www.example.com
 lexisnexis_ddp_org_id: test_org_id
 lexisnexis_ddp_timeout: 1.0
+lexisnexis_ddp_with_threatmetrix_enabled: false
 lexisnexis_username: test_username
 lexisnexis_password: test_password
 lexisnexis_phone_finder_timeout: 1.0
