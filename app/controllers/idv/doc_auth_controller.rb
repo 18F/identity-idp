@@ -10,7 +10,7 @@ module Idv
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
 
-    before_action :redirect_if_session_applicant
+    before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -38,7 +38,7 @@ module Idv
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
     end
 
-    def redirect_if_session_applicant
+    def redirect_if_flow_completed
       flow_finish if idv_session.applicant
     end
 
