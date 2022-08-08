@@ -87,8 +87,6 @@ module Idv
 
     def init_profile
       idv_session.create_profile_from_applicant_with_password(password)
-      idv_session.cache_encrypted_pii(password)
-      idv_session.complete_session
 
       if idv_session.address_verification_mechanism == 'gpo'
         analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now)
