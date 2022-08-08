@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ReviewController do
+  include UspsIppHelper
+
   let(:user) do
     create(
       :user,
@@ -34,6 +36,11 @@ describe Idv::ReviewController do
     idv_session.vendor_phone_confirmation = true
     idv_session.applicant = user_attrs
     idv_session
+  end
+
+  before do
+    stub_analytics
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
   end
 
   describe 'before_actions' do
@@ -384,8 +391,17 @@ describe Idv::ReviewController do
           end
         end
 
-        context 'with in person enrollment' do
+        context 'with in person profile' do
+          let!(:enrollment) {
+            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          }
+          let(:stub_usps_response) do
+            stub_request_enroll
+          end
+
           before do
+            stub_request_token
+            stub_usps_response
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
             idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
