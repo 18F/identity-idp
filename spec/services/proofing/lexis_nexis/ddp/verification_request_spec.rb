@@ -21,7 +21,9 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
   end
 
   let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
-  subject { described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config) }
+  subject do
+    described_class.new(applicant: applicant, config: LexisNexisFixtures.example_ddp_config)
+  end
 
   describe '#body' do
     it 'returns a properly formed request body' do
