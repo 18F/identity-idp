@@ -111,6 +111,13 @@ describe GpoVerifyForm do
         expect(pending_profile.reload).to be_active
       end
 
+      it 'logs the date the code was sent at' do
+        result = subject.submit
+
+        confirmation_code = pending_profile.gpo_confirmation_codes.last
+        expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
+      end
+
       context 'pending in person enrollment' do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
