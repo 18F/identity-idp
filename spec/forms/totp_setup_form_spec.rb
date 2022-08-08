@@ -14,6 +14,7 @@ describe TotpSetupForm do
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: next_auth_app_id,
+          enabled_mfa_methods_count: 1,
         }
 
         expect(form.submit.to_h).to eq(

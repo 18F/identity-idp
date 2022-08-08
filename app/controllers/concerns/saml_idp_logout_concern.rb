@@ -58,6 +58,9 @@ module SamlIdpLogoutConcern
       oidc: false,
       saml_request_valid: sp_initiated ? valid_saml_request? : true,
     )
+    irs_attempts_api_tracker.logout_initiated(
+      success: true,
+    )
   end
 
   def track_remote_logout_event

@@ -16,21 +16,25 @@ module UspsInPersonProofing
         city: location.city,
         state: location.state,
         zipCode: location.zip_code,
-      }
+      }.to_json
 
-      resp = faraday.post(url, body, dynamic_headers)
+      headers = request_headers.merge(
+        'Authorization' => @token,
+        'RequestID' => request_id,
+      )
 
-      resp.body['postOffices'].map do |post_office|
-        PostOffice.new(
-          distance: post_office['distance'],
-          address: post_office['streetAddress'],
-          city: post_office['city'],
-          phone: post_office['phone'],
-          name: post_office['name'],
-          zip_code: post_office['zip5'],
-          state: post_office['state'],
-        )
-      end
+      parse_facilities(
+        faraday.post(url, body, headers) do |req|
+          req.options.context = { service_name: 'usps_facilities' }
+        end.body,
+      )
+    end
+
+    # Temporary function to return a static set of facilities
+    # @return [Array<PostOffice>] Facility locations
+    def request_pilot_facilities
+      resp = File.read(Rails.root.join('config', 'ipp_pilot_usps_facilities.json'))
+      parse_facilities(JSON.parse(resp))
     end
 
     # Makes HTTP request to enroll an applicant in in-person proofing.
@@ -56,7 +60,9 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enroll' }
+      end.body
     end
 
     # Makes HTTP request to retrieve proofing status
@@ -75,7 +81,9 @@ module UspsInPersonProofing
         enrollmentCode: enrollment_code,
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_proofing_results' }
+      end.body
     end
 
     # Makes HTTP request to retrieve enrollment code
@@ -92,7 +100,9 @@ module UspsInPersonProofing
         uniqueID: unique_id,
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enrollment_code' }
+      end.body
     end
 
     # Makes a request to retrieve a new OAuth token
@@ -117,6 +127,9 @@ module UspsInPersonProofing
         conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
+
+        # Log request metrics
+        conn.request :instrumentation, name: 'request_metric.faraday'
 
         # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
         # Note: The order of this matters for parsing the error response body.
@@ -160,7 +173,9 @@ module UspsInPersonProofing
         scope: 'ivs.ippaas.apis',
       }
 
-      faraday.post(url, body).body
+      faraday.post(url, body) do |req|
+        req.options.context = { service_name: 'usps_token' }
+      end.body
     end
 
     def root_url
@@ -177,6 +192,31 @@ module UspsInPersonProofing
 
     def request_headers
       { 'Content-Type' => 'application/json; charset=utf-8' }
+    end
+
+    def parse_facilities(facilities)
+      facilities['postOffices'].map do |post_office|
+        hours = {}
+        post_office['hours'].each do |hour_details|
+          hour_details.keys.each do |key|
+            hours[key] = hour_details[key]
+          end
+        end
+
+        PostOffice.new(
+          address: post_office['streetAddress'],
+          city: post_office['city'],
+          distance: post_office['distance'],
+          name: post_office['name'],
+          phone: post_office['phone'],
+          saturday_hours: hours['saturdayHours'],
+          state: post_office['state'],
+          sunday_hours: hours['sundayHours'],
+          weekday_hours: hours['weekdayHours'],
+          zip_code_4: post_office['zip4'],
+          zip_code_5: post_office['zip5'],
+        )
+      end
     end
   end
 end

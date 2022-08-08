@@ -55,7 +55,7 @@ module Idv
     private
 
     def update_tracking
-      analytics.idv_gpo_address_letter_requested
+      analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now)
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
@@ -78,7 +78,10 @@ module Idv
     def non_address_pii
       pii_to_h.
         slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn').
-        merge(uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id)
+        merge(
+          uuid: current_user.uuid,
+          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
+        )
     end
 
     def pii_to_h

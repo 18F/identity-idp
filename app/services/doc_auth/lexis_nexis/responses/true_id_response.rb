@@ -124,6 +124,7 @@ module DocAuth
 
         def create_response_info
           alerts = parsed_alerts
+          log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
 
           {
             liveness_enabled: @liveness_checking_enabled,
@@ -133,6 +134,7 @@ module DocAuth
             doc_auth_result: doc_auth_result,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
+            log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
           }
@@ -246,9 +248,13 @@ module DocAuth
         end
 
         def parse_date(year:, month:, day:)
-          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
-            Date.new(year.to_i, month.to_i, day.to_i).to_s
-          end
+          Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
+        rescue ArgumentError
+          message = {
+            event: 'Failure to parse TrueID date',
+          }.to_json
+          Rails.logger.info(message)
+          nil
         end
       end
     end

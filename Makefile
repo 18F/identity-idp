@@ -62,8 +62,6 @@ lint: ## Runs all lint tests
 	make lint_analytics_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
-	@echo "--- zeitwerk check ---"
-	bin/rails zeitwerk:check
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript

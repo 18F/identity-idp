@@ -17,11 +17,13 @@ RSpec.describe 'In Person Proofing', js: true do
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
+    sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
     # location page
     expect(page).to have_content(t('in_person_proofing.headings.location'))
-    complete_location_step(user)
+    bethesda_location = page.find_all('.location-collection-item')[1]
+    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
     # prepare page
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
@@ -95,10 +97,87 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+    expect(page).to have_content('BETHESDA')
+    expect(page).to have_content(
+      "#{t('date.day_names')[6]}: #{t('in_person_proofing.body.barcode.retail_hours_closed')}",
+    )
+
+    # signing in again before completing in-person proofing at a post office
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_welcome_step
+    expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+  end
+
+  it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps
+
+    click_link t('links.cancel')
+    click_on t('idv.cancel.actions.start_over')
+
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    begin_in_person_proofing
+    complete_all_in_person_proofing_steps
+  end
+
+  context 'with hybrid document capture' do
+    before do
+      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
+      allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        @sms_link = config[:link]
+        impl.call(**config)
+      end
+    end
+
+    it 'resumes desktop session with in-person proofing', allow_browser_log: true do
+      user = nil
+
+      perform_in_browser(:desktop) do
+        user = sign_in_and_2fa_user
+        complete_doc_auth_steps_before_send_link_step
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+      end
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        mock_doc_auth_attention_with_barcode
+        attach_and_submit_images
+
+        click_button t('idv.troubleshooting.options.verify_in_person')
+
+        bethesda_location = page.find_all('.location-collection-item')[1]
+        bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+
+        click_idv_continue
+
+        expect(page).to have_content(t('in_person_proofing.headings.switch_back'))
+      end
+
+      perform_in_browser(:desktop) do
+        expect(page).to have_current_path(idv_in_person_step_path(step: :state_id), wait: 10)
+
+        complete_state_id_step(user)
+        complete_address_step(user)
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_review_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_content('BETHESDA')
+      end
+    end
   end
 
   context 'verify address by mail (GPO letter)' do
+    before do
+      allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
+    end
+
     it 'requires address verification before showing instructions', allow_browser_log: true do
+      sign_in_and_2fa_user
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
@@ -109,7 +188,29 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
-      # WILLFIX: After LG-6897, assert that "Ready to Verify" content is shown after code entry.
+      click_idv_continue
+      expect(page).to have_current_path(account_path)
+      expect(page).not_to have_content(t('headings.account.verified_account'))
+      click_on t('account.index.verification.reactivate_button')
+      click_button t('forms.verify_profile.submit')
+
+      expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      expect(page).not_to have_content(t('account.index.verification.success'))
+    end
+
+    it 'lets the user clear and start over from gpo confirmation', allow_browser_log: true do
+      sign_in_and_2fa_user
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      click_on t('idv.troubleshooting.options.verify_by_mail')
+      click_on t('idv.buttons.mail.send')
+      complete_review_step
+      acknowledge_and_confirm_personal_key
+      click_idv_continue
+      click_on t('account.index.verification.reactivate_button')
+      click_on t('idv.messages.clear_and_start_over')
+
+      expect(page).to have_current_path(idv_doc_auth_welcome_step)
     end
   end
 end

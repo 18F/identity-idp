@@ -105,7 +105,7 @@ install:
 
 specs:
   stage: test
-  parallel: 7
+  parallel: 11
   cache:
     - <<: *ruby_cache
     - <<: *yarn_cache
@@ -184,6 +184,17 @@ js_tests:
   script:
     - *yarn_install
     - yarn test
+
+
+pinpoint-check:
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint_country_dialing_codes
 
 coverage:
   stage: after_test
