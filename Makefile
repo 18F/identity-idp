@@ -25,6 +25,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_erb \
 	lint_optimized_assets \
 	lint_yaml \
+	lint_yarn_workspaces \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -76,6 +77,8 @@ lint: ## Runs all lint tests
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
+	@echo "--- lint Yarn workspaces ---"
+	make lint_yarn_workspaces
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
@@ -86,6 +89,9 @@ lint_erb: ## Lints ERB files
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
+lint_yarn_workspaces: ## Lints Yarn workspace packages
+	scripts/validate-workspaces.js
 
 lintfix: ## Runs rubocop fix
 	@echo "--- rubocop fix ---"
