@@ -7,16 +7,14 @@ module Idv
         def call
           flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
 
-          if IdentityConfig.store.proofing_device_profiling_collecting_enabled
-            flow_session[:threatmetrix_session_id] = threatmetrix_session_id
-          end
+          flow_session[:threatmetrix_session_id] = threatmetrix_session_id unless updating_ssn
 
           idv_session.delete('applicant')
         end
 
         def extra_view_variables
           {
-            updating_ssn: flow_session[:pii_from_user][:ssn].present?,
+            updating_ssn: updating_ssn,
           }
         end
 
@@ -26,8 +24,12 @@ module Idv
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
         end
 
+        def updating_ssn
+          flow_session.dig(:pii_from_doc, :ssn).present?
+        end
+
         def threatmetrix_session_id
-          return nil if !IdentityConfig.store.proofing_device_profiling_collecting_enabled
+          return unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
           SecureRandom.uuid
         end
       end
