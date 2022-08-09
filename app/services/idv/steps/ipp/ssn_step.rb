@@ -6,6 +6,10 @@ module Idv
 
         def call
           flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
+
+          if IdentityConfig.store.proofing_device_profiling_collecting_enabled
+            flow_session[:threatmetrix_session_id] = threatmetrix_session_id
+          end
         end
 
         def extra_view_variables
@@ -18,6 +22,11 @@ module Idv
 
         def form_submit
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+        end
+
+        def threatmetrix_session_id
+          return nil if !IdentityConfig.store.proofing_device_profiling_collecting_enabled
+          SecureRandom.uuid
         end
       end
     end
