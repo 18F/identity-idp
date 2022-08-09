@@ -102,7 +102,7 @@ lint_gemfile_lock: Gemfile Gemfile.lock
 
 lint_yarn_lock: package.json yarn.lock
 	@yarn install --ignore-scripts
-	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn lock'"; exit 1)
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
 
 lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
