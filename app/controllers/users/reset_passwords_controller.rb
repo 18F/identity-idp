@@ -86,6 +86,11 @@ module Users
       return unless result
 
       analytics.user_registration_email(**result.to_h)
+      irs_attempts_api_tracker.user_registration_email_submitted(
+        email: email,
+        success: result.success?,
+        failure_reason: result.to_h[:error_details],
+      )
       create_user_event(:account_created, user)
     end
 
