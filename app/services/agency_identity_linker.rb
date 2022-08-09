@@ -9,8 +9,8 @@ class AgencyIdentityLinker
       AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
   end
 
-  # @return [AgencyIdentity, ServiceProviderIdentity] the AgencyIdentity for this user at this service provider
-  #   or falls back to the ServiceProviderIdentity if one does not exist 
+  # @return [AgencyIdentity, ServiceProviderIdentity] the AgencyIdentity for this user at this
+  #   service provider or falls back to the ServiceProviderIdentity if one does not exist.
   def self.for(user:, service_provider:)
     agency = service_provider.agency
 
