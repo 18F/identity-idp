@@ -119,12 +119,6 @@ guidelines above for `package.json` `name` field (for example,
 
 ## Testing
 
-### At a Glance
-
-- integration tests and unit tests should always be running and passing
-- tests should be added/updated with new functionality and when features are changed
-- attempt to unit test data-related JS; functional/integration tests are fine for DOM-related code
-
 ### Running Tests
 
 #### Mocha
