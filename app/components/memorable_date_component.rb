@@ -2,7 +2,7 @@ class MemorableDateComponent < BaseComponent
   attr_reader :month, :day, :year, :hint, :label, :form
 
   alias_method :f, :form
-
+ 
   def initialize(month:, day:, year:, hint:, label:, form:, error_messages: {}, **_tag_options)
     @month = month
     @day = day
@@ -15,6 +15,6 @@ class MemorableDateComponent < BaseComponent
   end
 
   def error_messages
-    # validation errors
+    # WILLDO handle validation errors
   end
 end
