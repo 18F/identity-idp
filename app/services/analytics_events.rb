@@ -966,10 +966,8 @@ module AnalyticsEvents
   def idv_review_complete(success:, **extra)
     track_event(
       'IdV: review complete',
-      {
-        success: success,
-        **extra,
-      }.compact,
+      success: success,
+      **extra,
     )
   end
 
