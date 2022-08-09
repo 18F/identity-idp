@@ -26,6 +26,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_optimized_assets \
 	lint_yaml \
 	lint_yarn_workspaces \
+	lint_lockfiles \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -79,6 +80,8 @@ lint: ## Runs all lint tests
 	make lint_yaml
 	@echo "--- lint Yarn workspaces ---"
 	make lint_yarn_workspaces
+	@echo "--- lint lockfiles ---"
+	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
@@ -92,6 +95,16 @@ lint_yaml: normalize_yaml ## Lints YAML files
 
 lint_yarn_workspaces: ## Lints Yarn workspace packages
 	scripts/validate-workspaces.js
+
+lint_gemfile_lock: Gemfile Gemfile.lock
+	@bundle check
+	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
+
+lint_yarn_lock: package.json yarn.lock
+	@yarn install --ignore-scripts
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
+
+lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
 lintfix: ## Runs rubocop fix
 	@echo "--- rubocop fix ---"
