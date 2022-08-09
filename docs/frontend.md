@@ -119,6 +119,18 @@ guidelines above for `package.json` `name` field (for example,
 
 ## Testing
 
+### At a Glance
+
+JavaScript tests include a combination of unit tests and integration tests, with a heavier emphasis
+on integration tests since the bulk of our front-end code is in service of user interactivity.
+
+To simplify common test behaviors and encourage best practices, we make extensive use of the
+[Testing Library](https://testing-library.com/) suite of testing libraries, which can be used to
+render and query [basic DOM elements](https://testing-library.com/docs/dom-testing-library/intro) as
+well as advanced [React components](https://testing-library.com/docs/react-testing-library/intro).
+Their APIs are designed in a way to [accurately simulate real user behavior](https://testing-library.com/docs/user-event/intro)
+and support [querying by accessible semantics](https://testing-library.com/docs/queries/byrole).
+
 ### Running Tests
 
 #### Mocha
