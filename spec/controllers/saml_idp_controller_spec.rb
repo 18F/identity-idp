@@ -8,9 +8,13 @@ describe SamlIdpController do
   describe '/api/saml/logout' do
     it 'tracks the event when idp initiated' do
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: false, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout
     end
@@ -18,18 +22,26 @@ describe SamlIdpController do
     it 'tracks the event when sp initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlLogoutRequest.new)
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: true }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
 
     it 'tracks the event when the saml request is invalid' do
       stub_analytics
+      stub_attempts_tracker
 
       result = { sp_initiated: true, oidc: false, saml_request_valid: false }
       expect(@analytics).to receive(:track_event).with('Logout Initiated', hash_including(result))
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
+        success: true,
+      )
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end

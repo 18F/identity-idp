@@ -99,9 +99,7 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 4,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_warning_path)
 
     click_on t('idv.failure.button.warning')
 
@@ -120,9 +118,7 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 5,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_exception_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_exception_path)
 
     click_on t('idv.failure.button.warning')
 
@@ -136,9 +132,7 @@ feature 'doc auth verify step', :js do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(
-        idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-      )
+      expect(page).to have_current_path(idv_session_errors_warning_path)
       visit idv_doc_auth_verify_step
     end
     click_idv_continue
