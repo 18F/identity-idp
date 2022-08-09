@@ -32,10 +32,7 @@ feature 'IRS Attempts API Event Tracking' do
     events = irs_attempts_api_tracked_events
     expected_event_types = ['email-and-password-auth', 'mfa-phone-verification-otp-sent']
 
-    received_event_types = []
-    events.each do |event|
-      received_event_types.push(event.event_type)
-    end
+    received_event_types = events.map(&:event_type)
 
     expect(events.count).to be > 0
     expect(received_event_types.sort).to eq(expected_event_types.sort)
