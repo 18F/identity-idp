@@ -25,8 +25,6 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     )
   end
 
-  # it_behaves_like 'a lexisnexis proofer'
-
   describe '#send' do
     context 'when the request times out' do
       it 'raises a timeout error' do
@@ -64,13 +62,13 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         to_return(body: response_body, status: 200)
     end
 
-    # context 'when the response is a full match' do
-    #   let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
-    #
-    #   it 'is a successful result' do
-    #     expect(result.success?).to eq(true)
-    #     expect(result.errors).to be_empty
-    #   end
-    # end
+    context 'when the response is a full match' do
+      let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+
+      it 'is a successful result' do
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
+    end
   end
 end
