@@ -395,8 +395,63 @@ describe Idv::ReviewController do
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
           end
 
+          it 'redirects to personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_personal_key_path
+          end
+
+          it 'creates a USPS enrollment' do
+            proofer = UspsInPersonProofing::Proofer.new
+            mock = double
+
+            expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+            expect(mock).to receive(:request_enroll) do |applicant|
+              expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+              expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+              expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
+              expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+              expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
+              expect(applicant.email).to eq('no-reply@login.gov')
+              expect(applicant.unique_id).to be_a(String)
+
+              proofer.request_enroll(applicant)
+            end
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
           it 'does not dispatch account verified alert' do
             expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
+          it 'creates an in-person enrollment record' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            enrollment.reload
+
+            expect(enrollment.status).to eq('pending')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_a(String)
+            expect(enrollment.profile).to eq(user.profiles.last)
+            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+          end
+
+          it 'sends ready to verify email' do
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            user.email_addresses.each do |email_address|
+              expect(UserMailer).to receive(:in_person_ready_to_verify).
+                with(
+                  user,
+                  email_address,
+                  enrollment: instance_of(InPersonEnrollment),
+                  first_name: kind_of(String),
+                ).
+                and_return(mailer)
+            end
 
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
@@ -521,33 +576,6 @@ describe Idv::ReviewController do
             end
           end
 
-          it 'redirects to personal key path' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            expect(response).to redirect_to idv_personal_key_path
-          end
-
-          it 'creates a USPS enrollment' do
-            proofer = UspsInPersonProofing::Proofer.new
-            mock = double
-
-            expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
-            expect(mock).to receive(:request_enroll) do |applicant|
-              expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
-              expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
-              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
-              expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
-              expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
-              expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
-              expect(applicant.email).to eq('no-reply@login.gov')
-              expect(applicant.unique_id).to be_a(String)
-
-              proofer.request_enroll(applicant)
-            end
-
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
-
           context 'when user enters an address2 value' do
             let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
 
@@ -563,34 +591,6 @@ describe Idv::ReviewController do
 
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
-          end
-
-          it 'creates an in-person enrollment record' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-
-            enrollment.reload
-
-            expect(enrollment.status).to eq('pending')
-            expect(enrollment.user_id).to eq(user.id)
-            expect(enrollment.enrollment_code).to be_a(String)
-            expect(enrollment.profile).to eq(user.profiles.last)
-            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
-          end
-
-          it 'sends ready to verify email' do
-            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-            user.email_addresses.each do |email_address|
-              expect(UserMailer).to receive(:in_person_ready_to_verify).
-                with(
-                  user,
-                  email_address,
-                  enrollment: instance_of(InPersonEnrollment),
-                  first_name: kind_of(String),
-                ).
-                and_return(mailer)
-            end
-
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
       end
