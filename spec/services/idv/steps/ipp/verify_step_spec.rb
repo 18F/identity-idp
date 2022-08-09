@@ -99,7 +99,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           flow.flow_session = { pii_from_user: pii }
         end
 
-        Idv::Steps::VerifyStep.new(flow)
+        Idv::Steps::Ipp::VerifyStep.new(flow)
       end
 
       before do

@@ -31,6 +31,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # @param [Boolean] success
+    def multi_factor_auth_verify_totp(success:)
+      track_event(
+        :totp_verify,
+        success: success,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
@@ -42,6 +51,23 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_email_confirmation,
+        success: success,
+        email: email,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks when user submits registration email
+    # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def user_registration_email_submitted(
+      success:,
+      email:,
+      failure_reason: nil
+    )
+      track_event(
+        :user_registration_email_submitted,
         success: success,
         email: email,
         failure_reason: failure_reason,

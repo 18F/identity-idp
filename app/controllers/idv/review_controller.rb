@@ -24,6 +24,7 @@ module Idv
     def confirm_current_password
       return if valid_password?
 
+      analytics.idv_review_complete(success: false)
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_review_url
     end
@@ -46,7 +47,7 @@ module Idv
       init_profile
       user_session[:need_personal_key_confirmation] = true
       redirect_to next_step
-      analytics.idv_review_complete
+      analytics.idv_review_complete(success: true)
       analytics.idv_final(success: true)
 
       return unless FeatureManagement.reveal_gpo_code?
@@ -89,7 +90,7 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
 
       if idv_session.address_verification_mechanism == 'gpo'
-        analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now)
+        analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now, resend: false)
       end
 
       if idv_session.profile.active?
