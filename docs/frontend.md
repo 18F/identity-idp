@@ -175,3 +175,11 @@ The application should support:
 - All browsers with >1% usage according to our own analytics
 - All device sizes
 
+## Additional Resources
+
+You can find additional frontend documentation in relevant places throughout the code:
+
+- [`app/components/README.md`](../app/components/README.md)
+- [`app/javascript/app/README.md`](../app/javascript/app/README.md)
+- [`app/javascript/packages/README.md`](../app/javascript/packages/README.md)
+- [`app/javascript/packs/README.md`](../app/javascript/packs/README.md)
