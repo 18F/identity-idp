@@ -16,7 +16,7 @@
   <% end %>
 
 <%= button_to(
-      root_url,
+      login_two_factor_options_path,
       method: :get,
       class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
     ) { t('account_reset.request.no_cancel') } %>
@@ -25,4 +25,4 @@
       method: :delete,
       class: 'usa-button usa-button--unstyled',
     ) { t('account_reset.request.yes_continue') } %>
-
+    

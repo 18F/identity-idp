@@ -57,6 +57,6 @@ es:
           la única opción.
         - No podemos deshacer la eliminación de una cuenta, así que por favor
           asegúrese de no tener otra opción de seguridad que puede usar.
-      no_cancel: No, cancelar
+      no_cancel: Cancelar
       title: Eliminación y restablecimiento de cuenta
       yes_continue: Sí, continúa la eliminación

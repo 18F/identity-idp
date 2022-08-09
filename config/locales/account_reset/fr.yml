@@ -57,6 +57,6 @@ fr:
         - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît
           assurez-vous que vous n’avez pas une autre option de sécurité que vous
           pouvez utiliser à la place.
-      no_cancel: Non, annuler
+      no_cancel: Annuler
       title: Suppression de compte et réinitialisation
       yes_continue: Oui, continuez la suppression

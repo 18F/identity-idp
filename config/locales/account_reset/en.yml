@@ -62,6 +62,6 @@ en:
           only option.
         - We can’t undo an account delete, so please verify if you have another
           authentication method you can use instead.
-      no_cancel: No, cancel
+      no_cancel: Cancel
       title: Account deletion and reset
       yes_continue: Yes, continue deletion
