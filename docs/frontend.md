@@ -170,5 +170,8 @@ yarn run lint --fix
 
 ## Devices
 
-- strive to support all browsers with > 1% usage
-- site should look good and work well across all device sizes
+The application should support:
+
+- All browsers with >1% usage according to our own analytics
+- All device sizes
+
