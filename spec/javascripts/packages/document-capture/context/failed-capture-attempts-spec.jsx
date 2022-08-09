@@ -1,13 +1,15 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
+import userEvent from '@testing-library/user-event';
+import { DeviceContext, AnalyticsContext, UploadContext } from '@18f/identity-document-capture';
 import AcuantContext, {
   dirname,
   Provider as AcuantContextProvider,
   DEFAULT_ACCEPTABLE_GLARE_SCORE,
   DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
 } from '@18f/identity-document-capture/context/acuant';
-
+import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
+import { useAcuant, render } from '../../../support/document-capture';
 import FailedCaptureAttemptsContext, {
   Provider,
 } from '@18f/identity-document-capture/context/failed-capture-attempts';
@@ -19,6 +21,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
 
     expect(result.current).to.have.keys([
       'failedCaptureAttempts',
+      'forceNativeCamera',
       'onFailedCaptureAttempt',
       'onResetFailedCaptureAttempts',
       'maxFailedAttemptsBeforeTips',
@@ -36,7 +39,11 @@ describe('document-capture/context/failed-capture-attempts', () => {
   describe('Provider', () => {
     it('sets increments on onFailedCaptureAttempt', () => {
       const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-        wrapper: ({ children }) => <Provider maxFailedAttemptsBeforeTips={1}>{children}</Provider>,
+        wrapper: ({ children }) => (
+          <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+            {children}
+          </Provider>
+        ),
       });
 
       result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
@@ -55,38 +62,85 @@ describe('document-capture/context/failed-capture-attempts', () => {
 
       expect(result.current.lastAttemptMetadata).to.deep.equal(metadata);
     });
-    context('failed acuant camera attempts', function () {
-      //let result;
-      //let addPageAction;
+  });
+});
 
+describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () => {
+  it('Updating to a number of failed captures less than maxAttemptsBeforeNativeCamera will keep forceNativeCamera as false', () => {
+    const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      wrapper: ({ children }) => (
+        <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+          {children}
+        </Provider>
+      ),
+    });
+    result.current.onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+    });
+    rerender(true);
+    expect(result.current.failedCaptureAttempts).to.equal(1);
+    expect(result.current.forceNativeCamera).to.equal(false);
+  });
+  it('Updating failed captures to a number gte the maxAttemptsBeforeNativeCamera will set forceNativeCamera to true', () => {
+    const { result, rerender } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      wrapper: ({ children }) => (
+        <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+          {children}
+        </Provider>
+      ),
+    });
+    result.current.onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+    });
+    rerender(true);
+    expect(result.current.forceNativeCamera).to.equal(false);
+    result.current.onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+    });
+    rerender(true);
+    expect(result.current.forceNativeCamera).to.equal(true);
+    result.current.onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+    });
+    rerender({});
+    expect(result.current.failedCaptureAttempts).to.equal(3);
+    expect(result.current.forceNativeCamera).to.equal(true);
+  });
+});
+
+describe('maxAttemptsBeforeNativeCamera loggin tests', () => {
+  context('failed acuant camera attempts', function () {
+    const { initialize } = useAcuant();
+    it('calls analytics with native camera message when failed attempts is greater than or equal to 2', async function () {
       let addPageAction = sinon.spy();
-      const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-        wrapper: ({ children }) => (
-          <Provider maxAttemptsBeforeNativeCamera={3} maxFailedAttemptsBeforeTips={10}>
-            <AnalyticsContext.Provider value={{ addPageAction }}>
-              {children}
-            </AnalyticsContext.Provider>
-          </Provider>
-        ),
-      });
-      // const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
-      //   wrapper: ({ children }) => (
-      //     <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
-      //       {children}
-      //     </Provider>
-      //   ),
-      // });
-      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
-      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
-      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
-
-      it('calls analytics with native camera message when failed attempts is greater than 2', function () {
-        //expect(addPageAction).to.have.been.called();
-        expect(addPageAction).to.have.been.calledWith(
-          'IdV: Force native camera. Failed attempts: 3',
-          `Failed attempts: ${result.current.failedCaptureAttempts}`,
+      const acuantCaptureComponent = <AcuantCapture></AcuantCapture>;
+      const TestComponent = ({ children }) => {
+        return (
+          <AnalyticsContext.Provider value={{ addPageAction }}>
+            <DeviceContext.Provider value={{ isMobile: true }}>
+              <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                <Provider maxAttemptsBeforeNativeCamera={0} maxFailedAttemptsBeforeTips={10}>
+                  {acuantCaptureComponent}
+                  {children}
+                </Provider>
+              </AcuantContextProvider>
+            </DeviceContext.Provider>
+          </AnalyticsContext.Provider>
         );
-      });
+
+        initialize();
+      };
+      const result = render(<TestComponent></TestComponent>);
+      const user = userEvent.setup();
+      const fileInput = result.container.querySelector('input[type="file"]');
+      expect(fileInput).to.exist();
+      await user.click(fileInput);
+      expect(addPageAction).to.have.been.called();
+      expect(addPageAction).to.have.been.calledWith('IdV: Force native camera. Failed attempts: 0');
     });
   });
 });
