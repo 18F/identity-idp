@@ -30,8 +30,15 @@ feature 'IRS Attempts API Event Tracking' do
     sign_in_user(user)
 
     events = irs_attempts_api_tracked_events
+    expected_event_types = ["email-and-password-auth", "mfa-phone-verification-otp-sent"]
 
+    received_event_types = []
+    for event in events
+      received_event_types.push(event.event_type)
+    end
+    
     expect(events.count).to be > 0
+    expect(received_event_types.sort).to eq(expected_event_types.sort)
   end
 
   scenario 'signing in from an IRS SP without an attempts api session id does not track events' do
