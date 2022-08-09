@@ -10,6 +10,9 @@ module Idv
     before_action :redirect_to_idv_app_if_enabled
     before_action :confirm_current_password, only: [:create]
 
+    rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
+                with: :handle_request_enroll_exception
+
     def confirm_idv_steps_complete
       return redirect_to(idv_doc_auth_url) unless idv_profile_complete?
       return redirect_to(idv_phone_url) unless idv_address_complete?
@@ -121,6 +124,19 @@ module Idv
 
     def next_step
       idv_personal_key_url
+    end
+
+    def handle_request_enroll_exception(err)
+      analytics.idv_in_person_usps_request_enroll_exception(
+        context: context,
+        enrollment_id: err.enrollment_id,
+        exception_class: err.class.to_s,
+        original_exception_class: err.exception_class,
+        exception_message: err.message,
+        reason: 'Request exception',
+      )
+      # todo: any cleanup we need to do? profiles or enrollments so that the user can re-try? add a spec for retrying
+      render plain: 'Internal server error', status: :internal_server_error
     end
   end
 end

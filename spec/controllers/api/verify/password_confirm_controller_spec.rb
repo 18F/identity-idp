@@ -116,7 +116,7 @@ describe Api::Verify::PasswordConfirmController do
             )
           end
 
-          it 'leaves the enrollment in establishing when no enrollment code is returned' do
+          it 'leaves the enrollment in establishing' do
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
@@ -150,7 +150,7 @@ describe Api::Verify::PasswordConfirmController do
             )
           end
 
-          it 'leaves the enrollment in establishing when no enrollment code is returned' do
+          it 'leaves the enrollment in establishing' do
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
@@ -161,6 +161,8 @@ describe Api::Verify::PasswordConfirmController do
           end
 
           it 'allows the user to retry the request' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+            expect(response.status).to eq 500
             stub_request_enroll
 
             post :create, params: { password: password, user_bundle_token: jwt }
@@ -205,7 +207,7 @@ describe Api::Verify::PasswordConfirmController do
             )
           end
 
-          it 'leaves the enrollment in establishing when no enrollment code is returned' do
+          it 'leaves the enrollment in establishing' do
             post :create, params: { password: password, user_bundle_token: jwt }
 
             expect(InPersonEnrollment.count).to be(1)
