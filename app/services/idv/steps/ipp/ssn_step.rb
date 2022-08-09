@@ -25,7 +25,7 @@ module Idv
         end
 
         def updating_ssn
-          flow_session.dig(:pii_from_doc, :ssn).present?
+          flow_session.dig(:pii_from_user, :ssn).present?
         end
 
         def threatmetrix_session_id
