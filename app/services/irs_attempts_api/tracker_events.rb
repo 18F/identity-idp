@@ -39,7 +39,7 @@ module IrsAttemptsApi
         success: success,
       )
     end
-    
+
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [Boolean] success - True if the OTP Verification was sent
     # Relevant only when the user is enrolling a phone as their MFA.
