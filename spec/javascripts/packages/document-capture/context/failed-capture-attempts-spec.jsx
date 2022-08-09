@@ -11,7 +11,7 @@ import AcuantContext, {
 import FailedCaptureAttemptsContext, {
   Provider,
 } from '@18f/identity-document-capture/context/failed-capture-attempts';
-import sinon from "sinon";
+import sinon from 'sinon';
 
 describe('document-capture/context/failed-capture-attempts', () => {
   it('has expected default properties', () => {
@@ -29,6 +29,7 @@ describe('document-capture/context/failed-capture-attempts', () => {
     expect(result.current.onFailedCaptureAttempt).to.be.a('function');
     expect(result.current.onResetFailedCaptureAttempts).to.be.a('function');
     expect(result.current.maxFailedAttemptsBeforeTips).to.be.a('number');
+    expect(result.current.maxAttemptsBeforeNativeCamera).to.be.a('number');
     expect(result.current.lastAttemptMetadata).to.be.an('object');
   });
 
@@ -54,31 +55,38 @@ describe('document-capture/context/failed-capture-attempts', () => {
 
       expect(result.current.lastAttemptMetadata).to.deep.equal(metadata);
     });
-    context('failed acuant camera attempts', () => {
-      let result;
-      let addPageAction;
+    context('failed acuant camera attempts', function () {
+      //let result;
+      //let addPageAction;
 
-
-        addPageAction = sinon.spy();
-        ({ result } = renderHook(() => useContext(AcuantContext), {
-          wrapper: ({ children }) => (
+      let addPageAction = sinon.spy();
+      const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+        wrapper: ({ children }) => (
+          <Provider maxAttemptsBeforeNativeCamera={3} maxFailedAttemptsBeforeTips={10}>
             <AnalyticsContext.Provider value={{ addPageAction }}>
-              <DeviceContext.Provider value={{ isMobile: true }}>
-                <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-                  <Provider maxAttemptsBeforeNativeCamera={3}>{children}</Provider>
-                </AcuantContextProvider>
-              </DeviceContext.Provider>
+              {children}
             </AnalyticsContext.Provider>
-          ),
-        }));
+          </Provider>
+        ),
+      });
+      // const { result } = renderHook(() => useContext(FailedCaptureAttemptsContext), {
+      //   wrapper: ({ children }) => (
+      //     <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+      //       {children}
+      //     </Provider>
+      //   ),
+      // });
+      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
+      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
+      result.current.onFailedCaptureAttempt({ isAssessedAsGlare: true, isAssessedAsBlurry: false });
 
-
-      it('calls analytics with native camera message when failed attempts is greater than 2', () => {
+      it('calls analytics with native camera message when failed attempts is greater than 2', function () {
+        //expect(addPageAction).to.have.been.called();
         expect(addPageAction).to.have.been.calledWith(
           'IdV: Force native camera. Failed attempts: 3',
-          {success: true},
+          `Failed attempts: ${result.current.failedCaptureAttempts}`,
         );
-      })
+      });
     });
   });
 });
