@@ -81,18 +81,6 @@ describe Api::Verify::PasswordConfirmController do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        context 'when in-person mocking is enabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(true)
-          end
-
-          it 'uses a mock proofer' do
-            expect(UspsInPersonProofing::Mock::Proofer).to receive(:new)
-
-            post :create, params: { password: password, user_bundle_token: jwt }
-          end
-        end
-
         context 'when there is a 4xx error' do
           let(:stub_usps_response) do
             stub_request_enroll_bad_request_response
