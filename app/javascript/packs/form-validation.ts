@@ -7,11 +7,13 @@ import { t } from '@18f/identity-i18n';
  */
 function disableFormSubmit(event: Event) {
   const form = event.target as HTMLFormElement;
-  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((element) => {
-    const submit = element as HTMLInputElement | HTMLButtonElement;
-    submit.disabled = true;
-    submit.classList.add('usa-button--active');
-  });
+  Array.from(form.querySelectorAll(['button:not([type])', '[type="submit"]'].join())).forEach(
+    (element) => {
+      const submit = element as HTMLInputElement | HTMLButtonElement;
+      submit.disabled = true;
+      submit.classList.add('usa-button--active');
+    },
+  );
 }
 
 function resetInput(input) {
@@ -65,7 +67,9 @@ function validateInput(input: HTMLInputElement) {
  * @param form Form to initialize.
  */
 export function initialize(form: HTMLFormElement) {
-  const fields: HTMLInputElement[] = Array.from(form.querySelectorAll('.field,[required]'));
+  const fields: HTMLInputElement[] = Array.from(
+    form.querySelectorAll(['.field', '[required]'].join()),
+  );
   fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
