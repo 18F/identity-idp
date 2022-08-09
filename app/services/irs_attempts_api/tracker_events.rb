@@ -22,7 +22,16 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to enroll the MFA method TOTP to their account
+    # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
+    # @param [Boolean] success
+    def multi_factor_auth_enroll_backup_code(success:)
+      track_event(
+        :backup_code_enroll,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to enroll the TOTP MFA method to their account
     # @param [Boolean] success
     def multi_factor_auth_enroll_totp(success:)
       track_event(
