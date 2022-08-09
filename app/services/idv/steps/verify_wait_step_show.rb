@@ -8,6 +8,16 @@ module Idv
 
         process_async_state(async_state)
       end
+
+      private
+
+      def pii
+        flow_session[:pii_from_doc]
+      end
+
+      def delete_pii
+        flow_session.delete(:pii_from_doc)
+      end
     end
   end
 end

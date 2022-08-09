@@ -296,6 +296,8 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: 'wrong' } }
 
         expect(response).to redirect_to idv_review_path
+
+        expect(@analytics).to have_logged_event('IdV: review complete', success: false)
       end
     end
 
@@ -307,7 +309,7 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_logged_event('IdV: review complete')
+        expect(@analytics).to have_logged_event('IdV: review complete', success: true)
         expect(@analytics).to have_logged_event('IdV: final resolution', success: true)
         expect(response).to redirect_to idv_personal_key_path
       end

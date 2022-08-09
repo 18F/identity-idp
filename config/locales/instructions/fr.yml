@@ -108,6 +108,10 @@ fr:
       info:
         lead: Il doit avoir une longueur minimale de %{min_length} caractères et ne pas
           être un mot de passe couramment utilisé. C’est tout!
+      password_key: Vous avez besoin de votre clé personnelle de 16 caractères pour
+        réinitialiser votre mot de passe si vous avez vérifié votre identité
+        avec ce compte. Si vous ne l’avez pas, vous pouvez toujours
+        réinitialiser votre mot de passe et ensuite revérifier votre identité.
       strength:
         i: Très faible
         ii: Faible

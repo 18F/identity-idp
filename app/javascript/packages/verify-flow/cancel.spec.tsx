@@ -17,7 +17,6 @@ describe('Cancel', () => {
             cancelURL: 'http://example.test/cancel',
             currentStep: 'one',
             basePath: '',
-            inPersonURL: null,
             onComplete() {},
           }}
         >

@@ -6,6 +6,7 @@ module Idv
 
         def call
           flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
+          idv_session.delete('applicant')
         end
 
         def extra_view_variables
