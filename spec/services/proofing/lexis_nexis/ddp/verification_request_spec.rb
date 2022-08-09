@@ -14,7 +14,7 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
       state: 'LA',
       zipcode: '70802-12345',
       state_id_number: '12345678',
-      session_id: '123456',
+      threatmetrix_session_id: 'UNIQUE_SESSION_ID',
       phone: '5551231234',
       email: 'test@example.com',
     }
@@ -27,8 +27,6 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
 
   describe '#body' do
     it 'returns a properly formed request body' do
-      puts subject.body
-      puts
       expect(subject.body).to eq(LexisNexisFixtures.ddp_request_json)
     end
 
