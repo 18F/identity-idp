@@ -32,6 +32,13 @@ fr:
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
         seront plus valides.
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
+    backup_code_reminder:
+      body_info: Si vous perdez l’accès à votre méthode d’authentification principale,
+        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à
+        votre compte.
+      have_codes: J’ai mes codes
+      heading: Avez-vous toujours vos codes de sauvegarde?
+      need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
     buttons:
       back: Retour
       cancel: Oui, annuler
