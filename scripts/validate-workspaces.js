@@ -124,6 +124,6 @@ Promise.all(manifestPaths.map(async (path) => [path, await readFile(path, 'utf-8
     }
   })
   .catch((error) => {
-    process.stderr.write(error.message);
+    process.stderr.write(`${error.message}\n`);
     process.exitCode = 1;
   });
