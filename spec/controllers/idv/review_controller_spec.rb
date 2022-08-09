@@ -292,12 +292,19 @@ describe Idv::ReviewController do
     context 'user fails to supply correct password' do
       before do
         idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
         expect(response).to redirect_to idv_review_path
+
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: review complete',
+          success: false,
+        )
       end
     end
 
@@ -312,7 +319,10 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_received(:track_event).with('IdV: review complete')
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: review complete',
+          success: true,
+        )
         expect(@analytics).to have_received(:track_event).with(
           'IdV: final resolution',
           success: true,
