@@ -8,6 +8,44 @@ describe Idv::Session do
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
   }
 
+  describe '#initialize' do
+    context 'without idv user session' do
+      it 'initializes user session' do
+        expect_any_instance_of(Idv::Session).to receive(:new_idv_session).twice.and_call_original
+
+        subject
+
+        expect(user_session[:idv]).to eq(subject.new_idv_session)
+      end
+    end
+
+    context 'with idv user session' do
+      let(:idv_session) { { vendor_phone_confirmation: true } }
+      let(:user_session) { { idv: idv_session } }
+
+      it 'does not initialize user session' do
+        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+
+        subject
+
+        expect(user_session[:idv]).to eq(idv_session)
+      end
+    end
+
+    context 'with empty idv user session' do
+      let(:idv_session) { {} }
+      let(:user_session) { { idv: idv_session } }
+
+      it 'does not initialize user session' do
+        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+
+        subject
+
+        expect(user_session[:idv]).to eq(idv_session)
+      end
+    end
+  end
+
   describe '#method_missing' do
     it 'disallows un-supported attributes' do
       expect { subject.foo = 'bar' }.to raise_error NoMethodError

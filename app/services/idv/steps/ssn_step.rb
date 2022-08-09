@@ -7,6 +7,7 @@ module Idv
         return invalid_state_response if invalid_state?
 
         flow_session[:pii_from_doc][:ssn] = flow_params[:ssn]
+        idv_session.delete('applicant')
       end
 
       def extra_view_variables

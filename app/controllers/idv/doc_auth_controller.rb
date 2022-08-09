@@ -6,10 +6,11 @@ module Idv
     before_action :redirect_if_pending_in_person_enrollment
     before_action :extend_timeout_using_meta_refresh_for_select_paths
 
-    include IdvSession # remove if we retire the non docauth LOA3 flow
+    include IdvSession
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
 
+    before_action :redirect_if_flow_completed
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
     # rubocop:disable Rails/LexicallyScopedActionFilter
@@ -35,6 +36,10 @@ module Idv
       return if sp_session[:ial2_strict] &&
                 !IdentityConfig.store.gpo_allowed_for_strict_ial2
       redirect_to idv_gpo_verify_url if current_user.decorate.pending_profile_requires_verification?
+    end
+
+    def redirect_if_flow_completed
+      flow_finish if idv_session.applicant
     end
 
     def redirect_if_pending_in_person_enrollment

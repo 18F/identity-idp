@@ -56,12 +56,11 @@ module Idv
       end
 
       def pii
-        flow_session[:pii_from_doc].presence || flow_session[:pii_from_user]
+        raise NotImplementedError
       end
 
       def delete_pii
-        flow_session.delete(:pii_from_doc)
-        flow_session.delete(:pii_from_user)
+        raise NotImplementedError
       end
 
       def throttle
@@ -115,13 +114,13 @@ module Idv
         idv_result.except(:errors, :success)
       end
 
-      def should_use_aamva?(pii_from_doc)
-        aamva_state?(pii_from_doc) && !aamva_disallowed_for_service_provider?
+      def should_use_aamva?(pii)
+        aamva_state?(pii) && !aamva_disallowed_for_service_provider?
       end
 
-      def aamva_state?(pii_from_doc)
+      def aamva_state?(pii)
         IdentityConfig.store.aamva_supported_jurisdictions.include?(
-          pii_from_doc['state_id_jurisdiction'],
+          pii['state_id_jurisdiction'],
         )
       end
 

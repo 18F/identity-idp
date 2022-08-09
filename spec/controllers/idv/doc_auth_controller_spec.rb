@@ -20,6 +20,8 @@ describe Idv::DocAuthController do
     end
   end
 
+  let(:user) { build(:user) }
+
   before do |example|
     stub_sign_in(user) if user
     stub_analytics
@@ -129,6 +131,24 @@ describe Idv::DocAuthController do
         hash_including(step: 'welcome', step_count: 2),
       )
     end
+
+    context 'with an existing applicant' do
+      before do
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
+      end
+
+      it 'finishes the flow' do
+        get :show, params: { step: 'welcome' }
+
+        expect(response).to redirect_to idv_review_url
+      end
+    end
   end
 
   describe '#update' do
@@ -191,6 +211,24 @@ describe Idv::DocAuthController do
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
       )
+    end
+
+    context 'with an existing applicant' do
+      before do
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
+      end
+
+      it 'finishes the flow' do
+        put :update, params: { step: 'ssn' }
+
+        expect(response).to redirect_to idv_review_url
+      end
     end
   end
 
