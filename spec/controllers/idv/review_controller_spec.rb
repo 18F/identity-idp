@@ -20,9 +20,7 @@ describe Idv::ReviewController do
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
-    # is with_indifferent_access really necessary?
     idv_session.applicant = applicant.with_indifferent_access
-    # allow(subject).to receive(:idv_session).and_return(idv_session)
     idv_session
   end
 
