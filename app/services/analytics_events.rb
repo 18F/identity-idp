@@ -963,8 +963,13 @@ module AnalyticsEvents
   end
 
   # User submitted IDV password confirm page
-  def idv_review_complete
-    track_event('IdV: review complete')
+  # @param [Boolean] success
+  def idv_review_complete(success:, **extra)
+    track_event(
+      'IdV: review complete',
+      success: success,
+      **extra,
+    )
   end
 
   # User visited IDV password confirm page
