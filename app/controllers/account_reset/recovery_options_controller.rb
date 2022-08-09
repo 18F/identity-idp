@@ -6,11 +6,10 @@ module AccountReset
   
       def show
         recovery_options_visit
-        
       end
 
       def cancel
-        # Want to do this so we can track properly
+        cancel_account_recovery
       end
   
       private
@@ -21,6 +20,10 @@ module AccountReset
 
       def recovery_options_visit
         analytics.account_reset_recovery_options_visit
+      end
+
+      def cancel_account_reset_recovery
+        analytics.cancel_account_reset_recovery
       end
 
     end
