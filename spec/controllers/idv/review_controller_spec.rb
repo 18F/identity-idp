@@ -587,7 +587,8 @@ describe Idv::ReviewController do
 
               expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
               expect(mock).to receive(:request_enroll) do |applicant|
-                expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+                expect(applicant.address).
+                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
                 proofer.request_enroll(applicant)
               end
 

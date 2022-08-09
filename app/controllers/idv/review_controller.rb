@@ -138,7 +138,6 @@ module Idv
         exception_message: err.message,
         reason: 'Request exception',
       )
-      # todo: any cleanup we need to do? profiles or enrollments so that the user can re-try? add a spec for retrying
       render plain: 'Internal server error', status: :internal_server_error
     end
   end
