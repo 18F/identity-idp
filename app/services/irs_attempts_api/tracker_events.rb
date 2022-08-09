@@ -40,6 +40,31 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [Boolean] success - True if the OTP Verification was sent
+    # Relevant only when the user is enrolling a phone as their MFA.
+    # The user has been sent an OTP by login.gov over SMS during the MFA enrollment process.
+    def mfa_phone_enrollment_otp_sent(phone_number:, success:)
+      track_event(
+        :mfa_phone_enrollment_otp_sent,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] reauthentication - True if the user was already logged in
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [Boolean] success - True if the OTP Verification was sent
+    # During a login attempt, an OTP code has been sent via SMS.
+    def mfa_phone_verification_otp_sent(reauthentication:, phone_number:, success:)
+      track_event(
+        :mfa_phone_verification_otp_sent,
+        reauthentication: reauthentication,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
