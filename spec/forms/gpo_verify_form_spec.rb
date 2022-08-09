@@ -111,7 +111,17 @@ describe GpoVerifyForm do
         expect(pending_profile.reload).to be_active
       end
 
+      it 'logs the date the code was sent at' do
+        result = subject.submit
+
+        confirmation_code = pending_profile.gpo_confirmation_codes.last
+        expect(result.to_h[:enqueued_at]).to eq(confirmation_code.code_sent_at)
+      end
+
       context 'pending in person enrollment' do
+        let!(:enrollment) do
+          create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
+        end
         let(:proofing_components) {
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         }
@@ -127,10 +137,11 @@ describe GpoVerifyForm do
           expect(pending_profile.deactivation_reason).to eq('in_person_verification_pending')
         end
 
-        it 'creates an in-person enrollment' do
+        it 'updates establishing in-person enrollment to pending' do
           subject.submit
 
-          enrollment = InPersonEnrollment.where(user_id: user.id).first
+          enrollment.reload
+
           expect(enrollment.status).to eq('pending')
           expect(enrollment.user_id).to eq(user.id)
           expect(enrollment.enrollment_code).to be_a(String)

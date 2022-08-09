@@ -102,7 +102,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         transaction_reason_code: 'trueid_pass',
         product_status: 'pass',
         doc_auth_result: 'Passed',
-        processed_alerts: a_hash_including(:passed, :failed),
+        processed_alerts: a_hash_including(:failed),
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front, :back),
@@ -183,6 +183,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
       expect(errors[:hints]).to eq(true)
+    end
+
+    it 'returns Failed for visible_pattern when it gets passed and failed value ' do
+      output = described_class.new(failure_response_no_liveness, false, config).to_h
+      expect(output.to_h[:log_alert_results]).
+        to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
     end
 
     it 'produces appropriate errors with liveness' do
@@ -364,6 +370,34 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'does not throw an exception when getting pii from doc' do
       allow(response).to receive(:pii).and_return(bad_pii)
       expect { response.pii_from_doc }.not_to raise_error
+    end
+  end
+
+  describe '#parse_date' do
+    let(:response) { described_class.new(success_response, false, config) }
+
+    it 'handles an invalid month' do
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
+      expect(response.send(:parse_date, year: 2022, month: 13, day: 1)).to eq(nil)
+    end
+
+    it 'handles an invalid leap day' do
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
+      expect(response.send(:parse_date, year: 2022, month: 2, day: 29)).to eq(nil)
+    end
+
+    it 'handles a day past the end of the month' do
+      allow(Rails.logger).to receive(:info)
+      expect(Rails.logger).to receive(:info).with(
+        { event: 'Failure to parse TrueID date' }.to_json,
+      ).once
+      expect(response.send(:parse_date, year: 2022, month: 4, day: 31)).to eq(nil)
     end
   end
 

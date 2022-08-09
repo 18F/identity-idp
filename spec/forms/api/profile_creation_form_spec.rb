@@ -79,10 +79,9 @@ RSpec.describe Api::ProfileCreationForm do
           expect(stored_pii['first_name']).to eq 'Ada'
         end
 
-        context 'with pending in person enrollment' do
-          let(:selected_location_details) { { name: 'Example' } }
-          let(:user_session) do
-            { idv: { applicant: { selected_location_details: selected_location_details } } }
+        context 'with establishing in person enrollment' do
+          let!(:enrollment) do
+            create(:in_person_enrollment, :establishing, user: user, profile: nil)
           end
 
           before do
@@ -99,17 +98,13 @@ RSpec.describe Api::ProfileCreationForm do
           end
 
           it 'saves in person enrollment' do
-            enrollment_helper = instance_double(UspsInPersonProofing::EnrollmentHelper)
-            allow(UspsInPersonProofing::EnrollmentHelper).to receive(:new).
-              and_return(enrollment_helper)
-            expect(enrollment_helper).to receive(:save_in_person_enrollment).with(
-              user,
-              kind_of(Profile),
-              Pii::Attributes.new_from_hash(pii),
-              selected_location_details,
-            )
+            expect(UspsInPersonProofing::EnrollmentHelper).
+              to receive(:schedule_in_person_enrollment).
+              with(user, Pii::Attributes.new_from_hash(pii))
 
             subject.submit
+
+            expect(enrollment.reload.profile).to eq(user.profiles.last)
           end
         end
       end
@@ -157,7 +152,7 @@ RSpec.describe Api::ProfileCreationForm do
           end
         end
 
-        context 'with pending in person enrollment' do
+        context 'with establishing in person enrollment' do
           before do
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

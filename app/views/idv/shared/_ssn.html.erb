@@ -71,7 +71,7 @@ locals:
 <% end %>
 
 <% if updating_ssn %>
-  <%= render 'idv/doc_auth/back', action: 'cancel_update_ssn' %>
+  <%= render 'idv/shared/back', action: 'cancel_update_ssn' %>
 <% else %>
   <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
 <% end %>

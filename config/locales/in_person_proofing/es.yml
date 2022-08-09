@@ -18,7 +18,7 @@ es:
         learn_more: Más información
         location_details: Detalles de la ubicación
         no_appointment_required: No es necesario pedir cita.
-        retail_hours: Heures de vente au détail
+        retail_hours: Horario de atención al público
         retail_hours_closed: Cerrado
         retail_phone_label: Número de teléfono
         speak_to_associate: Puedes hablar con cualquier socio de ventas en esta oficina
@@ -92,6 +92,8 @@ es:
       location: Seleccione un lugar para verificar su cédula
       prepare: Verifique su identidad en persona
       state_id: Ingrese la información de su cédula
+      switch_back: Vuelva a su computadora para prepararse para verificar su identidad
+        en persona
       update_address: Actualizar su dirección actual
       update_state_id: Actualizar la información de su cédula de identidad
     process:

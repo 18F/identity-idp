@@ -234,5 +234,19 @@ describe Idv::CaptureDocStatusController do
         end
       end
     end
+
+    context 'when user opted for in-person proofing' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+      end
+
+      it 'returns success with redirect' do
+        get :show
+
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)).to include('redirect' => idv_in_person_url)
+      end
+    end
   end
 end

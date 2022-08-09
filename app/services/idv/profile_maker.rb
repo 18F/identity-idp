@@ -8,11 +8,12 @@ module Idv
       self.user_password = user_password
     end
 
-    def save_profile
-      profile = Profile.new(user: user, active: false)
+    def save_profile(active:, deactivation_reason: nil)
+      profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components
       profile.save!
+      profile.activate if active
       profile
     end
 

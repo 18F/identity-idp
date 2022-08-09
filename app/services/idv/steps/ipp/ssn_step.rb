@@ -10,6 +10,8 @@ module Idv
           if IdentityConfig.store.proofing_device_profiling_collecting_enabled
             flow_session[:threatmetrix_session_id] = threatmetrix_session_id
           end
+
+          idv_session.delete('applicant')
         end
 
         def extra_view_variables

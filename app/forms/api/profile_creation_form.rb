@@ -18,12 +18,7 @@ module Api
 
     def submit
       @form_valid = valid?
-
-      if form_valid?
-        create_profile
-        cache_encrypted_pii
-        complete_session
-      end
+      create_profile if form_valid?
 
       response = FormResponse.new(
         success: form_valid?,
@@ -39,11 +34,33 @@ module Api
 
     def create_profile
       profile_maker = build_profile_maker
-      profile = profile_maker.save_profile
+      profile = profile_maker.save_profile(
+        active: deactivation_reason.nil?,
+        deactivation_reason: deactivation_reason,
+      )
       @profile = profile
       session[:pii] = profile_maker.pii_attributes
       session[:profile_id] = profile.id
       session[:personal_key] = profile.personal_key
+
+      cache_encrypted_pii
+      associate_in_person_enrollment_with_profile
+
+      if profile.active
+        move_pii_to_user_session
+      elsif user_bundle.gpo_address_verification?
+        create_gpo_entry
+      elsif pending_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
+      end
+    end
+
+    def deactivation_reason
+      if !phone_confirmed? || user_bundle.gpo_address_verification?
+        :gpo_verification_pending
+      elsif pending_in_person_enrollment?
+        :in_person_verification_pending
+      end
     end
 
     def cache_encrypted_pii
@@ -51,23 +68,9 @@ module Api
       cacher.save(password, profile)
     end
 
-    def complete_session
-      if user_bundle.gpo_address_verification?
-        profile.deactivate(:gpo_verification_pending)
-        create_gpo_entry
-      elsif phone_confirmed?
-        if pending_in_person_enrollment?
-          UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
-            user,
-            profile,
-            session[:pii],
-            session.dig(:applicant, :selected_location_details),
-          )
-          profile.deactivate(:in_person_verification_pending)
-        else
-          complete_profile
-        end
-      end
+    def associate_in_person_enrollment_with_profile
+      return unless pending_in_person_enrollment? && user.establishing_in_person_enrollment
+      user.establishing_in_person_enrollment.update(profile: profile)
     end
 
     def pending_in_person_enrollment?
@@ -77,11 +80,6 @@ module Api
 
     def phone_confirmed?
       user_bundle.vendor_phone_confirmation? && user_bundle.user_phone_confirmation?
-    end
-
-    def complete_profile
-      profile.activate
-      move_pii_to_user_session
     end
 
     def move_pii_to_user_session

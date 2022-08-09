@@ -19,11 +19,7 @@ class GpoVerifyForm
     result = valid?
     if result
       if pending_in_person_enrollment?
-        UspsInPersonProofing::EnrollmentHelper.new.save_in_person_enrollment(
-          user,
-          pending_profile,
-          pii,
-        )
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, pii)
         pending_profile&.deactivate(:in_person_verification_pending)
       else
         activate_profile
@@ -35,6 +31,7 @@ class GpoVerifyForm
       success: result,
       errors: errors,
       extra: {
+        enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
       },
