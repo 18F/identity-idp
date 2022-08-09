@@ -2405,5 +2405,9 @@ module AnalyticsEvents
       **extra,
     )
   end
+
+  def account_reset_recovery_options_visit
+    track_event('Account Reset Recovery Options')
+  end
 end
 # rubocop:enable Metrics/ModuleLength
