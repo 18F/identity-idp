@@ -83,7 +83,7 @@ function checkHaveNoSiblingDependencies(manifests) {
     for (const [dependency] of Object.entries(manifest.dependencies || {})) {
       if (
         dependency.startsWith('@18f/identity-') &&
-        manifests.some(([siblingPath]) => siblingPath === dependency.slice(14))
+        manifests.some(([, { name }]) => dependency === name)
       ) {
         throw new Error(
           `Unexpected sibling dependency ${dependency} in ${path}. It's unnecessary to define sibling workspace packages as dependencies.`,
