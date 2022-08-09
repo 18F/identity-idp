@@ -22,7 +22,8 @@ module VerifyProfileConcern
 
   def user_last_signed_in_more_than_5_months_ago?
     user = UserDecorator.new(current_user)
-    user.devices? && user.last_signed_in_at < 5.months.ago
+    second_last_signed_in_at = user.second_last_signed_in_at
+    second_last_signed_in_at && second_last_signed_in_at < 5.months.ago
   end
 
   def profile_needs_verification?
