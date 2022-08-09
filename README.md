@@ -31,8 +31,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 -- (to install Node.js v.14 using brew: `brew install node@14`)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+  
+2. You will need to install openssl version 1.1:
+  
+- Run `brew install openssl@1.1`
 
-2. Test that you have Postgres and Redis running.
+3. Test that you have Postgres and Redis running.
 
   For example, if you've installed with Homebrew, you can start the services like this:
 
@@ -46,13 +50,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ brew services list
   ```
 
-3. Create the development and test databases:
-
-  ```
-  $ psql -c "CREATE DATABASE identity_idp_development;"
-  $ psql -c "CREATE DATABASE identity_idp_test;"
-  ```
-
 4. Run the following command to set up your local environment:
 
   ```
@@ -61,6 +58,8 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   This command copies sample configuration files, installs required gems
   and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
+
+  Note: If you didn't explicitly install `openssl@1.1` in Step 2 above and you use a M1 Mac, you may see an error on this step. Homebrew works differently on a M1 Mac, so specifying the version is necessary for the make script to work, but may still work on x86.
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
