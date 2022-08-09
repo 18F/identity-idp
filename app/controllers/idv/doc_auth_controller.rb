@@ -17,7 +17,7 @@ module Idv
     before_action :check_for_outage, only: :show
     # rubocop:enable Rails/LexicallyScopedActionFilter
 
-    FSM_SETTINGS = {
+    FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
       final_url: :idv_review_url,
       flow: Idv::Flows::DocAuthFlow,
