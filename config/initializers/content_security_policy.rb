@@ -2,7 +2,7 @@ require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
-  return nil if IdentityConfig.store.suppress_content_security_policy
+  next if IdentityConfig.store.suppress_content_security_policy
 
   connect_src = ["'self'", '*.nr-data.net']
 
