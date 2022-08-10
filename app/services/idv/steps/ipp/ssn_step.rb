@@ -7,7 +7,9 @@ module Idv
         def call
           flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
 
-          flow_session[:threatmetrix_session_id] = threatmetrix_session_id unless updating_ssn
+          unless updating_ssn
+            flow_session[:threatmetrix_session_id] = generate_threatmetrix_session_id
+          end
 
           idv_session.delete('applicant')
         end
@@ -28,7 +30,7 @@ module Idv
           flow_session.dig(:pii_from_user, :ssn).present?
         end
 
-        def threatmetrix_session_id
+        def generate_threatmetrix_session_id
           return unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
           SecureRandom.uuid
         end
