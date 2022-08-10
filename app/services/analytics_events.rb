@@ -2406,16 +2406,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks if when a user is enrolled in in-person proofing
-  # @param [String] context
-  def idv_in_person_usps_request_enroll(context:, **extra)
-    track_event(
-      'USPS IPPaaS enrollment',
-      context: context,
-      **extra,
-    )
-  end
-
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason
