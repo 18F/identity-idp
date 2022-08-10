@@ -6,10 +6,21 @@ module Telephony
         error = ErrorSimulator.new.error_for_number(to)
         if error.nil?
           Call.calls.push(Call.new(body: message, to: to, otp: otp))
-          Response.new(success: true, extra: { request_id: 'fake-message-request-id' })
+          Response.new(
+            success: true,
+            extra: {
+              request_id: 'fake-message-request-id',
+              origination_phone_number: '+1888LOGINGOV'
+            },
+          )
         else
           Response.new(
-            success: false, error: error, extra: { request_id: 'fake-message-request-id' },
+            success: false,
+            error: error,
+            extra: {
+              request_id: 'fake-message-request-id',
+              origination_phone_number: '+1888LOGINGOV'
+            },
           )
         end
       end
