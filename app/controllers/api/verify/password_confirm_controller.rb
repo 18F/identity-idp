@@ -72,7 +72,11 @@ module Api
           exception_message: err.message,
           reason: 'Request exception',
         )
-        render plain: 'Internal server error', status: :internal_server_error
+        render_errors(
+          { internal: [
+            I18n.t('idv.failure.exceptions.internal_error'),
+          ] },
+        )
       end
     end
   end
