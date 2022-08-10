@@ -20,7 +20,7 @@ module Proofing
             account_last_name: applicant[:last_name],
             account_telephone: applicant[:phone],
             drivers_license_number_hash: applicant[:state_id_number] ?
-              OpenSSL::Digest::SHA256.hexdigest(applicant[:state_id_number].gsub(/\W/,'')) : '',
+              OpenSSL::Digest::SHA256.hexdigest(applicant[:state_id_number].gsub(/\W/, '')) : '',
             event_type: 'ACCOUNT_CREATION',
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id] || 'UNIQUE_SESSION_ID',

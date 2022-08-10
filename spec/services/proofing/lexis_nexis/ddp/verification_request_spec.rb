@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Proofing::LexisNexis::Ddp::VerificationRequest do
-  let(:dob) { '01/01/1980' }
+  let(:dob) { '1980-01-01' }
   let(:applicant) do
     {
       first_name: 'Testy',
