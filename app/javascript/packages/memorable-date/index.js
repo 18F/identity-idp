@@ -1,16 +1,23 @@
-const dateValidity = (/** @type {any} */ month, day, year) => {
-  // Month is off by 1 in js
-  const date = new Date(year, month - 1, day);
-  // eslint-disable-next-line no-console
-  console.log('date: ', date);
-  if (month <= 12 && month > 0) {
-    // eslint-disable-next-line no-console
-    console.log('valid');
-    return true;
+const isValidPastDate = (
+  /** @type {any} */ month,
+  /** @type {any} */ day,
+  /** @type {any} */ year,
+) => {
+  const todaysDate = new Date();
+
+  if (year > todaysDate.getFullYear()) {
+    return false;
   }
-  // eslint-disable-next-line no-console
-  console.log('invalid');
-  return false;
+
+  // Month is off by 1 in js
+  if (
+    month >= todaysDate.getMonth() + 1 &&
+    day >= todaysDate.getDate() &&
+    year >= todaysDate.getFullYear()
+  ) {
+    return false;
+  }
+  return true;
 };
 
 export class MemorableDate extends HTMLElement {
@@ -39,11 +46,22 @@ export class MemorableDate extends HTMLElement {
     const day = dayInput.value;
     const year = yearInput.value;
 
-    const isInvalidDate = dateValidity(month, day, year);
-    if (isInvalidDate) {
+    const isvalidDate = isValidPastDate(month, day, year);
+
+    if (!isvalidDate) {
+      const errMessage = 'Date must be in the past';
+      this.setErrorMessage(errMessage);
+    }
+  }
+
+  /**
+   * @param {any} message
+   */
+  setErrorMessage(message) {
+    if (message) {
+      // WILLDO: attach err msg to instance of memdate
       // eslint-disable-next-line no-console
-      console.log('month is invalid value:', isInvalidDate, day);
-      // WILLDO: Err string
+      console.log('err: ', message);
     }
   }
 }
