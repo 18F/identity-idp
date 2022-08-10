@@ -2406,12 +2406,14 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks users visiting the recovery options page
   def account_reset_recovery_options_visit
-    track_event('Account Reset Recovery Options')
+    track_event('Account Reset: Recovery Options Visited')
   end
 
+  # Tracks users going back or cancelling acoount recovery
   def cancel_account_reset_recovery
-    track_event('Cancel Account Recovery')
+    track_event('Account Reset: Cancel Account Recovery Options')
   end
 end
 # rubocop:enable Metrics/ModuleLength

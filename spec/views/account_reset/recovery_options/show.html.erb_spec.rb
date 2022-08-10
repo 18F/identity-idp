@@ -5,10 +5,10 @@ describe 'account_reset/recovery_options/show.html.erb' do
     expect(view).to receive(:title).with(t('account_reset.cancel_request.title'))
 
     render
-    end
+  end
 
-    it 'has button to cancel request' do
+  it 'has button to cancel request' do
     render
     expect(rendered).to have_button t('account_reset.cancel_request.cancel_button')
-    end
+  end
 end
