@@ -48,16 +48,13 @@ module UspsInPersonProofing
         )
 
         proofer = usps_proofer
-        response = nil
-        begin
-          response = proofer.request_enroll(applicant)
-        rescue Faraday::BadRequestError => err
-          handle_bad_request_error(err, enrollment)
-        rescue StandardError => err
-          handle_standard_error(err, enrollment)
-        end
+        response = proofer.request_enroll(applicant)
 
-        response&.enrollment_code
+        response.enrollment_code
+      rescue Faraday::BadRequestError => err
+        handle_bad_request_error(err, enrollment)
+      rescue StandardError => err
+        handle_standard_error(err, enrollment)
       end
 
       def handle_bad_request_error(err, enrollment)
