@@ -112,10 +112,18 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
   });
 });
 
-describe('maxAttemptsBeforeNativeCamera loggin tests', () => {
+describe('maxAttemptsBeforeNativeCamera logging tests', () => {
   context('failed acuant camera attempts', function () {
     const { initialize } = useAcuant();
-    it('calls analytics with native camera message when failed attempts is greater than or equal to 2', async function () {
+    /**
+     * NOTE: We have to force maxAttemptsBeforeLogin to be 0 here
+     * in order to test this interactively. This is because the react
+     * testing library does not provide consistent ways to test using both
+     * a component's elements (for triggering clicks) and a component's
+     * subscribed context changes. You can use either render or renderHook,
+     * but not both.
+     */
+    it('calls analytics with native camera message when failed attempts is greater than or equal to 0', async function () {
       let addPageAction = sinon.spy();
       const acuantCaptureComponent = <AcuantCapture></AcuantCapture>;
       const TestComponent = ({ children }) => {
@@ -131,10 +139,9 @@ describe('maxAttemptsBeforeNativeCamera loggin tests', () => {
             </DeviceContext.Provider>
           </AnalyticsContext.Provider>
         );
-
         initialize();
       };
-      const result = render(<TestComponent></TestComponent>);
+      let result = render(<TestComponent></TestComponent>);
       const user = userEvent.setup();
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
