@@ -527,7 +527,9 @@ describe Idv::ReviewController do
 
             it 'allows the user to retry the request' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-              expect(response.status).to eq 500
+              expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
+              expect(response).to redirect_to idv_review_path
+
               stub_request_enroll
 
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }

@@ -150,7 +150,7 @@ describe Api::Verify::PasswordConfirmController do
 
           it 'allows the user to retry the request' do
             post :create, params: { password: password, user_bundle_token: jwt }
-            expect(response.status).to eq 500
+            expect(response.status).to eq 400
             stub_request_enroll
 
             post :create, params: { password: password, user_bundle_token: jwt }
