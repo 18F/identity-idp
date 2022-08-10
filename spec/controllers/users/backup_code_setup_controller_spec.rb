@@ -3,18 +3,6 @@ require 'rails_helper'
 describe Users::BackupCodeSetupController do
   it 'creates backup codes and logs expected events' do
     user = build(:user, :signed_up)
-    attributes_visited = {
-      success: true,
-      errors: {},
-      mfa_method_counts: {phone: 1},
-      pii_like_keypaths: [[:mfa_method_counts, :phone]],
-      error_details: nil,
-      enabled_mfa_methods_count: 1,
-    }
-    attributes_created = {
-      enabled_mfa_methods_count: 2,
-    }
-    
     stub_sign_in(user)
     stub_analytics
     stub_attempts_tracker
@@ -22,12 +10,21 @@ describe Users::BackupCodeSetupController do
     expect(PushNotification::HttpPush).to receive(:deliver).
       with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     expect(@analytics).to receive(:track_event).
-      with('Backup Code Setup Visited', attributes_visited)
+      with('Backup Code Setup Visited', {
+        success: true,
+        errors: {},
+        mfa_method_counts: { phone: 1 },
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        error_details: nil,
+        enabled_mfa_methods_count: 1,
+      })
     expect(@analytics).to receive(:track_event).
-      with('Backup Code Created', attributes_created)
+      with('Backup Code Created', {
+        enabled_mfa_methods_count: 2,
+      })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
-      with(:backup_code_enroll, success: true)    
-    
+      with(:backup_code_enroll, success: true)
+
     post :create
 
     expect(response).to render_template('create')
