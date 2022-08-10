@@ -165,6 +165,16 @@ lint:
     - *yarn_install
     - make lint
 
+ruby_sast:
+  stage: test
+  needs: ['install']
+  cache:
+    - <<: *ruby_cache
+  script:
+    - *bundle_install
+    - bundle exec brakeman -o /tmp/brakeman.json --no-exit-on-warn --no-exit-on-error --force
+    - cat /tmp/brakeman.json
+
 js_build:
   stage: test
   cache:
