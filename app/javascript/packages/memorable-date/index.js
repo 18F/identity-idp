@@ -1,3 +1,5 @@
+import { t } from '@18f/identity-i18n';
+
 const isValidPastDate = (
   /** @type {any} */ month,
   /** @type {any} */ day,
@@ -55,7 +57,7 @@ export class MemorableDate extends HTMLElement {
     const isvalid = isValidPastDate(month, day, year);
 
     if (!isvalid) {
-      const errMessage = 'Enter a date that is in the past';
+      const errMessage = t('simple_form.errors.future_date');
       this.displayError(errMessage);
     }
   }
