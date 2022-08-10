@@ -115,7 +115,7 @@ describe Idv::InPerson::UspsLocationsController do
       it 'writes the passed location to in-person enrollment associated with effective user' do
         response
 
-        enrollment = user.reload.establishing_in_person_enrollment
+        enrollment = effective_user.reload.establishing_in_person_enrollment
 
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,
