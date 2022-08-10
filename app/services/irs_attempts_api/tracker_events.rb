@@ -107,7 +107,7 @@ module IrsAttemptsApi
         success: success,
       )
     end
-    
+
     # @param [Boolean] success - True if the sms otp submitted matched what was sent
     # During a login attempt, the user, having previously been sent an OTP code via SMS, has entered an OTP code.
     def mfa_phone_verification_otp_submitted(success:)

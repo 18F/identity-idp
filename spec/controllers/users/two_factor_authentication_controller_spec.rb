@@ -513,7 +513,7 @@ describe Users::TwoFactorAuthenticationController do
         subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
 
         expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_enrollment_otp_sent).
-          with({:phone_number=>"+12025551213", :success=>true})
+          with({ phone_number: '+12025551213', success: true })
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end

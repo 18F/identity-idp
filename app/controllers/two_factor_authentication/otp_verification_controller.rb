@@ -87,11 +87,11 @@ module TwoFactorAuthentication
 
       if UserSessionContext.authentication_context?(context) || UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_phone_verification_otp_submitted(
-          success: properties[:success]
+          success: properties[:success],
         )
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_phone_enrollment_otp_submitted(
-          success: properties[:success]
+          success: properties[:success],
         )
       end
     end
