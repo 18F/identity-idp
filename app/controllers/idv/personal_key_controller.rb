@@ -76,7 +76,7 @@ module Idv
 
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
-      current_user.pending_in_person_enrollment.exists?
+      current_user.pending_in_person_enrollment.present?
     end
 
     def pending_profile?

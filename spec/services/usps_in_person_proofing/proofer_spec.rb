@@ -92,11 +92,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         unique_id: '123456789',
       )
 
-      expect(
-        -> do
-          subject.request_enroll(applicant)
-        end,
-      ).to raise_error(
+      expect { subject.request_enroll(applicant) }.to raise_error(
         an_instance_of(Faraday::BadRequestError).
         and(having_attributes(
           response: include(
@@ -123,11 +119,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         unique_id: '123456789',
       )
 
-      expect(
-        -> do
-          subject.request_enroll(applicant)
-        end,
-      ).to raise_error(
+      expect { subject.request_enroll(applicant) }.to raise_error(
         an_instance_of(Faraday::ServerError).
         and(having_attributes(
           response: include(
