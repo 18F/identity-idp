@@ -36,7 +36,7 @@ module Idv
       end
 
       def show_cta?
-        !service_provider || service_provider_homepage_url
+        !service_provider || service_provider_homepage_url.present?
       end
 
       def sign_in_url
