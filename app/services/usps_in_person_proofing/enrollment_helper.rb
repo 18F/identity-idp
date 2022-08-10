@@ -32,7 +32,7 @@ module UspsInPersonProofing
       end
 
       def create_usps_enrollment(enrollment, pii)
-        address = [pii.address1, pii.address2].select(&:present?).join(' ')
+        address = [pii[:address1], pii[:address2]].select(&:present?).join(' ')
 
         applicant = UspsInPersonProofing::Applicant.new(
           {

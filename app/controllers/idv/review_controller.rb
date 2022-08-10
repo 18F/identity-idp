@@ -138,7 +138,8 @@ module Idv
         exception_message: err.message,
         reason: 'Request exception',
       )
-      render plain: 'Internal server error', status: :internal_server_error
+      flash[:error] = t('idv.failure.exceptions.internal_error')
+      redirect_to idv_review_url
     end
   end
 end
