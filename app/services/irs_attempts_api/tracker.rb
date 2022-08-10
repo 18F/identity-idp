@@ -15,7 +15,7 @@ module IrsAttemptsApi
     end
 
     def track_event(event_type, metadata = {})
-      #return unless enabled?
+      return unless enabled?
 
       event_metadata = {
         user_agent: request&.user_agent,
@@ -34,9 +34,6 @@ module IrsAttemptsApi
       )
 
       redis_client.write_event(jti: event.jti, jwe: event.to_jwe)
-
-      puts "######### EVENT: #{event_type} successfully wrote to REDIS ##########"
-      puts "######### EVENT DATA = #{metadata} #########"
 
       event
     end

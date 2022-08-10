@@ -111,6 +111,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
+        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted).
+          with({:success=>false})
+
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms' }
@@ -169,6 +172,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
+        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted).
+          with({:success=>false})
+
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms' }
@@ -223,6 +229,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
+        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted).
+          with({:success=>true})
+
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
           otp_delivery_preference: 'sms',
@@ -275,6 +284,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits an invalid OTP' do
         before do
+          expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted).
+            with({:success=>false})
           post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
@@ -289,6 +300,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits a valid OTP' do
         before do
+          expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted).
+            with({:success=>true})
           post :create, params: {
             code: subject.current_user.direct_otp,
             otp_delivery_preference: 'sms',
@@ -349,6 +362,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(@analytics).to receive(:track_event).
               with('Multi-Factor Authentication Setup', properties)
             controller.user_session[:phone_id] = phone_id
+
+            expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_enrollment_otp_submitted).
+              with({:success=>true})
+
             post(
               :create,
               params: {
@@ -372,15 +389,21 @@ describe TwoFactorAuthentication::OtpVerificationController do
             end
             expect(@mailer).to have_received(:deliver_now_or_later)
           end
-
-          it 'tracks the appropriate attempt event with success: true' do
-            expect(subject.user_session[:context]).to eq 'authentication'
-            expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_verification_otp_submitted)
-          end
         end
 
         context 'user enters an invalid code' do
-          before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
+          before do
+            expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_phone_enrollment_otp_submitted).
+              with({:success=>false})
+
+            post(
+              :create, 
+              params: { 
+                code: '999', 
+                otp_delivery_preference: 'sms' 
+              },
+            )
+          end
 
           it 'increments second_factor_attempts_count' do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
