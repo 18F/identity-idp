@@ -25,9 +25,10 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
+    threatmetrix_result = nil
     if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-      proofer_result = proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
-      return proofer_result if proofer_result.failed?
+      threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
+      log_threatmetrix_info(threatmetrix_result)
     end
 
     callback_log_data = if dob_year_only && should_proof_state_id
@@ -44,6 +45,8 @@ class ResolutionProofingJob < ApplicationJob
                           )
                         end
 
+    add_threatmetrix_result_to_callback_result(callback_log_data.result, threatmetrix_result)
+
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
@@ -59,6 +62,21 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   private
+
+  def log_threatmetrix_info(threatmetrix_result)
+    logger.info(
+      {
+        name: 'ThreatMetrix',
+        threatmetrix_request_id: threatmetrix_result.transaction_id,
+        threatmetrix_success: threatmetrix_result.success?,
+      }.to_json,
+    )
+  end
+
+  def add_threatmetrix_result_to_callback_result(callback_log_data_result, threatmetrix_result)
+    callback_log_data_result[:threatmetrix_success] = threatmetrix_result.success?
+    callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
+  end
 
   def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
     lexisnexis_ddp_proofer.proof(applicant_pii)
