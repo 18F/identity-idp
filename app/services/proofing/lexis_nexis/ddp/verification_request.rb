@@ -14,7 +14,8 @@ module Proofing
             account_address_state: applicant[:state],
             account_address_country: 'US',
             account_address_zip: applicant[:zipcode].match(/^\d{5}/).to_s,
-            account_date_of_birth: Date.parse(applicant[:dob]).strftime('%Y%m%d'),
+            account_date_of_birth: applicant[:dob] ?
+              Date.parse(applicant[:dob]).strftime('%Y%m%d') : '',
             account_email: applicant[:email],
             account_first_name: applicant[:first_name],
             account_last_name: applicant[:last_name],
