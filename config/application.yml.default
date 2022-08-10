@@ -82,8 +82,6 @@ doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: false
-enable_numeric_authentication_otp: true
-enable_numeric_authentication_otp_input: true
 enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
