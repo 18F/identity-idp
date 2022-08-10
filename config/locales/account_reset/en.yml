@@ -1,14 +1,6 @@
 ---
 en:
   account_reset:
-    recovery_options:
-      header: Are you sure you want to delete your account? 
-      help_text: If you're locked out and still need access to Login.gov, try these steps instead.
-      try_method_again: Try your authentication method again
-      use_device: Use another device
-      try_another_device: Try another device where you might have selected the "remember device" option.
-      check_webauthn_platform: Use the same device you first set up face or touch unlock with
-      check_webauthn_platform_info: If you set up face or touch unlock when you created your account make sure to use the same device you created your Login.gov account on.
     cancel_request:
       are_you_sure: Are you sure you want to cancel your delete account request?
       cancel: Exit
@@ -44,6 +36,18 @@ en:
       wait_html: There is a 24-hour waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
+    recovery_options:
+      check_webauthn_platform: Use the same device you first set up face or touch unlock with
+      check_webauthn_platform_info: If you set up face or touch unlock when you
+        created your account make sure to use the same device you created your
+        Login.gov account on.
+      header: Are you sure you want to delete your account?
+      help_text: If you’re locked out and still need access to Login.gov, try these
+        steps instead.
+      try_another_device: Try another device where you might have selected the
+        “remember device” option.
+      try_method_again: Try your authentication method again
+      use_device: Use another device
     request:
       are_you_sure: Are you sure you don’t have access to any of your authentication methods?
       delete_account: Delete your account

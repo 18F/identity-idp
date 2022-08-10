@@ -9,7 +9,8 @@ en:
         process. Please check back later. %{cancel_link}
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
-      text_html: If you can’t use any of the authentication methods above, you can %{link}.
+      text_html: If you can’t use any of the authentication methods above, you can
+        %{link}.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
