@@ -24,6 +24,9 @@ export class MemorableDate extends HTMLElement {
   /** @type {HTMLElement?} */
   errorMessage;
 
+  /** @type {HTMLElement?} */
+  customErrorElement;
+
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.monthInput = this.querySelector('.memorable-date__month');
@@ -31,13 +34,13 @@ export class MemorableDate extends HTMLElement {
     this.dayInput = this.querySelector('.memorable-date__day');
     /** @type {HTMLInputElement?} */
     this.yearInput = this.querySelector('.memorable-date__year');
+    this.customErrorElement = this.querySelector('.memorable-date-custom-error');
 
     if (!this.monthInput || !this.dayInput || !this.yearInput) {
       return;
     }
 
     this.addEventListener('input', this.validate);
-    // error is set and can be found in class but is not displayed
   }
 
   validate() {
@@ -49,22 +52,29 @@ export class MemorableDate extends HTMLElement {
     const day = dayInput.value;
     const year = yearInput.value;
 
-    const isvalidDate = isValidPastDate(month, day, year);
+    const isvalid = isValidPastDate(month, day, year);
 
-    if (!isvalidDate) {
-      const errMessage = 'Date must be in the past';
-      this.setErrorMessage(errMessage);
+    if (!isvalid) {
+      const errMessage = 'Enter a date that is in the past';
+      this.displayError(errMessage);
     }
   }
 
   /**
    * @param {any} message
    */
-  setErrorMessage(message) {
+  displayError(message) {
     if (message) {
       const errClass = this.querySelector('.validated-field__error-strings');
       if (errClass) {
         errClass.textContent = message;
+        this.errorMessage = this.ownerDocument.createElement('div');
+        this.errorMessage.classList.add('usa-error-message');
+        this.errorMessage.textContent = message;
+        this.customErrorElement?.appendChild(this.errorMessage);
+        this.monthInput?.classList.add('usa-input--error');
+        this.dayInput?.classList.add('usa-input--error');
+        this.yearInput?.classList.add('usa-input--error');
       }
     }
   }
