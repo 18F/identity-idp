@@ -14,8 +14,8 @@ module Idv
 
       def add_proofing_components
         ProofingComponent.create_or_find_by(user: current_user).update(
-          resolution_check: 'lexis_nexis',
-          source_check: 'aamva',
+          resolution_check: Idp::Constants::Vendors::LEXIS_NEXIS,
+          source_check: Idp::Constants::Vendors::AAMVA,
         )
       end
 
