@@ -21,8 +21,10 @@ const isValidPastDate = (
 };
 
 export class MemorableDate extends HTMLElement {
+  /** @type {HTMLElement?} */
+  errorMessage;
+
   connectedCallback() {
-    this.addEventListener('input', this.validate);
     /** @type {HTMLInputElement?} */
     this.monthInput = this.querySelector('.memorable-date__month');
     /** @type {HTMLInputElement?} */
@@ -34,7 +36,8 @@ export class MemorableDate extends HTMLElement {
       return;
     }
 
-    this.validate();
+    this.addEventListener('input', this.validate);
+    // error is set and can be found in class but is not displayed
   }
 
   validate() {
@@ -59,9 +62,10 @@ export class MemorableDate extends HTMLElement {
    */
   setErrorMessage(message) {
     if (message) {
-      // WILLDO: attach err msg to instance of memdate
-      // eslint-disable-next-line no-console
-      console.log('err: ', message);
+      const errClass = this.querySelector('.validated-field__error-strings');
+      if (errClass) {
+        errClass.textContent = message;
+      }
     }
   }
 }
