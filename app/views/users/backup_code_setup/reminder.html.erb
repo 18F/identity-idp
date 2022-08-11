@@ -8,14 +8,12 @@
   <%= @presenter.body_info %>
 </p>
 
-<div class="col-12">
-  <%= button_to(
-        account_path,
-        method: :get,
-        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-      ) do %>
-    <%= @presenter.button %>
-  <% end %>
-</div>
+<%= button_to(
+      account_path,
+      method: :get,
+      class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
+    ) do %>
+  <%= @presenter.button %>
+<% end %>
 
 <%= link_to @presenter.need_new_codes_link_text, backup_code_regenerate_path %>
