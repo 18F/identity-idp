@@ -38,12 +38,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
-  let(:lexisnexis_ddp_proofer) do
-    instance_double(
-      Proofing::LexisNexis::Ddp::Proofer,
-      class: Proofing::LexisNexis::Ddp::Proofer,
-    )
-  end
   let(:trace_id) { SecureRandom.uuid }
 
   describe '.perform_later' do
@@ -241,7 +235,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
-        allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(lexisnexis_ddp_proofer)
       end
 
       context 'with a successful response from the proofer' do
