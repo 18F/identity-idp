@@ -27,4 +27,4 @@ module AccountReset
       analytics.cancel_account_reset_recovery
     end
   end
-  end
+end
