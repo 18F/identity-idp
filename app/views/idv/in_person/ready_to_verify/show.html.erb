@@ -59,9 +59,8 @@
     <% end %>
   <% end %>
   <p class="margin-bottom-0">
-    <%# WILLFIX: Hiding this text and link until help links are finalized; see LG-6875 %>
-    <%# t('in_person_proofing.body.barcode.items_to_bring_questions') %>
-    <%# new_window_link_to(
+    <%= t('in_person_proofing.body.barcode.items_to_bring_questions') %>
+    <%= new_window_link_to(
           t('in_person_proofing.body.barcode.learn_more'),
           MarketingSite.help_center_article_url(
             category: 'verify-your-identity',
