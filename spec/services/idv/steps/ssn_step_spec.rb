@@ -41,18 +41,12 @@ describe Idv::Steps::SsnStep do
     Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
       flow.flow_session = {
         pii_from_doc: pii_from_doc,
-        threatmetrix_session_id: threatmetrix_session_id,
       }
     end
   end
 
   subject(:step) do
     Idv::Steps::SsnStep.new(flow)
-  end
-
-  def threatmetrix_session_id
-    return unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
-    session_id
   end
 
   describe '#call' do
@@ -77,21 +71,27 @@ describe Idv::Steps::SsnStep do
       end
 
       context 'with proofing device profiling collecting enabled' do
-        let(:session_id) { 'ABCD-1234' }
-
         it 'adds a session id to flow session' do
           allow(IdentityConfig.store).
             to receive(:proofing_device_profiling_collecting_enabled).
             and_return(true)
           step.call
 
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(threatmetrix_session_id)
+          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
+        end
+
+        it 'does not change threatmetrix_session_id when updating ssn' do
+          allow(IdentityConfig.store).
+            to receive(:proofing_device_profiling_collecting_enabled).
+            and_return(true)
+          step.call
+          session_id = flow.flow_session[:threatmetrix_session_id]
+          step.call
+          expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
         end
       end
 
       context 'with proofing device profiling collecting disabled' do
-        let(:session_id) { 'ABCD-1234' }
-
         it 'does not add a session id to flow session' do
           allow(IdentityConfig.store).
             to receive(:proofing_device_profiling_collecting_enabled).

@@ -5,11 +5,10 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
-
           unless updating_ssn
             flow_session[:threatmetrix_session_id] = generate_threatmetrix_session_id
           end
+          flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
 
           idv_session.delete('applicant')
         end

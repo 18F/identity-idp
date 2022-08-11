@@ -20,7 +20,6 @@ describe Idv::Steps::Ipp::SsnStep do
     Idv::Flows::InPersonFlow.new(controller, {}, 'idv/in_person').tap do |flow|
       flow.flow_session = {
         pii_from_user: {},
-        threatmetrix_session_id: threatmetrix_session_id,
       }
     end
   end
@@ -47,15 +46,23 @@ describe Idv::Steps::Ipp::SsnStep do
     end
 
     context 'with proofing device profiling collecting enabled' do
-      let(:threatmetrix_session_id) { 'ABCD-1234' }
-
       it 'adds a session id to flow session' do
         allow(IdentityConfig.store).
           to receive(:proofing_device_profiling_collecting_enabled).
           and_return(true)
         step.call
 
-        expect(flow.flow_session[:threatmetrix_session_id]).to eq(threatmetrix_session_id)
+        expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
+      end
+
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        allow(IdentityConfig.store).
+          to receive(:proofing_device_profiling_collecting_enabled).
+          and_return(true)
+        step.call
+        session_id = flow.flow_session[:threatmetrix_session_id]
+        step.call
+        expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
       end
     end
   end
