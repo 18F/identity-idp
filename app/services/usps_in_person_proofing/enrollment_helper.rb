@@ -33,7 +33,6 @@ module UspsInPersonProofing
 
       def create_usps_enrollment(enrollment, pii)
         address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
-
         applicant = UspsInPersonProofing::Applicant.new(
           {
             unique_id: enrollment.usps_unique_id,
@@ -49,21 +48,11 @@ module UspsInPersonProofing
 
         proofer = usps_proofer
         response = proofer.request_enroll(applicant)
-
         response.enrollment_code
       rescue Faraday::BadRequestError => err
         handle_bad_request_error(err, enrollment)
       rescue StandardError => err
         handle_standard_error(err, enrollment)
-      end
-
-      def handle_bad_request_error(err, enrollment)
-        message = err.response.dig(:body, 'responseMessage') || err.message
-        raise Exception::RequestEnrollException.new(message, err, enrollment.id)
-      end
-
-      def handle_standard_error(err, enrollment)
-        raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
       end
 
       def establishing_in_person_enrollment_for_user(user)
@@ -73,6 +62,15 @@ module UspsInPersonProofing
         InPersonEnrollment.create!(user: user, profile: nil)
       end
 
+      def cancel_stale_establishing_enrollments_for_user(user)
+        user.
+          in_person_enrollments.
+          where(status: :establishing).
+          each(&:cancelled!)
+      end
+
+      private
+
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
@@ -81,11 +79,13 @@ module UspsInPersonProofing
         end
       end
 
-      def cancel_stale_establishing_enrollments_for_user(user)
-        user.
-          in_person_enrollments.
-          where(status: :establishing).
-          each(&:cancelled!)
+      def handle_bad_request_error(err, enrollment)
+        message = err.response.dig(:body, 'responseMessage') || err.message
+        raise Exception::RequestEnrollException.new(message, err, enrollment.id)
+      end
+
+      def handle_standard_error(err, enrollment)
+        raise Exception::RequestEnrollException.new(err.message, err, enrollment.id)
       end
     end
   end
