@@ -25,4 +25,12 @@ module IrsAttemptsApiTrackingHelper
   def irs_attempts_api_tracked_events
     IrsAttemptsApiEventDecryptor.new.decrypted_events_from_store.values
   end
+
+  def stub_attempts_tracker
+    irs_attempts_api_tracker = FakeAttemptsTracker.new
+
+    allow(controller).to receive(:irs_attempts_api_tracker).and_return(irs_attempts_api_tracker)
+
+    @irs_attempts_api_tracker = irs_attempts_api_tracker
+  end
 end

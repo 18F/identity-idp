@@ -635,9 +635,16 @@ module AnalyticsEvents
     track_event('IdV: forgot password confirmed')
   end
 
-  # GPO address letter requested
-  def idv_gpo_address_letter_requested
-    track_event('IdV: USPS address letter requested')
+  # @param [DateTime] enqueued_at
+  # @param [Boolean] resend
+  # GPO letter was requested and time was recorded
+  def idv_gpo_address_letter_requested(enqueued_at:, resend:, **extra)
+    track_event(
+      'IdV: USPS address letter requested',
+      enqueued_at: enqueued_at,
+      resend: resend,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -956,8 +963,13 @@ module AnalyticsEvents
   end
 
   # User submitted IDV password confirm page
-  def idv_review_complete
-    track_event('IdV: review complete')
+  # @param [Boolean] success
+  def idv_review_complete(success:, **extra)
+    track_event(
+      'IdV: review complete',
+      success: success,
+      **extra,
+    )
   end
 
   # User visited IDV password confirm page

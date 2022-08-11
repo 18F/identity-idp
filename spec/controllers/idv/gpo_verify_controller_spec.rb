@@ -105,6 +105,7 @@ RSpec.describe Idv::GpoVerifyController do
           success: true,
           errors: {},
           pending_in_person_enrollment: false,
+          enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
 
@@ -139,6 +140,7 @@ RSpec.describe Idv::GpoVerifyController do
             success: true,
             errors: {},
             pending_in_person_enrollment: true,
+            enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
 
@@ -164,6 +166,7 @@ RSpec.describe Idv::GpoVerifyController do
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           pending_in_person_enrollment: false,
+          enqueued_at: nil,
           error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
@@ -191,6 +194,7 @@ RSpec.describe Idv::GpoVerifyController do
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')] },
           pending_in_person_enrollment: false,
+          enqueued_at: nil,
           error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times

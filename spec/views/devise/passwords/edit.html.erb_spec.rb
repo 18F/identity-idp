@@ -23,4 +23,10 @@ describe 'devise/passwords/edit.html.erb' do
 
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
+
+  it 'has information about the password key' do
+    render
+
+    expect(rendered).to have_selector('p', text: t('instructions.password.password_key'))
+  end
 end

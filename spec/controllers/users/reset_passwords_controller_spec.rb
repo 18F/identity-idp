@@ -312,6 +312,8 @@ describe Users::ResetPasswordsController, devise: true do
     context 'no user matches email' do
       it 'send an email to tell the user they do not have an account yet' do
         stub_analytics
+        stub_attempts_tracker
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
         email = 'nonexistent@example.com'
 
         expect do
@@ -341,6 +343,12 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to have_logged_event(
           'User Registration: Email Submitted',
           analytics_hash,
+        )
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+          :user_registration_email_submitted,
+          email: email,
+          success: true,
+          failure_reason: nil,
         )
 
         expect(response).to redirect_to forgot_password_path
