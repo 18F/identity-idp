@@ -43,10 +43,10 @@ fr:
       check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou
         tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le
         même appareil que celui avec lequel vous avez créé votre compte
-        Login.gov.
+        %{app_name}.
       header: Êtes-vous sûr de vouloir supprimer votre compte?
       help_text: Si vous êtes bloqué et que vous avez toujours besoin d’accéder à
-        Login.gov, essayez plutôt ces étapes.
+        %{app_name}, essayez plutôt ces étapes.
       try_another_device: Essayez un autre appareil sur lequel vous avez peut-être
         sélectionné l’option « mémoriser l’appareil ».
       try_method_again: Essayez à nouveau votre méthode d’authentification
