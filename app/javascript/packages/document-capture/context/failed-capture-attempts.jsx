@@ -18,7 +18,9 @@ import useCounter from '../hooks/use-counter';
  * attempt, to increment attempts.
  * @prop {() => void} onResetFailedCaptureAttempts Callback to trigger a reset of attempts.
  * @prop {number} maxFailedAttemptsBeforeTips Number of failed attempts before showing tips.
+ * @prop {number} maxAttemptsBeforeNativeCamera Number of attempts before forcing the use of the native camera (if available)
  * @prop {CaptureAttemptMetadata} lastAttemptMetadata Metadata about the last attempt.
+ * @prop {boolean} forceNativeCamera Whether or not to force use of the native camera. Is set to true if the number of failedCaptureAttempts is equal to or greater than maxAttemptsBeforeNativeCamera
  */
 
 /** @type {CaptureAttemptMetadata} */
@@ -35,6 +37,7 @@ const FailedCaptureAttemptsContext = createContext(
     maxAttemptsBeforeNativeCamera: Infinity,
     maxFailedAttemptsBeforeTips: Infinity,
     lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
+    forceNativeCamera: false,
   }),
 );
 
@@ -45,17 +48,24 @@ FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
  *
  * @prop {ReactNode} children
  * @prop {number} maxFailedAttemptsBeforeTips
+ * @prop {number} maxAttemptsBeforeNativeCamera
  */
 
 /**
  * @param {FailedCaptureAttemptsContextProviderProps} props
  */
-function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBeforeTips, maxAttemptsBeforeNativeCamera }) {
+function FailedCaptureAttemptsContextProvider({
+  children,
+  maxFailedAttemptsBeforeTips,
+  maxAttemptsBeforeNativeCamera,
+}) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState(
     /** @type {CaptureAttemptMetadata} */ (DEFAULT_LAST_ATTEMPT_METADATA),
   );
   const [failedCaptureAttempts, incrementFailedCaptureAttempts, onResetFailedCaptureAttempts] =
     useCounter();
+
+  const forceNativeCamera = failedCaptureAttempts >= maxAttemptsBeforeNativeCamera;
 
   /**
    * @param {CaptureAttemptMetadata} metadata
@@ -74,6 +84,7 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
         maxAttemptsBeforeNativeCamera,
         maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
+        forceNativeCamera,
       }}
     >
       {children}

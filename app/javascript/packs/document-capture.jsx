@@ -40,6 +40,7 @@ import { trackEvent } from '@18f/identity-analytics';
  * @prop {string} helpCenterRedirectUrl
  * @prop {string} appName
  * @prop {string} maxCaptureAttemptsBeforeTips
+ * @prop {string} maxAttemptsBeforeNativeCamera
  * @prop {FlowPath} flowPath
  * @prop {string} cancelUrl
  * @prop {string=} idvInPersonUrl
