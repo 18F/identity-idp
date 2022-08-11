@@ -3,9 +3,11 @@ require 'securerandom'
 class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
-  # rubocop:disable Rails/InverseOf
-  belongs_to :service_provider, foreign_key: 'issuer', primary_key: 'issuer', optional: true
-  # rubocop:enable Rails/InverseOf
+  belongs_to :service_provider,
+             foreign_key: 'issuer',
+             primary_key: 'issuer',
+             inverse_of: :in_person_enrollments,
+             optional: true
   enum status: {
     establishing: 0,
     pending: 1,
