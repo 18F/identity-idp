@@ -38,6 +38,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
+  let(:lexisnexis_ddp_proofer) do
+    instance_double(
+      Proofing::LexisNexis::Ddp::Proofer,
+      class: Proofing::LexisNexis::Ddp::Proofer,
+    )
+  end
   let(:trace_id) { SecureRandom.uuid }
 
   describe '.perform_later' do
@@ -68,13 +74,19 @@ RSpec.describe ResolutionProofingJob, type: :job do
       )
     end
 
-    context 'webmock lexisnexis' do
+    context 'webmock lexisnexis and threatmetrix' do
       before do
         stub_request(
           :post,
           'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
         ).to_return(body: lexisnexis_response.to_json)
+        stub_request(
+          :post,
+          'https://www.example.com/api/session-query',
+        ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
 
+        allow(IdentityConfig.store).to receive(:lexisnexis_ddp_with_threatmetrix_enabled).
+          and_return(true)
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
@@ -140,6 +152,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
+          threatmetrix_success: true,
+          threatmetrix_request_id: '1234',
         )
       end
 
@@ -216,6 +230,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
+            threatmetrix_request_id: '1234',
+            threatmetrix_success: true,
           )
         end
       end
@@ -225,6 +241,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(lexisnexis_ddp_proofer)
       end
 
       context 'with a successful response from the proofer' do
