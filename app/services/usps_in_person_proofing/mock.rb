@@ -4,34 +4,33 @@ module UspsInPersonProofing
   module Mock
     class Proofer
       def request_enroll(applicant)
-        # timeout
-        if applicant[:first_name] == 'usps oot'
+        case applicant['first_name']
+        when 'usps waiting'
+          # timeout
           raise Faraday::TimeoutError.new
-        elsif applicant[:first_name] == 'usps 400'
-          # Usps 400 response
-          res = JSON.parse(::UspsIppFixtures.request_enroll_bad_request_response)
-        elsif applicant[:first_name] == 'usps 500'
-          # Usps 500 response
-          res = JSON.parse(::UspsIppFixtures.request_enroll_internal_failed_response)
-        elsif applicant[:first_name] == 'usps invalid'
+        when 'usps client error'
+          # usps 400 response
+          body = JSON.parse(UspsIppFixtures.request_enroll_bad_request_response)
+          response = { body: body, status: 400 }
+          raise Faraday::BadRequestError.new('Bad request error', response)
+        when 'usps server error'
+          # usps 500 response
+          body = JSON.parse(UspsIppFixtures.request_enroll_internal_failed_response)
+          response = { body: body, status: 500 }
+          raise Faraday::ServerError.new('Internal server error', response)
+        when 'usps invalid response'
           # no enrollment code
-          res = JSON.parse(::UspsIppFixtures.request_enroll_invalid_response)
+          res = JSON.parse(UspsIppFixtures.request_enroll_invalid_response)
         else
-          res = JSON.parse(::UspsIppFixtures.request_enroll_response)
+          # success
+          res = JSON.parse(UspsIppFixtures.request_enroll_response)
         end
 
         Response::RequestEnrollResponse.new(res)
       end
 
       def request_facilities(_location)
-        JSON.load_file(
-          Rails.root.join(
-            'spec',
-            'fixtures',
-            'usps_ipp_responses',
-            'request_facilities_response.json',
-          ),
-        )
+        JSON.parse(UspsIppFixtures.request_facilities_response)
       end
 
       def request_pilot_facilities
