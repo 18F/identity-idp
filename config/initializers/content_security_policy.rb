@@ -2,7 +2,7 @@ require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
-  connect_src = ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net']
+  connect_src = ["'self'", '*.nr-data.net', 'us.acas.acuant.net']
 
   font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
@@ -20,8 +20,6 @@ Rails.application.config.content_security_policy do |policy|
     :self,
     'js-agent.newrelic.com',
     '*.nr-data.net',
-    'dap.digitalgov.gov',
-    '*.google-analytics.com',
     IdentityConfig.store.asset_host.presence,
   ].compact
 
