@@ -72,7 +72,7 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       before do
         resolver = instance_double(SpReturnUrlResolver)
         allow(resolver).to receive(:homepage_url).and_return(homepage_url)
-        allow(SpReturnUrlResolver).to receive(:new).with(service_provider: sp).and_return(resolver)
+        allow(presenter).to receive(:sp_return_url_resolver).and_return(resolver)
       end
 
       context 'without homepage_url' do

@@ -44,8 +44,13 @@ module Idv
       end
 
       def service_provider_homepage_url
-        return unless service_provider
-        SpReturnUrlResolver.new(service_provider: service_provider).homepage_url
+        sp_return_url_resolver.homepage_url if service_provider
+      end
+
+      private
+
+      def sp_return_url_resolver
+        SpReturnUrlResolver.new(service_provider: service_provider)
       end
     end
   end
