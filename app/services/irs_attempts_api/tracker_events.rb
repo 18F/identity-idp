@@ -31,11 +31,14 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to verify the Backup Codes MFA method to their account
-    # @param [Boolean] success
-    def mfa_verify_backup_code(success:)
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [Boolean] success - True if the OTP Verification was sent
+    # Relevant only when the user is enrolling a phone as their MFA.
+    # The user has been sent an OTP by login.gov over SMS during the MFA enrollment process.
+    def mfa_enroll_phone(phone_number:, success:)
       track_event(
-        :mfa_verify_backup_code,
+        :mfa_enroll_phone,
+        phone_number: phone_number,
         success: success,
       )
     end
@@ -49,23 +52,11 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # Tracks when the user has attempted to verify the Backup Codes MFA method to their account
     # @param [Boolean] success
-    def mfa_verify_totp(success:)
+    def mfa_verify_backup_code(success:)
       track_event(
-        :mfa_verify_totp,
-        success: success,
-      )
-    end
-
-    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
-    # @param [Boolean] success - True if the OTP Verification was sent
-    # Relevant only when the user is enrolling a phone as their MFA.
-    # The user has been sent an OTP by login.gov over SMS during the MFA enrollment process.
-    def mfa_enroll_phone(phone_number:, success:)
-      track_event(
-        :mfa_enroll_phone,
-        phone_number: phone_number,
+        :mfa_verify_backup_code,
         success: success,
       )
     end
@@ -79,6 +70,15 @@ module IrsAttemptsApi
         :mfa_verify_phone,
         reauthentication: reauthentication,
         phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # @param [Boolean] success
+    def mfa_verify_totp(success:)
+      track_event(
+        :mfa_verify_totp,
         success: success,
       )
     end
