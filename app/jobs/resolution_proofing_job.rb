@@ -233,11 +233,16 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def lexisnexis_ddp_proofer
-    Proofing::LexisNexis::Ddp::Proofer.new(
-      api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
-      org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
-      base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
-    )
+    @ddp_proofer ||=
+      if IdentityConfig.store.proofer_mock_fallback
+        Proofing::Mock::DdpMockClient.new
+      else
+        Proofing::LexisNexis::Ddp::Proofer.new(
+          api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
+          org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
+          base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
+        )
+      end
   end
 
   def state_id_proofer
