@@ -5,10 +5,10 @@
   "main": "rails-i18n-webpack-plugin.js",
   "dependencies": {
     "webpack-sources": "^2.3.0",
-    "yaml": "^1.10.2"
+    "yaml": "^2.1.1"
   },
   "peerDependencies": {
-    "webpack": ">=5",
-    "sinon": "*"
+    "sinon": "*",
+    "webpack": ">=5"
   }
 }

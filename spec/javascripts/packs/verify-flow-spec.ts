@@ -11,7 +11,6 @@ describe('verify-flow', () => {
         data-enabled-step-names='["password_confirm"]'
         data-base-path="/"
         data-cancel-url="/"
-        data-in-person-url="/"
         data-store-key="dK00lFMxejQH3y5BWt+LwOShw+WSRt/6OudNYI/N9X4="
       ></div>
     `;

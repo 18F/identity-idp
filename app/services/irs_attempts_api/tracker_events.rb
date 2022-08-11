@@ -22,11 +22,63 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to enroll the MFA method TOTP to their account
+    # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
+    # @param [Boolean] success
+    def multi_factor_auth_enroll_backup_code(success:)
+      track_event(
+        :backup_code_enroll,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to verify the Backup Codes MFA method to their account
+    # @param [Boolean] success
+    def multi_factor_auth_verify_backup_code(success:)
+      track_event(
+        :backup_code_verify,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to enroll the TOTP MFA method to their account
     # @param [Boolean] success
     def multi_factor_auth_enroll_totp(success:)
       track_event(
         :totp_enroll,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # @param [Boolean] success
+    def multi_factor_auth_verify_totp(success:)
+      track_event(
+        :totp_verify,
+        success: success,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [Boolean] success - True if the OTP Verification was sent
+    # Relevant only when the user is enrolling a phone as their MFA.
+    # The user has been sent an OTP by login.gov over SMS during the MFA enrollment process.
+    def mfa_phone_enrollment_otp_sent(phone_number:, success:)
+      track_event(
+        :mfa_phone_enrollment_otp_sent,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] reauthentication - True if the user was already logged in
+    # @param [String] phone_number - The user's phone_number used for multi-factor authentication
+    # @param [Boolean] success - True if the OTP Verification was sent
+    # During a login attempt, an OTP code has been sent via SMS.
+    def mfa_phone_verification_otp_sent(reauthentication:, phone_number:, success:)
+      track_event(
+        :mfa_phone_verification_otp_sent,
+        reauthentication: reauthentication,
+        phone_number: phone_number,
         success: success,
       )
     end
@@ -42,6 +94,23 @@ module IrsAttemptsApi
     )
       track_event(
         :user_registration_email_confirmation,
+        success: success,
+        email: email,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks when user submits registration email
+    # @param [Boolean] success
+    # @param [String] email
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def user_registration_email_submitted(
+      success:,
+      email:,
+      failure_reason: nil
+    )
+      track_event(
+        :user_registration_email_submitted,
         success: success,
         email: email,
         failure_reason: failure_reason,

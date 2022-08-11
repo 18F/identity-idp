@@ -14,8 +14,8 @@ module Idv
 
       def add_proofing_components
         ProofingComponent.create_or_find_by(user: current_user).update(
-          resolution_check: 'lexis_nexis',
-          source_check: 'aamva',
+          resolution_check: Idp::Constants::Vendors::LEXIS_NEXIS,
+          source_check: Idp::Constants::Vendors::AAMVA,
         )
       end
 
@@ -56,12 +56,50 @@ module Idv
       end
 
       def pii
-        flow_session[:pii_from_doc].presence || flow_session[:pii_from_user]
+        raise NotImplementedError
       end
 
       def delete_pii
-        flow_session.delete(:pii_from_doc)
-        flow_session.delete(:pii_from_user)
+        raise NotImplementedError
+      end
+
+      def throttle
+        @throttle ||= Throttle.new(
+          user: current_user,
+          throttle_type: :idv_resolution,
+        )
+      end
+
+      def idv_failure(result)
+        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
+        if throttle.throttled?
+          @flow.analytics.throttler_rate_limit_triggered(
+            throttle_type: :idv_resolution,
+            step_name: self.class.name,
+          )
+          redirect_to idv_session_errors_failure_url
+        elsif result.extra.dig(:proofing_results, :exception).present?
+          @flow.analytics.idv_doc_auth_exception_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          redirect_to exception_url
+        else
+          @flow.analytics.idv_doc_auth_warning_visited(
+            step_name: self.class.name,
+            remaining_attempts: throttle.remaining_count,
+          )
+          redirect_to warning_url
+        end
+        result
+      end
+
+      def exception_url
+        idv_session_errors_exception_url
+      end
+
+      def warning_url
+        idv_session_errors_warning_url
       end
 
       def idv_success(idv_result)
@@ -76,13 +114,13 @@ module Idv
         idv_result.except(:errors, :success)
       end
 
-      def should_use_aamva?(pii_from_doc)
-        aamva_state?(pii_from_doc) && !aamva_disallowed_for_service_provider?
+      def should_use_aamva?(pii)
+        aamva_state?(pii) && !aamva_disallowed_for_service_provider?
       end
 
-      def aamva_state?(pii_from_doc)
+      def aamva_state?(pii)
         IdentityConfig.store.aamva_supported_jurisdictions.include?(
-          pii_from_doc['state_id_jurisdiction'],
+          pii['state_id_jurisdiction'],
         )
       end
 
