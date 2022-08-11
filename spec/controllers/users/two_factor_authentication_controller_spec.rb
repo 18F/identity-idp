@@ -453,6 +453,9 @@ describe Users::TwoFactorAuthenticationController do
             success: true,
             otp_delivery_preference: 'voice',
             country_code: 'US',
+            telephony_response: hash_including(
+              origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
+            ),
           ))
 
         get :send_code, params: {
