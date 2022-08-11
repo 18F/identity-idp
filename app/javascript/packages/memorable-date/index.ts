@@ -1,10 +1,6 @@
 import { t } from '@18f/identity-i18n';
 
-const isValidPastDate = (
-  /** @type {any} */ month,
-  /** @type {any} */ day,
-  /** @type {any} */ year,
-) => {
+const isValidPastDate = (month: any, day: any, year: any) => {
   const todaysDate = new Date();
 
   if (year > todaysDate.getFullYear()) {
@@ -23,18 +19,19 @@ const isValidPastDate = (
 };
 
 export class MemorableDate extends HTMLElement {
-  /** @type {HTMLElement?} */
-  errorMessage;
+  errorMessage: HTMLElement;
 
-  /** @type {HTMLElement?} */
-  customErrorElement;
+  customErrorElement: HTMLElement | null;
+
+  monthInput: HTMLInputElement | null;
+
+  dayInput: HTMLInputElement | null;
+
+  yearInput: HTMLInputElement | null;
 
   connectedCallback() {
-    /** @type {HTMLInputElement?} */
     this.monthInput = this.querySelector('.memorable-date__month');
-    /** @type {HTMLInputElement?} */
     this.dayInput = this.querySelector('.memorable-date__day');
-    /** @type {HTMLInputElement?} */
     this.yearInput = this.querySelector('.memorable-date__year');
     this.customErrorElement = this.querySelector('.memorable-date-custom-error');
 
@@ -62,10 +59,7 @@ export class MemorableDate extends HTMLElement {
     }
   }
 
-  /**
-   * @param {any} message
-   */
-  displayError(message) {
+  displayError(message: string) {
     if (message) {
       const errClass = this.querySelector('.validated-field__error-strings');
       if (errClass) {
