@@ -9,7 +9,7 @@ module Idv
 
     before_action :redirect_if_flow_completed
 
-    FSM_SETTINGS = {
+    FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
       final_url: :idv_phone_url,
       flow: Idv::Flows::InPersonFlow,
