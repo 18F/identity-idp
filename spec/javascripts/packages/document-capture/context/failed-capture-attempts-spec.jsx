@@ -149,5 +149,34 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       expect(addPageAction).to.have.been.called();
       expect(addPageAction).to.have.been.calledWith('IdV: Force native camera. Failed attempts: 0');
     });
+
+    it('Does not call analytics with native camera message when failed attempts less than 2', async function () {
+      let addPageAction = sinon.spy();
+      const acuantCaptureComponent = <AcuantCapture></AcuantCapture>;
+      const TestComponent = ({ children }) => {
+        return (
+          <AnalyticsContext.Provider value={{ addPageAction }}>
+            <DeviceContext.Provider value={{ isMobile: true }}>
+              <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
+                  {acuantCaptureComponent}
+                  {children}
+                </Provider>
+              </AcuantContextProvider>
+            </DeviceContext.Provider>
+          </AnalyticsContext.Provider>
+        );
+        initialize();
+      };
+      let result = render(<TestComponent></TestComponent>);
+      const user = userEvent.setup();
+      const fileInput = result.container.querySelector('input[type="file"]');
+      expect(fileInput).to.exist();
+      await user.click(fileInput);
+      //expect(addPageAction).to.have.been.called();
+      expect(addPageAction).to.not.have.been.calledWith(
+        'IdV: Force native camera. Failed attempts: 2',
+      );
+    });
   });
 });
