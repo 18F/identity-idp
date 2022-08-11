@@ -94,14 +94,6 @@ describe Users::WebauthnSetupController do
             platform_authenticator: false,
           })
 
-        expect(@analytics).to receive(:track_event).
-          with('User Registration: MFA Setup Complete', {
-            enabled_mfa_methods_count: 3,
-            mfa_method_counts: { auth_app: 1, phone: 1, webauthn: 1 },
-            pii_like_keypaths: [[:mfa_method_counts, :phone]],
-            success: true,
-          })
-
         patch :confirm, params: params
       end
     end

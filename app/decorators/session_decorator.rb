@@ -47,6 +47,10 @@ class SessionDecorator
 
   def irs_attempts_api_session_id; end
 
+  def request_url_params
+    {}
+  end
+
   private
 
   attr_reader :view_context

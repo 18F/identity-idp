@@ -56,7 +56,7 @@ Dir.chdir APP_ROOT do
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
   run "gem install thin -v 1.5.1 -- --with-cflags=\"-Wno-error=implicit-function-declaration\""
-  run "gem install mailcatcher -- --with-cppflags=-I/usr/local/opt/openssl/include"
+  run "gem install mailcatcher -- --with-cppflags=-I$(brew --prefix openssl@1.1)/include"
 
   puts "\n== Preparing database =="
   run 'bin/rake db:create'

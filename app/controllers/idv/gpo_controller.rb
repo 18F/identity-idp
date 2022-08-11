@@ -55,7 +55,7 @@ module Idv
     private
 
     def update_tracking
-      analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now)
+      analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now, resend: true)
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')

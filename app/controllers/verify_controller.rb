@@ -24,7 +24,6 @@ class VerifyController < ApplicationController
     {
       base_path: idv_app_path,
       cancel_url: idv_cancel_path,
-      in_person_url: in_person_url,
       initial_values: initial_values,
       reset_password_url: forgot_password_url,
       enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
@@ -45,10 +44,6 @@ class VerifyController < ApplicationController
 
   def enabled_steps
     IdentityConfig.store.idv_api_enabled_steps
-  end
-
-  def in_person_url
-    idv_in_person_url if Idv::InPersonConfig.enabled_for_issuer?(current_sp&.issuer)
   end
 
   def step_enabled?(step)

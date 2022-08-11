@@ -9,7 +9,7 @@ class FrontendLogController < ApplicationController
     'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_review_info_visited,
     'IdV: password confirm submitted' => proc do |analytics|
-      analytics.idv_review_complete
+      analytics.idv_review_complete(success: true)
       analytics.idv_final(success: true)
     end,
     'IdV: personal key visited' => :idv_personal_key_visited,
