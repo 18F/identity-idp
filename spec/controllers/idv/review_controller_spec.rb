@@ -490,7 +490,7 @@ describe Idv::ReviewController do
 
           context 'when there is 5xx error' do
             let(:stub_usps_response) do
-              stub_request_enroll_internal_failed_response
+              stub_request_enroll_internal_failure_response
             end
 
             it 'logs the error message' do

@@ -23,9 +23,9 @@ module UspsIppHelper
     )
   end
 
-  def stub_request_enroll_internal_failed_response
+  def stub_request_enroll_internal_failure_response
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).to_return(
-      status: 500, body: UspsIppFixtures.request_enroll_internal_failed_response,
+      status: 500, body: UspsIppFixtures.request_enroll_internal_failure_response,
     )
   end
 

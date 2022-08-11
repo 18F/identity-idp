@@ -23,8 +23,8 @@ class UspsIppFixtures
     load_response_fixture('request_enroll_failed_response.json')
   end
 
-  def self.request_enroll_internal_failed_response
-    load_response_fixture('request_enroll_internal_failed_response.json')
+  def self.request_enroll_internal_failure_response
+    load_response_fixture('request_enroll_internal_failure_response.json')
   end
 
   def self.request_enroll_invalid_response

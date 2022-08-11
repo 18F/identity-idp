@@ -15,7 +15,7 @@ module UspsInPersonProofing
           raise Faraday::BadRequestError.new('Bad request error', response)
         when 'usps server error'
           # usps 500 response
-          body = JSON.parse(UspsIppFixtures.request_enroll_internal_failed_response)
+          body = JSON.parse(UspsIppFixtures.request_enroll_internal_failure_response)
           response = { body: body, status: 500 }
           raise Faraday::ServerError.new('Internal server error', response)
         when 'usps invalid response'
