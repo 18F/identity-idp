@@ -463,10 +463,6 @@ describe Idv::ReviewController do
               stub_request_enroll_bad_request_response
             end
 
-            before do
-              stub_request_token
-            end
-
             it 'logs the response message' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
@@ -493,13 +489,8 @@ describe Idv::ReviewController do
           end
 
           context 'when there is 5xx error' do
-            before do
-              stub_request_token
-              stub_request_enroll_with_responses(
-                { status: [500, 'Internal Server Error'] },
-              )
-
-              allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+            let(:stub_usps_response) do
+              stub_request_enroll_internal_failed_response
             end
 
             it 'logs the error message' do
@@ -548,11 +539,6 @@ describe Idv::ReviewController do
           context 'when the USPS response is missing an enrollment code' do
             let(:stub_usps_response) do
               stub_request_enroll_invalid_response
-            end
-
-            before do
-              stub_request_token
-              allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
             end
 
             it 'logs an error message' do
