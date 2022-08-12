@@ -12,10 +12,18 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
   end
 
   describe '#override_csp_for_threat_metrix' do
+
+    let (:production) { true }
+    let (:ff_enabled) { true }
+
+    before do 
+      allow(Rails.env).to receive(:production?).and_return(true)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+      and_return(ff_enabled)
+    end 
+
     context 'non-production environment' do
-      before do
-        allow(Rails.env).to receive(:production?).and_return(false)
-      end
+      let (:production) { false }
       it 'does not modify CSP headers for SSN step' do
         assert_csp_is_not_modified 'ssn'
       end
@@ -25,15 +33,7 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
     end
 
     context 'production enviroment' do
-      before do
-        allow(Rails.env).to receive(:production?).and_return(true)
-      end
-
       context 'ff is set' do
-        before do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(true)
-        end
         it 'modifies CSP headers for SSN step' do
           assert_csp_is_modified 'ssn'
         end
@@ -44,11 +44,7 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
       end
 
       context 'ff is not set' do
-        before do
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(false)
-        end
-
+        let (:ff_enabled) { false }
         it 'does not modify CSP headers for SSN step' do
           assert_csp_is_not_modified 'ssn'
         end
