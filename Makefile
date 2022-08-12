@@ -33,6 +33,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
+	update \
 	urn \
 	setup \
 	test \
@@ -228,3 +229,9 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 		--no-output \
 		--db $@ \
 		-- $^
+
+update: ## Update dependencies, useful after a git pull
+	bundle install
+	yarn install
+	bundle exec rails db:migrate
+
