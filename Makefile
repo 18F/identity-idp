@@ -32,6 +32,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	optimize_assets \
 	optimize_svg \
 	run \
+	update \
 	urn \
 	setup \
 	test \
