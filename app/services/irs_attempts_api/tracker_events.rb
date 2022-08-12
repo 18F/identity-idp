@@ -108,6 +108,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to verify via the WebAuthn MFA method to their account
+    # @param [Boolean] success
+    def mfa_verify_webauthn(success:)
+      track_event(
+        :mfa_verify_webauthn,
+        success: success,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
