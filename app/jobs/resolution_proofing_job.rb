@@ -50,27 +50,27 @@ class ResolutionProofingJob < ApplicationJob
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
-    logger.info(
-      {
-        name: 'ProofResolution',
-        trace_id: trace_id,
-        resolution_success: callback_log_data&.resolution_success,
-        state_id_success: callback_log_data&.state_id_success,
-        timing: timer.results,
-      }.to_json,
+    logger_info_hash(
+      name: 'ProofResolution',
+      trace_id: trace_id,
+      resolution_success: callback_log_data&.resolution_success,
+      state_id_success: callback_log_data&.state_id_success,
+      timing: timer.results,
     )
   end
 
   private
 
   def log_threatmetrix_info(threatmetrix_result)
-    logger.info(
-      {
-        name: 'ThreatMetrix',
-        threatmetrix_request_id: threatmetrix_result.transaction_id,
-        threatmetrix_success: threatmetrix_result.success?,
-      }.to_json,
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
     )
+  end
+
+  def logger_info_hash(hash)
+    logger.info(hash.to_json)
   end
 
   def add_threatmetrix_result_to_callback_result(callback_log_data_result, threatmetrix_result)

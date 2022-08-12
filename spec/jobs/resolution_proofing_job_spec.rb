@@ -246,12 +246,21 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
 
         it 'logs the trace_id and timing info' do
-          expect(instance.logger).to receive(:info) do |message|
-            expect(JSON.parse(message, symbolize_names: true)).to include(
+          expect(instance).to receive(:logger_info_hash).ordered.with(
+            hash_including(
+              name: 'ThreatMetrix',
+              threatmetrix_request_id: nil,
+              threatmetrix_success: false,
+            ),
+          )
+
+          expect(instance).to receive(:logger_info_hash).ordered.with(
+            hash_including(
               :timing,
+              name: 'ProofResolution',
               trace_id: trace_id,
-            )
-          end
+            ),
+          )
 
           perform
         end
