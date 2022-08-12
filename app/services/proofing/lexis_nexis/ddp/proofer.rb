@@ -15,7 +15,7 @@ module Proofing
                             :state,
                             :zipcode
 
-        optional_attributes :address2, :phone
+        optional_attributes :address2, :phone, :state_id_number
 
         stage :resolution
 

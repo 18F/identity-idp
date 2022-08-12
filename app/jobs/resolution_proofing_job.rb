@@ -13,7 +13,7 @@ class ResolutionProofingJob < ApplicationJob
   )
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:)
+              dob_year_only:, user_id:, threatmetrix_session_id:)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -27,7 +27,9 @@ class ResolutionProofingJob < ApplicationJob
 
     threatmetrix_result = nil
     if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-      threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
+      threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(
+        applicant_pii, user_id, threatmetrix_session_id
+      )
       log_threatmetrix_info(threatmetrix_result)
     end
 
@@ -78,8 +80,11 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii)
-    lexisnexis_ddp_proofer.proof(applicant_pii)
+  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user_id, threatmetrix_session_id)
+    ddp_pii = applicant_pii.dup
+    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
+    ddp_pii[:email] = User.find_by(id: user_id).email
+    lexisnexis_ddp_proofer.proof(ddp_pii)
   end
 
   # @return [CallbackLogData]

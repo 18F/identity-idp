@@ -176,6 +176,8 @@ module Idv
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii),
           trace_id: amzn_trace_id,
+          user_id: user_id,
+          threatmetrix_session_id: flow_session[:threatmetrix_session_id],
         )
       end
 

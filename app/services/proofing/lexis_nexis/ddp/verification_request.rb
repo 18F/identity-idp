@@ -24,7 +24,7 @@ module Proofing
               OpenSSL::Digest::SHA256.hexdigest(applicant[:state_id_number].gsub(/\W/, '')) : '',
             event_type: 'ACCOUNT_CREATION',
             service_type: 'all',
-            session_id: applicant[:threatmetrix_session_id] || 'UNIQUE_SESSION_ID',
+            session_id: applicant[:threatmetrix_session_id],
             ssn_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:ssn].gsub(/\D/, '')),
           }.to_json
         end
