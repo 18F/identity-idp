@@ -1,19 +1,14 @@
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import userEvent from '@testing-library/user-event';
-import { DeviceContext, AnalyticsContext, UploadContext } from '@18f/identity-document-capture';
-import AcuantContext, {
-  dirname,
-  Provider as AcuantContextProvider,
-  DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-} from '@18f/identity-document-capture/context/acuant';
+import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
+import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
-import { useAcuant, render } from '../../../support/document-capture';
 import FailedCaptureAttemptsContext, {
   Provider,
 } from '@18f/identity-document-capture/context/failed-capture-attempts';
 import sinon from 'sinon';
+import { useAcuant, render } from '../../../support/document-capture';
 
 describe('document-capture/context/failed-capture-attempts', () => {
   it('has expected default properties', () => {
@@ -115,6 +110,7 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
 describe('maxAttemptsBeforeNativeCamera logging tests', () => {
   context('failed acuant camera attempts', function () {
     const { initialize } = useAcuant();
+    initialize();
     /**
      * NOTE: We have to force maxAttemptsBeforeLogin to be 0 here
      * in order to test this interactively. This is because the react
@@ -124,9 +120,9 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
      * but not both.
      */
     it('calls analytics with native camera message when failed attempts is greater than or equal to 0', async function () {
-      let addPageAction = sinon.spy();
-      const acuantCaptureComponent = <AcuantCapture></AcuantCapture>;
-      const TestComponent = ({ children }) => {
+      const addPageAction = sinon.spy();
+      const acuantCaptureComponent = <AcuantCapture />;
+      function TestComponent({ children }) {
         return (
           <AnalyticsContext.Provider value={{ addPageAction }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
@@ -139,9 +135,8 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
             </DeviceContext.Provider>
           </AnalyticsContext.Provider>
         );
-        initialize();
-      };
-      let result = render(<TestComponent></TestComponent>);
+      }
+      const result = render(<TestComponent />);
       const user = userEvent.setup();
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
@@ -151,9 +146,9 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
     });
 
     it('Does not call analytics with native camera message when failed attempts less than 2', async function () {
-      let addPageAction = sinon.spy();
-      const acuantCaptureComponent = <AcuantCapture></AcuantCapture>;
-      const TestComponent = ({ children }) => {
+      const addPageAction = sinon.spy();
+      const acuantCaptureComponent = <AcuantCapture />;
+      function TestComponent({ children }) {
         return (
           <AnalyticsContext.Provider value={{ addPageAction }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
@@ -166,14 +161,12 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
             </DeviceContext.Provider>
           </AnalyticsContext.Provider>
         );
-        initialize();
-      };
-      let result = render(<TestComponent></TestComponent>);
+      }
+      const result = render(<TestComponent />);
       const user = userEvent.setup();
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
       await user.click(fileInput);
-      //expect(addPageAction).to.have.been.called();
       expect(addPageAction).to.not.have.been.calledWith(
         'IdV: Force native camera. Failed attempts: 2',
       );
