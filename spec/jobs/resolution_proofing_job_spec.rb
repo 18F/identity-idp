@@ -251,10 +251,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return(Proofing::Result.new)
         end
 
-        it 'logs the trace_id and timing info' do
+        it 'logs the trace_id and timing info for ProofResolution and the Threatmetrix info' do
           expect(instance).to receive(:logger_info_hash).ordered.with(
             hash_including(
               name: 'ThreatMetrix',
+              user_id: user.uuid,
               threatmetrix_request_id: nil,
               threatmetrix_success: false,
             ),

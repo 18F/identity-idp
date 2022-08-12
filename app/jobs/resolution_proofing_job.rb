@@ -27,10 +27,11 @@ class ResolutionProofingJob < ApplicationJob
 
     threatmetrix_result = nil
     if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+      user = User.find_by(id: user_id)
       threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(
-        applicant_pii, user_id, threatmetrix_session_id
+        applicant_pii, user, threatmetrix_session_id
       )
-      log_threatmetrix_info(threatmetrix_result)
+      log_threatmetrix_info(threatmetrix_result, user)
     end
 
     callback_log_data = if dob_year_only && should_proof_state_id
@@ -63,9 +64,10 @@ class ResolutionProofingJob < ApplicationJob
 
   private
 
-  def log_threatmetrix_info(threatmetrix_result)
+  def log_threatmetrix_info(threatmetrix_result, user)
     logger_info_hash(
       name: 'ThreatMetrix',
+      user_id: user&.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
     )
@@ -80,12 +82,11 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user_id, threatmetrix_session_id)
+  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user, threatmetrix_session_id)
     return unless applicant_pii
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    user = User.find_by(id: user_id)
-    ddp_pii[:email] = user.email if user
+    ddp_pii[:email] = user&.email
     lexisnexis_ddp_proofer.proof(ddp_pii)
   end
 
