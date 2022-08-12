@@ -151,12 +151,14 @@ class AnalyticsEventsDocumenter
 
   # @return [Array<YARD::CodeObjects::MethodObject>]
   def analytics_methods
-    # this check will fail if the namespace is nested more than once
-    name_parts = class_name.split('::').map(&:to_sym)
+    class_name_parts = class_name.split('::').map(&:to_sym)
 
     database.select do |_k, object|
-      object.type == :method &&
-        [object.namespace&.parent&.name, object.namespace&.name == name_parts]
+      # this check will fail if the namespace is nested more than once
+      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name].
+        select { |part| part.present? && part != :root }
+
+      object.type == :method && method_object_name_parts == class_name_parts
     end.values
   end
 end
