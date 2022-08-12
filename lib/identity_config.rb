@@ -119,6 +119,7 @@ class IdentityConfig
     config.add(:database_readonly_username, type: :string)
     config.add(:database_read_replica_host, type: :string)
     config.add(:database_password, type: :string)
+    config.add(:database_pool_extra_connections_for_worker, :integer)
     config.add(:database_pool_idp, type: :integer)
     config.add(:database_statement_timeout, type: :integer)
     config.add(:database_timeout, type: :integer)
