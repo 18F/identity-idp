@@ -19,7 +19,7 @@ module TwoFactorAuthentication
       )
 
       if analytics_properties[:multi_factor_auth_method] == 'webauthn_platform'
-        irs_attempts_api_tracker.mfa_verify_webauthn_biometric(success: result.success?)
+        irs_attempts_api_tracker.mfa_verify_webauthn_platform(success: result.success?)
       end
 
       handle_webauthn_result(result)

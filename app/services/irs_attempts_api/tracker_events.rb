@@ -92,9 +92,9 @@ module IrsAttemptsApi
 
     # Tracks when the user has attempted to verify via the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
-    def mfa_verify_webauthn_biometric(success:)
+    def mfa_verify_webauthn_platform(success:)
       track_event(
-        :mfa_verify_webauthn_biometric,
+        :mfa_verify_webauthn_platform,
         success: success,
       )
     end
