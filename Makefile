@@ -21,6 +21,7 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	help \
 	lint \
 	lint_analytics_events \
+	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_optimized_assets \
@@ -210,17 +211,20 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 
 analytics_events: public/api/_analytics-events.json ## Generates a JSON file that documents analytics events for events.log
 
-lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --check $<
+lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
+	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
+
+lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
+	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
 
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
-	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
+	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
 	bundle exec yard doc \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
 		--no-output \
 		--db $@ \
-		-- $<
+		-- $^

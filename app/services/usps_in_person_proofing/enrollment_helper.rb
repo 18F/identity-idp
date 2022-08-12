@@ -31,13 +31,6 @@ module UspsInPersonProofing
         end
       end
 
-      def establishing_in_person_enrollment_for_user(user)
-        enrollment = user.establishing_in_person_enrollment
-        return enrollment if enrollment.present?
-
-        InPersonEnrollment.create!(user: user, profile: nil)
-      end
-
       def usps_proofer
         if IdentityConfig.store.usps_mock_fallback
           UspsInPersonProofing::Mock::Proofer.new
