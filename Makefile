@@ -228,7 +228,6 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
 		--no-output \
 		--db $@ \
-		-- $<
 		-- $^
 
 update: ## Update dependencies, useful after a git pull
