@@ -79,9 +79,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           'https://www.example.com/api/session-query',
         ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
 
+        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
         allow(IdentityConfig.store).to receive(:lexisnexis_ddp_with_threatmetrix_enabled).
           and_return(true)
-        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
         allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
@@ -146,8 +146,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
-          threatmetrix_success: true,
-          threatmetrix_request_id: '1234',
+          threatmetrix_success: false,
+          threatmetrix_request_id: nil,
         )
       end
 
@@ -224,8 +224,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
-            threatmetrix_request_id: '1234',
-            threatmetrix_success: true,
+            threatmetrix_request_id: nil,
+            threatmetrix_success: false,
           )
         end
       end
