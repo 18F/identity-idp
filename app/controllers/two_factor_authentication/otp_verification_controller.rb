@@ -85,7 +85,8 @@ module TwoFactorAuthentication
 
       analytics.track_mfa_submit_event(properties)
 
-      if UserSessionContext.authentication_context?(context) || UserSessionContext.reauthentication_context?(context)
+      if UserSessionContext.authentication_context?(context) ||
+         UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_phone_verification_otp_submitted(
           success: properties[:success],
         )
