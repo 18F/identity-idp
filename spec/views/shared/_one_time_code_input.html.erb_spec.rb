@@ -102,7 +102,6 @@ describe 'shared/_one_time_code_input.html.erb' do
   describe 'maxlength' do
     context 'no maxlength given' do
       it 'renders input maxlength DIRECT_OTP_LENGTH' do
-        puts rendered
         expect(rendered).to have_selector(
           "[maxlength=\"#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}\"]",
         )

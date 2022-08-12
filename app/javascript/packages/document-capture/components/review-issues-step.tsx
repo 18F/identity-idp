@@ -50,6 +50,8 @@ interface ReviewIssuesStepValue {
 interface ReviewIssuesStepProps extends FormStepComponentProps<ReviewIssuesStepValue> {
   remainingAttempts: number;
 
+  isFailedResult: boolean;
+
   captureHints: boolean;
 
   pii?: PII;
@@ -70,6 +72,7 @@ function ReviewIssuesStep({
   onError = () => {},
   registerField = () => undefined,
   remainingAttempts = Infinity,
+  isFailedResult = false,
   pii,
   captureHints = false,
 }: ReviewIssuesStepProps) {
@@ -110,6 +113,7 @@ function ReviewIssuesStep({
           <DocumentCaptureTroubleshootingOptions
             location="post_submission_warning"
             hasErrors={!!errors?.length}
+            showInPersonOption={!isFailedResult}
           />
         }
       >

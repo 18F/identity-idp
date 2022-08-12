@@ -63,7 +63,7 @@ describe AccountsController do
         user = create(
           :user,
           :signed_up,
-          profiles: [build(:profile, deactivation_reason: :verification_pending)],
+          profiles: [build(:profile, deactivation_reason: :gpo_verification_pending)],
         )
 
         sign_in user

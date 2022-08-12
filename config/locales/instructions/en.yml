@@ -92,6 +92,9 @@ en:
       info:
         lead: It must be at least %{min_length} characters long and not be a commonly
           used password. That’s it!
+      password_key: You need your 16-character personal key to reset your password if
+        you verified your identity with this account. If you don’t have it, you
+        can still reset your password and then reverify your identity.
       strength:
         i: Very weak
         ii: Weak

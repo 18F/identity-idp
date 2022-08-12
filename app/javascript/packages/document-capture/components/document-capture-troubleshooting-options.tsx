@@ -23,6 +23,11 @@ interface DocumentCaptureTroubleshootingOptionsProps {
   showDocumentTips?: boolean;
 
   /**
+   * Whether to include option to verify in person.
+   */
+  showInPersonOption?: boolean;
+
+  /**
    * If there are any errors (toggles whether or not to show in person proofing option)
    */
   hasErrors?: boolean;
@@ -32,6 +37,7 @@ function DocumentCaptureTroubleshootingOptions({
   heading,
   location = 'document_capture_troubleshooting_options',
   showDocumentTips = true,
+  showInPersonOption = true,
   hasErrors,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
@@ -71,7 +77,7 @@ function DocumentCaptureTroubleshootingOptions({
           ].filter(Boolean) as TroubleshootingOption[]
         }
       />
-      {hasErrors && inPersonURL && (
+      {hasErrors && inPersonURL && showInPersonOption && (
         <TroubleshootingOptions
           isNewFeatures
           heading={t('idv.troubleshooting.headings.are_you_near')}

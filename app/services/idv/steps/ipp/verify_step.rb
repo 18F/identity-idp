@@ -24,6 +24,10 @@ module Idv
             create_or_find_by(user: current_user).
             update(document_check: Idp::Constants::Vendors::USPS)
         end
+
+        def pii
+          flow_session[:pii_from_user]
+        end
       end
     end
   end

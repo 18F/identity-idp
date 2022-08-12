@@ -6,6 +6,7 @@ module OpenidConnect
     include SecureHeadersConcern
     include AuthorizationCountConcern
     include BillableEventTrackable
+    include InheritedProofingConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -65,7 +66,7 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri
+      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
       delete_branded_experience
     end
 
@@ -112,7 +113,7 @@ module OpenidConnect
       return if result.success?
 
       if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri
+        redirect_to redirect_uri, allow_other_host: true
       else
         render :error
       end
@@ -151,8 +152,7 @@ module OpenidConnect
         user: current_user,
       )
 
-      analytics.track_event(
-        Analytics::SP_REDIRECT_INITIATED,
+      analytics.sp_redirect_initiated(
         ial: event_ial_context.ial,
         billed_ial: event_ial_context.bill_for_ial_1_or_2,
       )

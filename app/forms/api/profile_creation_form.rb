@@ -18,12 +18,7 @@ module Api
 
     def submit
       @form_valid = valid?
-
-      if form_valid?
-        create_profile
-        cache_encrypted_pii
-        complete_session
-      end
+      create_profile if form_valid?
 
       response = FormResponse.new(
         success: form_valid?,
@@ -39,11 +34,33 @@ module Api
 
     def create_profile
       profile_maker = build_profile_maker
-      profile = profile_maker.save_profile
+      profile = profile_maker.save_profile(
+        active: deactivation_reason.nil?,
+        deactivation_reason: deactivation_reason,
+      )
       @profile = profile
       session[:pii] = profile_maker.pii_attributes
       session[:profile_id] = profile.id
       session[:personal_key] = profile.personal_key
+
+      cache_encrypted_pii
+      associate_in_person_enrollment_with_profile
+
+      if profile.active
+        move_pii_to_user_session
+      elsif user_bundle.gpo_address_verification?
+        create_gpo_entry
+      elsif pending_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
+      end
+    end
+
+    def deactivation_reason
+      if !phone_confirmed? || user_bundle.gpo_address_verification?
+        :gpo_verification_pending
+      elsif pending_in_person_enrollment?
+        :in_person_verification_pending
+      end
     end
 
     def cache_encrypted_pii
@@ -51,18 +68,18 @@ module Api
       cacher.save(password, profile)
     end
 
-    def complete_session
-      complete_profile if phone_confirmed?
-      create_gpo_entry if user_bundle.gpo_address_verification?
+    def associate_in_person_enrollment_with_profile
+      return unless pending_in_person_enrollment? && user.establishing_in_person_enrollment
+      user.establishing_in_person_enrollment.update(profile: profile)
+    end
+
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def phone_confirmed?
       user_bundle.vendor_phone_confirmation? && user_bundle.user_phone_confirmation?
-    end
-
-    def complete_profile
-      user.pending_profile&.activate
-      move_pii_to_user_session
     end
 
     def move_pii_to_user_session
@@ -127,7 +144,7 @@ module Api
     def extra_attributes
       if user.present?
         @extra_attributes ||= {
-          profile_pending: user.pending_profile?,
+          profile_pending: user_bundle.gpo_address_verification?,
           user_uuid: user.uuid,
         }
       else
@@ -149,6 +166,11 @@ module Api
       end
 
       key
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end

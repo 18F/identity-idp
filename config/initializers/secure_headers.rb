@@ -5,7 +5,7 @@ Rails.application.configure do
   }
 
   config.action_dispatch.default_headers.merge!(
-    'X-Frame-Options' => 'DENY',
+    'X-Frame-Options' => IdentityConfig.store.rails_mailer_previews_enabled ? 'SAMEORIGIN' : 'DENY',
     'X-XSS-Protection' => '1; mode=block',
     'X-Download-Options' => 'noopen',
   )

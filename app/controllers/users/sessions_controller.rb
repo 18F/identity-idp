@@ -40,6 +40,9 @@ module Users
 
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
+      irs_attempts_api_tracker.logout_initiated(
+        success: true,
+      )
       super
     end
 

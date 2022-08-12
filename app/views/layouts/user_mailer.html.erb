@@ -71,8 +71,11 @@
                                         </tr>
                                       </tbody>
                                     </table>
-                                    <h4><%= @header || message.subject %>
-                                    </h4><%= yield %>
+                                    <% unless @hide_title %>
+                                      <h4><%= @header || message.subject %>
+                                      </h4>
+                                    <% end %>
+                                    <%= yield %>
                                     <table class="spacer">
                                       <tbody>
                                         <tr>

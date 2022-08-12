@@ -207,7 +207,10 @@ describe Idv::ReviewController do
         expect(flash.now[:success]).to eq(
           t(
             'idv.messages.review.info_verified_html',
-            phone_message: "<strong>#{t('idv.messages.phone.phone_of_record')}</strong>",
+            phone_message: ActionController::Base.helpers.content_tag(
+              :strong,
+              t('idv.messages.phone.phone_of_record'),
+            ),
           ),
         )
       end
@@ -289,12 +292,19 @@ describe Idv::ReviewController do
     context 'user fails to supply correct password' do
       before do
         idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
         expect(response).to redirect_to idv_review_path
+
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: review complete',
+          success: false,
+        )
       end
     end
 
@@ -309,7 +319,10 @@ describe Idv::ReviewController do
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_received(:track_event).with('IdV: review complete')
+        expect(@analytics).to have_received(:track_event).with(
+          'IdV: review complete',
+          success: true,
+        )
         expect(@analytics).to have_received(:track_event).with(
           'IdV: final resolution',
           success: true,
@@ -355,6 +368,12 @@ describe Idv::ReviewController do
           expect(profile).to be_active
         end
 
+        it 'dispatches account verified alert' do
+          expect(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+
         it 'creates an `account_verified` event once per confirmation' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
@@ -372,6 +391,22 @@ describe Idv::ReviewController do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
             expect(response).to redirect_to idv_app_url
+          end
+        end
+
+        context 'with in person enrollment' do
+          before do
+            ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
+              same_address_as_id: true,
+            ).as_json
+          end
+
+          it 'does not dispatch account verified alert' do
+            expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
       end

@@ -288,4 +288,24 @@ RSpec.describe ServiceProviderSessionDecorator do
       end
     end
   end
+
+  describe '#request_url_params' do
+    context 'without url params' do
+      it 'returns an empty hash' do
+        expect(subject.request_url_params).to eq({})
+      end
+    end
+
+    context 'with url params' do
+      let(:service_provider_request) do
+        url = 'https://example.com/auth?param0=p0&param1=p1&param2=p2'
+        ServiceProviderRequest.new(url: url)
+      end
+      let(:expected_hash) { { 'param0' => 'p0', 'param1' => 'p1', 'param2' => 'p2' } }
+
+      it 'returns the url parameters' do
+        expect(subject.request_url_params).to eq(expected_hash)
+      end
+    end
+  end
 end

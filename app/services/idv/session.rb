@@ -49,10 +49,35 @@ module Idv
 
     def create_profile_from_applicant_with_password(user_password)
       profile_maker = build_profile_maker(user_password)
-      profile = profile_maker.save_profile
+      profile = profile_maker.save_profile(
+        active: deactivation_reason.nil?,
+        deactivation_reason: deactivation_reason,
+      )
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
+
+      cache_encrypted_pii(user_password)
+      associate_in_person_enrollment_with_profile
+
+      if profile.active?
+        move_pii_to_user_session
+      elsif address_verification_mechanism == 'gpo'
+        create_gpo_entry
+      elsif pending_in_person_enrollment?
+        UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
+          current_user,
+          applicant,
+        )
+      end
+    end
+
+    def deactivation_reason
+      if !phone_confirmed? || address_verification_mechanism == 'gpo'
+        :gpo_verification_pending
+      elsif pending_in_person_enrollment?
+        :in_person_verification_pending
+      end
     end
 
     def cache_encrypted_pii(password)
@@ -72,18 +97,18 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def pending_in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
     end
 
-    def complete_session
-      complete_profile if phone_confirmed?
-      create_gpo_entry if address_verification_mechanism == 'gpo'
-    end
-
-    def complete_profile
-      current_user.pending_profile&.activate
-      move_pii_to_user_session
+    def associate_in_person_enrollment_with_profile
+      return unless pending_in_person_enrollment? && current_user.establishing_in_person_enrollment
+      current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
     def create_gpo_entry
@@ -121,8 +146,7 @@ module Idv
     attr_accessor :user_session
 
     def set_idv_session
-      return if session.present?
-      user_session[:idv] = new_idv_session
+      user_session[:idv] = new_idv_session unless user_session.key?(:idv)
     end
 
     def new_idv_session
@@ -145,6 +169,11 @@ module Idv
         user: current_user,
         user_password: user_password,
       )
+    end
+
+    def in_person_enrollment?
+      return false unless IdentityConfig.store.in_person_proofing_enabled
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end

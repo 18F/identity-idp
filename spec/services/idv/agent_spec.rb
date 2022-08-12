@@ -4,6 +4,8 @@ require 'ostruct'
 describe Idv::Agent do
   include IdvHelper
 
+  let(:user) { build(:user) }
+
   let(:bad_phone) do
     Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
@@ -20,8 +22,7 @@ describe Idv::Agent do
       context 'proofing state_id enabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
-            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
-              zipcode: '11111' },
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
@@ -33,14 +34,7 @@ describe Idv::Agent do
         end
 
         it 'does proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(
-            ssn: '900-55-8888',
-            first_name: Faker::Name.first_name,
-            zipcode: '11111',
-            state_id_number: '123456789',
-            state_id_type: 'drivers_license',
-            state_id_jurisdiction: 'MD',
-          )
+          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
@@ -55,8 +49,7 @@ describe Idv::Agent do
       context 'proofing state_id disabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new(
-            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
-              zipcode: '11111' },
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
@@ -67,10 +60,7 @@ describe Idv::Agent do
         end
 
         it 'does not proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(
-            { ssn: '900-55-8888', first_name: Faker::Name.first_name,
-              zipcode: '11111' },
-          )
+          agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
@@ -84,8 +74,7 @@ describe Idv::Agent do
 
         it 'returns a successful result if SSN does not start with 900 but is in SSN allowlist' do
           agent = Idv::Agent.new(
-            ssn: '999-99-9999', first_name: Faker::Name.first_name,
-            zipcode: '11111'
+            Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '999-99-9999'),
           )
 
           agent.proof_resolution(
@@ -101,8 +90,10 @@ describe Idv::Agent do
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
         agent = Idv::Agent.new(
-          ssn: '900-55-8888', first_name: 'Time Exception',
-          zipcode: '11111'
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+            uuid: user.uuid,
+            first_name: 'Time Exception',
+          ),
         )
 
         agent.proof_resolution(

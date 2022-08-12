@@ -25,6 +25,8 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	lint_erb \
 	lint_optimized_assets \
 	lint_yaml \
+	lint_yarn_workspaces \
+	lint_lockfiles \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
@@ -62,8 +64,6 @@ lint: ## Runs all lint tests
 	make lint_analytics_events
 	@echo "--- brakeman ---"
 	bundle exec brakeman
-	@echo "--- zeitwerk check ---"
-	bin/rails zeitwerk:check
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	# JavaScript
@@ -78,6 +78,10 @@ lint: ## Runs all lint tests
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
+	@echo "--- lint Yarn workspaces ---"
+	make lint_yarn_workspaces
+	@echo "--- lint lockfiles ---"
+	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
@@ -88,6 +92,19 @@ lint_erb: ## Lints ERB files
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
+lint_yarn_workspaces: ## Lints Yarn workspace packages
+	scripts/validate-workspaces.js
+
+lint_gemfile_lock: Gemfile Gemfile.lock
+	@bundle check
+	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
+
+lint_yarn_lock: package.json yarn.lock
+	@yarn install --ignore-scripts
+	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
+
+lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
 lintfix: ## Runs rubocop fix
 	@echo "--- rubocop fix ---"
@@ -101,11 +118,11 @@ public/packs/manifest.json: yarn.lock $(shell find app/javascript -type f) ## Bu
 
 test: export RAILS_ENV := test
 test: $(CONFIG) ## Runs RSpec and yarn tests in parallel
-	bundle exec rake parallel:spec && yarn test
+	bundle exec rake parallel:spec && yarn build && yarn test
 
 test_serial: export RAILS_ENV := test
 test_serial: $(CONFIG) ## Runs RSpec and yarn tests serially
-	bundle exec rake spec && yarn test
+	bundle exec rake spec && yarn build && yarn test
 
 fast_test: export RAILS_ENV := test
 fast_test: ## Abbreviated test run, runs RSpec tests without accessibility specs

@@ -17,6 +17,7 @@ describe Idv::SessionsController do
       allow(idv_session).to receive(:clear)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       controller.user_session['idv/doc_auth'] = flow_session
+      controller.user_session['idv/in_person'] = flow_session
       controller.user_session[:decrypted_pii] = pii
     end
 
@@ -26,6 +27,7 @@ describe Idv::SessionsController do
       delete :destroy
 
       expect(controller.user_session['idv/doc_auth']).to be_blank
+      expect(controller.user_session['idv/in_person']).to be_blank
       expect(controller.user_session[:decrypted_pii]).to be_blank
     end
 
@@ -49,7 +51,7 @@ describe Idv::SessionsController do
       let(:user) do
         create(
           :user,
-          profiles: [create(:profile, deactivation_reason: :verification_pending)],
+          profiles: [create(:profile, deactivation_reason: :gpo_verification_pending)],
         )
       end
 
@@ -64,6 +66,20 @@ describe Idv::SessionsController do
           step: 'gpo_verify',
           location: 'clear_and_start_over',
         )
+      end
+    end
+
+    context 'with pending in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'cancels in person enrollment' do
+        delete :destroy
+
+        expect(user.reload.pending_in_person_enrollment).to be_blank
       end
     end
   end
