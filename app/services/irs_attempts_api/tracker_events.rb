@@ -11,8 +11,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] user_uuid The user's uuid
-    # @param [String] unique_session_id The unique session id
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
