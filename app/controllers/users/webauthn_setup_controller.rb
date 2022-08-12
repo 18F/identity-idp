@@ -43,7 +43,7 @@ module Users
       analytics.multi_factor_auth_setup(**properties)
 
       if @platform_authenticator
-        irs_attempts_api_tracker.mfa_enroll_webauthn_biometric(success: result.success?)
+        irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
       end
 
       if result.success?
