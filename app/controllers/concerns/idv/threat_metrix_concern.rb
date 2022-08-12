@@ -19,39 +19,29 @@ module Idv
       # `script-src` must be updated to enable:
       #   - The domain hosting ThreatMetrix JS (so it can be included on the page)
       #   - `unsafe-eval`, since the ThreatMetrix JS uses eval() internally.
-      add_to_policy policy, :script_src, THREAT_METRIX_DOMAIN, :unsafe_eval
+      policy.script_src(*(policy.script_src.to_set.merge([THREAT_METRIX_DOMAIN, :unsafe_eval])))
 
       # `style-src` must be updated to enable:
       #   - `unsafe-inline`, since the ThreatMetrix library applies inline
       #      styles to elements it inserts into the DOM
-      add_to_policy policy, :style_src, :unsafe_inline
+      policy.style_src(*(policy.style_src.to_set << :unsafe_inline))
 
       # `img-src` must be updated to enable:
-      #   - The domain hosting ThreatMetrix JS, since ThreatMetrix loads
-      #     images from this domain as part of its fingerprinting process.
-      add_to_policy policy, :img_src, THREAT_METRIX_WILDCARD_DOMAIN
+      #   - A wildcard domain, since the JS loads images from different 
+      #     subdomains of the main ThreatMetrix domain.
+      policy.img_src(*(policy.img_src.to_set << THREAT_METRIX_WILDCARD_DOMAIN))
 
       # `connect-src` must be updated to enable:
       #   - The domain hosting ThreatMetrix JS, since ThreatMetrix makes XHR
       #     requests to this domain.
-      add_to_policy policy, :connect_src, THREAT_METRIX_DOMAIN
+      policy.connect_src(*(policy.connect_src.to_set << THREAT_METRIX_DOMAIN))
 
       # `child-src` must be updated to enable:
       #   - The domain hosting ThreatMetrix JS, which used to load a fallback
       #     `<iframe>` element when Javascript is disabled.
-      add_to_policy policy, :child_src, THREAT_METRIX_DOMAIN
+      policy.child_src(*(policy.child_src.to_set << THREAT_METRIX_DOMAIN))
 
       request.content_security_policy = policy
-    end
-
-    private
-
-    def add_to_policy(policy, directive, *values)
-      existing_values = policy.directives[directive]
-
-      new_values = [existing_values, values].flatten.uniq.compact
-
-      policy.send(directive, *new_values)
     end
   end
 end
