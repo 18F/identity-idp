@@ -255,7 +255,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(instance).to receive(:logger_info_hash).ordered.with(
             hash_including(
               name: 'ThreatMetrix',
-              user_id: user.uuid,
+              user_id: nil,
               threatmetrix_request_id: nil,
               threatmetrix_success: false,
             ),

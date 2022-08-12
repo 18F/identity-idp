@@ -53,7 +53,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           should_proof_state_id: anything,
           trace_id: amzn_trace_id,
           threatmetrix_session_id: nil,
-          user_id: user.id,
+          user_id: anything,
         )
 
       step.call
