@@ -211,10 +211,10 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 
 analytics_events: public/api/_analytics-events.json ## Generates a JSON file that documents analytics events for events.log
 
-lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
+lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
-lint_tracker_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
+lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
 
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
