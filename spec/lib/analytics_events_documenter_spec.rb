@@ -240,8 +240,8 @@ RSpec.describe AnalyticsEventsDocumenter do
               attributes: [
                 { name: 'success', types: ['Boolean'], description: nil },
               ],
-            }
-          ]
+            },
+          ],
         )
       end
     end
