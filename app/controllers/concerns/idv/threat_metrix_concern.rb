@@ -6,8 +6,6 @@ module Idv
     THREAT_METRIX_WILDCARD_DOMAIN = '*.online-metrix.net'
 
     def override_csp_for_threat_metrix
-      return unless Rails.env.production?
-
       return unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
 
       return if params[:step] != 'ssn'
