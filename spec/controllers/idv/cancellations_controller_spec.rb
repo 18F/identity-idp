@@ -171,8 +171,10 @@ describe Idv::CancellationsController do
     end
 
     context 'when regular session' do
+      let(:user) { create(:user) }
+
       before do
-        stub_sign_in
+        stub_sign_in(user)
       end
 
       it 'destroys session' do
@@ -187,6 +189,33 @@ describe Idv::CancellationsController do
         parsed_body = JSON.parse(response.body, symbolize_names: true)
         expect(response).not_to render_template(:destroy)
         expect(parsed_body).to eq({ redirect_url: account_path })
+      end
+
+      context 'with pending in person enrollment' do
+        let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(controller).to receive(:user_session).and_return(
+            'idv/in_person' => { 'pii_from_user' => {},
+                                 'Idv::Steps::Ipp::StateIdStep' => true,
+                                 'Idv::Steps::Ipp::AddressStep' => true },
+          )
+        end
+
+        it 'cancels in person enrollment' do
+          expect(user.reload.pending_in_person_enrollment).to_not be_blank
+          delete :destroy
+
+          expect(user.reload.pending_in_person_enrollment).to be_blank
+        end
+
+        it 'deletes in person flow data' do
+          expect(controller.user_session['idv/in_person']).not_to be_blank
+          delete :destroy
+
+          expect(controller.user_session['idv/in_person']).to be_blank
+        end
       end
     end
   end
