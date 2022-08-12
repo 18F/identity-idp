@@ -2,7 +2,7 @@ require 'feature_management'
 
 # rubocop:disable Metrics/BlockLength
 Rails.application.config.content_security_policy do |policy|
-  connect_src = ["'self'", '*.nr-data.net', 'us.acas.acuant.net']
+  connect_src = ["'self'", '*.nr-data.net']
 
   font_src = [:self, :data, IdentityConfig.store.asset_host.presence].compact
 
@@ -11,7 +11,6 @@ Rails.application.config.content_security_policy do |policy|
     'data:',
     'login.gov',
     IdentityConfig.store.asset_host.presence,
-    'idscangoweb.acuant.com',
     IdentityConfig.store.aws_region.presence &&
       "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
   ].select(&:present?)
