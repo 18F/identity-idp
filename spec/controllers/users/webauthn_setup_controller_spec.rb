@@ -216,7 +216,7 @@ describe Users::WebauthnSetupController do
           )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn, success: true
+            :mfa_enroll_webauthn_roaming, success: true
           )
 
           patch :confirm, params: params
