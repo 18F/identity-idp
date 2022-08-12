@@ -1,9 +1,9 @@
-import * as React from 'react';
+import type { ComponentProps } from 'react';
 
 import { Button } from '@18f/identity-components';
 import { t } from '@18f/identity-i18n';
 
-interface BackLinkProps extends React.ComponentProps<typeof Button> {
+interface BackLinkProps extends ComponentProps<typeof Button> {
   includeBorder?: boolean;
 }
 
