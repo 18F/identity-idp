@@ -19,7 +19,7 @@ module Idv
       # `script-src` must be updated to enable:
       #   - The domain hosting ThreatMetrix JS (so it can be included on the page)
       #   - `unsafe-eval`, since the ThreatMetrix JS uses eval() internally.
-      policy.script_src(*(policy.script_src.to_set.merge([THREAT_METRIX_DOMAIN, :unsafe_eval])))
+      policy.script_src(*policy.script_src.to_set.merge([THREAT_METRIX_DOMAIN, :unsafe_eval]))
 
       # `style-src` must be updated to enable:
       #   - `unsafe-inline`, since the ThreatMetrix library applies inline
@@ -27,7 +27,7 @@ module Idv
       policy.style_src(*(policy.style_src.to_set << :unsafe_inline))
 
       # `img-src` must be updated to enable:
-      #   - A wildcard domain, since the JS loads images from different 
+      #   - A wildcard domain, since the JS loads images from different
       #     subdomains of the main ThreatMetrix domain.
       policy.img_src(*(policy.img_src.to_set << THREAT_METRIX_WILDCARD_DOMAIN))
 
