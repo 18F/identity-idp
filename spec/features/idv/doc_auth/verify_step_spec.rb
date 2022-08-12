@@ -38,8 +38,8 @@ feature 'doc auth verify step', :js do
     expect(page).to have_current_path(idv_phone_path)
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
     user = User.first
-    expect(user.proofing_component.resolution_check).to eq('lexis_nexis')
-    expect(user.proofing_component.source_check).to eq('aamva')
+    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',

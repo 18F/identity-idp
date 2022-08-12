@@ -2,9 +2,10 @@ module Idp
   module Constants
     module Vendors
       ACUANT = 'acuant'
-      LEXIS_NEXIS = 'lexisnexis'
+      LEXIS_NEXIS = 'lexis_nexis'
       MOCK = 'mock'
       USPS = 'usps'
+      AAMVA = 'aamva'
     end
 
     DEFAULT_IAL = 1

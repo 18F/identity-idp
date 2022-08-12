@@ -18,7 +18,16 @@ RSpec.describe AnalyticsEventsDocumenter do
     end
   end
 
-  subject(:documenter) { AnalyticsEventsDocumenter.new(@database_dir) }
+  let(:class_name) { 'AnalyticsEvents' }
+  let(:require_extra_params) { true }
+
+  subject(:documenter) do
+    AnalyticsEventsDocumenter.new(
+      database_path: @database_dir,
+      class_name: class_name,
+      require_extra_params: require_extra_params,
+    )
+  end
 
   describe '.run' do
     let(:source_code) { <<~RUBY }
@@ -125,6 +134,8 @@ RSpec.describe AnalyticsEventsDocumenter do
     end
 
     context 'when a method does not have a **extra param' do
+      let(:require_extra_params) { true }
+
       let(:source_code) { <<~RUBY }
         class AnalyticsEvents
           # @param [Boolean] success
@@ -136,6 +147,14 @@ RSpec.describe AnalyticsEventsDocumenter do
 
       it 'requires **extra param' do
         expect(documenter.missing_documentation.first).to include('some_event missing **extra')
+      end
+
+      context 'when require_extra_params is false' do
+        let(:require_extra_params) { false }
+
+        it 'allows **extra to be missing' do
+          expect(documenter.missing_documentation).to be_empty
+        end
       end
     end
 
@@ -195,6 +214,36 @@ RSpec.describe AnalyticsEventsDocumenter do
           },
         ],
       )
+    end
+
+    context 'with a namespaced class name, with symbol event names' do
+      let(:class_name) { 'Foobar::CustomEvents' }
+
+      let(:source_code) { <<~RUBY }
+        module Foobar
+          class CustomEvents
+            # @param [Boolean] success
+            def some_event(success:, **extra)
+              track_event(:some_event)
+            end
+          end
+        end
+      RUBY
+
+      it 'still finds events' do
+        expect(documenter.as_json[:events]).to eq(
+          [
+            {
+              event_name: 'some_event',
+              previous_event_names: [],
+              description: '',
+              attributes: [
+                { name: 'success', types: ['Boolean'], description: nil },
+              ],
+            },
+          ],
+        )
+      end
     end
   end
 end
