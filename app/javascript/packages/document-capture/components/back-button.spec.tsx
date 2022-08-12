@@ -1,5 +1,6 @@
 import { t } from '@18f/identity-i18n';
-import ReactDOM from 'react-dom';
+import { render } from '@testing-library/react';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
 import BackButton from './back-button';
 
@@ -23,54 +24,46 @@ const useOnClickTest = () => {
 };
 
 describe('BackButton', () => {
-  let rootContainer: HTMLDivElement;
+  let container: HTMLElement;
+  let getByRole: ReturnType<typeof render>['getByRole'];
 
-  before(() => {
-    rootContainer = document.createElement('div');
-    document.body.appendChild(rootContainer);
-  });
-
-  afterEach(() => {
-    ReactDOM.unmountComponentAtNode(rootContainer);
-  });
+  const renderTestElement = (element: React.ReactElement) => {
+    act(() => {
+      const rendered = render(element);
+      container = rendered.container;
+      getByRole = rendered.getByRole;
+    });
+  };
 
   it('renders a back button', () => {
-    act(() => {
-      ReactDOM.render(<BackButton />, rootContainer);
-    });
-    const button = rootContainer.querySelector(':scope > button');
-    expect(button).to.be.an.instanceof(HTMLElement);
-    expect(rootContainer.innerHTML).to.equal(getButtonHtml());
+    renderTestElement(<BackButton />);
+    const element = getByRole('button');
+    expect(element).to.be.an.instanceof(HTMLElement);
+    expect(container.innerHTML).to.equal(getButtonHtml());
   });
 
   it('processes the back button click', () => {
     const { wasClicked, onClick } = useOnClickTest();
-    act(() => {
-      ReactDOM.render(<BackButton onClick={onClick} />, rootContainer);
-    });
+    renderTestElement(<BackButton onClick={onClick} />);
     expect(wasClicked()).to.equal(false);
-    const button = rootContainer.querySelector<HTMLElement>(':scope > button');
+    const button = getByRole('button');
     button?.click();
     expect(wasClicked()).to.equal(true);
   });
 
   describe('with border', () => {
     it('renders a back button with a border', () => {
-      act(() => {
-        ReactDOM.render(<BackButton includeBorder />, rootContainer);
-      });
-      const button = rootContainer.querySelector<HTMLElement>(':scope > div > button');
+      renderTestElement(<BackButton includeBorder />);
+      const button = getByRole('button');
       expect(button).to.be.an.instanceof(HTMLButtonElement);
-      expect(rootContainer.innerHTML).to.equal(getBorderedButtonHtml());
+      expect(container.innerHTML).to.equal(getBorderedButtonHtml());
     });
 
     it('processes the back button click', () => {
       const { wasClicked, onClick } = useOnClickTest();
-      act(() => {
-        ReactDOM.render(<BackButton includeBorder onClick={onClick} />, rootContainer);
-      });
+      renderTestElement(<BackButton includeBorder onClick={onClick} />);
       expect(wasClicked()).to.equal(false);
-      const button = rootContainer.querySelector<HTMLElement>(':scope > div > button');
+      const button = getByRole('button');
       button?.click();
       expect(wasClicked()).to.equal(true);
     });
