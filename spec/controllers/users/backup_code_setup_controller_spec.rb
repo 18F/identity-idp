@@ -23,7 +23,7 @@ describe Users::BackupCodeSetupController do
         enabled_mfa_methods_count: 2,
       })
     expect(@irs_attempts_api_tracker).to receive(:track_event).
-      with(:backup_code_enroll, success: true)
+      with(:mfa_enroll_backup_code, success: true)
 
     post :create
 
