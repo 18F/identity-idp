@@ -55,7 +55,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
         connect_src = controller.request.content_security_policy.connect_src
         expect(connect_src).to eq(
-          ["'self'", '*.nr-data.net', '*.google-analytics.com', 'us.acas.acuant.net'],
+          ["'self'", '*.nr-data.net'],
         )
       end
     end
