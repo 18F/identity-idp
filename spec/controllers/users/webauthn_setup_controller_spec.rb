@@ -184,6 +184,46 @@ describe Users::WebauthnSetupController do
         end
       end
 
+      context 'with multiple MFA methods chosen on account creation' do
+        let(:params) do
+          {
+            attestation_object: attestation_object,
+            client_data_json: setup_client_data_json,
+            name: 'mykey',
+            platform_authenticator: 'true',
+          }
+        end
+        it 'should log expected events' do
+          expect(@analytics).to receive(:track_event).with(
+            'Multi-Factor Authentication Setup',
+            {
+              enabled_mfa_methods_count: 1,
+              errors: {},
+              in_multi_mfa_selection_flow: true,
+              mfa_method_counts: { webauthn_platform: 1 },
+              multi_factor_auth_method: 'webauthn_platform',
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
+              success: true,
+            },
+          )
+
+          expect(@analytics).to receive(:track_event).with(
+            'Multi-Factor Authentication: Added webauthn',
+            {
+              enabled_mfa_methods_count: 1,
+              method_name: :webauthn,
+              platform_authenticator: true,
+            },
+          )
+
+          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+            :mfa_enroll_webauthn_platform, success: true
+          )
+
+          patch :confirm, params: params
+        end
+      end
+
       context 'with a single MFA method chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
         it 'should direct user to second mfa suggestion page' do
