@@ -23,7 +23,7 @@ module Idv
       #   - `unsafe-eval`, since the ThreatMetrix JS uses eval() internally.
       add_to_policy policy, :script_src, THREAT_METRIX_DOMAIN, :unsafe_eval
 
-      # `style-src` must be update to enable:
+      # `style-src` must be updated to enable:
       #   - `unsafe-inline`, since the ThreatMetrix library applies inline
       #      styles to elements it inserts into the DOM
       add_to_policy policy, :style_src, :unsafe_inline
