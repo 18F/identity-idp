@@ -6,8 +6,10 @@ RSpec.describe BarcodeComponent, type: :component do
 
     caption = page.find_css('table + div', text: 'Code: 1234').first
 
-    expect(rendered).to have_css("table.barcode[aria-label=#{t('components.barcode.table_label')}]")
-    expect(rendered).to have_css("[role=figure][aria-labelledby=#{caption.attr(:id)}]")
+    expect(rendered).to have_css(
+      "table.barcode__image[aria-label=#{t('components.barcode.table_label')}]",
+    )
+    expect(rendered).to have_css(".barcode[role=figure][aria-labelledby=#{caption.attr(:id)}]")
     expect(rendered).to have_css('table tbody[aria-hidden=true]')
   end
 

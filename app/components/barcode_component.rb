@@ -19,7 +19,7 @@ class BarcodeComponent < BaseComponent
   end
 
   def barcode_html
-    html = Barby::Code128.new(barcode_data).to_html(class_name: 'barcode')
+    html = Barby::Code128.new(barcode_data).to_html(class_name: 'barcode__image')
     # The Barby gem doesn't provide much control over rendered output, so we need to manually slice
     # in accessibility features (label as substitute to illegible inner content).
     html.gsub(
@@ -33,6 +33,6 @@ class BarcodeComponent < BaseComponent
   end
 
   def css_class
-    [*tag_options[:class], 'display-inline-block margin-0']
+    [*tag_options[:class], 'barcode display-inline-block margin-0']
   end
 end

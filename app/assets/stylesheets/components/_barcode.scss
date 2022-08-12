@@ -1,4 +1,9 @@
-.barcode.barby-barcode {
+.barcode {
+  background-color: color('white');
+  padding: 2px;
+}
+
+.barcode__image.barby-barcode {
   width: auto;
   table-layout: fixed;
   border-spacing: 0;
