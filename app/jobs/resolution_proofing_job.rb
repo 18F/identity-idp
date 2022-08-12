@@ -225,9 +225,6 @@ class ResolutionProofingJob < ApplicationJob
     @resolution_proofer ||=
       if IdentityConfig.store.proofer_mock_fallback
         Proofing::Mock::ResolutionMockClient.new
-      # We run ddp ThreatMetrix in serial before resolution proofer. In future we can replace here
-      # elsif IdentityConfig.store.replace_lexisnexis_rdp_instant_verify_with_ddp
-      #   lexisnexis_ddp_proofer
       else
         Proofing::LexisNexis::InstantVerify::Proofer.new(
           instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
@@ -271,7 +268,6 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-    IdentityConfig.store.lexisnexis_ddp_with_threatmetrix_enabled &&
-      !IdentityConfig.store.replace_lexisnexis_rdp_instant_verify_with_ddp
+    IdentityConfig.store.lexisnexis_ddp_with_threatmetrix_enabled
   end
 end
