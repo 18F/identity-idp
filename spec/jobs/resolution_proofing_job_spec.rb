@@ -39,6 +39,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
   let(:trace_id) { SecureRandom.uuid }
+  let(:user) { build(:user, :signed_up) }
+  let(:threatmetrix_session_id) { SecureRandom.uuid }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -48,6 +50,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user.id,
+        threatmetrix_session_id: threatmetrix_session_id,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -65,6 +69,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user.id,
+        threatmetrix_session_id: threatmetrix_session_id,
       )
     end
 

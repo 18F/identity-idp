@@ -81,9 +81,11 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user_id, threatmetrix_session_id)
+    return unless applicant_pii
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = User.find_by(id: user_id).email
+    user = User.find_by(id: user_id)
+    ddp_pii[:email] = user.email if user
     lexisnexis_ddp_proofer.proof(ddp_pii)
   end
 
