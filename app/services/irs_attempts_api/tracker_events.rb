@@ -110,9 +110,9 @@ module IrsAttemptsApi
 
     # Tracks when the user has attempted to verify via the WebAuthn MFA method to their account
     # @param [Boolean] success
-    def mfa_verify_webauthn(success:)
+    def mfa_verify_webauthn_roaming(success:)
       track_event(
-        :mfa_verify_webauthn,
+        :mfa_verify_webauthn_roaming,
         success: success,
       )
     end
