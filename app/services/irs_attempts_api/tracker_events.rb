@@ -50,6 +50,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    # @param [Boolean] success
+    def mfa_enroll_webauthn(success:)
+      track_event(
+        :mfa_enroll_webauthn,
+        success: success,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
     def mfa_enroll_webauthn_platform(success:)

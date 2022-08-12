@@ -169,7 +169,7 @@ describe Users::WebauthnSetupController do
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
     context ' Multiple MFA options turned on' do
-      let(:mfa_selections) { ['webauthn_platform', 'voice'] }
+      let(:mfa_selections) { ['webauthn', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
@@ -190,7 +190,6 @@ describe Users::WebauthnSetupController do
             attestation_object: attestation_object,
             client_data_json: setup_client_data_json,
             name: 'mykey',
-            platform_authenticator: 'true',
           }
         end
         it 'should log expected events' do
@@ -200,8 +199,8 @@ describe Users::WebauthnSetupController do
               enabled_mfa_methods_count: 1,
               errors: {},
               in_multi_mfa_selection_flow: true,
-              mfa_method_counts: { webauthn_platform: 1 },
-              multi_factor_auth_method: 'webauthn_platform',
+              mfa_method_counts: { webauthn: 1 },
+              multi_factor_auth_method: 'webauthn',
               pii_like_keypaths: [[:mfa_method_counts, :phone]],
               success: true,
             },
@@ -212,12 +211,12 @@ describe Users::WebauthnSetupController do
             {
               enabled_mfa_methods_count: 1,
               method_name: :webauthn,
-              platform_authenticator: true,
+              platform_authenticator: false,
             },
           )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
+            :mfa_enroll_webauthn, success: true
           )
 
           patch :confirm, params: params
