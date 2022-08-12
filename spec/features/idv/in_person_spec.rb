@@ -93,7 +93,9 @@ RSpec.describe 'In Person Proofing', js: true do
 
     # ready to verify page
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
-    enrollment_code = JSON.parse(UspsIppFixtures.request_enroll_response)['enrollmentCode']
+    enrollment_code = JSON.parse(
+      UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
+    )['enrollmentCode']
     expect(page).to have_content(t('in_person_proofing.headings.barcode'))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
     expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
