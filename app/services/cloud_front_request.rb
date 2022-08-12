@@ -1,40 +1,61 @@
-class ClientRequest
-
-  attr_accessor :client_ip, :client_port
-
+class CloudFrontRequest
   def initialize(request)
-    @headers = request.headers
+    @request = request
   end
 
   def client_ip
-    # So, :think:
-    # For IPv4, this is a simple .split(':').first
-    # For IPv6, we need to do a bit more...
+    addr = ip_and_port
+    return nil unless addr
+    addr[:ip]
+  end
+
+  def client_port
+    addr = ip_and_port
+    return nil unless addr
+    addr[:port]
   end
 
   # Source IP and port for client connection to CloudFront
   def viewer_address
-    @headers['CloudFront-Viewer-Address']
+    @request.get_header 'CloudFront-Viewer-Address'
   end
 
   # HTTP version used for client connection to CloudFront
   def http_version
-    @headers['CloudFront-Viewer-Http-Version']
+    @request.get_header 'CloudFront-Viewer-Http-Version'
   end
 
   # TLS version and ciphers used for client connection to CloudFront
   def tls_version
-    @headers['CloudFront-Viewer-TLS']
+    @request.get_header 'CloudFront-Viewer-TLS'
   end
 
   # ISO country code for IP client used to connect
   def iso_country
-    @headers['CloudFront-Viewer-Country']
+    @request.get_header 'CloudFront-Viewer-Country'
   end
 
   # ISO region subcode for IP client used to connect
   def iso_region
-    @headers['CloudFront-Viewer-Country-Region']
+    @request.get_header 'CloudFront-Viewer-Country-Region'
   end
 
+  private
+
+  # Regexp variables are not exactly intuitive:
+  # https://ruby-doc.org/core-2.5.1/Regexp.html#class-Regexp-label-Special+global+variables
+  def ip_and_port
+    return nil unless viewer_address
+    if viewer_address =~ /\[*\]:/ # IPv6
+      {
+        ip: "#{$`}]",
+        port: $',
+      }
+    else # IPv4
+      {
+        ip: viewer_address.split(':').first,
+        port: viewer_address.split(':').last,
+      }
+    end
+  end
 end
