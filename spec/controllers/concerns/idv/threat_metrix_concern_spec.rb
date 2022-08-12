@@ -66,16 +66,18 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
 
     csp = response.request.content_security_policy
 
-    expect(csp.directives['script-src']).to include('h.online-metrix.net')
-    expect(csp.directives['script-src']).to include("'unsafe-eval'")
+    aggregate_failures do
+      expect(csp.directives['script-src']).to include('h.online-metrix.net')
+      expect(csp.directives['script-src']).to include("'unsafe-eval'")
 
-    expect(csp.directives['style-src']).to include("'unsafe-inline'")
+      expect(csp.directives['style-src']).to include("'unsafe-inline'")
 
-    expect(csp.directives['child-src']).to include('h.online-metrix.net')
+      expect(csp.directives['child-src']).to include('h.online-metrix.net')
 
-    expect(csp.directives['connect-src']).to include('h.online-metrix.net')
+      expect(csp.directives['connect-src']).to include('h.online-metrix.net')
 
-    expect(csp.directives['img-src']).to include('*.online-metrix.net')
+      expect(csp.directives['img-src']).to include('*.online-metrix.net')
+    end
   end
 
   def assert_csp_is_not_modified(step)
