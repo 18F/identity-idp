@@ -6,7 +6,7 @@ module Idv
       include UspsInPersonProofing
       include EffectiveUser
 
-      before_action :redirect_unless_effective_user, only: [:update]
+      before_action :confirm_authenticated_for_api, only: [:update]
 
       # get the list of all pilot Post Office locations
       def index
@@ -32,8 +32,8 @@ module Idv
 
       protected
 
-      def redirect_unless_effective_user
-        redirect_to root_url if !effective_user
+      def confirm_authenticated_for_api
+        render json: { success: false }, status: :unauthorized if !effective_user
       end
 
       def enrollment

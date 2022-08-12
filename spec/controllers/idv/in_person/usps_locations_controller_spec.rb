@@ -87,8 +87,8 @@ describe Idv::InPerson::UspsLocationsController do
     context 'when unauthenticated' do
       let(:user) { nil }
 
-      it 'redirects to the root url' do
-        expect(response).to redirect_to root_url
+      it 'renders an unauthorized status' do
+        expect(response.status).to eq(401)
       end
     end
 
