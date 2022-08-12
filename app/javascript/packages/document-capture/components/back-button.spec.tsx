@@ -1,5 +1,6 @@
 import { t } from '@18f/identity-i18n';
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import BackButton from './back-button';
@@ -42,12 +43,12 @@ describe('BackButton', () => {
     expect(container.innerHTML).to.equal(getButtonHtml());
   });
 
-  it('processes the back button click', () => {
+  it('processes the back button click', async () => {
     const { wasClicked, onClick } = useOnClickTest();
     renderTestElement(<BackButton onClick={onClick} />);
     expect(wasClicked()).to.equal(false);
     const button = getByRole('button');
-    button?.click();
+    await userEvent.click(button);
     expect(wasClicked()).to.equal(true);
   });
 
@@ -59,12 +60,12 @@ describe('BackButton', () => {
       expect(container.innerHTML).to.equal(getBorderedButtonHtml());
     });
 
-    it('processes the back button click', () => {
+    it('processes the back button click', async () => {
       const { wasClicked, onClick } = useOnClickTest();
       renderTestElement(<BackButton includeBorder onClick={onClick} />);
       expect(wasClicked()).to.equal(false);
       const button = getByRole('button');
-      button?.click();
+      await userEvent.click(button);
       expect(wasClicked()).to.equal(true);
     });
   });
