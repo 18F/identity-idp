@@ -1,24 +1,22 @@
-<div class="s16">
-  <%= t('user_mailer.in_person_verified.greeting') %><br>
-  <p class="s16">
-    <%= t(
-          'user_mailer.in_person_failed.intro',
-          location: @presenter.location_name,
-          date: @presenter.formatted_verified_date,
-        ) %>
-  </p>
-  <p class="s16">
-    <% if @presenter.show_cta? %>
-      <%= t('user_mailer.in_person_failed.body.with_cta', sp_or_app_name: @presenter.service_provider_or_app_name) %>
-    <% else %>
-      <%= t('user_mailer.in_person_failed.body.without_cta', sp_name: @presenter.service_provider.friendly_name) %>
-    <% end %>
-  </p>
-  <p class="s16"><strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong></p>
-  <ul class="usa-list">
-    <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
-    <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>
-  </ul>
-</div>
+<%= t('user_mailer.in_person_verified.greeting') %><br>
+<p>
+  <%= t(
+        'user_mailer.in_person_failed.intro',
+        location: @presenter.location_name,
+        date: @presenter.formatted_verified_date,
+      ) %>
+</p>
+<p>
+  <% if @presenter.show_cta? %>
+    <%= t('user_mailer.in_person_failed.body.with_cta', sp_or_app_name: @presenter.service_provider_or_app_name) %>
+  <% else %>
+    <%= t('user_mailer.in_person_failed.body.without_cta', sp_name: @presenter.service_provider.friendly_name) %>
+  <% end %>
+</p>
+<p><strong><%= t('user_mailer.in_person_failed.verifying_identity') %></strong></p>
+<ul class="usa-list">
+  <li><%= t('user_mailer.in_person_failed.verifying_step_not_expired') %></li>
+  <li><%= t('user_mailer.in_person_failed.verifying_step_proof_of_address') %></li>
+</ul>
 
 <%= render 'shared/in-person-verification-results-email-lower' %>
