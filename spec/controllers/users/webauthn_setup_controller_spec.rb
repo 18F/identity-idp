@@ -193,7 +193,7 @@ describe Users::WebauthnSetupController do
         end
       end
 
-      context 'with a single MFA method chosen on account creation' do
+      context 'with only webauthn_platform chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
         let(:params) do
           {
@@ -227,7 +227,7 @@ describe Users::WebauthnSetupController do
           )
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
+            :mfa_enroll_webauthn_biometric, success: true
           )
 
           patch :confirm, params: params
