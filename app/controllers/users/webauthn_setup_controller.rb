@@ -44,6 +44,8 @@ module Users
 
       if @platform_authenticator
         irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
+      else
+        irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
       end
 
       if result.success?

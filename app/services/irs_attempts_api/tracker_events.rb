@@ -59,6 +59,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to enroll the WebAuthn MFA method to their account
+    # @param [Boolean] success
+    def mfa_enroll_webauthn_roaming(success:)
+      track_event(
+        :mfa_enroll_webauthn_roaming,
+        success: success,
+      )
+    end
+
     # Tracks when the user has attempted to verify the Backup Codes MFA method to their account
     # @param [Boolean] success
     def mfa_verify_backup_code(success:)
