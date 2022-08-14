@@ -256,8 +256,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             hash_including(
               name: 'ThreatMetrix',
               user_id: nil,
-              threatmetrix_request_id: nil,
-              threatmetrix_success: false,
+              threatmetrix_request_id: Proofing::Mock::DdpMockClient::TRANSACTION_ID,
+              threatmetrix_success: true,
             ),
           )
 

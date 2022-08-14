@@ -22,7 +22,6 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
-        result.reference = REFERENCE
       end
     end
   end
