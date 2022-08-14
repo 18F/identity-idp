@@ -243,9 +243,9 @@ class ResolutionProofingJob < ApplicationJob
         Proofing::Mock::DdpMockClient.new
       else
         Proofing::LexisNexis::Ddp::Proofer.new(
-          api_key: IdentityConfig.store.lexisnexis_ddp_api_key,
-          org_id: IdentityConfig.store.lexisnexis_ddp_org_id,
-          base_url: IdentityConfig.store.lexisnexis_ddp_base_url,
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
         )
       end
   end
@@ -268,6 +268,6 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-    IdentityConfig.store.lexisnexis_ddp_with_threatmetrix_enabled
+    IdentityConfig.store.lexisnexis_threatmetrix_enabled
   end
 end

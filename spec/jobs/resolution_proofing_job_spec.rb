@@ -87,7 +87,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
 
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-        allow(IdentityConfig.store).to receive(:lexisnexis_ddp_with_threatmetrix_enabled).
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
           and_return(true)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')

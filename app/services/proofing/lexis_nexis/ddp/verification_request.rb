@@ -38,7 +38,7 @@ module Proofing
         end
 
         def timeout
-          IdentityConfig.store.lexisnexis_ddp_timeout
+          IdentityConfig.store.lexisnexis_threatmetrix_timeout
         end
       end
     end
