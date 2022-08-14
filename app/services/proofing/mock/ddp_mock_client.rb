@@ -3,7 +3,9 @@ module Proofing
     class DdpMockClient < Proofing::Base
       vendor_name 'DdpMock'
 
-      required_attributes :first_name,
+      required_attributes :threatmetrix_session_id,
+                          :state_id_number,
+                          :first_name,
                           :last_name,
                           :dob,
                           :ssn,
@@ -12,7 +14,7 @@ module Proofing
                           :state,
                           :zipcode
 
-      optional_attributes :address2, :phone, :state_id_number
+      optional_attributes :address2, :phone
 
       stage :resolution
 

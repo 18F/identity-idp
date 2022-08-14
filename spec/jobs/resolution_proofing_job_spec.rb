@@ -41,6 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { build(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
+  let(:threatmetrix_request_id) { '1234' }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -152,8 +153,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
-          threatmetrix_success: false,
-          threatmetrix_request_id: nil,
+          threatmetrix_success: true,
+          threatmetrix_request_id: threatmetrix_request_id,
         )
       end
 
@@ -230,8 +231,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
-            threatmetrix_request_id: nil,
-            threatmetrix_success: false,
+            threatmetrix_request_id: threatmetrix_request_id,
+            threatmetrix_success: true,
           )
         end
       end
