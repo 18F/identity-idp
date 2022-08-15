@@ -140,7 +140,9 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       expect(fileInput).to.exist();
       await user.click(fileInput);
       expect(addPageAction).to.have.been.called();
-      expect(addPageAction).to.have.been.calledWith('IdV: Force native camera. Failed attempts: 0');
+      expect(addPageAction).to.have.been.calledWith(
+        'IdV: Native camera forced after failed attempts',
+      );
     });
 
     it('Does not call analytics with native camera message when failed attempts less than 2', async function () {
@@ -166,7 +168,7 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       expect(fileInput).to.exist();
       await user.click(fileInput);
       expect(addPageAction).to.not.have.been.calledWith(
-        'IdV: Force native camera. Failed attempts: 2',
+        'IdV: Native camera forced after failed attempts',
       );
     });
   });
