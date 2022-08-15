@@ -139,8 +139,13 @@ describe('document-capture/components/file-input', () => {
   it('renders an optional hint', () => {
     const { getByLabelText } = render(<FileInput label="File" hint="Must be small" />);
 
+    /**
+     * The second id in the `aria-descrbedby` value will specify the original
+     * hint.
+     */
     const input = getByLabelText('File');
-    const hint = document.getElementById(input.getAttribute('aria-describedby')).textContent;
+    const hintId = input.getAttribute('aria-describedby').split(' ')[1];
+    const hint = document.getElementById(hintId).textContent;
 
     expect(hint).to.equal('Must be small');
   });
