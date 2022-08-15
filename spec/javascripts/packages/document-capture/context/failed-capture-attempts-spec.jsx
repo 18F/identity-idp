@@ -8,7 +8,7 @@ import FailedCaptureAttemptsContext, {
   Provider,
 } from '@18f/identity-document-capture/context/failed-capture-attempts';
 import sinon from 'sinon';
-import { useAcuant, render } from '../../../support/document-capture';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/context/failed-capture-attempts', () => {
   it('has expected default properties', () => {
@@ -109,8 +109,6 @@ describe('FailedCaptureAttemptsContext testing of forceNativeCamera logic', () =
 
 describe('maxAttemptsBeforeNativeCamera logging tests', () => {
   context('failed acuant camera attempts', function () {
-    const { initialize } = useAcuant();
-    initialize();
     /**
      * NOTE: We have to force maxAttemptsBeforeLogin to be 0 here
      * in order to test this interactively. This is because the react
