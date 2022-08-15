@@ -107,7 +107,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           enabled_mfa_methods_count: 1,
           in_multi_mfa_selection_flow: false,
         }
-        
+
         stub_analytics
         stub_attempts_tracker
 
