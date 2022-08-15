@@ -133,7 +133,7 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
-        
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
