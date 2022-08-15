@@ -421,8 +421,9 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
       if (forceNativeCamera) {
-        addPageAction(`IdV: Force native camera. Failed attempts: ${failedCaptureAttempts}`, {
+        addPageAction('IdV: Native camera forced after failed attempts', {
           field: name,
+          failed_attempts: failedCaptureAttempts,
         });
         return forceUpload();
       }
