@@ -454,6 +454,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_08_140030) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "liveness_check"
+    t.string "device_fingerprinting_vendor"
+    t.boolean "threatmetrix"
+    t.string "threatmetrix_review_status"
+    t.string "threatmetrix_risk_rating"
+    t.string "threatmetrix_policy_score"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end

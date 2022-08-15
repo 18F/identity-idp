@@ -1,0 +1,20 @@
+{
+  "api_key": "test_api_key",
+  "org_id": "test_org_id",
+  "account_address_street1": "123 Main St",
+  "account_address_street2": "Ste 3",
+  "account_address_city": "Baton Rouge",
+  "account_address_state": "LA",
+  "account_address_country": "US",
+  "account_address_zip": "70802-12345",
+  "account_date_of_birth": "19800101",
+  "account_email": "test@example.com",
+  "account_first_name": "Testy",
+  "account_last_name": "McTesterson",
+  "account_telephone": "",
+  "drivers_license_number_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
+  "event_type": "ACCOUNT_CREATION",
+  "service_type": "all",
+  "session_id": "UNIQUE_SESSION_ID",
+  "ssn_hash": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225"
+}

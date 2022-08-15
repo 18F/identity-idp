@@ -325,8 +325,8 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'tracks the verification attempt event' do
-        expect_any_instance_of(IrsAttemptsApi::Tracker).
-          to receive(:mfa_verify_phone_otp_sent).
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_sent).
           with(phone_number: '+12025551212', reauthentication: false, success: true)
 
         get :send_code, params: { otp_delivery_selection_form:
@@ -512,7 +512,9 @@ describe Users::TwoFactorAuthenticationController do
         subject.user_session[:context] = 'confirmation'
         subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
 
-        expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:mfa_enroll_phone_otp_sent)
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).
+          with({ phone_number: '+12025551213', success: true })
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
