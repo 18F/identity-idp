@@ -121,6 +121,39 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_all_in_person_proofing_steps
   end
 
+  it 'allows the user to go back to document capture from prepare step', allow_browser_log: true do
+    sign_in_and_2fa_user
+    begin_in_person_proofing
+
+    # location page
+    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    bethesda_location = page.find_all('.location-collection-item')[1]
+    bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
+
+    # prepare page
+    expect(page).to have_content(t('in_person_proofing.headings.prepare'))
+    click_button t('forms.buttons.back')
+
+    expect(page).to have_content(t('in_person_proofing.headings.location'))
+    click_button t('forms.buttons.back')
+
+    # Note: This is specifically for failed barcodes. Other cases may use
+    #      "idv.failure.button.warning" instead.
+    expect(page).to have_button(t('doc_auth.buttons.add_new_photos'))
+    click_button t('doc_auth.buttons.add_new_photos')
+
+    expect(page).to have_content(t('doc_auth.headings.review_issues'))
+
+    # Images should still be present
+    expect(page).to have_field('file-input-3') do |field|
+      field.value.present?
+    end
+
+    expect(page).to have_field('file-input-4') do |field|
+      field.value.present?
+    end
+  end
+
   context 'with hybrid document capture' do
     before do
       allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)

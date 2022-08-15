@@ -10,6 +10,11 @@ class ServiceProvider < ApplicationRecord
                         primary_key: 'issuer',
                         class_name: 'ServiceProviderIdentity'
   # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :in_person_enrollments,
+           inverse_of: :service_provider,
+           foreign_key: 'issuer',
+           primary_key: 'issuer',
+           dependent: :destroy
 
   # Do not define validations in this model.
   # See https://github.com/18F/identity_validations

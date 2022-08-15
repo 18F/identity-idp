@@ -6,6 +6,7 @@ import {
   LocationCollection,
   SpinnerDots,
 } from '@18f/identity-components';
+import BackButton from './back-button';
 
 interface PostOffice {
   address: string;
@@ -75,7 +76,7 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep({ onChange }) {
+function InPersonLocationStep({ onChange, toPreviousStep }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [inProgress, setInProgress] = useState(false);
@@ -186,6 +187,7 @@ function InPersonLocationStep({ onChange }) {
 
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
       <LocationCollection>{locationItems}</LocationCollection>
+      <BackButton onClick={toPreviousStep} />
     </>
   );
 }
