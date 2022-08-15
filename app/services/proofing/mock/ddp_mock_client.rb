@@ -5,6 +5,7 @@ module Proofing
 
       required_attributes :threatmetrix_session_id,
                           :state_id_number,
+                          :email,
                           :first_name,
                           :last_name,
                           :dob,

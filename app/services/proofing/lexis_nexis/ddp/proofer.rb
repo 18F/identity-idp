@@ -4,7 +4,9 @@ module Proofing
       class Proofer < LexisNexis::Proofer
         vendor_name 'lexisnexis:ddp'
 
-        required_attributes :threatmetrix_session_id,
+        required_attributes :state_id_number,
+                            :email,
+                            :threatmetrix_session_id,
                             :state_id_number,
                             :first_name,
                             :last_name,
@@ -15,7 +17,7 @@ module Proofing
                             :state,
                             :zipcode
 
-        optional_attributes :address2, :phone, :state_id_number
+        optional_attributes :address2, :phone
 
         stage :resolution
 

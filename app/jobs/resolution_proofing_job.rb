@@ -86,7 +86,7 @@ class ResolutionProofingJob < ApplicationJob
     return unless applicant_pii
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.email
+    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
     lexisnexis_ddp_proofer.proof(ddp_pii)
   end
 
