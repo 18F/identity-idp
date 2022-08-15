@@ -5,7 +5,6 @@ module Proofing
         vendor_name 'lexisnexis:ddp'
 
         required_attributes :state_id_number,
-                            :email,
                             :threatmetrix_session_id,
                             :state_id_number,
                             :first_name,
@@ -17,7 +16,7 @@ module Proofing
                             :state,
                             :zipcode
 
-        optional_attributes :address2, :phone
+        optional_attributes :address2, :phone, :email
 
         stage :resolution
 

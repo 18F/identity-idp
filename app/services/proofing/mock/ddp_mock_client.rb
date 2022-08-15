@@ -5,7 +5,6 @@ module Proofing
 
       required_attributes :threatmetrix_session_id,
                           :state_id_number,
-                          :email,
                           :first_name,
                           :last_name,
                           :dob,
@@ -15,7 +14,7 @@ module Proofing
                           :state,
                           :zipcode
 
-      optional_attributes :address2, :phone
+      optional_attributes :address2, :phone, :email
 
       stage :resolution
 

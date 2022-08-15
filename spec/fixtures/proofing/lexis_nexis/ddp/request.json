@@ -11,7 +11,7 @@
   "account_email": "test@example.com",
   "account_first_name": "Testy",
   "account_last_name": "McTesterson",
-  "account_telephone": "5551231234",
+  "account_telephone": "",
   "drivers_license_number_hash": "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f",
   "event_type": "ACCOUNT_CREATION",
   "service_type": "all",
