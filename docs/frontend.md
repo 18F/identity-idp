@@ -117,13 +117,48 @@ workspace packages using symlinks, you can reference a package using the name yo
 guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
 
+### Components
+
+We use a mixture of complementary component implementation approaches to support both server-side
+and client-side rendering.
+
+#### View Components
+
+The [ViewComponent gem](https://viewcomponent.org/) is a framework for creating reusable, testable,
+and independent view components, rendered server-side.
+
+For more information, refer to the [components `README.md`](../app/components/README.md).
+
+#### React
+
+For non-trivial client-side interactivity, we use [React](https://reactjs.org/) to build and combine
+JavaScript components for stateful applications.
+
+#### Custom Elements
+
+For simple client-side interactivity tied to singular components (React or ViewComponent), we use
+[native custom elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements).
+
+Custom elements provide several advantages in that they...
+
+- can be initialized from any markup renderer, supporting both server-side (ViewComponent) and
+  client-side (React) component implementations
+- have no dependencies, limiting overall page size in the critical path
+- are portable and avoid vendor lock-in (e.g. for use in a [design system](https://design.login.gov))
+
 ## Testing
 
 ### At a Glance
 
-- integration tests and unit tests should always be running and passing
-- tests should be added/updated with new functionality and when features are changed
-- attempt to unit test data-related JS; functional/integration tests are fine for DOM-related code
+JavaScript tests include a combination of unit tests and integration tests, with a heavier emphasis
+on integration tests since the bulk of our front-end code is in service of user interactivity.
+
+To simplify common test behaviors and encourage best practices, we make extensive use of the
+[Testing Library](https://testing-library.com/) suite of testing libraries, which can be used to
+render and query [basic DOM elements](https://testing-library.com/docs/dom-testing-library/intro) as
+well as advanced [React components](https://testing-library.com/docs/react-testing-library/intro).
+Their APIs are designed in a way to [accurately simulate real user behavior](https://testing-library.com/docs/user-event/intro)
+and support [querying by accessible semantics](https://testing-library.com/docs/queries/byrole).
 
 ### Running Tests
 
@@ -170,5 +205,16 @@ yarn run lint --fix
 
 ## Devices
 
-- strive to support all browsers with > 1% usage
-- site should look good and work well across all device sizes
+The application should support:
+
+- All browsers with >1% usage according to our own analytics
+- All device sizes
+
+## Additional Resources
+
+You can find additional frontend documentation in relevant places throughout the code:
+
+- [`app/components/README.md`](../app/components/README.md)
+- [`app/javascript/app/README.md`](../app/javascript/app/README.md)
+- [`app/javascript/packages/README.md`](../app/javascript/packages/README.md)
+- [`app/javascript/packs/README.md`](../app/javascript/packs/README.md)

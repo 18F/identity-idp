@@ -19,6 +19,7 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
+      override_csp_for_google_analytics
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
@@ -41,8 +42,6 @@ module Users
     def destroy
       analytics.logout_initiated(sp_initiated: false, oidc: false)
       irs_attempts_api_tracker.logout_initiated(
-        user_uuid: current_user.uuid,
-        unique_session_id: current_user.unique_session_id,
         success: true,
       )
       super
@@ -104,7 +103,12 @@ module Users
       analytics.invalid_authenticity_token(controller: controller_info)
       sign_out
       flash[:error] = t('errors.general')
-      redirect_back fallback_location: new_user_session_url, allow_other_host: false
+      begin
+        redirect_back fallback_location: new_user_session_url, allow_other_host: false
+      rescue ActionController::Redirecting::UnsafeRedirectError => err
+        # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
+        unsafe_redirect_error(err)
+      end
     end
 
     def check_user_needs_redirect
@@ -220,5 +224,25 @@ module Users
 
       request_id if LETTERS_AND_DASHES.match?(request_id)
     end
+
+    def override_csp_for_google_analytics
+      return unless IdentityConfig.store.participate_in_dap
+      policy = current_content_security_policy
+      policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
+      policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
+      request.content_security_policy = policy
+    end
+  end
+
+  def unsafe_redirect_error(_exception)
+    controller_info = "#{controller_path}##{action_name}"
+    analytics.unsafe_redirect_error(
+      controller: controller_info,
+      user_signed_in: user_signed_in?,
+      referer: request.referer,
+    )
+
+    flash[:error] = t('errors.general')
+    redirect_to new_user_session_url
   end
 end

@@ -14,7 +14,7 @@ class AnalyticsEventsDocumenter
     pii_like_keypaths
   ]
 
-  attr_reader :database_path
+  attr_reader :database_path, :class_name
 
   # @return [(String, Integer)] returns a tuple of (output, exit_status)
   def self.run(argv)
@@ -23,6 +23,8 @@ class AnalyticsEventsDocumenter
     check = false
     json = false
     help = false
+    require_extra_params = true
+    class_name = 'AnalyticsEvents'
 
     parser = OptionParser.new do |opts|
       opts.on('--check', 'Checks that all params are documented, will exit 1 if missing') do
@@ -33,6 +35,14 @@ class AnalyticsEventsDocumenter
         json = true
       end
 
+      opts.on('--skip-extra-params') do
+        require_extra_params = false
+      end
+
+      opts.on('--class-name=CLASS_NAME') do |c|
+        class_name = c
+      end
+
       opts.on('--help', 'print this help message') do
         help = true
       end
@@ -40,7 +50,11 @@ class AnalyticsEventsDocumenter
 
     parser.parse!(argv)
 
-    documenter = new(argv.first)
+    documenter = new(
+      database_path: argv.first,
+      class_name: class_name,
+      require_extra_params: require_extra_params,
+    )
 
     if help || (!check && !json)
       output.puts parser
@@ -50,7 +64,7 @@ class AnalyticsEventsDocumenter
         output.puts missing_documentation
         exit_status = 1
       else
-        output.puts 'All AnalyticsEvents methods are documented! 🚀'
+        output.puts "All #{class_name} methods are documented! 🚀"
       end
     elsif json
       output.puts JSON.pretty_generate(documenter.as_json)
@@ -59,8 +73,14 @@ class AnalyticsEventsDocumenter
     [ output.string.presence, exit_status ]
   end
 
-  def initialize(database_path)
+  def initialize(database_path:, class_name:, require_extra_params:)
     @database_path = database_path || DEFAULT_DATABASE_PATH
+    @class_name = class_name
+    @require_extra_params = require_extra_params
+  end
+
+  def require_extra_params?
+    !!@require_extra_params
   end
 
   # Checks for params that are missing documentation, and returns a list of
@@ -83,7 +103,7 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} #{attribute} (undocumented)"
       end
 
-      if param_names.size > 0 && !param_names.last.start_with?('**')
+      if require_extra_params? && param_names.size > 0 && !param_names.last.start_with?('**')
         errors << "#{error_prefix} missing **extra"
       end
 
@@ -121,7 +141,7 @@ class AnalyticsEventsDocumenter
 
   # Naive attempt to pull tracked event string from source code
   def extract_event_name(method_object)
-    m = /track_event\(\s*["'](?<event_name>[^"']+)["']/.match(method_object.source)
+    m = /track_event\(\s*[:"'](?<event_name>[^"']+)["',)]/.match(method_object.source)
     m && m[:event_name]
   end
 
@@ -131,8 +151,14 @@ class AnalyticsEventsDocumenter
 
   # @return [Array<YARD::CodeObjects::MethodObject>]
   def analytics_methods
+    class_name_parts = class_name.split('::').map(&:to_sym)
+
     database.select do |_k, object|
-      object.type == :method && object.namespace&.name == :AnalyticsEvents
+      # this check will fail if the namespace is nested more than once
+      method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name].
+        select { |part| part.present? && part != :root }
+
+      object.type == :method && method_object_name_parts == class_name_parts
     end.values
   end
 end

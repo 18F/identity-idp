@@ -39,7 +39,15 @@ module Users
         remember_device_default: remember_device_default,
         platform_authenticator: @platform_authenticator,
       )
-      analytics.multi_factor_auth_setup(**result.to_h)
+      properties = result.to_h.merge(analytics_properties)
+      analytics.multi_factor_auth_setup(**properties)
+
+      if @platform_authenticator
+        irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
+      else
+        irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
+      end
+
       if result.success?
         process_valid_webauthn(form)
       else
@@ -135,7 +143,7 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
+      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
       mark_user_as_fully_authenticated
       handle_remember_device
       if form.platform_authenticator?
@@ -145,6 +153,12 @@ module Users
       end
       user_session[:auth_method] = 'webauthn'
       redirect_to next_setup_path || after_mfa_setup_path
+    end
+
+    def analytics_properties
+      {
+        in_multi_mfa_selection_flow: in_multi_mfa_selection_flow?,
+      }
     end
 
     def handle_remember_device

@@ -635,9 +635,16 @@ module AnalyticsEvents
     track_event('IdV: forgot password confirmed')
   end
 
-  # GPO address letter requested
-  def idv_gpo_address_letter_requested
-    track_event('IdV: USPS address letter requested')
+  # @param [DateTime] enqueued_at
+  # @param [Boolean] resend
+  # GPO letter was requested and time was recorded
+  def idv_gpo_address_letter_requested(enqueued_at:, resend:, **extra)
+    track_event(
+      'IdV: USPS address letter requested',
+      enqueued_at: enqueued_at,
+      resend: resend,
+      **extra,
+    )
   end
 
   # @param [Boolean] success
@@ -956,8 +963,13 @@ module AnalyticsEvents
   end
 
   # User submitted IDV password confirm page
-  def idv_review_complete
-    track_event('IdV: review complete')
+  # @param [Boolean] success
+  def idv_review_complete(success:, **extra)
+    track_event(
+      'IdV: review complete',
+      success: success,
+      **extra,
+    )
   end
 
   # User visited IDV password confirm page
@@ -992,6 +1004,25 @@ module AnalyticsEvents
     track_event(
       'Invalid Authenticity Token',
       controller: controller,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
       user_signed_in: user_signed_in,
       **extra,
     )
@@ -1325,10 +1356,16 @@ module AnalyticsEvents
 
   # Tracks when a user sets up a multi factor auth method
   # @param [String] multi_factor_auth_method
-  def multi_factor_auth_setup(multi_factor_auth_method:, **extra)
+  # @param [Boolean] in_multi_mfa_selection_flow
+  # @param [integer] enabled_mfa_methods_count
+  def multi_factor_auth_setup(multi_factor_auth_method:,
+                              enabled_mfa_methods_count:, in_multi_mfa_selection_flow:,
+                              **extra)
     track_event(
       'Multi-Factor Authentication Setup',
       multi_factor_auth_method: multi_factor_auth_method,
+      in_multi_mfa_selection_flow: in_multi_mfa_selection_flow,
+      enabled_mfa_methods_count: enabled_mfa_methods_count,
       **extra,
     )
   end
@@ -2094,11 +2131,13 @@ module AnalyticsEvents
   # @param [Boolean] success
   # @param [Hash] errors
   # @param [Integer] enabled_mfa_methods_count
+  # @param [Integer] selected_mfa_count
   # @param ['voice', 'auth_app'] selection
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
     errors: nil,
+    selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
     selection: nil,
     **extra
@@ -2108,8 +2147,24 @@ module AnalyticsEvents
       {
         success: success,
         errors: errors,
+        selected_mfa_count: selected_mfa_count,
         enabled_mfa_methods_count: enabled_mfa_methods_count,
         selection: selection,
+        **extra,
+      }.compact,
+    )
+  end
+
+  # @param [String] mfa_method
+  # Tracks when the the user fully registered by submitting their first MFA method into the system
+  def user_registration_user_fully_registered(
+    mfa_method:,
+    **extra
+  )
+    track_event(
+      'User Registration: User Fully Registered',
+      {
+        mfa_method: mfa_method,
         **extra,
       }.compact,
     )

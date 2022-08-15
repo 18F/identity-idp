@@ -143,6 +143,22 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def in_person_verified
+    UserMailer.in_person_verified(
+      user,
+      email_address_record,
+      enrollment: in_person_enrollment,
+    )
+  end
+
+  def in_person_failed
+    UserMailer.in_person_failed(
+      user,
+      email_address_record,
+      enrollment: in_person_enrollment,
+    )
+  end
+
   private
 
   def user
@@ -163,7 +179,8 @@ class UserMailerPreview < ActionMailer::Preview
         user: user,
         profile: unsaveable(Profile.new(user: user)),
         enrollment_code: '2048702198804358',
-        created_at: Time.zone.now,
+        created_at: Time.zone.now - 2.hours,
+        status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: true,
         selected_location_details: {
           'name' => 'BALTIMORE',
@@ -174,6 +191,7 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
+        service_provider: params[:issuer] ? ServiceProvider.find_by(issuer: params[:issuer]) : nil,
       ),
     )
   end

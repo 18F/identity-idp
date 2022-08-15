@@ -4,13 +4,28 @@ describe Idv::InPerson::UspsLocationsController do
   include IdvHelper
 
   let(:user) { create(:user) }
+  let(:sp) { nil }
   let(:in_person_proofing_enabled) { false }
+  let(:selected_location) do
+    {
+      usps_location: {
+        formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
+        name: 'BALTIMORE',
+        phone: '410-555-1212',
+        saturday_hours: '8:30 AM - 5:00 PM',
+        street_address: '123 Fake St.',
+        sunday_hours: 'Closed',
+        weekday_hours: '8:30 AM - 7:00 PM',
+      },
+    }
+  end
 
   before do
     stub_analytics
-    stub_sign_in(user)
+    stub_sign_in(user) if user
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(controller).to receive(:current_sp).and_return(sp)
   end
 
   describe '#index' do
@@ -57,53 +72,55 @@ describe Idv::InPerson::UspsLocationsController do
     end
   end
 
-  context 'with a session' do
-    let(:idv_session) do
-      Idv::Session.new(
-        user_session: {},
-        current_user: user,
-        service_provider: nil,
-      )
-    end
-    let(:selected_location) do
-      {
-        usps_location: {
-          formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
-          name: 'BALTIMORE',
-          phone: '410-555-1212',
-          saturday_hours: '8:30 AM - 5:00 PM',
-          street_address: '123 Fake St.',
-          sunday_hours: 'Closed',
-          weekday_hours: '8:30 AM - 7:00 PM',
-        },
-      }
+  describe '#update' do
+    subject(:response) { put :update, params: selected_location }
+
+    it 'writes the passed location to in-person enrollment' do
+      response
+
+      enrollment = user.reload.establishing_in_person_enrollment
+
+      expect(enrollment.selected_location_details).to eq(selected_location[:usps_location].as_json)
+      expect(enrollment.service_provider).to be_nil
     end
 
-    before do
-      allow(subject).to receive(:idv_session).and_return(idv_session)
-    end
+    context 'when unauthenticated' do
+      let(:user) { nil }
 
-    describe '#update' do
-      it 'writes the passed location to session' do
-        put :update, params: selected_location
-
-        selected_location[:usps_location].keys.each do |key|
-          expect(idv_session.applicant[:selected_location_details][key.to_s]).
-            to eq(selected_location[:usps_location][key])
-        end
+      it 'renders an unauthorized status' do
+        expect(response.status).to eq(401)
       end
     end
 
-    describe '#show' do
-      it 'loads the saved location from session' do
-        put :update, params: selected_location
+    context 'with associated service provider' do
+      let(:sp) { create(:service_provider) }
 
-        response = get :show
-        body = JSON.parse(response.body)
-        selected_location[:usps_location].keys.each do |key|
-          expect(body[key.to_s.camelize(:lower)]).
-            to eq(selected_location[:usps_location][key])
-        end
+      it 'assigns services provider to in-person enrollment' do
+        response
+
+        enrollment = user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.issuer).to eq(sp.issuer)
+      end
+    end
+
+    context 'with hybrid user' do
+      let(:user) { nil }
+      let(:effective_user) { create(:user) }
+
+      before do
+        session[:doc_capture_user_id] = effective_user.id
+      end
+
+      it 'writes the passed location to in-person enrollment associated with effective user' do
+        response
+
+        enrollment = effective_user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to be_nil
       end
     end
   end

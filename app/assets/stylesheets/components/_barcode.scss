@@ -5,10 +5,11 @@
 }
 
 .barcode .barby-cell {
-  width: 2px;
+  padding: 0;
+  border-right: 2px solid color('white');
   height: 96px;
 
   &.on {
-    background-color: #000;
+    border-right-color: color('black');
   }
 }

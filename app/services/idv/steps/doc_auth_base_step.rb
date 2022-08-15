@@ -7,37 +7,6 @@ module Idv
 
       private
 
-      def throttle
-        @throttle ||= Throttle.new(
-          user: current_user,
-          throttle_type: :idv_resolution,
-        )
-      end
-
-      def idv_failure(result)
-        throttle.increment! if result.extra.dig(:proofing_results, :exception).blank?
-        if throttle.throttled?
-          @flow.analytics.throttler_rate_limit_triggered(
-            throttle_type: :idv_resolution,
-            step_name: self.class.name,
-          )
-          redirect_to idv_session_errors_failure_url
-        elsif result.extra.dig(:proofing_results, :exception).present?
-          @flow.analytics.idv_doc_auth_exception_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
-          redirect_to idv_session_errors_exception_url
-        else
-          @flow.analytics.idv_doc_auth_warning_visited(
-            step_name: self.class.name,
-            remaining_attempts: throttle.remaining_count,
-          )
-          redirect_to idv_session_errors_warning_url
-        end
-        result
-      end
-
       def save_proofing_components
         return unless current_user
 
@@ -67,6 +36,7 @@ module Idv
         flow_session[:had_barcode_read_failure] = response.attention_with_barcode?
         if store_in_session
           flow_session[:pii_from_doc] = flow_session[:pii_from_doc].to_h.merge(pii_from_doc)
+          idv_session.delete('applicant')
         end
         track_document_state(pii_from_doc[:state])
       end

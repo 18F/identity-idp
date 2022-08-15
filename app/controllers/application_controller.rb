@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  rescue_from ActionController::Redirecting::UnsafeRedirectError, with: :unsafe_redirect_error
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
   rescue_from ActionView::MissingTemplate, with: :render_not_acceptable
@@ -82,6 +83,11 @@ class ApplicationController < ActionController::Base
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
       session_id: irs_attempts_api_session_id,
+      request: request,
+      user: effective_user,
+      sp: current_sp,
+      device_fingerprint: cookies[:device],
+      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
     )
   end
@@ -267,7 +273,24 @@ class ApplicationController < ActionController::Base
       user_signed_in: user_signed_in?,
     )
     flash[:error] = t('errors.general')
-    redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    begin
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    rescue ActionController::Redirecting::UnsafeRedirectError => err
+      # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
+      unsafe_redirect_error(err)
+    end
+  end
+
+  def unsafe_redirect_error(_exception)
+    controller_info = "#{controller_path}##{action_name}"
+    analytics.unsafe_redirect_error(
+      controller: controller_info,
+      user_signed_in: user_signed_in?,
+      referer: request.referer,
+    )
+
+    flash[:error] = t('errors.general')
+    redirect_to new_user_session_url
   end
 
   def user_fully_authenticated?

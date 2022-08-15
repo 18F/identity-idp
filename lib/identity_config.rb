@@ -154,8 +154,6 @@ class IdentityConfig
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
     config.add(:enable_load_testing_mode, type: :boolean)
-    config.add(:enable_numeric_authentication_otp, type: :boolean)
-    config.add(:enable_numeric_authentication_otp_input, type: :boolean)
     config.add(:enable_partner_api, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
@@ -212,7 +210,7 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string)
     config.add(:lexisnexis_threatmetrix_request_mode, type: :string)
-    config.add(:lexisnexis_threatmetrix_account_id, type: :string)
+    config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_username, type: :string)
     config.add(:lexisnexis_threatmetrix_password, type: :string)
     config.add(:lexisnexis_threatmetrix_instant_verify_timeout, type: :float)
@@ -375,6 +373,7 @@ class IdentityConfig
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
+    config.add(:inherited_proofing_va_base_url, type: :string)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)

@@ -3,6 +3,11 @@ require 'securerandom'
 class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
+  belongs_to :service_provider,
+             foreign_key: 'issuer',
+             primary_key: 'issuer',
+             inverse_of: :in_person_enrollments,
+             optional: true
   enum status: {
     establishing: 0,
     pending: 1,
@@ -51,7 +56,9 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def profile_belongs_to_user
-    unless profile&.user == user
+    return unless profile.present?
+
+    unless profile.user == user
       errors.add :profile, I18n.t('idv.failure.exceptions.internal_error'),
                  type: :in_person_enrollment_user_profile_mismatch
     end
