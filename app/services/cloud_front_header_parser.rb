@@ -1,4 +1,4 @@
-class CloudFrontRequest
+class CloudFrontHeaderParser
   def initialize(request)
     @request = request
   end
@@ -42,20 +42,13 @@ class CloudFrontRequest
 
   private
 
-  # Regexp variables are not exactly intuitive:
-  # https://ruby-doc.org/core-2.5.1/Regexp.html#class-Regexp-label-Special+global+variables
   def ip_and_port
     return nil unless viewer_address
-    if viewer_address =~ /\[*\]:/ # IPv6
-      {
-        ip: "#{$`}]",
-        port: $',
-      }
-    else # IPv4
-      {
-        ip: viewer_address.split(':').first,
-        port: viewer_address.split(':').last,
-      }
-    end
+    *address_parts, port = viewer_address.split(':')
+    ip = address_parts.join(':')
+    {
+      ip: ip,
+      port: port,
+    }
   end
 end

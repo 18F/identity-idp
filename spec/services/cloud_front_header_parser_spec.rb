@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CloudFrontRequest do
+RSpec.describe CloudFrontHeaderParser do
   let(:url) { 'http://example.com' }
   let(:req) { Rack::Request.new(Rack::MockRequest.env_for(url, remote_addr_header)) }
   let(:port) { '1234' }
