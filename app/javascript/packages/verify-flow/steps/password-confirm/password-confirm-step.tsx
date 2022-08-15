@@ -98,7 +98,13 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
           }),
           {
             button: ({ children }) => (
-              <HistoryLink basePath={stepPath} step={FORGOT_PASSWORD_PATH}>
+              <HistoryLink
+                basePath={stepPath}
+                step={FORGOT_PASSWORD_PATH}
+                title={`${t('idv.forgot_password.link_html').replace(`%{link}`, '')} ${t(
+                  'idv.forgot_password.link_text',
+                )}`}
+              >
                 {children}
               </HistoryLink>
             ),
