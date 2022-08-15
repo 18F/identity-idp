@@ -6,7 +6,7 @@
   "account_address_city": "Baton Rouge",
   "account_address_state": "LA",
   "account_address_country": "US",
-  "account_address_zip": "70802",
+  "account_address_zip": "70802-12345",
   "account_date_of_birth": "19800101",
   "account_email": "test@example.com",
   "account_first_name": "Testy",
