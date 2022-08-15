@@ -6,8 +6,12 @@
       class: css_class,
       **tag_options,
     ) do %>
-  <div class="barcode__background">
-    <%= barcode_html.html_safe %>
+  <div class="barcode__background barcode__background--fallback">
+    <div class="barcode__background barcode__background--primary">
+      <div class="padding-2px">
+        <%= barcode_html.html_safe %>
+      </div>
+    </div>
   </div>
   <div id="<%= barcode_caption_id %>" class="text-center margin-top-1">
     <% if label.present? %>

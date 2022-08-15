@@ -1,12 +1,14 @@
-.barcode__background {
-  padding: 2px;
+.barcode__background.barcode__background--fallback {
+  background-image: linear-gradient(#ccc, #ccc);
+}
+
+.barcode__background.barcode__background--primary {
   background-color: color('white');
 
   // Attempt to force dark mode email clients to render the white background
   // See: https://www.litmus.com/blog/the-ultimate-guide-to-dark-mode-for-email-marketers/
   // See: https://www.hteumeuleu.com/2021/fixing-gmail-dark-mode-css-blend-modes/
 
-  background-image: linear-gradient(#ccc, #ccc);
   background-image: linear-gradient(color('white'), color('white'));
 
   &[data-ogsc] {
