@@ -13,7 +13,7 @@ module Proofing
             account_address_city: applicant[:city],
             account_address_state: applicant[:state],
             account_address_country: 'US',
-            account_address_zip: applicant[:zipcode].match(/^\d{5}/).to_s,
+            account_address_zip: applicant[:zipcode],
             account_date_of_birth: applicant[:dob] ?
               Date.parse(applicant[:dob]).strftime('%Y%m%d') : '',
             account_email: applicant[:email],
