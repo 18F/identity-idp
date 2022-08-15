@@ -17,6 +17,7 @@ module AccountReset
 
     def confirm_two_factor_enabled
       return if MfaPolicy.new(current_user).two_factor_enabled?
+      redirect_to login_two_factor_options_path
     end
 
     def recovery_options_visit
