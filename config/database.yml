@@ -52,7 +52,7 @@ test:
 
 <%
   pool = if Identity::Hostdata.instance_role == 'worker'
-    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp
+    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp + IdentityConfig.store.database_pool_extra_connections_for_worker
   else
     IdentityConfig.store.database_pool_idp
   end

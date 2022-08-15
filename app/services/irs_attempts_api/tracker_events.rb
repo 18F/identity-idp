@@ -108,6 +108,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to verify via the WebAuthn MFA method to their account
+    # @param [Boolean] success
+    def mfa_verify_webauthn_roaming(success:)
+      track_event(
+        :mfa_verify_webauthn_roaming,
+        success: success,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the piv cac MFA method to their account
     # @param [String] subject_dn
     # @param [Boolean] success
@@ -124,7 +133,7 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
-
+        
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
