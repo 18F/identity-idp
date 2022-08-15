@@ -222,6 +222,8 @@ module Idv
         document_capture_session,
         should_proof_state_id: false,
         trace_id: amzn_trace_id,
+        user_id: current_user.id,
+        threatmetrix_session_id: nil,
       )
     end
 

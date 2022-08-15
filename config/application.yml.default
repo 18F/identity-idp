@@ -140,14 +140,12 @@ lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
-# LexisNexis ThreatMetrix ##########################################
+# LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_api_key: test_api_key
 lexisnexis_threatmetrix_base_url: https://www.example.com
-lexisnexis_threatmetrix_request_mode: testing
 lexisnexis_threatmetrix_org_id: test_account
-lexisnexis_threatmetrix_username: test_username
-lexisnexis_threatmetrix_password: test_password
-lexisnexis_threatmetrix_instant_verify_timeout: 1.0
-lexisnexis_threatmetrix_instant_verify_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_threatmetrix_timeout: 1.0
+lexisnexis_threatmetrix_enabled: false
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false

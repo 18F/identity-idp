@@ -5,7 +5,11 @@ module Idv
     end
 
     def proof_resolution(
-      document_capture_session, should_proof_state_id:, trace_id:
+      document_capture_session,
+      should_proof_state_id:,
+      trace_id:,
+      user_id:,
+      threatmetrix_session_id:
     )
       document_capture_session.create_proofing_session
 
@@ -19,6 +23,8 @@ module Idv
         dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
+        user_id: user_id,
+        threatmetrix_session_id: threatmetrix_session_id,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
