@@ -191,7 +191,7 @@ describe Idv::CancellationsController do
         expect(parsed_body).to eq({ redirect_url: account_path })
       end
 
-      context 'with pending in person enrollment' do
+      context 'with in person enrollment' do
         let(:user) { build(:user, :with_pending_in_person_enrollment) }
 
         before do
@@ -203,11 +203,19 @@ describe Idv::CancellationsController do
           )
         end
 
-        it 'cancels in person enrollment' do
+        it 'cancels pending in person enrollment' do
           expect(user.reload.pending_in_person_enrollment).to_not be_blank
           delete :destroy
 
           expect(user.reload.pending_in_person_enrollment).to be_blank
+        end
+
+        it 'cancels establishing in person enrollment' do
+          create(:in_person_enrollment, :establishing, user: user)
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
+          delete :destroy
+
+          expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
         end
 
         it 'deletes in person flow data' do
