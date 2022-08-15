@@ -34,6 +34,7 @@ module IrsAttemptsApi
       )
 
       redis_client.write_event(jti: event.jti, jwe: event.to_jwe)
+
       event
     end
 

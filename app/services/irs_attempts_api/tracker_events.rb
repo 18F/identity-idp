@@ -41,6 +41,16 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # The user, after having previously been sent an OTP code during phone enrollment
+    # has been asked to submit that code.
+    def mfa_enroll_phone_otp_submitted(success:)
+      track_event(
+        :mfa_enroll_phone_otp_submitted,
+        success: success,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the TOTP MFA method to their account
     # @param [Boolean] success
     def mfa_enroll_totp(success:)
@@ -86,6 +96,17 @@ module IrsAttemptsApi
         :mfa_verify_phone_otp_sent,
         reauthentication: reauthentication,
         phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # During a login attempt, the user, having previously been sent an OTP code via SMS
+    # has entered an OTP code.
+    def mfa_verify_phone_otp_submitted(reauthentication:, success:)
+      track_event(
+        :mfa_verify_phone_otp_submitted,
+        reauthentication: reauthentication,
         success: success,
       )
     end
