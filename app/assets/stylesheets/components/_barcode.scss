@@ -1,6 +1,6 @@
-.barcode {
+.barcode__background {
   padding: 2px;
-  background: url('pixel-white.png') repeat;
+  background: linear-gradient(#fff, #fff) !important;
 }
 
 .barcode__image.barby-barcode {
