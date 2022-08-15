@@ -27,7 +27,7 @@ module Users
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
 
-      irs_attempts_api_tracker.multi_factor_auth_enroll_totp(
+      irs_attempts_api_tracker.mfa_enroll_totp(
         success: result.success?,
       )
 

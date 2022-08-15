@@ -7,7 +7,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:enrollment_selected_location_details) do
-    JSON.parse(UspsIppFixtures.enrollment_selected_location_details)
+    JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
   let(:enrollment) do
     InPersonEnrollment.new(

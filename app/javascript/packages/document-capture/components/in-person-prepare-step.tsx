@@ -13,10 +13,11 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
+import BackButton from './back-button';
 // WILLFIX: Hiding this component until help links are finalized; see LG-6875
 // import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
-function InPersonPrepareStep({ value }) {
+function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { flowPath } = useContext(UploadContext);
@@ -91,6 +92,7 @@ function InPersonPrepareStep({ value }) {
           </Button>
         </div>
       )}
+      <BackButton includeBorder onClick={toPreviousStep} />
       {/*
       WILLFIX: Hiding this component until help links are finalized; see LG-6875
       <InPersonTroubleshootingOptions />

@@ -393,6 +393,26 @@ describe Users::SessionsController, devise: true do
       expect(flash[:error]).to eq t('errors.general')
     end
 
+    it 'redirects back to home page if CSRF error and referer is invalid' do
+      user = create(:user, :signed_up)
+      stub_analytics
+      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
+      allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with('Invalid Authenticity Token', analytics_hash)
+
+      expect(@analytics).to receive(:track_event).
+        with('Unsafe Redirect', { controller: 'users/sessions#create', referer: '@@@',
+                                  user_signed_in: false })
+
+      request.env['HTTP_REFERER'] = '@@@'
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:error]).to eq t('errors.general')
+    end
+
     it 'returns to sign in page if email is a Hash' do
       post :create, params: { user: { email: { foo: 'bar' }, password: 'password' } }
 

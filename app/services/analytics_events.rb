@@ -2406,6 +2406,31 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if USPS in-person proofing enrollment request fails
+  # @param [String] context
+  # @param [String] reason
+  # @param [Integer] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_request_enroll_exception(
+    context:,
+    reason:,
+    enrollment_id:,
+    exception_class:,
+    exception_message:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment failed',
+      context: context,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      reason: reason,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
   # @param [String] reason why did this enrollment pass?
   # @param [String] enrollment_id

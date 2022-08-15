@@ -239,7 +239,10 @@ class UserMailer < ActionMailer::Base
   def in_person_verified(user, email_address, enrollment:)
     with_user_locale(user) do
       @hide_title = true
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(enrollment: enrollment)
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_verified.subject', app_name: APP_NAME),
@@ -249,7 +252,10 @@ class UserMailer < ActionMailer::Base
 
   def in_person_failed(user, email_address, enrollment:)
     with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(enrollment: enrollment)
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed.subject', app_name: APP_NAME),
