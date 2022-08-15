@@ -18,8 +18,6 @@ module Proofing
 
       stage :resolution
 
-      stage :resolution
-
       TRANSACTION_ID = 'ddp-mock-transaction-id-123'
 
       proof do |applicant, result|
