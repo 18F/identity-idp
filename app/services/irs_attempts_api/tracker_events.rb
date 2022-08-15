@@ -117,6 +117,23 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to enroll the piv cac MFA method to their account
+    # @param [String] subject_dn
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def mfa_enroll_piv_cac(
+      success:,
+      subject_dn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :mfa_enroll_piv_cac,
+        success: success,
+        subject_dn: subject_dn,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email

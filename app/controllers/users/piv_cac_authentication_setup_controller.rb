@@ -86,6 +86,11 @@ module Users
       result = user_piv_cac_form.submit
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+      irs_attempts_api_tracker.mfa_enroll_piv_cac(
+        success: result.success?,
+        subject_dn: user_piv_cac_form.x509_dn,
+        failure_reason: result.errors.presence,
+      )
       if result.success?
         process_valid_submission
       else
