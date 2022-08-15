@@ -17,7 +17,7 @@ RSpec.describe CloudFrontHeaderParser do
     end
 
     describe '#client_ip' do
-      it 'returns something handy' do
+      it 'returns the IPv4 address' do
         expect(subject.client_ip).to eq ip
       end
     end
