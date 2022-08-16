@@ -77,16 +77,22 @@ describe Idv::SessionsController do
       end
 
       it 'cancels pending in person enrollment' do
+        pending_enrollment = user.pending_in_person_enrollment
+        expect(user.reload.pending_in_person_enrollment).to_not be_blank
         delete :destroy
 
+        pending_enrollment.reload
+        expect(pending_enrollment.status).to eq('cancelled')
         expect(user.reload.pending_in_person_enrollment).to be_blank
       end
 
       it 'cancels establishing in person enrollment' do
-        create(:in_person_enrollment, :establishing, user: user)
+        establishing_enrollment = create(:in_person_enrollment, :establishing, user: user)
         expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(1)
         delete :destroy
 
+        establishing_enrollment.reload
+        expect(establishing_enrollment.status).to eq('cancelled')
         expect(InPersonEnrollment.where(user: user, status: :establishing).count).to eq(0)
       end
     end
