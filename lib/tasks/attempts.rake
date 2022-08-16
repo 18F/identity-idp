@@ -1,5 +1,4 @@
 namespace :attempts do
-
   AUTH_TOKEN = 'abc123'
   PRIVATE_KEY_PATH = 'keys/attempts_api_private_key.key'
 
