@@ -14,7 +14,8 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     )
   end
 
-  it 'provides back buttons for address, state ID, and SSN that discard changes', allow_browser_log: true do
+  it 'provides back buttons for address, state ID, and SSN that discard changes',
+     allow_browser_log: true do
     user = user_with_2fa
 
     sign_in_and_2fa_user(user)
@@ -40,20 +41,20 @@ RSpec.describe 'doc auth IPP Verify Step', js: true do
     # click update state ID button
     click_button t('idv.buttons.change_state_id_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-    fill_in t('in_person_proofing.form.state_id.first_name'), with: "bad first name"
+    fill_in t('in_person_proofing.form.state_id.first_name'), with: 'bad first name'
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
-    expect(page).not_to have_text("bad first name")
+    expect(page).not_to have_text('bad first name')
 
     # click update address button
     click_button t('idv.buttons.change_address_label')
     expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-    fill_in t('in_person_proofing.form.address.address1'), with: "bad address"
+    fill_in t('in_person_proofing.form.address.address1'), with: 'bad address'
     click_doc_auth_back_link
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_ADDRESS1)
-    expect(page).not_to have_text("bad address")
+    expect(page).not_to have_text('bad address')
 
     # click update ssn button
     click_button t('idv.buttons.change_ssn_label')
