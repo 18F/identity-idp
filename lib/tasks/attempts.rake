@@ -1,5 +1,6 @@
 namespace :attempts do
-  auth_token = 'abc123'
+  auth_token = IdentityConfig.store.irs_attempt_api_auth_tokens.sample
+  puts 'There are no configured irs_attempt_api_auth_tokens' if auth_token.nil?
   private_key_path = 'keys/attempts_api_private_key.key'
 
   desc 'Retrieve events via the API'
@@ -7,7 +8,8 @@ namespace :attempts do
     conn = Faraday.new(url: 'http://localhost:3000')
 
     resp = conn.post('/api/irs_attempts_api/security_events') do |req|
-      req.headers['Authorization'] = "Bearer #{auth_token}"
+      req.headers['Authorization'] =
+        "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
     end.body
 
     events = JSON.parse(resp)
