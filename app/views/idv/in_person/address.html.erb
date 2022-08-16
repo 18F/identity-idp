@@ -8,9 +8,13 @@
 
 <p>
   <%= t('in_person_proofing.body.address.info') %>
-  <%# WILLFIX: Hiding the link below until help links are finalized; see LG-6875 %>
-  <%# i18n-tasks-use t('in_person_proofing.body.address.learn_more') %>
-  <%# new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+  <%= new_window_link_to(
+        t('in_person_proofing.body.address.learn_more'),
+        MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'how-to-verify-in-person',
+        ),
+      ) %>
 </p>
 
 <%= simple_form_for(
