@@ -50,7 +50,6 @@ module Users
     end
 
     def reminder
-      @presenter = BackupCodeReminderPresenter.new
       flash.now[:success] = t('notices.authenticated_successfully')
     end
 

@@ -1,11 +1,11 @@
-<% title @presenter.title %>
+<% title t('forms.backup_code.title') %>
 
 <%= image_tag asset_url('user-signup-ial1.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4' %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+<%= render PageHeadingComponent.new.with_content(t('forms.backup_code_reminder.heading')) %>
 
 <p class='margin-top-1 margin-bottom-4'>
-  <%= @presenter.body_info %>
+  <%= t('forms.backup_code_reminder.body_info') %>
 </p>
 
 <%= button_to(
@@ -13,7 +13,7 @@
       method: :get,
       class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
     ) do %>
-  <%= @presenter.button %>
+  <%= t('forms.backup_code_reminder.have_codes') %>
 <% end %>
 
-<%= link_to @presenter.need_new_codes_link_text, backup_code_regenerate_path %>
+<%= link_to t('forms.backup_code_reminder.need_new_codes'), backup_code_regenerate_path %>

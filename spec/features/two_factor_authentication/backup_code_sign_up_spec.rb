@@ -80,12 +80,28 @@ feature 'sign up with backup code' do
       create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
     end
 
-    it 'redirects the user to the backup code reminder url' do
-      sign_in_user(user)
-      fill_in_code_with_last_totp(user)
-      click_submit_default
+    context 'without feature flag on (IdentityConfig.store.kantara_2fa_phone_restricted)' do
+      it 'redirects the user to the account url' do
+        sign_in_user(user)
+        fill_in_code_with_last_totp(user)
+        click_submit_default
 
-      expect(current_path).to eq backup_code_reminder_path
+        expect(current_path).to eq account_path
+      end
+    end
+
+    context 'with the feature flag turned on (IdentityConfig.store.kantara_2fa_phone_restricted)' do
+      before do
+        allow(IdentityConfig.store).to receive(:kantara_2fa_phone_restricted).and_return(true)
+      end
+
+      it 'redirects the user to the backup code reminder url' do
+        sign_in_user(user)
+        fill_in_code_with_last_totp(user)
+        click_submit_default
+
+        expect(current_path).to eq backup_code_reminder_path
+      end
     end
   end
 
