@@ -7,7 +7,6 @@ FactoryBot.define do
     trait :establishing do
       after :build do |enrollment|
         enrollment.status = :establishing
-        enrollment.enrollment_code = Faker::Number.number(digits: 16)
       end
     end
 
