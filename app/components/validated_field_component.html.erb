@@ -1,35 +1,34 @@
 <lg-validated-field>
   <%= content_tag(
-        :script,
-        error_messages.to_json,
-        {
-          type: 'application/json',
-          class: 'validated-field__error-strings',
-        },
-        false,
-      ) %>
+    :script,
+    error_messages.to_json,
+    {
+      type: 'application/json',
+      class: 'validated-field__error-strings',
+    },
+    false,
+  ) %>
   <%= f.input(
-        name,
-        tag_options.deep_merge(
-          wrapper_html: {
-            class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
-          },
-          input_html: {
-            class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
-            id: "password-input-#{unique_id}",
-            aria: {
-              invalid: false,
-              describedby: [
-                *tag_options.dig(:input_html, :aria, :describedby),
-                "validated-field-error-#{unique_id}",
-              ],
-            },
-          },
-          hint_html: {
-            id: "hint-for-#{unique_id}",
-            for: "password-input-#{unique_id}",
-          },
-          error_html: { id: "validated-field-error-#{unique_id}" },
-        ),
-      ) %>
+    name,
+    tag_options.deep_merge(
+      wrapper_html: {
+        class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
+      },
+      input_html: {
+        class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
+        aria: {
+          invalid: false,
+          describedby: [
+            *tag_options.dig(:input_html, :aria, :describedby),
+            "hint-#{unique_id}",
+            "validated-field-error-#{unique_id}",
+          ],
+        },
+      },
+      hint_html: {
+        id: "hint-#{unique_id}"
+      },
+      error_html: { id: "validated-field-error-#{unique_id}" },
+    ),
+  ) %>
 </lg-validated-field>
