@@ -9,7 +9,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
-  HelpCenterContextProvider,
+  MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -43,9 +43,10 @@ import { trackEvent } from '@18f/identity-analytics';
  * @prop {FlowPath} flowPath
  * @prop {string} cancelUrl
  * @prop {string=} idvInPersonUrl
+ * @prop {string} securityAndPrivacyHowItWorksUrl
  *
  * @see AppContext
- * @see HelpCenterContextProvider
+ * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
@@ -135,11 +136,12 @@ function addPageAction(event, payload) {
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
+    securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
+    [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction } }],
     [

@@ -28,6 +28,10 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'policy').to_s
   end
 
+  def self.security_and_privacy_how_it_works_url
+    URI.join(BASE_URL, locale_segment, 'policy/how-does-it-work/').to_s
+  end
+
   def self.privacy_act_statement_url
     URI.join(BASE_URL, locale_segment, 'policy/our-privacy-act-statement/').to_s
   end
