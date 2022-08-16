@@ -126,7 +126,7 @@ module Idv
     end
 
     def resend_letter
-      analytics.idv_gpo_address_letter_enqueued(enqueue_at: Time.zone.now, resend: true)
+      analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: true)
       confirmation_maker = confirmation_maker_perform
       send_reminder
       return unless FeatureManagement.reveal_gpo_code?
