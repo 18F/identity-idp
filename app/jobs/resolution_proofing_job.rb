@@ -239,7 +239,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def lexisnexis_ddp_proofer
     @lexisnexis_ddp_proofer ||=
-      if IdentityConfig.store.proofer_mock_fallback
+      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
         Proofing::Mock::DdpMockClient.new
       else
         Proofing::LexisNexis::Ddp::Proofer.new(

@@ -148,6 +148,7 @@ lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_org_id: test_account
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
+lexisnexis_threatmetrix_mock_enabled: true
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
