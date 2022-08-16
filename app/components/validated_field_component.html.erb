@@ -15,8 +15,8 @@
             class: [*tag_options.dig(:wrapper_html, :class), 'validated-field__input-wrapper'],
           },
           input_html: {
-              class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
-              id: "password-input-#{unique_id}",
+            class: [*tag_options.dig(:input_html, :class), 'validated-field__input'],
+            id: "password-input-#{unique_id}",
             aria: {
               invalid: false,
               describedby: [
@@ -25,10 +25,10 @@
               ],
             },
           },
-            hint_html: {
-                id: "hint-for-#{unique_id}",
-                for: "password-input-#{unique_id}"
-            },
+          hint_html: {
+            id: "hint-for-#{unique_id}",
+            for: "password-input-#{unique_id}",
+          },
           error_html: { id: "validated-field-error-#{unique_id}" },
         ),
       ) %>
