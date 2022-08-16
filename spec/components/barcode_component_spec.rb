@@ -4,13 +4,10 @@ RSpec.describe BarcodeComponent, type: :component do
   it 'renders expected content' do
     rendered = render_inline BarcodeComponent.new(barcode_data: '1234', label: 'Code')
 
-    caption = page.find_css('table + div', text: 'Code: 1234').first
+    caption = page.find_css('img + div', text: 'Code: 1234').first
 
-    expect(rendered).to have_css(
-      "table.barcode__image[aria-label=#{t('components.barcode.table_label')}]",
-    )
+    expect(rendered).to have_css("img[alt='#{t('components.barcode.image_alt')}']")
     expect(rendered).to have_css(".barcode[role=figure][aria-labelledby=#{caption.attr(:id)}]")
-    expect(rendered).to have_css('table tbody[aria-hidden=true]')
   end
 
   context 'with tag options' do
@@ -35,7 +32,7 @@ RSpec.describe BarcodeComponent, type: :component do
     it 'renders label without prefix' do
       rendered = render_inline BarcodeComponent.new(barcode_data: '1234', label: '')
 
-      expect(rendered).to have_css('table + div', text: '1234')
+      expect(rendered).to have_css('img + div', text: '1234')
     end
   end
 
@@ -47,7 +44,20 @@ RSpec.describe BarcodeComponent, type: :component do
         label_formatter: ->(barcode_data) { barcode_data + '5678' },
       )
 
-      expect(rendered).to have_css('table + div', text: '12345678')
+      expect(rendered).to have_css('img + div', text: '12345678')
+    end
+  end
+
+  context 'with image url method option' do
+    it 'renders formatted label' do
+      url = 'data:,ok'
+      rendered = render_inline BarcodeComponent.new(
+        barcode_data: '1234',
+        label: '',
+        barcode_image_url_method: -> { url },
+      )
+
+      expect(rendered).to have_css("img[src='#{url}']")
     end
   end
 end
