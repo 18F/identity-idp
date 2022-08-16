@@ -214,7 +214,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_api_key, type: :string)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string)
     config.add(:lexisnexis_threatmetrix_enabled, type: :string)
-    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :string)
+    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:liveness_checking_enabled, type: :boolean)
