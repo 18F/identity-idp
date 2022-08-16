@@ -6,8 +6,11 @@
 #
 module Api
   class IrsAttemptsApiController < ApplicationController
+    include RenderConditionConcern
+
+    check_or_render_not_found -> { IdentityConfig.store.irs_attempt_api_enabled }
+
     skip_before_action :verify_authenticity_token
-    before_action :render_404_if_disabled
     before_action :authenticate_client
 
     respond_to :json
@@ -19,10 +22,6 @@ module Api
     end
 
     private
-
-    def render_404_if_disabled
-      render_not_found unless IdentityConfig.store.irs_attempt_api_enabled
-    end
 
     def authenticate_client
       bearer, token = request.authorization.split(' ', 2)
