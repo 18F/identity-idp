@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store
+    attr_reader :store, :key_types
   end
 
   CONVERTERS = {
@@ -45,13 +45,18 @@ class IdentityConfig
     end,
   }
 
+  attr_reader :key_types
+
   def initialize(read_env)
     @read_env = read_env
     @written_env = {}
+    @key_types = {}
   end
 
   def add(key, type: :string, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
+
+    @key_types[key] = type
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
@@ -213,7 +218,7 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_api_key, type: :string)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string)
-    config.add(:lexisnexis_threatmetrix_enabled, type: :string)
+    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
@@ -378,6 +383,7 @@ class IdentityConfig
     config.add(:voip_check, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
 
+    @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end
