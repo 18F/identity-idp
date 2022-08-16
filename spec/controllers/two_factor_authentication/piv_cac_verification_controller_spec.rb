@@ -128,13 +128,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     context 'when the user presents an invalid piv/cac' do
       before do
         stub_sign_in_before_2fa(user)
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_piv_cac,
-          success: false,
-          subject_dn: 'bad-dn',
-          failure_reason: { type: 'user.piv_cac_mismatch' },
-        )
 
         get :show, params: { token: 'bad-token' }
       end
