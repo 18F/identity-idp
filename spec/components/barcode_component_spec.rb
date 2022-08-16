@@ -7,7 +7,7 @@ RSpec.describe BarcodeComponent, type: :component do
     caption = page.find_css('img + div', text: 'Code: 1234').first
 
     expect(rendered).to have_css("img[alt='#{t('components.barcode.image_alt')}']")
-    expect(rendered).to have_css(".barcode[role=figure][aria-labelledby=#{caption.attr(:id)}]")
+    expect(rendered).to have_css("[role=figure][aria-labelledby=#{caption.attr(:id)}]")
   end
 
   context 'with tag options' do
