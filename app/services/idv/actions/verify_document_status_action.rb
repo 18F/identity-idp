@@ -1,6 +1,6 @@
 module Idv
   module Actions
-    class VerifyDocumentStatusAction < Idv::Steps::VerifyBaseStep
+    class VerifyDocumentStatusAction < Idv::Steps::DocAuthBaseStep
       def call
         process_async_state(async_state)
       end

@@ -98,6 +98,10 @@ es:
       info:
         lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser una
           contraseña común. ¡Eso es todo!
+      password_key: Si verificó su identidad con esta cuenta, necesita su clave
+        personal de 16 caracteres para restablecer su contraseña. Si no cuenta
+        con ella, de todos modos puede restablecer su contraseña y luego volver
+        a verificar su identidad.
       strength:
         i: Muy débil
         ii: Débil

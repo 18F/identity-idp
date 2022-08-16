@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::EnrollmentHelper do
+  include UspsIppHelper
+
+  let(:usps_mock_fallback) { false }
   let(:user) { build(:user) }
   let(:current_address_matches_id) { false }
   let(:pii) do
@@ -10,7 +13,26 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
   end
   let(:subject) { described_class }
 
+  before(:each) do
+    stub_request_token
+    stub_request_enroll
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(usps_mock_fallback)
+  end
+
   describe '#schedule_in_person_enrollment' do
+    context 'when in-person mocking is enabled' do
+      let(:usps_mock_fallback) { true }
+      let!(:enrollment) do
+        create(:in_person_enrollment, user: user, status: :establishing, profile: nil)
+      end
+
+      it 'uses a mock proofer' do
+        expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_call_original
+
+        subject.schedule_in_person_enrollment(user, pii)
+      end
+    end
+
     context 'an establishing enrollment record exists for the user' do
       let!(:enrollment) do
         create(:in_person_enrollment, user: user, status: :establishing, profile: nil)
@@ -29,7 +51,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         proofer = UspsInPersonProofing::Mock::Proofer.new
         mock = double
 
-        expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+        expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
         expect(mock).to receive(:request_enroll) do |applicant|
           expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
           expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])

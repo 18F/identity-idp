@@ -13,6 +13,12 @@ module Idv
           step_url: method(:idv_doc_auth_step_url),
         }
       end
+
+      private
+
+      def pii
+        flow_session[:pii_from_doc]
+      end
     end
   end
 end

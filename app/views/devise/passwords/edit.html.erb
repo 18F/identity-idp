@@ -2,6 +2,8 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
+<p><%= t('instructions.password.password_key') %></p>
+
 <%= validated_form_for(
       @reset_password_form,
       url: user_password_path,

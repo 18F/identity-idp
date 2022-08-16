@@ -38,8 +38,8 @@ feature 'doc auth verify step', :js do
     expect(page).to have_current_path(idv_phone_path)
     expect(page).to have_content(t('doc_auth.forms.doc_success'))
     user = User.first
-    expect(user.proofing_component.resolution_check).to eq('lexis_nexis')
-    expect(user.proofing_component.source_check).to eq('aamva')
+    expect(user.proofing_component.resolution_check).to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+    expect(user.proofing_component.source_check).to eq(Idp::Constants::Vendors::AAMVA)
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth optional verify_wait submitted',
@@ -74,6 +74,22 @@ feature 'doc auth verify step', :js do
     )
   end
 
+  it 'allows user to back out of editing their address and proceed' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
+
+    click_button t('idv.buttons.change_address_label')
+    fill_out_address_form_fail
+    click_doc_auth_back_link
+
+    click_idv_continue
+
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth optional verify_wait submitted',
+      address_edited: false,
+    )
+  end
+
   it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
@@ -99,9 +115,7 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 4,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_warning_path)
 
     click_on t('idv.failure.button.warning')
 
@@ -120,9 +134,7 @@ feature 'doc auth verify step', :js do
       step_name: 'Idv::Steps::VerifyWaitStepShow',
       remaining_attempts: 5,
     )
-    expect(page).to have_current_path(
-      idv_session_errors_exception_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-    )
+    expect(page).to have_current_path(idv_session_errors_exception_path)
 
     click_on t('idv.failure.button.warning')
 
@@ -136,9 +148,7 @@ feature 'doc auth verify step', :js do
     click_idv_continue
     (max_attempts - 1).times do
       click_idv_continue
-      expect(page).to have_current_path(
-        idv_session_errors_warning_path(from: idv_doc_auth_step_path(step: :verify_wait)),
-      )
+      expect(page).to have_current_path(idv_session_errors_warning_path)
       visit idv_doc_auth_verify_step
     end
     click_idv_continue
@@ -163,16 +173,18 @@ feature 'doc auth verify step', :js do
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: true,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -187,16 +199,18 @@ feature 'doc auth verify step', :js do
         IdentityConfig.store.aamva_supported_jurisdictions -
           [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: false,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -209,17 +223,19 @@ feature 'doc auth verify step', :js do
     it 'does not perform the state ID check' do
       allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: false,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
       visit_idp_from_sp_with_ial1(:oidc)
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue

@@ -40,7 +40,7 @@ module Test
         with_nonce(error: error).to_json
       elsif subject.present?
         uuid = Digest::SHA256.hexdigest(subject)
-        with_nonce(dn: subject, uuid: uuid).to_json
+        with_nonce(subject: subject, uuid: uuid).to_json
       else
         with_nonce(error: 'certificate.none').to_json
       end

@@ -68,11 +68,6 @@ export interface VerifyFlowProps {
   cancelURL?: string;
 
   /**
-   * URL to in-person proofing alternative flow, if enabled.
-   */
-  inPersonURL?: string | null;
-
-  /**
    * Initial value for address verification method.
    */
   initialAddressVerificationMethod?: AddressVerificationMethod;
@@ -109,7 +104,6 @@ function VerifyFlow({
   enabledStepNames,
   basePath,
   cancelURL = '',
-  inPersonURL = null,
   initialAddressVerificationMethod,
   onComplete,
 }: VerifyFlowProps) {
@@ -123,7 +117,6 @@ function VerifyFlow({
   const [initialStep, setCompletedStep] = useInitialStepValidation(basePath, steps);
   const context = useObjectMemo({
     cancelURL,
-    inPersonURL,
     currentStep,
     basePath,
     onComplete,

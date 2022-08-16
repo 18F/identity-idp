@@ -32,9 +32,9 @@ module Idv
       update_tracking
       idv_session.address_verification_mechanism = :gpo
 
-      if current_user.decorate.pending_profile_requires_verification? && pii_locked?
+      if resend_requested? && pii_locked?
         redirect_to capture_password_url
-      elsif current_user.decorate.pending_profile_requires_verification?
+      elsif resend_requested?
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -55,10 +55,14 @@ module Idv
     private
 
     def update_tracking
-      analytics.idv_gpo_address_letter_requested
+      analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')
+    end
+
+    def resend_requested?
+      current_user.decorate.pending_profile_requires_verification?
     end
 
     def failure
@@ -122,6 +126,7 @@ module Idv
     end
 
     def resend_letter
+      analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: true)
       confirmation_maker = confirmation_maker_perform
       send_reminder
       return unless FeatureManagement.reveal_gpo_code?
@@ -222,6 +227,8 @@ module Idv
         document_capture_session,
         should_proof_state_id: false,
         trace_id: amzn_trace_id,
+        user_id: current_user.id,
+        threatmetrix_session_id: nil,
       )
     end
 

@@ -31,6 +31,7 @@ class GpoVerifyForm
       success: result,
       errors: errors,
       extra: {
+        enqueued_at: gpo_confirmation_code&.code_sent_at,
         pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         pending_in_person_enrollment: pending_in_person_enrollment?,
       },

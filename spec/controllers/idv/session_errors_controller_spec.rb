@@ -2,9 +2,9 @@ require 'rails_helper'
 
 shared_examples_for 'an idv session errors controller action' do
   context 'the user is authenticated and has not confirmed their profile' do
-    it 'renders the error' do
-      stub_sign_in(create(:user))
+    let(:user) { build(:user) }
 
+    it 'renders the error' do
       get action
 
       expect(response).to render_template(template)
@@ -13,10 +13,9 @@ shared_examples_for 'an idv session errors controller action' do
 
   context 'the user is authenticated and has confirmed their profile' do
     let(:idv_session_profile_confirmation) { true }
+    let(:user) { build(:user) }
 
     it 'redirects to the phone url' do
-      stub_sign_in
-
       get action
 
       expect(response).to redirect_to(idv_phone_url)
@@ -46,11 +45,13 @@ end
 describe Idv::SessionErrorsController do
   let(:idv_session) { double }
   let(:idv_session_profile_confirmation) { false }
+  let(:user) { nil }
 
   before do
     allow(idv_session).to receive(:profile_confirmation).
       and_return(idv_session_profile_confirmation)
     allow(controller).to receive(:idv_session).and_return(idv_session)
+    stub_sign_in(user) if user
   end
 
   describe 'before_actions' do
@@ -59,34 +60,49 @@ describe Idv::SessionErrorsController do
     end
   end
 
+  describe '#exception' do
+    let(:action) { :exception }
+    let(:template) { 'idv/session_errors/exception' }
+    let(:params) { {} }
+
+    subject(:response) { get action, params: params }
+
+    it_behaves_like 'an idv session errors controller action'
+  end
+
   describe '#warning' do
     let(:action) { :warning }
     let(:template) { 'idv/session_errors/warning' }
+    let(:params) { {} }
+
+    subject(:response) { get :warning, params: params }
 
     it_behaves_like 'an idv session errors controller action'
 
     context 'with throttle attempts' do
+      let(:user) { create(:user) }
+
       before do
-        user = create(:user)
-        stub_sign_in(user)
         Throttle.new(throttle_type: :proof_address, user: user).increment!
       end
 
       it 'assigns remaining count' do
-        get action
+        response
 
         expect(assigns(:remaining_attempts)).to be_kind_of(Numeric)
       end
 
       it 'assigns URL to try again' do
-        get action
+        response
 
         expect(assigns(:try_again_path)).to eq(idv_doc_auth_path)
       end
 
-      context 'referrer is page from In-Person Proofing flow' do
+      context 'in in-person proofing flow' do
+        let(:params) { { flow: 'in_person' } }
+
         it 'assigns URL to try again' do
-          get action, params: { from: idv_in_person_ready_to_verify_path }
+          response
 
           expect(assigns(:try_again_path)).to eq(idv_in_person_path)
         end
@@ -101,9 +117,9 @@ describe Idv::SessionErrorsController do
     it_behaves_like 'an idv session errors controller action'
 
     context 'while throttled' do
+      let(:user) { create(:user) }
+
       before do
-        user = create(:user)
-        stub_sign_in(user)
         Throttle.new(throttle_type: :proof_address, user: user).increment_to_throttled!
       end
 
@@ -122,6 +138,7 @@ describe Idv::SessionErrorsController do
     it_behaves_like 'an idv session errors controller action'
 
     context 'while throttled' do
+      let(:user) { build(:user) }
       let(:ssn) { '666666666' }
 
       around do |ex|
@@ -129,7 +146,6 @@ describe Idv::SessionErrorsController do
       end
 
       before do
-        stub_sign_in
         Throttle.new(
           throttle_type: :proof_ssn,
           target: Pii::Fingerprinter.fingerprint(ssn),
@@ -152,9 +168,9 @@ describe Idv::SessionErrorsController do
     it_behaves_like 'an idv session errors controller action'
 
     context 'while throttled' do
+      let(:user) { create(:user) }
+
       before do
-        user = create(:user)
-        stub_sign_in(user)
         Throttle.new(throttle_type: :idv_doc_auth, user: user).increment_to_throttled!
       end
 

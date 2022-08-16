@@ -83,6 +83,11 @@ class ApplicationController < ActionController::Base
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
       session_id: irs_attempts_api_session_id,
+      request: request,
+      user: effective_user,
+      sp: current_sp,
+      device_fingerprint: cookies[:device],
+      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
     )
   end

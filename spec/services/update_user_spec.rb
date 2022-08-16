@@ -127,6 +127,16 @@ describe UpdateUser do
             to be_within(1.second).of original_made_default_at
         end
       end
+
+      context 'when phone does not belong to user' do
+        it 'does not update the user if the phone does not belong to them' do
+          other_phone = create(:phone_configuration)
+          attributes[:phone_id] = other_phone.id
+          expect do
+            UpdateUser.new(user: user, attributes: attributes).call
+          end.to_not(change { other_phone.updated_at })
+        end
+      end
     end
   end
 end

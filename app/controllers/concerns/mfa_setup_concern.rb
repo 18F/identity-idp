@@ -7,13 +7,15 @@ module MfaSetupConcern
     elsif next_setup_choice
       confirmation_path
     else
+      if user_session[:mfa_selections]
+        analytics.user_registration_mfa_setup_complete(
+          mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
+          enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
+          success: true,
+        )
+      end
       user_session.delete(:mfa_selections)
-      analytics.user_registration_mfa_setup_complete(
-        mfa_method_counts: mfa_context.enabled_two_factor_configuration_counts_hash,
-        enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
-        pii_like_keypaths: [[:mfa_method_counts, :phone]],
-        success: true,
-      )
       nil
     end
   end

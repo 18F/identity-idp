@@ -10,6 +10,9 @@ module OpenidConnect
       result = @logout_form.submit
 
       analytics.logout_initiated(**result.to_h.except(:redirect_uri))
+      irs_attempts_api_tracker.logout_initiated(
+        success: result.success?,
+      )
 
       if result.success? && (redirect_uri = result.extra[:redirect_uri])
         sign_out

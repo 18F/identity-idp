@@ -3,13 +3,17 @@ import { t } from '@18f/identity-i18n';
 /**
  * Given a submit event, disables all submit buttons within the target form.
  *
- * @param {Event} event Submit event.
+ * @param event Submit event.
  */
-function disableFormSubmit(event) {
-  const form = /** @type {HTMLFormElement} */ (event.target);
-  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((submit) => {
-    /** @type {HTMLInputElement|HTMLButtonElement} */ (submit).disabled = true;
-  });
+function disableFormSubmit(event: Event) {
+  const form = event.target as HTMLFormElement;
+  Array.from(form.querySelectorAll(['button:not([type])', '[type="submit"]'].join())).forEach(
+    (element) => {
+      const submit = element as HTMLInputElement | HTMLButtonElement;
+      submit.disabled = true;
+      submit.classList.add('usa-button--active');
+    },
+  );
 }
 
 function resetInput(input) {
@@ -24,11 +28,11 @@ function resetInput(input) {
 /**
  * Given an `input` or `invalid` event, updates custom validity of the given input.
  *
- * @param {Event} event Input or invalid event.
+ * @param event Input or invalid event.
  */
 
-function checkInputValidity(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
+function checkInputValidity(event: Event) {
+  const input = event.target as HTMLInputElement;
   resetInput(input);
   if (
     event.type === 'invalid' &&
@@ -50,9 +54,9 @@ function checkInputValidity(event) {
 /**
  * Binds validation to a given input.
  *
- * @param {HTMLInputElement} input Input element.
+ * @param input Input element.
  */
-function validateInput(input) {
+function validateInput(input: HTMLInputElement) {
   input.addEventListener('input', checkInputValidity);
   input.addEventListener('invalid', checkInputValidity);
 }
@@ -60,15 +64,15 @@ function validateInput(input) {
 /**
  * Initializes validation on a form element.
  *
- * @param {HTMLFormElement} form Form to initialize.
+ * @param form Form to initialize.
  */
-export function initialize(form) {
-  /** @type {HTMLInputElement[]} */
-  const fields = Array.from(form.querySelectorAll('.field,[required]'));
+export function initialize(form: HTMLFormElement) {
+  const fields: HTMLInputElement[] = Array.from(
+    form.querySelectorAll(['.field', '[required]'].join()),
+  );
   fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
 
-/** @type {HTMLFormElement[]} */
-const forms = Array.from(document.querySelectorAll('form[data-validate]'));
+const forms: HTMLFormElement[] = Array.from(document.querySelectorAll('form[data-validate]'));
 forms.forEach(initialize);

@@ -225,10 +225,17 @@ class UserMailer < ActionMailer::Base
   end
 
   def in_person_ready_to_verify(user, email_address, first_name:, enrollment:)
+    attachments.inline['barcode.png'] = BarcodeOutputter.new(
+      code: enrollment.enrollment_code,
+    ).image_data
+
     with_user_locale(user) do
       @header = t('in_person_proofing.headings.barcode')
       @first_name = first_name
-      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment)
+      @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
+        enrollment: enrollment,
+        barcode_image_url: attachments['barcode.png'].url,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
@@ -239,7 +246,10 @@ class UserMailer < ActionMailer::Base
   def in_person_verified(user, email_address, enrollment:)
     with_user_locale(user) do
       @hide_title = true
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(enrollment: enrollment)
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_verified.subject', app_name: APP_NAME),
@@ -249,7 +259,10 @@ class UserMailer < ActionMailer::Base
 
   def in_person_failed(user, email_address, enrollment:)
     with_user_locale(user) do
-      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(enrollment: enrollment)
+      @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
+        enrollment: enrollment,
+        url_options: url_options,
+      )
       mail(
         to: email_address.email,
         subject: t('user_mailer.in_person_failed.subject', app_name: APP_NAME),

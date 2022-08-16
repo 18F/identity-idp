@@ -3,6 +3,8 @@ require 'rails_helper'
 describe Idv::DocAuthController do
   include DocAuthHelper
 
+  let(:user) { build(:user) }
+
   describe 'before_actions' do
     it 'includes corrects before_actions' do
       expect(subject).to have_actions(
@@ -18,15 +20,19 @@ describe Idv::DocAuthController do
     end
   end
 
+  let(:user) { build(:user) }
+
   before do |example|
-    stub_sign_in unless example.metadata[:skip_sign_in]
+    stub_sign_in(user) if user
     stub_analytics
     allow(@analytics).to receive(:track_event)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
-  describe 'unauthenticated', :skip_sign_in do
+  describe 'unauthenticated' do
+    let(:user) { nil }
+
     it 'redirects to the root url' do
       get :index
 
@@ -39,6 +45,20 @@ describe Idv::DocAuthController do
       get :index
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+    end
+
+    context 'with pending in person enrollment' do
+      let(:user) { build(:user, :with_pending_in_person_enrollment) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'redirects to in person ready to verify page' do
+        get :index
+
+        expect(response).to redirect_to idv_in_person_ready_to_verify_url
+      end
     end
   end
 
@@ -111,6 +131,24 @@ describe Idv::DocAuthController do
         hash_including(step: 'welcome', step_count: 2),
       )
     end
+
+    context 'with an existing applicant' do
+      before do
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
+      end
+
+      it 'finishes the flow' do
+        get :show, params: { step: 'welcome' }
+
+        expect(response).to redirect_to idv_review_url
+      end
+    end
   end
 
   describe '#update' do
@@ -173,6 +211,24 @@ describe Idv::DocAuthController do
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
       )
+    end
+
+    context 'with an existing applicant' do
+      before do
+        idv_session = Idv::Session.new(
+          user_session: controller.user_session,
+          current_user: user,
+          service_provider: nil,
+        )
+        idv_session.applicant = {}
+        allow(controller).to receive(:idv_session).and_return(idv_session)
+      end
+
+      it 'finishes the flow' do
+        put :update, params: { step: 'ssn' }
+
+        expect(response).to redirect_to idv_review_url
+      end
     end
   end
 
