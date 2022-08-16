@@ -29,7 +29,7 @@ locals:
 </p>
 
 <% if IdentityConfig.store.proofing_device_profiling_collecting_enabled %>
-  <% unless IdentityConfig.store.lexisnexis_threatmetrix_org_id.empty? || updating_ssn %>
+  <% unless IdentityConfig.store.lexisnexis_threatmetrix_org_id.empty? %>
     <script type="text/javascript" src="https://h.online-metrix.net/fp/tags.js?org_id=<%= IdentityConfig.store.lexisnexis_threatmetrix_org_id %>&session_id=<%= flow_session[:threatmetrix_session_id] %>">
     </script>
     <noscript>

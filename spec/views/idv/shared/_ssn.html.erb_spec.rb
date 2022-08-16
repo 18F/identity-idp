@@ -52,17 +52,6 @@ describe 'idv/shared/_ssn.html.erb' do
           end
         end
       end
-
-      context 'updating ssn already entered' do
-        let(:updating_ssn) { true }
-
-        it 'does not render <script> tag' do
-          expect_script_tag_not_rendered
-        end
-        it 'does not render <noscript> tag' do
-          expect_noscript_tag_not_rendered
-        end
-      end
     end
 
     context 'org id not specified' do
