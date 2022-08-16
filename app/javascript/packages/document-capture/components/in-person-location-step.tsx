@@ -1,12 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import {
-  PageHeading,
-  LocationCollectionItem,
-  LocationCollection,
-  SpinnerDots,
-} from '@18f/identity-components';
+import { PageHeading, SpinnerDots } from '@18f/identity-components';
 import BackButton from './back-button';
+import LocationCollection from './location-collection';
+import LocationCollectionItem from './location-collection-item';
 
 interface PostOffice {
   address: string;
@@ -160,33 +157,36 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     };
   }, []);
 
-  let locationItems: React.ReactNode;
+  let locationsContent: React.ReactNode;
   if (!isLoadingComplete) {
-    locationItems = <SpinnerDots />;
+    locationsContent = <SpinnerDots />;
   } else if (locationData.length < 1) {
-    locationItems = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
+    locationsContent = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
   } else {
-    locationItems = locationData.map((item, index) => (
-      <LocationCollectionItem
-        key={`${index}-${item.name}`}
-        handleSelect={handleLocationSelect}
-        name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
-        streetAddress={item.streetAddress}
-        selectId={item.id}
-        formattedCityStateZip={item.formattedCityStateZip}
-        weekdayHours={item.weekdayHours}
-        saturdayHours={item.saturdayHours}
-        sundayHours={item.sundayHours}
-      />
-    ));
+    locationsContent = (
+      <LocationCollection>
+        {locationData.map((item, index) => (
+          <LocationCollectionItem
+            key={`${index}-${item.name}`}
+            handleSelect={handleLocationSelect}
+            name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
+            streetAddress={item.streetAddress}
+            selectId={item.id}
+            formattedCityStateZip={item.formattedCityStateZip}
+            weekdayHours={item.weekdayHours}
+            saturdayHours={item.saturdayHours}
+            sundayHours={item.sundayHours}
+          />
+        ))}
+      </LocationCollection>
+    );
   }
 
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
-
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      <LocationCollection>{locationItems}</LocationCollection>
+      {locationsContent}
       <BackButton onClick={toPreviousStep} />
     </>
   );
