@@ -242,6 +242,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
       end
 
       context 'with a successful response from the proofer' do
