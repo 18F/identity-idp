@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  Link,
   IconList,
   IconListItem,
   PageHeading,
@@ -13,6 +14,7 @@ import { FlowContext } from '@18f/identity-verify-flow';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
+import MarketingSiteContext from '../context/marketing-site';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
@@ -20,6 +22,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { flowPath } = useContext(UploadContext);
+  const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationName } = value;
 
   return (
@@ -91,6 +94,17 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
           </Button>
         </div>
       )}
+      <p>
+        {t('in_person_proofing.body.prepare.privacy_disclaimer')}{' '}
+        {securityAndPrivacyHowItWorksURL && (
+          <>
+            {t('in_person_proofing.body.prepare.privacy_disclaimer_questions')}{' '}
+            <Link href={securityAndPrivacyHowItWorksURL}>
+              {t('in_person_proofing.body.prepare.privacy_disclaimer_link')}
+            </Link>
+          </>
+        )}
+      </p>
       <InPersonTroubleshootingOptions />
       <BackButton includeBorder onClick={toPreviousStep} />
     </>
