@@ -93,7 +93,7 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
 
       if idv_session.address_verification_mechanism == 'gpo'
-        analytics.idv_gpo_address_letter_requested(enqueued_at: Time.zone.now, resend: false)
+        analytics.idv_gpo_address_letter_enqueued(enqueued_at: Time.zone.now, resend: false)
       end
 
       if idv_session.profile.active?

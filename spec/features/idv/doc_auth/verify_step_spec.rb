@@ -74,6 +74,22 @@ feature 'doc auth verify step', :js do
     )
   end
 
+  it 'allows user to back out of editing their address and proceed' do
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_verify_step
+
+    click_button t('idv.buttons.change_address_label')
+    fill_out_address_form_fail
+    click_doc_auth_back_link
+
+    click_idv_continue
+
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth optional verify_wait submitted',
+      address_edited: false,
+    )
+  end
+
   it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step

@@ -90,4 +90,8 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/cancel', step: 'state_id' %>
+<% if updating_state_id %>
+  <%= render 'idv/shared/back', action: 'cancel_update_state_id' %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
+<% end %>
