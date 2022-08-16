@@ -157,16 +157,18 @@ feature 'doc auth verify step', :js do
       allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
         [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: true,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -181,16 +183,18 @@ feature 'doc auth verify step', :js do
         IdentityConfig.store.aamva_supported_jurisdictions -
           [Idp::Constants::MOCK_IDV_APPLICANT[:state_id_jurisdiction]],
       )
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: false,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -203,17 +207,19 @@ feature 'doc auth verify step', :js do
     it 'does not perform the state ID check' do
       allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
+      user = create(:user, :signed_up)
       expect_any_instance_of(Idv::Agent).
         to receive(:proof_resolution).
         with(
           anything,
           should_proof_state_id: false,
           trace_id: anything,
+          threatmetrix_session_id: nil,
+          user_id: user.id,
         ).
         and_call_original
 
       visit_idp_from_sp_with_ial1(:oidc)
-      user = create(:user, :signed_up)
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
