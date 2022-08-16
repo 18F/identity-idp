@@ -12,6 +12,8 @@ module Api
 
     skip_before_action :verify_authenticity_token
     before_action :authenticate_client
+    prepend_before_action :skip_session_load
+    prepend_before_action :skip_session_expiration
 
     respond_to :json
 
