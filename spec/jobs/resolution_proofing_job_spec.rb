@@ -41,7 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { build(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
-  let(:threatmetrix_request_id) { '1234' }
+  let(:threatmetrix_request_id) { 'ddp-mock-transaction-id-123' }
 
   describe '.perform_later' do
     it 'stores results' do
