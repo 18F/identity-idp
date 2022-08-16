@@ -78,7 +78,7 @@ describe 'idv/shared/_ssn.html.erb' do
   end
 
   def expect_script_tag_rendered
-    expect(rendered).to have_css("script[src='#{tags_js_url}']", visible: false)
+    expect(rendered).to have_css("script[nonce][src='#{tags_js_url}']", visible: false)
   end
 
   def expect_noscript_tag_rendered
