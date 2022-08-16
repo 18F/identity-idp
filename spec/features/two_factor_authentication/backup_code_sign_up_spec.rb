@@ -90,7 +90,7 @@ feature 'sign up with backup code' do
       end
     end
 
-    context 'with the feature flag turned on (IdentityConfig.store.backup_code_reminder_redirect)' do
+    context 'with the feature flag turned on' do
       before do
         allow(IdentityConfig.store).to receive(:backup_code_reminder_redirect).and_return(true)
       end
