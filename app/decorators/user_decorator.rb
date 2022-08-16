@@ -121,9 +121,7 @@ class UserDecorator
   end
 
   def second_last_signed_in_at
-    user.events.where(
-      event_type: 'sign_in_after_2fa'
-    ).order(id: :desc).pluck(:created_at).second
+    user.events.where(event_type: 'sign_in_after_2fa').order(id: :desc).pluck(:created_at).second
   end
 
   def connected_apps
