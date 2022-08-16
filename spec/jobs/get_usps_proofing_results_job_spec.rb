@@ -141,26 +141,98 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
-      it 'sends proofing failed email on response with failed status' do
-        stub_request_token
-        stub_request_failed_proofing_results
+      describe 'sending emails' do
+        it 'sends proofing failed email on response with failed status' do
+          stub_request_token
+          stub_request_failed_proofing_results
 
-        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-          and_return([pending_enrollment])
+          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+            and_return([pending_enrollment])
 
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-        user = pending_enrollment.user
-        user.email_addresses.each do |email_address|
-          expect(UserMailer).to receive(:in_person_failed).
-            with(
-              user,
-              email_address,
-              enrollment: instance_of(InPersonEnrollment),
-            ).
-            and_return(mailer)
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          user = pending_enrollment.user
+          user.email_addresses.each do |email_address|
+            # it sends with the default delay
+            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(UserMailer).to receive(:in_person_failed).
+              with(
+                user,
+                email_address,
+                enrollment: instance_of(InPersonEnrollment),
+              ).
+              and_return(mailer)
+          end
+
+          job.perform(Time.zone.now)
         end
 
-        job.perform(Time.zone.now)
+        it 'sends proofing verifed email on 2xx responses with valid JSON' do
+          stub_request_token
+          stub_request_passed_proofing_results
+
+          allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+            and_return([pending_enrollment])
+
+          mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+          user = pending_enrollment.user
+          user.email_addresses.each do |email_address|
+            # it sends with the default delay
+            expect(mailer).to receive(:deliver_now_or_later).with(wait: 1.hour)
+            expect(UserMailer).to receive(:in_person_verified).
+              with(
+                user,
+                email_address,
+                enrollment: instance_of(InPersonEnrollment),
+              ).
+              and_return(mailer)
+          end
+
+          job.perform(Time.zone.now)
+        end
+
+        context 'a custom delay greater than zero is set' do
+          it 'uses the custom delay' do
+            stub_request_token
+            stub_request_passed_proofing_results
+
+            allow(IdentityConfig.store).
+              to(receive(:in_person_results_delay_in_hours).and_return(5))
+
+            allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+              and_return([pending_enrollment])
+
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            user = pending_enrollment.user
+            user.email_addresses.each do |email_address|
+              expect(mailer).to receive(:deliver_now_or_later).with(wait: 5.hours)
+              expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
+            end
+
+            job.perform(Time.zone.now)
+          end
+        end
+
+        context 'a custom delay of zero is set' do
+          it 'does not delay sending the email' do
+            stub_request_token
+            stub_request_passed_proofing_results
+
+            allow(IdentityConfig.store).
+              to(receive(:in_person_results_delay_in_hours).and_return(0))
+
+            allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+              and_return([pending_enrollment])
+
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            user = pending_enrollment.user
+            user.email_addresses.each do |email_address|
+              expect(mailer).to receive(:deliver_now_or_later).with(no_args)
+              expect(UserMailer).to receive(:in_person_verified).and_return(mailer)
+            end
+
+            job.perform(Time.zone.now)
+          end
+        end
       end
 
       it 'updates enrollment records and activates profiles on response with passed status' do
@@ -188,28 +260,6 @@ RSpec.describe GetUspsProofingResultsJob do
             enrollment_code: enrollment.enrollment_code,
           )
         end
-      end
-
-      it 'sends verifed email on 2xx responses with valid JSON' do
-        stub_request_token
-        stub_request_passed_proofing_results
-
-        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
-          and_return([pending_enrollment])
-
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
-        user = pending_enrollment.user
-        user.email_addresses.each do |email_address|
-          expect(UserMailer).to receive(:in_person_verified).
-            with(
-              user,
-              email_address,
-              enrollment: instance_of(InPersonEnrollment),
-            ).
-            and_return(mailer)
-        end
-
-        job.perform(Time.zone.now)
       end
 
       it 'receives a non-hash value' do
