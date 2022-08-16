@@ -7,6 +7,7 @@ RSpec.describe Idv::InheritedProofing::Va::VerificationService do
 
     describe "valid phone" do
         it "does something" do
+            # get a valid call
             expect(subject.verify_phone(valid_user)).to eq "foo"
         end
     end
