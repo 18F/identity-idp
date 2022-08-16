@@ -3,28 +3,24 @@ require 'barby/barcode/code_128'
 require 'barby/outputter/html_outputter'
 
 class BarcodeComponent < BaseComponent
-  attr_reader :barcode_data, :label, :label_formatter, :barcode_image_url_method, :tag_options
+  attr_reader :barcode_data, :label, :label_formatter, :tag_options
 
   def initialize(
     barcode_data:,
     label:,
     label_formatter: nil,
-    barcode_image_url_method: nil,
+    barcode_image_url: nil,
     **tag_options
   )
     @barcode_data = barcode_data
     @label = label
     @label_formatter = label_formatter
-    @barcode_image_url_method = barcode_image_url_method
+    @barcode_image_url = barcode_image_url
     @tag_options = tag_options
   end
 
   def barcode_image_url
-    if barcode_image_url_method.respond_to?(:call)
-      barcode_image_url_method.call
-    else
-      barcode_data_url
-    end
+    @barcode_image_url.presence || barcode_data_url
   end
 
   def formatted_data

@@ -54,7 +54,7 @@ RSpec.describe BarcodeComponent, type: :component do
       rendered = render_inline BarcodeComponent.new(
         barcode_data: '1234',
         label: '',
-        barcode_image_url_method: -> { url },
+        barcode_image_url: url,
       )
 
       expect(rendered).to have_css("img[src='#{url}']")
