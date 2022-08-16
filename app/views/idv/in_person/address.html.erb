@@ -97,6 +97,10 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/cancel', step: 'address' %>
+<% if updating_address %>
+  <%= render 'idv/shared/back', action: 'cancel_update_address' %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'address' %>
+<% end %>
 
 <%= javascript_packs_tag_once('formatted-fields') %>
