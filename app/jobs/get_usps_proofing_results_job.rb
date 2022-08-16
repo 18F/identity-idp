@@ -182,12 +182,10 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def mail_delivery_params
     config_delay = IdentityConfig.store.in_person_results_delay_in_hours
-    if config_delay.present?
-      if config_delay > 0
-        return { wait: config_delay.hours }
-      elsif (config_delay == 0)
-        return {}
-      end
+    if config_delay > 0
+      return { wait: config_delay.hours }
+    elsif (config_delay == 0)
+      return {}
     end
     { wait: DEFAULT_EMAIL_DELAY_IN_HOURS.hours }
   end
