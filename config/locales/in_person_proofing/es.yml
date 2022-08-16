@@ -54,9 +54,9 @@ es:
         bring_proof_info_policy: Póliza de seguro del hogar o del vehículo
         bring_proof_info_registration: Registro de votantes
         bring_title: 'Cuando vaya a la oficina de correos, lleve:'
-        privacy_disclaimer: Login.gov es un sitio web seguro del gobierno. Nosotros y el
-          Servicio Postal de los Estados Unidos utilizamos sus datos para
-          verificar su identidad.
+        privacy_disclaimer: '%{app_name} es un sitio web seguro del gobierno. Nosotros y
+          el Servicio Postal de los Estados Unidos utilizamos sus datos para
+          verificar su identidad.'
         privacy_disclaimer_link: Obtenga más información sobre la privacidad y la seguridad.
         privacy_disclaimer_questions: ¿Preguntas?
         verify_step_about: 'Complete los siguientes pasos para generar el código de

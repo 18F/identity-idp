@@ -51,8 +51,8 @@ en:
         bring_proof_info_policy: Home or Vehicle Insurance Policy
         bring_proof_info_registration: Voter Registration
         bring_title: 'When you go to the Post Office, please bring:'
-        privacy_disclaimer: Login.gov is a secure, government website. We and the U.S.
-          Postal Service use your data to verify your identity.
+        privacy_disclaimer: '%{app_name} is a secure, government website. We and the
+          U.S. Postal Service use your data to verify your identity.'
         privacy_disclaimer_link: Learn more about privacy and security.
         privacy_disclaimer_questions: Questions?
         verify_step_about: 'Complete the steps below to generate the barcode you’ll take
