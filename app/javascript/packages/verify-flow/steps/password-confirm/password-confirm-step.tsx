@@ -101,9 +101,8 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
               <HistoryLink
                 basePath={stepPath}
                 step={FORGOT_PASSWORD_PATH}
-                title={`${t('idv.forgot_password.link_html').replace(`%{link}`, '')} ${t(
-                  'idv.forgot_password.link_text',
-                )}`}
+                aria-label={t('idv.forgot_password.link_html').replace(`%{link}`, '')}
+                title={`${t('idv.forgot_password.link_text')}`}
               >
                 {children}
               </HistoryLink>
