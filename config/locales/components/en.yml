@@ -2,7 +2,7 @@
 en:
   components:
     barcode:
-      table_label: Barcode
+      image_alt: Barcode
     clipboard_button:
       label: Copy
     javascript_required:
