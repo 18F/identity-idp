@@ -1,31 +1,31 @@
 namespace :attempts do
-  AUTH_TOKEN = 'abc123'
-  PRIVATE_KEY_PATH = 'keys/attempts_api_private_key.key'
+  auth_token = 'abc123'
+  private_key_path = 'keys/attempts_api_private_key.key'
 
   desc 'Retrieve events via the API'
   task fetch_events: :environment do
     conn = Faraday.new(url: 'http://localhost:3000')
 
     resp = conn.post('/api/irs_attempts_api/security_events') do |req|
-      req.headers['Authorization'] = "Bearer #{AUTH_TOKEN}"
+      req.headers['Authorization'] = "Bearer #{auth_token}"
     end.body
 
     events = JSON.parse(resp)
 
-    if File.exist?(PRIVATE_KEY_PATH)
+    if File.exist?(private_key_path)
       puts events['sets'].any? ? 'Decrypted events:' : 'No events returned.'
 
-      key = OpenSSL::PKey::RSA.new(File.read(PRIVATE_KEY_PATH))
-      events['sets'].each do |event|
+      key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
+      events['sets'].each do |_jti, event|
         begin
-          pp JSON.parse(JWE.decrypt(event[1], key))
+          pp JSON.parse(JWE.decrypt(event, key))
         rescue
           puts 'Failed to parse/decrypt event!'
         end
         puts "\n"
       end
     else
-      puts 'No decryption key in keys/irs-private-key.key; cannot decrypt events.'
+      puts "No decryption key in #{private_key_path}; cannot decrypt events."
       pp events
     end
   end
@@ -49,17 +49,17 @@ namespace :attempts do
       puts "❌ FAILED: Set irs_attempts_api_enabled=true on ServiceProvider.find #{sp.id}"
     end
 
-    if IdentityConfig.store.irs_attempt_api_auth_tokens.include?(AUTH_TOKEN)
-      puts "✅ #{AUTH_TOKEN} set as auth token"
+    if IdentityConfig.store.irs_attempt_api_auth_tokens.include?(auth_token)
+      puts "✅ #{auth_token} set as auth token"
     else
       failed = true
-      puts "❌ FAILED: set irs_attempt_api_auth_tokens='#{AUTH_TOKEN}' in application.yml.default"
+      puts "❌ FAILED: set irs_attempt_api_auth_tokens='#{auth_token}' in application.yml.default"
     end
 
-    if File.exist?(PRIVATE_KEY_PATH)
-      puts "✅ '#{PRIVATE_KEY_PATH}' exists for decrypting events"
+    if File.exist?(private_key_path)
+      puts "✅ '#{private_key_path}' exists for decrypting events"
     else
-      puts "❌ FAILED: Private key '#{PRIVATE_KEY_PATH}' does not exist; unable to decrypt events"
+      puts "❌ FAILED: Private key '#{private_key_path}' does not exist; unable to decrypt events"
     end
 
     puts 'Remember to restart Rails after updating application.yml.default!' if failed
