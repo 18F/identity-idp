@@ -10,6 +10,8 @@ class BarcodeOutputter
   end
 
   def image_data
+    # Based on requirements, this currently only supports Code 128C barcodes, but could be enhanced
+    # to support others as needed.
     Barby::Code128C.new(code).to_png(margin: 10, xdim: 2)
   end
 end
