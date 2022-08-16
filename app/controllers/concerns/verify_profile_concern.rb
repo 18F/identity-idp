@@ -12,7 +12,7 @@ module VerifyProfileConcern
   end
 
   def user_needs_backup_code_reminder?
-    return false unless IdentityConfig.store.kantara_2fa_phone_restricted
+    return false unless IdentityConfig.store.backup_code_reminder_redirect
     user_backup_codes_configured? && user_last_signed_in_more_than_5_months_ago?
   end
 
