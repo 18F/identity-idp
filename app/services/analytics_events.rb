@@ -648,7 +648,7 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] resend
-  # GPO letter was requested and time was recorded
+  # GPO letter was requested
   def idv_gpo_address_letter_requested(resend:, **extra)
     track_event(
       'IdV: USPS address letter requested',
