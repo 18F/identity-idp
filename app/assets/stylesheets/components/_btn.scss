@@ -10,21 +10,11 @@
   // of a link.
   display: inline;
   width: auto;
-
-  // Temporary: To be backported to design system. Unstyled buttons should not ever show the default
-  // opaque disabled background color. Typically a button would not be both disabled and active, but
-  // it is possible in some browsers when e.g. disabling a button in response to its own click.
-  &.usa-button:disabled:hover,
-  &.usa-button:disabled.usa-button--hover,
-  &.usa-button:disabled:active,
-  &.usa-button:disabled.usa-button--active,
-  &.usa-button:disabled:focus,
-  &.usa-button:disabled.usa-focus {
-    background-color: transparent;
-  }
 }
 
 .usa-button:disabled.usa-button--active,
 .usa-button--disabled.usa-button--active {
-  @include set-text-and-bg('primary-darker', $context: 'Button');
+  &:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse) {
+    @include set-text-and-bg('primary-darker', $context: 'Button');
+  }
 }
