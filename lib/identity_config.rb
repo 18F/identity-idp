@@ -191,6 +191,7 @@ class IdentityConfig
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
+    config.add(:irs_attempt_api_csp_id)
     config.add(:irs_attempt_api_enabled, type: :boolean)
     config.add(:irs_attempt_api_event_ttl_seconds, type: :integer)
     config.add(:irs_attempt_api_event_count_default, type: :integer)

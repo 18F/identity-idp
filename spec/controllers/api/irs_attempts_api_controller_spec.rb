@@ -8,7 +8,8 @@ RSpec.describe Api::IrsAttemptsApiController do
 
     existing_events
 
-    request.headers['Authorization'] = "Bearer #{auth_token}"
+    request.headers['Authorization'] =
+      "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
   end
 
   let(:auth_token) do
@@ -40,7 +41,8 @@ RSpec.describe Api::IrsAttemptsApiController do
       end
 
       it 'allows authentication without error' do
-        request.headers['Authorization'] = "Bearer #{auth_token}"
+        request.headers['Authorization'] =
+          "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
         post :create, params: {}
 
         expect(response.status).to eq(200)
@@ -69,24 +71,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(response.status).to eq(401)
     end
 
-    it 'allows events to be acknowledged' do
-      post :create, params: { ack: existing_event_jtis }
-
-      expect(response).to be_ok
-
-      expected_response = {
-        'sets' => {},
-      }
-      expect(JSON.parse(response.body)).to eq(expected_response)
-      expect(IrsAttemptsApi::RedisClient.new.read_events).to be_empty
-      expect(@analytics).to have_logged_event(
-        'IRS Attempt API: Events submitted',
-        acknowledged_event_count: 3,
-        rendered_event_count: 0,
-        set_errors: nil,
-      )
-    end
-
     it 'renders new events' do
       post :create, params: {}
 
@@ -98,7 +82,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(JSON.parse(response.body)).to eq(expected_response)
       expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
-        acknowledged_event_count: 0,
         rendered_event_count: 3,
         set_errors: nil,
       )
@@ -112,7 +95,6 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(response).to be_ok
       expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
-        acknowledged_event_count: 0,
         rendered_event_count: 3,
         set_errors: set_errors.to_json,
       )

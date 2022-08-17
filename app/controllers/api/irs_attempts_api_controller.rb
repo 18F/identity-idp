@@ -12,11 +12,12 @@ module Api
 
     skip_before_action :verify_authenticity_token
     before_action :authenticate_client
+    prepend_before_action :skip_session_load
+    prepend_before_action :skip_session_expiration
 
     respond_to :json
 
     def create
-      acknowledge_acked_events
       render json: { sets: security_event_tokens }
       analytics.irs_attempts_api_events(**analytics_properties)
     end
@@ -24,18 +25,11 @@ module Api
     private
 
     def authenticate_client
-      bearer, token = request.authorization.split(' ', 2)
-      if bearer != 'Bearer' || !valid_auth_tokens.include?(token)
+      bearer, csp_id, token = request.authorization.split(' ', 3)
+      if bearer != 'Bearer' || !valid_auth_tokens.include?(token) ||
+         csp_id != IdentityConfig.store.irs_attempt_api_csp_id
         render json: { status: 401, description: 'Unauthorized' }, status: :unauthorized
       end
-    end
-
-    def acknowledge_acked_events
-      redis_client.delete_events(ack_event_ids)
-    end
-
-    def ack_event_ids
-      params['ack'] || []
     end
 
     def requested_event_count
@@ -67,7 +61,6 @@ module Api
 
     def analytics_properties
       {
-        acknowledged_event_count: ack_event_ids.count,
         rendered_event_count: security_event_tokens.keys.count,
         set_errors: security_event_token_errors,
       }
