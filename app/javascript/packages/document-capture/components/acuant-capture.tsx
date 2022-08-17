@@ -136,7 +136,7 @@ const noop = () => {};
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  */
-export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError) =>
+export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error  =>
   error instanceof Error;
 
 /**
