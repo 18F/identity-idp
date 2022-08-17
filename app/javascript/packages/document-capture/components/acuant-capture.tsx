@@ -37,15 +37,15 @@ interface ImageAnalyticsPayload {
   /**
    * Image width, or null if unknown
    */
-  width?: number | null;
+  width: number | null;
   /**
    * Image height, or null if unknown
    */
-  height?: number | null;
+  height: number | null;
   /**
    * Mime type, or null if unknown
    */
-  mimeType?: string | null;
+  mimeType: string | null;
   /**
    * Method by which the image was added
    */
@@ -136,7 +136,7 @@ const noop = () => {};
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
  */
-export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error  =>
+export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error =>
   error instanceof Error;
 
 /**
@@ -162,8 +162,7 @@ export function getNormalizedAcuantCaptureFailureMessage(
     return 'User or system denied camera access';
   }
 
-  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } =
-    (window as AcuantGlobal).AcuantJavascriptWebSdk;
+  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
 
   switch (code) {
     case REPEAT_FAIL_CODE:
