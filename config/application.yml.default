@@ -51,6 +51,7 @@ aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
+backup_code_reminder_redirect: false
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 country_phone_number_overrides: '{}'

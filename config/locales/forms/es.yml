@@ -32,6 +32,12 @@ es:
         no serán válidos.
       confirm: '¿Está seguro de que desea volver a generar sus códigos de copia de
         seguridad?'
+    backup_code_reminder:
+      body_info: Si por alguna razón no puede acceder a su método de autenticación
+        principal, puede usar códigos de recuperación para ingresar a su cuenta.
+      have_codes: Tengo mis códigos
+      heading: '¿Todavía tiene sus códigos de recuperación?'
+      need_new_codes: Necesito un nuevo conjunto de códigos de recuperación
     buttons:
       back: Atrás
       cancel: Sí, cancelar
