@@ -11,6 +11,7 @@ RSpec.describe Api::IrsAttemptsApiController do
     request.headers['Authorization'] =
       "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
   end
+  let(:time) { Time.new(2022, 1, 1, 0, 0, 0, 'Z') }
 
   let(:auth_token) do
     IdentityConfig.store.irs_attempt_api_auth_tokens.first
@@ -20,12 +21,12 @@ RSpec.describe Api::IrsAttemptsApiController do
       event = IrsAttemptsApi::AttemptEvent.new(
         event_type: :test_event,
         session_id: 'test-session-id',
-        occurred_at: Time.zone.now,
+        occurred_at: time,
         event_metadata: {},
       )
       jti = event.jti
       jwe = event.to_jwe
-      IrsAttemptsApi::RedisClient.new.write_event(jti: jti, jwe: jwe)
+      IrsAttemptsApi::RedisClient.new.write_event(jti: jti, jwe: jwe, timestamp: event.occurred_at)
       [jti, jwe]
     end
   end
@@ -43,7 +44,7 @@ RSpec.describe Api::IrsAttemptsApiController do
       it 'allows authentication without error' do
         request.headers['Authorization'] =
           "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
-        post :create, params: {}
+        post :create, params: { timestamp: time.iso8601 }
 
         expect(response.status).to eq(200)
       end
@@ -52,7 +53,7 @@ RSpec.describe Api::IrsAttemptsApiController do
     it 'renders a 404 if disabled' do
       allow(IdentityConfig.store).to receive(:irs_attempt_api_enabled).and_return(false)
 
-      post :create, params: {}
+      post :create, params: { timestamp: time.iso8601 }
 
       expect(response.status).to eq(404)
     end
@@ -60,19 +61,19 @@ RSpec.describe Api::IrsAttemptsApiController do
     it 'authenticates the client' do
       request.headers['Authorization'] = auth_token # Missing Bearer prefix
 
-      post :create, params: {}
+      post :create, params: { timestamp: time.iso8601 }
 
       expect(response.status).to eq(401)
 
       request.headers['Authorization'] = 'garbage-fake-token-nobody-likes'
 
-      post :create, params: {}
+      post :create, params: { timestamp: time.iso8601 }
 
       expect(response.status).to eq(401)
     end
 
     it 'renders new events' do
-      post :create, params: {}
+      post :create, params: { timestamp: time.iso8601 }
 
       expect(response).to be_ok
 
@@ -83,37 +84,9 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
         rendered_event_count: 3,
-        set_errors: nil,
+        success: true,
+        timestamp: time.iso8601,
       )
-    end
-
-    it 'logs errors from the client' do
-      set_errors = { abc123: { description: 'it is b0rken' } }
-
-      post :create, params: { setErrs: set_errors }
-
-      expect(response).to be_ok
-      expect(@analytics).to have_logged_event(
-        'IRS Attempt API: Events submitted',
-        rendered_event_count: 3,
-        set_errors: set_errors.to_json,
-      )
-    end
-
-    it 'respects the maxEvents param' do
-      post :create, params: { maxEvents: 2 }
-
-      expect(response).to be_ok
-      expect(JSON.parse(response.body)['sets'].keys.length).to eq(2)
-    end
-
-    it 'does not render more than the configured maximum event allowance' do
-      allow(IdentityConfig.store).to receive(:irs_attempt_api_event_count_max).and_return(2)
-
-      post :create, params: { maxEvents: 5 }
-
-      expect(response).to be_ok
-      expect(JSON.parse(response.body)['sets'].keys.length).to eq(2)
     end
   end
 end
