@@ -48,7 +48,9 @@ class ResolutionProofingJob < ApplicationJob
                           )
                         end
 
-    add_threatmetrix_result_to_callback_result(callback_log_data.result, threatmetrix_result)
+    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+      add_threatmetrix_result_to_callback_result(callback_log_data.result, threatmetrix_result)
+    end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
