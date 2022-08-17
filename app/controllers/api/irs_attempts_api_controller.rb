@@ -19,7 +19,10 @@ module Api
 
     def create
       if timestamp
-        render json: { sets: security_event_tokens }
+        result = security_event_log_result
+        headers['X-Payload-Key'] = result[:key]
+        headers['X-Payload-IV'] = result[:iv]
+        send_data result[:data], disposition: "filename=#{result[:filename]}"
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
@@ -40,6 +43,30 @@ module Api
     def security_event_tokens
       return {} unless timestamp
       @security_event_tokens ||= redis_client.read_events(timestamp: timestamp)
+    end
+
+    def security_event_log_result
+      json = security_event_tokens.to_json
+      gzip = Zlib::gzip(json)
+
+      cipher = OpenSSL::Cipher::AES.new(128, :cbc)
+      cipher.encrypt
+      key = cipher.random_key
+      iv = cipher.random_iv
+      encrypted_gzip = cipher.update(gzip) + cipher.final
+      digest = Digest::SHA256.hexdigest(encrypted_gzip)
+      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+      pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+      encrypted_key = pub_key.public_encrypt(key)
+
+      filename = "FCI-#{IdentityConfig.store.irs_attempt_api_csp_id}_#{timestamp.strftime("%Y%m%dT%HZ")}_#{digest}.json.gz"
+
+      {
+        filename: filename,
+        iv: Base64.strict_encode64(iv),
+        encrypted_key: Base64.strict_encode64(encrypted_key),
+        data: Base64.strict_encode64(encrypted_gzip),
+      }
     end
 
     def redis_client
