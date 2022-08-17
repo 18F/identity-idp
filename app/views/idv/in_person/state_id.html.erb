@@ -81,12 +81,10 @@
         ) %>
   </div>
 
-  <%= render ButtonComponent.new(big: true, wide: true) do %>
-    <% if updating_state_id %>
-      <%= t('forms.buttons.submit.update') %>
-    <% else %>
-      <%= t('forms.buttons.continue') %>
-    <% end %>
+  <% if updating_state_id %>
+    <%= f.submit t('forms.buttons.submit.update'), big: true, wide: true %>
+  <% else %>
+    <%= f.submit t('forms.buttons.continue'), big: true, wide: true %>
   <% end %>
 <% end %>
 

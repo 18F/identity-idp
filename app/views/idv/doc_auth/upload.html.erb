@@ -51,10 +51,8 @@
           url: url_for(type: :mobile),
           method: 'PUT',
           html: { autocomplete: 'off', class: 'margin-top-2' },
-        ) do %>
-      <button type="submit" class="usa-button usa-button--big margin-top-05">
-        <%= t('doc_auth.buttons.use_phone') %>
-      </button>
+        ) do |f| %>
+      <%= f.submit t('doc_auth.buttons.use_phone'), big: true, class: 'margin-top-05' %>
     <% end %>
   </div>
 </div>
@@ -68,10 +66,8 @@
         url: url_for(type: :desktop),
         method: 'PUT',
         html: { autocomplete: 'off', class: 'display-inline' },
-      ) do %>
-    <button type="submit" class="usa-button usa-button--unstyled">
-      <%= t('doc_auth.info.upload_computer_link') %>
-    </button>
+      ) do |f| %>
+    <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true %>
   <% end %>
 </div>
 <div id="upload-comp-liveness" class="<%= 'display-none' unless liveness_checking_enabled? %>">
