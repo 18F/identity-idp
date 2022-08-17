@@ -35,14 +35,14 @@ feature 'IRS Attempts API Event Tracking' do
 
       received_event_types = events.map(&:event_type)
 
-    expect(events.count).to eq received_event_types.count
-    expect(received_event_types).to match_array(expected_event_types)
+      expect(events.count).to eq received_event_types.count
+      expect(received_event_types).to match_array(expected_event_types)
 
-    metadata = events.first.event_metadata
-    expect(metadata[:user_ip_address]).to eq '127.0.0.1'
-    expect(metadata[:irs_application_url]).to eq 'http://localhost:7654/auth/result'
-    expect(metadata[:unique_session_id]).to be_a(String)
-    expect(metadata[:success]).to be_truthy
+      metadata = events.first.event_metadata
+      expect(metadata[:user_ip_address]).to eq '127.0.0.1'
+      expect(metadata[:irs_application_url]).to eq 'http://localhost:7654/auth/result'
+      expect(metadata[:unique_session_id]).to be_a(String)
+      expect(metadata[:success]).to be_truthy
     end
   end
 
