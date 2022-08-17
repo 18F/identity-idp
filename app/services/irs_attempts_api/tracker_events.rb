@@ -21,7 +21,7 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success True if the email and password matched
-    # @param [String, nil] failure_reason
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def forgot_password_new_password_submitted(success:, failure_reason: nil)
       track_event(
         :forgot_password_new_password_submitted,

@@ -157,7 +157,7 @@ module Users
     def irs_tracker_forgot_new_password_submitted(result)
       irs_attempts_api_tracker.forgot_password_new_password_submitted(
         success: result.success?,
-        failure_reason: result.first_error_message,
+        failure_reason: result.errors,
       )
     end
   end

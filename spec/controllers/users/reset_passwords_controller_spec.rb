@@ -81,6 +81,13 @@ describe Users::ResetPasswordsController, devise: true do
 
   describe '#update' do
     context 'user submits new password after token expires' do
+      let(:irs_tracker_failure_reason) do
+        {
+          password: ['This password is too short (minimum is 12 characters)'],
+          reset_password_token: ['token_expired'],
+        }
+      end
+
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
         stub_attempts_tracker
@@ -121,7 +128,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_new_password_submitted,
           success: false,
-          failure_reason: 'This password is too short (minimum is 12 characters)',
+          failure_reason: irs_tracker_failure_reason,
         )
 
         expect(response).to redirect_to new_user_password_path
@@ -130,6 +137,10 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'user submits invalid new password' do
+      let(:irs_tracker_failure_reason) do
+        { password: ['This password is too short (minimum is 12 characters)'] }
+      end
+
       it 'renders edit' do
         stub_analytics
         stub_attempts_tracker
@@ -166,7 +177,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_new_password_submitted,
           success: false,
-          failure_reason: 'This password is too short (minimum is 12 characters)',
+          failure_reason: irs_tracker_failure_reason,
         )
       end
     end
@@ -234,7 +245,7 @@ describe Users::ResetPasswordsController, devise: true do
           expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
             :forgot_password_new_password_submitted,
             success: true,
-            failure_reason: nil,
+            failure_reason: {},
           )
           expect(user.events.password_changed.size).to be 1
 
@@ -284,7 +295,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_new_password_submitted,
           success: true,
-          failure_reason: nil,
+          failure_reason: {},
         )
 
         expect(user.active_profile.present?).to eq false
@@ -333,7 +344,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_new_password_submitted,
           success: true,
-          failure_reason: nil,
+          failure_reason: {},
         )
 
         expect(user.reload.confirmed?).to eq true
