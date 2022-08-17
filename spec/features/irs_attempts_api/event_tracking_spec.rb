@@ -43,8 +43,6 @@ feature 'IRS Attempts API Event Tracking' do
     expect(metadata[:irs_application_url]).to eq 'http://localhost:7654/auth/result'
     expect(metadata[:unique_session_id]).to be_a(String)
     expect(metadata[:success]).to be_truthy
-      expect(events.count).to be > 0
-      expect(received_event_types.sort).to eq(expected_event_types.sort)
     end
   end
 
