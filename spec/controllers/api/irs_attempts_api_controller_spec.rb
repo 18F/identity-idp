@@ -58,6 +58,21 @@ RSpec.describe Api::IrsAttemptsApiController do
       expect(response.status).to eq(404)
     end
 
+    it 'returns an error without required timestamp parameter' do
+      post :create, params: {}
+      expect(response.status).to eq 422
+    end
+
+    it 'returns an error with empty timestamp parameter' do
+      post :create, params: { timestamp: '' }
+      expect(response.status).to eq 422
+    end
+
+    it 'returns an error with invalid timestamp parameter' do
+      post :create, params: { timestamp: 'abc' }
+      expect(response.status).to eq 422
+    end
+
     it 'authenticates the client' do
       request.headers['Authorization'] = auth_token # Missing Bearer prefix
 
