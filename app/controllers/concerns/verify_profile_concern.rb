@@ -17,8 +17,7 @@ module VerifyProfileConcern
   end
 
   def user_backup_codes_configured?
-    mfa_user = MfaContext.new(current_user)
-    mfa_user.backup_code_configurations.present?
+    MfaContext.new(current_user).backup_code_configurations.present?
   end
 
   def user_last_signed_in_more_than_5_months_ago?
