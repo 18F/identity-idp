@@ -1053,18 +1053,17 @@ module AnalyticsEvents
   end
 
   # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [String] set_errors JSON encoded representation of SET errors from the client
-  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
-  # new set of events
+  # @param [Boolean] success
+  # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
     rendered_event_count:,
-    set_errors:,
+    success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
       rendered_event_count: rendered_event_count,
-      set_errors: set_errors,
+      success: success,
       **extra,
     )
   end

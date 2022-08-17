@@ -6,8 +6,9 @@ namespace :attempts do
   desc 'Retrieve events via the API'
   task fetch_events: :environment do
     conn = Faraday.new(url: 'http://localhost:3000')
+    body = "timestamp=#{Time.zone.now.iso8601}"
 
-    resp = conn.post('/api/irs_attempts_api/security_events') do |req|
+    resp = conn.post('/api/irs_attempts_api/security_events', body) do |req|
       req.headers['Authorization'] =
         "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
     end.body

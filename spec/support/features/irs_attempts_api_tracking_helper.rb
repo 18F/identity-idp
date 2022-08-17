@@ -8,8 +8,8 @@ module IrsAttemptsApiTrackingHelper
       @private_key ||= OpenSSL::PKey::RSA.new(4096)
     end
 
-    def decrypted_events_from_store
-      jwes = IrsAttemptsApi::RedisClient.new.read_events
+    def decrypted_events_from_store(timestamp:)
+      jwes = IrsAttemptsApi::RedisClient.new.read_events(timestamp: timestamp)
       jwes.transform_values do |jwe|
         IrsAttemptsApi::AttemptEvent.from_jwe(jwe, self.class.private_key)
       end
@@ -22,8 +22,8 @@ module IrsAttemptsApiTrackingHelper
       and_return(encoded_key)
   end
 
-  def irs_attempts_api_tracked_events
-    IrsAttemptsApiEventDecryptor.new.decrypted_events_from_store.values
+  def irs_attempts_api_tracked_events(timestamp:)
+    IrsAttemptsApiEventDecryptor.new.decrypted_events_from_store(timestamp: timestamp).values
   end
 
   def stub_attempts_tracker

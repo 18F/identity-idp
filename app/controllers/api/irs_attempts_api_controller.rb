@@ -18,7 +18,12 @@ module Api
     respond_to :json
 
     def create
-      render json: { sets: security_event_tokens }
+      if timestamp
+        render json: { sets: security_event_tokens }
+      else
+        render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
+               status: :unprocessable_entity
+      end
       analytics.irs_attempts_api_events(**analytics_properties)
     end
 
@@ -32,23 +37,9 @@ module Api
       end
     end
 
-    def requested_event_count
-      count = if params['maxEvents']
-                params['maxEvents'].to_i
-              else
-                IdentityConfig.store.irs_attempt_api_event_count_default
-              end
-
-      [count, IdentityConfig.store.irs_attempt_api_event_count_max].min
-    end
-
     def security_event_tokens
-      @security_event_tokens ||= redis_client.read_events(requested_event_count)
-    end
-
-    def security_event_token_errors
-      return unless params['setErrs'].present?
-      params['setErrs'].to_json
+      return {} unless timestamp
+      @security_event_tokens ||= redis_client.read_events(timestamp: timestamp)
     end
 
     def redis_client
@@ -62,8 +53,18 @@ module Api
     def analytics_properties
       {
         rendered_event_count: security_event_tokens.keys.count,
-        set_errors: security_event_token_errors,
+        timestamp: timestamp&.iso8601,
+        success: timestamp.present?,
       }
+    end
+
+    def timestamp
+      timestamp_param = params.permit(:timestamp)[:timestamp]
+      return nil if timestamp_param.nil?
+
+      ActiveSupport::TimeZone['UTC'].parse(timestamp_param)
+    rescue ArgumentError
+      nil
     end
   end
 end
