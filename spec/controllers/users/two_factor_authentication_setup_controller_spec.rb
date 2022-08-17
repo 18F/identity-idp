@@ -102,6 +102,21 @@ describe Users::TwoFactorAuthenticationSetupController do
       }
     end
 
+    it 'tracks IRS attempts event' do
+      stub_sign_in_before_2fa
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+      with(:mfa_enroll_options_selected, success: true,
+                                         mfa_device_types: ['voice', 'auth_app'])
+
+      patch :create, params: {
+        two_factor_options_form: {
+          selection: ['voice', 'auth_app'],
+        },
+      }
+    end
+
     context 'when the selection is only phone and multi mfa is enabled' do
       before do
         allow(IdentityConfig.store).to receive(:select_multiple_mfa_options).and_return(true)

@@ -20,6 +20,14 @@ module IrsAttemptsApi
       )
     end
 
+    def mfa_enroll_options_selected(success:, mfa_device_types:)
+      track_event(
+        :mfa_enroll_options_selected,
+        success: success,
+        mfa_device_types: mfa_device_types,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
     # @param [Boolean] success
     def mfa_enroll_backup_code(success:)
