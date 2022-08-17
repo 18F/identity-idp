@@ -6,7 +6,7 @@ class IdentityConfig
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage]
 
   class << self
-    attr_reader :store
+    attr_reader :store, :key_types
   end
 
   CONVERTERS = {
@@ -45,13 +45,18 @@ class IdentityConfig
     end,
   }
 
+  attr_reader :key_types
+
   def initialize(read_env)
     @read_env = read_env
     @written_env = {}
+    @key_types = {}
   end
 
   def add(key, type: :string, allow_nil: false, enum: nil, options: {})
     value = @read_env[key]
+
+    @key_types[key] = type
 
     converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
     raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
@@ -143,6 +148,7 @@ class IdentityConfig
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
     config.add(:doc_auth_max_attempts, type: :integer)
+    config.add(:doc_auth_max_attempts_before_native_camera, type: :integer)
     config.add(:doc_auth_max_capture_attempts_before_tips, type: :integer)
     config.add(:doc_auth_s3_request_timeout, type: :integer)
     config.add(:doc_auth_vendor, type: :string)
@@ -185,6 +191,7 @@ class IdentityConfig
     config.add(:include_slo_in_saml_metadata, type: :boolean)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
+    config.add(:irs_attempt_api_csp_id)
     config.add(:irs_attempt_api_enabled, type: :boolean)
     config.add(:irs_attempt_api_event_ttl_seconds, type: :integer)
     config.add(:irs_attempt_api_event_count_default, type: :integer)
@@ -212,8 +219,10 @@ class IdentityConfig
     config.add(:lexisnexis_trueid_timeout, type: :float)
     config.add(:lexisnexis_threatmetrix_api_key, type: :string)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string)
-    config.add(:lexisnexis_threatmetrix_enabled, type: :string)
+    config.add(:lexisnexis_threatmetrix_enabled, type: :boolean)
+    config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string)
+    config.add(:lexisnexis_threatmetrix_policy, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
@@ -338,6 +347,7 @@ class IdentityConfig
     config.add(:session_total_duration_timeout_in_minutes, type: :integer)
     config.add(:set_remember_device_session_expiration, type: :boolean)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
+    config.add(:show_account_recovery_recovery_options, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
@@ -356,6 +366,8 @@ class IdentityConfig
     config.add(:usps_ipp_username, type: :string)
     config.add(:usps_ipp_request_timeout, type: :integer)
     config.add(:usps_upload_enabled, type: :boolean)
+    config.add(:get_usps_proofing_results_job_cron, type: :string)
+    config.add(:get_usps_proofing_results_job_reprocess_delay_minutes, type: :integer)
     config.add(:gpo_allowed_for_strict_ial2, type: :boolean)
     config.add(:usps_upload_sftp_directory, type: :string)
     config.add(:usps_upload_sftp_host, type: :string)
@@ -375,6 +387,7 @@ class IdentityConfig
     config.add(:voip_check, type: :boolean)
     config.add(:inherited_proofing_va_base_url, type: :string)
 
+    @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

@@ -31,6 +31,22 @@ RSpec.describe MarketingSite do
     end
   end
 
+  describe '.security_and_privacy_how_it_works_url' do
+    it 'points to the privacy page' do
+      expect(MarketingSite.security_and_privacy_how_it_works_url).
+        to eq('https://www.login.gov/policy/how-does-it-work/')
+    end
+
+    context 'when the user has set their locale to :es' do
+      before { I18n.locale = :es }
+
+      it 'points to the privacy page with the locale appended' do
+        expect(MarketingSite.security_and_privacy_how_it_works_url).
+          to eq('https://www.login.gov/es/policy/how-does-it-work/')
+      end
+    end
+  end
+
   describe '.rules_of_use_url' do
     it 'points to the rules of use page' do
       expect(MarketingSite.rules_of_use_url).

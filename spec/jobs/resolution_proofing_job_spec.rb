@@ -41,7 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { build(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
-  let(:threatmetrix_request_id) { '1234' }
+  let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -242,6 +242,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
       end
 
       context 'with a successful response from the proofer' do

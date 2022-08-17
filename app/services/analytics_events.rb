@@ -467,6 +467,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] name the name to prepend to analytics events
+  # @param [Number] failed_attempts the number of failed document capture attempts so far
+  # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
+  # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
+  # camera, on mobile devices.
+  def idv_native_camera_forced(name:, failed_attempts:, **extra)
+    track_event(
+      'IdV: Native camera forced after failed attempts',
+      name: name,
+      failed_attempts: failed_attempts,
+      **extra,
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # The user confirmed their choice to cancel going through IDV
   def idv_cancellation_confirmed(step:, **extra)
@@ -1038,22 +1052,18 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
   # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [String] set_errors JSON encoded representation of SET errors from the client
-  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
-  # new set of events
+  # @param [Boolean] success
+  # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
-    acknowledged_event_count:,
     rendered_event_count:,
-    set_errors:,
+    success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
-      acknowledged_event_count: acknowledged_event_count,
       rendered_event_count: rendered_event_count,
-      set_errors: set_errors,
+      success: success,
       **extra,
     )
   end
@@ -2451,6 +2461,16 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       **extra,
     )
+  end
+
+  # Tracks users visiting the recovery options page
+  def account_reset_recovery_options_visit
+    track_event('Account Reset: Recovery Options Visited')
+  end
+
+  # Tracks users going back or cancelling acoount recovery
+  def cancel_account_reset_recovery
+    track_event('Account Reset: Cancel Account Recovery Options')
   end
 end
 # rubocop:enable Metrics/ModuleLength

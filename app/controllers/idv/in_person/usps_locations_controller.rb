@@ -3,8 +3,11 @@ require 'json'
 module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
+      include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
+
+      check_or_render_not_found -> { InPersonConfig.enabled? }
 
       before_action :confirm_authenticated_for_api, only: [:update]
 

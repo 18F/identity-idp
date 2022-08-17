@@ -34,7 +34,11 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      redis_client.write_event(jti: event.jti, jwe: event.to_jwe)
+      redis_client.write_event(
+        jti: event.jti,
+        jwe: event.to_jwe,
+        timestamp: event.occurred_at,
+      )
 
       event
     end

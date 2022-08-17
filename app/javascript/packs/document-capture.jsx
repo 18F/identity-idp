@@ -9,7 +9,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContext,
   FailedCaptureAttemptsContextProvider,
-  HelpCenterContextProvider,
+  MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -40,12 +40,14 @@ import { trackEvent } from '@18f/identity-analytics';
  * @prop {string} helpCenterRedirectUrl
  * @prop {string} appName
  * @prop {string} maxCaptureAttemptsBeforeTips
+ * @prop {string} maxAttemptsBeforeNativeCamera
  * @prop {FlowPath} flowPath
  * @prop {string} cancelUrl
  * @prop {string=} idvInPersonUrl
+ * @prop {string} securityAndPrivacyHowItWorksUrl
  *
  * @see AppContext
- * @see HelpCenterContextProvider
+ * @see MarketingSiteContextProvider
  * @see FailedCaptureAttemptsContext
  * @see UploadContext
  */
@@ -131,15 +133,17 @@ function addPageAction(event, payload) {
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
+    maxAttemptsBeforeNativeCamera,
     appName,
     flowPath,
     cancelUrl: cancelURL,
     idvInPersonUrl: inPersonURL,
+    securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
     [AppContext.Provider, { value: { appName } }],
-    [HelpCenterContextProvider, { value: { helpCenterRedirectURL } }],
+    [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction } }],
     [
@@ -180,6 +184,7 @@ function addPageAction(event, payload) {
       FailedCaptureAttemptsContextProvider,
       {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+        maxAttemptsBeforeNativeCamera: Number(maxAttemptsBeforeNativeCamera),
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
