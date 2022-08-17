@@ -125,7 +125,7 @@ interface AcuantCaptureProps {
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
  * happily tolerate than an HTML entity.
  */
-const NBSP_UNICODE: string = '\u00A0';
+const NBSP_UNICODE = '\u00A0';
 
 /**
  * A noop function.
