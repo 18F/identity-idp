@@ -73,7 +73,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(form).to receive(:submit).
         with(params.require(:two_factor_options_form).permit(:selection)).
         and_return(response)
-      expect(form).to receive(:selection).and_return(['voice'])
+      expect(form).to receive(:selection).twice.and_return(['voice'])
 
       patch :create, params: voice_params
 
