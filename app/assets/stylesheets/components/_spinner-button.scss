@@ -17,7 +17,9 @@ lg-spinner-button {
     a,
     button:not([type]),
     [type='submit'],
-    [type='button'] {
+    [type='button'],
+    .usa-button:disabled.usa-button--active:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse),
+    .usa-button--disabled.usa-button--active:not(.usa-button--unstyled, .usa-button--secondary, .usa-button--accent-cool, .usa-button--accent-warm, .usa-button--base, .usa-button--outline, .usa-button--inverse) {
       color: transparent;
       opacity: 1;
     }
