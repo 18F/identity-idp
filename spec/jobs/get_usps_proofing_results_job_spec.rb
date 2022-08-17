@@ -3,11 +3,14 @@ require 'rails_helper'
 RSpec.describe GetUspsProofingResultsJob do
   include UspsIppHelper
 
+  let(:reprocess_delay_minutes) { 2.0 }
   let(:job) { GetUspsProofingResultsJob.new }
   let(:job_analytics) { FakeAnalytics.new }
 
   before do
     allow(job).to receive(:analytics).and_return(job_analytics)
+    allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
+      and_return(reprocess_delay_minutes)
   end
 
   describe '#perform' do
@@ -74,7 +77,11 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(InPersonEnrollment).to(
           have_received(:needs_usps_status_check).
             with(
-              satisfy { |v| v.begin.nil? && v.end > 5.25.minutes.ago && v.end < 4.75.minutes.ago },
+              satisfy do |v|
+                v.begin.nil? && ((Time.zone.now - v.end) / 60).between?(
+                  reprocess_delay_minutes - 0.25, reprocess_delay_minutes + 0.25
+                )
+              end,
             ),
           failure_message,
         )

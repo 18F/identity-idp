@@ -358,6 +358,11 @@ class IdentityConfig
     config.add(:usps_ipp_username, type: :string)
     config.add(:usps_ipp_request_timeout, type: :integer)
     config.add(:usps_upload_enabled, type: :boolean)
+    config.add(:get_usps_proofing_results_job_cron, type: :string, allow_nil: true)
+    config.add(
+      :get_usps_proofing_results_job_reprocess_delay_minutes, type: :string,
+                                                              allow_nil: true
+    )
     config.add(:gpo_allowed_for_strict_ial2, type: :boolean)
     config.add(:usps_upload_sftp_directory, type: :string)
     config.add(:usps_upload_sftp_host, type: :string)
