@@ -6,14 +6,13 @@ import {
   useMemo,
   useEffect,
   useImperativeHandle,
-  Ref,
 } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { Button, FullScreen } from '@18f/identity-components';
 import type { FullScreenRefHandle } from '@18f/identity-components';
 import type { FocusTrap } from 'focus-trap';
-import type { ReactNode, MouseEvent } from 'react';
+import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
