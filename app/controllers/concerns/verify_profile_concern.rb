@@ -14,5 +14,4 @@ module VerifyProfileConcern
     current_user.decorate.pending_profile_requires_verification? ||
       user_needs_to_reactivate_account?
   end
-
 end
