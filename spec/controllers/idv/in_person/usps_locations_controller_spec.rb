@@ -5,7 +5,7 @@ describe Idv::InPerson::UspsLocationsController do
 
   let(:user) { create(:user) }
   let(:sp) { nil }
-  let(:in_person_proofing_enabled) { false }
+  let(:in_person_proofing_enabled) { true }
   let(:selected_location) do
     {
       usps_location: {
@@ -70,6 +70,14 @@ describe Idv::InPerson::UspsLocationsController do
         expect(facilities.length).to eq 0
       end
     end
+
+    context 'with feature disabled' do
+      let(:in_person_proofing_enabled) { false }
+
+      it 'renders 404' do
+        expect(response.status).to eq(404)
+      end
+    end
   end
 
   describe '#update' do
@@ -121,6 +129,14 @@ describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to be_nil
+      end
+    end
+
+    context 'with feature disabled' do
+      let(:in_person_proofing_enabled) { false }
+
+      it 'renders 404' do
+        expect(response.status).to eq(404)
       end
     end
   end

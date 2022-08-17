@@ -79,6 +79,7 @@ doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
 doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
+doc_auth_max_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -107,6 +108,7 @@ idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
+in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
@@ -146,6 +148,7 @@ lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_org_id: test_account
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
+lexisnexis_threatmetrix_mock_enabled: true
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
@@ -249,6 +252,7 @@ session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
+show_account_recovery_recovery_options: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -338,6 +342,7 @@ development:
   secret_key_base: development_secret_key_base
   select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true

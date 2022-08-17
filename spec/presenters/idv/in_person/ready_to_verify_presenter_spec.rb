@@ -109,4 +109,21 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       it { expect(needs_proof_of_address).to eq true }
     end
   end
+
+  describe '#barcode_image_url' do
+    subject(:barcode_image_url) { presenter.barcode_image_url }
+
+    it { expect(barcode_image_url).to be_nil }
+
+    context 'with barcode url' do
+      let(:barcode_url) { 'https://example.com/barcode.png' }
+      subject(:presenter) do
+        described_class.new(enrollment: enrollment, barcode_image_url: barcode_url)
+      end
+
+      it 'returns barcode url' do
+        expect(barcode_image_url).to eq(barcode_url)
+      end
+    end
+  end
 end
