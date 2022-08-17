@@ -34,6 +34,11 @@ interface FailedCaptureAttemptsContextInterface {
    * Metadata about the last attempt
    */
   lastAttemptMetadata: CaptureAttemptMetadata;
+  /**
+   * Whether or not the native camera is currently being forced
+   * after maxAttemptsBeforeNativeCamera number of failed attempts
+   */
+  forceNativeCamera: boolean;
 }
 
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
@@ -48,6 +53,7 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   maxAttemptsBeforeNativeCamera: Infinity,
   maxFailedAttemptsBeforeTips: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
+  forceNativeCamera: false,
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
@@ -58,9 +64,6 @@ interface FailedCaptureAttemptsContextProviderProps {
   maxAttemptsBeforeNativeCamera: number;
 }
 
-/**
- * @param {FailedCaptureAttemptsContextProviderProps} props
- */
 function FailedCaptureAttemptsContextProvider({
   children,
   maxFailedAttemptsBeforeTips,
@@ -77,6 +80,8 @@ function FailedCaptureAttemptsContextProvider({
     setLastAttemptMetadata(metadata);
   }
 
+  const forceNativeCamera = failedCaptureAttempts >= maxAttemptsBeforeNativeCamera;
+
   return (
     <FailedCaptureAttemptsContext.Provider
       value={{
@@ -86,6 +91,7 @@ function FailedCaptureAttemptsContextProvider({
         maxAttemptsBeforeNativeCamera,
         maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
+        forceNativeCamera,
       }}
     >
       {children}
