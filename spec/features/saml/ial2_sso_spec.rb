@@ -40,10 +40,6 @@ feature 'IAL2 Single Sign On' do
     ).to_s
   end
 
-  def mock_gpo_mail_bounced
-    allow_any_instance_of(UserDecorator).to receive(:gpo_mail_bounced?).and_return(true)
-  end
-
   def update_mailing_address
     click_on t('idv.buttons.mail.resend')
     fill_in t('idv.form.password'), with: user.password
@@ -136,55 +132,6 @@ feature 'IAL2 Single Sign On' do
           click_button(t('idv.buttons.mail.resend'))
 
           expect(current_path).to eq(idv_come_back_later_path)
-        end
-      end
-
-      context 'provides an option to update address if undeliverable' do
-        it 'allows the user to update the address' do
-          user = create(:user, :signed_up)
-
-          perform_id_verification_with_gpo_without_confirming_code(user)
-
-          expect(current_url).to eq expected_gpo_return_to_sp_url
-
-          visit account_path
-
-          mock_gpo_mail_bounced
-          visit account_path
-          click_link(t('account.index.verification.update_address'))
-
-          expect(current_path).to eq idv_gpo_path
-
-          fill_out_address_form_fail
-          click_on t('idv.buttons.mail.resend')
-
-          fill_out_address_form_ok
-          update_mailing_address
-        end
-
-        it 'throttles resolution' do
-          user = create(:user, :signed_up)
-
-          perform_id_verification_with_gpo_without_confirming_code(user)
-
-          expect(current_url).to eq expected_gpo_return_to_sp_url
-
-          visit account_path
-
-          mock_gpo_mail_bounced
-          visit account_path
-          click_link(t('account.index.verification.update_address'))
-
-          expect(current_path).to eq idv_gpo_path
-          fill_out_address_form_resolution_fail
-          click_on t('idv.buttons.mail.resend')
-          expect(current_path).to eq idv_gpo_path
-          expect(page).to have_content(t('idv.failure.sessions.heading'))
-
-          fill_out_address_form_resolution_fail
-          click_on t('idv.buttons.mail.resend')
-          expect(current_path).to eq idv_gpo_path
-          expect(page).to have_content(strip_tags(t('idv.failure.sessions.heading')))
         end
       end
     end
