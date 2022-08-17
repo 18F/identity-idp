@@ -10,7 +10,6 @@ module Idv
       pii
       previous_phone_step_params
       previous_profile_step_params
-      previous_gpo_step_params
       profile_confirmation
       profile_id
       profile_step_params
