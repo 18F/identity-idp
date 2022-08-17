@@ -34,16 +34,6 @@ function resetInput(input) {
 function checkInputValidity(event: Event) {
   const input = event.target as HTMLInputElement;
   resetInput(input);
-  if (
-    event.type === 'invalid' &&
-    !input.validity.valid &&
-    input.parentNode?.querySelector('.display-if-invalid')
-  ) {
-    event.preventDefault();
-    input.setAttribute('aria-invalid', 'true');
-    input.classList.add('usa-input--error');
-    input.focus();
-  }
 
   if (input.validity.valueMissing) {
     input.setCustomValidity(t('simple_form.required.text'));
@@ -67,9 +57,7 @@ function validateInput(input: HTMLInputElement) {
  * @param form Form to initialize.
  */
 export function initialize(form: HTMLFormElement) {
-  const fields: HTMLInputElement[] = Array.from(
-    form.querySelectorAll(['.field', '[required]'].join()),
-  );
+  const fields: HTMLInputElement[] = Array.from(form.querySelectorAll('[required]'));
   fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
