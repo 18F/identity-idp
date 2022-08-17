@@ -147,6 +147,7 @@ lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_threatmetrix_api_key: test_api_key
 lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_org_id: test_account
+lexisnexis_threatmetrix_policy: test-policy
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
 lexisnexis_threatmetrix_mock_enabled: true
