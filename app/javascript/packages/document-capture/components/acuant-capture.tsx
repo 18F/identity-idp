@@ -11,6 +11,9 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { Button, FullScreen } from '@18f/identity-components';
+import type { FullScreenRefHandle } from '@18f/identity-components';
+import type { FocusTrap } from 'focus-trap';
+import type { ReactNode, MouseEvent } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -21,12 +24,11 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
-import type { ReactNode, MouseEvent } from 'react';
-import type { AcuantSuccessResponse } from './acuant-camera';
-import type { AcuantDocumentType } from './acuant-camera';
-import type { AcuantCaptureFailureError } from './acuant-camera';
-import type { FullScreenRefHandle } from '@18f/identity-components';
-import type { FocusTrap } from 'focus-trap';
+import type {
+  AcuantSuccessResponse,
+  AcuantDocumentType,
+  AcuantCaptureFailureError,
+} from './acuant-camera';
 
 type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
 type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
@@ -357,13 +359,15 @@ function AcuantCapture(
     onChangeAndResetError(nextValue, analyticsPayload);
   }
 
+  type LoggedClickCallback = (...args: any[]) => any;
+
   /**
    * Given a click source, returns a higher-order function that, when called, will log an event
    * before calling the original function.
    */
   function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
-    return (fn: (...args: any[]) => any) =>
-      (...args: Parameters<(...args: any) => any>) => {
+    return (fn: LoggedClickCallback) =>
+      (...args: Parameters<LoggedClickCallback>) => {
         if (!isSuppressingClickLogging.current) {
           addPageAction(`IdV: ${name} image clicked`, { source, ...metadata });
         }
@@ -380,6 +384,31 @@ function AcuantCapture(
     isSuppressingClickLogging.current = true;
     fn();
     isSuppressingClickLogging.current = false;
+  }
+
+  /**
+   * Triggers upload to occur, regardless of support for direct capture. This is necessary since the
+   * default behavior for interacting with the file input is intercepted when capture is supported.
+   * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
+   */
+  function forceUpload() {
+    if (!inputRef.current) {
+      return;
+    }
+
+    isForceUploading.current = true;
+
+    const originalCapture = inputRef.current.getAttribute('capture');
+
+    if (originalCapture !== null) {
+      inputRef.current.removeAttribute('capture');
+    }
+
+    withoutClickLogging(() => inputRef.current?.click());
+
+    if (originalCapture !== null) {
+      inputRef.current.setAttribute('capture', originalCapture);
+    }
   }
 
   /**
@@ -420,31 +449,6 @@ function AcuantCapture(
       isForceUploading.current = false;
     } else {
       withoutClickLogging(() => inputRef.current?.click());
-    }
-  }
-
-  /**
-   * Triggers upload to occur, regardless of support for direct capture. This is necessary since the
-   * default behavior for interacting with the file input is intercepted when capture is supported.
-   * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
-   */
-  function forceUpload() {
-    if (!inputRef.current) {
-      return;
-    }
-
-    isForceUploading.current = true;
-
-    const originalCapture = inputRef.current.getAttribute('capture');
-
-    if (originalCapture !== null) {
-      inputRef.current.removeAttribute('capture');
-    }
-
-    withoutClickLogging(() => inputRef.current?.click());
-
-    if (originalCapture !== null) {
-      inputRef.current.setAttribute('capture', originalCapture);
     }
   }
 

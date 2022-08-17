@@ -1,7 +1,6 @@
 import { createContext, useState } from 'react';
-import useCounter from '../hooks/use-counter';
-
 import type { ReactNode } from 'react';
+import useCounter from '../hooks/use-counter';
 
 interface CaptureAttemptMetadata {
   isAssessedAsGlare: boolean;
