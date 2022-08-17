@@ -163,7 +163,7 @@ export function getNormalizedAcuantCaptureFailureMessage(
   }
 
   const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } =
-    /** @type {AcuantGlobal} */ window.AcuantJavascriptWebSdk;
+    (window as AcuantGlobal).AcuantJavascriptWebSdk;
 
   switch (code) {
     case REPEAT_FAIL_CODE:
