@@ -11,17 +11,22 @@ namespace :attempts do
     resp = conn.post('/api/irs_attempts_api/security_events', body) do |req|
       req.headers['Authorization'] =
         "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
-    end.body
-
-    events = JSON.parse(resp)
+    end
+    encrypted_data = Base64.strict_decode64(resp.body)
+    iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
+    encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
+    private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
+    key = private_key.private_decrypt(encrypted_key)
+    decrypted = IrsAttemptsApi::Encryptor.decrypt(encrypted_data: encrypted_data, key: key, iv: iv)
+    deflated_decrypted = Zlib.gunzip(decrypted)
+    events = JSON.parse(deflated_decrypted)
 
     if File.exist?(private_key_path)
-      puts events['sets'].any? ? 'Decrypted events:' : 'No events returned.'
+      puts events.any? ? 'Decrypted events:' : 'No events returned.'
 
-      key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
-      events['sets'].each do |_jti, event|
+      events.each do |_jti, event|
         begin
-          pp JSON.parse(JWE.decrypt(event, key))
+          pp JSON.parse(JWE.decrypt(event, private_key))
         rescue
           puts 'Failed to parse/decrypt event!'
         end
