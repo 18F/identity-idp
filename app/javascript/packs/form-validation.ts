@@ -57,9 +57,7 @@ function validateInput(input: HTMLInputElement) {
  * @param form Form to initialize.
  */
 export function initialize(form: HTMLFormElement) {
-  const fields: HTMLInputElement[] = Array.from(
-    form.querySelectorAll(['.field', '[required]'].join()),
-  );
+  const fields: HTMLInputElement[] = Array.from(form.querySelectorAll('[required]'));
   fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
