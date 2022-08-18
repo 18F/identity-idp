@@ -49,12 +49,11 @@ module Api
 
     def encrypted_security_event_log_result
       json = security_event_tokens.to_json
-      gzip = Zlib.gzip(json)
       decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
       pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
 
       IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: gzip, timestamp: timestamp,
+        data: json, timestamp: timestamp,
         public_key: pub_key
       )
     end
