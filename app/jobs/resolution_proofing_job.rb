@@ -13,7 +13,8 @@ class ResolutionProofingJob < ApplicationJob
   )
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:, user_id: nil, threatmetrix_session_id: nil)
+              dob_year_only:, user_id: nil, threatmetrix_session_id: nil,
+              uuid_prefix: nil, request_ip: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -25,10 +26,14 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
+    user = User.find_by(id: user_id)
+
     optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-      applicant_pii,
-      user_id,
-      threatmetrix_session_id,
+      { applicant_pii: applicant_pii,
+        user: user,
+        threatmetrix_session_id: threatmetrix_session_id,
+        request_ip: request_ip,
+        uuid_prefix: uuid_prefix },
     )
 
     callback_log_data = if dob_year_only && should_proof_state_id
@@ -84,29 +89,25 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-    applicant_pii,
-    user_id,
-    threatmetrix_session_id
-  )
+  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(args)
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.
-    return if threatmetrix_session_id.blank?
+    return if args[:threatmetrix_session_id].blank?
 
-    return unless applicant_pii
+    return unless args[:applicant_pii]
 
-    user = User.find_by(id: user_id)
-
-    ddp_pii = applicant_pii.dup
-    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
-    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+    ddp_pii = args[:applicant_pii].dup
+    ddp_pii[:threatmetrix_session_id] = args[:threatmetrix_session_id]
+    ddp_pii[:email] = args[:user]&.confirmed_email_addresses&.first&.email
+    ddp_pii[:input_ip_address] = args[:request_ip]
+    ddp_pii[:local_attrib_1] = args[:uuid_prefix]
 
     result = lexisnexis_ddp_proofer.proof(ddp_pii)
 
-    log_threatmetrix_info(result, user)
-    add_threatmetrix_proofing_component(user_id, result)
+    log_threatmetrix_info(result, args[:user])
+    add_threatmetrix_proofing_component(args[:user].id, result)
 
     result
   end
