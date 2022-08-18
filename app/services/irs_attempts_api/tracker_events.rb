@@ -98,7 +98,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to login with the Backup Codes MFA method to their account
+    # Tracks when the user has attempted to log in with the Backup Codes MFA method to their account
     # @param [Boolean] success
     def mfa_login_backup_code(success:)
       track_event(
@@ -131,7 +131,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to login with the TOTP MFA method to access their account
+    # Tracks when the user has attempted to log in with the TOTP MFA method to access their account
     # @param [Boolean] success
     def mfa_login_totp(success:)
       track_event(
@@ -140,7 +140,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when user has attempted to login with the WebAuthn-Platform MFA method to their account
+    # Tracks when user has attempted to log in with the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
     def mfa_login_webauthn_platform(success:)
       track_event(
@@ -149,7 +149,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to login with the WebAuthn MFA method to their account
+    # Tracks when the user has attempted to log in with the WebAuthn MFA method to their account
     # @param [Boolean] success
     def mfa_login_webauthn_roaming(success:)
       track_event(
@@ -175,7 +175,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to login with the piv cac MFA method to their account
+    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
     # @param [String] subject_dn
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
