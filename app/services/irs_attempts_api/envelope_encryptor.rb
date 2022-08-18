@@ -1,5 +1,5 @@
 module IrsAttemptsApi
-  class Encryptor
+  class EnvelopeEncryptor
     Result = Struct.new(:filename, :iv, :encrypted_key, :encrypted_data, keyword_init: true)
 
     # A new key is generated for each encryption.  This key is encrypted with the public_key

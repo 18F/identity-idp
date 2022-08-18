@@ -17,7 +17,7 @@ namespace :attempts do
     encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
     private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
     key = private_key.private_decrypt(encrypted_key)
-    decrypted = IrsAttemptsApi::Encryptor.decrypt(encrypted_data: encrypted_data, key: key, iv: iv)
+    decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(encrypted_data: encrypted_data, key: key, iv: iv)
     deflated_decrypted = Zlib.gunzip(decrypted)
     events = JSON.parse(deflated_decrypted)
 

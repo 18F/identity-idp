@@ -53,7 +53,10 @@ module Api
       decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
       pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
 
-      IrsAttemptsApi::Encryptor.encrypt(data: gzip, timestamp: timestamp, public_key: pub_key)
+      IrsAttemptsApi::EnvelopeEncryptor.encrypt(
+        data: gzip, timestamp: timestamp,
+        public_key: pub_key
+      )
     end
 
     def redis_client
