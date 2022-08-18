@@ -19,7 +19,7 @@ describe FrontendLogController do
 
       it 'succeeds' do
         expect(fake_analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload.symbolize_keys)
+          with("Frontend: #{event}", payload)
 
         action
 
@@ -121,8 +121,7 @@ describe FrontendLogController do
 
         it 'logs the analytics event without the prefix' do
           expect(fake_analytics).to receive(:track_event).with(
-            'IdV: Native camera forced after failed attempts',
-            payload.symbolize_keys,
+            'IdV: Native camera forced after failed attempts', payload
           )
 
           action
@@ -156,10 +155,7 @@ describe FrontendLogController do
       end
 
       it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).with(
-          "Frontend: #{event}",
-          payload.symbolize_keys,
-        )
+        expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", payload)
 
         action
 

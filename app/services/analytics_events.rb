@@ -472,11 +472,9 @@ module AnalyticsEvents
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(field:, failed_attempts:, **extra)
+  def idv_native_camera_forced(**extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
-      field: field,
-      failed_attempts: failed_attempts,
       **extra,
     )
   end
