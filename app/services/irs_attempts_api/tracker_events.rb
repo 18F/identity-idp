@@ -97,7 +97,7 @@ module IrsAttemptsApi
       )
     end
     
-    # @param [String] the type of multi-factor authentication used
+    # @param [String] type - the type of multi-factor authentication used
     # The user has exceeded the rate limit during enrollment
     # and account has been locked
     def mfa_enroll_rate_limited(type:)
@@ -167,10 +167,10 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] the type of multi-factor authentication used
+    # @param [String] type - the type of multi-factor authentication used
     # The user has exceeded the rate limit during verification
     # and account has been locked
-    def mfa_verify_rate_limited(type)
+    def mfa_verify_rate_limited(type:)
       track_event(
         :mfa_verify_rate_limited,
         type: type,
