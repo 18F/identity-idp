@@ -17,7 +17,7 @@ module AccountReset
       granted_token = session.delete(:granted_token)
       result = AccountReset::DeleteAccount.new(granted_token).call
       analytics.account_reset_delete(**result.to_h.except(:email))
-
+      binding.pry
       if result.success?
         handle_successful_deletion(result)
       else
@@ -33,6 +33,7 @@ module AccountReset
 
     def handle_valid_token
       session[:granted_token] = token
+      binding.pry
       redirect_to url_for
     end
 
@@ -44,6 +45,7 @@ module AccountReset
     def handle_successful_deletion(result)
       sign_out
       flash[:email] = result.extra[:email]
+      binding.pry
       redirect_to account_reset_confirm_delete_account_url
     end
   end

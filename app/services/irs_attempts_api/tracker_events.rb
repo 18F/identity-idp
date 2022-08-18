@@ -1,5 +1,16 @@
 module IrsAttemptsApi
   module TrackerEvents
+
+    # @param [Boolean] success True if the email and password matched
+    # A user has submitted an email address and password for authentication
+    def account_reset_request_submitted(success:)
+      track_event(
+        :account_reset_request_submitted,
+        email: email,
+        success: success,
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
