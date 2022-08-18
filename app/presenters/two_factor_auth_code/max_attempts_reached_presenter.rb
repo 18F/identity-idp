@@ -19,6 +19,10 @@ module TwoFactorAuthCode
         t('two_factor_authentication.max_otp_login_attempts_reached')
       when 'otp_requests'
         t('two_factor_authentication.max_otp_requests_reached')
+      when 'totp_login_attempts'
+        t('two_factor_authentication.max_otp_login_attempts_reached')
+      when 'totp_requests'
+        t('two_factor_authentication.max_otp_requests_reached')
       when 'personal_key_login_attempts'
         t('two_factor_authentication.max_personal_key_login_attempts_reached')
       when 'piv_cac_login_attempts'

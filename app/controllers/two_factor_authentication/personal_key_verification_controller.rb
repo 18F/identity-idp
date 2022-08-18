@@ -40,7 +40,7 @@ module TwoFactorAuthentication
         generate_new_personal_key_for_verified_users_otherwise_retire_the_key_and_ensure_two_mfa
         handle_valid_otp
       else
-        handle_invalid_otp(type: 'personal_key')
+        handle_invalid_otp(context: context, type: 'personal_key')
       end
     end
 

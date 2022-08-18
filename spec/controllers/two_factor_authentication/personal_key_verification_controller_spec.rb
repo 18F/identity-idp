@@ -152,11 +152,16 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         }
 
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: max attempts reached')
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_rate_limited).
+          with(type: 'personal_key')
+
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

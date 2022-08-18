@@ -17,17 +17,17 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:, context: nil, phone: nil)
+  def handle_second_factor_locked_user(context: nil, type:)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
     handle_max_attempts(type + '_login_attempts')
 
-    if !context.nil? || !phone.nil?
+    if context
       if UserSessionContext.authentication_context?(context)
-        irs_attempts_api_tracker.mfa_verify_phone_otp_rate_limited(phone_number: phone)
+        irs_attempts_api_tracker.mfa_verify_rate_limited(type: type)
       elsif UserSessionContext.confirmation_context?(context)
-        irs_attempts_api_tracker.mfa_enroll_phone_otp_rate_limited(phone_number: phone)
+        irs_attempts_api_tracker.mfa_enroll_rate_limited(type: type)
       end
     end
   end
@@ -116,13 +116,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type: 'otp', context: nil, phone: nil)
+  def handle_invalid_otp(context: nil, type: 'otp')
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
 
     if decorated_user.locked_out?
-      handle_second_factor_locked_user(type: type, context: context, phone: phone)
+      handle_second_factor_locked_user(context: context, type: type)
     else
       render_show_after_invalid
     end
@@ -131,6 +131,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
+      t('two_factor_authentication.invalid_otp')
+    when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')

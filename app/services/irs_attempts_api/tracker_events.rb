@@ -96,6 +96,16 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
+    
+    # @param [String] phone_number the user's phone_number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP during enrollment
+    # and account has been locked
+    def mfa_enroll_rate_limited(type:)
+      track_event(
+        :mfa_enroll_rate_limited,
+        type: type,
+      )
+    end
 
     # Tracks when the user has attempted to enroll the TOTP MFA method to their account
     # @param [Boolean] success
@@ -159,6 +169,26 @@ module IrsAttemptsApi
 
     # Tracks when the user has attempted to log in with the piv cac MFA method to their account
     # @param [String] subject_dn
+    # @param [String] phone_number - the user's phone_number used for multi-factor authentication
+    # The user has exceeded the rate limit for SMS OTP during verification
+    # and account has been locked
+    def mfa_verify_rate_limited(type)
+      track_event(
+        :mfa_verify_rate_limited,
+        type: type,
+      )
+    end
+
+    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # @param [Boolean] success
+    def mfa_verify_totp(success:)
+      track_event(
+        :mfa_verify_totp,
+        success: success,
+      )
+    end
+
+    # Tracks when user has attempted to verify via the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_piv_cac(

@@ -179,8 +179,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_rate_limited).
-          with({ phone_number: '+1 202-555-1212' })
+        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_rate_limited).
+          with(type: 'otp')
 
         post :create, params:
         { code: '12345',
@@ -383,7 +383,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             controller.user_session[:phone_id] = phone_id
 
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
-              with({ success: true })
+              with(success: true)
 
             post(
               :create,
@@ -413,7 +413,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         context 'user enters an invalid code' do
           before do
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
-              with({ success: false })
+              with(success: false)
 
             post(
               :create,
@@ -471,12 +471,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
               sign_in_before_2fa
 
               stub_attempts_tracker
-              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_rate_limited).
-                with(phone_number: '+1 202-555-1212')
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_rate_limited).
+                with(type: 'otp')
 
-              post :create, params:
-              { code: '12345',
-                otp_delivery_preference: 'sms' }
+              post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
             end
           end
         end
