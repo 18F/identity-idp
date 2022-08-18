@@ -21,7 +21,7 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success True if selection was valid
-    # @param [String] mfa_device_types List of MFA options users selected on account creation
+    # @param [Array<String>] mfa_device_types List of MFA options users selected on account creation
     # A user has selected MFA options
     def mfa_enroll_options_selected(success:, mfa_device_types:)
       track_event(
