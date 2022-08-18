@@ -13,7 +13,7 @@ describe('form-validation', () => {
     window.removeEventListener('submit', onSubmit);
   });
 
-  it('adds active, disabled effect to submit buttons on submit', () => {
+  it('disables submit buttons on submit', () => {
     document.body.innerHTML = `
       <form>
         <button>Submit1</button>
@@ -34,15 +34,10 @@ describe('form-validation', () => {
     submit1.click();
 
     expect(submit1.disabled).to.be.true();
-    expect(submit1.classList.contains('usa-button--active')).to.be.true();
     expect(submit2.disabled).to.be.true();
-    expect(submit2.classList.contains('usa-button--active')).to.be.true();
     expect(submit3.disabled).to.be.true();
-    expect(submit3.classList.contains('usa-button--active')).to.be.true();
     expect(button1.disabled).to.be.false();
-    expect(button1.classList.contains('usa-button--active')).to.be.false();
     expect(input1.disabled).to.be.false();
-    expect(input1.classList.contains('usa-button--active')).to.be.false();
   });
 
   it('checks validity of inputs', async () => {

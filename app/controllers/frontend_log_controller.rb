@@ -17,7 +17,6 @@ class FrontendLogController < ApplicationController
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
-    'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
   }.transform_values do |method|
     method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)

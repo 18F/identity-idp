@@ -2,7 +2,7 @@
 fr:
   components:
     barcode:
-      image_alt: Code-barres
+      table_label: Code-barres
     clipboard_button:
       label: Copier
     javascript_required:

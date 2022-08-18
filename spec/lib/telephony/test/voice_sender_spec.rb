@@ -17,7 +17,6 @@ describe Telephony::Test::VoiceSender do
       expect(response.success?).to eq(true)
       expect(response.error).to eq(nil)
       expect(response.extra[:request_id]).to eq('fake-message-request-id')
-      expect(response.extra[:origination_phone_number]).to be_present
     end
 
     it 'simulates a telephony error' do
@@ -28,7 +27,6 @@ describe Telephony::Test::VoiceSender do
       expect(response.success?).to eq(false)
       expect(response.error).to eq(Telephony::TelephonyError.new('Simulated telephony error'))
       expect(response.extra[:request_id]).to eq('fake-message-request-id')
-      expect(response.extra[:origination_phone_number]).to be_present
       expect(last_call).to eq(nil)
     end
 

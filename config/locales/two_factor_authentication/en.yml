@@ -3,14 +3,14 @@ en:
   two_factor_authentication:
     account_reset:
       cancel_link: Cancel your request
-      link: reset your account
+      link: deleting your account
       pending_html: You currently have a pending request to delete your account. It
         takes 24 hours from the time you made the request to complete the
         process. Please check back later. %{cancel_link}
       successful_cancel: Thank you. Your request to delete your %{app_name} account
         has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
-        %{link}.
+        reset your preferences by %{link}.
     backup_code_fallback:
       question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code

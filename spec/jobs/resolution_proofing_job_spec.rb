@@ -39,9 +39,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:user) { build(:user, :signed_up) }
-  let(:threatmetrix_session_id) { SecureRandom.uuid }
-  let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -51,8 +48,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        user_id: user.id,
-        threatmetrix_session_id: threatmetrix_session_id,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -70,25 +65,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        user_id: user.id,
-        threatmetrix_session_id: threatmetrix_session_id,
       )
     end
 
-    context 'webmock lexisnexis and threatmetrix' do
+    context 'webmock lexisnexis' do
       before do
         stub_request(
           :post,
           'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
         ).to_return(body: lexisnexis_response.to_json)
-        stub_request(
-          :post,
-          'https://www.example.com/api/session-query',
-        ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
 
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-          and_return(true)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
         allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
@@ -153,8 +140,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
-          threatmetrix_success: true,
-          threatmetrix_request_id: threatmetrix_request_id,
         )
       end
 
@@ -231,8 +216,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
-            threatmetrix_request_id: threatmetrix_request_id,
-            threatmetrix_success: true,
           )
         end
       end
@@ -242,8 +225,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
-          and_return(true)
       end
 
       context 'with a successful response from the proofer' do
@@ -254,23 +235,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return(Proofing::Result.new)
         end
 
-        it 'logs the trace_id and timing info for ProofResolution and the Threatmetrix info' do
-          expect(instance).to receive(:logger_info_hash).ordered.with(
-            hash_including(
-              name: 'ThreatMetrix',
-              user_id: nil,
-              threatmetrix_request_id: Proofing::Mock::DdpMockClient::TRANSACTION_ID,
-              threatmetrix_success: true,
-            ),
-          )
-
-          expect(instance).to receive(:logger_info_hash).ordered.with(
-            hash_including(
+        it 'logs the trace_id and timing info' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
               :timing,
-              name: 'ProofResolution',
               trace_id: trace_id,
-            ),
-          )
+            )
+          end
 
           perform
         end

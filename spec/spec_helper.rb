@@ -7,7 +7,6 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
 end
 
 require 'active_support/core_ext/object/blank'
-require 'active_support'
 
 RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
 

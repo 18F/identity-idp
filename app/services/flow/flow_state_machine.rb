@@ -70,13 +70,13 @@ module Flow
 
     def fsm_initialize
       klass = self.class
-      flow = klass::FLOW_STATE_MACHINE_SETTINGS[:flow]
+      flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
       @namespace = flow.name.split('::').first.underscore
-      @step_url = klass::FLOW_STATE_MACHINE_SETTINGS[:step_url]
-      @final_url = klass::FLOW_STATE_MACHINE_SETTINGS[:final_url]
-      @analytics_id = klass::FLOW_STATE_MACHINE_SETTINGS[:analytics_id]
-      @view = klass::FLOW_STATE_MACHINE_SETTINGS[:view]
+      @step_url = klass::FSM_SETTINGS[:step_url]
+      @final_url = klass::FSM_SETTINGS[:final_url]
+      @analytics_id = klass::FSM_SETTINGS[:analytics_id]
+      @view = klass::FSM_SETTINGS[:view]
 
       current_session[@name] ||= {}
       @flow = flow.new(self, current_session, @name)
@@ -213,7 +213,7 @@ end
 # class FooController
 #   include Flow::FlowStateMachine
 #
-#   FLOW_STATE_MACHINE_SETTINGS = {
+#   FSM_SETTINGS = {
 #     step_url: :foo_step_url,
 #     final_url: :after_foo_url,
 #     flow: FooFlow,

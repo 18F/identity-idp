@@ -73,62 +73,8 @@ RSpec.describe UspsInPersonProofing::Proofer do
       )
 
       enrollment = subject.request_enroll(applicant)
-      expect(enrollment.enrollment_code).to be_present
-      expect(enrollment.response_message).to be_present
-    end
-
-    it 'returns 400 error' do
-      stub_request_token
-      stub_request_enroll_bad_request_response
-      applicant = double(
-        'applicant',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        email: Faker::Internet.safe_email,
-        unique_id: '123456789',
-      )
-
-      expect { subject.request_enroll(applicant) }.to raise_error(
-        an_instance_of(Faraday::BadRequestError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'Sponsor for sponsorID 5 not found',
-            ),
-          ),
-        )),
-      )
-    end
-
-    it 'returns 500 error' do
-      stub_request_token
-      stub_request_enroll_internal_failure_response
-      applicant = double(
-        'applicant',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        email: Faker::Internet.safe_email,
-        unique_id: '123456789',
-      )
-
-      expect { subject.request_enroll(applicant) }.to raise_error(
-        an_instance_of(Faraday::ServerError).
-        and(having_attributes(
-          response: include(
-            body: include(
-              'responseMessage' => 'An internal error occurred processing the request',
-            ),
-          ),
-        )),
-      )
+      expect(enrollment['enrollmentCode']).to be_present
+      expect(enrollment['responseMessage']).to be_present
     end
   end
 

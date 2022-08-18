@@ -1,9 +1,6 @@
 module Api
   module Verify
     class PasswordConfirmController < BaseController
-      rescue_from UspsInPersonProofing::Exception::RequestEnrollException,
-                  with: :handle_request_enroll_exception
-
       self.required_step = 'password_confirm'
 
       def create
@@ -61,22 +58,6 @@ module Api
       def in_person_enrollment?(user)
         return false unless IdentityConfig.store.in_person_proofing_enabled
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
-      end
-
-      def handle_request_enroll_exception(err)
-        analytics.idv_in_person_usps_request_enroll_exception(
-          context: context,
-          enrollment_id: err.enrollment_id,
-          exception_class: err.class.to_s,
-          original_exception_class: err.exception_class,
-          exception_message: err.message,
-          reason: 'Request exception',
-        )
-        render_errors(
-          { internal: [
-            I18n.t('idv.failure.exceptions.internal_error'),
-          ] },
-        )
       end
     end
   end

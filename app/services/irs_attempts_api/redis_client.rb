@@ -9,28 +9,29 @@ module IrsAttemptsApi
       end
     end
 
-    def write_event(jti:, jwe:, timestamp:)
-      key = key(timestamp)
+    def write_event(jti:, jwe:)
       redis_pool.with do |client|
-        client.hset(key, jti, jwe)
-        client.expire(key, IdentityConfig.store.irs_attempt_api_event_ttl_seconds)
+        client.setex(jti, IdentityConfig.store.irs_attempt_api_event_ttl_seconds, jwe)
       end
     end
 
-    def read_events(timestamp:)
-      key = key(timestamp)
+    def delete_events(event_ids)
       redis_pool.with do |client|
-        client.hgetall(key)
+        client.del(*event_ids)
       end
     end
 
-    def key(timestamp)
-      timestamp.in_time_zone('UTC').change(min: 0, sec: 0).iso8601
+    def read_events(count = 1000)
+      redis_pool.with do |client|
+        keys = client.scan(0, count: count).last.first(count)
+        next {} if keys.empty?
+        client.mapped_mget(*keys)
+      end
     end
 
     def self.clear_attempts!
-      unless %w[test development].include?(Rails.env)
-        raise 'RedisClient.clear_attempts! should not be called outside of dev or test!'
+      if !Rails.env.test?
+        raise 'IrsAttemptsApi::RedisClient.clear_attempts! should not be called outside of test env'
       end
       Redis.new(url: IdentityConfig.store.redis_irs_attempt_api_url).flushall
     end

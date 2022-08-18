@@ -107,14 +107,9 @@ es:
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
     in_person_failed:
-      body:
-        with_cta: Haga clic en el botón o copie el enlace siguiente para volver a
-          intentar verificar su identidad en línea con %{sp_or_app_name}. Si
-          sigue teniendo problemas, póngase en contacto con la agencia a la que
-          intenta acceder.
-        without_cta: Vuelva a comprobar su identidad desde el sitio web de la
-          %{sp_name}. En caso de persistir los problemas, contacte con la
-          agencia a la que intenta entrar.
+      body: Haga clic en el botón o copie el enlace siguiente para volver a intentar
+        verificar su identidad en línea con %{app_name}. Si sigue teniendo
+        problemas, póngase en contacto con la agencia a la que intenta acceder.
       intro: El %{date}, no se pudo verificar su identidad en la oficina de correos de
         %{location}.
       subject: No se pudo verificar su identidad en persona
@@ -135,13 +130,8 @@ es:
       greeting: Hola,
       intro: El %{date}, verificó correctamente su identidad en la oficina de correos
         de %{location}.
-      next_sign_in:
-        with_sp:
-          with_cta: Seguidamente, haga clic en el botón o copie el siguiente enlace para
-            poder entrar en la %{sp_name} e inicie la sesión.
-          without_cta: Ya puede iniciar la sesión desde el sitio web de la %{sp_name}.
-        without_sp: Luego, haga clic en el botón o copie el enlace que aparece a
-          continuación para iniciar sesión en %{app_name}.
+      next_sign_in: Luego, haga clic en el botón o copie el enlace que aparece a
+        continuación para iniciar sesión en %{app_name}.
       sign_in: Iniciar sesión
       subject: Verificó correctamente su identidad con %{app_name}
       warning_contact_us_html: Si usted no intentó verificar su identidad en persona,

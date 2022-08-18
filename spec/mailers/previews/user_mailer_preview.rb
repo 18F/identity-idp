@@ -191,7 +191,6 @@ class UserMailerPreview < ActionMailer::Preview
           'saturday_hours' => '9:00 AM - 12:00 PM',
           'sunday_hours' => 'Closed',
         },
-        service_provider: params[:issuer] ? ServiceProvider.find_by(issuer: params[:issuer]) : nil,
       ),
     )
   end
