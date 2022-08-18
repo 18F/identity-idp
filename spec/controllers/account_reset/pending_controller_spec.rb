@@ -26,6 +26,19 @@ describe AccountReset::PendingController do
       expect(account_reset_request.reload.cancelled_at).to_not be_nil
     end
 
+    it 'logs the cancellation in attempts api' do
+      stub_attempts_tracker
+
+      account_reset_request = AccountResetRequest.create(user: user, requested_at: 1.hour.ago)
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:account_reset_cancel_request, success: true)
+
+      post :cancel
+
+      expect(account_reset_request.reload.cancelled_at).to_not be_nil
+    end
+
     context 'when the account reset request does not exist' do
       it 'renders a 404' do
         post :cancel
