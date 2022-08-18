@@ -6,7 +6,6 @@ module IrsAttemptsApi
     def account_reset_request_submitted(success:)
       track_event(
         :account_reset_request_submitted,
-        email: email,
         success: success,
       )
     end
