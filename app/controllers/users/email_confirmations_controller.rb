@@ -18,7 +18,7 @@ module Users
 
     def email_confirmation_token_validator
       @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.
-                                              new(email_address, current_user)
+        new(email_address, current_user)
     end
 
     def email_address_already_confirmed?

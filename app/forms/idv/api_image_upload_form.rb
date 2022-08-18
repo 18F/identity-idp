@@ -235,10 +235,10 @@ module Idv
       @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
         to_h.
         transform_values do |str|
-          JSON.parse(str)
-        rescue JSON::ParserError
-          nil
-        end.
+                            JSON.parse(str)
+      rescue JSON::ParserError
+        nil
+                          end.
         compact.
         transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
         deep_symbolize_keys

@@ -27,8 +27,8 @@ describe Proofing::Aamva::VerificationClient do
       verification_stub = stub_request(:post, AamvaFixtures.example_config.verification_url).
         to_return(body: AamvaFixtures.verification_response, status: 200).
         with do |request|
-          xml_text_at_path(request.body, '//ns:token').gsub(/\s/, '') == 'ThisIsTheToken'
-        end
+        xml_text_at_path(request.body, '//ns:token').gsub(/\s/, '') == 'ThisIsTheToken'
+      end
 
       verification_client.send_verification_request(
         applicant: applicant,
