@@ -1,6 +1,9 @@
 module Idv
   class InPersonController < ApplicationController
-    before_action :render_404_if_disabled
+    include RenderConditionConcern
+
+    check_or_render_not_found -> { InPersonConfig.enabled_for_issuer?(current_sp&.issuer) }
+
     before_action :confirm_two_factor_authenticated
     before_action :redirect_unless_enrollment
 
@@ -9,7 +12,7 @@ module Idv
 
     before_action :redirect_if_flow_completed
 
-    FSM_SETTINGS = {
+    FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_in_person_step_url,
       final_url: :idv_phone_url,
       flow: Idv::Flows::InPersonFlow,

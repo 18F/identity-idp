@@ -1,6 +1,7 @@
 {
   "name": "@18f/eslint-plugin-identity",
   "version": "2.0.0",
+  "private": false,
   "description": "ESLint plugin and shareable configurations for Login.gov JavaScript standards",
   "repository": {
     "type": "git",

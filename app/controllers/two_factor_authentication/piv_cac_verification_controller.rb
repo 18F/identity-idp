@@ -30,6 +30,11 @@ module TwoFactorAuthentication
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
       )
+      irs_attempts_api_tracker.mfa_login_piv_cac(
+        success: result.success?,
+        subject_dn: piv_cac_verification_form.x509_dn,
+        failure_reason: result.errors.presence,
+      )
       if result.success?
         handle_valid_piv_cac
       else

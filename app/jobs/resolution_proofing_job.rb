@@ -12,11 +12,8 @@ class ResolutionProofingJob < ApplicationJob
     keyword_init: true,
   )
 
-  # rubocop:disable Lint/UnusedMethodArgument
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
               dob_year_only:, user_id: nil, threatmetrix_session_id: nil)
-
-    # rubocop:enable Lint/UnusedMethodArgument
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -27,6 +24,15 @@ class ResolutionProofingJob < ApplicationJob
     )
 
     applicant_pii = decrypted_args[:applicant_pii]
+
+    threatmetrix_result = nil
+    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+      user = User.find_by(id: user_id)
+      threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(
+        applicant_pii, user, threatmetrix_session_id
+      )
+      log_threatmetrix_info(threatmetrix_result, user)
+    end
 
     callback_log_data = if dob_year_only && should_proof_state_id
                           proof_aamva_then_lexisnexis_dob_only(
@@ -42,21 +48,49 @@ class ResolutionProofingJob < ApplicationJob
                           )
                         end
 
+    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+      add_threatmetrix_result_to_callback_result(callback_log_data.result, threatmetrix_result)
+    end
+
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
-    logger.info(
-      {
-        name: 'ProofResolution',
-        trace_id: trace_id,
-        resolution_success: callback_log_data&.resolution_success,
-        state_id_success: callback_log_data&.state_id_success,
-        timing: timer.results,
-      }.to_json,
+    logger_info_hash(
+      name: 'ProofResolution',
+      trace_id: trace_id,
+      resolution_success: callback_log_data&.resolution_success,
+      state_id_success: callback_log_data&.state_id_success,
+      timing: timer.results,
     )
   end
 
   private
+
+  def log_threatmetrix_info(threatmetrix_result, user)
+    logger_info_hash(
+      name: 'ThreatMetrix',
+      user_id: user&.uuid,
+      threatmetrix_request_id: threatmetrix_result.transaction_id,
+      threatmetrix_success: threatmetrix_result.success?,
+    )
+  end
+
+  def logger_info_hash(hash)
+    logger.info(hash.to_json)
+  end
+
+  def add_threatmetrix_result_to_callback_result(callback_log_data_result, threatmetrix_result)
+    callback_log_data_result[:threatmetrix_success] = threatmetrix_result.success?
+    callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
+  end
+
+  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user, threatmetrix_session_id)
+    return unless applicant_pii
+    ddp_pii = applicant_pii.dup
+    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
+    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+    lexisnexis_ddp_proofer.proof(ddp_pii)
+  end
 
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
@@ -205,6 +239,19 @@ class ResolutionProofingJob < ApplicationJob
       end
   end
 
+  def lexisnexis_ddp_proofer
+    @lexisnexis_ddp_proofer ||=
+      if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+        Proofing::Mock::DdpMockClient.new
+      else
+        Proofing::LexisNexis::Ddp::Proofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+        )
+      end
+  end
+
   def state_id_proofer
     @state_id_proofer ||=
       if IdentityConfig.store.proofer_mock_fallback
@@ -220,5 +267,9 @@ class ResolutionProofingJob < ApplicationJob
           verification_url: IdentityConfig.store.aamva_verification_url,
         )
       end
+  end
+
+  def use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
+    IdentityConfig.store.lexisnexis_threatmetrix_enabled
   end
 end

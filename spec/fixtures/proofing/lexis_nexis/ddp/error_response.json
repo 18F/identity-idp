@@ -1,0 +1,5 @@
+{
+  "error_detail": "service_type",
+  "request_id":"1234-abcd",
+  "request_result":"fail_invalid_parameter"
+}

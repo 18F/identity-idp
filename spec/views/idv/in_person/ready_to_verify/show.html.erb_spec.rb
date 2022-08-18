@@ -8,7 +8,7 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
   let(:selected_location_details) {
-    JSON.parse(UspsIppFixtures.enrollment_selected_location_details)
+    JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   }
   let(:created_at) { Time.zone.parse('2022-07-13') }
   let(:enrollment) do

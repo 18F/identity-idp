@@ -1,6 +1,7 @@
 import {
   Alert,
   Button,
+  Link,
   IconList,
   IconListItem,
   PageHeading,
@@ -10,16 +11,19 @@ import {
 import { removeUnloadProtection } from '@18f/identity-url';
 import { useContext } from 'react';
 import { FlowContext } from '@18f/identity-verify-flow';
+import { getConfigValue } from '@18f/identity-config';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
-// WILLFIX: Hiding this component until help links are finalized; see LG-6875
-// import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
+import MarketingSiteContext from '../context/marketing-site';
+import BackButton from './back-button';
+import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
-function InPersonPrepareStep({ value }) {
+function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { flowPath } = useContext(UploadContext);
+  const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationName } = value;
 
   return (
@@ -91,10 +95,21 @@ function InPersonPrepareStep({ value }) {
           </Button>
         </div>
       )}
-      {/*
-      WILLFIX: Hiding this component until help links are finalized; see LG-6875
+      <p>
+        {t('in_person_proofing.body.prepare.privacy_disclaimer', {
+          app_name: getConfigValue('appName'),
+        })}{' '}
+        {securityAndPrivacyHowItWorksURL && (
+          <>
+            {t('in_person_proofing.body.prepare.privacy_disclaimer_questions')}{' '}
+            <Link href={securityAndPrivacyHowItWorksURL}>
+              {t('in_person_proofing.body.prepare.privacy_disclaimer_link')}
+            </Link>
+          </>
+        )}
+      </p>
       <InPersonTroubleshootingOptions />
-      */}
+      <BackButton includeBorder onClick={toPreviousStep} />
     </>
   );
 }

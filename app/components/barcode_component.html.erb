@@ -6,8 +6,13 @@
       class: css_class,
       **tag_options,
     ) do %>
-  <%= barcode_html.html_safe %>
-  <div id="<%= barcode_caption_id %>" class="text-center margin-top-1">
+  <%= image_tag(
+        barcode_image_url,
+        skip_pipeline: true,
+        alt: t('components.barcode.image_alt'),
+        class: 'display-block',
+      ) %>
+  <div id="<%= barcode_caption_id %>" class="text-center">
     <% if label.present? %>
       <span class="usa-sr-only"><%= label %>:</span>
     <% end %>
