@@ -116,7 +116,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(context: nil, type: 'otp')
+  def handle_invalid_otp(context: nil, type:)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
