@@ -36,18 +36,6 @@ en:
       wait_html: There is a 24-hour waiting period to delete your account. In
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
-    recovery_options:
-      check_webauthn_platform: Use the same device you first set up face or touch unlock with
-      check_webauthn_platform_info: If you set up face or touch unlock when you
-        created your account make sure to use the same device you created your
-        %{app_name} account on.
-      header: Are you sure you want to delete your account?
-      help_text: If you’re locked out and still need access to %{app_name}, try these
-        steps instead.
-      try_another_device: Try another device where you might have selected the
-        “remember device” option.
-      try_method_again: Try your authentication method again
-      use_device: Use another device
     request:
       are_you_sure: Are you sure you don’t have access to any of your authentication methods?
       delete_account: Delete your account
@@ -66,6 +54,6 @@ en:
           only option.
         - We can’t undo an account delete, so please verify if you have another
           authentication method you can use instead.
-      no_cancel: Cancel
+      no_cancel: No, cancel
       title: Account deletion and reset
       yes_continue: Yes, continue deletion

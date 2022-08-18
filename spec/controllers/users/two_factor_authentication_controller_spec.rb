@@ -297,7 +297,7 @@ describe Users::TwoFactorAuthenticationController do
         )
       end
 
-      it 'tracks the analytics events' do
+      it 'tracks the events' do
         stub_analytics
 
         analytics_hash = {
@@ -322,15 +322,6 @@ describe Users::TwoFactorAuthenticationController do
 
         get :send_code, params: { otp_delivery_selection_form:
                                   { otp_delivery_preference: 'sms', resend: 'true' } }
-      end
-
-      it 'tracks the verification attempt event' do
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_sent).
-          with(phone_number: '+12025551212', reauthentication: false, success: true)
-
-        get :send_code, params: { otp_delivery_selection_form:
-          { otp_delivery_preference: 'sms' } }
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -453,9 +444,6 @@ describe Users::TwoFactorAuthenticationController do
             success: true,
             otp_delivery_preference: 'voice',
             country_code: 'US',
-            telephony_response: hash_including(
-              origination_phone_number: Telephony::Test::VoiceSender::ORIGINATION_PHONE_NUMBER,
-            ),
           ))
 
         get :send_code, params: {
@@ -505,18 +493,6 @@ describe Users::TwoFactorAuthenticationController do
           domain: IdentityConfig.store.domain_name,
           country_code: 'US',
         )
-      end
-
-      it 'tracks the enrollment attempt event' do
-        sign_in_before_2fa(@user)
-        subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
-
-        stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent).
-          with({ phone_number: '+12025551213', success: true })
-
-        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
 
       it 'rate limits confirmation OTPs on sign up' do

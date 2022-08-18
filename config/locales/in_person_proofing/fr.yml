@@ -57,11 +57,6 @@ fr:
         bring_proof_info_policy: Police d’assurance habitation ou véhicule
         bring_proof_info_registration: Inscription sur les listes électorales
         bring_title: 'Lorsque vous allez au bureau de poste, veuillez apporter:'
-        privacy_disclaimer: '%{app_name} est un site gouvernemental sécurisé. Nous et le
-          service postal américain utilisons vos données pour vérifier votre
-          identité.'
-        privacy_disclaimer_link: En savoir plus sur la confidentialité et la sécurité.
-        privacy_disclaimer_questions: Vous avez des questions?
         verify_step_about: 'Suivez les étapes ci-dessous pour générer le code-barres que
           vous emporterez avec vous au bureau de poste:'
         verify_step_enter_phone: Entrez un numéro de téléphone avec votre nom sur le contrat.

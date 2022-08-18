@@ -7,7 +7,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:current_address_matches_id) { true }
   let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2022-07-14T00:00:00Z') }
   let(:enrollment_selected_location_details) do
-    JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
+    JSON.parse(UspsIppFixtures.enrollment_selected_location_details)
   end
   let(:enrollment) do
     InPersonEnrollment.new(
@@ -107,23 +107,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
       let(:current_address_matches_id) { false }
 
       it { expect(needs_proof_of_address).to eq true }
-    end
-  end
-
-  describe '#barcode_image_url' do
-    subject(:barcode_image_url) { presenter.barcode_image_url }
-
-    it { expect(barcode_image_url).to be_nil }
-
-    context 'with barcode url' do
-      let(:barcode_url) { 'https://example.com/barcode.png' }
-      subject(:presenter) do
-        described_class.new(enrollment: enrollment, barcode_image_url: barcode_url)
-      end
-
-      it 'returns barcode url' do
-        expect(barcode_image_url).to eq(barcode_url)
-      end
     end
   end
 end

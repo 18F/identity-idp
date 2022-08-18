@@ -9,7 +9,7 @@ class MarketingSite
     signing-in/what-is-a-hardware-security-key
     verify-your-identity/accepted-state-issued-identification
     verify-your-identity/how-to-add-images-of-your-state-issued-id
-    verify-your-identity/verify-your-identity-in-person
+    verify-your-identity/how-to-verify-in-person
     verify-your-identity/phone-number-and-phone-plan-in-your-name
     verify-your-identity/verify-your-address-by-mail
     get-started/authentication-options
@@ -26,10 +26,6 @@ class MarketingSite
 
   def self.security_and_privacy_practices_url
     URI.join(BASE_URL, locale_segment, 'policy').to_s
-  end
-
-  def self.security_and_privacy_how_it_works_url
-    URI.join(BASE_URL, locale_segment, 'policy/how-does-it-work/').to_s
   end
 
   def self.privacy_act_statement_url

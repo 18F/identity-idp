@@ -24,7 +24,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
   describe 'when signed in before 2fa' do
     before do
       stub_analytics
-      stub_attempts_tracker
       sign_in_before_2fa
     end
 
@@ -39,7 +38,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
             to receive(:enabled?).
             and_return(true)
           allow(@analytics).to receive(:track_event)
-          allow(@irs_attempts_api_tracker).to receive(:track_event)
         end
         it 'tracks an analytics event' do
           get :show, params: { platform: true }
@@ -82,11 +80,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
 
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_verify_webauthn_roaming,
-          success: true,
-        )
-
         patch :confirm, params: params
       end
 
@@ -106,11 +99,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           with(result)
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_verify_webauthn_platform,
-          success: true,
-        )
 
         patch :confirm, params: params
       end

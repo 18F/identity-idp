@@ -162,14 +162,13 @@ describe Users::WebauthnSetupController do
 
     before do
       stub_analytics
-      stub_attempts_tracker
       stub_sign_in(user)
       allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
       request.host = 'localhost:3000'
       controller.user_session[:webauthn_challenge] = webauthn_challenge
     end
     context ' Multiple MFA options turned on' do
-      let(:mfa_selections) { ['webauthn', 'voice'] }
+      let(:mfa_selections) { ['webauthn_platform', 'voice'] }
 
       before do
         controller.user_session[:mfa_selections] = mfa_selections
@@ -184,92 +183,12 @@ describe Users::WebauthnSetupController do
         end
       end
 
-      context 'with multiple MFA methods chosen on account creation' do
-        let(:params) do
-          {
-            attestation_object: attestation_object,
-            client_data_json: setup_client_data_json,
-            name: 'mykey',
-          }
-        end
-        it 'should log expected events' do
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication Setup',
-            {
-              enabled_mfa_methods_count: 1,
-              errors: {},
-              in_multi_mfa_selection_flow: true,
-              mfa_method_counts: { webauthn: 1 },
-              multi_factor_auth_method: 'webauthn',
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
-              success: true,
-            },
-          )
-
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
-              platform_authenticator: false,
-            },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_roaming, success: true
-          )
-
-          patch :confirm, params: params
-        end
-      end
-
       context 'with a single MFA method chosen on account creation' do
         let(:mfa_selections) { ['webauthn_platform'] }
         it 'should direct user to second mfa suggestion page' do
           patch :confirm, params: params
 
           expect(response).to redirect_to(auth_method_confirmation_url)
-        end
-      end
-
-      context 'with only webauthn_platform chosen on account creation' do
-        let(:mfa_selections) { ['webauthn_platform'] }
-        let(:params) do
-          {
-            attestation_object: attestation_object,
-            client_data_json: setup_client_data_json,
-            name: 'mykey',
-            platform_authenticator: 'true',
-          }
-        end
-        it 'should log expected events' do
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication Setup',
-            {
-              enabled_mfa_methods_count: 1,
-              errors: {},
-              in_multi_mfa_selection_flow: true,
-              mfa_method_counts: { webauthn_platform: 1 },
-              multi_factor_auth_method: 'webauthn_platform',
-              pii_like_keypaths: [[:mfa_method_counts, :phone]],
-              success: true,
-            },
-          )
-
-          expect(@analytics).to receive(:track_event).with(
-            'Multi-Factor Authentication: Added webauthn',
-            {
-              enabled_mfa_methods_count: 1,
-              method_name: :webauthn,
-              platform_authenticator: true,
-            },
-          )
-
-          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-            :mfa_enroll_webauthn_platform, success: true
-          )
-
-          patch :confirm, params: params
         end
       end
     end

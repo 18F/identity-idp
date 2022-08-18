@@ -8,7 +8,12 @@ module UserOtpMethods
   end
 
   def create_direct_otp
-    otp = OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+    otp =
+      if IdentityConfig.store.enable_numeric_authentication_otp
+        OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+      else
+        OtpCodeGenerator.generate_alphanumeric_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+      end
 
     update(
       direct_otp: otp,

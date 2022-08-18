@@ -53,6 +53,14 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+.display-if-invalid {
+  display: none;
+
+  [aria-invalid='true'] ~ & {
+    display: block;
+  }
+}
+
 // ===============================================
 // Pending upstream Login Design System revisions:
 // ===============================================

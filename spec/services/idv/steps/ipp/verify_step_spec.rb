@@ -52,8 +52,6 @@ describe Idv::Steps::Ipp::VerifyStep do
           kind_of(DocumentCaptureSession),
           should_proof_state_id: anything,
           trace_id: amzn_trace_id,
-          threatmetrix_session_id: nil,
-          user_id: anything,
         )
 
       step.call

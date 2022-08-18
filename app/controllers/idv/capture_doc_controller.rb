@@ -7,7 +7,7 @@ module Idv
 
     before_action :override_document_capture_step_csp
 
-    FLOW_STATE_MACHINE_SETTINGS = {
+    FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
       final_url: :root_url,
       flow: Idv::Flows::CaptureDocFlow,
@@ -27,7 +27,7 @@ module Idv
 
       result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
 
-      analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
+      analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
     end
 

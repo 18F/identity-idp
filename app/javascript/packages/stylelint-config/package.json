@@ -1,7 +1,6 @@
 {
   "name": "@18f/identity-stylelint-config",
   "version": "1.0.0",
-  "private": false,
   "description": "Stylelint shareable configuration for Login.gov CSS/SASS standards",
   "repository": {
     "type": "git",

@@ -41,13 +41,6 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
-
-      if @platform_authenticator
-        irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: result.success?)
-      else
-        irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: result.success?)
-      end
-
       if result.success?
         process_valid_webauthn(form)
       else

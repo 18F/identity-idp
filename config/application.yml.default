@@ -18,7 +18,7 @@ aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
-aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
+aamva_supported_jurisdictions: '["AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
@@ -57,7 +57,6 @@ country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
-database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
 database_timeout: 5_000
@@ -77,13 +76,14 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_max_attempts: 5
+doc_auth_max_attempts: 20
 doc_auth_max_capture_attempts_before_tips: 3
-doc_auth_max_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: false
+enable_numeric_authentication_otp: true
+enable_numeric_authentication_otp_input: true
 enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -108,11 +108,9 @@ idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
-in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
-irs_attempt_api_csp_id: 'Login.gov'
 irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
@@ -143,14 +141,14 @@ lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
-# LexisNexis DDP/ThreatMetrix #####################################
-lexisnexis_threatmetrix_api_key: test_api_key
+# LexisNexis ThreatMetrix ##########################################
 lexisnexis_threatmetrix_base_url: https://www.example.com
-lexisnexis_threatmetrix_org_id: test_account
-lexisnexis_threatmetrix_policy: test-policy
-lexisnexis_threatmetrix_timeout: 1.0
-lexisnexis_threatmetrix_enabled: false
-lexisnexis_threatmetrix_mock_enabled: true
+lexisnexis_threatmetrix_request_mode: testing
+lexisnexis_threatmetrix_account_id: test_account
+lexisnexis_threatmetrix_username: test_username
+lexisnexis_threatmetrix_password: test_password
+lexisnexis_threatmetrix_instant_verify_timeout: 1.0
+lexisnexis_threatmetrix_instant_verify_workflow: customers.gsa.instant.verify.workflow
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
@@ -254,7 +252,6 @@ session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
-show_account_recovery_recovery_options: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -280,8 +277,6 @@ usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
-get_usps_proofing_results_job_cron: '0/10 * * * *'
-get_usps_proofing_results_job_reprocess_delay_minutes: 5
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
@@ -346,7 +341,6 @@ development:
   secret_key_base: development_secret_key_base
   select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
-  show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true

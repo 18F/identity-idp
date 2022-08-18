@@ -90,7 +90,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        stub_attempts_tracker
 
         attributes = {
           context: 'authentication',
@@ -110,13 +109,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_piv_cac,
-          success: true,
-          subject_dn: x509_subject,
-          failure_reason: nil,
-        )
 
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
@@ -181,7 +173,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         stub_sign_in_before_2fa(user)
 
         stub_analytics
-        stub_attempts_tracker
 
         attributes = {
           context: 'authentication',
@@ -202,13 +193,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
-
-        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_login_piv_cac,
-          success: false,
-          subject_dn: 'bad-dn',
-          failure_reason: { type: 'user.piv_cac_mismatch' },
-        )
 
         expect(@analytics).to receive(:track_event).
                           with('Multi-Factor Authentication: max attempts reached')

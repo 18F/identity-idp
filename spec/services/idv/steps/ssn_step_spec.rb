@@ -39,9 +39,7 @@ describe Idv::Steps::SsnStep do
 
   let(:flow) do
     Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
-      flow.flow_session = {
-        pii_from_doc: pii_from_doc,
-      }
+      flow.flow_session = { pii_from_doc: pii_from_doc }
     end
   end
 
@@ -67,37 +65,6 @@ describe Idv::Steps::SsnStep do
           step.call
 
           expect(session[:idv]['applicant']).to be_blank
-        end
-      end
-
-      context 'with proofing device profiling collecting enabled' do
-        it 'adds a session id to flow session' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(true)
-          step.extra_view_variables
-
-          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
-        end
-
-        it 'does not change threatmetrix_session_id when updating ssn' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(true)
-          step.call
-          session_id = flow.flow_session[:threatmetrix_session_id]
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
-        end
-      end
-
-      context 'with proofing device profiling collecting disabled' do
-        it 'does not add a session id to flow session' do
-          allow(IdentityConfig.store).
-            to receive(:proofing_device_profiling_collecting_enabled).
-            and_return(false)
-          step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(nil)
         end
       end
     end

@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { PageHeading, SpinnerDots } from '@18f/identity-components';
-import BackButton from './back-button';
-import LocationCollection from './location-collection';
-import LocationCollectionItem from './location-collection-item';
+import {
+  PageHeading,
+  LocationCollectionItem,
+  LocationCollection,
+  SpinnerDots,
+} from '@18f/identity-components';
 
 interface PostOffice {
   address: string;
@@ -73,7 +75,7 @@ const prepToSend = (location: object) => {
   return sendObject;
 };
 
-function InPersonLocationStep({ onChange, toPreviousStep }) {
+function InPersonLocationStep({ onChange }) {
   const { t } = useI18n();
   const [locationData, setLocationData] = useState([] as FormattedLocation[]);
   const [inProgress, setInProgress] = useState(false);
@@ -157,37 +159,33 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
     };
   }, []);
 
-  let locationsContent: React.ReactNode;
+  let locationItems: React.ReactNode;
   if (!isLoadingComplete) {
-    locationsContent = <SpinnerDots />;
+    locationItems = <SpinnerDots />;
   } else if (locationData.length < 1) {
-    locationsContent = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
+    locationItems = <h4>{t('in_person_proofing.body.location.none_found')}</h4>;
   } else {
-    locationsContent = (
-      <LocationCollection>
-        {locationData.map((item, index) => (
-          <LocationCollectionItem
-            key={`${index}-${item.name}`}
-            handleSelect={handleLocationSelect}
-            name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
-            streetAddress={item.streetAddress}
-            selectId={item.id}
-            formattedCityStateZip={item.formattedCityStateZip}
-            weekdayHours={item.weekdayHours}
-            saturdayHours={item.saturdayHours}
-            sundayHours={item.sundayHours}
-          />
-        ))}
-      </LocationCollection>
-    );
+    locationItems = locationData.map((item, index) => (
+      <LocationCollectionItem
+        key={`${index}-${item.name}`}
+        handleSelect={handleLocationSelect}
+        name={`${item.name} — ${t('in_person_proofing.body.location.post_office')}`}
+        streetAddress={item.streetAddress}
+        selectId={item.id}
+        formattedCityStateZip={item.formattedCityStateZip}
+        weekdayHours={item.weekdayHours}
+        saturdayHours={item.saturdayHours}
+        sundayHours={item.sundayHours}
+      />
+    ));
   }
 
   return (
     <>
       <PageHeading>{t('in_person_proofing.headings.location')}</PageHeading>
+
       <p>{t('in_person_proofing.body.location.location_step_about')}</p>
-      {locationsContent}
-      <BackButton onClick={toPreviousStep} />
+      <LocationCollection>{locationItems}</LocationCollection>
     </>
   );
 }

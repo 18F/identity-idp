@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import {
-  MarketingSiteContextProvider,
+  HelpCenterContextProvider,
   ServiceProviderContextProvider,
 } from '@18f/identity-document-capture';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -14,23 +14,23 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
     failureToProofURL: 'http://example.test/url/to/failure-to-proof',
   };
   const wrappers = {
-    MarketingSiteContext: ({ children }) => (
-      <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
+    helpCenterContext: ({ children }) => (
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
         {children}
-      </MarketingSiteContextProvider>
+      </HelpCenterContextProvider>
     ),
     helpCenterAndServiceProviderContext: ({ children }) => (
-      <MarketingSiteContextProvider helpCenterRedirectURL={helpCenterRedirectURL}>
+      <HelpCenterContextProvider value={{ helpCenterRedirectURL }}>
         <ServiceProviderContextProvider value={serviceProviderContext}>
           {children}
         </ServiceProviderContextProvider>
-      </MarketingSiteContextProvider>
+      </HelpCenterContextProvider>
     ),
   };
 
   it('renders troubleshooting options', () => {
     const { getAllByRole } = render(<DocumentCaptureTroubleshootingOptions />, {
-      wrapper: wrappers.MarketingSiteContext,
+      wrapper: wrappers.helpCenterContext,
     });
 
     const links = /** @type {HTMLAnchorElement[]} */ (getAllByRole('link'));

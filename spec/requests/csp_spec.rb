@@ -12,14 +12,14 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['base-uri']).to eq("'self'")
       expect(content_security_policy['child-src']).to eq("'self'")
       expect(content_security_policy['connect-src']).to eq(
-        "'self' *.nr-data.net",
+        "'self' *.nr-data.net *.google-analytics.com us.acas.acuant.net",
       )
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq(
         "'self' http://localhost:7654 https://example.com http://www.example.com",
       )
       expect(content_security_policy['img-src']).to eq(
-        "'self' data: login.gov https://s3.us-west-2.amazonaws.com",
+        "'self' data: login.gov idscangoweb.acuant.com https://s3.us-west-2.amazonaws.com",
       )
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")
@@ -40,12 +40,12 @@ RSpec.describe 'content security policy' do
       expect(content_security_policy['base-uri']).to eq("'self'")
       expect(content_security_policy['child-src']).to eq("'self'")
       expect(content_security_policy['connect-src']).to eq(
-        "'self' *.nr-data.net",
+        "'self' *.nr-data.net *.google-analytics.com us.acas.acuant.net",
       )
       expect(content_security_policy['font-src']).to eq("'self' data:")
       expect(content_security_policy['form-action']).to eq("'self'")
       expect(content_security_policy['img-src']).to eq(
-        "'self' data: login.gov https://s3.us-west-2.amazonaws.com",
+        "'self' data: login.gov idscangoweb.acuant.com https://s3.us-west-2.amazonaws.com",
       )
       expect(content_security_policy['media-src']).to eq("'self'")
       expect(content_security_policy['object-src']).to eq("'none'")

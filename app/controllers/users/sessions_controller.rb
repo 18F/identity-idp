@@ -19,7 +19,6 @@ module Users
         flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
-      override_csp_for_google_analytics
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
@@ -224,26 +223,6 @@ module Users
 
       request_id if LETTERS_AND_DASHES.match?(request_id)
     end
-
-    def override_csp_for_google_analytics
-      return unless IdentityConfig.store.participate_in_dap
-      policy = current_content_security_policy
-      policy.script_src(*policy.script_src, 'dap.digitalgov.gov', 'www.google-analytics.com')
-      policy.connect_src(*policy.connect_src, 'www.google-analytics.com')
-      request.content_security_policy = policy
-    end
-  end
-
-  def unsafe_redirect_error(_exception)
-    controller_info = "#{controller_path}##{action_name}"
-    analytics.unsafe_redirect_error(
-      controller: controller_info,
-      user_signed_in: user_signed_in?,
-      referer: request.referer,
-    )
-
-    flash[:error] = t('errors.general')
-    redirect_to new_user_session_url
   end
 
   def unsafe_redirect_error(_exception)
