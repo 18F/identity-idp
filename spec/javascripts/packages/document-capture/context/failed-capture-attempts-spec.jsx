@@ -119,7 +119,7 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
      */
     it('calls analytics with native camera message when failed attempts is greater than or equal to 0', async function () {
       const addPageAction = sinon.spy();
-      const acuantCaptureComponent = <AcuantCapture />;
+      const acuantCaptureComponent = <AcuantCapture name="example" />;
       function TestComponent({ children }) {
         return (
           <AnalyticsContext.Provider value={{ addPageAction }}>
@@ -142,6 +142,7 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       expect(addPageAction).to.have.been.called();
       expect(addPageAction).to.have.been.calledWith(
         'IdV: Native camera forced after failed attempts',
+        { field: 'example', failed_attempts: 0 },
       );
     });
 

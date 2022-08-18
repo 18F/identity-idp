@@ -7,8 +7,8 @@ describe FrontendLogController do
     let(:fake_analytics) { FakeAnalytics.new }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:event) { 'Custom Event' }
-    let(:payload) { { message: 'To be logged...' } }
-    let(:params) { { event: event, payload: payload } }
+    let(:payload) { { 'message' => 'To be logged...' } }
+    let(:params) { { 'event' => event, 'payload' => payload } }
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
     context 'user is signed in' do
@@ -92,7 +92,7 @@ describe FrontendLogController do
         it 'rejects a request without specifying event' do
           expect(fake_analytics).not_to receive(:track_event)
 
-          params.delete(:event)
+          params.delete('event')
           action
 
           expect(response).to have_http_status(:bad_request)
@@ -102,11 +102,32 @@ describe FrontendLogController do
         it 'rejects a request without specifying payload' do
           expect(fake_analytics).not_to receive(:track_event)
 
-          params.delete(:payload)
+          params.delete('payload')
           action
 
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
+        end
+      end
+
+      context 'for a named analytics method' do
+        let(:payload) { { 'field' => 'front', 'failed_attempts' => 0 } }
+        let(:params) do
+          {
+            'event' => 'IdV: Native camera forced after failed attempts',
+            'payload' => payload,
+          }
+        end
+
+        it 'logs the analytics event without the prefix' do
+          expect(fake_analytics).to receive(:track_event).with(
+            'IdV: Native camera forced after failed attempts', payload
+          )
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
         end
       end
     end
