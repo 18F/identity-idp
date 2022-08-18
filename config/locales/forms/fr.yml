@@ -122,11 +122,17 @@ fr:
     validation:
       required_checkbox: Veuillez cocher cette case pour continuer
     verify_profile:
-      instructions: Entrez le code à dix caractères qui se trouve dans la lettre que
-        nous vous avons envoyée.
+      instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+        avez reçue.
       name: Code de confirmation
       submit: Confirmer le compte
       title: Confirmez votre compte
+      welcome_back: Content de vous revoir
+      welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
+        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas
+        encore arrivée, veuillez être patient car les <strong>lettres prennent
+        généralement entre trois à sept jours ouvrables pour arriver</strong>.
+        Nous vous remercions de votre patience.</p>'
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
         l’utiliser pour accéder à votre compte %{app_name}.
