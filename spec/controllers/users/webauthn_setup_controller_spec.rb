@@ -322,12 +322,14 @@ describe Users::WebauthnSetupController do
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 0,
-              error_details: {
-                name: ['Sorry, but your platform authenticator doesn’t appear to be a FIDO platform authenticator. Please make sure your device is listed at https://fidoalliance.org/certification/fido-certified-products/ and if you believe this is our error, please contact at https://www.login.gov/contact.'],
-              },
-              errors: {
-                name: ['Sorry, but your platform authenticator doesn’t appear to be a FIDO platform authenticator. Please make sure your device is listed at https://fidoalliance.org/certification/fido-certified-products/ and if you believe this is our error, please contact at https://www.login.gov/contact.'],
-              },
+              errors: { name: [I18n.t(
+                'errors.webauthn_platform_setup.attestation_error',
+                link: MarketingSite.contact_url,
+              )] },
+              error_details: { name: [I18n.t(
+                'errors.webauthn_platform_setup.attestation_error',
+                link: MarketingSite.contact_url,
+              )] },
               in_multi_mfa_selection_flow: true,
               mfa_method_counts: {},
               multi_factor_auth_method: 'webauthn_platform',
