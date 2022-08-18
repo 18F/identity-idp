@@ -364,8 +364,8 @@ function AcuantCapture(
    * before calling the original function.
    */
   function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
-    return (fn: LoggedClickCallback) =>
-      (...args: Parameters<LoggedClickCallback>) => {
+    return <T extends (...args: any[]) => any>(fn: T) =>
+      (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
           addPageAction(`IdV: ${name} image clicked`, { source, ...metadata });
         }
