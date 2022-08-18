@@ -179,6 +179,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
 
+        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_rate_limited).
+          with({ phone_number: '+1 202-555-1212' })
+
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms' }
@@ -460,6 +463,21 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
+          end
+
+          context 'user has exceeded the maximum number of attempts' do
+            it 'tracks the attempt event' do
+              allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+              sign_in_before_2fa
+
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_rate_limited).
+                with(phone_number: '+1 202-555-1212')
+
+              post :create, params:
+              { code: '12345',
+                otp_delivery_preference: 'sms' }
+            end
           end
         end
 
