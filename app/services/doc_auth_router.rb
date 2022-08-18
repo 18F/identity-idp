@@ -168,7 +168,7 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
-    when Idp::Constants::Vendors::LEXIS_NEXIS
+    when Idp::Constants::Vendors::LEXIS_NEXIS, 'lexisnexis' # Use constant once configured in prod
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::LexisNexisClient.new(
           account_id: IdentityConfig.store.lexisnexis_account_id,

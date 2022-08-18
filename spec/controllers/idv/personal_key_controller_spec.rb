@@ -191,6 +191,8 @@ describe Idv::PersonalKeyController do
     end
 
     context 'with in person profile' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: profile) }
+
       before do
         ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

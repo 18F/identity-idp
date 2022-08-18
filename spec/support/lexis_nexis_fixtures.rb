@@ -14,6 +14,34 @@ module LexisNexisFixtures
       )
     end
 
+    def example_ddp_config
+      Proofing::LexisNexis::Proofer::Config.new(
+        api_key: 'test_api_key',
+        base_url: 'https://example.com',
+        org_id: 'test_org_id',
+      )
+    end
+
+    def ddp_request_json
+      raw = read_fixture_file_at_path('ddp/request.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_success_response_json
+      raw = read_fixture_file_at_path('ddp/successful_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_failure_response_json
+      raw = read_fixture_file_at_path('ddp/failed_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_error_response_json
+      raw = read_fixture_file_at_path('ddp/error_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def instant_verify_request_json
       raw = read_fixture_file_at_path('instant_verify/request.json')
       JSON.parse(raw).to_json

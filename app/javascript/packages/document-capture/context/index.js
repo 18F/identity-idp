@@ -1,7 +1,10 @@
 export { default as AppContext } from './app';
 export { default as DeviceContext } from './device';
 export { default as AcuantContext, Provider as AcuantContextProvider } from './acuant';
-export { default as HelpCenterContext, Provider as HelpCenterContextProvider } from './help-center';
+export {
+  default as MarketingSiteContext,
+  Provider as MarketingSiteContextProvider,
+} from './marketing-site';
 export { default as UploadContext, Provider as UploadContextProvider } from './upload';
 export {
   default as ServiceProviderContext,

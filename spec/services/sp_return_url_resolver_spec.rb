@@ -121,4 +121,23 @@ RSpec.describe SpReturnUrlResolver do
       expect(failure_to_proof_url).to eq(configured_return_to_sp_url)
     end
   end
+
+  describe '#homepage_url' do
+    let(:return_to_sp_url) { nil }
+    let(:sp) { build(:service_provider, return_to_sp_url: return_to_sp_url) }
+    let(:instance) { described_class.new(service_provider: sp) }
+    subject(:homepage_url) { instance.homepage_url }
+
+    it 'returns nil' do
+      expect(homepage_url).to be_nil
+    end
+
+    context 'with return to sp url' do
+      let(:return_to_sp_url) { 'https://sp.gov/return_to_sp' }
+
+      it 'return return to sp url' do
+        expect(homepage_url).to eq(return_to_sp_url)
+      end
+    end
+  end
 end

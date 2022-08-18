@@ -4,7 +4,8 @@ describe Idv::InPerson::UspsLocationsController do
   include IdvHelper
 
   let(:user) { create(:user) }
-  let(:in_person_proofing_enabled) { false }
+  let(:sp) { nil }
+  let(:in_person_proofing_enabled) { true }
   let(:selected_location) do
     {
       usps_location: {
@@ -21,9 +22,10 @@ describe Idv::InPerson::UspsLocationsController do
 
   before do
     stub_analytics
-    stub_sign_in(user)
+    stub_sign_in(user) if user
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).
       and_return(in_person_proofing_enabled)
+    allow(controller).to receive(:current_sp).and_return(sp)
   end
 
   describe '#index' do
@@ -68,15 +70,46 @@ describe Idv::InPerson::UspsLocationsController do
         expect(facilities.length).to eq 0
       end
     end
+
+    context 'with feature disabled' do
+      let(:in_person_proofing_enabled) { false }
+
+      it 'renders 404' do
+        expect(response.status).to eq(404)
+      end
+    end
   end
 
   describe '#update' do
-    it 'writes the passed location to in-person enrollment' do
-      put :update, params: selected_location
+    subject(:response) { put :update, params: selected_location }
 
-      expect(user.reload.establishing_in_person_enrollment.selected_location_details).to eq(
-        selected_location[:usps_location].as_json,
-      )
+    it 'writes the passed location to in-person enrollment' do
+      response
+
+      enrollment = user.reload.establishing_in_person_enrollment
+
+      expect(enrollment.selected_location_details).to eq(selected_location[:usps_location].as_json)
+      expect(enrollment.service_provider).to be_nil
+    end
+
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
+      it 'renders an unauthorized status' do
+        expect(response.status).to eq(401)
+      end
+    end
+
+    context 'with associated service provider' do
+      let(:sp) { create(:service_provider) }
+
+      it 'assigns services provider to in-person enrollment' do
+        response
+
+        enrollment = user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.issuer).to eq(sp.issuer)
+      end
     end
 
     context 'with hybrid user' do
@@ -88,11 +121,22 @@ describe Idv::InPerson::UspsLocationsController do
       end
 
       it 'writes the passed location to in-person enrollment associated with effective user' do
-        put :update, params: selected_location
+        response
 
-        expect(
-          effective_user.reload.establishing_in_person_enrollment.selected_location_details,
-        ).to eq(selected_location[:usps_location].as_json)
+        enrollment = effective_user.reload.establishing_in_person_enrollment
+
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+        expect(enrollment.service_provider).to be_nil
+      end
+    end
+
+    context 'with feature disabled' do
+      let(:in_person_proofing_enabled) { false }
+
+      it 'renders 404' do
+        expect(response.status).to eq(404)
       end
     end
   end

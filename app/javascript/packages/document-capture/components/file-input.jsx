@@ -160,6 +160,7 @@ function FileInput(props, ref) {
   }, [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
+  const innerHintId = `${hintId}-inner`;
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling
@@ -303,7 +304,7 @@ function FileInput(props, ref) {
             <div className="usa-file-input__instructions" aria-hidden="true">
               {bannerText && <strong className="usa-file-input__banner-text">{bannerText}</strong>}
               {isMobile && bannerText ? null : (
-                <span className="usa-file-input__drag-text">
+                <span className="usa-file-input__drag-text" id={innerHintId}>
                   {formatHTML(t('doc_auth.forms.choose_file_html'), {
                     'lg-underline': ({ children }) => (
                       <span className="usa-file-input__choose">{children}</span>
@@ -328,7 +329,7 @@ function FileInput(props, ref) {
             onClick={onClick}
             onDrop={onDrop}
             accept={accept ? accept.join() : undefined}
-            aria-describedby={hint ? hintId : undefined}
+            aria-describedby={hint ? `${innerHintId} ${hintId}` : undefined}
           />
         </div>
       </div>

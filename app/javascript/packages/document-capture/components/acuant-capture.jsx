@@ -282,9 +282,14 @@ function AcuantCapture(
   const [attempt, incrementAttempt] = useCounter(1);
   const [acuantFailureCookie, setAcuantFailureCookie, refreshAcuantFailureCookie] =
     useCookie('AcuantCameraHasFailed');
-  const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
-    FailedCaptureAttemptsContext,
-  );
+
+  const {
+    failedCaptureAttempts,
+    onFailedCaptureAttempt,
+    onResetFailedCaptureAttempts,
+    forceNativeCamera,
+  } = useContext(FailedCaptureAttemptsContext);
+
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -382,6 +387,31 @@ function AcuantCapture(
   }
 
   /**
+   * Triggers upload to occur, regardless of support for direct capture. This is necessary since the
+   * default behavior for interacting with the file input is intercepted when capture is supported.
+   * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
+   */
+  function forceUpload() {
+    if (!inputRef.current) {
+      return;
+    }
+
+    isForceUploading.current = true;
+
+    const originalCapture = inputRef.current.getAttribute('capture');
+
+    if (originalCapture !== null) {
+      inputRef.current.removeAttribute('capture');
+    }
+
+    withoutClickLogging(() => inputRef.current?.click());
+
+    if (originalCapture !== null) {
+      inputRef.current.setAttribute('capture', originalCapture);
+    }
+  }
+
+  /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
@@ -390,6 +420,13 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
+      if (forceNativeCamera) {
+        addPageAction('IdV: Native camera forced after failed attempts', {
+          field: name,
+          failed_attempts: failedCaptureAttempts,
+        });
+        return forceUpload();
+      }
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
         isAcuantCaptureCapable && capture !== 'user' && !isForceUploading.current;
@@ -414,31 +451,6 @@ function AcuantCapture(
       isForceUploading.current = false;
     } else {
       withoutClickLogging(() => inputRef.current?.click());
-    }
-  }
-
-  /**
-   * Triggers upload to occur, regardless of support for direct capture. This is necessary since the
-   * default behavior for interacting with the file input is intercepted when capture is supported.
-   * Calling `forceUpload` will flag the click handling to skip intercepting the event as capture.
-   */
-  function forceUpload() {
-    if (!inputRef.current) {
-      return;
-    }
-
-    isForceUploading.current = true;
-
-    const originalCapture = inputRef.current.getAttribute('capture');
-
-    if (originalCapture !== null) {
-      inputRef.current.removeAttribute('capture');
-    }
-
-    withoutClickLogging(() => inputRef.current?.click());
-
-    if (originalCapture !== null) {
-      inputRef.current.setAttribute('capture', originalCapture);
     }
   }
 

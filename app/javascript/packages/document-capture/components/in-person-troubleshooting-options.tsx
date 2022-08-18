@@ -3,7 +3,7 @@ import { TroubleshootingOptions } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
-import HelpCenterContext from '../context/help-center';
+import MarketingSiteContext from '../context/marketing-site';
 
 interface InPersonTroubleshootingOptionsProps {
   /**
@@ -22,7 +22,7 @@ function InPersonTroubleshootingOptions({
   location = 'in_person_troubleshooting_options',
 }: InPersonTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { getHelpCenterURL } = useContext(HelpCenterContext);
+  const { getHelpCenterURL } = useContext(MarketingSiteContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
@@ -33,7 +33,7 @@ function InPersonTroubleshootingOptions({
           {
             url: getHelpCenterURL({
               category: 'verify-your-identity',
-              article: 'how-to-verify-in-person',
+              article: 'verify-your-identity-in-person',
               location,
             }),
             text: t('idv.troubleshooting.options.learn_more_verify_in_person'),

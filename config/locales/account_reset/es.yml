@@ -37,6 +37,19 @@ es:
       wait_html: Hay un período de espera de 24 horas para eliminar su cuenta. En
         <strong>%{interval}</strong>, recibirá un correo electrónico con
         instrucciones para completar la eliminación.
+    recovery_options:
+      check_webauthn_platform: Utilice el mismo dispositivo con el que configuró el
+        desbloqueo facial o táctil por primera vez.
+      check_webauthn_platform_info: Si configuró el desbloqueo facial o táctil cuando
+        creó su cuenta, asegúrese de utilizar el mismo dispositivo con el que
+        creó su cuenta de %{app_name}.
+      header: ¿Seguro que desea eliminar su cuenta?
+      help_text: Si sigue sin poder acceder a %{app_name}, pruebe con estos pasos en
+        su lugar.
+      try_another_device: Pruebe otro dispositivo donde pueda haber seleccionado la
+        opción “Recordar dispositivo”.
+      try_method_again: Pruebe nuevamente su método de autenticación.
+      use_device: Utilice otro dispositivo.
     request:
       are_you_sure: '¿Estás seguro de que no tienes acceso a ninguno de tus métodos de
         seguridad?'
@@ -57,6 +70,6 @@ es:
           la única opción.
         - No podemos deshacer la eliminación de una cuenta, así que por favor
           asegúrese de no tener otra opción de seguridad que puede usar.
-      no_cancel: No, cancelar
+      no_cancel: Cancelar
       title: Eliminación y restablecimiento de cuenta
       yes_continue: Sí, continúa la eliminación

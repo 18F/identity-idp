@@ -32,22 +32,26 @@ RSpec.describe IrsAttemptsApi::Tracker do
 
   describe '#track_event' do
     it 'records the event in redis' do
-      subject.track_event(:test_event, foo: :bar)
+      freeze_time do
+        subject.track_event(:test_event, foo: :bar)
 
-      events = IrsAttemptsApi::RedisClient.new.read_events
+        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
 
-      expect(events.values.length).to eq(1)
+        expect(events.values.length).to eq(1)
+      end
     end
 
     context 'the current session is not an IRS attempt API session' do
       let(:enabled_for_session) { false }
 
       it 'does not record any events in redis' do
-        subject.track_event(:test_event, foo: :bar)
+        freeze_time do
+          subject.track_event(:test_event, foo: :bar)
 
-        events = IrsAttemptsApi::RedisClient.new.read_events
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
 
-        expect(events.values.length).to eq(0)
+          expect(events.values.length).to eq(0)
+        end
       end
     end
 
@@ -55,11 +59,13 @@ RSpec.describe IrsAttemptsApi::Tracker do
       let(:irs_attempt_api_enabled) { false }
 
       it 'does not record any events in redis' do
-        subject.track_event(:test_event, foo: :bar)
+        freeze_time do
+          subject.track_event(:test_event, foo: :bar)
 
-        events = IrsAttemptsApi::RedisClient.new.read_events
+          events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
 
-        expect(events.values.length).to eq(0)
+          expect(events.values.length).to eq(0)
+        end
       end
     end
   end

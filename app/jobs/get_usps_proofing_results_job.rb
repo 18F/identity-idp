@@ -23,7 +23,11 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     proofer = UspsInPersonProofing::Proofer.new
 
-    InPersonEnrollment.needs_usps_status_check(...5.minutes.ago).each do |enrollment|
+    reprocess_delay_minutes = IdentityConfig.store.
+      get_usps_proofing_results_job_reprocess_delay_minutes
+    InPersonEnrollment.needs_usps_status_check(
+      ...reprocess_delay_minutes.minutes.ago,
+    ).each do |enrollment|
       # Record and commit attempt to check enrollment status to database
       enrollment.update(status_check_attempted_at: Time.zone.now)
 
@@ -54,6 +58,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   private
+
+  DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
@@ -164,7 +170,7 @@ class GetUspsProofingResultsJob < ApplicationJob
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_now_or_later
+      ).deliver_now_or_later(**mail_delivery_params)
     end
   end
 
@@ -174,7 +180,17 @@ class GetUspsProofingResultsJob < ApplicationJob
         user,
         email_address,
         enrollment: enrollment,
-      ).deliver_now_or_later
+      ).deliver_now_or_later(**mail_delivery_params)
     end
+  end
+
+  def mail_delivery_params
+    config_delay = IdentityConfig.store.in_person_results_delay_in_hours
+    if config_delay > 0
+      return { wait: config_delay.hours }
+    elsif (config_delay == 0)
+      return {}
+    end
+    { wait: DEFAULT_EMAIL_DELAY_IN_HOURS.hours }
   end
 end

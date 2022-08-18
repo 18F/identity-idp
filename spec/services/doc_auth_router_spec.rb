@@ -7,7 +7,7 @@ RSpec.describe DocAuthRouter do
     end
 
     context 'for acuant' do
-      let(:doc_auth_vendor) { 'acuant' }
+      let(:doc_auth_vendor) { Idp::Constants::Vendors::ACUANT }
 
       it 'is a translation-proxied acuant client' do
         expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
@@ -16,7 +16,7 @@ RSpec.describe DocAuthRouter do
     end
 
     context 'for lexisnexis' do
-      let(:doc_auth_vendor) { 'lexisnexis' }
+      let(:doc_auth_vendor) { Idp::Constants::Vendors::LEXIS_NEXIS }
 
       it 'is a translation-proxied lexisnexis client' do
         expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
@@ -130,8 +130,8 @@ RSpec.describe DocAuthRouter do
       end
 
       it 'client returns randomized vendors when configured' do
-        doc_auth_vendor = 'acuant'
-        doc_auth_vendor_randomize_alternate_vendor = 'lexisnexis'
+        doc_auth_vendor = Idp::Constants::Vendors::ACUANT
+        doc_auth_vendor_randomize_alternate_vendor = Idp::Constants::Vendors::LEXIS_NEXIS
         doc_auth_vendor_randomize_percent = 35
 
         allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
