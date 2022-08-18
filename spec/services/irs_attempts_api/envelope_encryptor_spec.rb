@@ -8,8 +8,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
       text = 'test'
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: text, timestamp: time,
-        public_key: public_key
+        data: text, timestamp: time, public_key: public_key,
       )
 
       expect(result.encrypted_data).to_not eq text

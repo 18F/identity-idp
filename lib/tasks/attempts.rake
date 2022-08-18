@@ -18,8 +18,7 @@ namespace :attempts do
     private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
     key = private_key.private_decrypt(encrypted_key)
     decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
-      encrypted_data: encrypted_data, key: key,
-      iv: iv
+      encrypted_data: encrypted_data, key: key, iv: iv,
     )
     events = JSON.parse(decrypted)
 

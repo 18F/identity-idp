@@ -53,8 +53,7 @@ module Api
       pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
 
       IrsAttemptsApi::EnvelopeEncryptor.encrypt(
-        data: json, timestamp: timestamp,
-        public_key: pub_key
+        data: json, timestamp: timestamp, public_key: pub_key,
       )
     end
 
