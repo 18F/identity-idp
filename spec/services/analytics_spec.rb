@@ -78,7 +78,7 @@ describe Analytics do
       }
 
       expect(ahoy).to receive(:track).
-          with('Trackable Event', analytics_hash.merge(request_attributes))
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', { success: false })
     end
