@@ -12,7 +12,7 @@
       html: { autocomplete: 'off', method: :post },
     ) do |f| %>
   <%= render 'partials/backup_code/entry_fields', f: f, attribute_name: :backup_code %>
-  <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.submit.default') %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

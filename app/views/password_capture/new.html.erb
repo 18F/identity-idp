@@ -14,7 +14,7 @@
         label: t('account.index.password'),
         required: true,
       ) %>
-  <%= f.button :submit, t('forms.buttons.submit.default'), class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render PageFooterComponent.new do %>
