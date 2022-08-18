@@ -27,6 +27,12 @@ en:
       caution: If you regenerate your backup codes you will receive a new set of
         backup codes. Your original backup codes will no longer be valid.
       confirm: Are you sure you want to regenerate your backup codes?
+    backup_code_reminder:
+      body_info: If you ever lose access to your primary authentication method, you
+        can use backup codes to regain access to your account.
+      have_codes: I have my codes
+      heading: Do you still have your backup codes?
+      need_new_codes: I need a new set of backup codes
     buttons:
       back: Back
       cancel: Yes, cancel

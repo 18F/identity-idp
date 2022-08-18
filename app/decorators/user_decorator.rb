@@ -116,6 +116,11 @@ class UserDecorator
     !recent_devices.empty?
   end
 
+  def second_last_signed_in_at
+    user.events.where(event_type: 'sign_in_after_2fa').
+      order(created_at: :desc).pluck(:created_at).second
+  end
+
   def connected_apps
     user.identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
   end
