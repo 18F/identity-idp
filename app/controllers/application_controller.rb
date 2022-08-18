@@ -317,15 +317,23 @@ class ApplicationController < ActionController::Base
 
   def confirm_two_factor_authenticated(id = nil)
     return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
+
     authenticate_user!(force: true)
-    return prompt_to_setup_mfa unless two_factor_enabled?
-    return prompt_to_verify_mfa unless user_fully_authenticated?
-    return prompt_to_setup_mfa if service_provider_mfa_policy.
-      user_needs_sp_auth_method_setup?
-    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
-    return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
-      user_needs_sp_auth_method_verification?
+
+    if !two_factor_enabled?
+      return prompt_to_setup_mfa
+    elsif !user_fully_authenticated?
+      return prompt_to_verify_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
+      return prompt_to_setup_mfa
+    elsif two_factor_kantara_enabled?
+      return prompt_to_setup_non_restricted_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
+      return prompt_to_verify_sp_required_mfa
+    end
+
     enforce_total_session_duration_timeout
+
     true
   end
 
