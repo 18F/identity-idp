@@ -357,8 +357,6 @@ function AcuantCapture(
     onChangeAndResetError(nextValue, analyticsPayload);
   }
 
-  type LoggedClickCallback = (...args: any[]) => any;
-
   /**
    * Given a click source, returns a higher-order function that, when called, will log an event
    * before calling the original function.
