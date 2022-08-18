@@ -467,15 +467,15 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] name the name to prepend to analytics events
+  # @param [String] field the name of the field which was clicked
   # @param [Number] failed_attempts the number of failed document capture attempts so far
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(name:, failed_attempts:, **extra)
+  def idv_native_camera_forced(field:, failed_attempts:, **extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
-      name: name,
+      field: field,
       failed_attempts: failed_attempts,
       **extra,
     )
