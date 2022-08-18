@@ -85,7 +85,7 @@ class SamlIdpController < ApplicationController
     bump_auth_count unless user_fully_authenticated?
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
                                                                service_provider_mfa_policy.
-                                                               auth_method_confirms_to_sp_request?
+                                                                 auth_method_confirms_to_sp_request?
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 

@@ -147,7 +147,7 @@ RSpec.describe Users::RulesOfUseController do
       it 'logs a failure analytics event' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-            with('Rules of Use Submitted', hash_including(success: false))
+          with('Rules of Use Submitted', hash_including(success: false))
 
         action
       end

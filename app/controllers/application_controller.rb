@@ -321,10 +321,10 @@ class ApplicationController < ActionController::Base
     return prompt_to_setup_mfa unless two_factor_enabled?
     return prompt_to_verify_mfa unless user_fully_authenticated?
     return prompt_to_setup_mfa if service_provider_mfa_policy.
-                                  user_needs_sp_auth_method_setup?
+      user_needs_sp_auth_method_setup?
     return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
-                                               user_needs_sp_auth_method_verification?
+      user_needs_sp_auth_method_verification?
     enforce_total_session_duration_timeout
     true
   end

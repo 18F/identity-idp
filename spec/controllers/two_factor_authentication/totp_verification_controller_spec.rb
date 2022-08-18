@@ -94,7 +94,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
         expect(@analytics).to receive(:track_event).
-                          with('Multi-Factor Authentication: max attempts reached')
+          with('Multi-Factor Authentication: max attempts reached')
         expect(@irs_attempts_api_tracker).to receive(:track_event).
           with(:mfa_verify_totp, success: false)
         expect(PushNotification::HttpPush).to receive(:deliver).

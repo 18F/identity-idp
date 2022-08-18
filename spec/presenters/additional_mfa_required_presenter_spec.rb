@@ -87,7 +87,7 @@ describe AdditionalMfaRequiredPresenter do
 
         it 'should return false' do
           expect(presenter.cant_skip_anymore?).
-          to be_falsey
+            to be_falsey
         end
       end
 
@@ -100,7 +100,7 @@ describe AdditionalMfaRequiredPresenter do
 
         it 'should return true' do
           expect(presenter.cant_skip_anymore?).
-          to be_truthy
+            to be_truthy
         end
       end
     end
