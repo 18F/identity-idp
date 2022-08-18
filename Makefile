@@ -21,19 +21,15 @@ ARTIFACT_DESTINATION_FILE ?= ./tmp/idp.tar.gz
 	help \
 	lint \
 	lint_analytics_events \
-	lint_tracker_events \
 	lint_country_dialing_codes \
 	lint_erb \
 	lint_optimized_assets \
 	lint_yaml \
-	lint_yarn_workspaces \
-	lint_lockfiles \
 	lintfix \
 	normalize_yaml \
 	optimize_assets \
 	optimize_svg \
 	run \
-	update \
 	urn \
 	setup \
 	test \
@@ -80,10 +76,6 @@ lint: ## Runs all lint tests
 	# Other
 	@echo "--- lint yaml ---"
 	make lint_yaml
-	@echo "--- lint Yarn workspaces ---"
-	make lint_yarn_workspaces
-	@echo "--- lint lockfiles ---"
-	make lint_lockfiles
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
 	@echo "--- stylelint ---"
@@ -94,19 +86,6 @@ lint_erb: ## Lints ERB files
 
 lint_yaml: normalize_yaml ## Lints YAML files
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
-
-lint_yarn_workspaces: ## Lints Yarn workspace packages
-	scripts/validate-workspaces.js
-
-lint_gemfile_lock: Gemfile Gemfile.lock
-	@bundle check
-	@git diff-index --quiet HEAD Gemfile.lock || (echo "Error: There are uncommitted changes after running 'bundle install'"; exit 1)
-
-lint_yarn_lock: package.json yarn.lock
-	@yarn install --ignore-scripts
-	@(! git diff --name-only | grep yarn.lock) || (echo "Error: There are uncommitted changes after running 'yarn install'"; exit 1)
-
-lint_lockfiles: lint_gemfile_lock lint_yarn_lock ## Lints to ensure lockfiles are in sync
 
 lintfix: ## Runs rubocop fix
 	@echo "--- rubocop fix ---"
@@ -212,26 +191,17 @@ build_artifact $(ARTIFACT_DESTINATION_FILE): ## Builds zipped tar file artifact 
 
 analytics_events: public/api/_analytics-events.json ## Generates a JSON file that documents analytics events for events.log
 
-lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
-
-lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="IrsAttemptsApi::TrackerEvents" --check --skip-extra-params $<
+lint_analytics_events: .yardoc # Checks that all methods on AnalyticsEvents are documented
+	bundle exec ruby lib/analytics_events_documenter.rb --check $<
 
 public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
-	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
+	bundle exec ruby lib/analytics_events_documenter.rb --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/irs_attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb
 	bundle exec yard doc \
 		--fail-on-warning \
 		--type-tag identity.idp.previous_event_name:"Previous Event Name" \
 		--no-output \
 		--db $@ \
-		-- $^
-
-update: ## Update dependencies, useful after a git pull
-	bundle install
-	yarn install
-	bundle exec rails db:migrate
-
+		-- $<

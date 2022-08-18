@@ -60,10 +60,9 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      res = faraday.post(url, body, dynamic_headers) do |req|
+      faraday.post(url, body, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_enroll' }
-      end
-      Response::RequestEnrollResponse.new(res.body)
+      end.body
     end
 
     # Makes HTTP request to retrieve proofing status

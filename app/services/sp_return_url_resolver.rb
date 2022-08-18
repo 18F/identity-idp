@@ -17,10 +17,6 @@ class SpReturnUrlResolver
     service_provider.failure_to_proof_url.presence || return_to_sp_url
   end
 
-  def homepage_url
-    service_provider.return_to_sp_url
-  end
-
   private
 
   def inferred_redirect_url

@@ -6,24 +6,14 @@
       class: 'float-center padding-bottom-4',
     ) %>
 <h4><%= message.subject %></h4>
-<p>
+<p class="s16">
   <%= t('user_mailer.in_person_verified.greeting') %><br>
   <%= t(
         'user_mailer.in_person_verified.intro',
         location: @presenter.location_name,
         date: @presenter.formatted_verified_date,
-      ) %>
-</p>
-<p class="s16">
-  <% if @presenter.service_provider.present? %>
-    <% if @presenter.show_cta? %>
-      <%= t('user_mailer.in_person_verified.next_sign_in.with_sp.with_cta', sp_name: @presenter.service_provider.friendly_name) %>
-    <% else %>
-      <%= t('user_mailer.in_person_verified.next_sign_in.with_sp.without_cta', sp_name: @presenter.service_provider.friendly_name) %>
-    <% end %>
-  <% else %>
-    <%= t('user_mailer.in_person_verified.next_sign_in.without_sp', app_name: APP_NAME) %>
-  <% end %>
+      ) %><br /><br />
+  <%= t('user_mailer.in_person_verified.next_sign_in', app_name: APP_NAME) %>
 </p>
 
 <%= render 'shared/in-person-verification-results-email-lower' %>

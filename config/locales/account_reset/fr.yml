@@ -37,20 +37,6 @@ fr:
       wait_html: Il y a un délai d’attente de 24 heures pour supprimer votre compte.
         Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des
         instructions pour terminer la suppression.
-    recovery_options:
-      check_webauthn_platform: Utilisez le même appareil que celui avec lequel vous
-        avez configuré le déverrouillage facial ou tactile
-      check_webauthn_platform_info: Si vous avez configuré le déverrouillage facial ou
-        tactile lorsque vous avez créé votre compte, assurez-vous d’utiliser le
-        même appareil que celui avec lequel vous avez créé votre compte
-        %{app_name}.
-      header: Êtes-vous sûr de vouloir supprimer votre compte?
-      help_text: Si vous êtes bloqué et que vous avez toujours besoin d’accéder à
-        %{app_name}, essayez plutôt ces étapes.
-      try_another_device: Essayez un autre appareil sur lequel vous avez peut-être
-        sélectionné l’option « mémoriser l’appareil ».
-      try_method_again: Essayez à nouveau votre méthode d’authentification
-      use_device: Utilisez un autre appareil
     request:
       are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes de sécurité?
       delete_account: Supprimer votre compte
@@ -71,6 +57,6 @@ fr:
         - Nous ne pouvons pas annuler un compte supprimer, alors s’il vous plaît
           assurez-vous que vous n’avez pas une autre option de sécurité que vous
           pouvez utiliser à la place.
-      no_cancel: Annuler
+      no_cancel: Non, annuler
       title: Suppression de compte et réinitialisation
       yes_continue: Oui, continuez la suppression

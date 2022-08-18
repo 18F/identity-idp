@@ -76,7 +76,8 @@ module Idv
 
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
-      current_user.pending_in_person_enrollment.present?
+      # WILLFIX: After LG-6872 and we have enrollment saved, reference enrollment instead.
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def pending_profile?

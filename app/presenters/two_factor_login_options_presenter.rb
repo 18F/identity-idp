@@ -78,15 +78,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       'two_factor_authentication.account_reset.text_html',
       link: @view.link_to(
         t('two_factor_authentication.account_reset.link'),
-        account_reset_url(locale: LinkLocaleResolver.locale),
+        account_reset_request_path(locale: LinkLocaleResolver.locale),
       ),
     )
-  end
-
-  def account_reset_url(locale:)
-    IdentityConfig.store.show_account_recovery_recovery_options ?
-      account_reset_recovery_options_path(locale: locale) :
-        account_reset_request_path(locale: locale)
   end
 
   def account_reset_cancel_link

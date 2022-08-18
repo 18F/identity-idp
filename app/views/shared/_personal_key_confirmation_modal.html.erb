@@ -8,8 +8,15 @@
         <%= t('forms.personal_key.instructions') %>
       </p>
 
-      <%= simple_form_for('', url: update_path, id: 'confirm-key') do |f| %>
-        <%= render 'shared/personal_key_input', code: code, form: f %>
+      <div id="personal-key-alert" class="display-none">
+        <%= render AlertComponent.new(
+              type: :error,
+              class: 'margin-bottom-4',
+              message: t('users.personal_key.confirmation_error'),
+            ) %>
+      </div>
+      <form id="confirm-key" method="post" action="<%= update_path %>" name="key-confirm" novalidate="novalidate">
+        <%= render 'shared/personal_key_input', code: code, validation_needed: true %>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
         <div class="grid-row grid-gap">
           <div class="grid-col-12 tablet:grid-col-6 margin-bottom-2 tablet:margin-bottom-0 tablet:display-none">
@@ -28,7 +35,7 @@
             </button>
           </div>
         </div>
-      <% end %>
+      </form>
     </div>
   <% end %>
 </div>

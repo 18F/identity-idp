@@ -12,8 +12,6 @@ module Proofing
         :password,
         :request_mode,
         :request_timeout,
-        :org_id,
-        :api_key,
         keyword_init: true,
         allowed_members: [
           :instant_verify_workflow,

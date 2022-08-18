@@ -58,7 +58,6 @@ describe Telephony::Pinpoint::VoiceSender do
 
       expect(response.success?).to eq(true)
       expect(response.extra[:message_id]).to eq('fake-message-id')
-      expect(response.extra[:origination_phone_number]).to eq(sending_phone)
     end
 
     context 'when the current locale is spanish' do

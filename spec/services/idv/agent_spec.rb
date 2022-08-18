@@ -25,11 +25,7 @@ describe Idv::Agent do
             Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
           agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: true,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
+            document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -40,11 +36,7 @@ describe Idv::Agent do
         it 'does proof state_id if resolution succeeds' do
           agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
           agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: true,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
+            document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -60,11 +52,7 @@ describe Idv::Agent do
             Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid: user.uuid, ssn: '444-55-6666'),
           )
           agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: true,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
+            document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -74,11 +62,7 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution succeeds' do
           agent = Idv::Agent.new(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user.uuid))
           agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: false,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
+            document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -94,11 +78,7 @@ describe Idv::Agent do
           )
 
           agent.proof_resolution(
-            document_capture_session,
-            should_proof_state_id: false,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: nil,
+            document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -117,11 +97,7 @@ describe Idv::Agent do
         )
 
         agent.proof_resolution(
-          document_capture_session,
-          should_proof_state_id: true,
-          trace_id: trace_id,
-          user_id: user.id,
-          threatmetrix_session_id: nil,
+          document_capture_session, should_proof_state_id: true, trace_id: trace_id
         )
         result = document_capture_session.load_proofing_result.result
 
@@ -141,10 +117,7 @@ describe Idv::Agent do
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
         agent.proof_address(
-          document_capture_session,
-          trace_id: trace_id,
-          user_id: user_id,
-          issuer: issuer,
+          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
         )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })

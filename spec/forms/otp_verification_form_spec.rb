@@ -32,8 +32,35 @@ RSpec.describe OtpVerificationForm do
       end
     end
 
+    context 'when alphanumeric is enabled and the code is not exactly 6 characters' do
+      it 'returns FormResponse with success: false' do
+        allow(IdentityConfig.store).to receive(:enable_numeric_authentication_otp).and_return(false)
+        user = build_stubbed(:user)
+        invalid_codes = [
+          '123abcd',
+          '1234567',
+          'abcde',
+          "aaaaa\n123456\naaaaaaaaa",
+        ]
+
+        invalid_codes.each do |code|
+          form = OtpVerificationForm.new(user, code)
+          allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
+
+          result = FormResponse.new(
+            success: false,
+            errors: {},
+            extra: { multi_factor_auth_method: 'otp_code' },
+          )
+
+          expect(form.submit).to eq(result), "expected #{code.inspect} to not pass"
+        end
+      end
+    end
+
     context 'when numeric is enabled and the code is not exactly 6 digits' do
       it 'returns FormResponse with success: false' do
+        allow(IdentityConfig.store).to receive(:enable_numeric_authentication_otp).and_return(true)
         user = build_stubbed(:user)
         invalid_codes = [
           'abcdef',

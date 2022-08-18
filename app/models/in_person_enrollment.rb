@@ -3,11 +3,6 @@ require 'securerandom'
 class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
-  belongs_to :service_provider,
-             foreign_key: 'issuer',
-             primary_key: 'issuer',
-             inverse_of: :in_person_enrollments,
-             optional: true
   enum status: {
     establishing: 0,
     pending: 1,
