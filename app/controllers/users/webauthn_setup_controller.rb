@@ -25,6 +25,15 @@ module Users
       analytics.webauthn_setup_visit(**result.to_h)
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
+
+      if !result.success?
+        if @platform_authenticator
+          irs_attempts_api_tracker.mfa_enroll_webauthn_platform(success: false)
+        else
+          irs_attempts_api_tracker.mfa_enroll_webauthn_roaming(success: false)
+        end
+      end
+
       flash_error(result.errors) unless result.success?
     end
 
