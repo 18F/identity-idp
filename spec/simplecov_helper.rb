@@ -21,8 +21,8 @@ class SimplecovHelper
         #  This is not necessarily folder name friendly, so non-alphabetic/numeric characters are
         #  removed.
         job_name = ENV['CI_JOB_NAME'].downcase.
-          gsub(/[^a-z0-9]/, '-')[0..62].
-          gsub(/(\A-+|-+\z)/, '')
+                   gsub(/[^a-z0-9]/, '-')[0..62].
+                   gsub(/(\A-+|-+\z)/, '')
         command_name job_name
         coverage_dir "coverage/#{job_name}"
       end

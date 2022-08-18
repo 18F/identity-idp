@@ -63,10 +63,10 @@ class UuidReporter
 
   def all_issuers_belong_to_same_agency?
     agency_count = Agency.
-      joins(:service_providers).
-      where(service_providers: { issuer: issuers }).
-      distinct.
-      count
+                   joins(:service_providers).
+                   where(service_providers: { issuer: issuers }).
+                   distinct.
+                   count
 
     return if agency_count == 1
 
@@ -101,11 +101,11 @@ class UuidReporter
     # advantage of the composite indexes and are highly non-performant.
     actual_user_ids = emails_to_user_ids.values.select(&:present?)
     user_ids_with_identities = ServiceProviderIdentity.
-      where(user_id: actual_user_ids, service_provider: issuers).
-      pluck(:user_id)
+                               where(user_id: actual_user_ids, service_provider: issuers).
+                               pluck(:user_id)
     agency_identities = AgencyIdentity.
-      select(:uuid, :user_id).
-      where(user_id: user_ids_with_identities, agency_id: agency.id)
+                        select(:uuid, :user_id).
+                        where(user_id: user_ids_with_identities, agency_id: agency.id)
 
     uuid_hash = agency_identities.map { |record| [record.user_id, record.uuid] }.to_h
     emails_to_user_ids.transform_values { |user_id| uuid_hash[user_id] }

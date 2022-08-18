@@ -390,6 +390,6 @@ class IdentityConfig
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
-      new(**config.written_env)
+             new(**config.written_env)
   end
 end

@@ -162,7 +162,7 @@ feature 'SAML logout' do
       send_saml_remote_logout_request(overrides: { sessionindex: agency_uuid })
 
       identity = ServiceProviderIdentity.
-        find_by(user_id: user.id, service_provider: saml_settings.issuer)
+                 find_by(user_id: user.id, service_provider: saml_settings.issuer)
       session_id = identity.rails_session_id
       expect(OutOfBandSessionAccessor.new(session_id).load).to be_empty
 

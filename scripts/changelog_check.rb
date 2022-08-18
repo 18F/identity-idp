@@ -155,8 +155,8 @@ def format_changelog(changelog_entries)
   changelog = ''
   CATEGORIES.each do |category|
     category_changes = changelog_entries.
-      filter { |(changelog_category, _change), _changes| changelog_category == category }.
-      sort_by { |(_category, change), _changes| change }
+                       filter { |(changelog_category, _change), _changes| changelog_category == category }.
+                       sort_by { |(_category, change), _changes| change }
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")

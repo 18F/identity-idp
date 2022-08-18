@@ -107,8 +107,8 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_attempts_tracker
 
       expect(@irs_attempts_api_tracker).to receive(:track_event).
-      with(:mfa_enroll_options_selected, success: true,
-                                         mfa_device_types: ['voice', 'auth_app'])
+        with(:mfa_enroll_options_selected, success: true,
+                                           mfa_device_types: ['voice', 'auth_app'])
 
       patch :create, params: {
         two_factor_options_form: {

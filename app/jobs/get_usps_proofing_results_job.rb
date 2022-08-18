@@ -24,7 +24,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     proofer = UspsInPersonProofing::Proofer.new
 
     reprocess_delay_minutes = IdentityConfig.store.
-      get_usps_proofing_results_job_reprocess_delay_minutes
+                              get_usps_proofing_results_job_reprocess_delay_minutes
     InPersonEnrollment.needs_usps_status_check(
       ...reprocess_delay_minutes.minutes.ago,
     ).each do |enrollment|

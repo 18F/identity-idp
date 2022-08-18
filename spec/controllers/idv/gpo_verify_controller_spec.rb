@@ -112,7 +112,7 @@ RSpec.describe Idv::GpoVerifyController do
         action
 
         disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
-          where.not(disavowal_token_fingerprint: nil).count
+                                where.not(disavowal_token_fingerprint: nil).count
         expect(disavowal_event_count).to eq 1
         expect(response).to redirect_to(sign_up_completed_url)
       end

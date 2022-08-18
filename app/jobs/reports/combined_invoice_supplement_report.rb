@@ -52,11 +52,11 @@ module Reports
       end
 
       by_issuer_iaa_issuer_year_months = by_issuer_results.
-        group_by { |r| r[:iaa] }.
-        transform_values do |iaa|
-          iaa.group_by { |r| r[:issuer] }.
-            transform_values { |issuer| issuer.group_by { |r| r[:year_month] } }
-        end
+                                         group_by { |r| r[:iaa] }.
+                                         transform_values do |iaa|
+        iaa.group_by { |r| r[:issuer] }.
+          transform_values { |issuer| issuer.group_by { |r| r[:year_month] } }
+      end
 
       # rubocop:disable Metrics/BlockLength
       CSV.generate do |csv|

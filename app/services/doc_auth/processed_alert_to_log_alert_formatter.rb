@@ -15,8 +15,8 @@ module DocAuth
       alerts.keys.each do |key|
         alerts[key.to_sym].each do |alert|
           alert_name_key = alert[:name].
-            downcase.
-            parameterize(separator: '_').to_sym
+                           downcase.
+                           parameterize(separator: '_').to_sym
           side = alert[:side] || 'no_side'
 
           log_alert_results[alert_name_key] =

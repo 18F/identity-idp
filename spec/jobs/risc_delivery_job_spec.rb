@@ -27,13 +27,13 @@ RSpec.describe RiscDeliveryJob do
 
     it 'POSTs the jwt to the given URL' do
       req = stub_request(:post, push_notification_url).
-        with(
-          body: jwt,
-          headers: {
-            'Content-Type' => 'application/secevent+jwt',
-            'Accept' => 'application/json',
-          },
-        )
+            with(
+              body: jwt,
+              headers: {
+                'Content-Type' => 'application/secevent+jwt',
+                'Accept' => 'application/json',
+              },
+            )
 
       perform
 

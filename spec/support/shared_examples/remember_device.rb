@@ -9,7 +9,7 @@ shared_examples 'remember device' do
     user = remember_device_and_sign_out_user
 
     days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1).
-      hours.from_now
+                     hours.from_now
     travel_to(days_to_travel)
     sign_in_user(user)
 

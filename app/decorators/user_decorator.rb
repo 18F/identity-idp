@@ -109,7 +109,7 @@ class UserDecorator
 
   def recent_devices
     @recent_devices ||= user.devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
-      map(&:decorate)
+                        map(&:decorate)
   end
 
   def devices?

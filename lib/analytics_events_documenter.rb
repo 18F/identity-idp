@@ -156,7 +156,7 @@ class AnalyticsEventsDocumenter
     database.select do |_k, object|
       # this check will fail if the namespace is nested more than once
       method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name].
-        select { |part| part.present? && part != :root }
+                                 select { |part| part.present? && part != :root }
 
       object.type == :method && method_object_name_parts == class_name_parts
     end.values

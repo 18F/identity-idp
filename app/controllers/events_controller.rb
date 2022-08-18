@@ -28,8 +28,8 @@ class EventsController < ApplicationController
     return if !device
 
     @events = Event.where(user_id: user_id, device_id: device.id).order(created_at: :desc).
-      limit(EVENTS_PAGE_SIZE).
-      map(&:decorate)
+              limit(EVENTS_PAGE_SIZE).
+              map(&:decorate)
     @device = device.decorate
   end
 

@@ -29,8 +29,8 @@ RSpec.describe Idv::InheritedProofing::Va::Service do
       it 'makes an authenticated request' do
         freeze_time do
           stub = stub_request(:get, request_uri).
-            with(headers: request_headers).
-            to_return(status: 200, body: '{}', headers: {})
+                 with(headers: request_headers).
+                 to_return(status: 200, body: '{}', headers: {})
 
           service.execute
 

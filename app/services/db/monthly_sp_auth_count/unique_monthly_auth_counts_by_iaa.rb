@@ -16,9 +16,9 @@ module Db
         return [] if !date_range || issuers.blank?
 
         full_months, partial_months = Reports::MonthHelper.months(date_range).
-          partition do |month_range|
-            Reports::MonthHelper.full_month?(month_range)
-          end
+                                      partition do |month_range|
+          Reports::MonthHelper.full_month?(month_range)
+        end
 
         # The subqueries create a uniform representation of data:
         # - full months from monthly_sp_auth_counts

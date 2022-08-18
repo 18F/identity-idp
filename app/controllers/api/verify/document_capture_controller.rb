@@ -25,7 +25,7 @@ module Api
 
       def enqueue_job
         verify_document_capture_session = DocumentCaptureSession.
-          find_by(uuid: params[:document_capture_session_uuid])
+                                          find_by(uuid: params[:document_capture_session_uuid])
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
 

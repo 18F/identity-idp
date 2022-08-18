@@ -14,9 +14,9 @@ describe Users::EmailConfirmationsController do
           )).ordered
 
         expect(PushNotification::HttpPush).to receive(:deliver).once.
-            with(PushNotification::RecoveryInformationChangedEvent.new(
-              user: user,
-            )).ordered
+          with(PushNotification::RecoveryInformationChangedEvent.new(
+            user: user,
+          )).ordered
 
         add_email_form = AddUserEmailForm.new
         add_email_form.submit(user, email: new_email)

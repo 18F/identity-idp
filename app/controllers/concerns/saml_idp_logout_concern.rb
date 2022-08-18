@@ -24,8 +24,8 @@ module SamlIdpLogoutConcern
   def handle_valid_sp_remote_logout_request(user_id)
     # Remotely delete the user's current session
     session_id = ServiceProviderIdentity.
-      find_by(user_id: user_id, service_provider: saml_request.issuer).
-      rails_session_id
+                 find_by(user_id: user_id, service_provider: saml_request.issuer).
+                 rails_session_id
 
     OutOfBandSessionAccessor.new(session_id).destroy
     sign_out if user_signed_in?

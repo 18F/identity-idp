@@ -10,21 +10,21 @@ class QueryTracker
     queries = Hash.new { |h, k| h[k] = [] }
 
     subscriber = ActiveSupport::Notifications.
-      subscribe('sql.active_record') do |_name, _start, _finish, _id, payload|
-        sql = payload[:sql]
+                 subscribe('sql.active_record') do |_name, _start, _finish, _id, payload|
+      sql = payload[:sql]
 
-        action = sql.split(' ').first.downcase.to_sym
-        tables = PgQuery.parse(sql).tables.map(&:to_sym)
+      action = sql.split(' ').first.downcase.to_sym
+      tables = PgQuery.parse(sql).tables.map(&:to_sym)
 
-        root = Rails.root.to_s
-        location = caller.find do |line|
-          line.include?(root) && Gem.path.none? { |v| line.include?(v) }
-        end
-
-        tables.each do |table|
-          queries[table] << [action, location]
-        end
+      root = Rails.root.to_s
+      location = caller.find do |line|
+        line.include?(root) && Gem.path.none? { |v| line.include?(v) }
       end
+
+      tables.each do |table|
+        queries[table] << [action, location]
+      end
+    end
 
     yield
 

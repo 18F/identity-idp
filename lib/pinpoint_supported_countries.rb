@@ -45,9 +45,9 @@ class PinpointSupportedCountries
     country_dialing_codes = load_country_dialing_codes
 
     duplicate_iso = country_dialing_codes.
-      group_by(&:iso_code).
-      select { |iso, arr| arr.size > 1 }.
-      keys
+                    group_by(&:iso_code).
+                    select { |iso, arr| arr.size > 1 }.
+                    keys
 
     raise "error countries with duplicate iso codes: #{duplicate_iso}" if duplicate_iso.size > 0
 

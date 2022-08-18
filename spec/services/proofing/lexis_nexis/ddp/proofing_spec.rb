@@ -40,8 +40,8 @@ describe Proofing::LexisNexis::Ddp::Proofer do
     context 'when the request is made' do
       it 'it looks like the right request' do
         request = stub_request(:post, verification_request.url).
-          with(body: verification_request.body, headers: verification_request.headers).
-          to_return(body: LexisNexisFixtures.ddp_success_response_json, status: 200)
+                  with(body: verification_request.body, headers: verification_request.headers).
+                  to_return(body: LexisNexisFixtures.ddp_success_response_json, status: 200)
 
         verification_request.send
 
