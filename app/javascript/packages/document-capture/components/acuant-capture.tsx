@@ -240,7 +240,7 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap: FocusTrap) {
   }, 0);
 }
 
-export function getDecodedBase64ByteSize(data: string | any[]) {
+export function getDecodedBase64ByteSize(data: string) {
   let bytes = 0.75 * data.length;
 
   let i = data.length;
