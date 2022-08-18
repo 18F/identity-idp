@@ -25,7 +25,7 @@ class FrontendLogController < ApplicationController
 
   def create
     event = log_params[:event]
-    payload = log_params[:payload].to_h
+    payload = log_params[:payload].to_h.symbolize_keys
     if (analytics_method = EVENT_MAP[event])
       if analytics_method.is_a?(Proc)
         analytics_method.call(analytics, **payload)
