@@ -329,7 +329,9 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    */
-  function getAddAttemptAnalyticsPayload<P>(payload: P): P {
+  function getAddAttemptAnalyticsPayload<
+    P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
+  >(payload: P): P {
     const enhancedPayload = { ...payload, attempt };
     incrementAttempt();
     return enhancedPayload;
