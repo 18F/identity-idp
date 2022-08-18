@@ -120,10 +120,10 @@ es:
       submit: Confirmar cuenta
       title: Confirme su cuenta
       welcome_back: Bienvenido de nuevo
-      welcome_back_description: "<p>Si ha recibido su carta, introduzca su código de confirmación
-        a continuación.</p>
-        <p>Si su carta aún no ha llegado, tenga paciencia, ya que las <strong>cartas suelen tardar
-        de 3 a 7 días hábiles en llegar</strong>. Gracias por su paciencia.</p>"
+      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código de
+        confirmación a continuación.</p> <p>Si su carta aún no ha llegado, tenga
+        paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
+        en llegar</strong>. Gracias por su paciencia.</p>'
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta %{app_name}.
