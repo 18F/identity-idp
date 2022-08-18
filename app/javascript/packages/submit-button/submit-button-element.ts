@@ -8,7 +8,7 @@ class SubmitButtonElement extends HTMLElement {
   }
 
   get button(): HTMLButtonElement {
-    return this.querySelector('.usa-button')!;
+    return this.querySelector('button')!;
   }
 
   activate() {

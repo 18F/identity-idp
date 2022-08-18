@@ -17,7 +17,7 @@ The custom element will implement the behavior to activate a button upon associa
 ```html
 <form>
   <lg-submit-button>
-    <button class="usa-button">Submit</button>
+    <button>Submit</button>
   </lg-submit-button>
 </form>
 ```

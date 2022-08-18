@@ -6,7 +6,7 @@ describe('SubmitButtonElement', () => {
   it('gracefully ignores if there is no associated form', () => {
     document.body.innerHTML = `
       <lg-submit-button>
-        <button class="usa-button">Submit</button>
+        <button>Submit</button>
       </lg-submit-button>`;
   });
 
@@ -14,7 +14,7 @@ describe('SubmitButtonElement', () => {
     document.body.innerHTML = `
       <form>
         <lg-submit-button>
-          <button class="usa-button">Submit</button>
+          <button>Submit</button>
         </lg-submit-button>
       </form>`;
 
@@ -33,7 +33,7 @@ describe('SubmitButtonElement', () => {
       <form>
         <input required>
         <lg-submit-button>
-          <button class="usa-button">Submit</button>
+          <button>Submit</button>
         </lg-submit-button>
       </form>`;
 
