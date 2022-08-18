@@ -19,7 +19,7 @@ describe FrontendLogController do
 
       it 'succeeds' do
         expect(fake_analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload)
+          with("Frontend: #{event}", payload.symbolize_keys)
 
         action
 
@@ -111,16 +111,17 @@ describe FrontendLogController do
       end
 
       context 'for a named analytics method' do
+        let(:payload) { { 'field' => 'front', 'failed_attempts' => 0 } }
         let(:params) do
           {
             'event' => 'IdV: Native camera forced after failed attempts',
-            'payload' => { 'name' => 'front', 'failed_attempts' => 0 },
+            'payload' => payload,
           }
         end
 
-        it 'logs the analytics event appropriatly' do
+        it 'logs the analytics event without the prefix' do
           expect(fake_analytics).to receive(:track_event).with(
-            'Frontend: IdV: Native camera forced after failed attempts',
+            'IdV: Native camera forced after failed attempts',
             payload.symbolize_keys,
           )
 
@@ -155,7 +156,10 @@ describe FrontendLogController do
       end
 
       it 'succeeds' do
-        expect(fake_analytics).to receive(:track_event).with("Frontend: #{event}", payload)
+        expect(fake_analytics).to receive(:track_event).with(
+          "Frontend: #{event}",
+          payload.symbolize_keys,
+        )
 
         action
 
