@@ -1,10 +1,6 @@
 Login.gov Identity Provider (IdP)
 =================================
 
-[![Build Status](https://circleci.com/gh/18F/identity-idp.svg?style=svg)](https://circleci.com/gh/18F/identity-idp)
-[![Code Climate](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/maintainability)](https://codeclimate.com/github/18F/identity-idp/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/test_coverage)](https://codeclimate.com/github/18F/identity-idp/test_coverage)
-
 Login.gov is the public's one account for government. Use one account and password for secure, private access to participating government agencies.
 
 This repository contains the core code base and documentation for the identity management system powering secure.login.gov.
