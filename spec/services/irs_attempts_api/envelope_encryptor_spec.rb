@@ -1,9 +1,8 @@
 require 'rails_helper'
-
 RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
   let(:private_key) { OpenSSL::PKey::RSA.new(4096) }
   let(:public_key) { private_key.public_key }
-  describe '#encrypt' do
+  describe '.encrypt' do
     it 'returns encrypted result' do
       text = 'test'
       time = Time.zone.now
@@ -30,7 +29,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
     end
   end
 
-  describe '#decrypt' do
+  describe '.decrypt' do
     it 'returns decrypted text' do
       text = 'test'
       time = Time.zone.now
@@ -47,6 +46,15 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
           iv: result.iv,
         ),
       ).to eq(text)
+    end
+  end
+
+  describe '.formatted_timestamp' do
+    it 'formats according to the specification' do
+      timestamp = Time.new(2022, 1, 1, 11, 1, 1, 'UTC')
+      result = IrsAttemptsApi::EnvelopeEncryptor.formatted_timestamp(timestamp)
+
+      expect(result).to eq '20220101T11Z'
     end
   end
 end
