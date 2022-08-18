@@ -81,10 +81,12 @@
         ) %>
   </div>
 
-  <% if updating_state_id %>
-    <%= f.submit t('forms.buttons.submit.update') %>
-  <% else %>
-    <%= f.submit t('forms.buttons.continue') %>
+  <%= f.submit do %>
+    <% if updating_state_id %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
   <% end %>
 <% end %>
 

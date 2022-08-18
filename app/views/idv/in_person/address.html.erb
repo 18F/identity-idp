@@ -88,10 +88,12 @@
         wrapper: :uswds_radio_buttons,
       ) %>
 
-  <% if updating_address %>
-    <%= f.submit t('forms.buttons.submit.update'), class: 'margin-top-1' %>
-  <% else %>
-    <%= f.submit t('forms.buttons.continue'), class: 'margin-top-1' %>
+  <%= f.submit class: 'margin-top-1' do %>
+    <% if updating_address %>
+      <%= t('forms.buttons.submit.update') %>
+    <% else %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
   <% end %>
 <% end %>
 

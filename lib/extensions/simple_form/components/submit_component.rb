@@ -1,7 +1,9 @@
 module SubmitComponent
-  def submit(*args)
+  def submit(*args, &block)
     options = args.extract_options!
-    template.render SubmitButtonComponent.new(**options).with_content(args.first)
+    content, = args
+    content = template.capture { yield(content) } if block
+    template.render SubmitButtonComponent.new(**options, &block).with_content(content)
   end
 end
 
