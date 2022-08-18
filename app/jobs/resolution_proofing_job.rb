@@ -12,8 +12,11 @@ class ResolutionProofingJob < ApplicationJob
     keyword_init: true,
   )
 
+  # rubocop:disable Lint/UnusedMethodArgument
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:)
+              dob_year_only:, user_id: nil, threatmetrix_session_id: nil)
+
+    # rubocop:enable Lint/UnusedMethodArgument
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
