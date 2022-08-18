@@ -9,7 +9,7 @@ module AccountReset
 
     def call
       @success = valid?
-      binding.pry
+
       track_account_age
       track_mfa_method_counts
 
