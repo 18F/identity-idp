@@ -24,6 +24,7 @@ module IrsAttemptsApi
         device_fingerprint: device_fingerprint,
         user_ip_address: request&.remote_ip,
         irs_application_url: sp_request_uri,
+        client_port: CloudFrontHeaderParser.new(request).client_port,
       }.merge(metadata)
 
       event = AttemptEvent.new(
