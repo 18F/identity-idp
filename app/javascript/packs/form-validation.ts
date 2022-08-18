@@ -1,5 +1,3 @@
-import { t } from '@18f/identity-i18n';
-
 /**
  * Given a submit event, disables all submit buttons within the target form.
  *
@@ -16,49 +14,12 @@ function disableFormSubmit(event: Event) {
   );
 }
 
-function resetInput(input) {
-  if (input.hasAttribute('data-form-validation-message')) {
-    input.setCustomValidity('');
-    input.removeAttribute('data-form-validation-message');
-  }
-  input.setAttribute('aria-invalid', 'false');
-  input.classList.remove('usa-input--error');
-}
-
-/**
- * Given an `input` or `invalid` event, updates custom validity of the given input.
- *
- * @param event Input or invalid event.
- */
-
-function checkInputValidity(event: Event) {
-  const input = event.target as HTMLInputElement;
-  resetInput(input);
-
-  if (input.validity.valueMissing) {
-    input.setCustomValidity(t('simple_form.required.text'));
-    input.setAttribute('data-form-validation-message', '');
-  }
-}
-
-/**
- * Binds validation to a given input.
- *
- * @param input Input element.
- */
-function validateInput(input: HTMLInputElement) {
-  input.addEventListener('input', checkInputValidity);
-  input.addEventListener('invalid', checkInputValidity);
-}
-
 /**
  * Initializes validation on a form element.
  *
  * @param form Form to initialize.
  */
 export function initialize(form: HTMLFormElement) {
-  const fields: HTMLInputElement[] = Array.from(form.querySelectorAll('[required]'));
-  fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
 
