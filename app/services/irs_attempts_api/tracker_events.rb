@@ -97,8 +97,8 @@ module IrsAttemptsApi
       )
     end
     
-    # @param [String] phone_number the user's phone_number used for multi-factor authentication
-    # The user has exceeded the rate limit for SMS OTP during enrollment
+    # @param [String] the type of multi-factor authentication used
+    # The user has exceeded the rate limit during enrollment
     # and account has been locked
     def mfa_enroll_rate_limited(type:)
       track_event(
@@ -167,10 +167,8 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
-    # @param [String] subject_dn
-    # @param [String] phone_number - the user's phone_number used for multi-factor authentication
-    # The user has exceeded the rate limit for SMS OTP during verification
+    # @param [String] the type of multi-factor authentication used
+    # The user has exceeded the rate limit during verification
     # and account has been locked
     def mfa_verify_rate_limited(type)
       track_event(
