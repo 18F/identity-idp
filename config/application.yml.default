@@ -113,7 +113,7 @@ in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
-irs_attempt_api_csp_id: 'Login.gov'
+irs_attempt_api_csp_id: 'LOGIN.gov'
 irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
