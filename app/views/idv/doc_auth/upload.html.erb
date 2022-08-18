@@ -67,7 +67,7 @@
         method: 'PUT',
         html: { autocomplete: 'off', class: 'display-inline' },
       ) do |f| %>
-    <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true %>
+    <%= f.submit t('doc_auth.info.upload_computer_link'), unstyled: true, big: false, wide: false %>
   <% end %>
 </div>
 <div id="upload-comp-liveness" class="<%= 'display-none' unless liveness_checking_enabled? %>">
