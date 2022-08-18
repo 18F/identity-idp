@@ -119,7 +119,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: false)
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -156,7 +156,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: true)
+            with(:mfa_enroll_totp, success: true)
         end
       end
 
@@ -194,7 +194,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: false)
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -233,7 +233,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: false)
+            with(:mfa_enroll_totp, success: false)
         end
       end
     end
@@ -270,7 +270,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: false)
+            with(:mfa_enroll_totp, success: false)
         end
       end
 
@@ -310,7 +310,7 @@ describe Users::TotpSetupController, devise: true do
               with('Multi-Factor Authentication Setup', result)
 
             expect(@irs_attempts_api_tracker).to have_received(:track_event).
-              with(:totp_enroll, success:  true)
+              with(:mfa_enroll_totp, success: true)
           end
         end
 
@@ -335,7 +335,7 @@ describe Users::TotpSetupController, devise: true do
               with('Multi-Factor Authentication Setup', result)
 
             expect(@irs_attempts_api_tracker).to have_received(:track_event).
-              with(:totp_enroll, success:  true)
+              with(:mfa_enroll_totp, success: true)
           end
         end
       end
@@ -371,7 +371,7 @@ describe Users::TotpSetupController, devise: true do
             with('Multi-Factor Authentication Setup', result)
 
           expect(@irs_attempts_api_tracker).to have_received(:track_event).
-            with(:totp_enroll, success: false)
+            with(:mfa_enroll_totp, success: false)
         end
       end
     end

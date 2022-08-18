@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Api::Verify::PasswordConfirmController do
   include PersonalKeyValidator
   include SamlAuthHelper
+  include UspsIppHelper
 
   def stub_idv_session
     stub_sign_in(user)
@@ -18,6 +19,8 @@ describe Api::Verify::PasswordConfirmController do
   let(:jwt) { JWT.encode({ pii: applicant, metadata: jwt_metadata }, key, 'RS256', sub: user.uuid) }
 
   before do
+    stub_analytics
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).and_return(['password_confirm'])
   end
 
@@ -59,29 +62,133 @@ describe Api::Verify::PasswordConfirmController do
         expect(response.status).to eq 400
       end
 
-      context 'with in person profile' do
+      context 'with in-person profile' do
         let(:applicant) {
           Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
         }
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
+        let(:stub_usps_response) do
+          stub_request_enroll
+        end
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
 
-        before do
+        before(:each) do
+          stub_request_token
+          stub_usps_response
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end
 
-        context 'when in-person mocking is disabled' do
-          before do
-            allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+        context 'when there is a 4xx error' do
+          let(:stub_usps_response) do
+            stub_request_enroll_bad_request_response
           end
 
-          it 'uses a real proofer' do
-            expect(UspsInPersonProofing::Proofer).to receive(:new).
-              and_return(UspsInPersonProofing::Mock::Proofer.new)
+          it 'logs the response message' do
             post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(@analytics).to have_logged_event(
+              'USPS IPPaaS enrollment failed',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+              exception_message: 'Sponsor for sponsorID 5 not found',
+              original_exception_class: 'Faraday::BadRequestError',
+              reason: 'Request exception',
+            )
+          end
+
+          it 'leaves the enrollment in establishing' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment = InPersonEnrollment.where(user_id: user.id).first
+            expect(enrollment.status).to eq('establishing')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_nil
+          end
+        end
+
+        context 'when there is 5xx error' do
+          let(:stub_usps_response) do
+            stub_request_enroll_internal_failure_response
+          end
+
+          it 'logs the error message' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(@analytics).to have_logged_event(
+              'USPS IPPaaS enrollment failed',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+              exception_message: 'the server responded with status 500',
+              original_exception_class: 'Faraday::ServerError',
+              reason: 'Request exception',
+            )
+          end
+
+          it 'leaves the enrollment in establishing' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment = InPersonEnrollment.where(user_id: user.id).first
+            expect(enrollment.status).to eq('establishing')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_nil
+          end
+
+          it 'allows the user to retry the request' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+            expect(response.status).to eq 400
+            stub_request_enroll
+
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            parsed_body = JSON.parse(response.body)
+            expect(parsed_body).to include(
+              'personal_key' => kind_of(String),
+              'completion_url' => idv_in_person_ready_to_verify_url,
+            )
+            expect(response.status).to eq 200
+
+            enrollment.reload
+            expect(enrollment.status).to eq('pending')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_a(String)
+            expect(enrollment.profile).to eq(user.profiles.last)
+            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+          end
+        end
+
+        context 'when the USPS response is missing an enrollment code' do
+          let(:stub_usps_response) do
+            stub_request_enroll_invalid_response
+          end
+
+          it 'logs an error message' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(@analytics).to have_logged_event(
+              'USPS IPPaaS enrollment failed',
+              context: 'authentication',
+              enrollment_id: enrollment.id,
+              exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+              exception_message: 'Expected to receive an enrollment code',
+              original_exception_class: 'StandardError',
+              reason: 'Request exception',
+            )
+          end
+
+          it 'leaves the enrollment in establishing' do
+            post :create, params: { password: password, user_bundle_token: jwt }
+
+            expect(InPersonEnrollment.count).to be(1)
+            enrollment = InPersonEnrollment.where(user_id: user.id).first
+            expect(enrollment.status).to eq('establishing')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_nil
           end
         end
 
@@ -94,10 +201,10 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         it 'creates a USPS enrollment' do
-          proofer = UspsInPersonProofing::Mock::Proofer.new
+          proofer = UspsInPersonProofing::Proofer.new
           mock = double
 
-          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(mock)
+          expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
           expect(mock).to receive(:request_enroll) do |applicant|
             expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
             expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
@@ -114,7 +221,24 @@ describe Api::Verify::PasswordConfirmController do
           post :create, params: { password: password, user_bundle_token: jwt }
         end
 
-        it 'updates in-person enrollment record to associate profile' do
+        context 'when user enters an address2 value' do
+          let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
+
+          it 'provides address2 if the user entered it' do
+            proofer = UspsInPersonProofing::Proofer.new
+            mock = double
+
+            expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+            expect(mock).to receive(:request_enroll) do |applicant|
+              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+              proofer.request_enroll(applicant)
+            end
+
+            post :create, params: { password: password, user_bundle_token: jwt }
+          end
+        end
+
+        it 'creates an in-person enrollment record' do
           post :create, params: { password: password, user_bundle_token: jwt }
 
           enrollment.reload
@@ -124,21 +248,6 @@ describe Api::Verify::PasswordConfirmController do
           expect(enrollment.enrollment_code).to be_a(String)
           expect(enrollment.profile).to eq(user.profiles.last)
           expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
-        end
-
-        it 'leaves the enrollment in establishing when no enrollment code is returned' do
-          proofer = UspsInPersonProofing::Mock::Proofer.new
-          expect(UspsInPersonProofing::Mock::Proofer).to receive(:new).and_return(proofer)
-          expect(proofer).to receive(:request_enroll).and_return({})
-
-          post :create, params: { password: password, user_bundle_token: jwt }
-
-          enrollment.reload
-
-          expect(InPersonEnrollment.count).to be(1)
-          expect(enrollment.status).to eq('establishing')
-          expect(enrollment.user_id).to be(user.id)
-          expect(enrollment.enrollment_code).to be_nil
         end
 
         it 'sends ready to verify email' do

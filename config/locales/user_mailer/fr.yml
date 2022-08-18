@@ -110,10 +110,14 @@ fr:
       subject: Adresse email supprimée
     help_link_text: Centre d’aide
     in_person_failed:
-      body: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
-        vérifier à nouveau votre identité en ligne par le biais de %{app_name}.
-        Si vous rencontrez toujours des problèmes, veuillez contacter l’agence à
-        laquelle vous essayez d’accéder.
+      body:
+        with_cta: Cliquez sur le bouton ou copiez le lien ci-dessous pour essayer de
+          vérifier à nouveau votre identité en ligne par le biais de
+          %{sp_or_app_name}. Si vous rencontrez toujours des problèmes, veuillez
+          contacter l’agence à laquelle vous essayez d’accéder.
+        without_cta: Veuillez essayer de confirmer votre identité à nouveau sur le site
+          Web de %{sp_name}. Si vous rencontrez toujours des difficultés,
+          veuillez contacter l’agence à laquelle vous essayez d’accéder.
       intro: Votre identité n’a pas pu être vérifiée au bureau de poste de %{location}
         le %{date}.
       subject: Votre identité n’a pas pu être vérifiée en personne
@@ -135,8 +139,14 @@ fr:
       greeting: Bonjour,
       intro: Vous avez vérifié avec succès votre identité au bureau de poste de
         %{location} le %{date}.
-      next_sign_in: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
-        vous connecter à %{app_name}.
+      next_sign_in:
+        with_sp:
+          with_cta: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
+            accéder à %{sp_name} et connectez-vous.
+          without_cta: Vous pouvez maintenant vous connecter à partir du site Web de
+            %{sp_name}.
+        without_sp: Ensuite, cliquez sur le bouton ou copiez le lien ci-dessous pour
+          vous connecter à %{app_name}.
       sign_in: Se connecter
       subject: Vous avez vérifié avec succès votre identité avec %{app_name}
       warning_contact_us_html: Si vous n’avez pas essayé de vérifier votre identité en

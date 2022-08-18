@@ -3,8 +3,13 @@ require 'json'
 module Idv
   module InPerson
     class UspsLocationsController < ApplicationController
+      include RenderConditionConcern
       include UspsInPersonProofing
       include EffectiveUser
+
+      check_or_render_not_found -> { InPersonConfig.enabled? }
+
+      before_action :confirm_authenticated_for_api, only: [:update]
 
       # get the list of all pilot Post Office locations
       def index
@@ -20,16 +25,26 @@ module Idv
 
       # save the Post Office location the user selected to an enrollment
       def update
-        enrollment.update!(selected_location_details: permitted_params.as_json)
+        enrollment.update!(
+          selected_location_details: permitted_params.as_json,
+          issuer: current_sp&.issuer,
+        )
 
         render json: { success: true }, status: :ok
       end
 
       protected
 
+      def confirm_authenticated_for_api
+        render json: { success: false }, status: :unauthorized if !effective_user
+      end
+
       def enrollment
-        UspsInPersonProofing::EnrollmentHelper.
-          establishing_in_person_enrollment_for_user(effective_user)
+        InPersonEnrollment.find_or_initialize_by(
+          user: effective_user,
+          status: :establishing,
+          profile: nil,
+        )
       end
 
       def permitted_params
