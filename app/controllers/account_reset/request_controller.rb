@@ -11,7 +11,7 @@ module AccountReset
     def create
       create_account_reset_request
       flash[:email] = current_user.email_addresses.take.email
-      
+
       redirect_to account_reset_confirm_request_url
     end
 
