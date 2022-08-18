@@ -238,7 +238,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
-          with({ reauthentication: false, success: true })
+          with(reauthentication: false, success: true)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,

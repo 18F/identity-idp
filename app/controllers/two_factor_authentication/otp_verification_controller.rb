@@ -22,7 +22,7 @@ module TwoFactorAuthentication
       if result.success?
         handle_valid_otp
       else
-        handle_invalid_otp(context: context, type: "otp")
+        handle_invalid_otp(context: context, type: 'otp')
       end
     end
 

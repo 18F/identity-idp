@@ -192,8 +192,8 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_rate_limited)
-          .with(type: 'piv_cac')
+        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_rate_limited).
+          with(type: 'piv_cac')
 
         submit_attributes = {
           success: false,
