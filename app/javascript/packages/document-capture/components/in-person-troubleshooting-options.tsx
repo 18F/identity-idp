@@ -33,7 +33,7 @@ function InPersonTroubleshootingOptions({
           {
             url: getHelpCenterURL({
               category: 'verify-your-identity',
-              article: 'how-to-verify-in-person',
+              article: 'verify-your-identity-in-person',
               location,
             }),
             text: t('idv.troubleshooting.options.learn_more_verify_in_person'),
