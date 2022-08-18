@@ -60,34 +60,6 @@ describe Users::WebauthnSetupController do
       end
     end
 
-    # describe 'render new' do
-    #   it 'logs expected event' do
-    #     stub_sign_in
-    #     stub_analytics
-    #     stub_attempts_tracker
-
-    #     expect(@analytics).to receive(:track_event).
-    #       with(
-    #         'WebAuthn Setup Visited',
-    #         platform_authenticator: false,
-    #         errors: {},
-    #         enabled_mfa_methods_count: 0,
-    #         success: true,
-    #       )
-
-    #     expect(@irs_attempts_api_tracker).to receive(:track_event).
-    #       with(
-    #         'WebAuthn Setup Visited',
-    #         platform_authenticator: true,
-    #         success: false,
-    #       )
-
-    #     flash[:error] = t('errors.webauthn_setup.general_error')
-
-    #     render :new
-    #   end
-    # end
-
     describe 'patch confirm' do
       let(:params) do
         {
