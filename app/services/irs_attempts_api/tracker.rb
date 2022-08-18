@@ -24,6 +24,7 @@ module IrsAttemptsApi
         device_fingerprint: device_fingerprint,
         user_ip_address: request&.remote_ip,
         irs_application_url: sp_request_uri,
+        client_port: CloudFrontHeaderParser.new(request).client_port,
       }.merge(metadata)
 
       event = AttemptEvent.new(
@@ -33,7 +34,11 @@ module IrsAttemptsApi
         event_metadata: event_metadata,
       )
 
-      redis_client.write_event(jti: event.jti, jwe: event.to_jwe)
+      redis_client.write_event(
+        jti: event.jti,
+        jwe: event.to_jwe,
+        timestamp: event.occurred_at,
+      )
 
       event
     end

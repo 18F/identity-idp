@@ -40,6 +40,7 @@ import { trackEvent } from '@18f/identity-analytics';
  * @prop {string} helpCenterRedirectUrl
  * @prop {string} appName
  * @prop {string} maxCaptureAttemptsBeforeTips
+ * @prop {string} maxAttemptsBeforeNativeCamera
  * @prop {FlowPath} flowPath
  * @prop {string} cancelUrl
  * @prop {string=} idvInPersonUrl
@@ -132,6 +133,7 @@ function addPageAction(event, payload) {
   const {
     helpCenterRedirectUrl: helpCenterRedirectURL,
     maxCaptureAttemptsBeforeTips,
+    maxAttemptsBeforeNativeCamera,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -182,6 +184,7 @@ function addPageAction(event, payload) {
       FailedCaptureAttemptsContextProvider,
       {
         maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+        maxAttemptsBeforeNativeCamera: Number(maxAttemptsBeforeNativeCamera),
       },
     ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],

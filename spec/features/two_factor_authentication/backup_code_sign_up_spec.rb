@@ -74,6 +74,37 @@ feature 'sign up with backup code' do
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
 
+  context 'when the user needs a backup code reminder' do
+    let!(:user) { create(:user, :signed_up, :with_authentication_app, :with_backup_code) }
+    let!(:event) do
+      create(:event, user: user, event_type: :sign_in_after_2fa, created_at: 9.months.ago)
+    end
+
+    context 'without feature flag on (IdentityConfig.store.backup_code_reminder_redirect)' do
+      it 'redirects the user to the account url' do
+        sign_in_user(user)
+        fill_in_code_with_last_totp(user)
+        click_submit_default
+
+        expect(current_path).to eq account_path
+      end
+    end
+
+    context 'with the feature flag turned on' do
+      before do
+        allow(IdentityConfig.store).to receive(:backup_code_reminder_redirect).and_return(true)
+      end
+
+      it 'redirects the user to the backup code reminder url' do
+        sign_in_user(user)
+        fill_in_code_with_last_totp(user)
+        click_submit_default
+
+        expect(current_path).to eq backup_code_reminder_path
+      end
+    end
+  end
+
   def sign_out_user
     first(:link, t('links.sign_out')).click
   end

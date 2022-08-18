@@ -2,6 +2,7 @@
 fr:
   notices:
     account_reactivation: Excellent! Vous avez votre clé personnelle.
+    authenticated_successfully: Authentifié avec succès.
     backup_codes_configured: Les codes de sauvegarde ont été ajoutés à votre compte.
     backup_codes_deleted: Vos codes de sauvegarde ont été supprimés de votre compte.
     dap_participation: Nous participons au programme d’analytique du gouvernement

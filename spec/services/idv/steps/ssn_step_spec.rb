@@ -75,7 +75,7 @@ describe Idv::Steps::SsnStep do
           allow(IdentityConfig.store).
             to receive(:proofing_device_profiling_collecting_enabled).
             and_return(true)
-          step.call
+          step.extra_view_variables
 
           expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
         end
@@ -86,7 +86,7 @@ describe Idv::Steps::SsnStep do
             and_return(true)
           step.call
           session_id = flow.flow_session[:threatmetrix_session_id]
-          step.call
+          step.extra_view_variables
           expect(flow.flow_session[:threatmetrix_session_id]).to eq(session_id)
         end
       end
@@ -96,7 +96,7 @@ describe Idv::Steps::SsnStep do
           allow(IdentityConfig.store).
             to receive(:proofing_device_profiling_collecting_enabled).
             and_return(false)
-          step.call
+          step.extra_view_variables
           expect(flow.flow_session[:threatmetrix_session_id]).to eq(nil)
         end
       end
