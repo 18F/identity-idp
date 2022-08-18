@@ -116,7 +116,7 @@ function analyzePw() {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
-  const submit = document.querySelector('input[type="submit"]');
+  const submit = document.querySelector('[type="submit"]');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
