@@ -60,7 +60,7 @@ interface ImageAnalyticsPayload {
   size: number;
 }
 
-interface _AcuantImageAnalyticsPayload {
+interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   documentType: AcuantDocumentTypeLabel;
   dpi: number;
   moire: number;
@@ -72,8 +72,6 @@ interface _AcuantImageAnalyticsPayload {
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
 }
-
-type AcuantImageAnalyticsPayload = ImageAnalyticsPayload & _AcuantImageAnalyticsPayload;
 
 interface AcuantCaptureProps {
   /**
