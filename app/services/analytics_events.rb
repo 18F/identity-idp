@@ -467,8 +467,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] field the name of the field which was clicked
-  # @param [Number] failed_attempts the number of failed document capture attempts so far
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
