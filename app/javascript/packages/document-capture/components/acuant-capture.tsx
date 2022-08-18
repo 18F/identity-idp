@@ -320,7 +320,7 @@ function AcuantCapture(
    */
   function onChangeAndResetError(
     nextValue: Blob | string | null,
-    metadata?: ImageAnalyticsPayload | undefined,
+    metadata?: ImageAnalyticsPayload,
   ) {
     setOwnErrorMessage(null);
     onChange(nextValue, metadata);
