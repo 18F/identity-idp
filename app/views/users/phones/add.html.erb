@@ -29,7 +29,7 @@
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.continue') %>
 <% end %>
 
 <%= render 'shared/cancel', link: account_path %>

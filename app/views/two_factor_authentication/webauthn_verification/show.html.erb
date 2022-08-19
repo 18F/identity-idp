@@ -77,8 +77,7 @@
             checked: @presenter.remember_device_box_checked?,
           },
         ) %>
-    <%= submit_tag t('forms.buttons.continue'),
-                   class: 'display-block usa-button usa-button--big usa-button--wide margin-y-4' %>
+    <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-4' %>
   </div>
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

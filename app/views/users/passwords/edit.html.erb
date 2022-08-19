@@ -19,7 +19,7 @@
         input_html: { aria: { describedby: 'password-description' } },
       ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.button :submit, t('forms.buttons.submit.update'), class: 'usa-button--big usa-button--wide margin-top-2 margin-bottom-4' %>
+  <%= f.submit t('forms.buttons.submit.update'), class: 'margin-top-2 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>

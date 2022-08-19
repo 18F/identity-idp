@@ -38,9 +38,7 @@
             },
             label: t('forms.verify_profile.name'),
           ) %>
-      <%= f.button :submit,
-                   t('forms.verify_profile.submit'),
-                   class: 'usa-button--big usa-button--full-width display-block margin-top-5' %>
+      <%= f.submit t('forms.verify_profile.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
     </div>
   </div>
 <% end %>

@@ -81,7 +81,7 @@
         ) %>
   </div>
 
-  <%= render ButtonComponent.new(big: true, wide: true) do %>
+  <%= f.submit do %>
     <% if updating_state_id %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>

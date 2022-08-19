@@ -29,12 +29,7 @@
         required: true,
       ) %>
 
-    <%= f.button(
-          :button,
-          t('forms.buttons.continue'),
-          type: :submit,
-          class: 'usa-button--big usa-button--wide margin-y-5',
-        ) %>
+    <%= f.submit t('forms.buttons.continue'), class: 'margin-y-5' %>
 <% end %>
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
