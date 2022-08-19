@@ -22,7 +22,10 @@ module Users
       result = PasswordResetTokenValidator.new(token_user).submit
 
       analytics.password_reset_token(**result.to_h)
-      irs_tracker_forgot_password_email_confirmed(result)
+      irs_attempts_api_tracker.forgot_password_email_confirmed(
+        success: result.success?,
+        failure_reason: result.errors,
+      )
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
@@ -152,13 +155,6 @@ module Users
 
     def assert_reset_token_passed
       # remove devise's default behavior
-    end
-
-    def irs_tracker_forgot_password_email_confirmed(result)
-      irs_attempts_api_tracker.forgot_password_email_confirmed(
-        success: result.success?,
-        failure_reason: result.errors,
-      )
     end
   end
 end
