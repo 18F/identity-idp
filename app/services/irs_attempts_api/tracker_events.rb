@@ -11,6 +11,19 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has requested a forgot password email
+    # @param [String] email The submitted email address
+    # @param [Boolean] success True if the forgot password email was sent
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_email_sent(email:, success:, failure_reason: nil)
+      track_event(
+        :forgot_password_email_sent,
+        email: email,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)

@@ -1,6 +1,7 @@
 RequestPasswordReset = RedactedStruct.new(
-  :email, :request_id, :analytics, keyword_init: true,
-                                   allowed_members: [:request_id]
+  :email, :request_id, :analytics, :irs_attempts_api_tracker,
+  keyword_init: true,
+  allowed_members: [:request_id]
 ) do
   def perform
     if user_should_receive_registration_email?
@@ -16,15 +17,25 @@ RequestPasswordReset = RedactedStruct.new(
   private
 
   def send_reset_password_instructions
+    irs_params = {
+      email: email,
+    }
+
     if Throttle.new(user: user, throttle_type: :reset_password_email).throttled_else_increment?
       analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
+      irs_params[:success] = true
+      irs_params[:failure_reason] = 'throttle rate limit triggered'
     else
       token = user.set_reset_password_token
       UserMailer.reset_password_instructions(user, email, token: token).deliver_now_or_later
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
+
+      irs_params[:success] = true
     end
+
+    irs_attempts_api_tracker.forgot_password_email_sent(irs_params)
   end
 
   def instructions
