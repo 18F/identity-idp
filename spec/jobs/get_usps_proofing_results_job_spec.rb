@@ -134,14 +134,15 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(pending_enrollment.failed?).to be_truthy
 
         expect(job_analytics).to have_logged_event(
-          'GetUspsProofingResultsJob: Enrollment failed proofing',
-          reason: 'Failed status',
-          enrollment_id: pending_enrollment.id,
+          'GetUspsProofingResultsJob: Enrollment status updated',
           enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
           failure_reason: 'Clerk indicates that ID name or address does not match source data.',
           fraud_suspected: false,
+          passed: false,
           primary_id_type: 'Uniformed Services identification card',
           proofing_state: 'PA',
+          reason: 'Failed status',
           secondary_id_type: 'Deed of Trust',
           transaction_end_date_time: '12/17/2020 034055',
           transaction_start_date_time: '12/17/2020 033855',
@@ -261,10 +262,11 @@ RSpec.describe GetUspsProofingResultsJob do
           expect(enrollment.profile.active).to be(true)
 
           expect(job_analytics).to have_logged_event(
-            'GetUspsProofingResultsJob: Enrollment passed proofing',
-            reason: 'Successful status update',
-            enrollment_id: enrollment.id,
+            'GetUspsProofingResultsJob: Enrollment status updated',
             enrollment_code: enrollment.enrollment_code,
+            enrollment_id: enrollment.id,
+            passed: true,
+            reason: 'Successful status update',
           )
         end
       end
@@ -297,10 +299,11 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(pending_enrollment.pending?).to be_truthy
 
         expect(job_analytics).to have_logged_event(
-          'GetUspsProofingResultsJob: Enrollment failed proofing',
-          reason: 'Unsupported status',
-          enrollment_id: pending_enrollment.id,
+          'GetUspsProofingResultsJob: Enrollment status updated',
           enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          passed: false,
+          reason: 'Unsupported status',
           status: 'Not supported',
         )
       end
@@ -406,11 +409,12 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(pending_enrollment.reload.failed?).to be_truthy
 
         expect(job_analytics).to have_logged_event(
-          'GetUspsProofingResultsJob: Enrollment failed proofing',
-          reason: 'Unsupported ID type',
-          enrollment_id: pending_enrollment.id,
+          'GetUspsProofingResultsJob: Enrollment status updated',
           enrollment_code: pending_enrollment.enrollment_code,
+          enrollment_id: pending_enrollment.id,
+          passed: false,
           primary_id_type: 'Not supported',
+          reason: 'Unsupported ID type',
         )
       end
     end

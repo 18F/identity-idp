@@ -23,6 +23,11 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     proofer = UspsInPersonProofing::Proofer.new
 
+    # todo
+    # calculate stats about the expected workload. log to analytics
+    # started at (implicit through log timestamp)
+    # number of jobs eligible for update
+
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
     InPersonEnrollment.needs_usps_status_check(
@@ -53,6 +58,12 @@ class GetUspsProofingResultsJob < ApplicationJob
 
       update_enrollment_status(enrollment, response)
     end
+
+    # todo
+    # calculate stats about the actual workload. log to analytics
+    # ended at (implicit through log timestamp)
+    # number of records processed
+    # breakdown of outcomes (passed, failed, no-ops, errors)
 
     true
   end
@@ -101,44 +112,51 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
   end
 
-  def handle_unsupported_status(enrollment, status)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
-      reason: 'Unsupported status',
-      enrollment_id: enrollment.id,
+  def handle_unsupported_status(enrollment, response)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       enrollment_code: enrollment.enrollment_code,
-      status: status,
+      enrollment_id: enrollment.id,
+      fraud_suspected: response['fraudSuspected'],
+      passed: false,
+      reason: 'Unsupported status',
+      status: response['status'],
     )
   end
 
-  def handle_unsupported_id_type(enrollment, primary_id_type)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
-      reason: 'Unsupported ID type',
-      enrollment_id: enrollment.id,
+  def handle_unsupported_id_type(enrollment, response)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       enrollment_code: enrollment.enrollment_code,
-      primary_id_type: primary_id_type,
+      enrollment_id: enrollment.id,
+      fraud_suspected: response['fraudSuspected'],
+      passed: false,
+      primary_id_type: response['primaryIdType'],
+      reason: 'Unsupported ID type',
     )
   end
 
   def handle_failed_status(enrollment, response)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_failure(
-      reason: 'Failed status',
-      enrollment_id: enrollment.id,
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       enrollment_code: enrollment.enrollment_code,
+      enrollment_id: enrollment.id,
       failure_reason: response['failureReason'],
       fraud_suspected: response['fraudSuspected'],
+      passed: false,
       primary_id_type: response['primaryIdType'],
       proofing_state: response['proofingState'],
+      reason: 'Failed status',
       secondary_id_type: response['secondaryIdType'],
       transaction_end_date_time: response['transactionEndDateTime'],
       transaction_start_date_time: response['transactionStartDateTime'],
     )
   end
 
-  def handle_successful_status_update(enrollment)
-    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_success(
-      reason: 'Successful status update',
-      enrollment_id: enrollment.id,
+  def handle_successful_status_update(enrollment, response)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       enrollment_code: enrollment.enrollment_code,
+      enrollment_id: enrollment.id,
+      fraud_suspected: response['fraudSuspected'],
+      passed: true,
+      reason: 'Successful status update',
     )
   end
 
@@ -148,19 +166,19 @@ class GetUspsProofingResultsJob < ApplicationJob
       if SUPPORTED_ID_TYPES.include?(response['primaryIdType'])
         enrollment.profile.activate
         enrollment.update(status: :passed)
-        handle_successful_status_update(enrollment)
+        handle_successful_status_update(enrollment, response)
         send_verified_email(enrollment.user, enrollment)
       else
         # Unsupported ID type
         enrollment.update(status: :failed)
-        handle_unsupported_id_type(enrollment, response['primaryIdType'])
+        handle_unsupported_id_type(enrollment, response)
       end
     when IPP_STATUS_FAILED
       enrollment.update(status: :failed)
       handle_failed_status(enrollment, response)
       send_failed_email(enrollment.user, enrollment)
     else
-      handle_unsupported_status(enrollment, response['status'])
+      handle_unsupported_status(enrollment, response)
     end
   end
 

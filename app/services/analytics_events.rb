@@ -2414,18 +2414,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks individual enrollments that fail during GetUspsProofingResultsJob
-  # @param [String] reason why did this enrollment fail?
-  # @param [String] enrollment_id
-  def idv_in_person_usps_proofing_results_job_enrollment_failure(reason:, enrollment_id:, **extra)
-    track_event(
-      'GetUspsProofingResultsJob: Enrollment failed proofing',
-      reason: reason,
-      enrollment_id: enrollment_id,
-      **extra,
-    )
-  end
-
   # Tracks if USPS in-person proofing enrollment request fails
   # @param [String] context
   # @param [String] reason
@@ -2451,14 +2439,22 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
-  # @param [String] reason why did this enrollment pass?
+  # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
+  # @param [String] enrollment_code
   # @param [String] enrollment_id
-  def idv_in_person_usps_proofing_results_job_enrollment_success(reason:, enrollment_id:, **extra)
+  # @param [Boolean] fraud_suspected
+  # @param [Boolean] passed did this enrollment pass or fail?
+  # @param [String] reason why did this enrollment pass or fail?
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(enrollment_code:, enrollment_id:,
+                                                                 fraud_suspected:, passed:, reason:,
+                                                                 **extra)
     track_event(
-      'GetUspsProofingResultsJob: Enrollment passed proofing',
-      reason: reason,
+      'GetUspsProofingResultsJob: Enrollment status updated',
+      enrollment_code: enrollment_code,
       enrollment_id: enrollment_id,
+      fraud_suspected: fraud_suspected,
+      passed: passed,
+      reason: reason,
       **extra,
     )
   end
