@@ -106,6 +106,7 @@ class ResolutionProofingJob < ApplicationJob
     result = lexisnexis_ddp_proofer.proof(ddp_pii)
 
     log_threatmetrix_info(result, user)
+    add_threatmetrix_proofing_component(user_id, result)
 
     result
   end
@@ -285,5 +286,12 @@ class ResolutionProofingJob < ApplicationJob
           verification_url: IdentityConfig.store.aamva_verification_url,
         )
       end
+  end
+
+  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+    ProofingComponent.
+      create_or_find_by(user_id: user_id).
+      update(threatmetrix: true,
+             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end

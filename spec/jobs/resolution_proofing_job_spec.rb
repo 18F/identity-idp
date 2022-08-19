@@ -39,7 +39,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:user) { build(:user, :signed_up) }
+  let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
 
@@ -117,7 +117,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
       let(:dob_year_only) { false }
 
-      it 'returns results' do
+      it 'returns results and adds threatmetrix proofing components' do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
@@ -156,6 +156,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           threatmetrix_success: true,
           threatmetrix_request_id: threatmetrix_request_id,
         )
+        proofing_component = ProofingComponent.first
+        expect(proofing_component.threatmetrix).to equal(true)
+        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
 
       context 'dob_year_only, failed response from lexisnexis' do
@@ -267,7 +270,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(instance).to receive(:logger_info_hash).ordered.with(
             hash_including(
               name: 'ThreatMetrix',
-              user_id: nil,
+              user_id: user.uuid,
               threatmetrix_request_id: Proofing::Mock::DdpMockClient::TRANSACTION_ID,
               threatmetrix_success: true,
             ),
@@ -282,6 +285,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
           )
 
           perform
+
+          proofing_component = ProofingComponent.first
+          expect(proofing_component.threatmetrix).to equal(true)
+          expect(proofing_component.threatmetrix_review_status).to eq('pass')
         end
       end
 
