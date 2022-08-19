@@ -23,7 +23,13 @@ module ScriptHelper
         [
           javascript_assets_tag(*@scripts),
           javascript_polyfill_pack_tag,
-          javascript_include_tag(*sources, crossorigin: local_crossorigin_sources? ? true : nil),
+          *sources.map do |source|
+            javascript_include_tag(
+              source,
+              crossorigin: local_crossorigin_sources? ? true : nil,
+              integrity: AssetSources.get_integrity(source),
+            )
+          end,
         ],
       )
     end
