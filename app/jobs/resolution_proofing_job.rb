@@ -46,7 +46,10 @@ class ResolutionProofingJob < ApplicationJob
                         end
 
     if optional_threatmetrix_result.present?
-      add_threatmetrix_result_to_callback_result(callback_log_data.result, optional_threatmetrix_result)
+      add_threatmetrix_result_to_callback_result(
+        callback_log_data.result,
+        optional_threatmetrix_result,
+      )
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -81,7 +84,11 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(applicant_pii, user_id, threatmetrix_session_id)
+  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+    applicant_pii,
+    user_id,
+    threatmetrix_session_id
+  )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
 
     # The API call will fail without a session ID, so do not attempt to make
