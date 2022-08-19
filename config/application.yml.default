@@ -320,7 +320,6 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
-  idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
   in_person_proofing_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
