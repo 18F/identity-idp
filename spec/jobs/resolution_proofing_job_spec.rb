@@ -236,6 +236,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
           )
         end
       end
+
+      context 'no threatmetrix_session_id' do
+        let(:threatmetrix_session_id) { nil }
+        it 'does not attempt to create a ddp proofer' do
+          perform
+
+          expect(instance).not_to receive(:lexisnexis_ddp_proofer)
+        end
+      end
     end
 
     context 'stubbing vendors' do
