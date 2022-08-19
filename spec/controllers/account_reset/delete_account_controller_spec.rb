@@ -6,12 +6,12 @@ describe AccountReset::DeleteAccountController do
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :signed_up, :with_backup_code)
-      create(:phone_configuration, user: user, phone: '+1 703-555-1214')
+      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
 
-      session[:granted_token] = AccountResetRequest.all[0].granted_token
+      session[:granted_token] = AccountResetRequest.first.granted_token
       stub_analytics
       properties = {
         user_id: user.uuid,
@@ -31,12 +31,12 @@ describe AccountReset::DeleteAccountController do
 
     it 'logs a good token to the attempts api' do
       user = create(:user, :signed_up, :with_backup_code)
-      create(:phone_configuration, user: user, phone: '+1 703-555-1214')
+      create(:phone_configuration, user: user, phone: Faker::PhoneNumber.cell_phone)
       create_list(:webauthn_configuration, 2, user: user)
       create_account_reset_request_for(user)
       grant_request(user)
 
-      session[:granted_token] = AccountResetRequest.all[0].granted_token
+      session[:granted_token] = AccountResetRequest.first].granted_token
       stub_attempts_tracker
 
       expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
@@ -132,7 +132,7 @@ describe AccountReset::DeleteAccountController do
       expect(@analytics).to receive(:track_event).with('Account Reset: delete', properties)
 
       travel_to(Time.zone.now + 2.days) do
-        session[:granted_token] = AccountResetRequest.all[0].granted_token
+        session[:granted_token] = AccountResetRequest.first.granted_token
         delete :delete
       end
 
@@ -183,7 +183,7 @@ describe AccountReset::DeleteAccountController do
         with('Account Reset: granted token validation', properties)
 
       travel_to(Time.zone.now + 2.days) do
-        get :show, params: { token: AccountResetRequest.all[0].granted_token }
+        get :show, params: { token: AccountResetRequest.first.granted_token }
       end
 
       expect(response).to redirect_to(root_url)

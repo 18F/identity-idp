@@ -9,7 +9,7 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success True if Account Reset Deletion submitted successfu
+    # @param [Boolean] success True if Account Reset Deletion submitted successful
     # account Reset Deletion Requested
     def account_reset_request_submitted(success:)
       track_event(
