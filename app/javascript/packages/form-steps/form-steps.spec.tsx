@@ -5,6 +5,7 @@ import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { PageHeading } from '@18f/identity-components';
 import * as analytics from '@18f/identity-analytics';
+import { t } from '@18f/identity-i18n';
 import FormSteps, { FormStepComponentProps, getStepIndexByName } from './form-steps';
 import FormError from './form-error';
 import FormStepsContext from './form-steps-context';
@@ -388,6 +389,38 @@ describe('FormSteps', () => {
     expect((getByLabelText('Second Input One') as HTMLInputElement).value).to.equal('one');
     expect((getByLabelText('Second Input Two') as HTMLInputElement).value).to.equal('two');
     expect(window.location.hash).to.equal('#second');
+  });
+
+  it('retains errors from prior steps', async () => {
+    const errors = [
+      {
+        field: 'nonExistentField1',
+        error: new FormError('abcde'),
+      },
+      {
+        field: 'nonExistentField2',
+        error: new FormError('12345'),
+      },
+    ];
+    const { getByText, findByText } = render(
+      <FormSteps steps={STEPS} initialActiveErrors={errors} />,
+    );
+
+    const checkFormHasExpectedErrors = () =>
+      findByText('Errors:', { exact: false }).then((e) =>
+        expect(e.parentElement?.textContent).contains('abcde,12345'),
+      );
+
+    await expect(checkFormHasExpectedErrors()).to.be.fulfilled();
+
+    await userEvent.click(getByText(t('forms.buttons.continue')));
+
+    await expect(findByText('Second Title')).to.be.fulfilled();
+    await expect(checkFormHasExpectedErrors()).to.be.rejected();
+
+    window.history.back();
+
+    await expect(checkFormHasExpectedErrors()).to.be.fulfilled();
   });
 
   it('shifts focus to next heading on step change', async () => {

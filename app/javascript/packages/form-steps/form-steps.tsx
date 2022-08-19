@@ -177,6 +177,10 @@ interface FormStepsProps {
   titleFormat?: string;
 }
 
+interface PreviousErrorsLookup {
+  [stepName: string]: FormStepError<Record<string, Error>>[] | undefined;
+}
+
 /**
  * React hook which sets page title for the current step.
  *
@@ -246,6 +250,15 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
+  const [previousErrors, setPreviousErrors] = useState<PreviousErrorsLookup>({});
+
+  useEffect(() => {
+    const prevErrs = previousErrors[stepName || steps[0]?.name];
+    if (prevErrs && prevErrs.length > 0) {
+      setActiveErrors(prevErrs);
+    }
+  }, [steps[0]?.name, stepName, previousErrors]);
+
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
@@ -361,6 +374,10 @@ function FormSteps({
     }
 
     const nextActiveErrors = getValidationErrors();
+    setPreviousErrors((prev) => ({
+      ...prev,
+      [stepName || steps[0].name]: activeErrors,
+    }));
     setActiveErrors(nextActiveErrors);
     if (nextActiveErrors.length) {
       didSubmitWithErrors.current = true;
