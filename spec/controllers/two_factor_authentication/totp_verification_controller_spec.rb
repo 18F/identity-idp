@@ -48,7 +48,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
         expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_verify_totp, success: true)
+          with(:mfa_login_totp, success: true)
 
         post :create, params: { code: generate_totp_code(@secret) }
       end
@@ -96,7 +96,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: max attempts reached')
         expect(@irs_attempts_api_tracker).to receive(:track_event).
-          with(:mfa_verify_totp, success: false)
+          with(:mfa_login_totp, success: false)
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
