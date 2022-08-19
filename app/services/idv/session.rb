@@ -5,13 +5,10 @@ module Idv
       applicant
       go_back_path
       idv_phone_step_document_capture_session_uuid
-      idv_gpo_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
       pii
       previous_phone_step_params
-      previous_profile_step_params
-      previous_gpo_step_params
       profile_confirmation
       profile_id
       profile_step_params

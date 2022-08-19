@@ -131,8 +131,6 @@ es:
       gpo:
         address_on_file: Le enviaremos una carta con un código de confirmación a la
           dirección que nos facilitó en el paso anterior.
-        new_address: Le enviaremos una carta con un código de confirmación a la
-          dirección que especifique.
         resend: Envíeme otra carta
         timeframe: Las correspondencias se envían al día siguiente por correo de primera
           clase de USPS y por lo general tardan entre 3 y 7 días laborables.

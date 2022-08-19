@@ -54,11 +54,9 @@ es:
       totp_confirm_delete: Sí, eliminar la aplicación de autenticación
       unknown_location: ubicación desconocida
       verification:
-        bounced: El servicio postal no pudo entregar la carta a su dirección.
         instructions: Su cuenta requiere un código de confirmación para ser verificado.
         reactivate_button: Ingrese el código que recibió por correo postal.
         success: Su cuenta ha sido verificada.
-        update_address: Actualice su dirección para ser verificada.
       webauthn: Clave de seguridad
       webauthn_add: Añadir clave de seguridad
       webauthn_confirm_delete: Si quitar la llave

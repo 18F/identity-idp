@@ -53,11 +53,9 @@ en:
       totp_confirm_delete: Yes, remove authentication app
       unknown_location: unknown location
       verification:
-        bounced: The postal service could not deliver the letter to your address.
         instructions: Your account requires a confirmation code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
-        update_address: Please update your address to be verified.
       webauthn: Security key
       webauthn_add: Add security key
       webauthn_confirm_delete: Yes, remove key
