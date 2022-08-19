@@ -40,6 +40,7 @@ module Proofing
           result.transaction_id = body['request_id']
           request_result = body['request_result']
           review_status = body['review_status']
+          result.review_status = review_status
           result.add_error(:request_result, request_result) unless request_result == 'success'
           result.add_error(:review_status, review_status) unless review_status == 'pass'
         end

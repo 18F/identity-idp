@@ -22,6 +22,7 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
+        result.review_status = 'pass'
       end
     end
   end
