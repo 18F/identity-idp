@@ -32,6 +32,15 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] upload_method String of method chosen for uploading id verification
+    # A user has selected id document upload method ('mobile'/'desktop')
+    def document_upload_method_selected(upload_method:)
+      track_event(
+        :document_upload_method_selected,
+        upload_method: upload_method,
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
