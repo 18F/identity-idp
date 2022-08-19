@@ -140,7 +140,7 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when user has attempted to log in with the WebAuthn-Platform MFA method to their account
+    # Tracks when user has attempted to log in with WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
     def mfa_login_webauthn_platform(success:)
       track_event(
