@@ -96,7 +96,7 @@ fr:
         que d’habitude Veuillez réessayer.
     forgot_password:
       link_html: Mot de passe oublié? %{link}
-      link_text: Suivez ces instructions
+      link_text: Mot de passe oublié?
       modal_header: Êtes-vous sûr de ne pas pouvoir vous souvenir de votre mot de passe?
       reset_password: Réinitialiser le mot de passe
       try_again: Réessayer

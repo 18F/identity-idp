@@ -92,23 +92,13 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
         required
       />
       <div className="text-right margin-top-2 margin-bottom-4">
-        {formatHTML(
-          t('idv.forgot_password.link_html', {
-            link: `<button>${t('idv.forgot_password.link_text')}</button>`,
-          }),
-          {
-            button: ({ children }) => (
-              <HistoryLink
-                basePath={stepPath}
-                step={FORGOT_PASSWORD_PATH}
-                aria-label={t('idv.forgot_password.link_html').replace(`%{link}`, '')}
-                title={`${t('idv.forgot_password.link_text')}`}
-              >
-                {children}
-              </HistoryLink>
-            ),
-          },
-        )}
+        {formatHTML(`<button>${t('idv.forgot_password.link_text')}</button>`, {
+          button: ({ children }) => (
+            <HistoryLink basePath={stepPath} step={FORGOT_PASSWORD_PATH}>
+              {children}
+            </HistoryLink>
+          ),
+        })}
       </div>
       <Accordion header={t('idv.messages.review.intro')}>
         <PersonalInfoSummary pii={value} />

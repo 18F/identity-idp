@@ -92,7 +92,7 @@ es:
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
       link_html: '¿Se te olvidó tu contraseña? %{link}'
-      link_text: Siga estas instrucciones
+      link_text: '¿Se te olvidó tu contraseña?'
       modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
