@@ -1,5 +1,14 @@
 module IrsAttemptsApi
   module TrackerEvents
+    # @param [Boolean] success True if the email and password matched
+    # account Reset Deletion Requested
+    def account_reset_request_submitted(success:)
+      track_event(
+        :account_reset_request_submitted,
+        success: success,
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
@@ -17,6 +26,17 @@ module IrsAttemptsApi
       track_event(
         :logout_initiated,
         success: success,
+      )
+    end
+
+    # @param [Boolean] success True if selection was valid
+    # @param [Array<String>] mfa_device_types List of MFA options users selected on account creation
+    # A user has selected MFA options
+    def mfa_enroll_options_selected(success:, mfa_device_types:)
+      track_event(
+        :mfa_enroll_options_selected,
+        success: success,
+        mfa_device_types: mfa_device_types,
       )
     end
 

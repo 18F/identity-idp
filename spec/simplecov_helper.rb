@@ -60,9 +60,6 @@ class SimplecovHelper
     if ENV['GITLAB_CI']
       # GitLab CI uses Cobertura formatter to display diffs in pull requests
       formatters << SimpleCov::Formatter::CoberturaFormatter
-    elsif ENV['CIRCLE_CI']
-      # CircleCI uses JSON formatting for CodeClimate
-      formatters << SimpleCov::Formatter::JSONFormatter
     end
 
     formatters

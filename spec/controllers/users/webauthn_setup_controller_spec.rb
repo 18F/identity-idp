@@ -43,6 +43,7 @@ describe Users::WebauthnSetupController do
       it 'tracks page visit' do
         stub_sign_in
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_event).
           with(
@@ -52,6 +53,8 @@ describe Users::WebauthnSetupController do
             enabled_mfa_methods_count: 0,
             success: true,
           )
+
+        expect(@irs_attempts_api_tracker).not_to receive(:track_event)
 
         get :new
       end
@@ -267,6 +270,48 @@ describe Users::WebauthnSetupController do
 
           expect(@irs_attempts_api_tracker).to receive(:track_event).with(
             :mfa_enroll_webauthn_platform, success: true
+          )
+
+          patch :confirm, params: params
+        end
+      end
+
+      context 'with attestation response error' do
+        let(:mfa_selections) { ['webauthn_platform'] }
+        let(:params) do
+          {
+            attestation_object: attestation_object,
+            client_data_json: setup_client_data_json,
+            name: 'mykey',
+            platform_authenticator: 'true',
+          }
+        end
+        it 'should log expected events' do
+          allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+          allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
+
+          expect(@analytics).to receive(:track_event).with(
+            'Multi-Factor Authentication Setup',
+            {
+              enabled_mfa_methods_count: 0,
+              errors: { name: [I18n.t(
+                'errors.webauthn_platform_setup.attestation_error',
+                link: MarketingSite.contact_url,
+              )] },
+              error_details: { name: [I18n.t(
+                'errors.webauthn_platform_setup.attestation_error',
+                link: MarketingSite.contact_url,
+              )] },
+              in_multi_mfa_selection_flow: true,
+              mfa_method_counts: {},
+              multi_factor_auth_method: 'webauthn_platform',
+              pii_like_keypaths: [[:mfa_method_counts, :phone]],
+              success: false,
+            },
+          )
+
+          expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+            :mfa_enroll_webauthn_platform, success: false
           )
 
           patch :confirm, params: params
