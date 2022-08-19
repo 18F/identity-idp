@@ -92,13 +92,9 @@ function PasswordConfirmStep({ errors, registerField, onChange, value }: Passwor
         required
       />
       <div className="text-right margin-top-2 margin-bottom-4">
-        {formatHTML(`<button>${t('idv.forgot_password.link_text')}</button>`, {
-          button: ({ children }) => (
-            <HistoryLink basePath={stepPath} step={FORGOT_PASSWORD_PATH}>
-              {children}
-            </HistoryLink>
-          ),
-        })}
+        <HistoryLink basePath={stepPath} step={FORGOT_PASSWORD_PATH}>
+          {t('idv.forgot_password.link_text')}
+        </HistoryLink>
       </div>
       <Accordion header={t('idv.messages.review.intro')}>
         <PersonalInfoSummary pii={value} />
