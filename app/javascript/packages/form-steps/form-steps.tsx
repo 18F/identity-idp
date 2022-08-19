@@ -177,7 +177,7 @@ interface FormStepsProps {
   titleFormat?: string;
 }
 
-interface PreviousErrorsLookup {
+interface PreviousStepErrorsLookup {
   [stepName: string]: FormStepError<Record<string, Error>>[] | undefined;
 }
 
@@ -250,14 +250,6 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
-  const [previousErrors, setPreviousErrors] = useState<PreviousErrorsLookup>({});
-
-  useEffect(() => {
-    const prevErrs = previousErrors[stepName || steps[0]?.name];
-    if (prevErrs && prevErrs.length > 0) {
-      setActiveErrors(prevErrs);
-    }
-  }, [steps[0]?.name, stepName, previousErrors]);
 
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
@@ -283,6 +275,17 @@ function FormSteps({
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
+
+  // Preserve/restore non-blocking errors for each step regardless of field association
+  const [previousStepErrors, setPreviousStepErrors] = useState<PreviousStepErrorsLookup>({});
+  useEffect(() => {
+    if (step?.name) {
+      const prevErrs = previousStepErrors[step?.name];
+      if (prevErrs && prevErrs.length > 0) {
+        setActiveErrors(prevErrs);
+      }
+    }
+  }, [step?.name, previousStepErrors]);
 
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
@@ -374,7 +377,7 @@ function FormSteps({
     }
 
     const nextActiveErrors = getValidationErrors();
-    setPreviousErrors((prev) => ({
+    setPreviousStepErrors((prev) => ({
       ...prev,
       [stepName || steps[0].name]: activeErrors,
     }));
