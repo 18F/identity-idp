@@ -97,6 +97,16 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] type - the type of multi-factor authentication used
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_rate_limited(type:)
+      track_event(
+        :mfa_enroll_rate_limited,
+        type: type,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the TOTP MFA method to their account
     # @param [Boolean] success
     def mfa_enroll_totp(success:)
@@ -158,8 +168,8 @@ module IrsAttemptsApi
     end
 
     # Tracks when the user has attempted to log in with the piv cac MFA method to their account
-    # @param [String] subject_dn
     # @param [Boolean] success
+    # @param [String] subject_dn
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_piv_cac(
       success:,
@@ -171,6 +181,16 @@ module IrsAttemptsApi
         success: success,
         subject_dn: subject_dn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] type - the type of multi-factor authentication used
+    # The user has exceeded the rate limit during verification
+    # and account has been locked
+    def mfa_login_rate_limited(type:)
+      track_event(
+        :mfa_login_rate_limited,
+        type: type,
       )
     end
 

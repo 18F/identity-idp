@@ -53,7 +53,7 @@ module TwoFactorAuthentication
       flash.now[:error] = t('two_factor_authentication.invalid_backup_code')
 
       if decorated_user.locked_out?
-        handle_second_factor_locked_user('backup_code')
+        handle_second_factor_locked_user(context: context, type: 'backup_code')
       else
         render_show_after_invalid
       end

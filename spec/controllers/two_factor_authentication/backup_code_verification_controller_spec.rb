@@ -141,6 +141,10 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
 
         expect(@analytics).to receive(:track_event).
           with('Multi-Factor Authentication: max attempts reached')
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
+          with(type: 'backup_code')
+
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

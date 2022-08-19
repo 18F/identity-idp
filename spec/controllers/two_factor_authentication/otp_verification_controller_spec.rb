@@ -179,6 +179,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
 
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
+          with(type: 'otp')
+
         post :create, params:
         { code: '12345',
           otp_delivery_preference: 'sms' }
@@ -235,7 +238,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
-          with({ reauthentication: false, success: true })
+          with(reauthentication: false, success: true)
 
         post :create, params: {
           code: subject.current_user.reload.direct_otp,
@@ -380,7 +383,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             controller.user_session[:phone_id] = phone_id
 
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
-              with({ success: true })
+              with(success: true)
 
             post(
               :create,
@@ -410,7 +413,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         context 'user enters an invalid code' do
           before do
             expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_submitted).
-              with({ success: false })
+              with(success: false)
 
             post(
               :create,
@@ -460,6 +463,19 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
             expect(@analytics).to have_received(:track_event).
               with('Multi-Factor Authentication Setup', properties)
+          end
+
+          context 'user has exceeded the maximum number of attempts' do
+            it 'tracks the attempt event' do
+              allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+              sign_in_before_2fa
+
+              stub_attempts_tracker
+              expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_rate_limited).
+                with(type: 'otp')
+
+              post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+            end
           end
         end
 
