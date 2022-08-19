@@ -2,7 +2,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @password_reset_from_disavowal_form,
       url: events_disavowal_url,
       html: { autocomplete: 'off',

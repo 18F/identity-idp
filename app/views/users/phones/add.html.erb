@@ -14,7 +14,7 @@
   <% end %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @new_phone_form,
       html: { autocomplete: 'off', method: :post },
       data: { international_phone_form: true },

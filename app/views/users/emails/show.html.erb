@@ -5,7 +5,7 @@
 <%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
 
 <div class="margin-bottom-6">
-  <%= validated_form_for(
+  <%= simple_form_for(
         @add_user_email_form,
         html: { autocomplete: 'off' },
         url: add_email_path,

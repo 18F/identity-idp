@@ -6,7 +6,7 @@
   <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @update_user_password_form, url: manage_password_path,
                                   html: { autocomplete: 'off', method: :patch }
     ) do |f| %>

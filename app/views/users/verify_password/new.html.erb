@@ -6,7 +6,7 @@
   <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       current_user, url: update_verify_password_path,
                     html: { autocomplete: 'off', method: :put }
     ) do |f| %>

@@ -1,7 +1,7 @@
 <% title t('titles.edit_info.phone') %>
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.phone')) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @edit_phone_form,
       html: { autocomplete: 'off', method: :put },
       url: manage_phone_path(id: @phone_configuration.id),

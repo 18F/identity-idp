@@ -34,7 +34,7 @@
   <% end %>
 <% end %>
 <p>
-  <%= validated_form_for(:idv_form, url: sign_up_completed_path) do |f| %>
+  <%= simple_form_for(:idv_form, url: sign_up_completed_path) do |f| %>
     <%= f.submit t('sign_up.agree_and_continue') %>
   <% end %>
 </p>

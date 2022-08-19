@@ -4,7 +4,7 @@
 
 <p><%= t('instructions.password.password_key') %></p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @reset_password_form,
       url: user_password_path,
       html: { autocomplete: 'off',

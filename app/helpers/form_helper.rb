@@ -64,10 +64,4 @@ module FormHelper
       ['Wyoming', 'WY'],
     ]
   end
-
-  private
-
-  def validated_form_for(record, options = {}, &block)
-    simple_form_for(record, options, &block)
-  end
 end

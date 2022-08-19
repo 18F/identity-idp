@@ -8,7 +8,7 @@
   <%= @presenter.info %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @two_factor_options_form,
       html: { autocomplete: 'off' },
       method: :post,

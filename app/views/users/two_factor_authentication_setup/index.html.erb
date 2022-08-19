@@ -14,10 +14,10 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
-<%= validated_form_for @two_factor_options_form,
-                       html: { autocomplete: 'off' },
-                       method: :patch,
-                       url: authentication_methods_setup_path do |f| %>
+<%= simple_form_for @two_factor_options_form,
+                    html: { autocomplete: 'off' },
+                    method: :patch,
+                    url: authentication_methods_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
