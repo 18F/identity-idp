@@ -5,7 +5,7 @@
 <p class="margin-top-2 margin-bottom-0" id="password-description">
   <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
 </p>
-<%= validated_form_for(
+<%= simple_form_for(
       @password_form,
       url: sign_up_create_password_path,
       method: :post,

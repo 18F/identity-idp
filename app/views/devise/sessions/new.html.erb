@@ -13,7 +13,7 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       resource,
       as: resource_name,
       url: session_path(resource_name),

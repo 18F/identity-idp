@@ -2,7 +2,7 @@
 
 <%= render PageHeadingComponent.new.with_content(password_header) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       current_user,
       as: :user,
       url: capture_password_url,

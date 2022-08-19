@@ -12,7 +12,7 @@
       ) %>
 </p>
 
-<%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
+<%= simple_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
   <%= render partial: 'shared/email_languages',
              locals: { f: f, hint: false, selection: current_user.email_language } %>
   <%= f.submit t('forms.buttons.submit.default'), class: 'grid-col-8 tablet:grid-col-6' %>

@@ -6,7 +6,7 @@
   <%= t('two_factor_authentication.backup_code_prompt') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @backup_code_form,
       url: login_two_factor_backup_code_path,
       html: { autocomplete: 'off', method: :post },

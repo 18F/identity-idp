@@ -1,7 +1,7 @@
 <% title t('titles.confirmations.new') %>
 
 <%= render PageHeadingComponent.new.with_content(t('headings.confirmations.new')) %>
-<%= validated_form_for(
+<%= simple_form_for(
       @resend_email_confirmation_form,
       url: sign_up_register_path,
       html: { autocomplete: 'off', method: :post },
