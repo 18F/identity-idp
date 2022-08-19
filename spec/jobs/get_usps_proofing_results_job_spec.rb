@@ -11,61 +11,40 @@ RSpec.describe GetUspsProofingResultsJob do
     allow(job).to receive(:analytics).and_return(job_analytics)
     allow(IdentityConfig.store).to receive(:get_usps_proofing_results_job_reprocess_delay_minutes).
       and_return(reprocess_delay_minutes)
+    stub_request_token
   end
 
   describe '#perform' do
     describe 'IPP enabled' do
-      # this passing enrollment shouldn't be included when the job collects
+      # these non-pending enrollments shouldn't be included when the job collects
       # enrollments that need their status checked
+      let!(:establishing_enrollment) { create(:in_person_enrollment, :establishing) }
+      let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+      let!(:failed_enrollment) { create(:in_person_enrollment, :failed) }
       let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
 
-      let!(:pending_enrollment) do
-        create(
-          :in_person_enrollment,
-          status: :pending,
-          enrollment_code: SecureRandom.hex(16),
-          selected_location_details: { name: 'FRIENDSHIP' },
-        )
-      end
-      let!(:pending_enrollment_2) do
-        create(
-          :in_person_enrollment,
-          status: :pending,
-          enrollment_code: SecureRandom.hex(16),
-          selected_location_details: { name: 'BALTIMORE' },
-        )
-      end
-      let!(:pending_enrollment_3) do
-        create(
-          :in_person_enrollment,
-          status: :pending,
-          enrollment_code: SecureRandom.hex(16),
-          selected_location_details: { name: 'WASHINGTON' },
-        )
-      end
-      let!(:pending_enrollment_4) do
-        create(
-          :in_person_enrollment,
-          status: :pending,
-          enrollment_code: SecureRandom.hex(16),
-          selected_location_details: { name: 'ARLINGTON' },
-        )
-      end
-      let(:pending_enrollments) do
+      let!(:pending_enrollments) do
         [
-          pending_enrollment,
-          pending_enrollment_2,
-          pending_enrollment_3,
-          pending_enrollment_4,
+          create(:in_person_enrollment, :pending, selected_location_details: { name: 'BALTIMORE' }),
+          create(
+            :in_person_enrollment, :pending,
+            selected_location_details: { name: 'FRIENDSHIP' }
+          ),
+          create(
+            :in_person_enrollment, :pending,
+            selected_location_details: { name: 'WASHINGTON' }
+          ),
+          create(:in_person_enrollment, :pending, selected_location_details: { name: 'ARLINGTON' }),
+          create(:in_person_enrollment, :pending, selected_location_details: { name: 'DEANWOOD' }),
         ]
       end
+      let(:pending_enrollment) { pending_enrollments[0] }
 
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       end
 
       it 'requests the enrollments that need their status checked' do
-        stub_request_token
         stub_request_passed_proofing_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).and_return([])
@@ -88,7 +67,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'records the last attempted status check regardless of response code and contents' do
-        stub_request_token
         stub_request_proofing_results_with_responses(
           request_failed_proofing_results_args,
           request_in_progress_proofing_results_args,
@@ -120,8 +98,46 @@ RSpec.describe GetUspsProofingResultsJob do
         )
       end
 
+      it 'logs a message when the job starts' do
+        stub_request_proofing_results_with_responses(
+          request_failed_proofing_results_args,
+          request_in_progress_proofing_results_args,
+          request_in_progress_proofing_results_args,
+          request_failed_proofing_results_args,
+        )
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Job started',
+          enrollments_count: 5,
+          reprocess_delay_minutes: 2.0,
+        )
+      end
+
+      it 'logs a message with counts of various outcomes when the job completes' do
+        stub_request_proofing_results_with_responses(
+          request_passed_proofing_results_args,
+          request_in_progress_proofing_results_args,
+          { status: 500 },
+          request_failed_proofing_results_args,
+          request_expired_proofing_results_args,
+        )
+
+        job.perform(Time.zone.now)
+
+        expect(job_analytics).to have_logged_event(
+          'GetUspsProofingResultsJob: Job completed',
+          enrollments_checked: 5,
+          enrollments_errored: 1,
+          enrollments_expired: 1,
+          enrollments_failed: 1,
+          enrollments_in_progress: 1,
+          enrollments_passed: 1,
+        )
+      end
+
       it 'logs details about a failed proofing' do
-        stub_request_token
         stub_request_failed_proofing_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -151,7 +167,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
       describe 'sending emails' do
         it 'sends proofing failed email on response with failed status' do
-          stub_request_token
           stub_request_failed_proofing_results
 
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -175,7 +190,6 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'sends proofing verifed email on 2xx responses with valid JSON' do
-          stub_request_token
           stub_request_passed_proofing_results
 
           allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -200,7 +214,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
         context 'a custom delay greater than zero is set' do
           it 'uses the custom delay' do
-            stub_request_token
             stub_request_passed_proofing_results
 
             allow(IdentityConfig.store).
@@ -222,7 +235,6 @@ RSpec.describe GetUspsProofingResultsJob do
 
         context 'a custom delay of zero is set' do
           it 'does not delay sending the email' do
-            stub_request_token
             stub_request_passed_proofing_results
 
             allow(IdentityConfig.store).
@@ -244,7 +256,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'updates enrollment records and activates profiles on response with passed status' do
-        stub_request_token
         stub_request_passed_proofing_results
 
         start_time = Time.zone.now
@@ -265,6 +276,7 @@ RSpec.describe GetUspsProofingResultsJob do
             'GetUspsProofingResultsJob: Enrollment status updated',
             enrollment_code: enrollment.enrollment_code,
             enrollment_id: enrollment.id,
+            fraud_suspected: false,
             passed: true,
             reason: 'Successful status update',
           )
@@ -272,7 +284,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'receives a non-hash value' do
-        stub_request_token
         stub_request_proofing_results_with_responses({})
 
         job.perform(Time.zone.now)
@@ -286,7 +297,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'receives an unsupported status' do
-        stub_request_token
         stub_request_passed_proofing_unsupported_status_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -299,17 +309,15 @@ RSpec.describe GetUspsProofingResultsJob do
         expect(pending_enrollment.pending?).to be_truthy
 
         expect(job_analytics).to have_logged_event(
-          'GetUspsProofingResultsJob: Enrollment status updated',
+          'GetUspsProofingResultsJob: Exception raised',
           enrollment_code: pending_enrollment.enrollment_code,
           enrollment_id: pending_enrollment.id,
-          passed: false,
           reason: 'Unsupported status',
           status: 'Not supported',
         )
       end
 
       it 'reports a high-priority error on 2xx responses with invalid JSON' do
-        stub_request_token
         stub_request_proofing_results_with_invalid_response
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -330,7 +338,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'reports a low-priority error on 4xx responses' do
-        stub_request_token
         stub_request_proofing_results_with_responses({ status: 400 })
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -351,7 +358,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'marks enrollments as expired when USPS says they have expired' do
-        stub_request_token
         stub_request_expired_proofing_results
 
         job.perform(Time.zone.now)
@@ -363,7 +369,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'ignores enrollments when USPS says the customer has not been to the post office' do
-        stub_request_token
         stub_request_in_progress_proofing_results
 
         job.perform(Time.zone.now)
@@ -375,7 +380,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'reports a high-priority error on 5xx responses' do
-        stub_request_token
         stub_request_proofing_results_with_responses({ status: 500 })
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -396,7 +400,6 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       it 'fails enrollment for unsupported ID types' do
-        stub_request_token
         stub_request_passed_proofing_unsupported_id_results
 
         allow(InPersonEnrollment).to receive(:needs_usps_status_check).
@@ -412,6 +415,7 @@ RSpec.describe GetUspsProofingResultsJob do
           'GetUspsProofingResultsJob: Enrollment status updated',
           enrollment_code: pending_enrollment.enrollment_code,
           enrollment_id: pending_enrollment.id,
+          fraud_suspected: false,
           passed: false,
           primary_id_type: 'Not supported',
           reason: 'Unsupported ID type',
