@@ -1,5 +1,14 @@
 module IrsAttemptsApi
   module TrackerEvents
+    # param [Boolean] success True if account reset request is cancelled
+    # A user cancels the request to delete their account before 24 hour period
+    def account_reset_cancel_request(success:)
+      track_event(
+        :account_reset_cancel_request,
+        success: success,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # account Reset Deletion Requested
     def account_reset_request_submitted(success:)
