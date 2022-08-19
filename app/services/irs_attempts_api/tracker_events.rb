@@ -167,8 +167,9 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when user has attempted to verify via the WebAuthn-Platform MFA method to their account
+    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
     # @param [Boolean] success
+    # @param [String] subject_dn
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_piv_cac(
       success:,
