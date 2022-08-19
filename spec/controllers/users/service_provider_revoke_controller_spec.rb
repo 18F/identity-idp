@@ -67,7 +67,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
           subject
         end
       end.to change { @identity.reload.deleted_at&.to_i }.
-      from(nil).to(now.to_i)
+        from(nil).to(now.to_i)
 
       expect(response).to redirect_to(account_connected_accounts_path)
     end

@@ -326,7 +326,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'tracks the verification attempt event' do
         stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_sent).
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
           with(phone_number: '+12025551212', reauthentication: false, success: true)
 
         get :send_code, params: { otp_delivery_selection_form:

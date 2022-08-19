@@ -126,8 +126,6 @@ en:
       gpo:
         address_on_file: We will mail a letter with a confirmation code to the address
           that you provided on the previous step.
-        new_address: We will mail a letter with a confirmation code to the address you
-          specify.
         resend: Send me another letter
         timeframe: Letters are sent the next business day via USPS First Class Mail and
           typically take 3 to 7 business days.

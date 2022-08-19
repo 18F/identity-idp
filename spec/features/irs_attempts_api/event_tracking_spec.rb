@@ -31,7 +31,7 @@ feature 'IRS Attempts API Event Tracking' do
       sign_in_user(user)
 
       events = irs_attempts_api_tracked_events(timestamp: Time.zone.now)
-      expected_event_types = %w[email-and-password-auth mfa-verify-phone-otp-sent]
+      expected_event_types = %w[email-and-password-auth mfa-login-phone-otp-sent]
 
       received_event_types = events.map(&:event_type)
 

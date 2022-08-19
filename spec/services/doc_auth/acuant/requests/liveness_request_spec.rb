@@ -34,8 +34,8 @@ RSpec.describe DocAuth::Acuant::Requests::LivenessRequest do
 
       it 'returns a successful response' do
         request_stub = stub_request(:post, url).
-                       with(body: request_body).
-                       to_return(body: response_body)
+          with(body: request_body).
+          to_return(body: response_body)
 
         response = request.fetch
 
@@ -51,8 +51,8 @@ RSpec.describe DocAuth::Acuant::Requests::LivenessRequest do
 
       it 'returns an unsuccessful response' do
         request_stub = stub_request(:post, url).
-                       with(body: request_body).
-                       to_return(body: response_body)
+          with(body: request_body).
+          to_return(body: response_body)
 
         response = request.fetch
 

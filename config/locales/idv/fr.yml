@@ -138,8 +138,6 @@ fr:
       gpo:
         address_on_file: Nous enverrons une lettre avec un code de confirmation à
           l’adresse que vous avez indiquée à l’étape précédente.
-        new_address: Nous vous enverrons une lettre avec un code de confirmation à
-          l’adresse que vous spécifiez.
         resend: Envoyez-moi une autre lettre
         timeframe: Les lettres sont envoyées le jour ouvrable suivant par courrier de
           première classe USPS et prennent généralement de 3 à 7 jours

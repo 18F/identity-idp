@@ -19,7 +19,12 @@ module Api
 
     def create
       if timestamp
-        render json: { sets: security_event_tokens }
+        result = encrypted_security_event_log_result
+
+        headers['X-Payload-Key'] = Base64.strict_encode64(result.encrypted_key)
+        headers['X-Payload-IV'] = Base64.strict_encode64(result.iv)
+        send_data Base64.strict_encode64(result.encrypted_data),
+                  disposition: "filename=#{result.filename}"
       else
         render json: { status: :unprocessable_entity, description: 'Invalid timestamp parameter' },
                status: :unprocessable_entity
@@ -40,6 +45,16 @@ module Api
     def security_event_tokens
       return {} unless timestamp
       @security_event_tokens ||= redis_client.read_events(timestamp: timestamp)
+    end
+
+    def encrypted_security_event_log_result
+      json = security_event_tokens.to_json
+      decoded_key_der = Base64.strict_decode64(IdentityConfig.store.irs_attempt_api_public_key)
+      pub_key = OpenSSL::PKey::RSA.new(decoded_key_der)
+
+      IrsAttemptsApi::EnvelopeEncryptor.encrypt(
+        data: json, timestamp: timestamp, public_key: pub_key,
+      )
     end
 
     def redis_client

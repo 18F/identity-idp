@@ -55,8 +55,8 @@ feature 'Backup codes' do
       click_continue
 
       generated_at = user.backup_code_configurations.
-                     order(created_at: :asc).first.created_at.
-                     in_time_zone('UTC')
+        order(created_at: :asc).first.created_at.
+        in_time_zone('UTC')
       formatted_generated_at = l(generated_at, format: t('time.formats.event_timestamp'))
 
       expected_message = "#{t('account.index.backup_codes_exist')} #{formatted_generated_at}"

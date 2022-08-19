@@ -227,6 +227,10 @@ Layout/MultilineHashBraceLayout:
 Layout/MultilineMethodCallBraceLayout:
   Enabled: true
 
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
 Layout/MultilineMethodDefinitionBraceLayout:
   Enabled: true
   EnforcedStyle: symmetrical

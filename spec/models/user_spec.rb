@@ -14,12 +14,12 @@ RSpec.describe User do
     it { is_expected.to have_many(:in_person_enrollments).dependent(:destroy) }
     it {
       is_expected.to have_one(:pending_in_person_enrollment).
-      conditions(status: :pending).
-      order(created_at: :desc).
-      class_name('InPersonEnrollment').
-      with_foreign_key(:user_id).
-      inverse_of(:user).
-      dependent(:destroy)
+        conditions(status: :pending).
+        order(created_at: :desc).
+        class_name('InPersonEnrollment').
+        with_foreign_key(:user_id).
+        inverse_of(:user).
+        dependent(:destroy)
     }
   end
 

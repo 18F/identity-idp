@@ -11,11 +11,7 @@
     <% end %>
 
     <% if @presenter.show_gpo_partial? %>
-      <% if @presenter.decorated_user.gpo_mail_bounced? %>
-        <%= render 'accounts/pending_profile_bounced_gpo' %>
-      <% else %>
-        <%= render 'accounts/pending_profile_gpo' %>
-      <% end %>
+      <%= render 'accounts/pending_profile_gpo' %>
     <% end %>
 
     <% if @presenter.show_service_provider_continue_partial? %>
