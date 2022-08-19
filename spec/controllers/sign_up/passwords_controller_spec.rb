@@ -79,6 +79,9 @@ describe SignUp::PasswordsController do
       user = create(:user, :unconfirmed, confirmation_token: token)
 
       stub_analytics
+      stub_attempts_tracker
+
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
 
       analytics_hash = {
         success: false,
@@ -98,18 +101,22 @@ describe SignUp::PasswordsController do
           'User Registration: Email Confirmation',
           { errors: {}, error_details: nil, success: true, user_id: user.uuid },
         )
+      expect(@analytics).to receive(:track_event).
+        with('Password Creation', analytics_hash)
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
+
+      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+        :user_registration_password_submitted,
+        success: false,
+        failure_reason: { password: ['This password is too short (minimum is 12 characters)'] },
+      )
+      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
         :user_registration_email_confirmation,
         email: user.email_addresses.first.email,
         success: true,
         failure_reason: nil,
       )
-
-      expect(@analytics).to receive(:track_event).
-        with('Password Creation', analytics_hash)
-
-      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end
   end
 
