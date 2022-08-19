@@ -179,7 +179,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
           with({ reauthentication: false, success: false })
 
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_rate_limited).
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
           with(type: 'otp')
 
         post :create, params:

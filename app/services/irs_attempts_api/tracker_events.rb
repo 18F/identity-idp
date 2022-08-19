@@ -96,7 +96,7 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
-    
+
     # @param [String] type - the type of multi-factor authentication used
     # The user has exceeded the rate limit during enrollment
     # and account has been locked
@@ -167,25 +167,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] type - the type of multi-factor authentication used
-    # The user has exceeded the rate limit during verification
-    # and account has been locked
-    def mfa_verify_rate_limited(type:)
-      track_event(
-        :mfa_verify_rate_limited,
-        type: type,
-      )
-    end
-
-    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
-    # @param [Boolean] success
-    def mfa_verify_totp(success:)
-      track_event(
-        :mfa_verify_totp,
-        success: success,
-      )
-    end
-
     # Tracks when user has attempted to verify via the WebAuthn-Platform MFA method to their account
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
@@ -199,6 +180,16 @@ module IrsAttemptsApi
         success: success,
         subject_dn: subject_dn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] type - the type of multi-factor authentication used
+    # The user has exceeded the rate limit during verification
+    # and account has been locked
+    def mfa_login_rate_limited(type:)
+      track_event(
+        :mfa_login_rate_limited,
+        type: type,
       )
     end
 

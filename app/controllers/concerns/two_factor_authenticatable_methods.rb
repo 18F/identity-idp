@@ -25,7 +25,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
     if context
       if UserSessionContext.authentication_context?(context)
-        irs_attempts_api_tracker.mfa_verify_rate_limited(type: type)
+        irs_attempts_api_tracker.mfa_login_rate_limited(type: type)
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_rate_limited(type: type)
       end
