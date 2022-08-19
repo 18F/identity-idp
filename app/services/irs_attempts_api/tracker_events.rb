@@ -1,6 +1,5 @@
 module IrsAttemptsApi
   module TrackerEvents
-    
     # param [Boolean] success True if account reset request is cancelled
     # A user cancels the request to delete their account before 24 hour period
     def account_reset_cancel_request(success:)
