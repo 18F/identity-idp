@@ -36,7 +36,7 @@
     <%= render 'users/shared/otp_make_default_number',
                form_obj: @new_phone_form %>
   <% end %>
-  <%= f.button :submit, t('forms.buttons.send_security_code'), class: 'usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.send_security_code') %>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>

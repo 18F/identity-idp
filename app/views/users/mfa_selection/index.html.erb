@@ -21,7 +21,7 @@
     </fieldset>
   </div>
 
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide margin-bottom-1' %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
 <%= render 'shared/cancel', link: @after_setup_path %>

@@ -60,13 +60,13 @@ locals:
 
   <p><%= flow_session[:error_message] %></p>
 
-  <button type="submit" class="display-block margin-y-5 usa-button usa-button--big usa-button--wide">
+  <%= f.submit class: 'display-block margin-y-5' do %>
     <% if updating_ssn %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
       <%= t('forms.buttons.continue') %>
     <% end %>
-  </button>
+  <% end %>
 <% end %>
 
 <% if updating_ssn %>

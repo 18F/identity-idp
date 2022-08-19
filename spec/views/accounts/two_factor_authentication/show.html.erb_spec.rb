@@ -22,7 +22,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
       render
 
       expect(rendered).to have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
-      expect(rendered).not_to have_xpath("//input[@value='Disable']")
+      expect(rendered).not_to have_link(t('forms.buttons.disable'))
     end
   end
 
@@ -43,7 +43,10 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     it 'contains link to disable TOTP' do
       render
 
-      expect(rendered).to have_link(t('forms.buttons.disable', href: auth_app_delete_path))
+      expect(rendered).to have_link(
+        t('forms.buttons.disable'),
+        href: auth_app_delete_path(id: user.auth_app_configurations.first.id),
+      )
     end
   end
 
@@ -95,7 +98,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     it 'disables delete buttons for the last non restricted mfa method with phone configured' do
       render
 
-      expect(rendered).to_not have_link(t('forms.buttons.disable', href: auth_app_delete_path))
+      expect(rendered).to_not have_link(t('forms.buttons.disable'))
     end
   end
 end

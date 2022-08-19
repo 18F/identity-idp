@@ -36,12 +36,7 @@
         <% end,
         required: true,
       ) %>
-  <%= f.button(
-        :button,
-        t('doc_auth.buttons.continue'),
-        type: :submit,
-        class: 'usa-button--big usa-button--wide margin-top-4',
-      ) %>
+  <%= f.submit t('doc_auth.buttons.continue'), class: 'margin-top-4' %>
 <% end %>
 
 <%= render 'idv/doc_auth/cancel', step: 'agreement' %>

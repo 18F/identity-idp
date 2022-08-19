@@ -27,9 +27,6 @@
         delivery_methods: [:sms],
         class: 'margin-bottom-4',
       ) %>
-  <div class="usa-error-message margin-bottom-4 display-none" role="alert"></div>
-  <button class="margin-top-1 usa-button usa-button--big usa-button--wide">
-    <%= t('forms.buttons.continue') %>
-  </button>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-4' %>
 <% end %>
 <%= render 'idv/shared/back', action: 'cancel_send_link' %>

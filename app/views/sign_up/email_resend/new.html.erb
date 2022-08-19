@@ -11,5 +11,5 @@
               required: true,
               input_html: { aria: { invalid: false } } %>
   <%= f.input :request_id, as: :hidden %>
-  <%= f.button :submit, t('forms.buttons.resend_confirmation'), class: 'usa-button--big usa-button--wide margin-top-2 margin-bottom-1' %>
+  <%= f.submit t('forms.buttons.resend_confirmation'), class: 'margin-top-2 margin-bottom-1' %>
 <% end %>

@@ -34,7 +34,7 @@
       ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
-    <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary usa-button--full-width margin-bottom-2' %>
+    <%= f.submit t('links.next'), full_width: true, big: false, wide: false, class: 'margin-bottom-2' %>
     <%= link_to(
           t('links.create_account'),
           sign_up_email_url(request_id: @request_id),
