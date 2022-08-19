@@ -6,10 +6,6 @@ describe Users::ResetPasswordsController, devise: true do
   end
   describe '#edit' do
     context 'no user matches token' do
-      let(:irs_tracker_failure_reason) do
-        { user: ['invalid_token'] }
-      end
-
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
         stub_attempts_tracker
@@ -30,7 +26,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_email_confirmed,
           success: false,
-          failure_reason: irs_tracker_failure_reason,
+          failure_reason: { user: ['invalid_token'] },
         )
 
         expect(response).to redirect_to new_user_password_path
@@ -39,10 +35,6 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'token expired' do
-      let(:irs_tracker_failure_reason) do
-        { user: ['token_expired'] }
-      end
-
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
         stub_attempts_tracker
@@ -67,7 +59,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
           :forgot_password_email_confirmed,
           success: false,
-          failure_reason: irs_tracker_failure_reason,
+          failure_reason: { user: ['token_expired'] },
         )
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
