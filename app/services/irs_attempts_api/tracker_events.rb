@@ -29,6 +29,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
+    # @param [Boolean] success
+    def mfa_enroll_backup_code(success:)
+      track_event(
+        :mfa_enroll_backup_code,
+        success: success,
+      )
+    end
+
     # @param [Boolean] success True if selection was valid
     # @param [Array<String>] mfa_device_types List of MFA options users selected on account creation
     # A user has selected MFA options
@@ -37,15 +46,6 @@ module IrsAttemptsApi
         :mfa_enroll_options_selected,
         success: success,
         mfa_device_types: mfa_device_types,
-      )
-    end
-
-    # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
-    # @param [Boolean] success
-    def mfa_enroll_backup_code(success:)
-      track_event(
-        :mfa_enroll_backup_code,
-        success: success,
       )
     end
 
@@ -68,6 +68,23 @@ module IrsAttemptsApi
       track_event(
         :mfa_enroll_phone_otp_submitted,
         success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to enroll the piv cac MFA method to their account
+    # @param [String] subject_dn
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def mfa_enroll_piv_cac(
+      success:,
+      subject_dn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :mfa_enroll_piv_cac,
+        success: success,
+        subject_dn: subject_dn,
+        failure_reason: failure_reason,
       )
     end
 
@@ -131,6 +148,23 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
+    # @param [String] subject_dn
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def mfa_login_piv_cac(
+      success:,
+      subject_dn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :mfa_login_piv_cac,
+        success: success,
+        subject_dn: subject_dn,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Tracks when the user has attempted to log in with the TOTP MFA method to access their account
     # @param [Boolean] success
     def mfa_login_totp(success:)
@@ -155,40 +189,6 @@ module IrsAttemptsApi
       track_event(
         :mfa_login_webauthn_roaming,
         success: success,
-      )
-    end
-
-    # Tracks when the user has attempted to enroll the piv cac MFA method to their account
-    # @param [String] subject_dn
-    # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def mfa_enroll_piv_cac(
-      success:,
-      subject_dn: nil,
-      failure_reason: nil
-    )
-      track_event(
-        :mfa_enroll_piv_cac,
-        success: success,
-        subject_dn: subject_dn,
-        failure_reason: failure_reason,
-      )
-    end
-
-    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
-    # @param [String] subject_dn
-    # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def mfa_login_piv_cac(
-      success:,
-      subject_dn: nil,
-      failure_reason: nil
-    )
-      track_event(
-        :mfa_login_piv_cac,
-        success: success,
-        subject_dn: subject_dn,
-        failure_reason: failure_reason,
       )
     end
 
