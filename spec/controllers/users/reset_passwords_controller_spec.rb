@@ -83,7 +83,7 @@ describe Users::ResetPasswordsController, devise: true do
     context 'user submits new password after token expires' do
       let(:irs_tracker_failure_reason) do
         {
-          password: ['This password is too short (minimum is 12 characters)'],
+          password: [password_error_message],
           reset_password_token: ['token_expired'],
         }
       end
@@ -138,7 +138,7 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'user submits invalid new password' do
       let(:irs_tracker_failure_reason) do
-        { password: ['This password is too short (minimum is 12 characters)'] }
+        { password: [password_error_message] }
       end
 
       it 'renders edit' do
