@@ -30,6 +30,8 @@ class AssetSources
     end
 
     def get_integrity(path)
+      load_manifest_if_needed
+
       manifest&.dig('integrity', path)
     end
 
