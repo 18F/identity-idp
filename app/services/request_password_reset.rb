@@ -23,7 +23,7 @@ RequestPasswordReset = RedactedStruct.new(
 
     if Throttle.new(user: user, throttle_type: :reset_password_email).throttled_else_increment?
       analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
-      irs_params[:success] = true
+      irs_params[:success] = false
       irs_params[:failure_reason] = 'throttle rate limit triggered'
     else
       token = user.set_reset_password_token
