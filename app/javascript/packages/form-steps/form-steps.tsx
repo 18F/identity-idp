@@ -177,6 +177,10 @@ interface FormStepsProps {
   titleFormat?: string;
 }
 
+interface PreviousStepErrorsLookup {
+  [stepName: string]: FormStepError<Record<string, Error>>[] | undefined;
+}
+
 /**
  * React hook which sets page title for the current step.
  *
@@ -246,6 +250,7 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
+
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       const activeErrorFieldElement = getFieldActiveErrorFieldElement(activeErrors, fields.current);
@@ -270,6 +275,17 @@ function FormSteps({
 
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex] as FormStep | undefined;
+
+  // Preserve/restore non-blocking errors for each step regardless of field association
+  const [previousStepErrors, setPreviousStepErrors] = useState<PreviousStepErrorsLookup>({});
+  useEffect(() => {
+    if (step?.name) {
+      const prevErrs = previousStepErrors[step?.name];
+      if (prevErrs && prevErrs.length > 0) {
+        setActiveErrors(prevErrs);
+      }
+    }
+  }, [step?.name, previousStepErrors]);
 
   /**
    * After a change in content, maintain focus by resetting to the beginning of the new content.
@@ -361,6 +377,10 @@ function FormSteps({
     }
 
     const nextActiveErrors = getValidationErrors();
+    setPreviousStepErrors((prev) => ({
+      ...prev,
+      [stepName || steps[0].name]: activeErrors,
+    }));
     setActiveErrors(nextActiveErrors);
     if (nextActiveErrors.length) {
       didSubmitWithErrors.current = true;
