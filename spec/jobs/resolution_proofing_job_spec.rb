@@ -156,7 +156,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           threatmetrix_success: true,
           threatmetrix_request_id: threatmetrix_request_id,
         )
-        proofing_component = ProofingComponent.first
+        proofing_component = user.proofing_component
         expect(proofing_component.threatmetrix).to equal(true)
         expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
@@ -286,7 +286,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           perform
 
-          proofing_component = ProofingComponent.first
+          proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
           expect(proofing_component.threatmetrix_review_status).to eq('pass')
         end
