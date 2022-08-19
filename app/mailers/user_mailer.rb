@@ -49,6 +49,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @locale = locale_url_param
       @token = token
+      @pending_profile_requires_verification = user.decorate.pending_profile_requires_verification?
       mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
     end
   end

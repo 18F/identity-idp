@@ -224,6 +224,9 @@ en:
         and paste the entire link into your browser.
       link_text: Reset your password
       subject: Reset your password
+      gpo_letter_header: Your letter is on the way
+      gpo_letter_description: If you reset your password now, the confirmation code in your
+        letter will no longer work and you'll have to verify your identity again.
     signup_with_your_email:
       help_html: If you did not request a new account or suspect an error, please
         visit the %{app_name} %{help_link} or %{contact_link}.
