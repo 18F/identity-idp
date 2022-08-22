@@ -36,7 +36,7 @@ describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
-      session[:granted_token] = AccountResetRequest.first].granted_token
+      session[:granted_token] = AccountResetRequest.first.granted_token
       stub_attempts_tracker
 
       expect(@irs_attempts_api_tracker).to receive(:account_reset_account_deleted).with(
