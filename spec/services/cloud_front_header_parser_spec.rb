@@ -14,7 +14,7 @@ RSpec.describe CloudFrontHeaderParser do
     let(:ip) { '192.0.2.1' }
 
     before do
-      req.add_header('CloudFront-Viewer-Address', "#{ip}:#{port}")
+      req.add_header('HTTP_CLOUDFRONT_VIEWER_ADDRESS', "#{ip}:#{port}")
     end
 
     describe '#client_port' do
@@ -28,7 +28,7 @@ RSpec.describe CloudFrontHeaderParser do
     let(:ip) { '[2001:DB8::1]' }
 
     before do
-      req.add_header('CloudFront-Viewer-Address', "#{ip}:#{port}")
+      req.add_header('HTTP_CLOUDFRONT_VIEWER_ADDRESS', "#{ip}:#{port}")
     end
 
     describe '#client_port' do
