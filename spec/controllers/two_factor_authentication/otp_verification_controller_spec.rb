@@ -246,6 +246,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
         }
       end
 
+      it 'tracks the attempt event with reauthentication parameter true' do
+        stub_attempts_tracker
+
+        subject.user_session[:context] = 'reauthentication'
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_submitted).
+          with(reauthentication: true, success: true)
+
+        post :create, params: {
+          code: subject.current_user.reload.direct_otp,
+          otp_delivery_preference: 'sms',
+        }
+      end
+
       context 'with remember_device in the params' do
         it 'saves an encrypted cookie' do
           remember_device_cookie = instance_double(RememberDeviceCookie)

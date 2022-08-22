@@ -85,14 +85,14 @@ module TwoFactorAuthentication
 
       analytics.track_mfa_submit_event(properties)
 
-      if UserSessionContext.authentication_context?(context)
-        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
-          reauthentication: false,
-          success: properties[:success],
-        )
-      elsif UserSessionContext.reauthentication_context?(context)
+      if UserSessionContext.reauthentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
           reauthentication: true,
+          success: properties[:success],
+        )
+      elsif UserSessionContext.authentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_phone_otp_submitted(
+          reauthentication: false,
           success: properties[:success],
         )
       elsif UserSessionContext.confirmation_context?(context)

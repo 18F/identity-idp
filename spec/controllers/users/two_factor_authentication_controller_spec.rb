@@ -333,6 +333,17 @@ describe Users::TwoFactorAuthenticationController do
           { otp_delivery_preference: 'sms' } }
       end
 
+      it 'tracks the attempt event when user session context is reauthentication' do
+        stub_attempts_tracker
+        subject.user_session[:context] = 'reauthentication'
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
+          with(phone_number: '+12025551212', reauthentication: true, success: true)
+
+        get :send_code, params: { otp_delivery_selection_form:
+          { otp_delivery_preference: 'sms' } }
+      end
+
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
         otp_rate_limiter = instance_double(OtpRateLimiter)
         allow(OtpRateLimiter).to receive(:new).
