@@ -9,12 +9,23 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success True if the email and password matched
+    # @param [Boolean] success True if Account Reset Deletion submitted successful
     # account Reset Deletion Requested
     def account_reset_request_submitted(success:)
       track_event(
         :account_reset_request_submitted,
         success: success,
+      )
+    end
+
+    # param [Boolean] success True if Account Successfully Deleted
+    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # A User confirms and deletes their Login.gov account after 24 hour period
+    def account_reset_account_deleted(success:, failure_reason:)
+      track_event(
+        :account_reset_account_deleted,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
