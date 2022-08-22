@@ -275,5 +275,19 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
+
+    # Tracks when user submits registration password
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def user_registration_password_submitted(
+      success:,
+      failure_reason: nil
+    )
+      track_event(
+        :user_registration_password_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
   end
 end
