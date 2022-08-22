@@ -88,17 +88,102 @@ RSpec.describe Idv::InheritedProofing::Va::Form do
   end
 
   describe '#validate' do
-    context 'with a valid payload' do
-      it 'returns true'
+    context 'with valid payload data' do
+      it 'returns true' do
+        expect(subject.validate).to eq true
+      end
     end
 
-    context 'with an invalid payload' do
+    context 'with invalid payload data' do
       context 'when the payload has missing fields' do
-        it 'returns false'
+        let(:payload_hash) do
+          {
+            xfirst_name: 'Henry',
+            xlast_name: 'Ford',
+            xphone: '12222222222',
+            xbirth_date: '2000-01-01',
+            xssn: '111223333',
+            xaddress: {
+              xstreet: '1234 Model Street',
+              xstreet2: 'Suite A',
+              xcity: 'Detroit',
+              xstate: 'MI',
+              xcountry: 'United States',
+              xzip: '12345',
+            },
+          }
+        end
+
+        let(:expected_error_messages) do
+          [
+            # Required field presence
+            'First name field is missing',
+            'Last name field is missing',
+            'Phone field is missing',
+            'Birth date field is missing',
+            'Ssn field is missing',
+            'Address street field is missing',
+            'Address street2 field is missing',
+            'Address city field is missing',
+            'Address state field is missing',
+            'Address country field is missing',
+            'Address zip field is missing',
+          ]
+        end
+
+        it 'returns false' do
+          expect(subject.validate).to eq false
+        end
+
+        it 'adds the correct error messages for missing fields' do
+          subject.validate
+          expect(
+            expected_error_messages.all? do |error_message|
+              subject.errors.full_messages.include? error_message
+            end,
+          ).to eq true
+        end
       end
 
-      context 'when the payload has invalid field data' do
-        it 'returns false'
+      context 'when the payload has missing required field data' do
+        let(:payload_hash) do
+          {
+            first_name: nil,
+            last_name: '',
+            phone: nil,
+            birth_date: '',
+            ssn: nil,
+            address: {
+              street: '',
+              street2: nil,
+              city: '',
+              state: nil,
+              country: '',
+              zip: nil,
+            },
+          }
+        end
+
+        let(:expected_error_messages) do
+          [
+            # Required field data presence
+            'First name Please fill in this field.',
+            'Last name Please fill in this field.',
+            'Birth date Please fill in this field.',
+            'Ssn Please fill in this field.',
+            'Address street Please fill in this field.',
+            'Address zip Please fill in this field.',
+          ]
+        end
+
+        it 'returns false' do
+          expect(subject.validate).to eq false
+        end
+
+        it 'adds the correct error messages for required fields that are missing data' do
+          subject.validate
+          expect(subject.errors.full_messages).to match_array expected_error_messages
+        end
       end
     end
   end

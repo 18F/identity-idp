@@ -34,12 +34,7 @@
       ) %>
 
   <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
-  <%= f.button(
-        :button,
-        t('forms.buttons.submit.default'),
-        type: :submit,
-        class: 'display-block usa-button usa-button--big usa-button--wide margin-y-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>

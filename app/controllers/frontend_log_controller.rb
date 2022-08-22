@@ -9,7 +9,7 @@ class FrontendLogController < ApplicationController
     'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_review_info_visited,
     'IdV: password confirm submitted' => proc do |analytics|
-      analytics.idv_review_complete
+      analytics.idv_review_complete(success: true)
       analytics.idv_final(success: true)
     end,
     'IdV: personal key visited' => :idv_personal_key_visited,
@@ -17,6 +17,7 @@ class FrontendLogController < ApplicationController
     'IdV: personal key confirm visited' => :idv_personal_key_confirm_visited,
     'IdV: personal key confirm submitted' => :idv_personal_key_confirm_submitted,
     'IdV: download personal key' => :idv_personal_key_downloaded,
+    'IdV: Native camera forced after failed attempts' => :idv_native_camera_forced,
     'Multi-Factor Authentication: download backup code' => :multi_factor_auth_backup_code_download,
   }.transform_values do |method|
     method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)

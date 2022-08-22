@@ -51,28 +51,6 @@ describe Idv::GpoController do
       expect(response).to be_ok
     end
 
-    it 'renders wait page while job is in progress' do
-      allow(controller).to receive(:async_state).and_return(
-        ProofingSessionAsyncResult.new(
-          status: ProofingSessionAsyncResult::IN_PROGRESS,
-        ),
-      )
-      get :index
-
-      expect(response).to render_template :wait
-    end
-
-    it 'logs an event when there is a timeout' do
-      allow(controller).to receive(:async_state).and_return(
-        ProofingSessionAsyncResult.new(
-          status: ProofingSessionAsyncResult::MISSING,
-        ),
-      )
-
-      get :index
-      expect(@analytics).to have_logged_event('Proofing Address Result Missing', {})
-    end
-
     context 'with letter already sent' do
       before do
         allow_any_instance_of(Idv::GpoPresenter).to receive(:letter_already_sent?).and_return(true)

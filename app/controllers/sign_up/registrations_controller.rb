@@ -23,6 +23,11 @@ module SignUp
       result = @register_user_email_form.submit(permitted_params)
 
       analytics.user_registration_email(**result.to_h)
+      irs_attempts_api_tracker.user_registration_email_submitted(
+        email: permitted_params[:email],
+        success: result.success?,
+        failure_reason: result.to_h[:error_details],
+      )
 
       if result.success?
         process_successful_creation

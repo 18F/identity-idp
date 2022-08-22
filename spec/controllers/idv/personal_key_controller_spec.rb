@@ -18,7 +18,7 @@ describe Idv::PersonalKeyController do
       user: user,
       user_password: password,
     )
-    profile = profile_maker.save_profile
+    profile = profile_maker.save_profile(active: false)
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
@@ -27,17 +27,7 @@ describe Idv::PersonalKeyController do
 
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
-  let(:applicant) do
-    {
-      first_name: 'Some',
-      last_name: 'One',
-      address1: '123 Any St',
-      address2: 'Ste 456',
-      city: 'Anywhere',
-      state: 'KS',
-      zipcode: '66666',
-    }
-  end
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do
@@ -150,7 +140,7 @@ describe Idv::PersonalKeyController do
         subject.idv_session.address_verification_mechanism = 'phone'
         subject.idv_session.vendor_phone_confirmation = true
         subject.idv_session.user_phone_confirmation = true
-        subject.idv_session.complete_session
+        subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
       it 'redirects to sign up completed for an sp' do
@@ -177,7 +167,7 @@ describe Idv::PersonalKeyController do
     context 'user selected gpo verification' do
       before do
         subject.idv_session.address_verification_mechanism = 'gpo'
-        subject.idv_session.complete_session
+        subject.idv_session.create_profile_from_applicant_with_password(password)
       end
 
       it 'redirects to come back later path' do
@@ -201,6 +191,8 @@ describe Idv::PersonalKeyController do
     end
 
     context 'with in person profile' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user, profile: profile) }
+
       before do
         ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

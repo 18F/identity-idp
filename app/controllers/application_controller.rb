@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
+  rescue_from ActionController::Redirecting::UnsafeRedirectError, with: :unsafe_redirect_error
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
   rescue_from ActionView::MissingTemplate, with: :render_not_acceptable
@@ -82,6 +83,11 @@ class ApplicationController < ActionController::Base
   def irs_attempts_api_tracker
     @irs_attempts_api_tracker ||= IrsAttemptsApi::Tracker.new(
       session_id: irs_attempts_api_session_id,
+      request: request,
+      user: effective_user,
+      sp: current_sp,
+      device_fingerprint: cookies[:device],
+      sp_request_uri: decorated_session.request_url_params[:redirect_uri],
       enabled_for_session: irs_attempt_api_enabled_for_session?,
     )
   end
@@ -267,7 +273,24 @@ class ApplicationController < ActionController::Base
       user_signed_in: user_signed_in?,
     )
     flash[:error] = t('errors.general')
-    redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    begin
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
+    rescue ActionController::Redirecting::UnsafeRedirectError => err
+      # Exceptions raised inside exception handlers are not propagated up, so we manually rescue
+      unsafe_redirect_error(err)
+    end
+  end
+
+  def unsafe_redirect_error(_exception)
+    controller_info = "#{controller_path}##{action_name}"
+    analytics.unsafe_redirect_error(
+      controller: controller_info,
+      user_signed_in: user_signed_in?,
+      referer: request.referer,
+    )
+
+    flash[:error] = t('errors.general')
+    redirect_to new_user_session_url
   end
 
   def user_fully_authenticated?
@@ -294,15 +317,23 @@ class ApplicationController < ActionController::Base
 
   def confirm_two_factor_authenticated(id = nil)
     return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
+
     authenticate_user!(force: true)
-    return prompt_to_setup_mfa unless two_factor_enabled?
-    return prompt_to_verify_mfa unless user_fully_authenticated?
-    return prompt_to_setup_mfa if service_provider_mfa_policy.
-                                  user_needs_sp_auth_method_setup?
-    return prompt_to_setup_non_restricted_mfa if two_factor_kantara_enabled?
-    return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
-                                               user_needs_sp_auth_method_verification?
+
+    if !two_factor_enabled?
+      return prompt_to_setup_mfa
+    elsif !user_fully_authenticated?
+      return prompt_to_verify_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_setup?
+      return prompt_to_setup_mfa
+    elsif two_factor_kantara_enabled?
+      return prompt_to_setup_non_restricted_mfa
+    elsif service_provider_mfa_policy.user_needs_sp_auth_method_verification?
+      return prompt_to_verify_sp_required_mfa
+    end
+
     enforce_total_session_duration_timeout
+
     true
   end
 

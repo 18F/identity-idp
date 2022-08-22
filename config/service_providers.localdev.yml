@@ -419,6 +419,7 @@ development:
     redirect_uris:
       - 'http://localhost:3001/auth/logindotgov/callback'
       - 'http://localhost:3001'
+    push_notification_url: http://localhost:3001/api/security_events
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uris:

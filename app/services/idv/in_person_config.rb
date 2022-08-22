@@ -1,7 +1,17 @@
 module Idv
   class InPersonConfig
     def self.enabled_for_issuer?(issuer)
-      enabled? && (issuer.nil? || enabled_issuers.include?(issuer))
+      return false if !enabled?
+
+      if issuer.nil?
+        enabled_without_issuer?
+      else
+        enabled_issuers.include?(issuer)
+      end
+    end
+
+    def self.enabled_without_issuer?
+      !IdentityConfig.store.idv_sp_required
     end
 
     def self.enabled?

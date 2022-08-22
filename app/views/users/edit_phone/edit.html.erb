@@ -1,7 +1,7 @@
 <% title t('titles.edit_info.phone') %>
 <%= render PageHeadingComponent.new.with_content(t('headings.edit_info.phone')) %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @edit_phone_form,
       html: { autocomplete: 'off', method: :put },
       url: manage_phone_path(id: @phone_configuration.id),
@@ -15,7 +15,7 @@
   <%= render 'delivery_preference_selection' %>
   <%= render 'make_default_number' %>
 
-  <%= f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.submit.confirm_change') %>
 <% end %>
 
 <%= render 'remove_phone' %>

@@ -3,6 +3,7 @@ require 'rails_helper'
 describe TwoFactorAuthentication::TotpVerificationController do
   before do
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#create' do
@@ -46,6 +47,8 @@ describe TwoFactorAuthentication::TotpVerificationController do
           with(attributes)
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_totp, success: true)
 
         post :create, params: { code: generate_totp_code(@secret) }
       end
@@ -91,7 +94,13 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
         expect(@analytics).to receive(:track_event).
-                          with('Multi-Factor Authentication: max attempts reached')
+          with('Multi-Factor Authentication: max attempts reached')
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_totp, success: false)
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
+          with(type: 'totp')
+
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

@@ -134,6 +134,48 @@ describe ApplicationController do
 
       expect(response).to redirect_to(new_user_session_url)
     end
+
+    it 'redirects back to home page if present and referer is invalid' do
+      referer = '@@ABC'
+
+      request.env['HTTP_REFERER'] = referer
+
+      get :index
+
+      expect(response).to redirect_to(new_user_session_url)
+    end
+  end
+
+  describe 'handling UnsafeRedirectError exceptions' do
+    controller do
+      def index
+        raise ActionController::Redirecting::UnsafeRedirectError
+      end
+    end
+
+    it 'tracks the Unsafe Redirect event and does not sign the user out' do
+      referer = '@@ABC'
+      request.env['HTTP_REFERER'] = referer
+      sign_in_as_user
+      expect(subject.current_user).to be_present
+
+      stub_analytics
+      event_properties = { controller: 'anonymous#index', user_signed_in: true, referer: referer }
+      expect(@analytics).to receive(:track_event).
+        with('Unsafe Redirect', event_properties)
+
+      get :index
+
+      expect(flash[:error]).to eq t('errors.general')
+      expect(response).to redirect_to(root_url)
+      expect(subject.current_user).to be_present
+    end
+
+    it 'redirects back to home page' do
+      get :index
+
+      expect(response).to redirect_to(new_user_session_url)
+    end
   end
 
   describe '#append_info_to_payload' do

@@ -12,16 +12,15 @@
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
-  <%= @presenter.byline %>
+  <%= t('idv.messages.gpo.address_on_file') %>
   <%= t('idv.messages.gpo.timeframe') %>
 </p>
 
 <div class="margin-top-6 margin-bottom-5">
-  <% if @presenter.gpo_mail_bounced? %>
-    <%= render 'idv/gpo/new_address', presenter: @presenter %>
-  <% else %>
-    <%= render 'idv/gpo/address_on_file', presenter: @presenter %>
-  <% end %>
+  <%= button_to @presenter.button,
+                idv_gpo_path,
+                method: 'put',
+                class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
 <%= render(
@@ -41,4 +40,4 @@
       ],
     ) %>
 
-<%= render 'idv/doc_auth/back', fallback_path: @presenter.fallback_back_path %>
+<%= render 'idv/shared/back', fallback_path: @presenter.fallback_back_path %>

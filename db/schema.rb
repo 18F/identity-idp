@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_28_223843) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_08_140030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -293,6 +293,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_28_223843) do
     t.jsonb "selected_location_details", comment: "The location details of the Post Office the user selected (including title, address, hours of operation)"
     t.string "unique_id", comment: "Unique ID to use with the USPS service"
     t.datetime "enrollment_established_at", comment: "When the enrollment was successfully established"
+    t.string "issuer", comment: "Issuer associated with the enrollment at time of creation"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["unique_id"], name: "index_in_person_enrollments_on_unique_id", unique: true
     t.index ["user_id", "status"], name: "index_in_person_enrollments_on_user_id_and_status", unique: true, where: "(status = 1)"
@@ -453,6 +454,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_28_223843) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "liveness_check"
+    t.string "device_fingerprinting_vendor"
+    t.boolean "threatmetrix"
+    t.string "threatmetrix_review_status"
+    t.string "threatmetrix_risk_rating"
+    t.string "threatmetrix_policy_score"
     t.index ["user_id"], name: "index_proofing_components_on_user_id", unique: true
     t.index ["verified_at"], name: "index_proofing_components_on_verified_at"
   end
@@ -639,6 +645,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_28_223843) do
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
   add_foreign_key "in_person_enrollments", "profiles"
+  add_foreign_key "in_person_enrollments", "service_providers", column: "issuer", primary_key: "issuer"
   add_foreign_key "in_person_enrollments", "users"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"

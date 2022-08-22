@@ -18,7 +18,7 @@ module Proofing
       stage :resolution
 
       UNVERIFIABLE_ZIP_CODE = '00000'
-      NO_CONTACT_SSN = '000-00-0000'
+      NO_CONTACT_SSN = /000-?00-?0000/
       TRANSACTION_ID = 'resolution-mock-transaction-id-123'
       REFERENCE = 'aaa-bbb-ccc'
 
@@ -27,7 +27,7 @@ module Proofing
         ssn = applicant[:ssn]
 
         raise 'Failed to contact proofing vendor' if /Fail/i.match?(first_name)
-        raise 'Failed to contact proofing vendor' if ssn == NO_CONTACT_SSN
+        raise 'Failed to contact proofing vendor' if ssn.match?(NO_CONTACT_SSN)
 
         if first_name.match?(/Bad/i)
           result.add_error(:first_name, 'Unverified first name.')

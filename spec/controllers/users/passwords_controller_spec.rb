@@ -47,6 +47,16 @@ describe Users::PasswordsController do
         patch :update, params: { update_user_password_form: params }
       end
 
+      it 'sends a security event' do
+        user = create(:user)
+        stub_sign_in(user)
+        security_event = PushNotification::PasswordResetEvent.new(user: user)
+        expect(PushNotification::HttpPush).to receive(:deliver).with(security_event)
+
+        params = { password: 'salty new password' }
+        patch :update, params: { update_user_password_form: params }
+      end
+
       it 'sends the user an email' do
         user = create(:user)
         mail = double

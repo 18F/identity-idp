@@ -467,6 +467,16 @@ module AnalyticsEvents
     )
   end
 
+  # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
+  # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
+  # camera, on mobile devices.
+  def idv_native_camera_forced(**extra)
+    track_event(
+      'IdV: Native camera forced after failed attempts',
+      **extra,
+    )
+  end
+
   # @param [String] step the step that the user was on when they clicked cancel
   # The user confirmed their choice to cancel going through IDV
   def idv_cancellation_confirmed(step:, **extra)
@@ -635,23 +645,24 @@ module AnalyticsEvents
     track_event('IdV: forgot password confirmed')
   end
 
-  # GPO address letter requested
-  def idv_gpo_address_letter_requested
-    track_event('IdV: USPS address letter requested')
+  # @param [DateTime] enqueued_at
+  # @param [Boolean] resend
+  # GPO letter was enqueued and the time at which it was enqueued
+  def idv_gpo_address_letter_enqueued(enqueued_at:, resend:, **extra)
+    track_event(
+      'IdV: USPS address letter enqueued',
+      enqueued_at: enqueued_at,
+      resend: resend,
+      **extra,
+    )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # GPO address submitted
-  def idv_gpo_address_submitted(
-    success:,
-    errors:,
-    **extra
-  )
+  # @param [Boolean] resend
+  # GPO letter was requested
+  def idv_gpo_address_letter_requested(resend:, **extra)
     track_event(
-      'IdV: USPS address submitted',
-      success: success,
-      errors: errors,
+      'IdV: USPS address letter requested',
+      resend: resend,
       **extra,
     )
   end
@@ -956,8 +967,13 @@ module AnalyticsEvents
   end
 
   # User submitted IDV password confirm page
-  def idv_review_complete
-    track_event('IdV: review complete')
+  # @param [Boolean] success
+  def idv_review_complete(success:, **extra)
+    track_event(
+      'IdV: review complete',
+      success: success,
+      **extra,
+    )
   end
 
   # User visited IDV password confirm page
@@ -997,22 +1013,37 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Integer] acknowledged_event_count number of acknowledged events in the API call
+  # @param [String] controller
+  # @param [String] referer
+  # @param [Boolean] user_signed_in
+  # Redirect was almost sent to an invalid external host unexpectedly
+  def unsafe_redirect_error(
+    controller:,
+    referer:,
+    user_signed_in: nil,
+    **extra
+  )
+    track_event(
+      'Unsafe Redirect',
+      controller: controller,
+      referer: referer,
+      user_signed_in: user_signed_in,
+      **extra,
+    )
+  end
+
   # @param [Integer] rendered_event_count how many events were rendered in the API response
-  # @param [String] set_errors JSON encoded representation of SET errors from the client
-  # An IRS Attempt API client has acknowledged receipt of security event tokens and polled for a
-  # new set of events
+  # @param [Boolean] success
+  # An IRS Attempt API client has requested events
   def irs_attempts_api_events(
-    acknowledged_event_count:,
     rendered_event_count:,
-    set_errors:,
+    success:,
     **extra
   )
     track_event(
       'IRS Attempt API: Events submitted',
-      acknowledged_event_count: acknowledged_event_count,
       rendered_event_count: rendered_event_count,
-      set_errors: set_errors,
+      success: success,
       **extra,
     )
   end
@@ -2375,6 +2406,31 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks if USPS in-person proofing enrollment request fails
+  # @param [String] context
+  # @param [String] reason
+  # @param [Integer] enrollment_id
+  # @param [String] exception_class
+  # @param [String] exception_message
+  def idv_in_person_usps_request_enroll_exception(
+    context:,
+    reason:,
+    enrollment_id:,
+    exception_class:,
+    exception_message:,
+    **extra
+  )
+    track_event(
+      'USPS IPPaaS enrollment failed',
+      context: context,
+      enrollment_id: enrollment_id,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      reason: reason,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that succeed during GetUspsProofingResultsJob
   # @param [String] reason why did this enrollment pass?
   # @param [String] enrollment_id
@@ -2385,6 +2441,16 @@ module AnalyticsEvents
       enrollment_id: enrollment_id,
       **extra,
     )
+  end
+
+  # Tracks users visiting the recovery options page
+  def account_reset_recovery_options_visit
+    track_event('Account Reset: Recovery Options Visited')
+  end
+
+  # Tracks users going back or cancelling acoount recovery
+  def cancel_account_reset_recovery
+    track_event('Account Reset: Cancel Account Recovery Options')
   end
 end
 # rubocop:enable Metrics/ModuleLength

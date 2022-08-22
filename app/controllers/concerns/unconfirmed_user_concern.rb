@@ -25,18 +25,29 @@ module UnconfirmedUserConcern
       errors: { email: [t('errors.messages.already_confirmed')] },
       user_id: @user.uuid,
     )
+    irs_attempts_api_tracker.user_registration_email_confirmation(
+      email: @email_address.email,
+      success: false,
+      failure_reason: { email: [:already_confirmed] },
+    )
   end
 
   def stop_if_invalid_token
     result = email_confirmation_token_validator.submit
     analytics.user_registration_email_confirmation(**result.to_h)
+    irs_attempts_api_tracker.user_registration_email_confirmation(
+      email: @email_address&.email,
+      success: result.success?,
+      failure_reason: result.to_h[:error_details],
+    )
     return if result.success?
     process_unsuccessful_confirmation
   end
 
   def email_confirmation_token_validator
-    @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.
-                                            new(@email_address, current_user)
+    @email_confirmation_token_validator ||= begin
+      EmailConfirmationTokenValidator.new(@email_address, current_user)
+    end
   end
 
   def process_valid_confirmation_token

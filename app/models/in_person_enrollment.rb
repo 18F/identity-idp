@@ -3,6 +3,11 @@ require 'securerandom'
 class InPersonEnrollment < ApplicationRecord
   belongs_to :user
   belongs_to :profile
+  belongs_to :service_provider,
+             foreign_key: 'issuer',
+             primary_key: 'issuer',
+             inverse_of: :in_person_enrollments,
+             optional: true
   enum status: {
     establishing: 0,
     pending: 1,
@@ -19,11 +24,11 @@ class InPersonEnrollment < ApplicationRecord
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
     where(status: :pending).
-    and(
-      where(status_check_attempted_at: check_interval).
-      or(where(status_check_attempted_at: nil)),
-    ).
-    order(status_check_attempted_at: :asc)
+      and(
+        where(status_check_attempted_at: check_interval).
+        or(where(status_check_attempted_at: nil)),
+      ).
+      order(status_check_attempted_at: :asc)
   end
 
   # Does this enrollment need a status check via the USPS API?

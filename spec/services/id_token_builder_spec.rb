@@ -95,7 +95,7 @@ RSpec.describe IdTokenBuilder do
 
     it 'sets the code hash correctly' do
       leftmost_128_bits = Digest::SHA256.digest(code).
-                          byteslice(0, IdTokenBuilder::NUM_BYTES_FIRST_128_BITS)
+        byteslice(0, IdTokenBuilder::NUM_BYTES_FIRST_128_BITS)
       expected_hash = Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
 
       expect(decoded_payload[:c_hash]).to eq(expected_hash)

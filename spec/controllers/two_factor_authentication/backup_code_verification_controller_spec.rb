@@ -31,10 +31,14 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         allow(form).to receive(:submit).and_return(response)
 
         stub_analytics
+        stub_attempts_tracker
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash)
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_backup_code, success: true)
 
         post :create, params: payload
       end
@@ -53,10 +57,14 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         allow(form).to receive(:submit).and_return(response)
 
         stub_analytics
+        stub_attempts_tracker
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'backup_code' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(analytics_hash)
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_backup_code, success: true)
 
         expect(@analytics).to receive(:track_event).
           with('User marked authenticated', authentication_type: :valid_2fa)
@@ -81,6 +89,9 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 'renders the show page' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_backup_code, success: false)
         post :create, params: payload
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_backup_code')
@@ -102,6 +113,9 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
       end
 
       it 're-renders the backup code entry screen' do
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_backup_code, success: false)
         post :create, params: payload
 
         expect(response).to render_template(:show)
@@ -117,12 +131,20 @@ describe TwoFactorAuthentication::BackupCodeVerificationController do
         }
 
         stub_analytics
+        stub_attempts_tracker
 
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(properties)
 
+        expect(@irs_attempts_api_tracker).to receive(:track_event).
+          with(:mfa_login_backup_code, success: false)
+
         expect(@analytics).to receive(:track_event).
-                          with('Multi-Factor Authentication: max attempts reached')
+          with('Multi-Factor Authentication: max attempts reached')
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
+          with(type: 'backup_code')
+
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 

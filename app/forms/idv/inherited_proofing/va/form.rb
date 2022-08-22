@@ -15,32 +15,45 @@ module Idv
 
           # Returns the field names based on the validators we've set up.
           def field_names
-            @field_names ||= validators.filter_map do |validator|
-              validator.attributes.first
-            end&.flatten&.uniq&.sort
+            @field_names ||= fields.keys
+          end
+
+          def fields
+            @fields ||= {
+              first_name: { required: true },
+              last_name: { required: true },
+              phone: { required: false },
+              birth_date: { required: true },
+              ssn: { required: true },
+              address_street: { required: true },
+              address_street2: { required: false },
+              address_city: { required: false },
+              address_state: { required: false },
+              address_country: { required: false },
+              address_zip: { required: true },
+            }
+          end
+
+          def required_fields
+            @required_fields ||= fields.filter_map do |field_name, options|
+              field_name if options[:required]
+            end
+          end
+
+          def optional_fields
+            @optional_fields ||= fields.filter_map do |field_name, options|
+              field_name unless options[:required]
+            end
           end
         end
 
-        private_class_method :namespaced_model_name
+        private_class_method :namespaced_model_name, :required_fields, :optional_fields
 
         attr_reader :payload_hash
 
         validate :validate_field_names
 
-        validates :first_name, presence: true, length: { maximum: 255 }
-        validates :last_name, presence: true, length: { maximum: 255 }
-        validates :phone, length: { maximum: 11 }
-        validates :birth_date, presence: true
-        validates :ssn, presence: true
-        validates :address_street, presence: true, length: { maximum: 255 }
-        validates :address_street2, length: { maximum: 255 }
-        validates :address_city, length: { maximum: 255 }
-        validates :address_state, length: { maximum: 2 }
-        validates :address_country, length: { maximum: 255 }
-        validates :address_zip, presence: true
-        validates_format_of :address_zip, with: /\A\d{5}(-?\d{4})?\z/,
-                                          message: I18n.t('idv.errors.pattern_mismatch.zipcode'),
-                                          allow_blank: false
+        required_fields.each { |required_field| validates(required_field, presence: true) }
 
         # This must be performed after our validators are defined.
         attr_accessor(*self.field_names)
@@ -72,6 +85,9 @@ module Idv
         # Populates our field data from the payload hash.
         def populate_field_data
           payload_field_info.each do |field_name, field_info|
+            # Ignore fields we're not interested in.
+            next unless respond_to? field_name
+
             value = payload_hash.dig(
               *[field_info[:namespace],
                 field_info[:field_name]].flatten.compact,
@@ -84,7 +100,7 @@ module Idv
         def validate_field_names
           self.class.field_names.each do |field_name|
             next if payload_field_info.key? field_name
-            errors.add(field_name, 'field is missing', type: missing_required_field)
+            errors.add(field_name, 'field is missing', type: :missing_required_field)
           end
         end
 

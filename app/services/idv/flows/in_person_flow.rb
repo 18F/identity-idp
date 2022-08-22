@@ -16,6 +16,9 @@ module Idv
       }.freeze
 
       ACTIONS = {
+        cancel_update_address: Idv::Actions::Ipp::CancelUpdateAddressAction,
+        cancel_update_ssn: Idv::Actions::Ipp::CancelUpdateSsnAction,
+        cancel_update_state_id: Idv::Actions::Ipp::CancelUpdateStateIdAction,
         redo_state_id: Idv::Actions::Ipp::RedoStateIdAction,
         redo_address: Idv::Actions::Ipp::RedoAddressAction,
         redo_ssn: Idv::Actions::RedoSsnAction,

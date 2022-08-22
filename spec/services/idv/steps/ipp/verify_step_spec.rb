@@ -52,6 +52,8 @@ describe Idv::Steps::Ipp::VerifyStep do
           kind_of(DocumentCaptureSession),
           should_proof_state_id: anything,
           trace_id: amzn_trace_id,
+          threatmetrix_session_id: nil,
+          user_id: anything,
         )
 
       step.call
@@ -99,7 +101,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           flow.flow_session = { pii_from_user: pii }
         end
 
-        Idv::Steps::VerifyStep.new(flow)
+        Idv::Steps::Ipp::VerifyStep.new(flow)
       end
 
       before do

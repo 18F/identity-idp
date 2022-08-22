@@ -24,7 +24,9 @@ module UspsInPersonProofing
       )
 
       parse_facilities(
-        faraday.post(url, body, headers).body,
+        faraday.post(url, body, headers) do |req|
+          req.options.context = { service_name: 'usps_facilities' }
+        end.body,
       )
     end
 
@@ -58,7 +60,10 @@ module UspsInPersonProofing
         IPPAssuranceLevel: '1.5',
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      res = faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enroll' }
+      end
+      Response::RequestEnrollResponse.new(res.body)
     end
 
     # Makes HTTP request to retrieve proofing status
@@ -77,7 +82,9 @@ module UspsInPersonProofing
         enrollmentCode: enrollment_code,
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_proofing_results' }
+      end.body
     end
 
     # Makes HTTP request to retrieve enrollment code
@@ -94,7 +101,9 @@ module UspsInPersonProofing
         uniqueID: unique_id,
       }
 
-      faraday.post(url, body, dynamic_headers).body
+      faraday.post(url, body, dynamic_headers) do |req|
+        req.options.context = { service_name: 'usps_enrollment_code' }
+      end.body
     end
 
     # Makes a request to retrieve a new OAuth token
@@ -119,6 +128,9 @@ module UspsInPersonProofing
         conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
         conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
+
+        # Log request metrics
+        conn.request :instrumentation, name: 'request_metric.faraday'
 
         # Raise an error subclassing Faraday::Error on 4xx, 5xx, and malformed responses
         # Note: The order of this matters for parsing the error response body.
@@ -162,7 +174,9 @@ module UspsInPersonProofing
         scope: 'ivs.ippaas.apis',
       }
 
-      faraday.post(url, body).body
+      faraday.post(url, body) do |req|
+        req.options.context = { service_name: 'usps_token' }
+      end.body
     end
 
     def root_url

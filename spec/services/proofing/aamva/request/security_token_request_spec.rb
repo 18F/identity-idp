@@ -31,9 +31,9 @@ describe Proofing::Aamva::Request::SecurityTokenRequest do
       expect(signature.text).to_not be_empty
 
       body_without_sig = security_token_request.body.
-                         gsub(public_key.text, '').
-                         gsub(signature.text, '').
-                         gsub(key_identifier.text, '')
+        gsub(public_key.text, '').
+        gsub(signature.text, '').
+        gsub(key_identifier.text, '')
 
       expect(body_without_sig).to eq(AamvaFixtures.security_token_request)
     end

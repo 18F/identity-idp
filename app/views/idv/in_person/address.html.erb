@@ -8,7 +8,13 @@
 
 <p>
   <%= t('in_person_proofing.body.address.info') %>
-  <%= new_window_link_to(t('in_person_proofing.body.address.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+  <%= new_window_link_to(
+        t('in_person_proofing.body.address.learn_more'),
+        MarketingSite.help_center_article_url(
+          category: 'verify-your-identity',
+          article: 'verify-your-identity-in-person',
+        ),
+      ) %>
 </p>
 
 <%= simple_form_for(
@@ -82,7 +88,7 @@
         wrapper: :uswds_radio_buttons,
       ) %>
 
-  <%= render ButtonComponent.new(big: true, wide: true, class: 'margin-top-1') do %>
+  <%= f.submit class: 'margin-top-1' do %>
     <% if updating_address %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>
@@ -91,6 +97,10 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/cancel', step: 'address' %>
+<% if updating_address %>
+  <%= render 'idv/shared/back', action: 'cancel_update_address' %>
+<% else %>
+  <%= render 'idv/doc_auth/cancel', step: 'address' %>
+<% end %>
 
 <%= javascript_packs_tag_once('formatted-fields') %>

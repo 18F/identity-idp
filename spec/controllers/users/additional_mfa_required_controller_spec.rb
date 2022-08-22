@@ -28,7 +28,7 @@ describe Users::AdditionalMfaRequiredController do
     let(:enforcement_date) { Time.zone.today + 6.days }
     before do
       allow(IdentityConfig.store).to receive(:kantara_restriction_enforcement_date).
-      and_return(enforcement_date)
+        and_return(enforcement_date)
     end
 
     context 'before enforcement date' do
@@ -55,7 +55,7 @@ describe Users::AdditionalMfaRequiredController do
 
         user.reload
         expect(user.non_restricted_mfa_required_prompt_skip_date).
-        to eq Time.zone.today
+          to eq Time.zone.today
       end
 
       it 'does not allow unauthenticated users' do

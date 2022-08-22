@@ -4,7 +4,7 @@
       heading: t('idv.failure.sessions.exception'),
       action: {
         text: t('idv.failure.button.warning'),
-        url: idv_doc_auth_path,
+        url: @try_again_path,
       },
       options: [
         {
@@ -29,5 +29,3 @@
             ) %>
       </p>
     <% end %>
-
-<%= render partial: 'idv/session_errors/in_person_proofing_options' %>

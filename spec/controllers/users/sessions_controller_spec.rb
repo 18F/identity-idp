@@ -118,6 +118,7 @@ describe Users::SessionsController, devise: true do
   describe 'GET /logout' do
     it 'tracks a logout event' do
       stub_analytics
+      stub_attempts_tracker
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
         hash_including(
@@ -128,9 +129,7 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
-        user_uuid: controller.current_user.uuid,
-        unique_session_id: controller.current_user.unique_session_id,
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
         success: true,
       )
 
@@ -142,6 +141,7 @@ describe Users::SessionsController, devise: true do
   describe 'DELETE /logout' do
     it 'tracks a logout event' do
       stub_analytics
+      stub_attempts_tracker
       expect(@analytics).to receive(:track_event).with(
         'Logout Initiated',
         hash_including(
@@ -152,9 +152,7 @@ describe Users::SessionsController, devise: true do
 
       sign_in_as_user
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:logout_initiated).with(
-        user_uuid: controller.current_user.uuid,
-        unique_session_id: controller.current_user.unique_session_id,
+      expect(@irs_attempts_api_tracker).to receive(:logout_initiated).with(
         success: true,
       )
 
@@ -205,6 +203,7 @@ describe Users::SessionsController, devise: true do
       subject.session['user_return_to'] = 'http://example.com'
 
       stub_analytics
+      stub_attempts_tracker
       analytics_hash = {
         success: true,
         user_id: user.uuid,
@@ -217,7 +216,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Email and Password Authentication', analytics_hash)
 
-      expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:email_and_password_auth).
+      expect(@irs_attempts_api_tracker).to receive(:email_and_password_auth).
         with(email: user.email, success: true)
 
       post :create, params: { user: { email: user.email, password: user.password } }
@@ -388,6 +387,26 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with('Invalid Authenticity Token', analytics_hash)
 
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:error]).to eq t('errors.general')
+    end
+
+    it 'redirects back to home page if CSRF error and referer is invalid' do
+      user = create(:user, :signed_up)
+      stub_analytics
+      analytics_hash = { controller: 'users/sessions#create', user_signed_in: nil }
+      allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with('Invalid Authenticity Token', analytics_hash)
+
+      expect(@analytics).to receive(:track_event).
+        with('Unsafe Redirect', { controller: 'users/sessions#create', referer: '@@@',
+                                  user_signed_in: false })
+
+      request.env['HTTP_REFERER'] = '@@@'
       post :create, params: { user: { email: user.email, password: user.password } }
 
       expect(response).to redirect_to new_user_session_url

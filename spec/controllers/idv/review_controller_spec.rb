@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ReviewController do
+  include UspsIppHelper
+
   let(:user) do
     create(
       :user,
@@ -9,21 +11,7 @@ describe Idv::ReviewController do
       email: 'old_email@example.com',
     )
   end
-  let(:zipcode) { '66044' }
-  let(:user_attrs) do
-    {
-      first_name: 'José',
-      last_name: 'One',
-      dob: 'March 29, 1972',
-      address1: '123 Main St',
-      address2: '',
-      city: 'Somewhere',
-      state: 'KS',
-      zipcode: zipcode,
-      phone: MfaContext.new(user).phone_configurations.first&.phone,
-      ssn: '12345678',
-    }
-  end
+  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:idv_session) do
     idv_session = Idv::Session.new(
       user_session: subject.user_session,
@@ -32,8 +20,13 @@ describe Idv::ReviewController do
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
-    idv_session.applicant = user_attrs
+    idv_session.applicant = applicant.with_indifferent_access
     idv_session
+  end
+
+  before do
+    stub_analytics
+    allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
   end
 
   describe 'before_actions' do
@@ -65,8 +58,6 @@ describe Idv::ReviewController do
       routes.draw do
         get 'show' => 'idv/review#show'
       end
-      idv_session.applicant = user_attrs
-      allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
     context 'user has missed address step' do
@@ -139,6 +130,10 @@ describe Idv::ReviewController do
   end
 
   describe '#confirm_current_password' do
+    let(:applicant) {
+      Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
+    }
+
     controller do
       before_action :confirm_current_password
 
@@ -153,7 +148,6 @@ describe Idv::ReviewController do
         post 'show' => 'idv/review#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
-      idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
@@ -192,7 +186,7 @@ describe Idv::ReviewController do
 
     context 'user has completed all steps' do
       before do
-        idv_session.applicant = user_attrs
+        idv_session
       end
 
       it 'shows completed session' do
@@ -290,33 +284,33 @@ describe Idv::ReviewController do
     end
 
     context 'user fails to supply correct password' do
+      let(:applicant) {
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
+      }
+
       before do
-        idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        idv_session
       end
 
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
         expect(response).to redirect_to idv_review_path
+
+        expect(@analytics).to have_logged_event('IdV: review complete', success: false)
       end
     end
 
     context 'user has completed all steps' do
       before do
-        idv_session.applicant = user_attrs
-        idv_session.applicant = idv_session.vendor_params
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
+        idv_session
       end
 
       it 'redirects to personal key path' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-        expect(@analytics).to have_received(:track_event).with('IdV: review complete')
-        expect(@analytics).to have_received(:track_event).with(
-          'IdV: final resolution',
-          success: true,
-        )
+        expect(@analytics).to have_logged_event('IdV: review complete', success: true)
+        expect(@analytics).to have_logged_event('IdV: final resolution', success: true)
         expect(response).to redirect_to idv_personal_key_path
       end
 
@@ -336,10 +330,9 @@ describe Idv::ReviewController do
         profile = idv_session.profile
         pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
 
-        expect(pii.zipcode).to eq zipcode
+        expect(pii.zipcode).to eq applicant[:zipcode]
 
-        expect(idv_session.applicant[:first_name]).to eq 'José'
-        expect(pii.first_name).to eq 'José'
+        expect(pii.first_name).to eq applicant[:first_name]
       end
 
       context 'user picked phone confirmation' do
@@ -384,19 +377,211 @@ describe Idv::ReviewController do
           end
         end
 
-        context 'with in person enrollment' do
+        context 'with in person profile' do
+          let!(:enrollment) {
+            create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          }
+          let(:stub_usps_response) do
+            stub_request_enroll
+          end
+          let(:applicant) {
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
+              same_address_as_id: true,
+            )
+          }
+
           before do
+            stub_request_token
+            stub_usps_response
             ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
             allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-            idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
-              same_address_as_id: true,
-            ).as_json
+          end
+
+          it 'redirects to personal key path' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(response).to redirect_to idv_personal_key_path
+          end
+
+          it 'creates a USPS enrollment' do
+            proofer = UspsInPersonProofing::Proofer.new
+            mock = double
+
+            expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+            expect(mock).to receive(:request_enroll) do |applicant|
+              expect(applicant.first_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+              expect(applicant.last_name).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:last_name])
+              expect(applicant.address).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1])
+              expect(applicant.city).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:city])
+              expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
+              expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
+              expect(applicant.email).to eq('no-reply@login.gov')
+              expect(applicant.unique_id).to be_a(String)
+
+              proofer.request_enroll(applicant)
+            end
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
 
           it 'does not dispatch account verified alert' do
             expect(UserAlerts::AlertUserAboutAccountVerified).not_to receive(:call)
 
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
+          it 'creates an in-person enrollment record' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            enrollment.reload
+
+            expect(enrollment.status).to eq('pending')
+            expect(enrollment.user_id).to eq(user.id)
+            expect(enrollment.enrollment_code).to be_a(String)
+            expect(enrollment.profile).to eq(user.profiles.last)
+            expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+          end
+
+          it 'sends ready to verify email' do
+            mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+            user.email_addresses.each do |email_address|
+              expect(UserMailer).to receive(:in_person_ready_to_verify).
+                with(
+                  user,
+                  email_address,
+                  enrollment: instance_of(InPersonEnrollment),
+                  first_name: kind_of(String),
+                ).
+                and_return(mailer)
+            end
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
+          context 'when there is a 4xx error' do
+            let(:stub_usps_response) do
+              stub_request_enroll_bad_request_response
+            end
+
+            it 'logs the response message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Sponsor for sponsorID 5 not found',
+                original_exception_class: 'Faraday::BadRequestError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+          end
+
+          context 'when there is 5xx error' do
+            let(:stub_usps_response) do
+              stub_request_enroll_internal_failure_response
+            end
+
+            it 'logs the error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'the server responded with status 500',
+                original_exception_class: 'Faraday::ServerError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+
+            it 'allows the user to retry the request' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              expect(flash[:error]).to eq t('idv.failure.exceptions.internal_error')
+              expect(response).to redirect_to idv_review_path
+
+              stub_request_enroll
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(response).to redirect_to idv_personal_key_path
+
+              enrollment.reload
+              expect(enrollment.status).to eq('pending')
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_a(String)
+              expect(enrollment.profile).to eq(user.profiles.last)
+              expect(enrollment.profile.deactivation_reason).to eq('in_person_verification_pending')
+            end
+          end
+
+          context 'when the USPS response is missing an enrollment code' do
+            let(:stub_usps_response) do
+              stub_request_enroll_invalid_response
+            end
+
+            it 'logs an error message' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(
+                'USPS IPPaaS enrollment failed',
+                context: 'authentication',
+                enrollment_id: enrollment.id,
+                exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
+                exception_message: 'Expected to receive an enrollment code',
+                original_exception_class: 'StandardError',
+                reason: 'Request exception',
+              )
+            end
+
+            it 'leaves the enrollment in establishing' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(InPersonEnrollment.count).to be(1)
+              enrollment = InPersonEnrollment.where(user_id: user.id).first
+              expect(enrollment.status).to eq('establishing')
+              expect(enrollment.user_id).to eq(user.id)
+              expect(enrollment.enrollment_code).to be_nil
+            end
+          end
+
+          context 'when user enters an address2 value' do
+            let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(address2: '3b') }
+
+            it 'provides address2 if the user entered it' do
+              proofer = UspsInPersonProofing::Proofer.new
+              mock = double
+
+              expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+              expect(mock).to receive(:request_enroll) do |applicant|
+                expect(applicant.address).
+                  to eq(Idp::Constants::MOCK_IDV_APPLICANT[:address1] + ' 3b')
+                proofer.request_enroll(applicant)
+              end
+
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
           end
         end
       end

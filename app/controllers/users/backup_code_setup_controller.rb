@@ -21,6 +21,8 @@ module Users
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
       analytics.backup_code_setup_visit(**result.to_h)
+      irs_attempts_api_tracker.mfa_enroll_backup_code(success: result.success?)
+
       save_backup_codes
       track_backup_codes_created
     end
@@ -47,6 +49,10 @@ module Users
       flash[:success] = t('notices.backup_codes_deleted')
       revoke_remember_device(current_user)
       redirect_to account_two_factor_authentication_path
+    end
+
+    def reminder
+      flash.now[:success] = t('notices.authenticated_successfully')
     end
 
     private

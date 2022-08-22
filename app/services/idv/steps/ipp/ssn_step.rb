@@ -6,11 +6,13 @@ module Idv
 
         def call
           flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
+
+          idv_session.delete('applicant')
         end
 
         def extra_view_variables
           {
-            updating_ssn: flow_session[:pii_from_user][:ssn].present?,
+            updating_ssn: updating_ssn,
           }
         end
 
@@ -18,6 +20,10 @@ module Idv
 
         def form_submit
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+        end
+
+        def updating_ssn
+          flow_session.dig(:pii_from_user, :ssn).present?
         end
       end
     end

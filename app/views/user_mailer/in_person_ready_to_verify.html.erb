@@ -27,6 +27,7 @@
         <p><%= t('in_person_proofing.process.barcode.info') %></p>
         <%= render BarcodeComponent.new(
               barcode_data: @presenter.enrollment_code,
+              barcode_image_url: @presenter.barcode_image_url,
               label: nil,
               label_formatter: Idv::InPerson::EnrollmentCodeFormatter.method(:format),
             ) %>
@@ -66,7 +67,7 @@
           t('in_person_proofing.body.barcode.learn_more'),
           MarketingSite.help_center_article_url(
             category: 'verify-your-identity',
-            article: 'how-to-verify-in-person',
+            article: 'verify-your-identity-in-person',
           ),
         ) %>
   </p>

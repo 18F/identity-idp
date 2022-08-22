@@ -32,6 +32,13 @@ fr:
         ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
         seront plus valides.
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
+    backup_code_reminder:
+      body_info: Si vous perdez l’accès à votre méthode d’authentification principale,
+        vous pouvez utiliser des codes de sauvegarde pour accéder à nouveau à
+        votre compte.
+      have_codes: J’ai mes codes
+      heading: Avez-vous toujours vos codes de sauvegarde?
+      need_new_codes: J’ai besoin d’un nouvel ensemble de codes de sauvegarde
     buttons:
       back: Retour
       cancel: Oui, annuler
@@ -115,11 +122,17 @@ fr:
     validation:
       required_checkbox: Veuillez cocher cette case pour continuer
     verify_profile:
-      instructions: Entrez le code à dix caractères qui se trouve dans la lettre que
-        nous vous avons envoyée.
+      instructions: Entrez le code à 10 caractères figurant sur la lettre que vous
+        avez reçue.
       name: Code de confirmation
       submit: Confirmer le compte
       title: Confirmez votre compte
+      welcome_back: Content de vous revoir
+      welcome_back_description: '<p>Si vous avez reçu votre lettre, veuillez entrer
+        votre code de confirmation ci-dessous. </p> <p>Si votre lettre n’est pas
+        encore arrivée, veuillez être patient car les <strong>lettres prennent
+        généralement entre trois à sept jours ouvrables pour arriver</strong>.
+        Nous vous remercions de votre patience.</p>'
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
         l’utiliser pour accéder à votre compte %{app_name}.

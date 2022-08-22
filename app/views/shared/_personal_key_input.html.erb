@@ -1,20 +1,22 @@
-<input aria-label="<%= t('forms.personal_key.confirmation_label') %>"
-       autocomplete="off"
-       class="width-full margin-bottom-6 border-dashed field font-family-mono personal-key text-uppercase"
-       maxlength="<%= PersonalKeyFormatter.code_length %>"
-       name="personal_key"
-       pattern="^<%= PersonalKeyFormatter.regexp_string %>$"
-       required=""
-       aria-invalid="false"
-       spellcheck="false"
-       type="text"
-       aria-describedby="<%= 'personal-key-validation-message' if validation_needed %>" />
-<% if validation_needed %>
-  <%= render 'shared/validation_message',
-             {
-               id: 'personal-key-validation-message',
-               class: 'margin-bottom-2',
-               message: t('simple_form.required.text'),
-             } %>
-<% end %>
+<%#
+locals:
+* form: SimpleForm form builder
+%>
+<%= render ValidatedFieldComponent.new(
+      form: form,
+      name: :personal_key,
+      error_messages: {
+        patternMismatch: t('users.personal_key.confirmation_error'),
+      },
+      label: false,
+      required: true,
+      input_html: {
+        aria: { label: t('forms.personal_key.confirmation_label') },
+        autocomplete: 'off',
+        spellcheck: 'false',
+        class: 'personal-key text-uppercase',
+        maxlength: PersonalKeyFormatter.code_length,
+        pattern: PersonalKeyFormatter.regexp_string,
+      },
+    ) %>
 <%= javascript_packs_tag_once('formatted-fields') %>

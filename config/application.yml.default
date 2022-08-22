@@ -18,7 +18,7 @@ aamva_auth_request_timeout: 5.0
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: true
 aamva_sp_banlist_issuers: '[]'
-aamva_supported_jurisdictions: '["AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WY"]'
+aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","HI","IA","ID","IL","IN","KS","KY","MA","MD","ME","MI","MO","MS","MT","NC","ND","NE","NJ","NM","OH","OR","PA","RI","SC","SD","TN","TX","VA","VT","WA","WI","WV","WY"]'
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 all_redirect_uris_cache_duration_minutes: 2
@@ -51,12 +51,14 @@ aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: false
 backup_code_cost: '2000$8$1$'
+backup_code_reminder_redirect: false
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 country_phone_number_overrides: '{}'
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_sharpness_threshold: 40
 doc_auth_error_glare_threshold: 40
+database_pool_extra_connections_for_worker: 4
 database_pool_idp: 5
 database_statement_timeout: 2_500
 database_timeout: 5_000
@@ -76,14 +78,13 @@ doc_auth_s3_request_timeout: 5
 doc_auth_error_dpi_threshold: 290
 doc_auth_error_glare_threshold: 40
 doc_auth_error_sharpness_threshold: 40
-doc_auth_max_attempts: 20
+doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_tips: 3
+doc_auth_max_attempts_before_native_camera: 2
 doc_capture_request_valid_for_minutes: 15
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: false
-enable_numeric_authentication_otp: true
-enable_numeric_authentication_otp_input: true
 enable_partner_api: false
 enable_rate_limiting: true
 enable_test_routes: true
@@ -108,9 +109,11 @@ idv_sp_required: false
 in_person_proofing_enabled: false
 in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
+in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
+irs_attempt_api_csp_id: 'LOGIN.gov'
 irs_attempt_api_enabled: false
 irs_attempt_api_event_ttl_seconds: 86400
 irs_attempt_api_event_count_default: 1000
@@ -141,14 +144,14 @@ lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
 lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
-# LexisNexis ThreatMetrix ##########################################
+# LexisNexis DDP/ThreatMetrix #####################################
+lexisnexis_threatmetrix_api_key: test_api_key
 lexisnexis_threatmetrix_base_url: https://www.example.com
-lexisnexis_threatmetrix_request_mode: testing
-lexisnexis_threatmetrix_account_id: test_account
-lexisnexis_threatmetrix_username: test_username
-lexisnexis_threatmetrix_password: test_password
-lexisnexis_threatmetrix_instant_verify_timeout: 1.0
-lexisnexis_threatmetrix_instant_verify_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_threatmetrix_org_id: test_account
+lexisnexis_threatmetrix_policy: test-policy
+lexisnexis_threatmetrix_timeout: 1.0
+lexisnexis_threatmetrix_enabled: false
+lexisnexis_threatmetrix_mock_enabled: true
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
@@ -252,6 +255,7 @@ session_total_duration_timeout_in_minutes: 720
 set_remember_device_session_expiration: false
 sp_handoff_bounce_max_seconds: 2
 show_user_attribute_deprecation_warnings: false
+show_account_recovery_recovery_options: false
 test_ssn_allowed_list: ''
 totp_code_interval: 30
 unauthorized_scope_enabled: false
@@ -277,6 +281,8 @@ usps_ipp_request_timeout: 10
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
 usps_mock_fallback: true
+get_usps_proofing_results_job_cron: '0/10 * * * *'
+get_usps_proofing_results_job_reprocess_delay_minutes: 5
 gpo_allowed_for_strict_ial2: true
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
@@ -314,12 +320,13 @@ development:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
-  idv_api_enabled_steps: '["password_confirm", "personal_key","personal_key_confirm"]'
   in_person_proofing_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  irs_attempt_api_enabled: true
+  irs_attempt_api_auth_tokens: 'abc123'
   liveness_checking_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
@@ -341,6 +348,7 @@ development:
   secret_key_base: development_secret_key_base
   select_multiple_mfa_options: true
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  show_account_recovery_recovery_options: true
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   state_tracking_enabled: true

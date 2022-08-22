@@ -47,6 +47,21 @@ describe 'AAL3 authentication required in an OIDC context' do
         expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
         expect(page).to have_xpath("//img[@alt='important alert icon']")
       end
+
+      it 'throws an error if user doesnt select AAL3 auth' do
+        user = user_with_2fa
+
+        visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(prompt: 'select_account')
+        sign_in_live_with_2fa(user)
+
+        expect(current_url).to eq(authentication_methods_setup_url)
+        expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
+        expect(page).to have_xpath("//img[@alt='important alert icon']")
+
+        click_continue
+
+        expect(page).to have_content(t('errors.two_factor_auth_setup.must_select_option'))
+      end
     end
 
     context 'user has aal3 auth configured' do

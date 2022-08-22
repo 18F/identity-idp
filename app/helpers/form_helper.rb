@@ -64,13 +64,4 @@ module FormHelper
       ['Wyoming', 'WY'],
     ]
   end
-
-  private
-
-  def validated_form_for(record, options = {}, &block)
-    options[:data] ||= {}
-    options[:data][:validate] = true
-    javascript_packs_tag_once('form-validation')
-    simple_form_for(record, options, &block)
-  end
 end

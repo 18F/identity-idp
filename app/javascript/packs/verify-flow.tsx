@@ -5,11 +5,10 @@ import {
   decodeUserBundle,
   AddressVerificationMethod,
   ErrorStatusPage,
-  FlowContext,
 } from '@18f/identity-verify-flow';
 import { trackError } from '@18f/identity-analytics';
 import SecretSessionStorage, { s2ab } from '@18f/identity-secret-session-storage';
-import type { SecretValues, VerifyFlowValues, FlowContextValue } from '@18f/identity-verify-flow';
+import type { SecretValues, VerifyFlowValues } from '@18f/identity-verify-flow';
 
 interface AppRootValues {
   /**
@@ -31,11 +30,6 @@ interface AppRootValues {
    * URL to path for session cancel.
    */
   cancelUrl: string;
-
-  /**
-   * URL to in-person proofing alternative flow, if enabled.
-   */
-  inPersonUrl: string | null;
 
   /**
    * Base64-encoded encryption key for secret session store.
@@ -61,7 +55,6 @@ export async function initialize() {
     enabledStepNames: enabledStepNamesJSON,
     basePath,
     cancelUrl: cancelURL,
-    inPersonUrl: inPersonURL,
     storeKey: storeKeyBase64,
   } = appRoot.dataset;
   const initialValues: Partial<VerifyFlowValues> = JSON.parse(initialValuesJSON);
@@ -88,12 +81,7 @@ export async function initialize() {
     }
   } catch (error) {
     trackError(error);
-    render(
-      <FlowContext.Provider value={{ inPersonURL } as FlowContextValue}>
-        <ErrorStatusPage />
-      </FlowContext.Provider>,
-      appRoot,
-    );
+    render(<ErrorStatusPage />, appRoot);
     return tearDown;
   }
 
@@ -112,7 +100,6 @@ export async function initialize() {
         initialValues={initialValues}
         enabledStepNames={enabledStepNames}
         cancelURL={cancelURL}
-        inPersonURL={inPersonURL}
         basePath={basePath}
         onComplete={onComplete}
         initialAddressVerificationMethod={initialAddressVerificationMethod}

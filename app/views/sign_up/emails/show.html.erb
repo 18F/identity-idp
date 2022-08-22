@@ -19,9 +19,9 @@
   <hr class="margin-y-4 border-width-05 border-info">
 </div>
 
-<%= validated_form_for @resend_email_confirmation_form,
-                       html: { class: 'margin-bottom-2' },
-                       url: sign_up_register_path do |f| %>
+<%= simple_form_for @resend_email_confirmation_form,
+                    html: { class: 'margin-bottom-2' },
+                    url: sign_up_register_path do |f| %>
   <%= f.input :email, as: :hidden %>
   <%= f.input :resend, as: :hidden %>
   <%= f.input :request_id, as: :hidden %>

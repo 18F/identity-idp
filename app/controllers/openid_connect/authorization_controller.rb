@@ -45,9 +45,12 @@ module OpenidConnect
 
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                                 service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
+
+      unless user_fully_authenticated? && service_provider_mfa_policy.
+          auth_method_confirms_to_sp_request?
+        return confirm_two_factor_authenticated(request_id)
+      end
+
       redirect_to user_two_factor_authentication_url if device_not_remembered?
     end
 
@@ -82,7 +85,7 @@ module OpenidConnect
 
     def track_authorize_analytics(result)
       analytics_attributes = result.to_h.except(:redirect_uri).
-                             merge(user_fully_authenticated: user_fully_authenticated?)
+        merge(user_fully_authenticated: user_fully_authenticated?)
 
       analytics.openid_connect_request_authorization(**analytics_attributes)
     end

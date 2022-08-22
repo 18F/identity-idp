@@ -1,0 +1,32 @@
+<%#
+Renders a "Back" link to return to a previous step, given by one of action or step local variables.
+If neither are passed, redirects to the previous screen using HTTP referer. An optional fallback
+path can be passed in case the HTTP header is not specified or is invalid. If none of the above
+yield a useable URL, nothing will be rendered.
+
+locals:
+* step_url: (Optional) Base target for flow step URL calls, falls back to @step_url.
+* action: (Optional) Flow action to call to return to the previous step.
+* step: (Optional) Name of step to which user should be returned.
+* fallback_path: (Optional) Path to redirect absent action, step, and HTTP referer.
+%>
+<% text = '‹ ' + t('forms.buttons.back')
+   step_url = local_assigns[:step_url] || @step_url
+   step = local_assigns[:action] || local_assigns[:step]
+   path = (step_url && step) ? send(step_url, step: step) : go_back_path
+   path ||= local_assigns[:fallback_path]
+   classes = []
+   classes << local_assigns[:class] if local_assigns[:class] %>
+<% if path %>
+  <div class="margin-top-5 padding-top-2 border-top border-primary-light">
+    <% if local_assigns[:action] %>
+      <%= button_to(
+            path,
+            method: :put,
+            class: [*classes, 'usa-button usa-button--unstyled'],
+          ) { text } %>
+    <% else %>
+      <%= link_to(text, path, class: classes) %>
+    <% end %>
+  </div>
+<% end %>

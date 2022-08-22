@@ -91,8 +91,7 @@ es:
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
-      link_html: '¿Se te olvidó tu contraseña? %{link}'
-      link_text: Siga estas instrucciones
+      link_text: '¿Se te olvidó tu contraseña?'
       modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
@@ -131,8 +130,6 @@ es:
       gpo:
         address_on_file: Le enviaremos una carta con un código de confirmación a la
           dirección que nos facilitó en el paso anterior.
-        new_address: Le enviaremos una carta con un código de confirmación a la
-          dirección que especifique.
         resend: Envíeme otra carta
         timeframe: Las correspondencias se envían al día siguiente por correo de primera
           clase de USPS y por lo general tardan entre 3 y 7 días laborables.

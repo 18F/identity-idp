@@ -21,7 +21,8 @@
     "app/javascript/packages",
     "app/javascript/packs",
     "spec/javascripts/spec_helper.d.ts",
-    "spec/javascripts/**/*.ts"
+    "spec/javascripts/**/*.ts",
+    "scripts"
   ],
   "exclude": [
     "**/fixtures",

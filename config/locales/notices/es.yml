@@ -2,6 +2,7 @@
 es:
   notices:
     account_reactivation: '¡Estupendo! Tiene su clave personal.'
+    authenticated_successfully: Autenticado con éxito.
     backup_codes_configured: Códigos de respaldo fueron agregados a tu cuenta.
     backup_codes_deleted: Tus códigos de respaldo fueron eliminados de tu cuenta.
     dap_participation: Participamos en el programa analítico del Gobierno de Estados

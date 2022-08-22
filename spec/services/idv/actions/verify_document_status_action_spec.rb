@@ -83,6 +83,14 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         )
       end
 
+      context 'with existing applicant' do
+        let(:session) { super().merge(idv: { 'applicant' => {} }) }
+
+        it 'clears applicant' do
+          expect(session[:idv]['applicant']).to be_blank
+        end
+      end
+
       context 'unbilled' do
         let(:billed) { false }
 

@@ -40,7 +40,7 @@ module Accounts
       end
 
       telephony_responses = MfaContext.new(current_user).
-                            phone_configurations.map do |phone_configuration|
+        phone_configurations.map do |phone_configuration|
         phone = phone_configuration.phone
         Telephony.send_personal_key_regeneration_notice(
           to: phone,

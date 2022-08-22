@@ -8,6 +8,27 @@ For consistency, we use [Faraday](https://github.com/lostisland/faraday)
 when making HTTP requests. We also wire in notifications so we can
 [log metrics on these requests](../config/initializers/faraday.rb)
 
+```ruby
+# request_metric is logged specifically as a metric to allow for quicker data aggregation and
+# historical querying
+conn = Faraday.new do |f|
+  f.request :instrumentation, name: 'request_metric.faraday'
+end
+
+# request_log is logged, but only to the log file, typically for requests where we are
+# less interested in aggregation and generally only need to view the attributes of a specific
+# request
+conn = Faraday.new do |f|
+  f.request :instrumentation, name: 'request_log.faraday'
+end
+
+# service_name is a required context attribute and is the unique identifier for the request.
+# Requests within the same service (e.g. a POST, GET, etc. to different resources) should have a
+# distinct service_name.
+resp = conn.post do |req|
+  req.options.context = { service_name: 'aamva_token' }
+end
+```
 
 ## Forms, FormResponse, Analytics, and Controllers
 

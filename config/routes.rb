@@ -79,6 +79,8 @@ Rails.application.routes.draw do
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
 
+      get '/account_reset/recovery_options' => 'account_reset/recovery_options#show'
+      post '/account_reset/recovery_options/cancel' => 'account_reset/recovery_options#cancel'
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
       get '/account_reset/cancel' => 'account_reset/cancel#show'
@@ -239,6 +241,7 @@ Rails.application.routes.draw do
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
+    get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
     patch '/backup_code_setup' => 'users/backup_code_setup#create', as: :backup_code_create
     patch '/backup_code_continue' => 'users/backup_code_setup#continue'

@@ -39,6 +39,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
   let(:trace_id) { SecureRandom.uuid }
+  let(:user) { create(:user, :signed_up) }
+  let(:threatmetrix_session_id) { SecureRandom.uuid }
+  let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -48,6 +51,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user.id,
+        threatmetrix_session_id: threatmetrix_session_id,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -65,17 +70,25 @@ RSpec.describe ResolutionProofingJob, type: :job do
         dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user.id,
+        threatmetrix_session_id: threatmetrix_session_id,
       )
     end
 
-    context 'webmock lexisnexis' do
+    context 'webmock lexisnexis and threatmetrix' do
       before do
         stub_request(
           :post,
           'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
         ).to_return(body: lexisnexis_response.to_json)
+        stub_request(
+          :post,
+          'https://www.example.com/api/session-query',
+        ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
 
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
 
         allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
         allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
@@ -104,7 +117,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
       let(:dob_year_only) { false }
 
-      it 'returns results' do
+      it 'returns results and adds threatmetrix proofing components' do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
@@ -140,7 +153,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
+          threatmetrix_success: true,
+          threatmetrix_request_id: threatmetrix_request_id,
         )
+        proofing_component = user.proofing_component
+        expect(proofing_component.threatmetrix).to equal(true)
+        expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
 
       context 'dob_year_only, failed response from lexisnexis' do
@@ -216,7 +234,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
+            threatmetrix_request_id: threatmetrix_request_id,
+            threatmetrix_success: true,
           )
+        end
+      end
+
+      context 'no threatmetrix_session_id' do
+        let(:threatmetrix_session_id) { nil }
+        it 'does not attempt to create a ddp proofer' do
+          perform
+
+          expect(instance).not_to receive(:lexisnexis_ddp_proofer)
         end
       end
     end
@@ -225,6 +254,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
       end
 
       context 'with a successful response from the proofer' do
@@ -235,15 +266,29 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return(Proofing::Result.new)
         end
 
-        it 'logs the trace_id and timing info' do
-          expect(instance.logger).to receive(:info) do |message|
-            expect(JSON.parse(message, symbolize_names: true)).to include(
+        it 'logs the trace_id and timing info for ProofResolution and the Threatmetrix info' do
+          expect(instance).to receive(:logger_info_hash).ordered.with(
+            hash_including(
+              name: 'ThreatMetrix',
+              user_id: user.uuid,
+              threatmetrix_request_id: Proofing::Mock::DdpMockClient::TRANSACTION_ID,
+              threatmetrix_success: true,
+            ),
+          )
+
+          expect(instance).to receive(:logger_info_hash).ordered.with(
+            hash_including(
               :timing,
+              name: 'ProofResolution',
               trace_id: trace_id,
-            )
-          end
+            ),
+          )
 
           perform
+
+          proofing_component = user.proofing_component
+          expect(proofing_component.threatmetrix).to equal(true)
+          expect(proofing_component.threatmetrix_review_status).to eq('pass')
         end
       end
 

@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 SimpleForm.setup do |config|
   require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
+  require Rails.root.join('lib', 'extensions', 'simple_form', 'components', 'submit_component')
 
   config.button_class = 'usa-button'
   config.boolean_label_class = nil

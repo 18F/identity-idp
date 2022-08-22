@@ -62,7 +62,7 @@ RSpec.describe Telephony do
 
       random_double_character = Telephony::GSM_DOUBLE_CHARACTERS.to_a.sample
       expect(Telephony.sms_character_length("abc\n¥ΔΦΓΛΩΠΨΣΘΞ#{random_double_character}")).
-             to eq 17
+        to eq 17
     end
 
     it 'calculates correct length of messages containing non-GSM characters' do

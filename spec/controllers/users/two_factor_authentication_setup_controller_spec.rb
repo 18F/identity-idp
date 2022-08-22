@@ -67,12 +67,13 @@ describe Users::TwoFactorAuthenticationSetupController do
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: ['voice'] })
 
+      form_params = { user: user, aal3_required: false, piv_cac_required: nil }
       form = instance_double(TwoFactorOptionsForm)
-      allow(TwoFactorOptionsForm).to receive(:new).with(user).and_return(form)
+      allow(TwoFactorOptionsForm).to receive(:new).with(form_params).and_return(form)
       expect(form).to receive(:submit).
         with(params.require(:two_factor_options_form).permit(:selection)).
         and_return(response)
-      expect(form).to receive(:selection).and_return(['voice'])
+      expect(form).to receive(:selection).twice.and_return(['voice'])
 
       patch :create, params: voice_params
 
@@ -93,6 +94,21 @@ describe Users::TwoFactorAuthenticationSetupController do
 
       expect(@analytics).to receive(:track_event).
         with('User Registration: 2FA Setup', result)
+
+      patch :create, params: {
+        two_factor_options_form: {
+          selection: ['voice', 'auth_app'],
+        },
+      }
+    end
+
+    it 'tracks IRS attempts event' do
+      stub_sign_in_before_2fa
+      stub_attempts_tracker
+
+      expect(@irs_attempts_api_tracker).to receive(:track_event).
+        with(:mfa_enroll_options_selected, success: true,
+                                           mfa_device_types: ['voice', 'auth_app'])
 
       patch :create, params: {
         two_factor_options_form: {
