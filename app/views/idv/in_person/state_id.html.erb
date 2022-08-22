@@ -39,33 +39,17 @@
         ) %>
   </div>
 
-  <%= # render MemorableDateComponent.new( 
-      #   day: :day, 
-      #   month: :month, 
-      #   year: :year, 
-      #   hint: t('in_person_proofing.form.state_id.dob_hint'), 
-      #   label:t('in_person_proofing.form.state_id.dob'), 
-      #   form: f,
-      #  )
+  <%= render MemorableDateComponent.new( 
+        content_tag: 'memorable-date',
+        day: :day, 
+        month: :month, 
+        year: :year, 
+        hint: t('in_person_proofing.form.state_id.dob_hint'), 
+        label:t('in_person_proofing.form.state_id.dob'), 
+        form: f,
+       )
       %>
-  <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :dob,
-          as: :date,
-          wrapper: :uswds_memorable_date,
-          form: f,
-          hint: t('in_person_proofing.form.state_id.dob_hint'),
-          html5: true,
-          input_html: { value: pii[:dob] },
-          label: t('in_person_proofing.form.state_id.dob'),
-          label_html: { class: 'usa-label' },
-          month_label: t('in_person_proofing.form.state_id.month'),
-          day_label: t('in_person_proofing.form.state_id.day'),
-          year_label: t('in_person_proofing.form.state_id.year'),
-          maxlength: 255,
-          required: true,
-        ) %>
-  </div>
+
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
           name: :dob,

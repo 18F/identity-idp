@@ -1,45 +1,61 @@
-<lg-validated-field class='usa-fieldset'>
-<%= content_tag(
-        :script,
-        error_messages.to_json,
-        {
-          type: 'application/json',
-          class: 'validated-field__error-strings',
-        },
-        false,
-      ) %>
     <label class="usa-label">     
         <%= @label %>
     </label>
     <span class="usa-hint" id="dob_hint">
         <%= @hint %>
     </span>
-    <%# this forms memorable date layout as expected using form #%>
-          <div class="usa-memorable-date">
+    <%= content_tag(
+        'memorable-date',
+      ) do %>
+       <div class="usa-memorable-date">
+       <lg-validated-field>
+       <%= content_tag(
+           :script,
+           error_messages.to_json,
+           {
+             type: 'application/json',
+             class: 'validated-field__error-strings',
+           },
+           false,
+         ) %>
           <%= f.input(
             :month,
             pattern: '^\d{2}$',
-            maxlength: 2,
-            wrapper_html: { class: 'usa-form-group usa-form-group--month'},
+            wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0'},
             label_html: { class: 'usa-label' },
             input_html: {
                 type: 'number',
-                class: 'usa-input',
+                class: 'validated-field__input memorable-date__month input-padding',
+                min: 1,
+                max: 12,
             aria: {
                 invalid: false,
                 describedby: "validated-field-error-#{unique_id}",
             },
             },
             error: { id: "validated-field-error-#{unique_id}" },
-        ) %>
+            ) %>
+        </lg-validated-field>
+        <lg-validated-field>
+        <%= content_tag(
+            :script,
+            error_messages.to_json,
+            {
+              type: 'application/json',
+              class: 'validated-field__error-strings',
+            },
+            false,
+          ) %>
         <%= f.input(
             :day,
             pattern: '^\d{2}$',
-            maxlength: 2,
-            wrapper_html: { class: 'usa-form-group usa-form-group--day'},
+            wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0'},
             label_html: { class: 'usa-label' },
             input_html: {
-                class: 'usa-input',
+                type: 'number',
+                class: 'validated-field__input memorable-date__day input-padding',
+                min: 1,
+                max: 31,
             aria: {
                 invalid: false,
                 describedby: "validated-field-error-#{unique_id}",
@@ -47,14 +63,24 @@
             },
             error: { id: "validated-field-error-#{unique_id}" },
         ) %>
+        </lg-validated-field>
+        <lg-validated-field>
+        <%= content_tag(
+            :script,
+            {
+              type: 'application/json',
+              class: 'validated-field__error-strings',
+            },
+            false,
+          ) %>
         <%= f.input(
             :year,
             pattern: '^\d{2}$',
-            maxlength: 2,
-            wrapper_html: { class: 'usa-form-group usa-form-group--year'},
+            wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0'},
             label_html: { class: 'usa-label' },
             input_html: {
-                class: 'usa-input',
+                type: 'number',
+                class: 'validated-field__input memorable-date__year input-padding',
             aria: {
                 invalid: false,
                 describedby: "validated-field-error-#{unique_id}",
@@ -62,15 +88,8 @@
             },
             error: { id: "validated-field-error-#{unique_id}" },
         ) %>
+        </lg-validated-field>
         </div>
-        <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
-
-        <%# this is the wrapper that's in progress #%>
-        <%= f.input(
-            :date,
-            label: t("in_person_proofing.form.state_id.month"),
-            wrapper: :uswds_memorable_date, 
-        ) %>
-        <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>
-       
-</lg-validated-field>
+        <div class='memorable-date-custom-error'></div>
+        <% end %>
+     <div class="usa-error-message" id="validated-field-error-<%= unique_id %>"></div>

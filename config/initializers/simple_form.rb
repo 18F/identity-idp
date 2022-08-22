@@ -45,39 +45,6 @@ SimpleForm.setup do |config|
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 
-  config.wrappers :err do |b|
-    b.use :input, class: 'usa-input', error_class: 'usa-input--error'
-    b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
-  end
-
-  config.wrappers :uswds_memorable_date, 
-    tag: 'fieldset',
-    wrapper_class: 'usa-fieldset' do |b|
-    b.wrapper :legend, tag: 'legend', class: 'usa-legend' do |ba|
-      ba.use :label_text
-    end
-    b.use :hint,  wrap_with: { tag: 'span', class: 'usa-hint' }
-    b.wrapper :memorable_date, tag: 'div', class:'usa-memorable-date' do |md|
-      md.wrapper :memorable_month, tag: 'div', class: 'usa-form-group usa-form-group--month' do |mdl|
-        mdl.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :month_label
-        end
-      end
-      md.wrapper :memorable_day, tag: 'div', class: 'usa-form-group usa-form-group--day' do |mdd|
-        mdd.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :day_label
-        end
-      end
-      md.wrapper :memorable_year, tag: 'div', class: 'usa-form-group usa-form-group--year' do |mdy|
-        mdy.wrapper :label, tag: 'label', class: 'usa-label' do |ba|
-          ba.use :year_label
-        end
-      end
-    end
-    b.use :input, class: 'usa-input', error_class: 'usa-input--error', type: 'number'
-    b.use :error,  wrap_with: { tag: 'div', class: 'usa-error-message' }
-  end
-
   # Helper proc to define different types of radio button wrappers
   radio_button_builder = proc do |name, bordered|
     item_label_class = 'usa-radio__label width-full text-no-wrap' +
