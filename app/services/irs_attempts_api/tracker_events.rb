@@ -59,6 +59,16 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+      track_event(
+        :forgot_password_new_password_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the Backup Codes MFA method to their account
     # @param [Boolean] success
     def mfa_enroll_backup_code(success:)
