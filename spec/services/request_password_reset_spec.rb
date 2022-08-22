@@ -5,7 +5,11 @@ RSpec.describe RequestPasswordReset do
     let(:user) { create(:user) }
     let(:email) { user.email_addresses.first.email }
     let(:irs_attempts_api_tracker) do
-      instance_double(IrsAttemptsApi::Tracker, forgot_password_email_sent: true)
+      instance_double(
+        IrsAttemptsApi::Tracker,
+        forgot_password_email_sent: true,
+        forgot_password_email_rate_limited: true,
+      )
     end
 
     before do
@@ -165,8 +169,9 @@ RSpec.describe RequestPasswordReset do
         max_attempts.times do
           expect {
             RequestPasswordReset.new(
-              email: email, analytics: analytics,
-              irs_attempts_api_tracker: irs_attempts_api_tracker
+              email: email,
+              analytics: analytics,
+              irs_attempts_api_tracker: irs_attempts_api_tracker,
             ).perform
           }.
             to(change { user.reload.reset_password_token })
@@ -175,8 +180,9 @@ RSpec.describe RequestPasswordReset do
         # extra time, throttled
         expect {
           RequestPasswordReset.new(
-            email: email, analytics: analytics,
-            irs_attempts_api_tracker: irs_attempts_api_tracker
+            email: email,
+            analytics: analytics,
+            irs_attempts_api_tracker: irs_attempts_api_tracker,
           ).perform
         }.
           to_not(change { user.reload.reset_password_token })
@@ -185,10 +191,8 @@ RSpec.describe RequestPasswordReset do
           'Throttler Rate Limit Triggered',
           throttle_type: :reset_password_email,
         )
-        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).with(
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_rate_limited).with(
           email: email,
-          success: false,
-          failure_reason: { throttled: 'Rate limit triggered for the user.' },
         )
       end
 
@@ -202,8 +206,9 @@ RSpec.describe RequestPasswordReset do
         max_attempts.times do
           expect {
             RequestPasswordReset.new(
-              email: email, analytics: analytics,
-              irs_attempts_api_tracker: irs_attempts_api_tracker
+              email: email,
+              analytics: analytics,
+              irs_attempts_api_tracker: irs_attempts_api_tracker,
             ).perform
           }.
             to(change { user.reload.reset_password_token })
@@ -212,8 +217,9 @@ RSpec.describe RequestPasswordReset do
         # extra time, throttled
         expect {
           RequestPasswordReset.new(
-            email: email, analytics: analytics,
-            irs_attempts_api_tracker: irs_attempts_api_tracker
+            email: email,
+            analytics: analytics,
+            irs_attempts_api_tracker: irs_attempts_api_tracker,
           ).perform
         }.
           to_not(change { user.reload.reset_password_token })
