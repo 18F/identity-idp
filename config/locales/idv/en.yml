@@ -124,11 +124,11 @@ en:
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file: We will mail a letter with a confirmation code to the address
-          that you provided on the previous step.
+        address_on_file: We will mail a letter with a <strong>confirmation code</strong>
+          to the address that you provided on the previous step.
         resend: Send me another letter
         timeframe: Letters are sent the next business day via USPS First Class Mail and
-          typically take 3 to 7 business days.
+          <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that

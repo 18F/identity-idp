@@ -12,8 +12,8 @@
 <%= render PageHeadingComponent.new.with_content(@presenter.title) %>
 
 <p>
-  <%= t('idv.messages.gpo.address_on_file') %>
-  <%= t('idv.messages.gpo.timeframe') %>
+  <%= sanitize t('idv.messages.gpo.address_on_file') %>
+  <%= sanitize t('idv.messages.gpo.timeframe') %>
 </p>
 
 <div class="margin-top-6 margin-bottom-5">
