@@ -28,10 +28,10 @@ RSpec.describe ValidatedFieldComponent, type: :component do
   it 'renders aria-describedby to establish connection between input and error message' do
     field = rendered.at_css('input')
 
-    expect(field.attr('aria-describedby').split(' ')).to include([
+    expect(field.attr('aria-describedby').split(' ')).to include(
       start_with('validated-field-hint-'),
       start_with('validated-field-error-'),
-    ])
+    )
   end
 
   describe 'error message strings' do
