@@ -188,7 +188,7 @@ RSpec.describe RequestPasswordReset do
         expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent).with(
           email: email,
           success: false,
-          failure_reason: { throttled: 'Rate limit triggered for the user.' }
+          failure_reason: { throttled: 'Rate limit triggered for the user.' },
         )
       end
 
