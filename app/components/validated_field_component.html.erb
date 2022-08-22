@@ -21,8 +21,12 @@
               describedby: [
                 *tag_options.dig(:input_html, :aria, :describedby),
                 "validated-field-error-#{unique_id}",
+                "validated-field-hint-#{unique_id}",
               ],
             },
+          },
+          hint_html: {
+            id: "validated-field-hint-#{unique_id}",
           },
           error_html: { id: "validated-field-error-#{unique_id}" },
         ),

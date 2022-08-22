@@ -111,9 +111,9 @@ describe('PasswordConfirmStep', () => {
     });
 
     it('navigates to forgot password subpage', async () => {
-      const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+      const { getByText } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
-      await userEvent.click(getByRole('link', { name: 'idv.forgot_password.link_text' }));
+      await userEvent.click(getByText('idv.forgot_password.link_text'));
 
       expect(window.location.pathname).to.equal('/password_confirm/forgot_password');
       expect(analytics.trackEvent).to.have.been.calledWith('IdV: forgot password visited');
@@ -121,9 +121,9 @@ describe('PasswordConfirmStep', () => {
     });
 
     it('navigates back from forgot password subpage', async () => {
-      const { getByRole } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
+      const { getByRole, getByText } = render(<PasswordConfirmStep {...DEFAULT_PROPS} />);
 
-      await userEvent.click(getByRole('link', { name: 'idv.forgot_password.link_text' }));
+      await userEvent.click(getByText('idv.forgot_password.link_text'));
       await userEvent.click(getByRole('link', { name: 'idv.forgot_password.try_again' }));
 
       expect(window.location.pathname).to.equal('/password_confirm');

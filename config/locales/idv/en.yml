@@ -85,8 +85,7 @@ en:
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
-      link_html: Forgot password? %{link}
-      link_text: Follow these instructions
+      link_text: Forgot password?
       modal_header: Are you sure you can’t remember your password?
       reset_password: Reset password
       try_again: Try again
