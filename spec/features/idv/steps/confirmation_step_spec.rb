@@ -58,12 +58,9 @@ feature 'idv confirmation step', js: true do
         click_continue if javascript_enabled?
       end
 
-      it 'does not display modal content' do
+      it 'does not display modal content. and continues to the account page' do
         expect(page).not_to have_content t('forms.personal_key.title')
         expect(page).not_to have_content t('forms.personal_key.instructions')
-      end
-
-      it 'continues to the account page' do
         expect(current_path).to eq(account_path)
         expect(page).to have_content t('headings.account.verified_account')
       end
