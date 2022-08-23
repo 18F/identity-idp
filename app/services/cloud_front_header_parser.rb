@@ -10,6 +10,6 @@ class CloudFrontHeaderParser
 
   # Source IP and port for client connection to CloudFront
   def viewer_address
-    @request.get_header 'CloudFront-Viewer-Address'
+    @request.headers['CloudFront-Viewer-Address']
   end
 end

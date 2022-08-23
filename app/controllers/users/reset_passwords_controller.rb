@@ -22,6 +22,10 @@ module Users
       result = PasswordResetTokenValidator.new(token_user).submit
 
       analytics.password_reset_token(**result.to_h)
+      irs_attempts_api_tracker.forgot_password_email_confirmed(
+        success: result.success?,
+        failure_reason: result.errors,
+      )
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
@@ -39,6 +43,10 @@ module Users
       result = @reset_password_form.submit(user_params)
 
       analytics.password_reset_password(**result.to_h)
+      irs_attempts_api_tracker.forgot_password_new_password_submitted(
+        success: result.success?,
+        failure_reason: result.errors,
+      )
 
       if result.success?
         handle_successful_password_reset
