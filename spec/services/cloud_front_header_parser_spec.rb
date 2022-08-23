@@ -1,12 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CloudFrontHeaderParser do
-  let(:url) { 'http://example.com' }
-  let(:req) { Rack::Request.new(Rack::MockRequest.env_for(url, remote_addr_header)) }
+  let(:req) { ActionDispatch::TestRequest.new({}) }
   let(:port) { '1234' }
-  let(:remote_addr_header) do
-    { 'REMOTE_ADDR' => ip }
-  end
 
   subject { described_class.new(req) }
 
@@ -14,7 +10,7 @@ RSpec.describe CloudFrontHeaderParser do
     let(:ip) { '192.0.2.1' }
 
     before do
-      req.add_header('HTTP_CLOUDFRONT_VIEWER_ADDRESS', "#{ip}:#{port}")
+      req.headers['CloudFront-Viewer-Address'] = "#{ip}:#{port}"
     end
 
     describe '#client_port' do
@@ -28,7 +24,7 @@ RSpec.describe CloudFrontHeaderParser do
     let(:ip) { '[2001:DB8::1]' }
 
     before do
-      req.add_header('HTTP_CLOUDFRONT_VIEWER_ADDRESS', "#{ip}:#{port}")
+      req.headers['CloudFront-Viewer-Address'] = "#{ip}:#{port}"
     end
 
     describe '#client_port' do
