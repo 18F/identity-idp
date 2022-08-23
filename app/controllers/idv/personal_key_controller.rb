@@ -86,7 +86,7 @@ module Idv
     end
 
     def device_profiling_failed?
-      return false unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
+      return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
       proofing_component = ProofingComponent.find_by(user: current_user)
       proofing_component.threatmetrix_review_status != 'pass'
     end
