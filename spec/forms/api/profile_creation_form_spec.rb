@@ -136,6 +136,31 @@ RSpec.describe Api::ProfileCreationForm do
         end
       end
 
+      context 'with the user failing threatmetrix and it never ran' do
+        let(:metadata) do
+          {
+            vendor_phone_confirmation: true,
+            user_phone_confirmation: true,
+          }
+        end
+        before do
+          ProofingComponent.create(
+            user: user,
+          )
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+            and_return(true)
+        end
+
+        it 'sets profile to pending threatmetrix review' do
+          subject.submit
+          profile = user.profiles.first
+
+          expect(profile.active?).to be false
+          expect(profile.deactivation_reason).to eq('threatmetrix_review_pending')
+        end
+      end
+
       context 'with the user failing threatmetrix but it is not required' do
         let(:metadata) do
           {
