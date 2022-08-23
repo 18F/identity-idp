@@ -278,7 +278,7 @@ function AcuantCapture(
     sharpnessThreshold,
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const fullScreenRef = useRef<FullScreenRefHandle>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
@@ -351,7 +351,7 @@ function AcuantCapture(
         size: nextValue.size,
       });
 
-      addPageAction(`IdV: ${name} image added`, analyticsPayload);
+      trackEvent(`IdV: ${name} image added`, analyticsPayload);
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -365,7 +365,7 @@ function AcuantCapture(
     return <T extends (...args: any[]) => any>(fn: T) =>
       (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          addPageAction(`IdV: ${name} image clicked`, { source, ...metadata });
+          trackEvent(`IdV: ${name} image clicked`, { source, ...metadata });
         }
 
         return fn(...args);
@@ -415,7 +415,7 @@ function AcuantCapture(
   function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       if (forceNativeCamera) {
-        addPageAction('IdV: Native camera forced after failed attempts', {
+        trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_attempts: failedCaptureAttempts,
         });
@@ -483,7 +483,7 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
     });
 
-    addPageAction(`IdV: ${name} image added`, analyticsPayload);
+    trackEvent(`IdV: ${name} image added`, analyticsPayload);
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
@@ -528,7 +528,7 @@ function AcuantCapture(
             }
 
             setIsCapturingEnvironment(false);
-            addPageAction('IdV: Image capture failed', {
+            trackEvent('IdV: Image capture failed', {
               field: name,
               error: getNormalizedAcuantCaptureFailureMessage(error, code),
             });

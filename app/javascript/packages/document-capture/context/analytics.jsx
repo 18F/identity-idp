@@ -14,12 +14,12 @@ import { createContext } from 'react';
 /**
  * @typedef AnalyticsContext
  *
- * @prop {TrackEvent} addPageAction Log an action with optional payload.
+ * @prop {TrackEvent} trackEvent Log an action with optional payload.
  */
 
 const AnalyticsContext = createContext(
   /** @type {AnalyticsContext} */ ({
-    addPageAction: () => Promise.resolve(),
+    trackEvent: () => Promise.resolve(),
   }),
 );
 
