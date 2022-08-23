@@ -7,6 +7,16 @@ describe Idv::InheritedProofingController do
 
       expect(response).to redirect_to idv_inherited_proofing_step_url(step: :get_started)
     end
+
+    context 'when the inherited proofing feature flag is disabled' do
+      it 'returns 404 not found' do
+        allow(IdentityConfig.store).to receive(:inherited_proofing_enabled).and_return(false)
+
+        get :index
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
   end
 
   describe '#show' do

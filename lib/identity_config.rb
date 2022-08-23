@@ -190,6 +190,8 @@ class IdentityConfig
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
+    config.add(:inherited_proofing_enabled, type: :boolean)
+    config.add(:inherited_proofing_va_base_url, type: :string)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
     config.add(:irs_attempt_api_csp_id)
@@ -386,7 +388,6 @@ class IdentityConfig
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
-    config.add(:inherited_proofing_va_base_url, type: :string)
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
