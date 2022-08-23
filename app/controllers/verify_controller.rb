@@ -26,7 +26,7 @@ class VerifyController < ApplicationController
       cancel_url: idv_cancel_path,
       initial_values: initial_values,
       reset_password_url: forgot_password_url,
-      enabled_step_names: IdentityConfig.store.idv_api_enabled_steps,
+      enabled_step_names: enabled_steps,
       store_key: user_session[:idv_api_store_key],
     }
   end
@@ -43,7 +43,11 @@ class VerifyController < ApplicationController
   end
 
   def enabled_steps
-    IdentityConfig.store.idv_api_enabled_steps
+    steps = IdentityConfig.store.idv_api_enabled_steps
+
+    return steps if FeatureManagement.idv_personal_key_confirmation_enabled?
+
+    steps - ['personal_key_confirm']
   end
 
   def step_enabled?(step)

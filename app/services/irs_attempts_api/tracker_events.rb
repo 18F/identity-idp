@@ -91,6 +91,20 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
