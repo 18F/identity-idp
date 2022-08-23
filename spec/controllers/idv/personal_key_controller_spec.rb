@@ -207,11 +207,13 @@ describe Idv::PersonalKeyController do
 
     context 'with device profiling collecting enabled' do
       before do
+        ProofingComponent.create(user: user, threatmetrix: true)
         allow(IdentityConfig.store).
           to receive(:proofing_device_profiling_collecting_enabled).and_return(true)
       end
 
-      it 'device profiling failed' do
+      it 'when device profiling fails redirect to come back later path' do
+        ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
         patch :update
 
         expect(response).to redirect_to idv_come_back_later_path
