@@ -136,11 +136,11 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file: Nous enverrons une lettre avec <strong>un code de
+        address_on_file_html: Nous enverrons une lettre avec <strong>un code de
           confirmation</strong> à l’adresse que vous avez indiquée à l’étape
           précédente.
         resend: Envoyez-moi une autre lettre
-        timeframe: Les lettres sont envoyées les jours ouvrables par courriel de
+        timeframe_html: Les lettres sont envoyées les jours ouvrables par courriel de
           première classe de USPS et <strong>prennent généralement entre trois à
           sept jours ouvrables pour être reçues</strong>.
       mail_sent: Votre lettre est en route
