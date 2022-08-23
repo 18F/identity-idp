@@ -204,5 +204,18 @@ describe Idv::PersonalKeyController do
         expect(response).to redirect_to idv_in_person_ready_to_verify_url
       end
     end
+
+    context 'with device profiling collecting enabled' do
+      before do
+        allow(IdentityConfig.store).
+          to receive(:proofing_device_profiling_collecting_enabled).and_return(true)
+      end
+
+      it 'device profiling failed' do
+        patch :update
+
+        expect(response).to redirect_to idv_come_back_later_path
+      end
+    end
   end
 end

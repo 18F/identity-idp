@@ -37,6 +37,8 @@ module Idv
         idv_come_back_later_url
       elsif in_person_enrollment?
         idv_in_person_ready_to_verify_url
+      elsif device_profiling_failed?
+        idv_come_back_later_url
       elsif session[:sp] && !pending_profile?
         sign_up_completed_url
       else
@@ -81,6 +83,11 @@ module Idv
 
     def pending_profile?
       current_user.pending_profile?
+    end
+
+    def device_profiling_failed?
+      return false unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
+      true
     end
   end
 end
