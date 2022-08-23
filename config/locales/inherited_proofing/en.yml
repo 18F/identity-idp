@@ -1,0 +1,17 @@
+---
+en:
+  inherited_proofing:
+    buttons:
+      continue: Continue
+    headings:
+      welcome: Get started verifying your identity
+    info:
+      no_sp_name: The agency that you are trying to access
+      privacy_html: '%{app_name} is a secure, government website that adheres to the highest standards in data
+        protection. We only use your data to verify your identity. %{link} about our privacy and security measures.'
+      welcome_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you.'
+    instructions:
+      bullet1: A phone number on a phone plan associated with your name
+      learn_more: Learn more
+      privacy: Our privacy and security standards
+      welcome: 'To verify your identity, you will need:'

@@ -337,6 +337,9 @@ Rails.application.routes.draw do
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
 
+      get '/inherited_proofing' => 'inherited_proofing#index'
+      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
+
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
       post '/confirmations' => 'personal_key#update'
