@@ -29,11 +29,11 @@ class ResolutionProofingJob < ApplicationJob
     user = User.find_by(id: user_id)
 
     optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
-      { applicant_pii: applicant_pii,
-        user: user,
-        threatmetrix_session_id: threatmetrix_session_id,
-        request_ip: request_ip,
-        uuid_prefix: uuid_prefix },
+      applicant_pii: applicant_pii,
+      user: user,
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      uuid_prefix: uuid_prefix,
     )
 
     callback_log_data = if dob_year_only && should_proof_state_id
@@ -89,25 +89,31 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(args)
+  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+    applicant_pii:,
+    user:,
+    threatmetrix_session_id:,
+    request_ip:,
+    uuid_prefix:
+  )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
 
     # The API call will fail without a session ID, so do not attempt to make
     # it to avoid leaking data when not required.
-    return if args[:threatmetrix_session_id].blank?
+    return if threatmetrix_session_id.blank?
 
-    return unless args[:applicant_pii]
+    return unless applicant_pii
 
-    ddp_pii = args[:applicant_pii].dup
-    ddp_pii[:threatmetrix_session_id] = args[:threatmetrix_session_id]
-    ddp_pii[:email] = args[:user]&.confirmed_email_addresses&.first&.email
-    ddp_pii[:input_ip_address] = args[:request_ip]
-    ddp_pii[:local_attrib_1] = args[:uuid_prefix]
+    ddp_pii = applicant_pii.dup
+    ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
+    ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
+    ddp_pii[:input_ip_address] = request_ip
+    ddp_pii[:local_attrib_1] = uuid_prefix
 
     result = lexisnexis_ddp_proofer.proof(ddp_pii)
 
-    log_threatmetrix_info(result, args[:user])
-    add_threatmetrix_proofing_component(args[:user].id, result)
+    log_threatmetrix_info(result, user)
+    add_threatmetrix_proofing_component(user.id, result)
 
     result
   end
