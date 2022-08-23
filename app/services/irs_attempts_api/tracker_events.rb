@@ -221,6 +221,14 @@ module IrsAttemptsApi
       )
     end
 
+    def personal_key_reactivation_submitted(success:, failure_reason:)
+      track_event(
+        :personal_key_reactivation_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email

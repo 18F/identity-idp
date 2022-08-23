@@ -22,6 +22,7 @@ module Users
 
     def create
       if throttle.throttled_else_increment?
+        irs_attempts_api.personal_key_reactivation_throttled(success: false)
         render_throttled
       else
         result = personal_key_form.submit
@@ -29,6 +30,10 @@ module Users
         analytics.personal_key_reactivation_submitted(
           **result.to_h,
           pii_like_keypaths: [[:errors, :personal_key], [:error_details, :personal_key]],
+        )
+        irs_attempts_api_tracker.personal_key_reactivation_submitted(
+          success: result.success?,
+          failure_reason: result.errors,
         )
         if result.success?
           handle_success(decrypted_pii: personal_key_form.decrypted_pii)

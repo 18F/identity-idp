@@ -109,21 +109,48 @@ describe Users::VerifyPersonalKeyController do
 
         expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
       end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :personal_key_reactivation_submitted,
+          failure_reason: {},
+          success: true,
+        ).once
+
+        post :create, params: { personal_key: profiles.first.personal_key }
+
+        expect(subject.reactivate_account_session.validated_personal_key?).to eq(true)
+      end
     end
 
     context 'with an invalid form' do
       let(:bad_key) { 'baaad' }
 
-      before do
-        post :create, params: { personal_key: bad_key }
-      end
-
       it 'sets an error in the flash' do
+        post :create, params: { personal_key: bad_key }
+
         expect(flash[:error]).to eq(error_text)
       end
 
       it 'redirects to form' do
+        post :create, params: { personal_key: bad_key }
         expect(response).to redirect_to(verify_personal_key_url)
+      end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :personal_key_reactivation_submitted,
+          failure_reason: personal_key_error,
+          success: false,
+        ).once
+
+        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
+
+        post :create, params: { personal_key: bad_key }
       end
     end
 
@@ -148,6 +175,21 @@ describe Users::VerifyPersonalKeyController do
         (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
 
         expect(response).to render_template(:throttled)
+      end
+
+      it 'tracks irs attempts api for relevant users' do
+        stub_attempts_tracker
+
+        expect(@irs_attempts_api_tracker).to receive(:track_event).with(
+          :personal_key_reactivation_submitted,
+          failure_reason: personal_key_error,
+          success: false,
+        ).once
+
+        allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
+
+        post :create, params: { personal_key: bad_key }
+
       end
     end
   end
