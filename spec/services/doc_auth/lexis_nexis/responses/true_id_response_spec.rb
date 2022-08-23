@@ -77,6 +77,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'includes expiration' do
       expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
     end
+    it 'includes issued date' do
+      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
+    end
 
     it 'excludes pii fields from logging' do
       expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
@@ -148,6 +151,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
     it 'includes expiration' do
       expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
+    end
+    it 'includes issued date' do
+      expect(response.pii_from_doc).to include(state_id_issued: '2016-10-15')
     end
   end
 

@@ -39,6 +39,9 @@ module DocAuth
           'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
           'Fields_ExpirationDate_Month' => :state_id_expiration_month,
           'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+          'Fields_IssueDate_Day' => :state_id_issued_day,
+          'Fields_IssueDate_Month' => :state_id_issued_month,
+          'Fields_IssueDate_Year' => :state_id_issued_year,
           'Fields_DocumentClassName' => :state_id_type,
         }.freeze
         attr_reader :config
@@ -104,6 +107,13 @@ module DocAuth
             day: pii.delete(:state_id_expiration_day),
           )
           pii[:state_id_expiration] = exp_date if exp_date
+
+          issued_date = parse_date(
+            year: pii.delete(:state_id_issued_year),
+            month: pii.delete(:state_id_issued_month),
+            day: pii.delete(:state_id_issued_day),
+          )
+          pii[:state_id_issued] = issued_date if issued_date
 
           pii
         end

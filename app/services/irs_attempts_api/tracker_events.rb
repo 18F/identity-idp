@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if account reset request is cancelled
@@ -46,6 +49,44 @@ module IrsAttemptsApi
       track_event(
         :forgot_password_email_confirmed,
         success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The document was uploaded during the IDV process
+    def idv_document_upload_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_document_upload_submitted,
+        success: success,
+        document_state: document_state,
+        document_number: document_number,
+        document_issued: document_issued,
+        document_expiration: document_expiration,
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth,
+        address: address,
         failure_reason: failure_reason,
       )
     end
@@ -301,3 +342,4 @@ module IrsAttemptsApi
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
