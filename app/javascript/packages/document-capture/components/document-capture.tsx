@@ -2,7 +2,7 @@ import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { FlowContext } from '@18f/identity-verify-flow';
+import { FlowContext, VerifyFlowStepIndicator } from '@18f/identity-verify-flow';
 import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
@@ -142,37 +142,42 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }: DocumentCaptureP
         },
       ].filter(Boolean) as FormStep[]);
 
-  return submissionFormValues &&
-    (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+  return (
     <>
-      <SubmissionInterstitial autoFocus />
-      <SuspenseErrorBoundary
-        fallback={<PromptOnNavigate />}
-        onError={setSubmissionError}
-        handledError={submissionError}
-      >
-        {submissionError instanceof RetrySubmissionError ? (
-          <SubmissionStatus />
-        ) : (
-          <Submission payload={submissionFormValues} />
-        )}
-      </SuspenseErrorBoundary>
-    </>
-  ) : (
-    <>
-      {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
-        <Alert type="error" className="margin-bottom-4">
-          {t('doc_auth.errors.general.network_error')}
-        </Alert>
+      <VerifyFlowStepIndicator currentStep="document_capture" />
+      {submissionFormValues &&
+      (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+        <>
+          <SubmissionInterstitial autoFocus />
+          <SuspenseErrorBoundary
+            fallback={<PromptOnNavigate />}
+            onError={setSubmissionError}
+            handledError={submissionError}
+          >
+            {submissionError instanceof RetrySubmissionError ? (
+              <SubmissionStatus />
+            ) : (
+              <Submission payload={submissionFormValues} />
+            )}
+          </SuspenseErrorBoundary>
+        </>
+      ) : (
+        <>
+          {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
+            <Alert type="error" className="margin-bottom-4">
+              {t('doc_auth.errors.general.network_error')}
+            </Alert>
+          )}
+          <FormSteps
+            steps={steps}
+            initialValues={initialValues}
+            initialActiveErrors={initialActiveErrors}
+            onComplete={submitForm}
+            onStepChange={onStepChange}
+            autoFocus={!!submissionError}
+          />
+        </>
       )}
-      <FormSteps
-        steps={steps}
-        initialValues={initialValues}
-        initialActiveErrors={initialActiveErrors}
-        onComplete={submitForm}
-        onStepChange={onStepChange}
-        autoFocus={!!submissionError}
-      />
     </>
   );
 }
