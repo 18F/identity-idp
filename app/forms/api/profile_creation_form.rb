@@ -180,7 +180,7 @@ module Api
       return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
       component = ProofingComponent.find_by(user: user)
       return true unless component
-      !(component.threatmetrix_enabled && component.threatmetrix_review_status == 'pass')
+      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
     end
   end
 end
