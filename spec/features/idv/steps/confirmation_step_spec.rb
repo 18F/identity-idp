@@ -100,5 +100,19 @@ feature 'idv confirmation step', js: true do
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
+
+    context 'with personal key confirmation disabled' do
+      let(:idv_personal_key_confirmation_enabled) { false }
+
+      it 'redirects to the completions page and then to the SP' do
+        click_acknowledge_personal_key
+
+        expect(page).to have_current_path(sign_up_completed_path)
+
+        click_agree_and_continue
+
+        expect(current_url).to start_with('http://localhost:7654/auth/result')
+      end
+    end
   end
 end
