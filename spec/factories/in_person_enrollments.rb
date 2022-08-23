@@ -16,6 +16,8 @@ FactoryBot.define do
       after :build do |enrollment|
         enrollment.status = :pending
         enrollment.enrollment_code = Faker::Number.number(digits: 16)
+        enrollment.enrollment_established_at = Time.zone.now
+        enrollment.status_updated_at = Time.zone.now
       end
     end
 

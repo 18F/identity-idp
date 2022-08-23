@@ -103,4 +103,93 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe 'complete?' do
+    let(:cancelled_enrollment) { create(:in_person_enrollment, :cancelled) }
+    let(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+    let(:failed_enrollment) { create(:in_person_enrollment, :failed) }
+    let(:passed_enrollment) { create(:in_person_enrollment, :passed) }
+
+    let(:establishing_enrollment) { create(:in_person_enrollment, :establishing) }
+    let(:pending_enrollment) { create(:in_person_enrollment, :pending) }
+
+    it 'returns true for completed enrollments' do
+      expect(cancelled_enrollment.complete?).to eq(true)
+      expect(expired_enrollment.complete?).to eq(true)
+      expect(failed_enrollment.complete?).to eq(true)
+      expect(passed_enrollment.complete?).to eq(true)
+    end
+
+    it 'returns false for incomplete enrollments' do
+      expect(establishing_enrollment.complete?).to eq(false)
+      expect(pending_enrollment.complete?).to eq(false)
+    end
+  end
+
+  describe 'minutes_to_completion' do
+    let(:enrollment) {
+      enrollment = create(
+        :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.days
+      )
+      enrollment.status_updated_at = Time.zone.now - 1.hour
+      enrollment
+    }
+
+    it 'returns number of minutes it took to reach completion' do
+      expect(enrollment.minutes_to_completion).to be_within(0.01).of(2820)
+    end
+
+    it 'returns nil if enrollment is not completed' do
+      enrollment.status = 'pending'
+
+      expect(enrollment.minutes_to_completion).to eq(nil)
+    end
+
+    it 'returns nil if expected fields are not present' do
+      enrollment.status_updated_at = nil
+
+      expect(enrollment.minutes_to_completion).to eq(nil)
+
+      enrollment.status_updated_at = Time.zone.now
+      enrollment.enrollment_established_at = nil
+
+      expect(enrollment.minutes_to_completion).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_last_status_check' do
+    let(:enrollment) {
+      create(
+        :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
+      )
+    }
+
+    it 'returns number of minutes since last status check' do
+      expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been status-checked' do
+      enrollment.status_check_attempted_at = nil
+
+      expect(enrollment.minutes_since_last_status_check).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_status_updated' do
+    let(:enrollment) {
+      enrollment = create(:in_person_enrollment, :passed)
+      enrollment.status_updated_at = (Time.zone.now - 2.hours)
+      enrollment
+    }
+
+    it 'returns number of minutes since the status was updated' do
+      expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment status has not been updated' do
+      enrollment.status_updated_at = nil
+
+      expect(enrollment.minutes_since_last_status_update).to eq(nil)
+    end
+  end
 end

@@ -39,6 +39,27 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  def complete?
+    return ['cancelled', 'expired', 'failed', 'passed'].include?(status)
+  end
+
+  def minutes_to_completion
+    return unless complete?
+    return unless enrollment_established_at.present?
+    return unless status_updated_at.present?
+    (status_updated_at - enrollment_established_at) / 60
+  end
+
+  def minutes_since_last_status_check
+    return unless status_check_attempted_at.present?
+    (Time.zone.now - status_check_attempted_at) / 60
+  end
+
+  def minutes_since_last_status_update
+    return unless status_updated_at.present?
+    (Time.zone.now - status_updated_at) / 60
+  end
+
   # (deprecated) Returns the value to use for the USPS enrollment ID
   def usps_unique_id
     user.uuid.delete('-').slice(0, 18)

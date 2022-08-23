@@ -18,6 +18,18 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
+  def enrollment_attributes(enrollment)
+    attributes = {
+      enrollment_code: enrollment.enrollment_code,
+      enrollment_id: enrollment.id,
+      minutes_since_last_status_check: enrollment.minutes_since_last_status_check,
+      minutes_since_last_status_update: enrollment.minutes_since_last_status_update,
+    }
+    attributes[:minutes_to_completion] = enrollment.minutes_to_completion if enrollment.complete?
+
+    attributes
+  end
+
   def perform(_now)
     @enrollment_outcomes = {
       enrollments_checked: 0,
@@ -31,8 +43,6 @@ class GetUspsProofingResultsJob < ApplicationJob
     return true unless IdentityConfig.store.in_person_proofing_enabled
 
     proofer = UspsInPersonProofing::Proofer.new
-
-    # todo: add time-to-completion metrics for success/failure
 
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
@@ -99,9 +109,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollment_outcomes[:enrollments_expired] += 1
     else
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+        **enrollment_attributes(enrollment),
         reason: 'Request exception',
-        enrollment_id: enrollment.id,
-        enrollment_code: enrollment.enrollment_code,
         exception_class: err.class.to_s,
         exception_message: err.message,
       )
@@ -112,9 +121,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_standard_error(err, enrollment)
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_attributes(enrollment),
       reason: 'Request exception',
-      enrollment_id: enrollment.id,
-      enrollment_code: enrollment.enrollment_code,
       exception_class: err.class.to_s,
       exception_message: err.message,
     )
@@ -123,9 +131,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_response_is_not_a_hash(enrollment)
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_attributes(enrollment),
       reason: 'Bad response structure',
-      enrollment_id: enrollment.id,
-      enrollment_code: enrollment.enrollment_code,
     )
   end
 
@@ -133,18 +140,16 @@ class GetUspsProofingResultsJob < ApplicationJob
     # todo: this doesn't actually change the status of the enrollment. should it? should this instead be part of the exception codepath?
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
+      **enrollment_attributes(enrollment),
       reason: 'Unsupported status',
       status: status,
-      enrollment_id: enrollment.id,
-      enrollment_code: enrollment.enrollment_code,
     )
   end
 
   def handle_unsupported_id_type(enrollment, response)
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      enrollment_code: enrollment.enrollment_code,
-      enrollment_id: enrollment.id,
+      **enrollment_attributes(enrollment),
       fraud_suspected: response['fraudSuspected'],
       passed: false,
       primary_id_type: response['primaryIdType'],
@@ -155,8 +160,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_failed_status(enrollment, response)
     enrollment_outcomes[:enrollments_failed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      enrollment_code: enrollment.enrollment_code,
-      enrollment_id: enrollment.id,
+      **enrollment_attributes(enrollment),
       failure_reason: response['failureReason'],
       fraud_suspected: response['fraudSuspected'],
       passed: false,
@@ -172,8 +176,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   def handle_successful_status_update(enrollment, response)
     enrollment_outcomes[:enrollments_passed] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
-      enrollment_code: enrollment.enrollment_code,
-      enrollment_id: enrollment.id,
+      **enrollment_attributes(enrollment),
       fraud_suspected: response['fraudSuspected'],
       passed: true,
       reason: 'Successful status update',

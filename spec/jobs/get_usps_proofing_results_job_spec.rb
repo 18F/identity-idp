@@ -163,6 +163,10 @@ RSpec.describe GetUspsProofingResultsJob do
           transaction_end_date_time: '12/17/2020 034055',
           transaction_start_date_time: '12/17/2020 033855',
         )
+
+        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_since_last_status_check]).to be_instance_of(Float)
+        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_since_last_status_update]).to be_instance_of(Float)
+        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_to_completion]).to be_instance_of(Float)
       end
 
       describe 'sending emails' do
@@ -426,6 +430,7 @@ RSpec.describe GetUspsProofingResultsJob do
     describe 'IPP disabled' do
       before do
         allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
       end
 
       it 'does not request any enrollment records' do
