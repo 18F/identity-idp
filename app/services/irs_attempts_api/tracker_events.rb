@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if account reset request is cancelled
@@ -47,6 +50,20 @@ module IrsAttemptsApi
         :forgot_password_email_confirmed,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
       )
     end
 
@@ -301,3 +318,4 @@ module IrsAttemptsApi
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
