@@ -189,7 +189,6 @@ describe Users::VerifyPersonalKeyController do
         allow_any_instance_of(VerifyPersonalKeyForm).to receive(:submit).and_return(response_bad)
 
         post :create, params: { personal_key: bad_key }
-
       end
     end
   end

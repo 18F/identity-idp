@@ -234,7 +234,7 @@ module IrsAttemptsApi
 
     # Tracks when User personal key has been throttled by too many attempts
     # @param [Boolean] success
-    def personal_key_reactivation_throttled(success:,)
+    def personal_key_reactivation_throttled(success:)
       track_event(
         :personal_key_reactivation_throttled,
         success: success,
