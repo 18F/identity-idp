@@ -8,6 +8,8 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
+require 'action_cable/engine'
+
 require_relative '../lib/asset_sources'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'

@@ -1,5 +1,7 @@
 import { render, unmountComponentAtNode } from 'react-dom';
+import { createConsumer } from '@rails/actioncable';
 import { Alert } from '@18f/identity-components';
+import type { Consumer } from '@rails/actioncable';
 
 interface FormStepsWaitElements {
   form: HTMLFormElement;
@@ -46,13 +48,6 @@ export function getDOMFromHTML(html: string): Document {
 }
 
 /**
- * @return Whether page polls.
- */
-export function isPollingPage(dom: Document): boolean {
-  return Boolean(dom.querySelector('meta[http-equiv="refresh"]'));
-}
-
-/**
  * Returns trimmed page alert contents, if exists.
  *
  * @param dom
@@ -86,6 +81,8 @@ export class FormStepsWait {
 
   options: FormStepsWaitOptions;
 
+  consumer: Consumer;
+
   constructor(form) {
     this.elements = { form };
 
@@ -94,6 +91,7 @@ export class FormStepsWait {
       ...this.elements.form.dataset,
     };
 
+    this.consumer = createConsumer();
     this.options.pollIntervalMs = Number(this.options.pollIntervalMs);
   }
 
@@ -116,22 +114,19 @@ export class FormStepsWait {
     const response = await window.fetch(action, {
       method,
       body: new window.FormData(form),
+      headers: {
+        Accept: 'application/json',
+      },
     });
 
-    if ('polyfill' in window.fetch) {
-      // The fetch polyfill is implemented using XMLHttpRequest, which suffers from an issue where a
-      // Content-Type header from a POST is carried into a redirected GET, which is exactly the flow
-      // we are handling here. The current version of Rack neither handles nor provides easy insight
-      // into an empty-bodied (GET) multi-part form. This will change in Rack 3 with the addition of
-      // the Rack::Multipart::EmptyContentError class. In the meantime, only allow non-polyfilled
-      // fetch environmnents to handle the initial response.
-      //
-      // See: https://github.com/whatwg/fetch/issues/609
-      // See: https://github.com/rack/rack/issues/1603
-      this.poll();
-    } else {
-      this.handleResponse(response);
-    }
+    const channelDetails = await response.json();
+
+    this.consumer.subscriptions.create(
+      { channel: 'DocumentCaptureResultChannel', ...channelDetails },
+      {
+        received: () => this.poll(),
+      },
+    );
   }
 
   /**
@@ -143,19 +138,15 @@ export class FormStepsWait {
     } else {
       const body = await response.text();
       const dom = getDOMFromHTML(body);
-      if (isPollingPage(dom)) {
-        this.scheduleNextPollFetch();
+      const message = getPageErrorMessage(dom);
+      const redirectURL = getRedirectURL(response, body);
+      const isSamePage =
+        new URL(redirectURL, window.location.href).pathname === window.location.pathname;
+      if (message && isSamePage) {
+        this.renderError(message);
+        this.stopSpinner();
       } else {
-        const message = getPageErrorMessage(dom);
-        const redirectURL = getRedirectURL(response, body);
-        const isSamePage =
-          new URL(redirectURL, window.location.href).pathname === window.location.pathname;
-        if (message && isSamePage) {
-          this.renderError(message);
-          this.stopSpinner();
-        } else {
-          window.location.href = redirectURL;
-        }
+        window.location.href = redirectURL;
       }
     }
   }

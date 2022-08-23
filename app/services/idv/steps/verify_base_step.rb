@@ -181,6 +181,10 @@ module Idv
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
         )
+
+        if request.format.json?
+          render_json({ document_capture_session_uuid: document_capture_session.uuid })
+        end
       end
 
       def idv_agent
