@@ -10,7 +10,6 @@ module Api
           verify_params,
           liveness_checking_enabled: liveness_checking_enabled?,
           analytics: analytics,
-          irs_attempts_api_tracker: irs_attempts_api_tracker,
         ).submit
 
         if result.success?

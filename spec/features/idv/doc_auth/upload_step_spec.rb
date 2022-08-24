@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'doc auth upload step' do
   include IdvStepHelper
   include DocAuthHelper
-  include IrsAttemptsApiTrackingHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
@@ -33,7 +32,9 @@ feature 'doc auth upload step' do
       expect(fake_attempts_tracker).to receive(
         :document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
+
       click_on t('doc_auth.info.upload_computer_link')
+
       expect(page).to have_current_path(idv_doc_auth_email_sent_step)
       expect(fake_analytics).to have_logged_event(
         "IdV: #{Analytics::DOC_AUTH.downcase} upload submitted",
@@ -45,7 +46,9 @@ feature 'doc auth upload step' do
       expect(fake_attempts_tracker).to receive(
         :document_upload_method_selected,
       ).with({ upload_method: 'mobile' })
+
       click_on t('doc_auth.buttons.use_phone')
+
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
 
       expect(fake_analytics).to have_logged_event(
@@ -68,7 +71,9 @@ feature 'doc auth upload step' do
       expect(fake_attempts_tracker).to receive(
         :document_upload_method_selected,
       ).with({ upload_method: 'desktop' })
+
       click_on t('doc_auth.info.upload_computer_link')
+
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
       expect(fake_analytics).to have_logged_event(
         "IdV: #{Analytics::DOC_AUTH.downcase} upload submitted",
@@ -80,7 +85,9 @@ feature 'doc auth upload step' do
       expect(fake_attempts_tracker).to receive(
         :document_upload_method_selected,
       ).with({ upload_method: 'mobile' })
+
       click_on t('doc_auth.buttons.use_phone')
+
       expect(page).to have_current_path(idv_doc_auth_send_link_step)
       expect(fake_analytics).to have_logged_event(
         "IdV: #{Analytics::DOC_AUTH.downcase} upload submitted",
