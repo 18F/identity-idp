@@ -4,8 +4,6 @@ module Idv
       STEP_INDICATOR_STEP = :verify_id
 
       def call
-        irs_attempts_api_tracker.document_upload_method_selected(params[:type])
-        
         if params[:type] == 'desktop'
           handle_desktop_selection
         else

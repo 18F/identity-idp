@@ -21,6 +21,11 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
+
+      if params[:controller]=="idv/doc_auth" and step == "upload"
+        irs_attempts_api_tracker.document_upload_method_selected(upload_method: params[:type])
+      end
+
       if @analytics_id
         increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
