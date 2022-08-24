@@ -26,7 +26,12 @@ RSpec.describe Api::IrsAttemptsApiController do
       )
       jti = event.jti
       jwe = event.to_jwe
-      IrsAttemptsApi::RedisClient.new.write_event(jti: jti, jwe: jwe, timestamp: event.occurred_at)
+      event_key = event.event_key
+      IrsAttemptsApi::RedisClient.new.write_event(
+        event_key: event_key,
+        jwe: jwe,
+        timestamp: event.occurred_at
+      )
       [jti, jwe]
     end
   end
