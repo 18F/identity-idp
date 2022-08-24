@@ -326,7 +326,7 @@ describe Api::Verify::PasswordConfirmController do
         it 'redirects to come back later path when threatmetrix review status is nil' do
           post :create, params: { password: password, user_bundle_token: jwt }
 
-          expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+          expect(JSON.parse(response.body)['completion_url']).to eq(account_url)
         end
 
         it 'redirects to account path when device profiling passes' do

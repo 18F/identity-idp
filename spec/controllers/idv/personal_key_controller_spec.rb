@@ -212,10 +212,10 @@ describe Idv::PersonalKeyController do
           to receive(:proofing_device_profiling_decisioning_enabled).and_return(true)
       end
 
-      it 'redirects to come back later path when threatmetrix review status is nil' do
+      it 'redirects to account path when threatmetrix review status is nil' do
         patch :update
 
-        expect(response).to redirect_to idv_come_back_later_path
+        expect(response).to redirect_to account_path
       end
 
       it 'redirects to account path when device profiling passes' do

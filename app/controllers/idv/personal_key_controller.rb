@@ -88,6 +88,8 @@ module Idv
     def device_profiling_failed?
       return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
       proofing_component = ProofingComponent.find_by(user: current_user)
+      # pass users who are inbetween feature flag being enabled and have not had a check run.
+      return false if proofing_component.threatmetrix_review_status.nil?
       proofing_component.threatmetrix_review_status != 'pass'
     end
   end
