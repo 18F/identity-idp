@@ -17,10 +17,7 @@ feature 'doc auth verify step', :js do
 
     expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_info'),
-    )
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
     # SSN is masked until revealed
     expect(page).to have_text('9**-**-***4')
