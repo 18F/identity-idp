@@ -180,6 +180,7 @@ class IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
+    config.add(:idv_personal_key_confirmation_enabled, type: :boolean)
     config.add(:idv_private_key, type: :string)
     config.add(:idv_public_key, type: :string)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)

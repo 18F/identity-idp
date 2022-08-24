@@ -16,6 +16,8 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       threatmetrix_session_id: '123456',
       phone: '5551231234',
       email: 'test@example.com',
+      request_ip: '127.0.0.1',
+      uuid_prefix: 'ABCD',
     }
   end
   let(:verification_request) do

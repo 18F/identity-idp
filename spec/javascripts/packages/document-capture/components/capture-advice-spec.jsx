@@ -6,15 +6,15 @@ import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/capture-advice', () => {
   it('logs warning events', async () => {
-    const addPageAction = sinon.spy();
+    const trackEvent = sinon.spy();
 
     const { getByRole } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <CaptureAdvice onTryAgain={() => {}} />
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledWith('IdV: warning shown', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
       location: 'doc_auth_capture_advice',
       remaining_attempts: undefined,
     });
@@ -22,7 +22,7 @@ describe('document-capture/components/capture-advice', () => {
     const button = getByRole('button');
     await userEvent.click(button);
 
-    expect(addPageAction).to.have.been.calledWith('IdV: warning action triggered', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning action triggered', {
       location: 'doc_auth_capture_advice',
     });
   });

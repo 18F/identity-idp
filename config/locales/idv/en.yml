@@ -85,8 +85,7 @@ en:
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:
-      link_html: Forgot password? %{link}
-      link_text: Follow these instructions
+      link_text: Forgot password?
       modal_header: Are you sure you can’t remember your password?
       reset_password: Reset password
       try_again: Try again
@@ -124,11 +123,11 @@ en:
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file: We will mail a letter with a confirmation code to the address
-          that you provided on the previous step.
+        address_on_file_html: We will mail a letter with a <strong>confirmation
+          code</strong> to the address that you provided on the previous step.
         resend: Send me another letter
-        timeframe: Letters are sent the next business day via USPS First Class Mail and
-          typically take 3 to 7 business days.
+        timeframe_html: Letters are sent the next business day via USPS First Class Mail
+          and <strong>typically take 3 to 7 business days to arrive</strong>.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that

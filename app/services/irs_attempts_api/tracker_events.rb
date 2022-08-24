@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if account reset request is cancelled
@@ -9,12 +12,23 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success True if the email and password matched
+    # @param [Boolean] success True if Account Reset Deletion submitted successful
     # account Reset Deletion Requested
     def account_reset_request_submitted(success:)
       track_event(
         :account_reset_request_submitted,
         success: success,
+      )
+    end
+
+    # param [Boolean] success True if Account Successfully Deleted
+    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # A User confirms and deletes their Login.gov account after 24 hour period
+    def account_reset_account_deleted(success:, failure_reason:)
+      track_event(
+        :account_reset_account_deleted,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
@@ -29,12 +43,46 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_email_confirmed(success:, failure_reason: nil)
+      track_event(
+        :forgot_password_email_confirmed,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
       track_event(
         :logout_initiated,
         success: success,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+      track_event(
+        :forgot_password_new_password_submitted,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
@@ -254,5 +302,20 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
+
+    # Tracks when user submits registration password
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def user_registration_password_submitted(
+      success:,
+      failure_reason: nil
+    )
+      track_event(
+        :user_registration_password_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
   end
 end
+# rubocop:enable Metrics/ModuleLength

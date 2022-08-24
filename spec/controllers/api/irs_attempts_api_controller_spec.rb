@@ -85,6 +85,12 @@ RSpec.describe Api::IrsAttemptsApiController do
       post :create, params: { timestamp: time.iso8601 }
 
       expect(response.status).to eq(401)
+
+      request.headers['Authorization'] = nil
+
+      post :create, params: { timestamp: time.iso8601 }
+
+      expect(response.status).to eq(401)
     end
 
     it 'renders encrypted events' do

@@ -50,9 +50,9 @@ function Warning({
   location,
   remainingAttempts,
 }: WarningProps) {
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   useEffect(() => {
-    addPageAction('IdV: warning shown', { location, remaining_attempts: remainingAttempts });
+    trackEvent('IdV: warning shown', { location, remaining_attempts: remainingAttempts });
   }, []);
 
   let actionButtons: ReactComponentElement<typeof Button>[] | undefined;
@@ -62,7 +62,7 @@ function Warning({
         isBig
         isWide
         onClick={() => {
-          addPageAction('IdV: warning action triggered', { location });
+          trackEvent('IdV: warning action triggered', { location });
           actionOnClick();
         }}
       >
