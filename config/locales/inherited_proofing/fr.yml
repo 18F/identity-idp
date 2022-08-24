@@ -1,0 +1,16 @@
+---
+fr:
+  inherited_proofing:
+    buttons:
+      continue: replace me
+    headings:
+      welcome: replace me
+    info:
+      no_sp_name: replace me
+      privacy_html: replace me
+      welcome_html: replace me
+    instructions:
+      bullet1: replace me
+      learn_more: replace me
+      privacy: replace me
+      welcome: replace me
