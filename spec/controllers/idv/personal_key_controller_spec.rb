@@ -205,7 +205,7 @@ describe Idv::PersonalKeyController do
       end
     end
 
-    context 'with device profiling collecting enabled' do
+    context 'with device profiling decisioning enabled' do
       before do
         ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
         allow(IdentityConfig.store).

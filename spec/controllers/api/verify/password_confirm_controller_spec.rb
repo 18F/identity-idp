@@ -315,6 +315,35 @@ describe Api::Verify::PasswordConfirmController do
         end
       end
 
+      context 'with device profiling decisioning enabled' do
+        before do
+          ProofingComponent.create(user: user, threatmetrix: true, threatmetrix_review_status: nil)
+          allow(IdentityConfig.store).
+            to receive(:proofing_device_profiling_decisioning_enabled).
+            and_return(true)
+        end
+
+        it 'redirects to come back later path when threatmetrix review status is nil' do
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+        end
+
+        it 'redirects to account path when device profiling passes' do
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'pass')
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(JSON.parse(response.body)['completion_url']).to eq(account_url)
+        end
+
+        it 'redirects to come back later path when device profiling fails' do
+          ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+        end
+      end
+
       context 'with gpo_code returned from form submission and reveal gpo feature enabled' do
         let(:gpo_code) { SecureRandom.hex }
 
