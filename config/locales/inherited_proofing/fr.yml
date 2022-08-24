@@ -2,15 +2,15 @@
 fr:
   inherited_proofing:
     buttons:
-      continue: replace me
+      continue: replaceme
     headings:
-      welcome: replace me
+      welcome: replaceme
     info:
-      no_sp_name: replace me
-      privacy_html: replace me
-      welcome_html: replace me
+      no_sp_name: replaceme
+      privacy_html: replaceme
+      welcome_html: replaceme
     instructions:
-      bullet1: replace me
-      learn_more: replace me
-      privacy: replace me
-      welcome: replace me
+      bullet1: replaceme
+      learn_more: replaceme
+      privacy: replaceme
+      welcome: replaceme
