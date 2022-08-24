@@ -31,8 +31,7 @@ RequestPasswordReset = RedactedStruct.new(
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
 
-      irs_params[:success] = true
-      irs_attempts_api_tracker.forgot_password_email_sent(**irs_params)
+      irs_attempts_api_tracker.forgot_password_email_sent(email: email, success: true)
     end
   end
 
