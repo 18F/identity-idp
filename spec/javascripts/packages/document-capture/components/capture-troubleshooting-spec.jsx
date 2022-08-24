@@ -79,17 +79,17 @@ describe('document-capture/context/capture-troubleshooting', () => {
   });
 
   it('logs events', async () => {
-    const addPageAction = sinon.spy();
+    const trackEvent = sinon.spy();
     const { getByRole } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={0}>
           <CaptureTroubleshooting>Default children</CaptureTroubleshooting>
         </FailedCaptureAttemptsContextProvider>
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledTwice();
-    expect(addPageAction).to.have.been.calledWith('IdV: Capture troubleshooting shown', {
+    expect(trackEvent).to.have.been.calledTwice();
+    expect(trackEvent).to.have.been.calledWith('IdV: Capture troubleshooting shown', {
       isAssessedAsGlare: false,
       isAssessedAsBlurry: false,
     });
@@ -97,7 +97,7 @@ describe('document-capture/context/capture-troubleshooting', () => {
     const tryAgainButton = getByRole('button', { name: 'idv.failure.button.warning' });
     await userEvent.click(tryAgainButton);
 
-    expect(addPageAction.callCount).to.equal(4);
-    expect(addPageAction).to.have.been.calledWith('IdV: Capture troubleshooting dismissed');
+    expect(trackEvent.callCount).to.equal(4);
+    expect(trackEvent).to.have.been.calledWith('IdV: Capture troubleshooting dismissed');
   });
 });
