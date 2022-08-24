@@ -7,8 +7,8 @@ fr:
       welcome: replaceme
     info:
       no_sp_name: replaceme
-      privacy_html: replaceme
-      welcome_html: replaceme
+      privacy_html: replaceme %{app_name} %{link}
+      welcome_html: replaceme %{sp_name}
     instructions:
       bullet1: replaceme
       learn_more: replaceme
