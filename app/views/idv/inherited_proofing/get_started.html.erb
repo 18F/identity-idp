@@ -17,16 +17,14 @@
   <%= simple_form_for :inherited_proofing,
                       url: url_for,
                       method: 'put',
-                      html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
-    <%= f.button :button,
-                 t('inherited_proofing.buttons.continue'),
-                 type: :submit,
-                 class: 'usa-button--big usa-button--wide' %>
+                      html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+    <%= f.submit t('inherited_proofing.buttons.continue') %>
   <% end %>
 
   <h3><%= t('inherited_proofing.instructions.privacy') %></h3>
   <p>
-    <%= t('inherited_proofing.info.privacy_html',
+    <%= t(
+          'inherited_proofing.info.privacy_html',
           app_name: APP_NAME,
           link: new_window_link_to(
             t('inherited_proofing.instructions.learn_more'),
