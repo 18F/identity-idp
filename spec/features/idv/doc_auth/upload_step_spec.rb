@@ -50,7 +50,6 @@ feature 'doc auth upload step' do
       click_on t('doc_auth.buttons.use_phone')
 
       expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-
       expect(fake_analytics).to have_logged_event(
         "IdV: #{Analytics::DOC_AUTH.downcase} upload submitted",
         hash_including(step: 'upload', destination: :document_capture),
