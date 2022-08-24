@@ -21,11 +21,13 @@ RSpec.describe 'In Person Proofing', js: true do
     begin_in_person_proofing(user)
 
     # location page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.location'))
     bethesda_location = page.find_all('.location-collection-item')[1]
     bethesda_location.click_button(t('in_person_proofing.body.location.location_button'))
 
     # prepare page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.find_a_post_office'))
     expect(page).to have_content(t('in_person_proofing.headings.prepare'))
     complete_prepare_step(user)
 
