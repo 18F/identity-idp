@@ -137,7 +137,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_unsupported_status(enrollment, status)
-    # todo: this doesn't actually change the status of the enrollment. should it? should this instead be part of the exception codepath?
     enrollment_outcomes[:enrollments_errored] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_exception(
       **enrollment_attributes(enrollment),

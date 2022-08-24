@@ -164,9 +164,18 @@ RSpec.describe GetUspsProofingResultsJob do
           transaction_start_date_time: '12/17/2020 033855',
         )
 
-        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_since_last_status_check]).to be_instance_of(Float)
-        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_since_last_status_update]).to be_instance_of(Float)
-        expect(job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].first[:minutes_to_completion]).to be_instance_of(Float)
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
+                         first[:minutes_since_last_status_check],
+        ).to be_instance_of(Float)
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
+                         first[:minutes_since_last_status_update],
+        ).to be_instance_of(Float)
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
+                         first[:minutes_to_completion],
+        ).to be_instance_of(Float)
       end
 
       describe 'sending emails' do
