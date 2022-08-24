@@ -1,5 +1,37 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
+    # param [Boolean] success True if account reset request is cancelled
+    # A user cancels the request to delete their account before 24 hour period
+    def account_reset_cancel_request(success:)
+      track_event(
+        :account_reset_cancel_request,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success True if Account Reset Deletion submitted successful
+    # account Reset Deletion Requested
+    def account_reset_request_submitted(success:)
+      track_event(
+        :account_reset_request_submitted,
+        success: success,
+      )
+    end
+
+    # param [Boolean] success True if Account Successfully Deleted
+    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # A User confirms and deletes their Login.gov account after 24 hour period
+    def account_reset_account_deleted(success:, failure_reason:)
+      track_event(
+        :account_reset_account_deleted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
@@ -23,13 +55,35 @@ module IrsAttemptsApi
     # Tracks when the user has requested a forgot password email
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the forgot password email was sent
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def forgot_password_email_sent(email:, success:, failure_reason: nil)
+    def forgot_password_email_sent(email:, success:)
       track_event(
         :forgot_password_email_sent,
         email: email,
         success: success,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_email_confirmed(success:, failure_reason: nil)
+      track_event(
+        :forgot_password_email_confirmed,
+        success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
       )
     end
 
@@ -42,14 +96,13 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success True if selection was valid
-    # @param [Array<String>] mfa_device_types List of MFA options users selected on account creation
-    # A user has selected MFA options
-    def mfa_enroll_options_selected(success:, mfa_device_types:)
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
       track_event(
-        :mfa_enroll_options_selected,
+        :forgot_password_new_password_submitted,
         success: success,
-        mfa_device_types: mfa_device_types,
+        failure_reason: failure_reason,
       )
     end
 
@@ -59,6 +112,17 @@ module IrsAttemptsApi
       track_event(
         :mfa_enroll_backup_code,
         success: success,
+      )
+    end
+
+    # @param [Boolean] success True if selection was valid
+    # @param [Array<String>] mfa_device_types List of MFA options users selected on account creation
+    # A user has selected MFA options
+    def mfa_enroll_options_selected(success:, mfa_device_types:)
+      track_event(
+        :mfa_enroll_options_selected,
+        success: success,
+        mfa_device_types: mfa_device_types,
       )
     end
 
@@ -81,6 +145,33 @@ module IrsAttemptsApi
       track_event(
         :mfa_enroll_phone_otp_submitted,
         success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to enroll the piv cac MFA method to their account
+    # @param [String] subject_dn
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def mfa_enroll_piv_cac(
+      success:,
+      subject_dn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :mfa_enroll_piv_cac,
+        success: success,
+        subject_dn: subject_dn,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] type - the type of multi-factor authentication used
+    # The user has exceeded the rate limit during enrollment
+    # and account has been locked
+    def mfa_enroll_rate_limited(type:)
+      track_event(
+        :mfa_enroll_rate_limited,
+        type: type,
       )
     end
 
@@ -111,11 +202,11 @@ module IrsAttemptsApi
       )
     end
 
-    # Tracks when the user has attempted to verify the Backup Codes MFA method to their account
+    # Tracks when the user has attempted to log in with the Backup Codes MFA method to their account
     # @param [Boolean] success
-    def mfa_verify_backup_code(success:)
+    def mfa_login_backup_code(success:)
       track_event(
-        :mfa_verify_backup_code,
+        :mfa_login_backup_code,
         success: success,
       )
     end
@@ -124,9 +215,9 @@ module IrsAttemptsApi
     # @param [String] phone_number - The user's phone_number used for multi-factor authentication
     # @param [Boolean] success - True if the OTP Verification was sent
     # During a login attempt, an OTP code has been sent via SMS.
-    def mfa_verify_phone_otp_sent(reauthentication:, phone_number:, success:)
+    def mfa_login_phone_otp_sent(reauthentication:, phone_number:, success:)
       track_event(
-        :mfa_verify_phone_otp_sent,
+        :mfa_login_phone_otp_sent,
         reauthentication: reauthentication,
         phone_number: phone_number,
         success: success,
@@ -136,61 +227,17 @@ module IrsAttemptsApi
     # @param [Boolean] success - True if the sms otp submitted matched what was sent
     # During a login attempt, the user, having previously been sent an OTP code via SMS
     # has entered an OTP code.
-    def mfa_verify_phone_otp_submitted(reauthentication:, success:)
+    def mfa_login_phone_otp_submitted(reauthentication:, success:)
       track_event(
-        :mfa_verify_phone_otp_submitted,
+        :mfa_login_phone_otp_submitted,
         reauthentication: reauthentication,
         success: success,
       )
     end
 
-    # Tracks when the user has attempted to verify via the TOTP MFA method to access their account
+    # Tracks when the user has attempted to log in with the piv cac MFA method to their account
     # @param [Boolean] success
-    def mfa_verify_totp(success:)
-      track_event(
-        :mfa_verify_totp,
-        success: success,
-      )
-    end
-
-    # Tracks when user has attempted to verify via the WebAuthn-Platform MFA method to their account
-    # @param [Boolean] success
-    def mfa_verify_webauthn_platform(success:)
-      track_event(
-        :mfa_verify_webauthn_platform,
-        success: success,
-      )
-    end
-
-    # Tracks when the user has attempted to verify via the WebAuthn MFA method to their account
-    # @param [Boolean] success
-    def mfa_verify_webauthn_roaming(success:)
-      track_event(
-        :mfa_verify_webauthn_roaming,
-        success: success,
-      )
-    end
-
-    # Tracks when the user has attempted to enroll the piv cac MFA method to their account
     # @param [String] subject_dn
-    # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def mfa_enroll_piv_cac(
-      success:,
-      subject_dn: nil,
-      failure_reason: nil
-    )
-      track_event(
-        :mfa_enroll_piv_cac,
-        success: success,
-        subject_dn: subject_dn,
-        failure_reason: failure_reason,
-      )
-    end
-
-    # Tracks when the user has attempted to verify the piv cac MFA method to their account
-    # @param [String] subject_dn
-    # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def mfa_login_piv_cac(
       success:,
@@ -202,6 +249,43 @@ module IrsAttemptsApi
         success: success,
         subject_dn: subject_dn,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] type - the type of multi-factor authentication used
+    # The user has exceeded the rate limit during verification
+    # and account has been locked
+    def mfa_login_rate_limited(type:)
+      track_event(
+        :mfa_login_rate_limited,
+        type: type,
+      )
+    end
+
+    # Tracks when the user has attempted to log in with the TOTP MFA method to access their account
+    # @param [Boolean] success
+    def mfa_login_totp(success:)
+      track_event(
+        :mfa_login_totp,
+        success: success,
+      )
+    end
+
+    # Tracks when user has attempted to log in with WebAuthn-Platform MFA method to their account
+    # @param [Boolean] success
+    def mfa_login_webauthn_platform(success:)
+      track_event(
+        :mfa_login_webauthn_platform,
+        success: success,
+      )
+    end
+
+    # Tracks when the user has attempted to log in with the WebAuthn MFA method to their account
+    # @param [Boolean] success
+    def mfa_login_webauthn_roaming(success:)
+      track_event(
+        :mfa_login_webauthn_roaming,
+        success: success,
       )
     end
 
@@ -238,5 +322,20 @@ module IrsAttemptsApi
         failure_reason: failure_reason,
       )
     end
+
+    # Tracks when user submits registration password
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def user_registration_password_submitted(
+      success:,
+      failure_reason: nil
+    )
+      track_event(
+        :user_registration_password_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
   end
 end
+# rubocop:enable Metrics/ModuleLength

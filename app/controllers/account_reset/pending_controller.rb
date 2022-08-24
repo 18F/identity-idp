@@ -14,6 +14,9 @@ module AccountReset
 
     def cancel
       analytics.pending_account_reset_cancelled
+      irs_attempts_api_tracker.account_reset_cancel_request(
+        success: true,
+      )
       AccountReset::CancelRequestForUser.new(current_user).call
     end
 

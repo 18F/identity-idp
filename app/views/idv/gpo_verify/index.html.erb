@@ -9,9 +9,12 @@
       } %>
 <% end %>
 
-<% title t('titles.verify_profile') %>
+<% title t('forms.verify_profile.title') %>
 
-<%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.title')) %>
+<%= render PageHeadingComponent.new.with_content(t('forms.verify_profile.welcome_back')) %>
+<%= sanitize t('forms.verify_profile.welcome_back_description'), tags: %i[p strong] %>
+<hr class="margin-y-4" />
+<h2><%= t('forms.verify_profile.title') %></h2>
 
 <p>
   <%= t('forms.verify_profile.instructions') %>
@@ -35,9 +38,7 @@
             },
             label: t('forms.verify_profile.name'),
           ) %>
-      <%= f.button :submit,
-                   t('forms.verify_profile.submit'),
-                   class: 'usa-button--big usa-button--full-width display-block margin-top-5' %>
+      <%= f.submit t('forms.verify_profile.submit'), full_width: true, wide: false, class: 'display-block margin-top-5' %>
     </div>
   </div>
 <% end %>

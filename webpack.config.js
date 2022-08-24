@@ -77,7 +77,20 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
           : filename;
       },
       writeToDisk: true,
+      integrity: isProductionEnv,
       output: 'manifest.json',
+      transform(manifest) {
+        const srcIntegrity = {};
+        for (const [key, { src, integrity }] of Object.entries(manifest)) {
+          if (integrity) {
+            srcIntegrity[src] = integrity;
+            delete manifest[key];
+          }
+        }
+
+        manifest.integrity = srcIntegrity;
+        return manifest;
+      },
     }),
     new RailsI18nWebpackPlugin({
       onMissingString(key, locale) {

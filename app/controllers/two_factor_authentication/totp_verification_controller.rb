@@ -19,12 +19,12 @@ module TwoFactorAuthentication
       result = TotpVerificationForm.new(current_user, params.require(:code).strip).submit
 
       analytics.track_mfa_submit_event(result.to_h)
-      irs_attempts_api_tracker.mfa_verify_totp(success: result.success?)
+      irs_attempts_api_tracker.mfa_login_totp(success: result.success?)
 
       if result.success?
         handle_valid_otp
       else
-        handle_invalid_otp
+        handle_invalid_otp(context: context, type: 'totp')
       end
     end
 

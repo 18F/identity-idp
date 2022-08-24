@@ -39,7 +39,7 @@
   <%= t('idv.messages.phone.final_note_html') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @idv_form,
       url: idv_phone_path,
       data: {

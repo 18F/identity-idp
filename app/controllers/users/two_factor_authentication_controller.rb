@@ -211,15 +211,15 @@ module Users
         success: @telephony_result.success?,
       )
 
-      if UserSessionContext.authentication_context?(context)
-        irs_attempts_api_tracker.mfa_verify_phone_otp_sent(
-          reauthentication: false,
+      if UserSessionContext.reauthentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
+          reauthentication: true,
           phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
         )
-      elsif UserSessionContext.reauthentication_context?(context)
-        irs_attempts_api_tracker.mfa_verify_phone_otp_sent(
-          reauthentication: true,
+      elsif UserSessionContext.authentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_phone_otp_sent(
+          reauthentication: false,
           phone_number: parsed_phone.e164,
           success: @telephony_result.success?,
         )

@@ -17,11 +17,19 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type)
+  def handle_second_factor_locked_user(type:, context: nil)
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
     handle_max_attempts(type + '_login_attempts')
+
+    if context
+      if UserSessionContext.authentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_rate_limited(type: type)
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_enroll_rate_limited(type: type)
+      end
+    end
   end
 
   def handle_too_many_otp_sends
@@ -108,13 +116,13 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type: 'otp')
+  def handle_invalid_otp(type:, context: nil)
     update_invalid_user
 
     flash.now[:error] = invalid_otp_error(type)
 
     if decorated_user.locked_out?
-      handle_second_factor_locked_user(type)
+      handle_second_factor_locked_user(context: context, type: type)
     else
       render_show_after_invalid
     end
@@ -123,6 +131,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
   def invalid_otp_error(type)
     case type
     when 'otp'
+      t('two_factor_authentication.invalid_otp')
+    when 'totp'
       t('two_factor_authentication.invalid_otp')
     when 'personal_key'
       t('two_factor_authentication.invalid_personal_key')

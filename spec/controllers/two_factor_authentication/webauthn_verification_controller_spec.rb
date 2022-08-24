@@ -83,7 +83,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_verify_webauthn_roaming,
+          :mfa_login_webauthn_roaming,
           success: true,
         )
 
@@ -108,7 +108,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           with('User marked authenticated', authentication_type: :valid_2fa)
 
         expect(@irs_attempts_api_tracker).to receive(:track_event).with(
-          :mfa_verify_webauthn_platform,
+          :mfa_login_webauthn_platform,
           success: true,
         )
 
@@ -151,8 +151,8 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           let(:view_context) { ActionController::Base.new.view_context }
           before do
             allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-            to receive(:multiple_factors_enabled?).
-            and_return(true)
+              to receive(:multiple_factors_enabled?).
+              and_return(true)
           end
 
           it 'redirects to webauthn show page' do
@@ -175,8 +175,8 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         context 'User only has webauthn as an MFA method' do
           before do
             allow_any_instance_of(TwoFactorAuthCode::WebauthnAuthenticationPresenter).
-            to receive(:multiple_factors_enabled?).
-            and_return(false)
+              to receive(:multiple_factors_enabled?).
+              and_return(false)
           end
 
           it 'redirects to webauthn error page ' do

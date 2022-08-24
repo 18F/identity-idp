@@ -13,7 +13,8 @@ class ResolutionProofingJob < ApplicationJob
   )
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:, user_id: nil, threatmetrix_session_id: nil)
+              dob_year_only:, user_id: nil, threatmetrix_session_id: nil,
+              uuid_prefix: nil, request_ip: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -25,14 +26,15 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    threatmetrix_result = nil
-    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-      user = User.find_by(id: user_id)
-      threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix(
-        applicant_pii, user, threatmetrix_session_id
-      )
-      log_threatmetrix_info(threatmetrix_result, user)
-    end
+    user = User.find_by(id: user_id)
+
+    optional_threatmetrix_result = proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+      applicant_pii: applicant_pii,
+      user: user,
+      threatmetrix_session_id: threatmetrix_session_id,
+      request_ip: request_ip,
+      uuid_prefix: uuid_prefix,
+    )
 
     callback_log_data = if dob_year_only && should_proof_state_id
                           proof_aamva_then_lexisnexis_dob_only(
@@ -48,8 +50,11 @@ class ResolutionProofingJob < ApplicationJob
                           )
                         end
 
-    if use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-      add_threatmetrix_result_to_callback_result(callback_log_data.result, threatmetrix_result)
+    if optional_threatmetrix_result.present?
+      add_threatmetrix_result_to_callback_result(
+        callback_log_data.result,
+        optional_threatmetrix_result,
+      )
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -84,12 +89,33 @@ class ResolutionProofingJob < ApplicationJob
     callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
   end
 
-  def proof_lexisnexis_ddp_with_threatmetrix(applicant_pii, user, threatmetrix_session_id)
+  def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
+    applicant_pii:,
+    user:,
+    threatmetrix_session_id:,
+    request_ip:,
+    uuid_prefix:
+  )
+    return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+
+    # The API call will fail without a session ID, so do not attempt to make
+    # it to avoid leaking data when not required.
+    return if threatmetrix_session_id.blank?
+
     return unless applicant_pii
+
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
     ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    lexisnexis_ddp_proofer.proof(ddp_pii)
+    ddp_pii[:input_ip_address] = request_ip
+    ddp_pii[:local_attrib_1] = uuid_prefix
+
+    result = lexisnexis_ddp_proofer.proof(ddp_pii)
+
+    log_threatmetrix_info(result, user)
+    add_threatmetrix_proofing_component(user.id, result)
+
+    result
   end
 
   # @return [CallbackLogData]
@@ -269,7 +295,10 @@ class ResolutionProofingJob < ApplicationJob
       end
   end
 
-  def use_lexisnexis_ddp_threatmetrix_before_rdp_instant_verify?
-    IdentityConfig.store.lexisnexis_threatmetrix_enabled
+  def add_threatmetrix_proofing_component(user_id, threatmetrix_result)
+    ProofingComponent.
+      create_or_find_by(user_id: user_id).
+      update(threatmetrix: true,
+             threatmetrix_review_status: threatmetrix_result.review_status)
   end
 end

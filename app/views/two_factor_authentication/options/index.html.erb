@@ -8,7 +8,7 @@
   <%= @presenter.info %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @two_factor_options_form,
       html: { autocomplete: 'off' },
       method: :post,
@@ -37,11 +37,7 @@
     <% end %>
   </div>
 
-  <%= f.button(
-        :submit,
-        t('forms.buttons.continue'),
-        class: 'display-block margin-y-5 usa-button--big usa-button--wide',
-      ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <p>
