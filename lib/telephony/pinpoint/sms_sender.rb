@@ -94,7 +94,7 @@ module Telephony
           )
           break if response
         rescue Seahorse::Client::NetworkingError,
-               Aws::Pinpoint::Errors::InternalServerErrorException => error
+               Aws::Pinpoint::Errors::ServiceError => error
           PinpointHelper.notify_pinpoint_failover(
             error: error,
             region: sms_config.region,
