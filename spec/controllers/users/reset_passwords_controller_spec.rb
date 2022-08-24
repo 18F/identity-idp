@@ -13,15 +13,17 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'no user matches token' do
-      it 'redirects to page where user enters email for password reset token' do
-        get :edit, params: { reset_password_token: 'foo' }
-
-        analytics_hash = {
+      let(:analytics_hash) do
+        {
           success: false,
           errors: { user: ['invalid_token'] },
           error_details: { user: [:blank] },
           user_id: nil,
         }
+      end
+
+      it 'redirects to page where user enters email for password reset token' do
+        get :edit, params: { reset_password_token: 'foo' }
 
         expect(@analytics).to have_received(:track_event).
           with('Password Reset: Token Submitted', analytics_hash)
@@ -455,7 +457,6 @@ describe Users::ResetPasswordsController, devise: true do
           :forgot_password_email_sent,
           email: email,
           success: true,
-          failure_reason: nil,
         )
 
         expect(response).to redirect_to forgot_password_path
@@ -502,7 +503,6 @@ describe Users::ResetPasswordsController, devise: true do
           :forgot_password_email_sent,
           email: user.email,
           success: true,
-          failure_reason: nil,
         )
 
         expect(response).to redirect_to forgot_password_path
@@ -536,7 +536,6 @@ describe Users::ResetPasswordsController, devise: true do
           :forgot_password_email_sent,
           email: user.email,
           success: true,
-          failure_reason: nil,
         )
       end
     end

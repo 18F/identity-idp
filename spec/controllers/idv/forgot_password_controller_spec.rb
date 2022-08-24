@@ -41,7 +41,6 @@ describe Idv::ForgotPasswordController do
         :forgot_password_email_sent,
         email: user.email,
         success: true,
-        failure_reason: nil,
       )
     end
   end
