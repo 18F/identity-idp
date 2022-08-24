@@ -124,7 +124,6 @@ function VerifyFlowStepIndicator({
   const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
   const statusOverrides = getStatusOverrides({ addressVerificationMethod });
 
-  // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_info')
