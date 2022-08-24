@@ -8,9 +8,14 @@ module Idv
       def call
         return throttled_failure if throttle.throttled_else_increment?
         telephony_result = send_link
+        failure_reason = nil
+        unless telephony_result.success?
+          failure_reason = { telephony: [telephony_result.error.class.name.demodulize] }
+        end
         @flow.irs_attempts_api_tracker.idv_phone_upload_link_sent(
           success: telephony_result.success?,
           phone_number: formatted_destination_phone,
+          failure_reason: failure_reason,
         )
         return failure(telephony_result.error.friendly_message) unless telephony_result.success?
       end
