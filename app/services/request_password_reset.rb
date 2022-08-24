@@ -17,10 +17,6 @@ RequestPasswordReset = RedactedStruct.new(
   private
 
   def send_reset_password_instructions
-    irs_params = {
-      email: email,
-    }
-
     if Throttle.new(user: user, throttle_type: :reset_password_email).throttled_else_increment?
       analytics.throttler_rate_limit_triggered(throttle_type: :reset_password_email)
       irs_attempts_api_tracker.forgot_password_email_rate_limited(email: email)
