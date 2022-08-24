@@ -33,7 +33,7 @@ module IrsAttemptsApi
     end
 
     # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
-    # A user has selected id document upload method    
+    # A user has selected id document upload method
     def document_upload_method_selected(upload_method:)
       track_event(
         :document_upload_method_selected,

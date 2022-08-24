@@ -22,7 +22,7 @@ module Flow
       step = current_step
       result = flow.handle(step)
 
-      if params[:controller]=="idv/doc_auth" and step == "upload"
+      if params[:controller] == 'idv/doc_auth' && step == 'upload'
         irs_attempts_api_tracker.document_upload_method_selected(upload_method: params[:type])
       end
 
