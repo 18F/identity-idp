@@ -106,7 +106,7 @@ function getStatusOverrides({
 }: {
   addressVerificationMethod: AddressVerificationMethod;
 }) {
-  const statuses: Partial<Record<string, StepStatus>> = {};
+  const statuses: Partial<Record<VerifyFlowStepIndicatorStep, StepStatus>> = {};
 
   if (addressVerificationMethod === 'gpo') {
     statuses.verify_phone_or_address = StepStatus.PENDING;
