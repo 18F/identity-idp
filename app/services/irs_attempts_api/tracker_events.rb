@@ -50,6 +50,15 @@ module IrsAttemptsApi
       )
     end
 
+    # The user reached the rate limit for Idv phone OTP submitted
+    # @param [String] phone
+    def idv_phone_otp_submitted_rate_limited(phone:)
+      track_event(
+        :idv_phone_otp_submitted_rate_limited,
+        phone: phone,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
