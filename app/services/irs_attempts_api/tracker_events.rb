@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if account reset request is cancelled
@@ -29,12 +32,41 @@ module IrsAttemptsApi
       )
     end
 
+    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
+    # A user has selected id document upload method
+    def document_upload_method_selected(upload_method:)
+      track_event(
+        :document_upload_method_selected,
+        upload_method: upload_method,
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
     def email_and_password_auth(email:, success:)
       track_event(
         :email_and_password_auth,
+        email: email,
+        success: success,
+      )
+    end
+
+    # The user has exceeded the rate limit for password reset emails
+    # @param [String] email The user's email address
+    def forgot_password_email_rate_limited(email:)
+      track_event(
+        :forgot_password_email_rate_limited,
+        email: email,
+      )
+    end
+
+    # Tracks when the user has requested a forgot password email
+    # @param [String] email The submitted email address
+    # @param [Boolean] success True if the forgot password email was sent
+    def forgot_password_email_sent(email:, success:)
+      track_event(
+        :forgot_password_email_sent,
         email: email,
         success: success,
       )
@@ -56,6 +88,20 @@ module IrsAttemptsApi
       track_event(
         :idv_phone_otp_submitted_rate_limited,
         phone: phone,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
       )
     end
 
@@ -310,3 +356,4 @@ module IrsAttemptsApi
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

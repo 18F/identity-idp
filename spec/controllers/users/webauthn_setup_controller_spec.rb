@@ -247,6 +247,11 @@ describe Users::WebauthnSetupController do
         end
         it 'should log expected events' do
           expect(@analytics).to receive(:track_event).with(
+            'User Registration: User Fully Registered',
+            { mfa_method: 'webauthn_platform' },
+          )
+
+          expect(@analytics).to receive(:track_event).with(
             'Multi-Factor Authentication Setup',
             {
               enabled_mfa_methods_count: 1,
@@ -272,7 +277,10 @@ describe Users::WebauthnSetupController do
             :mfa_enroll_webauthn_platform, success: true
           )
 
+          registration_log = Funnel::Registration::Create.call(user.id)
           patch :confirm, params: params
+
+          expect(registration_log.reload.first_mfa).to eq 'webauthn_platform'
         end
       end
 

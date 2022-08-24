@@ -2,7 +2,8 @@ import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { FlowContext } from '@18f/identity-verify-flow';
+import { FlowContext, VerifyFlowStepIndicator } from '@18f/identity-verify-flow';
+import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
@@ -20,20 +21,15 @@ import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
 
-/** @typedef {import('react').ReactNode} ReactNode */
-/** @typedef {import('@18f/identity-form-steps').FormStep} FormStep */
-
 /**
  * Returns a new object with specified keys removed.
  *
- * @template {Record<string,any>} T
+ * @param object Original object.
+ * @param keys Keys to remove.
  *
- * @param {T} object Original object.
- * @param {...string} keys Keys to remove.
- *
- * @return {Partial<T>} Object with keys removed.
+ * @return Object with keys removed.
  */
-export const except = (object, ...keys) =>
+export const except = <T extends Record<string, any>>(object: T, ...keys: string[]): Partial<T> =>
   Object.entries(object).reduce((result, [key, value]) => {
     if (!keys.includes(key)) {
       result[key] = value;
@@ -42,19 +38,21 @@ export const except = (object, ...keys) =>
     return result;
   }, {});
 
-/**
- * @typedef DocumentCaptureProps
- *
- * @prop {boolean=} isAsyncForm Whether submission should poll for async response.
- * @prop {()=>void=} onStepChange Callback triggered on step change.
- */
+interface DocumentCaptureProps {
+  /**
+   * Whether submission should poll for async response.
+   */
+  isAsyncForm?: boolean;
 
-/**
- * @param {DocumentCaptureProps} props
- */
-function DocumentCapture({ isAsyncForm = false, onStepChange }) {
-  const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
-  const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
+  /**
+   * Callback triggered on step change.
+   */
+  onStepChange?: () => void;
+}
+
+function DocumentCapture({ isAsyncForm = false, onStepChange }: DocumentCaptureProps) {
+  const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
+  const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
@@ -63,9 +61,9 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   /**
    * Clears error state and sets form values for submission.
    *
-   * @param {Record<string,any>} nextFormValues Submitted form values.
+   * @param nextFormValues Submitted form values.
    */
-  function submitForm(nextFormValues) {
+  function submitForm(nextFormValues: Record<string, any>) {
     setSubmissionError(undefined);
     setFormValues(nextFormValues);
   }
@@ -98,10 +96,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     }
   }
 
-  const inPersonSteps =
+  const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
-      : /** @type {FormStep[]} */ ([
+      : ([
           {
             name: 'location',
             form: InPersonLocationStep,
@@ -114,70 +112,72 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
             name: 'switch_back',
             form: InPersonSwitchBackStep,
           },
-        ]).filter(Boolean);
+        ].filter(Boolean) as FormStep[]);
 
-  /** @type {FormStep[]} */
-  const steps = submissionError
-    ? /** @type {FormStep[]} */ ([
-        {
-          name: 'review',
-          form:
-            submissionError instanceof UploadFormEntriesError
-              ? withProps({
-                  remainingAttempts: submissionError.remainingAttempts,
-                  isFailedResult: submissionError.isFailedResult,
-                  captureHints: submissionError.hints,
-                  pii: submissionError.pii,
-                })(ReviewIssuesStep)
-              : ReviewIssuesStep,
-        },
-      ])
-        .concat(inPersonSteps)
-        .filter(Boolean)
-    : /** @type {FormStep[]} */ (
+  const steps: FormStep[] = submissionError
+    ? (
         [
           {
-            name: 'documents',
-            form: DocumentsStep,
+            name: 'review',
+            form:
+              submissionError instanceof UploadFormEntriesError
+                ? withProps({
+                    remainingAttempts: submissionError.remainingAttempts,
+                    isFailedResult: submissionError.isFailedResult,
+                    captureHints: submissionError.hints,
+                    pii: submissionError.pii,
+                  })(ReviewIssuesStep)
+                : ReviewIssuesStep,
           },
-          serviceProvider.isLivenessRequired && {
-            name: 'selfie',
-            form: SelfieStep,
-          },
-        ].filter(Boolean)
-      );
+        ] as FormStep[]
+      ).concat(inPersonSteps)
+    : ([
+        {
+          name: 'documents',
+          form: DocumentsStep,
+        },
+        serviceProvider.isLivenessRequired && {
+          name: 'selfie',
+          form: SelfieStep,
+        },
+      ].filter(Boolean) as FormStep[]);
 
-  return submissionFormValues &&
-    (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+  return (
     <>
-      <SubmissionInterstitial autoFocus />
-      <SuspenseErrorBoundary
-        fallback={<PromptOnNavigate />}
-        onError={setSubmissionError}
-        handledError={submissionError}
-      >
-        {submissionError instanceof RetrySubmissionError ? (
-          <SubmissionStatus />
-        ) : (
-          <Submission payload={submissionFormValues} />
-        )}
-      </SuspenseErrorBoundary>
-    </>
-  ) : (
-    <>
-      {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
-        <Alert type="error" className="margin-bottom-4">
-          {t('doc_auth.errors.general.network_error')}
-        </Alert>
+      <VerifyFlowStepIndicator currentStep="document_capture" />
+      {submissionFormValues &&
+      (!submissionError || submissionError instanceof RetrySubmissionError) ? (
+        <>
+          <SubmissionInterstitial autoFocus />
+          <SuspenseErrorBoundary
+            fallback={<PromptOnNavigate />}
+            onError={setSubmissionError}
+            handledError={submissionError}
+          >
+            {submissionError instanceof RetrySubmissionError ? (
+              <SubmissionStatus />
+            ) : (
+              <Submission payload={submissionFormValues} />
+            )}
+          </SuspenseErrorBoundary>
+        </>
+      ) : (
+        <>
+          {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
+            <Alert type="error" className="margin-bottom-4">
+              {t('doc_auth.errors.general.network_error')}
+            </Alert>
+          )}
+          <FormSteps
+            steps={steps}
+            initialValues={initialValues}
+            initialActiveErrors={initialActiveErrors}
+            onComplete={submitForm}
+            onStepChange={onStepChange}
+            autoFocus={!!submissionError}
+          />
+        </>
       )}
-      <FormSteps
-        steps={steps}
-        initialValues={initialValues}
-        initialActiveErrors={initialActiveErrors}
-        onComplete={submitForm}
-        onStepChange={onStepChange}
-        autoFocus={!!submissionError}
-      />
     </>
   );
 }

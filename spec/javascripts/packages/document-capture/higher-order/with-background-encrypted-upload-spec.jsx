@@ -132,7 +132,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
 
     describe('upload', () => {
       async function renderWithResponse(response) {
-        const addPageAction = sinon.spy();
+        const trackEvent = sinon.spy();
         const onChange = sinon.spy();
         const onError = sinon.spy();
         const key = await window.crypto.subtle.generateKey(
@@ -145,7 +145,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         );
         sandbox.stub(window, 'fetch').callsFake(() => Promise.resolve(response));
         render(
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
             <UploadContextProvider
               backgroundUploadURLs={{ foo: 'about:blank' }}
               backgroundUploadEncryptKey={key}
@@ -155,7 +155,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           </AnalyticsContext.Provider>,
         );
 
-        return { onChange, onError, addPageAction };
+        return { onChange, onError, trackEvent };
       }
 
       context('success', () => {
@@ -185,15 +185,15 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         });
 
         it('logs result', async () => {
-          const { onChange, addPageAction } = await renderWithResponse(response);
+          const { onChange, trackEvent } = await renderWithResponse(response);
 
           await onChange.getCall(0).args[0].foo_image_url;
-          expect(addPageAction).to.have.been.calledTwice();
-          expect(addPageAction).to.have.been.calledWith(
+          expect(trackEvent).to.have.been.calledTwice();
+          expect(trackEvent).to.have.been.calledWith(
             'IdV: document capture async upload encryption',
             { success: true },
           );
-          expect(addPageAction).to.have.been.calledWith(
+          expect(trackEvent).to.have.been.calledWith(
             'IdV: document capture async upload submitted',
             { success: true, trace_id: null, status_code: 200 },
           );
@@ -238,7 +238,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const error = new Error();
           sandbox.stub(window.crypto.subtle, 'encrypt').throws(error);
           sandbox.spy(analytics, 'trackError');
-          const { onChange, onError, addPageAction } = await renderWithResponse(response);
+          const { onChange, onError, trackEvent } = await renderWithResponse(response);
 
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
@@ -246,7 +246,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
             { field: 'foo' },
           );
-          expect(addPageAction).to.have.been.calledWith(
+          expect(trackEvent).to.have.been.calledWith(
             'IdV: document capture async upload encryption',
             { success: false },
           );
@@ -266,15 +266,15 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         });
 
         it('logs result', async () => {
-          const { onChange, addPageAction } = await renderWithResponse(response);
+          const { onChange, trackEvent } = await renderWithResponse(response);
 
           await onChange.getCall(0).args[0].foo_image_url.catch(() => {});
-          expect(addPageAction).to.have.been.calledTwice();
-          expect(addPageAction).to.have.been.calledWith(
+          expect(trackEvent).to.have.been.calledTwice();
+          expect(trackEvent).to.have.been.calledWith(
             'IdV: document capture async upload encryption',
             { success: true },
           );
-          expect(addPageAction).to.have.been.calledWith(
+          expect(trackEvent).to.have.been.calledWith(
             'IdV: document capture async upload submitted',
             {
               success: false,

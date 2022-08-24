@@ -79,14 +79,14 @@ function ReviewIssuesStep({
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const selfieError = errors.find(({ field }) => field === 'selfie')?.error;
   const [hasDismissed, setHasDismissed] = useState(remainingAttempts === Infinity);
   const { onPageTransition, changeStepCanComplete } = useContext(FormStepsContext);
   useDidUpdateEffect(onPageTransition, [hasDismissed]);
 
   function onWarningPageDismissed() {
-    addPageAction('IdV: Capture troubleshooting dismissed');
+    trackEvent('IdV: Capture troubleshooting dismissed');
 
     setHasDismissed(true);
   }

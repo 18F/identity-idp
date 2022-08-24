@@ -14,6 +14,8 @@ module Idv
       add_proofing_component
 
       finish_idv_session
+
+      @confirm = FeatureManagement.idv_personal_key_confirmation_enabled? ? 'modal' : 'skip'
     end
 
     def update

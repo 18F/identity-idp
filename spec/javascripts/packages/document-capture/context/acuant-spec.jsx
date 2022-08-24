@@ -126,13 +126,13 @@ describe('document-capture/context/acuant', () => {
 
     context('successful initialization', () => {
       let result;
-      let addPageAction;
+      let trackEvent;
 
       beforeEach(() => {
-        addPageAction = sinon.spy();
+        trackEvent = sinon.spy();
         ({ result } = renderHook(() => useContext(AcuantContext), {
           wrapper: ({ children }) => (
-            <AnalyticsContext.Provider value={{ addPageAction }}>
+            <AnalyticsContext.Provider value={{ trackEvent }}>
               <DeviceContext.Provider value={{ isMobile: true }}>
                 <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
                   {children}
@@ -156,7 +156,7 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('logs', () => {
-          expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+          expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK loaded', {
             success: true,
             isCameraSupported: true,
           });
@@ -176,7 +176,7 @@ describe('document-capture/context/acuant', () => {
         });
 
         it('logs', () => {
-          expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+          expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK loaded', {
             success: true,
             isCameraSupported: false,
           });
@@ -186,13 +186,13 @@ describe('document-capture/context/acuant', () => {
 
     context('failed initialization', () => {
       let result;
-      let addPageAction;
+      let trackEvent;
 
       beforeEach(() => {
-        addPageAction = sinon.spy();
+        trackEvent = sinon.spy();
         ({ result } = renderHook(() => useContext(AcuantContext), {
           wrapper: ({ children }) => (
-            <AnalyticsContext.Provider value={{ addPageAction }}>
+            <AnalyticsContext.Provider value={{ trackEvent }}>
               <DeviceContext.Provider value={{ isMobile: true }}>
                 <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
                   {children}
@@ -213,7 +213,7 @@ describe('document-capture/context/acuant', () => {
       });
 
       it('logs', () => {
-        expect(addPageAction).to.have.been.calledWith('IdV: Acuant SDK loaded', {
+        expect(trackEvent).to.have.been.calledWith('IdV: Acuant SDK loaded', {
           success: false,
           code: sinon.match.number,
           description: sinon.match.string,

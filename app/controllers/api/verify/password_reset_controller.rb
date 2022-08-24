@@ -17,7 +17,12 @@ module Api
 
       def reset_password(email, request_id)
         sign_out
-        RequestPasswordReset.new(email: email, request_id: request_id, analytics: analytics).perform
+        RequestPasswordReset.new(
+          email: email,
+          request_id: request_id,
+          analytics: analytics,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        ).perform
         session[:email] = email
       end
     end
