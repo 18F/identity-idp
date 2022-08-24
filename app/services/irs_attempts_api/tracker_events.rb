@@ -128,6 +128,17 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] success - True if the user was locked out
+    # The user has exceeded the rate limit for SMS OTP sends.
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:, success:)
+      track_event(
+        :mfa_enroll_phone_otp_sent_rate_limited,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
     # Tracks when the user has attempted to enroll the piv cac MFA method to their account
     # @param [String] subject_dn
     # @param [Boolean] success
@@ -199,6 +210,17 @@ module IrsAttemptsApi
       track_event(
         :mfa_login_phone_otp_sent,
         reauthentication: reauthentication,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] success - True if the user was locked out
+    # The user has exceeded the rate limit for SMS OTP sends.
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:, success:)
+      track_event(
+        :mfa_login_phone_otp_sent_rate_limited,
         phone_number: phone_number,
         success: success,
       )
