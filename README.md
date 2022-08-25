@@ -27,9 +27,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 -- (to install Node.js v.14 using brew: `brew install node@14`)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
-  
+
 2. You will need to install openssl version 1.1:
-  
+
 - Run `brew install openssl@1.1`
 
 3. Test that you have Postgres and Redis running.
@@ -237,4 +237,18 @@ $ ulimit -Sn 65536 && make test
 To set this _permanently_, add the following to your `~/.zshrc` or `~/.bash_profile` file, depending on your shell:
 ```
 ulimit -Sn 65536
+```
+
+##### Initializing a local database
+``` docker build ./ -f postgres-development.Dockerfile
+docker run -d [image number or name from above]
+docker ps
+docker exec -it [running container id from docker ps] bash
+
+source /etc/profile.d/rvm.sh
+export DOCKER_DB_USER=postgres_user
+export DOCKER_DB_PASSWORD=postgres_password
+export DOCKER_DB_HOST=localhost
+bundle exec rake db:create
+bundle exec rake db:migrate
 ```
