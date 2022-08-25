@@ -3,10 +3,12 @@ module Idv
     class InheritedProofingFlow < Flow::BaseFlow
       STEPS = {
         get_started: Idv::Steps::InheritedProofing::GetStartedStep,
+        confirmation: Idv::Steps::InheritedProofing::ConfirmationStep,
       }.freeze
 
       STEP_INDICATOR_STEPS = [
         { name: :getting_started },
+        { name: :confirmation },
       ].freeze
 
       ACTIONS = {}.freeze

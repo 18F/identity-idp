@@ -11,6 +11,7 @@ en:
         verify_id: Verify your ID
         verify_info: Verify your personal details
         verify_phone_or_address: Verify phone or address
+        confirmation: How verifying your identity works
     status:
       complete: Completed
       current: Current step
