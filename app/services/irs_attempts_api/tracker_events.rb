@@ -120,12 +120,12 @@ module IrsAttemptsApi
       )
     end
 
-    def idv_ssn_submitted(success: , failure_reason: , ssn:)
+    def idv_ssn_submitted(success:, failure_reason:, ssn:)
       track_event(
         :idv_ssn_submitted,
-        success: attributes[:success],
-        failure_reason: attributes[:failure_reason],
-        ssn: attributes[:ssn],
+        success: success,
+        failure_reason: failure_reason,
+        ssn: ssn,
       )
     end
 
