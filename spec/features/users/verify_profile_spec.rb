@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'verify profile with OTP' do
+  include IdvStepHelper
+
   let(:user) { create(:user, :signed_up) }
   let(:otp) { 'ABC123' }
 
@@ -19,10 +21,7 @@ feature 'verify profile with OTP' do
     it 'shows step indicator progress with current verify step, completed secure account' do
       sign_in_live_with_2fa(user)
 
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_phone_or_address'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone_or_address'))
       expect(page).to have_css(
         '.step-indicator__step--complete',
         text: t('step_indicator.flows.idv.secure_account'),

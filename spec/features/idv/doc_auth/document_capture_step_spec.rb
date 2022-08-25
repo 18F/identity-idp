@@ -98,10 +98,7 @@ feature 'doc auth document capture step', :js do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
@@ -187,10 +184,7 @@ feature 'doc auth document capture step', :js do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))

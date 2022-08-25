@@ -172,9 +172,19 @@ module Users
     def handle_valid_otp_params(method, default = nil)
       otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
 
-      return handle_too_many_otp_sends if exceeded_otp_send_limit?
+      if exceeded_otp_send_limit?
+        return handle_too_many_otp_sends(
+          phone: parsed_phone.e164,
+          context: context,
+        )
+      end
       otp_rate_limiter.increment
-      return handle_too_many_otp_sends if exceeded_otp_send_limit?
+      if exceeded_otp_send_limit?
+        return handle_too_many_otp_sends(
+          phone: parsed_phone.e164,
+          context: context,
+        )
+      end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)

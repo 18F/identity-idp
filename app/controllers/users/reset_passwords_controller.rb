@@ -89,6 +89,7 @@ module Users
         email: email,
         request_id: request_id,
         analytics: analytics,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
       ).perform
 
       return unless result

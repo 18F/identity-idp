@@ -32,9 +32,23 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def handle_too_many_otp_sends
+  def handle_too_many_otp_sends(phone: nil, context: nil)
     analytics.multi_factor_auth_max_sends
     handle_max_attempts('otp_requests')
+
+    if context && phone
+      if UserSessionContext.authentication_context?(context)
+        irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
+          phone_number: phone,
+          success: true,
+        )
+      elsif UserSessionContext.confirmation_context?(context)
+        irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
+          phone_number: phone,
+          success: true,
+        )
+      end
+    end
   end
 
   def handle_max_attempts(type)

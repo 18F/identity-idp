@@ -17,6 +17,7 @@ RSpec.describe DocAuth::Acuant::PiiFromDoc do
         zipcode: '58501',
         dob: '1984-04-01',
         state_id_expiration: '2022-10-24',
+        state_id_issued: '2014-10-24',
         state_id_number: 'DOE-84-1165',
         state_id_jurisdiction: 'ND',
         state_id_type: 'state_id_card',

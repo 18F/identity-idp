@@ -2,7 +2,8 @@ import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { FlowContext, VerifyFlowStepIndicator } from '@18f/identity-verify-flow';
+import { FlowContext, VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
+import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
@@ -50,13 +51,15 @@ interface DocumentCaptureProps {
   onStepChange?: () => void;
 }
 
-function DocumentCapture({ isAsyncForm = false, onStepChange }: DocumentCaptureProps) {
+function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: DocumentCaptureProps) {
   const [formValues, setFormValues] = useState<Record<string, any> | null>(null);
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
+  const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
   const { inPersonURL } = useContext(FlowContext);
+  useDidUpdateEffect(onStepChange, [stepName]);
 
   /**
    * Clears error state and sets form values for submission.
@@ -142,9 +145,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }: DocumentCaptureP
         },
       ].filter(Boolean) as FormStep[]);
 
+  const stepIndicatorPath =
+    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+      ? VerifyFlowPath.IN_PERSON
+      : VerifyFlowPath.DEFAULT;
+
   return (
     <>
-      <VerifyFlowStepIndicator currentStep="document_capture" />
+      <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
       {submissionFormValues &&
       (!submissionError || submissionError instanceof RetrySubmissionError) ? (
         <>
@@ -173,7 +181,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }: DocumentCaptureP
             initialValues={initialValues}
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
-            onStepChange={onStepChange}
+            onStepChange={setStepName}
             autoFocus={!!submissionError}
           />
         </>

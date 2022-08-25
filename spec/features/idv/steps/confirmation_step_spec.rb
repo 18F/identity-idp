@@ -20,10 +20,7 @@ feature 'idv confirmation step', js: true do
 
   it 'shows status content for phone verification progress' do
     expect(page).to have_content(t('idv.messages.confirm'))
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.secure_account'),
-    )
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
     expect(page).to have_css(
       '.step-indicator__step--complete',
       text: t('step_indicator.flows.idv.verify_phone_or_address'),
@@ -72,10 +69,7 @@ feature 'idv confirmation step', js: true do
 
     it 'shows status content for gpo verification progress' do
       expect(page).to have_content(t('idv.messages.mail_sent'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.secure_account'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       expect(page).to have_css(
         '.step-indicator__step--pending',
         text: t('step_indicator.flows.idv.verify_phone_or_address'),

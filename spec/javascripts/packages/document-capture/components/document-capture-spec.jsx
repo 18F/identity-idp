@@ -15,6 +15,7 @@ import {
 import DocumentCapture, {
   except,
 } from '@18f/identity-document-capture/components/document-capture';
+import { FlowContext } from '@18f/identity-verify-flow';
 import { expect } from 'chai';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
@@ -621,6 +622,71 @@ describe('document-capture/components/document-capture', () => {
       await new Promise((resolve) => {
         onSubmit.callsFake(resolve);
         userEvent.click(getByText('forms.buttons.submit.default'));
+      });
+    });
+  });
+
+  describe('step indicator', () => {
+    it('renders the step indicator', () => {
+      const { getByText } = render(<DocumentCapture />);
+
+      const step = getByText('step_indicator.flows.idv.verify_id');
+
+      expect(step).to.be.ok();
+      expect(step.closest('.step-indicator__step--current')).to.exist();
+    });
+
+    context('in person steps', () => {
+      it('renders the step indicator', async () => {
+        const endpoint = '/upload';
+        const { getByLabelText, getByText, findByText } = render(
+          <UploadContextProvider upload={httpUpload} endpoint={endpoint}>
+            <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
+              <FlowContext.Provider
+                value={{
+                  cancelURL: '/cancel',
+                  inPersonURL: '/in_person',
+                  currentStep: 'document_capture',
+                }}
+              >
+                <DocumentCapture />
+              </FlowContext.Provider>
+            </ServiceProviderContextProvider>
+          </UploadContextProvider>,
+        );
+
+        sandbox
+          .stub(window, 'fetch')
+          .withArgs(endpoint)
+          .resolves({
+            ok: false,
+            status: 400,
+            url: endpoint,
+            json: () => ({ success: false, remaining_attempts: 1, errors: [{}] }),
+          });
+
+        const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
+        const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+        await userEvent.upload(frontImage, validUpload);
+        await userEvent.upload(backImage, validUpload);
+        await waitFor(() => frontImage.src && backImage.src);
+
+        await userEvent.click(getByText('forms.buttons.submit.default'));
+
+        const verifyInPersonButton = await findByText(
+          'idv.troubleshooting.options.verify_in_person',
+        );
+        await userEvent.click(verifyInPersonButton);
+
+        expect(console).to.have.loggedError(/^Error: Uncaught/);
+        expect(console).to.have.loggedError(
+          /React will try to recreate this component tree from scratch using the error boundary you provided/,
+        );
+
+        const step = await findByText('step_indicator.flows.idv.find_a_post_office');
+
+        expect(step).to.be.ok();
+        expect(step.closest('.step-indicator__step--current')).to.exist();
       });
     });
   });
