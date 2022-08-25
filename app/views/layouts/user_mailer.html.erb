@@ -65,13 +65,13 @@
                                     <table class="spacer">
                                       <tbody>
                                         <tr>
-                                          <td class="s30" height="30px">
-                                            &nbsp;
-                                          </td>
+                                            <td class="s30" height="30px">
+                                                &nbsp;
+                                            </td>
                                         </tr>
                                       </tbody>
                                     </table>
-                                    <% unless @hide_title %>
+                                    <% unless @hide_title or @pending_profile_requires_verification %>
                                       <h4><%= @header || message.subject %>
                                       </h4>
                                     <% end %>

@@ -250,9 +250,8 @@ fr:
       link_text: Réinitialisez votre mot de passe
       subject: Réinitialisez votre mot de passe
       gpo_letter_header: Votre lettre est en route
-      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
-        confirmation contenu dans votre lettre ne correspondra plus et vous devrez de
-        vérifier à nouveau votre identité.
+      gpo_are_you_sure_header: Êtes-vous sûr?
+      gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de confirmation contenu dans votre lettre ne correspondra plus et vous devrez de vérifier à nouveau votre identité.
     signup_with_your_email:
       help_html: Si vous n’avez pas demandé un nouveau compte ou que vous soupçonnez
         qu’une erreur s’est produite, veuillez visiter le %{help_link} de
