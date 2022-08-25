@@ -23,13 +23,12 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 - Ruby ~> 3.0.4
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
-- [Node.js v14](https://nodejs.org)
--- (to install Node.js v.14 using brew: `brew install node@14`)
+- [Node.js v16](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
-  
+
 2. You will need to install openssl version 1.1:
-  
+
 - Run `brew install openssl@1.1`
 
 3. Test that you have Postgres and Redis running.
