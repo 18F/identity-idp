@@ -340,7 +340,7 @@ describe Api::Verify::PasswordConfirmController do
           ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
           post :create, params: { password: password, user_bundle_token: jwt }
 
-          expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+          expect(JSON.parse(response.body)['completion_url']).to eq(idv_setup_errors_url)
         end
       end
 

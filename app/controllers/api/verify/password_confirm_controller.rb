@@ -52,7 +52,7 @@ module Api
         elsif in_person_enrollment?(user)
           idv_in_person_ready_to_verify_url
         elsif device_profiling_failed?(user)
-          idv_come_back_later_url
+          idv_setup_errors_url
         elsif current_sp
           sign_up_completed_url
         else
