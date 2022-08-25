@@ -52,8 +52,8 @@ class ResolutionProofingJob < ApplicationJob
 
     if optional_threatmetrix_result.present?
       add_threatmetrix_result_to_callback_result(
-        callback_log_data.result,
-        optional_threatmetrix_result,
+        callback_log_data: callback_log_data,
+        threatmetrix_result: optional_threatmetrix_result,
       )
     end
 
@@ -84,9 +84,17 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def add_threatmetrix_result_to_callback_result(callback_log_data_result, threatmetrix_result)
-    callback_log_data_result[:threatmetrix_success] = threatmetrix_result.success?
-    callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
+  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
+    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
+
+    callback_log_data.result[:context][:stages][:threatmetrix] = {
+      client: lexisnexis_ddp_proofer.class.vendor_name,
+      errors: threatmetrix_result.errors,
+      exception: exception,
+      success: threatmetrix_result.success?,
+      timed_out: threatmetrix_result.timed_out?,
+      transaction_id: threatmetrix_result.transaction_id,
+    }
   end
 
   def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
