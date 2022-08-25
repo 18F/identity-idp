@@ -72,7 +72,10 @@ module Idv
       end
 
       def link(session_uuid)
-        idv_capture_doc_dashes_url('document-capture-session': session_uuid)
+        idv_capture_doc_dashes_url(
+          'document-capture-session': session_uuid,
+          request_id: sp_session[:request_id],
+        )
       end
 
       def throttle

@@ -50,6 +50,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
       state_id_jurisdiction: 'ND',
       state_id_type: 'drivers_license',
       state_id_expiration: '2099-12-31',
+      state_id_issued: '2019-12-31',
       phone: nil,
     )
 
