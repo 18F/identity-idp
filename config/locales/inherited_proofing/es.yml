@@ -1,0 +1,16 @@
+---
+es:
+  inherited_proofing:
+    buttons:
+      continue: replaceme
+    headings:
+      welcome: replaceme
+    info:
+      no_sp_name: replaceme
+      privacy_html: replaceme %{app_name} %{link}
+      welcome_html: replaceme %{sp_name}
+    instructions:
+      bullet1: replaceme
+      learn_more: replaceme
+      privacy: replaceme
+      welcome: replaceme
