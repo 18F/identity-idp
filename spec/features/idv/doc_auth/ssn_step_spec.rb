@@ -15,10 +15,7 @@ feature 'doc auth ssn step', :js do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
       expect(page).to have_content(t('doc_auth.headings.ssn'))
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_info'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
 
     it 'proceeds to the next page with valid info' do
@@ -51,10 +48,7 @@ feature 'doc auth ssn step', :js do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
       expect(page).to have_content(t('doc_auth.headings.ssn'))
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_info'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
 
     it 'proceeds to the next page with valid info' do
