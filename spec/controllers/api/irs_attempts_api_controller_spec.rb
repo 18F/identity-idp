@@ -30,7 +30,7 @@ RSpec.describe Api::IrsAttemptsApiController do
       IrsAttemptsApi::RedisClient.new.write_event(
         event_key: event_key,
         jwe: jwe,
-        timestamp: event.occurred_at
+        timestamp: event.occurred_at,
       )
       [jti, jwe]
     end

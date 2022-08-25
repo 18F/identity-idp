@@ -33,8 +33,9 @@ module IrsAttemptsApi
       parsed_event = JSON.parse(decrypted_event)
       event_type = parsed_event['events'].keys.first.split('/').last
       event_data = parsed_event['events'].values.first
+      jti = parsed_event['jti'].split(':').last
       AttemptEvent.new(
-        jti: parsed_event['jti'].split(':').last,
+        jti: jti,
         iat: parsed_event['iat'],
         event_type: event_type,
         session_id: event_data['subject']['session_id'],
