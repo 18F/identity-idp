@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
     # param [Boolean] success True if account reset request is cancelled
@@ -29,12 +32,12 @@ module IrsAttemptsApi
       )
     end
 
-    def idv_ssn_submitted(attributes)
+    # @param ["mobile", "desktop"] upload_method method chosen for uploading id verification
+    # A user has selected id document upload method
+    def document_upload_method_selected(upload_method:)
       track_event(
-        :idv_ssn_submitted,
-        success: attributes[:success],
-        failure_reason: attributes[:failure_reason],
-        ssn: attributes[:ssn],
+        :document_upload_method_selected,
+        upload_method: upload_method,
       )
     end
 
@@ -49,12 +52,96 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit for password reset emails
+    # @param [String] email The user's email address
+    def forgot_password_email_rate_limited(email:)
+      track_event(
+        :forgot_password_email_rate_limited,
+        email: email,
+      )
+    end
+
+    # Tracks when the user has requested a forgot password email
+    # @param [String] email The submitted email address
+    # @param [Boolean] success True if the forgot password email was sent
+    def forgot_password_email_sent(email:, success:)
+      track_event(
+        :forgot_password_email_sent,
+        email: email,
+        success: success,
+      )
+    end
+
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def forgot_password_email_confirmed(success:, failure_reason: nil)
       track_event(
         :forgot_password_email_confirmed,
         success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The document was uploaded during the IDV process
+    def idv_document_upload_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_document_upload_submitted,
+        success: success,
+        document_state: document_state,
+        document_number: document_number,
+        document_issued: document_issued,
+        document_expiration: document_expiration,
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth,
+        address: address,
+        failure_reason: failure_reason,
+      )
+    end
+
+    def idv_ssn_submitted(success: , failure_reason: , ssn:)
+      track_event(
+        :idv_ssn_submitted,
+        success: attributes[:success],
+        failure_reason: attributes[:failure_reason],
+        ssn: attributes[:ssn],
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # The phone upload link was sent during the IDV process
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_upload_link_sent(
+      success:,
+      phone_number:,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_phone_upload_link_sent,
+        success: success,
+        phone_number: phone_number,
         failure_reason: failure_reason,
       )
     end
@@ -116,6 +203,17 @@ module IrsAttemptsApi
     def mfa_enroll_phone_otp_submitted(success:)
       track_event(
         :mfa_enroll_phone_otp_submitted,
+        success: success,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] success - True if the user was locked out
+    # The user has exceeded the rate limit for SMS OTP sends.
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:, success:)
+      track_event(
+        :mfa_enroll_phone_otp_sent_rate_limited,
+        phone_number: phone_number,
         success: success,
       )
     end
@@ -191,6 +289,17 @@ module IrsAttemptsApi
       track_event(
         :mfa_login_phone_otp_sent,
         reauthentication: reauthentication,
+        phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [String] phone_number - The user's phone number used for multi-factor authentication
+    # @param [Boolean] success - True if the user was locked out
+    # The user has exceeded the rate limit for SMS OTP sends.
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:, success:)
+      track_event(
+        :mfa_login_phone_otp_sent_rate_limited,
         phone_number: phone_number,
         success: success,
       )
@@ -310,3 +419,4 @@ module IrsAttemptsApi
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

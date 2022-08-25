@@ -1,7 +1,10 @@
 import { render } from '@testing-library/react';
 import { StepStatus } from '@18f/identity-step-indicator';
 import { AddressVerificationMethodContextProvider } from './context/address-verification-method-context';
-import VerifyFlowStepIndicator, { getStepStatus } from './verify-flow-step-indicator';
+import VerifyFlowStepIndicator, {
+  getStepStatus,
+  VerifyFlowPath,
+} from './verify-flow-step-indicator';
 
 describe('getStepStatus', () => {
   it('returns incomplete if step is after current step', () => {
@@ -44,6 +47,17 @@ describe('VerifyFlowStepIndicator', () => {
 
       const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
       expect(previous.closest('.step-indicator__step--pending')).to.exist();
+    });
+  });
+
+  context('with in-person flow path', () => {
+    it('renders step indicator for the current step', () => {
+      const { getByText } = render(
+        <VerifyFlowStepIndicator currentStep="document_capture" path={VerifyFlowPath.IN_PERSON} />,
+      );
+
+      const current = getByText('step_indicator.flows.idv.find_a_post_office');
+      expect(current.closest('.step-indicator__step--current')).to.exist();
     });
   });
 });

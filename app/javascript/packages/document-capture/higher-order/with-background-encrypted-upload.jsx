@@ -84,7 +84,7 @@ const withBackgroundEncryptedUpload = (Component) => {
    */
   function ComposedComponent({ onChange, onError, ...props }) {
     const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
-    const { addPageAction } = useContext(AnalyticsContext);
+    const { trackEvent } = useContext(AnalyticsContext);
 
     /**
      * @param {Record<string, string|Blob|null|undefined>} nextValues Next values.
@@ -103,14 +103,14 @@ const withBackgroundEncryptedUpload = (Component) => {
             value,
           )
             .catch((error) => {
-              addPageAction('IdV: document capture async upload encryption', { success: false });
+              trackEvent('IdV: document capture async upload encryption', { success: false });
               trackError(error);
 
               // Rethrow error to skip upload and proceed from next `catch` block.
               throw error;
             })
             .then((encryptedValue) => {
-              addPageAction('IdV: document capture async upload encryption', { success: true });
+              trackEvent('IdV: document capture async upload encryption', { success: true });
 
               return window.fetch(url, {
                 method: 'PUT',
@@ -120,7 +120,7 @@ const withBackgroundEncryptedUpload = (Component) => {
             })
             .then((response) => {
               const traceId = response.headers.get('X-Amzn-Trace-Id');
-              addPageAction('IdV: document capture async upload submitted', {
+              trackEvent('IdV: document capture async upload submitted', {
                 success: response.ok,
                 trace_id: traceId,
                 status_code: response.status,

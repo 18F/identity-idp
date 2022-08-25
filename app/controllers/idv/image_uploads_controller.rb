@@ -24,6 +24,7 @@ module Idv
         service_provider: current_sp,
         analytics: analytics,
         uuid_prefix: current_sp&.app_id,
+        irs_attempts_api_tracker: irs_attempts_api_tracker,
       )
     end
   end

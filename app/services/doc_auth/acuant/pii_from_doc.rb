@@ -13,6 +13,7 @@ module DocAuth
         'Document Number' => :state_id_number,
         'Issuing State Code' => :state_id_jurisdiction,
         'Expiration Date' => :state_id_expiration,
+        'Issue Date' => :state_id_issued,
         'Document Class Name' => :state_id_type,
       }.freeze
 
@@ -30,6 +31,7 @@ module DocAuth
         hash[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[hash[:state_id_type]]
         hash[:dob] = convert_date(hash[:dob])
         hash[:state_id_expiration] = convert_date(hash[:state_id_expiration])
+        hash[:state_id_issued] = convert_date(hash[:state_id_issued])
         hash
       end
 

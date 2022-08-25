@@ -16,15 +16,15 @@ describe('document-capture/components/review-issues-step', () => {
   const sandbox = useSandbox();
 
   it('logs warning events', async () => {
-    const addPageAction = sinon.spy();
+    const trackEvent = sinon.spy();
 
     const { getByRole } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <ReviewIssuesStep {...DEFAULT_PROPS} />
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledWith('IdV: warning shown', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
       location: 'doc_auth_review_issues',
       remaining_attempts: 3,
     });
@@ -32,7 +32,7 @@ describe('document-capture/components/review-issues-step', () => {
     const button = getByRole('button');
     await userEvent.click(button);
 
-    expect(addPageAction).to.have.been.calledWith('IdV: warning action triggered', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning action triggered', {
       location: 'doc_auth_review_issues',
     });
   });

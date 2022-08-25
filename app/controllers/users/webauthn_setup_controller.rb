@@ -152,12 +152,13 @@ module Users
         platform_authenticator: form.platform_authenticator?,
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
       )
-      Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
       mark_user_as_fully_authenticated
       handle_remember_device
       if form.platform_authenticator?
+        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn_platform', analytics)
         flash[:success] = t('notices.webauthn_platform_configured')
       else
+        Funnel::Registration::AddMfa.call(current_user.id, 'webauthn', analytics)
         flash[:success] = t('notices.webauthn_configured')
       end
       user_session[:auth_method] = 'webauthn'
