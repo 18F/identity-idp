@@ -69,7 +69,9 @@ function trackDownload() {
   trackEvent('IdV: download personal key');
 }
 
-modalTrigger.addEventListener('click', show);
+if (modalTrigger) {
+  modalTrigger.addEventListener('click', show);
+}
 modalDismiss.addEventListener('click', hide);
 input.addEventListener('input', validateInput);
 downloadLink.addEventListener('click', trackDownload);

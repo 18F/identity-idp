@@ -27,6 +27,8 @@ module Proofing
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id],
             ssn_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:ssn].gsub(/\D/, '')),
+            input_ip_address: applicant[:request_ip],
+            local_attrib_1: applicant[:uuid_prefix],
           }.to_json
         end
 

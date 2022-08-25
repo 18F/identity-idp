@@ -29,10 +29,7 @@
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
-  <%= submit_tag(
-        t('forms.buttons.submit.default'),
-        class: 'display-block usa-button usa-button--wide usa-button--big margin-top-5',
-      ) %>
+  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-top-5' %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

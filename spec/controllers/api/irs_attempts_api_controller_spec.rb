@@ -85,20 +85,25 @@ RSpec.describe Api::IrsAttemptsApiController do
       post :create, params: { timestamp: time.iso8601 }
 
       expect(response.status).to eq(401)
+
+      request.headers['Authorization'] = nil
+
+      post :create, params: { timestamp: time.iso8601 }
+
+      expect(response.status).to eq(401)
     end
 
-    it 'renders new events' do
+    it 'renders encrypted events' do
       post :create, params: { timestamp: time.iso8601 }
 
       expect(response).to be_ok
+      expect(Base64.strict_decode64(response.headers['X-Payload-IV'])).to be_present
+      expect(Base64.strict_decode64(response.headers['X-Payload-Key'])).to be_present
+      expect(Base64.strict_decode64(response.body)).to be_present
 
-      expected_response = {
-        'sets' => existing_events.to_h,
-      }
-      expect(JSON.parse(response.body)).to eq(expected_response)
       expect(@analytics).to have_logged_event(
         'IRS Attempt API: Events submitted',
-        rendered_event_count: 3,
+        rendered_event_count: existing_events.count,
         success: true,
         timestamp: time.iso8601,
       )

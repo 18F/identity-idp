@@ -667,22 +667,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # GPO address submitted
-  def idv_gpo_address_submitted(
-    success:,
-    errors:,
-    **extra
-  )
-    track_event(
-      'IdV: USPS address submitted',
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
-
   # @param [Boolean] letter_already_sent
   # GPO address visited
   def idv_gpo_address_visited(

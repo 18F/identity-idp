@@ -4,10 +4,10 @@
 
 <p class="maxw-mobile-lg margin-bottom-0"><%= @presenter.intro %></p>
 
-<%= validated_form_for @two_factor_options_form,
-                       html: { autocomplete: 'off' },
-                       method: :patch,
-                       url: second_mfa_setup_path do |f| %>
+<%= simple_form_for @two_factor_options_form,
+                    html: { autocomplete: 'off' },
+                    method: :patch,
+                    url: second_mfa_setup_path do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
       <legend class="margin-bottom-2 usa-sr-only"><%= @presenter.intro %></legend>
@@ -21,7 +21,7 @@
     </fieldset>
   </div>
 
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide margin-bottom-1' %>
+  <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
 <% end %>
 
 <%= render 'shared/cancel', link: @after_setup_path %>

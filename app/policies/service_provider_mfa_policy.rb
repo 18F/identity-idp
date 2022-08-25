@@ -1,5 +1,5 @@
 class ServiceProviderMfaPolicy
-  AAL3_METHODS = %w[webauthn piv_cac].freeze
+  AAL3_METHODS = %w[webauthn webauthn_platform piv_cac].freeze
 
   attr_reader :mfa_context, :auth_method, :service_provider
 

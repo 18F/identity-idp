@@ -50,7 +50,7 @@ RSpec.describe MarketingSite do
   describe '.rules_of_use_url' do
     it 'points to the rules of use page' do
       expect(MarketingSite.rules_of_use_url).
-          to eq('https://www.login.gov/policy/rules-of-use/')
+        to eq('https://www.login.gov/policy/rules-of-use/')
     end
 
     context 'when the user has set their locale to :es' do
@@ -58,7 +58,7 @@ RSpec.describe MarketingSite do
 
       it 'points to the rules of use page with the locale appended' do
         expect(MarketingSite.rules_of_use_url).
-            to eq('https://www.login.gov/es/policy/rules-of-use/')
+          to eq('https://www.login.gov/es/policy/rules-of-use/')
       end
     end
   end

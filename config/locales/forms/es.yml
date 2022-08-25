@@ -32,6 +32,12 @@ es:
         no serán válidos.
       confirm: '¿Está seguro de que desea volver a generar sus códigos de copia de
         seguridad?'
+    backup_code_reminder:
+      body_info: Si por alguna razón no puede acceder a su método de autenticación
+        principal, puede usar códigos de recuperación para ingresar a su cuenta.
+      have_codes: Tengo mis códigos
+      heading: '¿Todavía tiene sus códigos de recuperación?'
+      need_new_codes: Necesito un nuevo conjunto de códigos de recuperación
     buttons:
       back: Atrás
       cancel: Sí, cancelar
@@ -115,10 +121,15 @@ es:
     validation:
       required_checkbox: Marque esta casilla para continuar
     verify_profile:
-      instructions: Ingrese el código de 10 caracteres que le enviamos en la carta.
+      instructions: Introduzca el código de 10 caracteres de la carta que ha recibido.
       name: Código de confirmación
       submit: Confirmar cuenta
       title: Confirme su cuenta
+      welcome_back: Bienvenido de nuevo
+      welcome_back_description: '<p>Si ha recibido su carta, introduzca su código de
+        confirmación a continuación.</p> <p>Si su carta aún no ha llegado, tenga
+        paciencia, ya que las <strong>cartas suelen tardar de 3 a 7 días hábiles
+        en llegar</strong>. Gracias por su paciencia.</p>'
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta %{app_name}.

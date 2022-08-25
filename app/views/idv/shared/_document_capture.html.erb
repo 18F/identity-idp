@@ -41,7 +41,7 @@
       idv_in_person_url: Idv::InPersonConfig.enabled_for_issuer?(decorated_session.sp_issuer) ? idv_in_person_url : nil,
       security_and_privacy_how_it_works_url: MarketingSite.security_and_privacy_how_it_works_url,
     } %>
-  <%= validated_form_for(
+  <%= simple_form_for(
         :doc_auth,
         url: url_for,
         method: 'PUT',

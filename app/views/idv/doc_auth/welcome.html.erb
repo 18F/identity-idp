@@ -28,14 +28,11 @@
       <% end %>
     <% end %>
 
-    <%= validated_form_for :doc_auth,
-                           url: url_for,
-                           method: 'put',
-                           html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
-      <%= f.button :button,
-                   t('doc_auth.buttons.continue'),
-                   type: :submit,
-                   class: 'usa-button--big usa-button--wide' %>
+    <%= simple_form_for :doc_auth,
+                        url: url_for,
+                        method: 'put',
+                        html: { autocomplete: 'off', class: 'margin-y-5 js-consent-continue-form' } do |f| %>
+      <%= f.submit t('doc_auth.buttons.continue') %>
     <% end %>
 
     <%= render(

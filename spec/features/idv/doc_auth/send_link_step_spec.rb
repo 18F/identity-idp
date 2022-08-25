@@ -27,6 +27,11 @@ feature 'doc auth send link step' do
   end
 
   it 'proceeds to the next page with valid info' do
+    expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+      :idv_phone_upload_link_sent,
+      success: true,
+      phone_number: '+1 415-555-0199',
+    )
     expect(Telephony).to receive(:send_doc_auth_link).
       with(hash_including(to: '+1 415-555-0199')).
       and_call_original
@@ -44,7 +49,11 @@ feature 'doc auth send link step' do
 
       impl.call(**config)
     end
-
+    expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+      :idv_phone_upload_link_sent,
+      success: true,
+      phone_number: '+1 415-555-0199',
+    )
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
 
@@ -59,6 +68,11 @@ feature 'doc auth send link step' do
   end
 
   it 'does not proceed if Telephony raises an error' do
+    expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+      :idv_phone_upload_link_sent,
+      success: false,
+      phone_number: '+1 225-555-1000',
+    )
     fill_in :doc_auth_phone, with: '225-555-1000'
     click_idv_continue
 
@@ -127,7 +141,11 @@ feature 'doc auth send link step' do
     allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
       document_capture_session_uuid: document_capture_session.uuid,
     )
-
+    expect_any_instance_of(IrsAttemptsApi::Tracker).to receive(:track_event).with(
+      :idv_phone_upload_link_sent,
+      success: true,
+      phone_number: '+1 415-555-0199',
+    )
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       params = Rack::Utils.parse_nested_query URI(config[:link]).query
       expect(params).to eq('document-capture-session' => document_capture_session.uuid)

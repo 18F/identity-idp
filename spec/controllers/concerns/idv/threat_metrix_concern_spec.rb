@@ -16,7 +16,7 @@ RSpec.describe Idv::ThreatMetrixConcern, type: :controller do
 
     before do
       allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
-      and_return(ff_enabled)
+        and_return(ff_enabled)
     end
 
     context 'ff is set' do

@@ -57,11 +57,9 @@ fr:
       totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu
       verification:
-        bounced: Le service postal n’a pas pu envoyer la lettre à votre adresse.
         instructions: Votre compte nécessite un code de confirmation pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
-        update_address: Veuillez mettre à jour votre adresse pour être vérifiée.
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé

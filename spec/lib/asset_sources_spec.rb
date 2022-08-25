@@ -41,6 +41,9 @@ RSpec.describe AssetSources do
               ]
             }
           }
+        },
+        "integrity": {
+          "vendor.js": "sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA"
         }
       }
     STR
@@ -132,6 +135,23 @@ RSpec.describe AssetSources do
 
         AssetSources.get_assets('application')
         AssetSources.get_assets('input')
+      end
+    end
+  end
+
+  describe '.get_integrity' do
+    let(:path) { 'vendor.js' }
+    subject(:integrity) { AssetSources.get_integrity(path) }
+
+    it 'returns the integrity hash' do
+      expect(integrity).to start_with('sha256-')
+    end
+
+    context 'a path which does not exist in the manifest' do
+      let(:path) { 'missing.js' }
+
+      it 'returns nil' do
+        expect(integrity).to be_nil
       end
     end
   end

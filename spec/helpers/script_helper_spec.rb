@@ -86,6 +86,25 @@ RSpec.describe ScriptHelper do
         )
       end
 
+      context 'with script integrity available' do
+        before do
+          allow(AssetSources).to receive(:get_integrity).and_return(nil)
+          allow(AssetSources).to receive(:get_integrity).with('/application.js').
+            and_return('sha256-aztp/wpATyjXXpigZtP8ZP/9mUCHDMaL7OKFRbmnUIazQ9ehNmg4CD5Ljzym/TyA')
+        end
+
+        it 'adds integrity attribute' do
+          output = render_javascript_pack_once_tags
+
+          expect(output).to have_css(
+            "script[src^='/polyfill.js']:not([integrity]) ~ \
+            script[src^='/application.js'][integrity^='sha256-']",
+            count: 1,
+            visible: :all,
+          )
+        end
+      end
+
       context 'local development crossorigin sources' do
         let(:webpack_port) { '3035' }
 

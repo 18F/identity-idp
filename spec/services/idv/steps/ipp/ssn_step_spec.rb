@@ -46,13 +46,13 @@ describe Idv::Steps::Ipp::SsnStep do
     end
 
     context 'with proofing device profiling collecting enabled' do
-      it 'adds a session id to flow session' do
+      it 'does not add a threatmetrix session id to flow session' do
         allow(IdentityConfig.store).
           to receive(:proofing_device_profiling_collecting_enabled).
           and_return(true)
         step.extra_view_variables
 
-        expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
+        expect(flow.flow_session[:threatmetrix_session_id]).to eq(nil)
       end
 
       it 'does not change threatmetrix_session_id when updating ssn' do
