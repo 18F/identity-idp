@@ -36,6 +36,10 @@ module Flow
       {}
     end
 
+    def attempt_api_properties
+      {}
+    end
+
     def url_options
       @flow.controller.url_options
     end

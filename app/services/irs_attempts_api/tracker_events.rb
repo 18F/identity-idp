@@ -29,6 +29,15 @@ module IrsAttemptsApi
       )
     end
 
+    def idv_ssn_submitted(attributes)
+      track_event(
+        :idv_ssn_submitted,
+        success: attributes[:success],
+        failure_reason: attributes[:failure_reason],
+        ssn: attributes[:ssn],
+      )
+    end
+
     # @param [String] email The submitted email address
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication

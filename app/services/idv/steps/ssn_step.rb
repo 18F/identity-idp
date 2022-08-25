@@ -18,6 +18,12 @@ module Idv
         }
       end
 
+      def attempt_api_properties
+        {
+          ssn: flow_session.dig(:pii_from_doc, :ssn),
+        }
+      end
+
       private
 
       def form_submit

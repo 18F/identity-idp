@@ -25,6 +25,15 @@ module Flow
         increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
       end
+
+      if irs_attempts_api_session_id &&
+         irs_attempts_api_tracker.respond_to?(attempts_api_submitted_method)
+        irs_attempts_api_tracker.send(
+          attempts_api_submitted_method,
+          attempt_api_properties(result, step),
+        )
+      end
+
       register_update_step(step, result)
       if flow.json
         render json: flow.json, status: flow.http_status
@@ -172,12 +181,23 @@ module Flow
       'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
     end
 
+    def attempts_api_submitted_method
+      "idv_#{current_step}_submitted".to_sym
+    end
+
     def analytics_properties
       {
         flow_path: @flow.flow_path,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
       }
+    end
+
+    def attempt_api_properties(result, step)
+      { 
+        success: result.success?,
+        errors: result.errors,
+      }.merge(flow.step_attempts_api_properties(step))
     end
 
     def current_step_name

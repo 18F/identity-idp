@@ -48,6 +48,14 @@ module Flow
       obj.extra_view_variables
     end
 
+    def step_attempts_api_properties(step)
+      handler = steps[step]
+
+      return failure("Unhandled step #{step}") unless handler
+      obj = handler.new(self)
+      obj.attempt_api_properties
+    end
+
     def flow_path
       'standard'
     end
