@@ -31,6 +31,7 @@ feature 'doc auth send link step' do
       :idv_phone_upload_link_sent,
       success: true,
       phone_number: '+1 415-555-0199',
+      failure_reason: nil,
     )
     expect(Telephony).to receive(:send_doc_auth_link).
       with(hash_including(to: '+1 415-555-0199')).
@@ -53,6 +54,7 @@ feature 'doc auth send link step' do
       :idv_phone_upload_link_sent,
       success: true,
       phone_number: '+1 415-555-0199',
+      failure_reason: nil,
     )
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
@@ -72,6 +74,7 @@ feature 'doc auth send link step' do
       :idv_phone_upload_link_sent,
       success: false,
       phone_number: '+1 225-555-1000',
+      failure_reason: { telephony: ['TelephonyError'] },
     )
     fill_in :doc_auth_phone, with: '225-555-1000'
     click_idv_continue
@@ -145,6 +148,7 @@ feature 'doc auth send link step' do
       :idv_phone_upload_link_sent,
       success: true,
       phone_number: '+1 415-555-0199',
+      failure_reason: nil,
     )
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       params = Rack::Utils.parse_nested_query URI(config[:link]).query

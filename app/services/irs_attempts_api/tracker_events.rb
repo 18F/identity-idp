@@ -85,14 +85,17 @@ module IrsAttemptsApi
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_upload_link_sent(
       success:,
-      phone_number:
+      phone_number:,
+      failure_reason: nil
     )
       track_event(
         :idv_phone_upload_link_sent,
         success: success,
         phone_number: phone_number,
+        failure_reason: failure_reason,
       )
     end
 
