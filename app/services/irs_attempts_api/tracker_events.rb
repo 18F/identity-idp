@@ -3,6 +3,17 @@
 # rubocop:disable Metrics/ModuleLength
 module IrsAttemptsApi
   module TrackerEvents
+    # param [Boolean] success True if Account Successfully Deleted
+    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
+    # A User confirms and deletes their Login.gov account after 24 hour period
+    def account_reset_account_deleted(success:, failure_reason:)
+      track_event(
+        :account_reset_account_deleted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # param [Boolean] success True if account reset request is cancelled
     # A user cancels the request to delete their account before 24 hour period
     def account_reset_cancel_request(success:)
@@ -18,17 +29,6 @@ module IrsAttemptsApi
       track_event(
         :account_reset_request_submitted,
         success: success,
-      )
-    end
-
-    # param [Boolean] success True if Account Successfully Deleted
-    # param [Hash<Key, Array<String>>] failure_reason displays why account deletion failed
-    # A User confirms and deletes their Login.gov account after 24 hour period
-    def account_reset_account_deleted(success:, failure_reason:)
-      track_event(
-        :account_reset_account_deleted,
-        success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -49,6 +49,16 @@ module IrsAttemptsApi
         :email_and_password_auth,
         email: email,
         success: success,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def forgot_password_email_confirmed(success:, failure_reason: nil)
+      track_event(
+        :forgot_password_email_confirmed,
+        success: success,
+        failure_reason: failure_reason,
       )
     end
 
@@ -74,9 +84,9 @@ module IrsAttemptsApi
 
     # @param [Boolean] success
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def forgot_password_email_confirmed(success:, failure_reason: nil)
+    def forgot_password_new_password_submitted(success:, failure_reason: nil)
       track_event(
-        :forgot_password_email_confirmed,
+        :forgot_password_new_password_submitted,
         success: success,
         failure_reason: failure_reason,
       )
@@ -133,6 +143,13 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_document_upload_rate_limited
+      track_event(
+        :idv_document_upload_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
@@ -156,16 +173,6 @@ module IrsAttemptsApi
       track_event(
         :logout_initiated,
         success: success,
-      )
-    end
-
-    # @param [Boolean] success
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
-    def forgot_password_new_password_submitted(success:, failure_reason: nil)
-      track_event(
-        :forgot_password_new_password_submitted,
-        success: success,
-        failure_reason: failure_reason,
       )
     end
 
@@ -201,16 +208,6 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success - True if the sms otp submitted matched what was sent
-    # The user, after having previously been sent an OTP code during phone enrollment
-    # has been asked to submit that code.
-    def mfa_enroll_phone_otp_submitted(success:)
-      track_event(
-        :mfa_enroll_phone_otp_submitted,
-        success: success,
-      )
-    end
-
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
     # @param [Boolean] success - True if the user was locked out
     # The user has exceeded the rate limit for SMS OTP sends.
@@ -218,6 +215,16 @@ module IrsAttemptsApi
       track_event(
         :mfa_enroll_phone_otp_sent_rate_limited,
         phone_number: phone_number,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success - True if the sms otp submitted matched what was sent
+    # The user, after having previously been sent an OTP code during phone enrollment
+    # has been asked to submit that code.
+    def mfa_enroll_phone_otp_submitted(success:)
+      track_event(
+        :mfa_enroll_phone_otp_submitted,
         success: success,
       )
     end

@@ -42,8 +42,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
-  let(:request_ip) { '127.0.0.1' }
-  let(:uuid_prefix) { 'ABC' }
+  let(:request_ip) { Faker::Internet.ip_v4_address }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -56,7 +55,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        uuid_prefix: uuid_prefix,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -77,7 +75,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        uuid_prefix: uuid_prefix,
       )
     end
 
@@ -155,12 +152,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 timed_out: false,
                 transaction_id: aamva_transaction_id,
               },
+              threatmetrix: {
+                client: Proofing::Mock::DdpMockClient.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: threatmetrix_request_id,
+              },
             },
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
-          threatmetrix_success: true,
-          threatmetrix_request_id: threatmetrix_request_id,
         )
         proofing_component = user.proofing_component
         expect(proofing_component.threatmetrix).to equal(true)
@@ -236,12 +239,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   transaction_id: lexisnexis_transaction_id,
                   reference: lexisnexis_reference,
                 },
+                threatmetrix: {
+                  client: Proofing::Mock::DdpMockClient.vendor_name,
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: threatmetrix_request_id,
+                },
               },
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
-            threatmetrix_request_id: threatmetrix_request_id,
-            threatmetrix_success: true,
           )
         end
       end
@@ -375,6 +384,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   timed_out: false,
                   transaction_id: lexisnexis_transaction_id,
                   reference: lexisnexis_reference,
+                },
+                threatmetrix: {
+                  client: Proofing::Mock::DdpMockClient.vendor_name,
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: threatmetrix_request_id,
                 },
               },
             },

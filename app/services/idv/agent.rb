@@ -9,7 +9,8 @@ module Idv
       should_proof_state_id:,
       trace_id:,
       user_id:,
-      threatmetrix_session_id:
+      threatmetrix_session_id:,
+      request_ip:
     )
       document_capture_session.create_proofing_session
 
@@ -25,6 +26,7 @@ module Idv
         result_id: document_capture_session.result_id,
         user_id: user_id,
         threatmetrix_session_id: threatmetrix_session_id,
+        request_ip: request_ip,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

@@ -14,7 +14,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
               dob_year_only:, user_id: nil, threatmetrix_session_id: nil,
-              uuid_prefix: nil, request_ip: nil)
+              request_ip: nil)
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -33,7 +33,6 @@ class ResolutionProofingJob < ApplicationJob
       user: user,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      uuid_prefix: uuid_prefix,
     )
 
     callback_log_data = if dob_year_only && should_proof_state_id
@@ -52,8 +51,8 @@ class ResolutionProofingJob < ApplicationJob
 
     if optional_threatmetrix_result.present?
       add_threatmetrix_result_to_callback_result(
-        callback_log_data.result,
-        optional_threatmetrix_result,
+        callback_log_data: callback_log_data,
+        threatmetrix_result: optional_threatmetrix_result,
       )
     end
 
@@ -84,17 +83,24 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def add_threatmetrix_result_to_callback_result(callback_log_data_result, threatmetrix_result)
-    callback_log_data_result[:threatmetrix_success] = threatmetrix_result.success?
-    callback_log_data_result[:threatmetrix_request_id] = threatmetrix_result.transaction_id
+  def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
+    exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
+
+    callback_log_data.result[:context][:stages][:threatmetrix] = {
+      client: lexisnexis_ddp_proofer.class.vendor_name,
+      errors: threatmetrix_result.errors,
+      exception: exception,
+      success: threatmetrix_result.success?,
+      timed_out: threatmetrix_result.timed_out?,
+      transaction_id: threatmetrix_result.transaction_id,
+    }
   end
 
   def proof_lexisnexis_ddp_with_threatmetrix_if_needed(
     applicant_pii:,
     user:,
     threatmetrix_session_id:,
-    request_ip:,
-    uuid_prefix:
+    request_ip:
   )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
 
@@ -107,8 +113,7 @@ class ResolutionProofingJob < ApplicationJob
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
     ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:input_ip_address] = request_ip
-    ddp_pii[:local_attrib_1] = uuid_prefix
+    ddp_pii[:request_ip] = request_ip
 
     result = lexisnexis_ddp_proofer.proof(ddp_pii)
 

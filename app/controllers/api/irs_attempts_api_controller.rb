@@ -44,7 +44,14 @@ module Api
 
     def security_event_tokens
       return {} unless timestamp
-      @security_event_tokens ||= redis_client.read_events(timestamp: timestamp)
+
+      events = redis_client.read_events(timestamp: timestamp)
+      sets = {}
+      events.each_pair do |k, v|
+        key_id, jti = k.split(':')
+        sets[jti] = { key_id => v }
+      end
+      sets
     end
 
     def encrypted_security_event_log_result

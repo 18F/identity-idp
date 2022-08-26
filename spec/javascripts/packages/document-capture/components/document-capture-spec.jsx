@@ -215,8 +215,6 @@ describe('document-capture/components/document-capture', () => {
 
     submitButton = getByText('forms.buttons.submit.default');
     await userEvent.click(submitButton);
-    const interstitialHeading = getByText('doc_auth.headings.interstitial');
-    expect(interstitialHeading).to.be.ok();
 
     await findByText('doc_auth.errors.general.network_error');
 
@@ -290,8 +288,6 @@ describe('document-capture/components/document-capture', () => {
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
     // screen is shown once more.
     await userEvent.click(submitButton);
-    const interstitialHeading = getByText('doc_auth.headings.interstitial');
-    expect(interstitialHeading).to.be.ok();
 
     await waitFor(() => expect(() => getAllByText('doc_auth.info.interstitial_eta')).to.throw());
 
