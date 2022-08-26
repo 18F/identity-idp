@@ -6,4 +6,3 @@ RSpec.describe Proofing::Mock::AddressMockClient do
     real_proofer_class: Proofing::LexisNexis::PhoneFinder::Proofer,
   )
 end
-

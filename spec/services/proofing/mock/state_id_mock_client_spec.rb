@@ -6,4 +6,3 @@ RSpec.describe Proofing::Mock::StateIdMockClient do
     real_proofer_class: Proofing::Aamva::Proofer,
   )
 end
-
