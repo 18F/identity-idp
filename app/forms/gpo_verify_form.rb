@@ -74,8 +74,7 @@ class GpoVerifyForm
   end
 
   def pending_in_person_enrollment?
-    return false unless IdentityConfig.store.in_person_proofing_enabled
-    pending_profile.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
+    pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def activate_profile
