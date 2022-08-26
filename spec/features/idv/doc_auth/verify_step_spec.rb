@@ -179,6 +179,7 @@ feature 'doc auth verify step', :js do
           trace_id: anything,
           threatmetrix_session_id: nil,
           user_id: user.id,
+          request_ip: kind_of(String),
         ).
         and_call_original
 
@@ -205,6 +206,7 @@ feature 'doc auth verify step', :js do
           trace_id: anything,
           threatmetrix_session_id: nil,
           user_id: user.id,
+          request_ip: kind_of(String),
         ).
         and_call_original
 
@@ -229,6 +231,7 @@ feature 'doc auth verify step', :js do
           trace_id: anything,
           threatmetrix_session_id: nil,
           user_id: user.id,
+          request_ip: kind_of(String),
         ).
         and_call_original
 
