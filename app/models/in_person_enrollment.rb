@@ -39,15 +39,9 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
-  def complete?
-    return ['cancelled', 'expired', 'failed', 'passed'].include?(status)
-  end
-
-  def minutes_to_completion
-    return unless complete?
+  def minutes_since_established
     return unless enrollment_established_at.present?
-    return unless status_updated_at.present?
-    (status_updated_at - enrollment_established_at) / 60
+    (Time.zone.now - enrollment_established_at) / 60
   end
 
   def minutes_since_last_status_check

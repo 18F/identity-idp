@@ -163,15 +163,30 @@ RSpec.describe GetUspsProofingResultsJob do
           transaction_end_date_time: '12/17/2020 034055',
           transaction_start_date_time: '12/17/2020 033855',
         )
+      end
+
+      it 'logs status check timing details about the enrollments' do
+        stub_request_failed_proofing_results
+        allow(InPersonEnrollment).to receive(:needs_usps_status_check).
+          and_return([pending_enrollment])
+
+        pending_enrollment.update(
+          status_check_attempted_at: (Time.zone.now - 15.minutes),
+          status_updated_at: (Time.zone.now - 2.days),
+        )
+
+        job.perform(Time.zone.now)
+
+        pending_enrollment.reload
 
         expect(
           job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
                          first[:minutes_since_last_status_check],
-        ).to be_instance_of(Float)
+        ).to be_within(0.01).of(15.0)
         expect(
           job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
                          first[:minutes_since_last_status_update],
-        ).to be_instance_of(Float)
+        ).to be_within(0.01).of(2880)
         expect(
           job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
                          first[:minutes_to_completion],
