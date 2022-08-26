@@ -12,10 +12,17 @@ module Idv
 
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, analytics:, flow_path: nil)
+    def initialize(
+      params,
+      liveness_checking_enabled:,
+      analytics:,
+      irs_attempts_api_tracker:,
+      flow_path: nil
+    )
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
       @analytics = analytics
+      @irs_attempts_api_tracker = irs_attempts_api_tracker
       @flow_path = flow_path
     end
 
@@ -88,6 +95,7 @@ module Idv
     def throttle_if_rate_limited
       return unless @throttled
       @analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      @irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
