@@ -238,7 +238,7 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        failure_reason: client_response.errors&.presence,
+        failure_reason: client_response.errors&.except(:hints)&.presence,
       )
     end
 
