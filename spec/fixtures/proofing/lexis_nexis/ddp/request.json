@@ -17,7 +17,8 @@
   "policy": "test-policy",
   "service_type": "all",
   "session_id": "UNIQUE_SESSION_ID",
-  "ssn_hash": "15e2b0d3c33891ebb0f1ef609ec419420c20e320ce94c65fbc8c3312448eb225",
+  "national_id_number": "123456789",
+  "national_id_type": "US_SSN",
   "input_ip_address": "127.0.0.1",
   "local_attrib_1": "ABCD"
 
