@@ -37,3 +37,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 
 useCleanDOM(dom);
 useConsoleLogSpy();
+
+// Remove after upgrading to React 18
+// See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
+delete global.MessageChannel;
