@@ -388,8 +388,8 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByLabelText('Image');
       await userEvent.click(button);
 
-      await waitFor(() => !container.querySelector('.full-screen'));
-      expect(document.activeElement).to.equal(outsideInput);
+      await waitFor(() => document.activeElement === outsideInput);
+      expect(container.classList.contains('full-screen')).to.be.false();
     });
 
     it('renders pending state while cropping', async () => {
