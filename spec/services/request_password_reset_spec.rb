@@ -193,6 +193,7 @@ RSpec.describe RequestPasswordReset do
         )
         expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_rate_limited).with(
           email: email,
+          success: true,
         )
       end
 
