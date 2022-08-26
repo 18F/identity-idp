@@ -378,6 +378,20 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when user is rate limited for submitting registration email
+    # @param [String] email
+    # @param [Boolean] email_confirmed_with_password
+    def user_registration_email_submission_rate_limited(
+      email:,
+      email_confirmed_with_password:
+    )
+      track_event(
+        :user_registration_email_submission_rate_limited,
+        email: email,
+        email_confirmed_with_password: email_confirmed_with_password,
+      )
+    end
+
     # Tracks when user submits registration email
     # @param [Boolean] success
     # @param [String] email
