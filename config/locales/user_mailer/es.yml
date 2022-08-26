@@ -232,7 +232,6 @@ es:
       subject: Actividad inusual — restablezca su contraseña de %{app_name}
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
-      gpo_are_you_sure_header: ¿Está seguro?
       gpo_letter_description: Si restablece su contraseña, el código de confirmación
         que figura en su carta dejará de funcionar y tendrá que volver a
         verificar su identidad.

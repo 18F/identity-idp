@@ -220,7 +220,6 @@ en:
       subject: Unusual activity — reset your %{app_name} password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
-      gpo_are_you_sure_header: Are you sure?
       gpo_letter_description: If you reset your password, the confirmation code in
         your letter will no longer work and you’ll have to verify your identity
         again.

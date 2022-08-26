@@ -244,7 +244,6 @@ fr:
       subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
-      gpo_are_you_sure_header: Êtes-vous sûr?
       gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de
         confirmation contenu dans votre lettre ne correspondra plus et vous
         devrez de vérifier à nouveau votre identité.
