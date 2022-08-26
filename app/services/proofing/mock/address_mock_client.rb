@@ -3,9 +3,15 @@ module Proofing
     class AddressMockClient < Proofing::Base
       vendor_name 'AddressMock'
 
-      required_attributes :phone
+      required_attributes :uuid,
+                          :first_name,
+                          :last_name,
+                          :dob,
+                          :ssn,
+                          :phone
 
-      optional_attributes :uuid, :uuid_prefix
+      optional_attributes :uuid_prefix
+
 
       stage :address
 
