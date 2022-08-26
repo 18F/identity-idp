@@ -227,6 +227,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_policy, type: :string)
+    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
