@@ -70,12 +70,14 @@ class ValidatedFieldElement extends HTMLElement {
   setErrorMessage(message?: string | null) {
     if (message) {
       this.getOrCreateErrorMessageElement().textContent = message;
+      if (this.errorMessage?.style.display === 'none') {
+        this.errorMessage.style.display = '';
+      }
       if (!document.activeElement?.classList.contains('usa-input--error')) {
         this.input?.focus();
       }
     } else if (this.errorMessage) {
-      this.inputWrapper?.removeChild(this.errorMessage);
-      this.errorMessage = null;
+      this.errorMessage.style.display = 'none';
     }
   }
 
