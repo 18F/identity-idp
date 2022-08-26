@@ -12,9 +12,16 @@ class ResolutionProofingJob < ApplicationJob
     keyword_init: true,
   )
 
-  def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:, user_id: nil, threatmetrix_session_id: nil,
-              uuid_prefix: nil, request_ip: nil)
+  def perform(
+    result_id:,
+    encrypted_arguments:,
+    trace_id:,
+    should_proof_state_id:,
+    user_id: nil,
+    threatmetrix_session_id: nil,
+    uuid_prefix: nil,
+    request_ip: nil
+  )
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -36,19 +43,11 @@ class ResolutionProofingJob < ApplicationJob
       uuid_prefix: uuid_prefix,
     )
 
-    callback_log_data = if dob_year_only && should_proof_state_id
-                          proof_aamva_then_lexisnexis_dob_only(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            dob_year_only: dob_year_only,
-                          )
-                        else
-                          proof_lexisnexis_then_aamva(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            should_proof_state_id: should_proof_state_id,
-                          )
-                        end
+    callback_log_data = proof_lexisnexis_then_aamva(
+                          timer: timer,
+                          applicant_pii: applicant_pii,
+                          should_proof_state_id: should_proof_state_id,
+                        )
 
     if optional_threatmetrix_result.present?
       add_threatmetrix_result_to_callback_result(
@@ -143,7 +142,6 @@ class ResolutionProofingJob < ApplicationJob
     result[:exception] = exception
 
     result[:context] = {
-      dob_year_only: false,
       should_proof_state_id: should_proof_state_id,
       stages: {
         resolution: {
@@ -164,67 +162,6 @@ class ResolutionProofingJob < ApplicationJob
         proof_state_id(applicant_pii: applicant_pii, result: result)
       end
       state_id_success = result[:success]
-    end
-
-    CallbackLogData.new(
-      result: result,
-      resolution_success: resolution_success,
-      state_id_success: state_id_success,
-    )
-  end
-
-  # @return [CallbackLogData]
-  def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:, dob_year_only:)
-    proofer_result = timer.time('state_id') do
-      state_id_proofer.proof(applicant_pii)
-    end
-
-    result = proofer_result.to_h
-    state_id_success = proofer_result.success?
-    resolution_success = nil
-    exception = proofer_result.exception.inspect if proofer_result.exception
-
-    result[:context] = {
-      dob_year_only: dob_year_only,
-      should_proof_state_id: true,
-      stages: {
-        state_id: {
-          client: state_id_proofer.class.vendor_name,
-          errors: proofer_result.errors,
-          exception: exception,
-          success: state_id_success,
-          timed_out: proofer_result.timed_out?,
-          transaction_id: proofer_result.transaction_id,
-        },
-      },
-    }
-
-    if state_id_success
-      lexisnexis_result = timer.time('resolution') do
-        resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
-      end
-
-      resolution_success = lexisnexis_result.success?
-      exception = lexisnexis_result.exception.inspect if lexisnexis_result.exception
-
-      result.merge!(lexisnexis_result.to_h) do |key, orig, current|
-        key == :messages ? orig + current : current
-      end
-
-      result[:context][:stages][:resolution] = {
-        client: resolution_proofer.class.vendor_name,
-        errors: lexisnexis_result.errors,
-        exception: exception,
-        success: lexisnexis_result.success?,
-        timed_out: lexisnexis_result.timed_out?,
-        transaction_id: lexisnexis_result.transaction_id,
-        reference: lexisnexis_result.reference,
-      }
-
-      result[:transaction_id] = lexisnexis_result.transaction_id
-      result[:reference] = lexisnexis_result.reference
-      result[:timed_out] = lexisnexis_result.timed_out?
-      result[:exception] = lexisnexis_result.exception.inspect if lexisnexis_result.exception
     end
 
     CallbackLogData.new(
