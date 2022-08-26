@@ -64,14 +64,6 @@ module Idv
       redirect_to idv_app_path
     end
 
-    def step_indicator_steps
-      if idv_session.address_verification_mechanism == 'gpo'
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
-      else
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      end
-    end
-
     def flash_message_content
       if idv_session.address_verification_mechanism != 'gpo'
         phone_of_record_msg = ActionController::Base.helpers.content_tag(

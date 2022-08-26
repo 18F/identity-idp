@@ -10,6 +10,7 @@ module Idv
       gpo_mail = Idv::GpoMail.new(current_user)
       @mail_spammed = gpo_mail.mail_spammed?
       @gpo_verify_form = GpoVerifyForm.new(user: current_user, pii: pii)
+      @step_indicator_steps = step_indicator_steps
       @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
       if throttle.throttled?
@@ -60,6 +61,8 @@ module Idv
 
     private
 
+    attr_reader :gpo_verify_form
+
     def throttle
       @throttle ||= Throttle.new(
         user: current_user,
@@ -91,6 +94,14 @@ module Idv
     def confirm_verification_needed
       return if current_user.decorate.pending_profile_requires_verification?
       redirect_to account_url
+    end
+
+    def step_indicator_steps
+      if gpo_verify_form.pending_in_person_enrollment?
+        Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS_GPO
+      else
+        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
+      end
     end
   end
 end

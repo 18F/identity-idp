@@ -1,10 +1,12 @@
 module Idv
   class ComeBackLaterController < ApplicationController
-    before_action :confirm_two_factor_authenticated
+    include IdvStepConcern
+
     before_action :confirm_user_needs_gpo_confirmation
 
     def show
       analytics.idv_come_back_later_visit
+      @step_indicator_steps = step_indicator_steps
     end
 
     private

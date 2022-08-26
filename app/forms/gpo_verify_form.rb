@@ -38,6 +38,10 @@ class GpoVerifyForm
     )
   end
 
+  def pending_in_person_enrollment?
+    pending_profile.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
+  end
+
   protected
 
   def pending_profile
@@ -71,10 +75,6 @@ class GpoVerifyForm
 
   def reset_sensitive_fields
     self.otp = nil
-  end
-
-  def pending_in_person_enrollment?
-    pending_profile&.proofing_components&.[]('document_check') == Idp::Constants::Vendors::USPS
   end
 
   def activate_profile

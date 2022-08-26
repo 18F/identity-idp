@@ -15,13 +15,13 @@ module Idv
       async_state = step.async_state
       if async_state.none?
         analytics.idv_phone_of_record_visited
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render_new_with_locals
       elsif async_state.in_progress?
         render :wait
       elsif async_state.missing?
         analytics.proofing_address_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        render :new, locals: { gpo_letter_available: gpo_letter_available }
+        render_new_with_locals
       elsif async_state.done?
         async_state_done(async_state)
       end
@@ -31,12 +31,20 @@ module Idv
       result = idv_form.submit(step_params)
       analytics.idv_phone_confirmation_form_submitted(**result.to_h)
       flash[:error] = result.first_error_message if !result.success?
-      return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
+      return render_new_with_locals if !result.success?
       submit_proofing_attempt
       redirect_to idv_phone_path
     end
 
     private
+
+    def render_new_with_locals
+      render :new,
+             locals: {
+               step_indicator_steps: step_indicator_steps,
+               gpo_letter_available: gpo_letter_available,
+             }
+    end
 
     def throttle
       @throttle ||= Throttle.new(user: current_user, throttle_type: :proof_address)

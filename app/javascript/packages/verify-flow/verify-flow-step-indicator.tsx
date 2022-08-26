@@ -57,6 +57,9 @@ const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
     ],
     mapping: {
       document_capture: 'find_a_post_office',
+      password_confirm: 'secure_account',
+      personal_key: 'secure_account',
+      personal_key_confirm: 'secure_account',
     },
   },
 };

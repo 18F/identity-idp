@@ -1,15 +1,14 @@
 module Idv
   class GpoController < ApplicationController
-    include IdvSession
+    include IdvStepConcern
 
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
     before_action :confirm_gpo_allowed_if_strict_ial2
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
+      @step_indicator_steps = step_indicator_steps
       analytics.idv_gpo_address_visited(
         letter_already_sent: @presenter.letter_already_sent?,
       )

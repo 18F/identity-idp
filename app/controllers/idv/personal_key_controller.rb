@@ -1,11 +1,9 @@
 module Idv
   class PersonalKeyController < ApplicationController
-    include IdvSession
+    include IdvStepConcern
     include SecureHeadersConcern
 
     before_action :apply_secure_headers_override
-    before_action :confirm_two_factor_authenticated
-    before_action :confirm_idv_vendor_session_started
     before_action :confirm_profile_has_been_created
 
     def show
@@ -25,14 +23,6 @@ module Idv
     end
 
     private
-
-    def step_indicator_steps
-      if idv_session.address_verification_mechanism == 'gpo'
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
-      else
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      end
-    end
 
     def next_step
       if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
