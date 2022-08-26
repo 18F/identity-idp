@@ -1,11 +1,28 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Mock::DdpMockClient do
-  let(:applicant) {
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(threatmetrix_session_id: 'ABCD-1234')
-  }
+  let(:applicant) do
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+      threatmetrix_session_id: 'ABCD-1234',
+      request_ip: Faker::Internet.ip_v4_address,
+    )
+  end
 
   subject(:instance) { described_class.new }
+
+  describe '.required_attributes' do
+    it 'has the same required_attributes as the real proofer' do
+      expect(Proofing::Mock::DdpMockClient.required_attributes).
+        to match_array(Proofing::LexisNexis::Ddp::Proofer.required_attributes)
+    end
+  end
+
+  describe '.optional_attributes' do
+    it 'has the same optional_attributes as the real proofer' do
+      expect(Proofing::Mock::DdpMockClient.optional_attributes).
+        to match_array(Proofing::LexisNexis::Ddp::Proofer.optional_attributes)
+    end
+  end
 
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
