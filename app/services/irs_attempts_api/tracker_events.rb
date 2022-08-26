@@ -64,9 +64,10 @@ module IrsAttemptsApi
 
     # The user has exceeded the rate limit for password reset emails
     # @param [String] email The user's email address
-    def forgot_password_email_rate_limited(email:)
+    def forgot_password_email_rate_limited(email:, success:)
       track_event(
         :forgot_password_email_rate_limited,
+        success: success,
         email: email,
       )
     end
