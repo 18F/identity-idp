@@ -60,6 +60,8 @@ module Api
         :gpo_verification_pending
       elsif pending_in_person_enrollment?
         :in_person_verification_pending
+      elsif threatmetrix_failed_and_needs_review?
+        :threatmetrix_review_pending
       end
     end
 
@@ -171,6 +173,14 @@ module Api
     def in_person_enrollment?
       return false unless IdentityConfig.store.in_person_proofing_enabled
       ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def threatmetrix_failed_and_needs_review?
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      component = ProofingComponent.find_by(user: user)
+      return true unless component
+      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
     end
   end
 end

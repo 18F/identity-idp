@@ -155,12 +155,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 timed_out: false,
                 transaction_id: aamva_transaction_id,
               },
+              threatmetrix: {
+                client: Proofing::Mock::DdpMockClient.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: threatmetrix_request_id,
+              },
             },
           },
           transaction_id: lexisnexis_transaction_id,
           reference: lexisnexis_reference,
-          threatmetrix_success: true,
-          threatmetrix_request_id: threatmetrix_request_id,
         )
         proofing_component = user.proofing_component
         expect(proofing_component.threatmetrix).to equal(true)
@@ -236,12 +242,18 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   transaction_id: lexisnexis_transaction_id,
                   reference: lexisnexis_reference,
                 },
+                threatmetrix: {
+                  client: Proofing::Mock::DdpMockClient.vendor_name,
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: threatmetrix_request_id,
+                },
               },
             },
             transaction_id: lexisnexis_transaction_id,
             reference: lexisnexis_reference,
-            threatmetrix_request_id: threatmetrix_request_id,
-            threatmetrix_success: true,
           )
         end
       end
@@ -375,6 +387,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   timed_out: false,
                   transaction_id: lexisnexis_transaction_id,
                   reference: lexisnexis_reference,
+                },
+                threatmetrix: {
+                  client: Proofing::Mock::DdpMockClient.vendor_name,
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: threatmetrix_request_id,
                 },
               },
             },
