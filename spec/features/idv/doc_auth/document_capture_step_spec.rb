@@ -10,6 +10,7 @@ feature 'doc auth document capture step', :js do
   let(:liveness_enabled) { false }
   let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
@@ -74,6 +75,7 @@ feature 'doc auth document capture step', :js do
     #   'Throttler Rate Limit Triggered',
     #   throttle_type: :idv_doc_auth,
     # )
+    # expect(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
   end
 
   it 'catches network connection errors on post_front_image', allow_browser_log: true do
