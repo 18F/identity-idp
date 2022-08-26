@@ -120,6 +120,15 @@ module IrsAttemptsApi
       )
     end
 
+    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_otp_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
