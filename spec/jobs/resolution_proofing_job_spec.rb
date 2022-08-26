@@ -211,14 +211,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             context: {
               should_proof_state_id: true,
               stages: {
-                state_id: {
-                  client: Proofing::Aamva::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: aamva_transaction_id,
-                },
                 resolution: {
                   client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
                   errors: {
