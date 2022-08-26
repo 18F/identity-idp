@@ -5,6 +5,15 @@
  * @return {boolean}
  */
 export function isLikelyMobile() {
+  /**
+   * iPadOS devices no longer list the correct user agent.
+   * As a proxy, we check for the incorrect one (Macintosh)
+   * then test the number of touchpoints, which for iPads will
+   * be 5.
+   */
+  if (/macintosh/i.test(window.navigator.userAgent) && window.navigator.maxTouchPoints == 5) {
+    return true;
+  }
   return /ip(hone|ad|od)|android/i.test(window.navigator.userAgent);
 }
 
