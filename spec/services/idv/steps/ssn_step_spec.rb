@@ -6,6 +6,7 @@ describe Idv::Steps::SsnStep do
   let(:user) { build(:user) }
   let(:params) { { doc_auth: {} } }
   let(:session) { { sp: { issuer: service_provider.issuer } } }
+  let(:attempts_api) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:service_provider) do
     create(
       :service_provider,
@@ -20,6 +21,7 @@ describe Idv::Steps::SsnStep do
       current_user: user,
       params: params,
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: attempts_api,
       url_options: {},
       request: double(
         'request',
@@ -58,6 +60,14 @@ describe Idv::Steps::SsnStep do
         step.call
 
         expect(flow.flow_session[:pii_from_doc][:ssn]).to eq(ssn)
+      end
+
+      it 'logs attempts api event' do
+        expect(attempts_api).to receive(:idv_ssn_submitted).with(
+          success: true,
+          ssn: ssn,
+        )
+        step.call
       end
 
       context 'with existing session applicant' do
