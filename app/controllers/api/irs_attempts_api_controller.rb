@@ -48,8 +48,8 @@ module Api
       events = redis_client.read_events(timestamp: timestamp)
       sets = {}
       events.each_pair do |k, v|
-        key_id, jit = k.split(':')
-        sets[jit] = { key_id => v }
+        key_id, jti = k.split(':')
+        sets[jti] = { key_id => v }
       end
       sets
     end
