@@ -13,6 +13,7 @@ const TEST_URL = 'http://example.test';
 export function createDOM() {
   const dom = new JSDOM('<!doctype html><html lang="en"><head><title>JSDOM</title></head></html>', {
     url: TEST_URL,
+    pretendToBeVisual: true,
     resources: new (class extends ResourceLoader {
       /**
        * @param {string} url

@@ -56,3 +56,9 @@ export class TimeElement extends HTMLElement {
     }
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lg-time': TimeElement;
+  }
+}
