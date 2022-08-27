@@ -146,7 +146,14 @@ describe Idv::Agent do
       let(:issuer) { build(:service_provider).issuer }
 
       it 'proofs addresses successfully with valid information' do
-        agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
+        agent = Idv::Agent.new(
+          uuid: SecureRandom.uuid,
+          first_name: 'Fakey',
+          last_name: 'Fakersgerald',
+          dob: 50.years.ago.to_date.to_s,
+          ssn: '666-12-1234',
+          phone: Faker::PhoneNumber.cell_phone,
+        )
         agent.proof_address(
           document_capture_session,
           trace_id: trace_id,
