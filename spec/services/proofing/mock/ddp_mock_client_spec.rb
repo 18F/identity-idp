@@ -10,7 +10,7 @@ RSpec.describe Proofing::Mock::DdpMockClient do
 
   subject(:instance) { described_class.new }
 
-  expect_mock_proofer_matches_real_proofer(
+  it_behaves_like_mock_proofer(
     mock_proofer_class: Proofing::Mock::DdpMockClient,
     real_proofer_class: Proofing::LexisNexis::Ddp::Proofer,
   )

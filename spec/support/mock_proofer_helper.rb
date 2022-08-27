@@ -1,4 +1,4 @@
-def expect_mock_proofer_matches_real_proofer(mock_proofer_class:, real_proofer_class:)
+def it_behaves_like_mock_proofer(mock_proofer_class:, real_proofer_class:)
   describe '.required_attributes' do
     it 'has the same required_attributes as the real proofer' do
       expect(mock_proofer_class.required_attributes).
