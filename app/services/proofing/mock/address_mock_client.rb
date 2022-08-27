@@ -12,7 +12,6 @@ module Proofing
 
       optional_attributes :uuid_prefix
 
-
       stage :address
 
       UNVERIFIABLE_PHONE_NUMBER = '7035555555'
