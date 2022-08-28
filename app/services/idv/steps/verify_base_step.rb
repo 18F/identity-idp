@@ -159,14 +159,14 @@ module Idv
             throttle_type: :proof_ssn,
           )
 
-          # if throttle.throttled_else_increment?
-          #   @flow.analytics.throttler_rate_limit_triggered(
-          #     throttle_type: :proof_ssn,
-          #     step_name: self.class,
-          #   )
-          #   redirect_to idv_session_errors_ssn_failure_url
-          #   return
-          # end
+          if throttle.throttled_else_increment?
+            @flow.analytics.throttler_rate_limit_triggered(
+              throttle_type: :proof_ssn,
+              step_name: self.class,
+            )
+            redirect_to idv_session_errors_ssn_failure_url
+            return
+          end
         end
 
         document_capture_session = create_document_capture_session(
