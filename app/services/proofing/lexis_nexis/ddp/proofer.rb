@@ -36,7 +36,7 @@ module Proofing
         private
 
         def process_response(response, result)
-          body = response.response_body
+          result.response_body = response.response_body
           result.transaction_id = body['request_id']
           request_result = body['request_result']
           review_status = body['review_status']

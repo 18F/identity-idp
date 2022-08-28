@@ -85,6 +85,8 @@ class ResolutionProofingJob < ApplicationJob
   def add_threatmetrix_result_to_callback_result(callback_log_data:, threatmetrix_result:)
     exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
 
+    response_h = Proofing::LexisNexis::Ddp::ResponseWhitelister.
+      whilelist_response_and_redact_unwhitelisted_fields(threatmetrix_result.response_body)
     callback_log_data.result[:context][:stages][:threatmetrix] = {
       client: lexisnexis_ddp_proofer.class.vendor_name,
       errors: threatmetrix_result.errors,
@@ -92,6 +94,7 @@ class ResolutionProofingJob < ApplicationJob
       success: threatmetrix_result.success?,
       timed_out: threatmetrix_result.timed_out?,
       transaction_id: threatmetrix_result.transaction_id,
+      response_body: response_h,
     }
   end
 

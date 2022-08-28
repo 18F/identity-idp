@@ -32,6 +32,11 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
+        result.response_body = File.read(
+          Rails.root.join(
+            'spec', 'fixtures', 'proofing', 'lexis_nexis', 'ddp', 'successful_response.json'
+          ),
+        )
         result.review_status = case SsnFormatter.format(applicant[:ssn])
         when REJECT_STATUS_SSN
           'reject'

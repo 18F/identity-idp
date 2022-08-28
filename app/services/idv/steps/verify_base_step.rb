@@ -49,10 +49,11 @@ module Idv
           if stage == :resolution
             # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            tmx_id = hash[:threatmetrix_request_id]
-            add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           elsif stage == :state_id
             process_aamva(hash[:transaction_id])
+          elsif stage == :threatmetrix
+            tmx_id = hash[:transaction_id]
+            add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           end
         end
       end
@@ -158,14 +159,14 @@ module Idv
             throttle_type: :proof_ssn,
           )
 
-          if throttle.throttled_else_increment?
-            @flow.analytics.throttler_rate_limit_triggered(
-              throttle_type: :proof_ssn,
-              step_name: self.class,
-            )
-            redirect_to idv_session_errors_ssn_failure_url
-            return
-          end
+          # if throttle.throttled_else_increment?
+          #   @flow.analytics.throttler_rate_limit_triggered(
+          #     throttle_type: :proof_ssn,
+          #     step_name: self.class,
+          #   )
+          #   redirect_to idv_session_errors_ssn_failure_url
+          #   return
+          # end
         end
 
         document_capture_session = create_document_capture_session(
