@@ -2401,7 +2401,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks information about GetUspsProofingResultsJob when each time it begins
+  # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
   def idv_in_person_usps_proofing_results_job_started(enrollments_count:, reprocess_delay_minutes:,
@@ -2414,7 +2414,7 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks information about GetUspsProofingResultsJob when each time it begins
+  # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
   # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
   # @param [Integer] enrollments_expired number of enrollments which expired
