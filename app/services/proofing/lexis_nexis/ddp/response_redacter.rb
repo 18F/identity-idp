@@ -126,12 +126,12 @@ module Proofing
 
         # @param [Hash] body
         def self.redact(hash)
-          whitelisted_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
-          unwhitelisted_fields = hash.keys - whitelisted_response_h.keys
-          unwhitelisted_fields.each do |key|
-            whitelisted_response_h[key] = '[redacted]'
+          filtered_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
+          unfiltered_keys = hash.keys - filtered_response_h.keys
+          unfiltered_keys.each do |key|
+            filtered_response_h[key] = '[redacted]'
           end
-          whitelisted_response_h
+          filtered_response_h
         end
       end
     end
