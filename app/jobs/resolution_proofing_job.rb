@@ -19,7 +19,8 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     user_id: nil,
     threatmetrix_session_id: nil,
-    request_ip: nil
+    request_ip: nil,
+    dob_year_only: nil, # retired
   )
     timer = JobHelpers::Timer.new
 
