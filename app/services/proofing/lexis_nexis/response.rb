@@ -5,8 +5,6 @@ module Proofing
 
       attr_reader :response
 
-      # @param [Boolean] dob_year_only
-      # @see VerificationErrorParser#initialize
       def initialize(response)
         @response = response
         handle_unexpected_http_status_code_error

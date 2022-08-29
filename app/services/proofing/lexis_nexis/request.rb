@@ -13,9 +13,6 @@ module Proofing
         @url = build_request_url
       end
 
-      # @see Response#initialize
-      # @param [Hash<Symbol, Object>] response_options a hash of options for the Response class
-      #   * +:dob_year_only+
       def send
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'

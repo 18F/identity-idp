@@ -3,8 +3,6 @@ module Proofing
     class VerificationErrorParser
       attr_reader :body
 
-      # @param [Boolean] dob_year_only when true, only enforce that the year
-      # from the date of birth must match
       def initialize(response_body)
         @body = response_body
         @product_error_messages = parse_product_error_messages
