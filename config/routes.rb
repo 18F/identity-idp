@@ -341,6 +341,7 @@ Rails.application.routes.draw do
 
       get '/inherited_proofing' => 'inherited_proofing#index'
       get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
+      put '/inherited_proofing/:step' => 'inherited_proofing#update'
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'
