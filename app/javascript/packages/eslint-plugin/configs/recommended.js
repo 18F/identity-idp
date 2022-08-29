@@ -55,6 +55,7 @@ const config = {
     'object-curly-spacing': 'off',
     'operator-linebreak': 'off',
     'padded-blocks': 'off',
+    'prefer-const': ['error', { destructuring: 'all' }],
     'quote-props': 'off',
     'require-await': 'error',
     'rest-spread-spacing': 'off',
