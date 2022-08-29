@@ -152,7 +152,9 @@ class MemorableDateElement extends HTMLElement {
       return;
     }
 
-    const { error_messages: errorMessages } = this.getErrorMessageMappings;
+    const { error_messages: errorMessages, range_errors: rangeErrors } =
+      this.getErrorMessageMappings();
+
     const hasMissingValues = [
       { month, day, year },
       { month, day },
@@ -192,22 +194,42 @@ class MemorableDateElement extends HTMLElement {
       return;
     }
 
-    const { min } = this;
+    const rangeError = this.getRangeError(errorMessages, rangeErrors, parsedDate);
+
+    // Set range error if exists; otherwise clear previous value
+    this.setValidity(rangeError || '', month, day, year);
+  }
+
+  /**
+   * Check the given date against allowable date ranges and return the configured error message.
+   * @param errorMessages Memorable date error message mapping
+   * @param rangeErrors List of range errors for memorable date
+   * @param date Date to compare against min, max, and allowable ranges
+   * @returns Configured error message for range violations by the given date
+   */
+  private getRangeError(
+    errorMessages: MemorableDateErrorMessageLookup,
+    rangeErrors: RangeErrorMessage[],
+    date: Date,
+  ): string | undefined {
+    const { min, max } = this;
+
     const minErrorMessage = errorMessages.range_underflow || errorMessages.outside_date_range;
-    const underMin = minErrorMessage && min instanceof Date && parsedDate < min;
-
-    const { max } = this;
     const maxErrorMessage = errorMessages.range_overflow || errorMessages.outside_date_range;
-    const overMax = maxErrorMessage && max instanceof Date && parsedDate > max;
 
-    if (underMin) {
-      this.setValidity(minErrorMessage, month, day, year);
-    } else if (overMax) {
-      this.setValidity(maxErrorMessage, month, day, year);
-    } else {
-      // Clear previous value
-      this.setValidity('', month, day, year);
+    if (minErrorMessage && min instanceof Date && date < min) {
+      // Set range underflow error if applicable and messaging is available
+      return minErrorMessage;
     }
+    if (maxErrorMessage && max instanceof Date && date > max) {
+      // Set range overflow error if applicable and messaging is available
+      return maxErrorMessage;
+    }
+    // Set another range error if applicable and messaging is available
+    return rangeErrors.find(
+      ({ min: rangeMin, max: rangeMax }) =>
+        (rangeMin && date < new Date(rangeMin)) || (rangeMax && date > new Date(rangeMax)),
+    )?.message;
   }
 
   /**
@@ -334,7 +356,7 @@ class MemorableDateElement extends HTMLElement {
    * Fetch and parse the error message mappings associated with this memorable date field
    * @returns Parsed error message mappings
    */
-  private get getErrorMessageMappings(): ErrorMessageLookupContainer {
+  private getErrorMessageMappings(): ErrorMessageLookupContainer {
     const errorMessageText =
       this.querySelector('.memorable-date__error-strings')?.textContent || '{}';
     let parsed: any;

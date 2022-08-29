@@ -16,7 +16,7 @@ en:
         future_date: 'Enter a date that is in the past' 
         date_of_birth:
           missing_month_day_year: 'Enter a date of birth'
-          range_underflow: 'You must be over 13 years of age to use Login.gov'
+          range_min_age: 'You must be over 13 years of age to use Login.gov'
           range_overflow: 'Enter a date that is in the past'
         missing_month_day_year: 'Enter a %{label}'
         missing_month_day: 'Enter a month and day'

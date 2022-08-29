@@ -45,16 +45,21 @@
         month: :month, 
         year: :year, 
         required: true,
-        # min: '',
-        # max: '',
+        min: Time.zone.today - 200.years,
+        max: Time.zone.today,
         hint: t('in_person_proofing.form.state_id.dob_hint'), 
         label:t('in_person_proofing.form.state_id.dob'), 
         form: f,
         error_messages: {
           'missing_month_day_year' => t('simple_form.memorable_date.errors.date_of_birth.missing_month_day_year'),
-          'range_underflow' => t('simple_form.memorable_date.errors.date_of_birth.range_underflow'),
-          'range_overflow' => t('simple_form.memorable_date.errors.date_of_birth.range_overflow')
-        }
+          'range_overflow' => t('simple_form.memorable_date.errors.date_of_birth.range_overflow'),
+        },
+        range_errors: [
+          {
+            "max": Time.zone.today - 13.years,
+            "message": t('simple_form.memorable_date.errors.date_of_birth.range_min_age'),
+          },
+        ],
        )
       %>
 
