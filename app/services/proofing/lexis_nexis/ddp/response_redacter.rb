@@ -12,7 +12,8 @@ module Proofing
           tmx_risk_rating
         ]
 
-        def self.whilelist_response_and_redact_unwhitelisted_fields(response_json)
+        # @param [String] body
+        def self.redact(response_json)
           begin
             hash = JSON.parse(response_json)
             whielisted_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)

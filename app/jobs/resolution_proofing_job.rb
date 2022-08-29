@@ -86,7 +86,7 @@ class ResolutionProofingJob < ApplicationJob
     exception = threatmetrix_result.exception.inspect if threatmetrix_result.exception
 
     response_h = Proofing::LexisNexis::Ddp::ResponseRedacter.
-      whilelist_response_and_redact_unwhitelisted_fields(threatmetrix_result.response_body)
+      redact(threatmetrix_result.response_body)
     callback_log_data.result[:context][:stages][:threatmetrix] = {
       client: lexisnexis_ddp_proofer.class.vendor_name,
       errors: threatmetrix_result.errors,
