@@ -135,7 +135,7 @@ class RegisterUserEmailForm
         throttle_type: :reg_unconfirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_confirmed_with_password: false,
+        email: email, email_already_registered: false,
       )
     else
       SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
@@ -151,7 +151,7 @@ class RegisterUserEmailForm
         throttle_type: :reg_confirmed_email,
       )
       @attempts_tracker.user_registration_email_submission_rate_limited(
-        email: email, email_confirmed_with_password: true,
+        email: email, email_already_registered: true,
       )
     else
       UserMailer.signup_with_your_email(existing_user, email).deliver_now_or_later
