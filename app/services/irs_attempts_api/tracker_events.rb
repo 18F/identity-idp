@@ -198,11 +198,10 @@ module IrsAttemptsApi
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
     # @param [Boolean] success - True if the user was locked out
     # The user has exceeded the rate limit for SMS OTP sends.
-    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:, success:)
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_enroll_phone_otp_sent_rate_limited,
         phone_number: phone_number,
-        success: success,
       )
     end
 
@@ -295,11 +294,10 @@ module IrsAttemptsApi
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
     # @param [Boolean] success - True if the user was locked out
     # The user has exceeded the rate limit for SMS OTP sends.
-    def mfa_login_phone_otp_sent_rate_limited(phone_number:, success:)
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_login_phone_otp_sent_rate_limited,
         phone_number: phone_number,
-        success: success,
       )
     end
 

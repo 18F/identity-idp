@@ -21,34 +21,34 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
     analytics.multi_factor_auth_max_attempts
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
-    handle_max_attempts(type + '_login_attempts')
 
-    if context
+    if context && type
       if UserSessionContext.authentication_context?(context)
         irs_attempts_api_tracker.mfa_login_rate_limited(type: type)
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_rate_limited(type: type)
       end
     end
+
+    handle_max_attempts(type + '_login_attempts')
   end
 
   def handle_too_many_otp_sends(phone: nil, context: nil)
     analytics.multi_factor_auth_max_sends
-    handle_max_attempts('otp_requests')
 
     if context && phone
       if UserSessionContext.authentication_context?(context)
         irs_attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(
           phone_number: phone,
-          success: true,
         )
       elsif UserSessionContext.confirmation_context?(context)
         irs_attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(
           phone_number: phone,
-          success: true,
         )
       end
     end
+
+    handle_max_attempts('otp_requests')
   end
 
   def handle_max_attempts(type)
