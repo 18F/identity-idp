@@ -12,10 +12,9 @@ module Proofing
           tmx_risk_rating
         ]
 
-        # @param [String] body
-        def self.redact(response_json)
+        # @param [Hash] body
+        def self.redact(hash)
           begin
-            hash = JSON.parse(response_json)
             whielisted_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
             unwhitelisted_fields = hash.keys - whielisted_response_h.keys
             unwhitelisted_fields.each do |key|

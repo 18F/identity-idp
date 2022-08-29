@@ -47,7 +47,9 @@ module Proofing
         else
           'pass'
         end
-        result.response_body = response_body.gsub('REVIEW_STATUS', result.review_status.to_s)
+        result.response_body = JSON.parse(
+          response_body.gsub('REVIEW_STATUS', result.review_status.to_s),
+        )
       end
     end
   end
