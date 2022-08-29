@@ -41,17 +41,17 @@ class InPersonEnrollment < ApplicationRecord
 
   def minutes_since_established
     return unless enrollment_established_at.present?
-    (Time.zone.now - enrollment_established_at) / 60
+    (Time.zone.now - enrollment_established_at).seconds.in_minutes
   end
 
   def minutes_since_last_status_check
     return unless status_check_attempted_at.present?
-    (Time.zone.now - status_check_attempted_at) / 60
+    (Time.zone.now - status_check_attempted_at).seconds.in_minutes
   end
 
   def minutes_since_last_status_update
     return unless status_updated_at.present?
-    (Time.zone.now - status_updated_at) / 60
+    (Time.zone.now - status_updated_at).seconds.in_minutes
   end
 
   # (deprecated) Returns the value to use for the USPS enrollment ID
