@@ -304,7 +304,6 @@ describe Idv::PhoneController do
           errors: {},
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
-            messages: [],
             context: context,
             exception: nil,
             timed_out: false,
@@ -356,7 +355,6 @@ describe Idv::PhoneController do
           },
           pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
-            messages: [],
             context: context,
             exception: nil,
             timed_out: false,

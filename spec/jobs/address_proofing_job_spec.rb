@@ -81,7 +81,6 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result).to eq(
           exception: nil,
           errors: {},
-          messages: [],
           success: true,
           timed_out: false,
           transaction_id: conversation_id,
