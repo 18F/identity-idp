@@ -486,7 +486,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
               stub_attempts_tracker
               expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_rate_limited).
-                with(type: 'otp')
+                with(mfa_device_type: 'otp')
 
               post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
             end
