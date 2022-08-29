@@ -37,7 +37,7 @@ describe RegisterUserEmailForm do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
         ).with(
-          { email: 'taken@example.com', email_already_registered: true },
+          email: 'taken@example.com', email_already_registered: true,
         )
 
         create(:user, :signed_up, email: 'taken@example.com')
@@ -81,8 +81,8 @@ describe RegisterUserEmailForm do
       it 'creates throttle events after reaching throttle limit' do
         expect(attempts_tracker).to receive(
           :user_registration_email_submission_rate_limited,
-        ).twice.with(
-          { email: 'test@example.com', email_already_registered: false },
+        ).with(
+          email: 'test@example.com', email_already_registered: false,
         )
 
         create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
