@@ -1,4 +1,17 @@
-<div>
-  <b>There is an issue with your information</b>
-  Please fill out our contact form and enter the code LG99 in the detail field.
-</div>
+<% content_for(:pre_flash_content) do %>
+  <%= render 'shared/step_indicator', {
+        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+        current_step: :secure_account,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      } %>
+<% end %>
+<%= render(
+      'idv/shared/error',
+      title: t('titles.failure.information_not_verified'),
+      heading: t('idv.failure.setup.heading')
+  ) do %>
+  <p>
+    <%= t('idv.failure.setup.fail_html', contact_form: 'https://login.gov/contact') %>
+  </p>
+<% end %>
