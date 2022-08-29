@@ -49,7 +49,7 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
     end
     expect(pending_enrollment.status).to eq(status)
 
-    expect(pending_enrollment.profile.active).to be(passed)
+    expect(pending_enrollment.profile.active).to eq(passed)
   end
 end
 
@@ -60,8 +60,8 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
     job.perform(Time.zone.now)
     pending_enrollment.reload
 
-    expect(pending_enrollment.pending?).to be(true)
-    expect(pending_enrollment.profile.active).to be(false)
+    expect(pending_enrollment.pending?).to eq(true)
+    expect(pending_enrollment.profile.active).to eq(false)
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Exception raised',
       reason: reason,
@@ -462,7 +462,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
           pending_enrollment.reload
           expect(pending_enrollment.pending?).to be_truthy
-          expect(pending_enrollment.profile.active).to be(false)
+          expect(pending_enrollment.profile.active).to eq(false)
           expect(pending_enrollment.status_updated_at).to eq(status_updated_at)
           expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
             updated_time_range.cover?(timestamp)
