@@ -16,7 +16,7 @@ module Proofing
       # @see Response#initialize
       # @param [Hash<Symbol, Object>] response_options a hash of options for the Response class
       #   * +:dob_year_only+
-      def send(response_options: {})
+      def send
         conn = Faraday.new do |f|
           f.request :instrumentation, name: 'request_metric.faraday'
           f.request :basic_auth, config.username, config.password
@@ -30,7 +30,6 @@ module Proofing
           conn.post(url, body, headers) do |req|
             req.options.context = { service_name: metric_name }
           end,
-          **response_options,
         )
       rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
         # NOTE: This is only for when Faraday is using NET::HTTP if the adapter is changed

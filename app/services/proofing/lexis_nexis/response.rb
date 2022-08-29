@@ -7,14 +7,9 @@ module Proofing
 
       # @param [Boolean] dob_year_only
       # @see VerificationErrorParser#initialize
-      def initialize(response, dob_year_only: false)
+      def initialize(response)
         @response = response
-        @dob_year_only = dob_year_only
         handle_unexpected_http_status_code_error
-      end
-
-      def dob_year_only?
-        @dob_year_only
       end
 
       def verification_errors
@@ -43,10 +38,7 @@ module Proofing
       private
 
       def verification_error_parser
-        @verification_error_parser ||= VerificationErrorParser.new(
-          response_body,
-          dob_year_only: dob_year_only?,
-        )
+        @verification_error_parser ||= VerificationErrorParser.new(response_body)
       end
 
       def handle_unexpected_http_status_code_error
