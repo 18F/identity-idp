@@ -14,7 +14,7 @@ describe Proofing::LexisNexis::Ddp::VerificationRequest do
       state: 'LA',
       zipcode: '70802-12345',
       state_id_number: '12345678',
-      state_id_issued: 'LA',
+      state_id_jurisdiction: 'LA',
       threatmetrix_session_id: 'UNIQUE_SESSION_ID',
       phone: '5551231234',
       email: 'test@example.com',

@@ -21,7 +21,7 @@ module Proofing
             account_last_name: applicant[:last_name],
             account_telephone: '', # applicant[:phone], decision was made not to send phone
             account_drivers_license_number: applicant[:state_id_number].gsub(/\W/, ''),
-            account_drivers_license_issuer: applicant[:state_id_issued].to_s.strip,
+            account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip,
             event_type: 'ACCOUNT_CREATION',
             policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
             service_type: 'all',

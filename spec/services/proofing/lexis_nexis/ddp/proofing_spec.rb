@@ -13,7 +13,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
       state: 'LA',
       zipcode: '70802-12345',
       state_id_number: '12345678',
-      state_id_issued: 'LA',
+      state_id_jurisdiction: 'LA',
       threatmetrix_session_id: '123456',
       phone: '5551231234',
       email: 'test@example.com',
