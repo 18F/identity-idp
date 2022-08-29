@@ -713,7 +713,6 @@ describe Idv::ImageUploadsController do
           failure_reason: {
             general: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
             back: [I18n.t('doc_auth.errors.general.fallback_field_level')],
-            hints: true,
           },
           document_state: nil,
           document_number: nil,

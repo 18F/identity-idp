@@ -26,7 +26,8 @@ module Proofing
             policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id],
-            ssn_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:ssn].gsub(/\D/, '')),
+            national_id_number: applicant[:ssn].gsub(/\D/, ''),
+            national_id_type: 'US_SSN',
             input_ip_address: applicant[:request_ip],
             local_attrib_1: applicant[:uuid_prefix],
           }.to_json
