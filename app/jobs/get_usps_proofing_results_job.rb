@@ -154,7 +154,6 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def handle_expired_status_update(enrollment)
-    # todo: add spec for this log message
     enrollment_outcomes[:enrollments_expired] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_attributes(enrollment, true),
