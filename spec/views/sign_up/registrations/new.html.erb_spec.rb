@@ -12,7 +12,7 @@ describe 'sign_up/registrations/new.html.erb' do
     allow(view).to receive(:current_user).and_return(nil)
     @register_user_email_form = RegisterUserEmailForm.new(
       analytics: FakeAnalytics.new,
-      attempts_tracker: FakeAttemptsTracker.new,
+      attempts_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
     )
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url).
