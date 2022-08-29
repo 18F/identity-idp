@@ -32,7 +32,7 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
-        result.response_body = File.read(
+        response_body = File.read(
           Rails.root.join(
             'spec', 'fixtures', 'proofing', 'lexis_nexis', 'ddp', 'successful_response.json'
           ),
@@ -47,6 +47,7 @@ module Proofing
         else
           'pass'
         end
+        result.response_body = response_body.gsub('REVIEW_STATUS', result.review_status.to_s)
       end
     end
   end
