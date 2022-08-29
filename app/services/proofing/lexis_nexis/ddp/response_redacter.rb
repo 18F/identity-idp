@@ -109,15 +109,6 @@ module Proofing
           service_type
           session_id
           session_id_query_count
-          ssn_hash
-          ssn_hash_assert_history
-          ssn_hash_attributes
-          ssn_hash_first_seen
-          ssn_hash_last_event
-          ssn_hash_last_update
-          ssn_hash_result
-          ssn_hash_score
-          ssn_hash_worst_score
           summary_risk_score
           tmx_reason_code
           tmx_risk_rating
