@@ -7,38 +7,30 @@ FactoryBot.define do
     selected_location_details do { name: 'BALTIMORE' } end
 
     trait :establishing do
-      after :build do |enrollment|
-        enrollment.status = :establishing
-      end
+      status { :establishing }
     end
 
     trait :pending do
-      after :build do |enrollment|
-        enrollment.status = :pending
-        enrollment.enrollment_code = Faker::Number.number(digits: 16)
-        enrollment.enrollment_established_at = Time.zone.now
-        enrollment.status_updated_at = Time.zone.now
-      end
+      status { :pending }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
     end
 
     trait :expired do
-      after :build do |enrollment|
-        enrollment.status = :expired
-        enrollment.enrollment_code = Faker::Number.number(digits: 16)
-        enrollment.enrollment_established_at = Time.zone.now
-        enrollment.status_check_attempted_at = Time.zone.now
-        enrollment.status_updated_at = Time.zone.now
-      end
+      status { :expired }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_check_attempted_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
     end
 
     trait :failed do
-      after :build do |enrollment|
-        enrollment.status = :failed
-        enrollment.enrollment_code = Faker::Number.number(digits: 16)
-        enrollment.enrollment_established_at = Time.zone.now
-        enrollment.status_check_attempted_at = Time.zone.now
-        enrollment.status_updated_at = Time.zone.now
-      end
+      status { :failed }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_check_attempted_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
     end
   end
 end
