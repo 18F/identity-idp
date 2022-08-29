@@ -70,10 +70,7 @@ feature 'idv confirmation step', js: true do
     it 'shows status content for gpo verification progress' do
       expect(page).to have_content(t('idv.messages.mail_sent'))
       expect_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
-      expect(page).to have_css(
-        '.step-indicator__step--incomplete',
-        text: t('step_indicator.flows.idv.get_a_letter'),
-      )
+      expect(page).to have_content(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone_or_address'))
     end
 

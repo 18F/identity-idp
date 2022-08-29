@@ -55,16 +55,12 @@ describe 'idv/come_back_later/show.html.erb' do
     end
   end
 
-  it 'shows step indicator with pending status' do
+  it 'shows step indicator with current step' do
     render
 
     expect(view.content_for(:pre_flash_content)).to have_css(
       '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_phone_or_address'),
-    )
-    expect(view.content_for(:pre_flash_content)).to have_css(
-      '.step-indicator__step--complete',
-      text: t('step_indicator.flows.idv.secure_account'),
+      text: t('step_indicator.flows.idv.get_a_letter'),
     )
   end
 end
