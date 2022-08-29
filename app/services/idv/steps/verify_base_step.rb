@@ -52,6 +52,7 @@ module Idv
           elsif stage == :state_id
             process_aamva(hash[:transaction_id])
           elsif stage == :threatmetrix
+            # transaction_id comes from request_id
             tmx_id = hash[:transaction_id]
             add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           end
