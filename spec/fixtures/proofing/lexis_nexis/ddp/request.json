@@ -13,6 +13,7 @@
   "account_last_name": "McTesterson",
   "account_telephone": "",
   "account_drivers_license_number": "12345678",
+  "account_drivers_license_issuer" : "LA",
   "event_type": "ACCOUNT_CREATION",
   "policy": "test-policy",
   "service_type": "all",
