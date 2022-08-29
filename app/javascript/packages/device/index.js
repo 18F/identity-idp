@@ -11,7 +11,7 @@ export function isLikelyMobile() {
    * then test the number of touchpoints, which for iPads will
    * be 5.
    */
-  if (/macintosh/i.test(window.navigator.userAgent) && window.navigator.maxTouchPoints == 5) {
+  if (/macintosh/i.test(window.navigator.userAgent) && window.navigator.maxTouchPoints === 5) {
     return true;
   }
   return /ip(hone|ad|od)|android/i.test(window.navigator.userAgent);
