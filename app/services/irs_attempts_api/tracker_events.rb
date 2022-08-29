@@ -368,6 +368,26 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when user has entered personal key after forgot password steps
+    # @param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def personal_key_reactivation_submitted(success:, failure_reason:)
+      track_event(
+        :personal_key_reactivation_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks when User personal key has been throttled by too many attempts
+    # @param [Boolean] success
+    def personal_key_reactivation_throttled(success:)
+      track_event(
+        :personal_key_reactivation_throttled,
+        success: success,
+      )
+    end
+
     # Tracks when user confirms registration email
     # @param [Boolean] success
     # @param [String] email
