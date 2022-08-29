@@ -65,7 +65,7 @@ module Idv
       end
 
       def mobile_device?
-        if not flow_session[:skip_upload_step]
+        if !flow_session[:skip_upload_step]
           BrowserCache.parse(request.user_agent).mobile?
         else
           true
