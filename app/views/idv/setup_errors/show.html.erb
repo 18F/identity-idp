@@ -12,6 +12,10 @@
       heading: t('idv.failure.setup.heading'),
     ) do %>
   <p>
-    <%= t('idv.failure.setup.fail_html', contact_form: 'https://login.gov/contact') %>
+    <% if !IdentityConfig.store.lexisnexis_threatmetrix_mock_contact_url.nil? %>
+      <%= t('idv.failure.setup.fail_html', contact_form: IdentityConfig.store.lexisnexis_threatmetrix_mock_contact_url) %>
+    <% else %>
+      <%= t('idv.failure.setup.fail_html', contact_form: MarketingSite.contact_url) %>
+    <% end %>
   </p>
 <% end %>

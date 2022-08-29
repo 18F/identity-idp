@@ -12,13 +12,30 @@ describe 'idv/setup_errors/show.html.erb' do
     )
   end
 
-  it 'includes a message instructing them to fill out a contact form' do
-    contact = 'http://example.com/contact'
+  context 'when threatmetrix_mock_contact_url is enabled' do
+    let(:mock_url) { 'https://example.com/contact' }
+    before :each do
+      allow(IdentityConfig.store).
+        to receive(:lexisnexis_threatmetrix_mock_contact_url).
+        and_return(mock_url)
+    end
 
-    expect(rendered).to have_text(
-      strip_tags(
-        t('idv.failure.setup.fail_html', contact_form: contact),
-      ),
-    )
+    it 'includes a message instructing them to fill out a mock contact form' do
+      expect(rendered).to have_text(
+        strip_tags(
+          t('idv.failure.setup.fail_html', contact_form: mock_url),
+        ),
+      )
+    end
+  end
+
+  context 'when threatmetrix_mock_contact_url is not present' do
+    it 'includes a message instructing them to fill out a contact form' do
+      expect(rendered).to have_text(
+        strip_tags(
+          t('idv.failure.setup.fail_html', contact_form: MarketingSite.contact_url),
+        ),
+      )
+    end
   end
 end
