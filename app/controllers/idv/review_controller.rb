@@ -28,6 +28,8 @@ module Idv
       return if valid_password?
 
       analytics.idv_review_complete(success: false)
+      irs_attempts_api_tracker.idv_password_entered(success: false)
+
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_review_url
     end
@@ -47,6 +49,7 @@ module Idv
     end
 
     def create
+      irs_attempts_api_tracker.idv_password_entered(success: true)
       init_profile
       user_session[:need_personal_key_confirmation] = true
       redirect_to next_step
