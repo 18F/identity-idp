@@ -155,7 +155,7 @@ module IrsAttemptsApi
     def idv_password_entered(success:)
       track_event(
         :idv_password_entered,
-        success: success
+        success: success,
       )
     end
 
