@@ -59,6 +59,7 @@ class ValidatedFieldElement extends HTMLElement {
     const isValid = !errorMessage;
 
     this.setErrorMessage(errorMessage);
+    this.focusOnError(isValid);
     this.setInputIsValid(isValid);
   }
 
@@ -72,9 +73,6 @@ class ValidatedFieldElement extends HTMLElement {
       this.getOrCreateErrorMessageElement().textContent = message;
       if (this.errorMessage?.style.display === 'none') {
         this.errorMessage.style.display = '';
-      }
-      if (!document.activeElement?.classList.contains('usa-input--error')) {
-        this.input?.focus();
       }
     } else if (this.errorMessage) {
       this.errorMessage.style.display = 'none';
@@ -140,6 +138,18 @@ class ValidatedFieldElement extends HTMLElement {
     }
 
     return this.errorMessage;
+  }
+
+  /**
+   * Focus on this input if it's invalid and another error element
+   * does not have focus.
+   * 
+   * @param isValid Whether input is valid.
+   */
+  private focusOnError(isValid: boolean) {
+    if (!(isValid && document.activeElement?.classList.contains('usa-input--error'))) {
+      this.input?.focus();
+    }
   }
 }
 

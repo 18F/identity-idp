@@ -7,6 +7,9 @@ export enum MemorableDateErrorMessage {
   missing_month_day = 'missing_month_day',
   missing_month_year = 'missing_month_year',
   missing_day_year = 'missing_day_year',
+  missing_month = 'missing_month',
+  missing_day = 'missing_day',
+  missing_year = 'missing_year',
   invalid_month = 'invalid_month',
   invalid_day = 'invalid_day',
   invalid_year = 'invalid_year',
@@ -102,43 +105,34 @@ class MemorableDateElement extends HTMLElement {
   }
 
   connectedCallback() {
-    // Wait to show validation until submission, i.e. behave like
-    // accompanying form controls
-    let checkValidityEnabled = false;
-
-    // Prevent recursion during validation checking
-    let processingInvalidEvent = false;
+    // Wait to show validation until first submission
+    let updateErrorMessage = false;
 
     const { allInputs } = this;
 
-    const inputListener = () => {
+    const inputListener = (e: Event) => {
       // Run validations
       this.validate();
-      if (checkValidityEnabled) {
+
+      // Update error messages on form validation
+      if (e.type === "invalid") {
+        updateErrorMessage = true;
+      }
+
+      if (updateErrorMessage) {
         // Trigger error message updates
-        allInputs.forEach((f) => f.checkValidity());
-      }
-    };
-
-    // Start showing error messages when the form is first submitted
-    const invalidListener = () => {
-      if (processingInvalidEvent) {
-        return;
-      }
-
-      try {
-        processingInvalidEvent = true;
-        checkValidityEnabled = true;
-        // Immediately start showing validations
-        inputListener();
-      } finally {
-        processingInvalidEvent = false;
+        const errorMessage = allInputs.find(f => f.validationMessage)?.validationMessage;
+        allInputs.forEach((f) => {
+          f.closest('lg-validated-field')?.setErrorMessage(
+            errorMessage || null
+          );
+        });
       }
     };
 
     allInputs.forEach((i) => {
       i.addEventListener('input', inputListener);
-      i.addEventListener('invalid', invalidListener);
+      i.addEventListener('invalid', inputListener);
     });
   }
 
