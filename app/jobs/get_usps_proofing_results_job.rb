@@ -29,6 +29,8 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def perform(_now)
+    return true unless IdentityConfig.store.in_person_proofing_enabled
+
     @enrollment_outcomes = {
       enrollments_checked: 0,
       enrollments_errored: 0,
@@ -37,21 +39,18 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_in_progress: 0,
       enrollments_passed: 0,
     }
-
-    return true unless IdentityConfig.store.in_person_proofing_enabled
-
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
     enrollments = InPersonEnrollment.needs_usps_status_check(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
-    check_enrollments(enrollments)
-
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
     )
+
+    check_enrollments(enrollments)
 
     analytics.idv_in_person_usps_proofing_results_job_completed(**enrollment_outcomes)
 
