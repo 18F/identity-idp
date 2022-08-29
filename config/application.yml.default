@@ -205,7 +205,6 @@ poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proofing_device_profiling_collecting_enabled: false
 proofing_device_profiling_decisioning_enabled: false
-proofing_send_partial_dob: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10

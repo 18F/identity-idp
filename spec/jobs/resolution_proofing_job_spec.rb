@@ -23,7 +23,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
     )
   end
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
-  let(:dob_year_only) { false }
   let(:should_proof_state_id) { true }
 
   let(:lexisnexis_transaction_id) { SecureRandom.uuid }
@@ -49,7 +48,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       ResolutionProofingJob.perform_later(
         result_id: document_capture_session.result_id,
         should_proof_state_id: should_proof_state_id,
-        dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user.id,
@@ -69,7 +67,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       instance.perform(
         result_id: document_capture_session.result_id,
         should_proof_state_id: should_proof_state_id,
-        dob_year_only: dob_year_only,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         user_id: user.id,
@@ -118,8 +115,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         }
       end
 
-      let(:dob_year_only) { false }
-
       it 'returns results and adds threatmetrix proofing components' do
         perform
 
@@ -132,7 +127,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           success: true,
           timed_out: false,
           context: {
-            dob_year_only: dob_year_only,
             should_proof_state_id: true,
             stages: {
               resolution: {
@@ -170,8 +164,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(proofing_component.threatmetrix_review_status).to eq('pass')
       end
 
-      context 'dob_year_only, failed response from lexisnexis' do
-        let(:dob_year_only) { true }
+      context 'failed response from lexisnexis' do
         let(:should_proof_state_id) { true }
         let(:lexisnexis_response) do
           {
@@ -213,17 +206,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             success: false,
             timed_out: false,
             context: {
-              dob_year_only: dob_year_only,
               should_proof_state_id: true,
               stages: {
-                state_id: {
-                  client: Proofing::Aamva::Proofer.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: aamva_transaction_id,
-                },
                 resolution: {
                   client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
                   errors: {
@@ -326,79 +310,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           expect(state_id_proofer).not_to receive(:proof)
           perform
-        end
-      end
-
-      context 'checking DOB year only' do
-        let(:dob_year_only) { true }
-
-        it 'only sends the birth year to LexisNexis (extra applicant attribute)' do
-          expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
-          expect(resolution_proofer).to receive(:proof).
-            with(hash_including(dob_year_only: true)).
-            and_return(Proofing::Result.new)
-
-          perform
-        end
-
-        it 'does not check LexisNexis when AAMVA proofing does not match' do
-          expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(exception: 'error'))
-          expect(resolution_proofer).to_not receive(:proof)
-
-          perform
-        end
-
-        it 'logs the correct context' do
-          expect(state_id_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
-          expect(resolution_proofer).to receive(:proof).and_return(
-            Proofing::Result.new(
-              transaction_id: lexisnexis_transaction_id,
-              reference: lexisnexis_reference,
-            ),
-          )
-
-          perform
-
-          result = document_capture_session.load_proofing_result[:result]
-
-          expect(result[:context]).to eq(
-            {
-              dob_year_only: dob_year_only,
-              should_proof_state_id: true,
-              stages: {
-                state_id: {
-                  client: 'aamva:state_id',
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: aamva_transaction_id,
-                },
-                resolution: {
-                  client: 'lexisnexis:instant_verify',
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: lexisnexis_transaction_id,
-                  reference: lexisnexis_reference,
-                },
-                threatmetrix: {
-                  client: Proofing::Mock::DdpMockClient.vendor_name,
-                  errors: {},
-                  exception: nil,
-                  success: true,
-                  timed_out: false,
-                  transaction_id: threatmetrix_request_id,
-                },
-              },
-            },
-          )
-
-          expect(result.dig(:transaction_id)).to eq(lexisnexis_transaction_id)
-          expect(result.dig(:reference)).to eq(lexisnexis_reference)
         end
       end
     end
