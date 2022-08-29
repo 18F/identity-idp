@@ -73,7 +73,7 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
   end
 
   it 'updates the status_check_attempted_at timestamp' do
-    status_updated_at = Time.zone.now
+    status_updated_at = Time.zone.now - 1.day
     pending_enrollment.update(
       status_check_attempted_at: (Time.zone.now - 1.day),
       status_updated_at: status_updated_at,
@@ -83,7 +83,7 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
     updated_time_range = start_time...(Time.zone.now)
 
     pending_enrollment.reload
-    expect(pending_enrollment.status_updated_at).to eq(status_updated_at)
+    expect(pending_enrollment.status_updated_at).to be_within(1.second).of status_updated_at
     expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
       updated_time_range.cover?(timestamp)
     end
@@ -451,7 +451,7 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'updates the timestamp but does not update the status or log a message' do
-          status_updated_at = Time.zone.now
+          status_updated_at = Time.zone.now - 1.day
           pending_enrollment.update(
             status_check_attempted_at: (Time.zone.now - 1.day),
             status_updated_at: status_updated_at,
@@ -463,7 +463,7 @@ RSpec.describe GetUspsProofingResultsJob do
           pending_enrollment.reload
           expect(pending_enrollment.pending?).to be_truthy
           expect(pending_enrollment.profile.active).to eq(false)
-          expect(pending_enrollment.status_updated_at).to eq(status_updated_at)
+          expect(pending_enrollment.status_updated_at).to be_within(1.second).of status_updated_at
           expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
             updated_time_range.cover?(timestamp)
           end
