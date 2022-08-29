@@ -43,7 +43,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:ddp_response_body) do
-    JSON.parse(LexisNexisFixtures.ddp_success_response_json, symbolize_names: true)
+    JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true)
   end
 
   describe '.perform_later' do
