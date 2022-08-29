@@ -42,6 +42,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
   let(:request_ip) { Faker::Internet.ip_v4_address }
+  let(:ddp_response_body) do
+    JSON.parse(LexisNexisFixtures.ddp_success_response_json, symbolize_names: true)
+  end
 
   describe '.perform_later' do
     it 'stores results' do
@@ -153,6 +156,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 success: true,
                 timed_out: false,
                 transaction_id: threatmetrix_request_id,
+                response_body: ddp_response_body,
               },
             },
           },
@@ -230,6 +234,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   success: true,
                   timed_out: false,
                   transaction_id: threatmetrix_request_id,
+                  response_body: ddp_response_body,
                 },
               },
             },
