@@ -33,6 +33,7 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
 
   it 'updates the status of the enrollment and profile appropriately' do
     pending_enrollment.update(
+      status_check_attempted_at: (Time.zone.now - 1.day),
       status_updated_at: (Time.zone.now - 2.days),
     )
     start_time = Time.zone.now
@@ -41,6 +42,9 @@ RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
 
     pending_enrollment.reload
     expect(pending_enrollment.status_updated_at).to satisfy do |timestamp|
+      updated_time_range.cover?(timestamp)
+    end
+    expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
       updated_time_range.cover?(timestamp)
     end
     expect(pending_enrollment.status).to eq(status)
@@ -66,6 +70,23 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
       exception_class: exception_class,
       exception_message: exception_message,
     )
+  end
+
+  it 'updates the status_check_attempted_at timestamp' do
+    status_updated_at = Time.zone.now
+    pending_enrollment.update(
+      status_check_attempted_at: (Time.zone.now - 1.day),
+      status_updated_at: status_updated_at,
+    )
+    start_time = Time.zone.now
+    job.perform(Time.zone.now)
+    updated_time_range = start_time...(Time.zone.now)
+
+    pending_enrollment.reload
+    expect(pending_enrollment.status_updated_at).to eq(status_updated_at)
+    expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
+      updated_time_range.cover?(timestamp)
+    end
   end
 end
 
@@ -429,13 +450,22 @@ RSpec.describe GetUspsProofingResultsJob do
           stub_request_in_progress_proofing_results
         end
 
-        it 'does not update the status or log a message' do
+        it 'updates the timestamp but does not update the status or log a message' do
+          status_updated_at = Time.zone.now
+          pending_enrollment.update(
+            status_check_attempted_at: (Time.zone.now - 1.day),
+            status_updated_at: status_updated_at,
+          )
+          start_time = Time.zone.now
           job.perform(Time.zone.now)
+          updated_time_range = start_time...(Time.zone.now)
 
-          pending_enrollments.each do |enrollment|
-            enrollment.reload
-            expect(enrollment.pending?).to be_truthy
-            expect(enrollment.profile.active).to be(false)
+          pending_enrollment.reload
+          expect(pending_enrollment.pending?).to be_truthy
+          expect(pending_enrollment.profile.active).to be(false)
+          expect(pending_enrollment.status_updated_at).to eq(status_updated_at)
+          expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
+            updated_time_range.cover?(timestamp)
           end
 
           expect(job_analytics).not_to have_logged_event(
