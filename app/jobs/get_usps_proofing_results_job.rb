@@ -40,18 +40,32 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     return true unless IdentityConfig.store.in_person_proofing_enabled
 
-    proofer = UspsInPersonProofing::Proofer.new
-
     reprocess_delay_minutes = IdentityConfig.store.
       get_usps_proofing_results_job_reprocess_delay_minutes
     enrollments = InPersonEnrollment.needs_usps_status_check(
       ...reprocess_delay_minutes.minutes.ago,
     )
 
+    check_enrollments(enrollments)
+
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
     )
+
+    analytics.idv_in_person_usps_proofing_results_job_completed(**enrollment_outcomes)
+
+    true
+  end
+
+  private
+
+  attr_accessor :enrollment_outcomes
+
+  DEFAULT_EMAIL_DELAY_IN_HOURS = 1
+
+  def check_enrollments(enrollments)
+    proofer = UspsInPersonProofing::Proofer.new
 
     enrollments.each do |enrollment|
       # Add a unique ID for enrollments that don't have one
@@ -73,24 +87,12 @@ class GetUspsProofingResultsJob < ApplicationJob
         handle_standard_error(err, enrollment)
       end
 
-      # todo: worth putting this in a begin/ensure block to make sure the enrollment has its
-      # attempted_at timestamp updated?
       process_enrollment_response(enrollment, response) unless errored
 
       # Record the attempt to update the enrollment
       enrollment.update(status_check_attempted_at: status_check_attempted_at)
     end
-
-    analytics.idv_in_person_usps_proofing_results_job_completed(**enrollment_outcomes)
-
-    true
   end
-
-  private
-
-  attr_accessor :enrollment_outcomes
-
-  DEFAULT_EMAIL_DELAY_IN_HOURS = 1
 
   def analytics(user: AnonymousUser.new)
     Analytics.new(user: user, request: nil, session: {}, sp: nil)
