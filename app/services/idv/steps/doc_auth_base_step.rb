@@ -53,6 +53,7 @@ module Idv
         @flow.analytics.throttler_rate_limit_triggered(
           throttle_type: :idv_doc_auth,
         )
+        @flow.irs_attempts_api_tracker.idv_document_upload_rate_limited
         redirect_to throttled_url
         DocAuth::Response.new(
           success: false,

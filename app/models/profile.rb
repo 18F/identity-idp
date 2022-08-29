@@ -16,6 +16,7 @@ class Profile < ApplicationRecord
     gpo_verification_pending: 3,
     verification_cancelled: 4,
     in_person_verification_pending: 5,
+    threatmetrix_review_pending: 6,
   }
 
   attr_reader :personal_key

@@ -49,10 +49,6 @@
           "ItemStatus": "pass"
         },
         {
-          "ItemName": "SSNLowIssuance",
-          "ItemStatus": "pass"
-        },
-        {
           "ItemName": "LexIDDeathMatch",
           "ItemStatus": "pass"
         }

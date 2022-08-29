@@ -15,7 +15,7 @@ module Proofing
                             :state,
                             :zipcode
 
-        optional_attributes :address2, :uuid_prefix, :dob_year_only
+        optional_attributes :address2, :uuid_prefix
 
         stage :resolution
 
@@ -24,11 +24,7 @@ module Proofing
         end
 
         def send_verification_request(applicant)
-          VerificationRequest.new(config: config, applicant: applicant).send(
-            response_options: {
-              dob_year_only: applicant[:dob_year_only],
-            },
-          )
+          VerificationRequest.new(config: config, applicant: applicant).send
         end
       end
     end

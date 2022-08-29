@@ -179,6 +179,7 @@ module Idv
     def throttle_if_rate_limited
       return unless @throttled
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
@@ -237,7 +238,7 @@ module Idv
         last_name: pii_from_doc[:last_name],
         date_of_birth: pii_from_doc[:dob],
         address: pii_from_doc[:address1],
-        failure_reason: client_response.errors&.presence,
+        failure_reason: client_response.errors&.except(:hints)&.presence,
       )
     end
 

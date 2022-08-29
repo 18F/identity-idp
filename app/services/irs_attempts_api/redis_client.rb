@@ -9,10 +9,10 @@ module IrsAttemptsApi
       end
     end
 
-    def write_event(jti:, jwe:, timestamp:)
+    def write_event(event_key:, jwe:, timestamp:)
       key = key(timestamp)
       redis_pool.with do |client|
-        client.hset(key, jti, jwe)
+        client.hset(key, event_key, jwe)
         client.expire(key, IdentityConfig.store.irs_attempt_api_event_ttl_seconds)
       end
     end

@@ -40,7 +40,13 @@ module ControllerHelper
       user_session: user_session, current_user: user,
       service_provider: nil
     )
-    idv_session.applicant = { first_name: 'Some', last_name: 'One' }.with_indifferent_access
+    idv_session.applicant = {
+      first_name: 'Some',
+      last_name: 'One',
+      uuid: SecureRandom.uuid,
+      dob: 50.years.ago.to_date.to_s,
+      ssn: '666-12-1234',
+    }.with_indifferent_access
     idv_session.profile_confirmation = true
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
