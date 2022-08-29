@@ -180,6 +180,7 @@ module Idv
           trace_id: amzn_trace_id,
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
+          request_ip: request.remote_ip,
         )
       end
 

@@ -57,7 +57,7 @@ module TwoFactorAuthentication
 
     def handle_invalid_piv_cac
       clear_piv_cac_information
-      handle_invalid_otp(type: 'piv_cac')
+      handle_invalid_otp(context: context, type: 'piv_cac')
     end
 
     # This overrides the method in TwoFactorAuthenticatable so that we

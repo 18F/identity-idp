@@ -40,6 +40,8 @@ module Proofing
         :state_id_jurisdiction,
       )
 
+      optional_attributes :uuid_prefix
+
       stage :state_id
 
       proof :aamva_proof

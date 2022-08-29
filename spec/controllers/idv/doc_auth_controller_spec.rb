@@ -73,10 +73,6 @@ describe Idv::DocAuthController do
           :flow_session,
           step_template: 'idv/doc_auth/document_capture',
           flow_namespace: 'idv',
-          step_indicator: hash_including(
-            :steps,
-            current_step: :verify_id,
-          ),
         ),
       ).and_call_original
 

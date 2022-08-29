@@ -954,7 +954,7 @@ feature 'Sign in' do
       expect(page).to have_content(user.email)
 
       agree_and_continue_button = find_button(t('sign_up.agree_and_continue'))
-      action_url = agree_and_continue_button.find(:xpath, '..')[:action]
+      action_url = agree_and_continue_button.ancestor('form')[:action]
       agree_and_continue_button.click
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')

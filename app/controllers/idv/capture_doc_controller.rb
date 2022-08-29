@@ -43,10 +43,13 @@ module Idv
       end
     end
 
-    def update_sp_session_with_result(result)
-      session[:sp] ||= {}
-      session[:sp][:ial2_strict] = result.extra[:ial2_strict]
-      session[:sp][:issuer] = result.extra[:sp_issuer]
+    def update_sp_session_with_result(_result)
+      return if sp_session[:issuer] || request_id.blank?
+      StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+    end
+
+    def request_id
+      params.fetch(:request_id, '')
     end
 
     def token

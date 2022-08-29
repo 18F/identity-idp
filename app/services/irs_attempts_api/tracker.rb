@@ -1,15 +1,15 @@
 module IrsAttemptsApi
   class Tracker
-    attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :device_fingerprint,
+    attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_request_uri
 
-    def initialize(session_id:, request:, user:, sp:, device_fingerprint:,
+    def initialize(session_id:, request:, user:, sp:, cookie_device_uuid:,
                    sp_request_uri:, enabled_for_session:)
       @session_id = session_id # IRS session ID
       @request = request
       @user = user
       @sp = sp
-      @device_fingerprint = device_fingerprint
+      @cookie_device_uuid = cookie_device_uuid
       @sp_request_uri = sp_request_uri
       @enabled_for_session = enabled_for_session
     end
@@ -21,7 +21,7 @@ module IrsAttemptsApi
         user_agent: request&.user_agent,
         unique_session_id: hashed_session_id,
         user_uuid: AgencyIdentityLinker.for(user: user, service_provider: sp)&.uuid,
-        device_fingerprint: device_fingerprint,
+        device_fingerprint: hashed_cookie_device_uuid,
         user_ip_address: request&.remote_ip,
         irs_application_url: sp_request_uri,
         client_port: CloudFrontHeaderParser.new(request).client_port,
@@ -35,7 +35,7 @@ module IrsAttemptsApi
       )
 
       redis_client.write_event(
-        jti: event.jti,
+        event_key: event.event_key,
         jwe: event.to_jwe,
         timestamp: event.occurred_at,
       )
@@ -50,6 +50,11 @@ module IrsAttemptsApi
     def hashed_session_id
       return nil unless user&.unique_session_id
       Digest::SHA1.hexdigest(user&.unique_session_id)
+    end
+
+    def hashed_cookie_device_uuid
+      return nil unless cookie_device_uuid
+      Digest::SHA1.hexdigest(cookie_device_uuid)
     end
 
     def enabled?

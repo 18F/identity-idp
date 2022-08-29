@@ -13,7 +13,7 @@ import {
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
-import { trackEvent } from '@18f/identity-analytics';
+import { trackEvent as baseTrackEvent } from '@18f/identity-analytics';
 
 /** @typedef {import('@18f/identity-document-capture').FlowPath} FlowPath */
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
@@ -93,9 +93,9 @@ const device = {
 };
 
 /** @type {import('@18f/identity-analytics').trackEvent} */
-function addPageAction(event, payload) {
+function trackEvent(event, payload) {
   const { flowPath } = appRoot.dataset;
-  return trackEvent(event, { ...payload, flow_path: flowPath });
+  return baseTrackEvent(event, { ...payload, flow_path: flowPath });
 }
 
 (async () => {
@@ -145,7 +145,7 @@ function addPageAction(event, payload) {
     [AppContext.Provider, { value: { appName } }],
     [MarketingSiteContextProvider, { helpCenterRedirectURL, securityAndPrivacyHowItWorksURL }],
     [DeviceContext.Provider, { value: device }],
-    [AnalyticsContext.Provider, { value: { addPageAction } }],
+    [AnalyticsContext.Provider, { value: { trackEvent } }],
     [
       AcuantContextProvider,
       {

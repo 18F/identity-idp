@@ -4,7 +4,7 @@
 
 <p><%= t('instructions.password.password_key') %></p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @reset_password_form,
       url: user_password_path,
       html: { autocomplete: 'off',
@@ -18,7 +18,7 @@
         required: true,
       ) %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'usa-button--big margin-bottom-4' %>
+  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>

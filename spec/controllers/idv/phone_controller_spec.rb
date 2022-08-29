@@ -219,20 +219,20 @@ describe Idv::PhoneController do
         end
 
         it 'redirects to otp delivery page' do
+          original_applicant = subject.idv_session.applicant.dup
+
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
           expect(response).to redirect_to idv_phone_path
           get :new
           expect(response).to redirect_to idv_otp_delivery_method_path
 
-          expected_applicant = {
-            'first_name' => 'Some',
-            'last_name' => 'One',
-            'phone' => normalized_phone,
-            'uuid_prefix' => nil,
-          }
-
-          expect(subject.idv_session.applicant).to eq expected_applicant
+          expect(subject.idv_session.applicant).to eq(
+            original_applicant.merge(
+              'phone' => normalized_phone,
+              'uuid_prefix' => nil,
+            ),
+          )
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
           expect(subject.idv_session.user_phone_confirmation).to eq false
         end

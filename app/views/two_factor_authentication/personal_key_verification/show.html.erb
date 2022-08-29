@@ -6,12 +6,12 @@
   <%= t('two_factor_authentication.personal_key_prompt') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @personal_key_form, url: login_two_factor_personal_key_path,
                           html: { autocomplete: 'off', method: :post }
     ) do |f| %>
   <%= render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key %>
-  <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.submit.default') %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

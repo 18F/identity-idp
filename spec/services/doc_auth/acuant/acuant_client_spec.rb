@@ -258,11 +258,11 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
     context 'when the result is a pass' do
       it 'sends the requests and returns success' do
         get_face_stub = stub_request(:get, get_face_image_url).
-                        to_return(body: AcuantFixtures.get_face_image_response)
+          to_return(body: AcuantFixtures.get_face_image_response)
         facial_match_stub = stub_request(:post, full_facial_match_url).
-                            to_return(body: AcuantFixtures.facial_match_response_success)
+          to_return(body: AcuantFixtures.facial_match_response_success)
         liveness_stub = stub_request(:post, full_liveness_url).
-                        to_return(body: AcuantFixtures.liveness_response_success)
+          to_return(body: AcuantFixtures.liveness_response_success)
 
         result = subject.post_selfie(
           instance_id: instance_id,

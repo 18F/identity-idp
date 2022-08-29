@@ -13,23 +13,28 @@
 <% end %>
 <%= render 'shared/sp_alert' %>
 
-<%= validated_form_for(
+<%= simple_form_for(
       resource,
       as: resource_name,
       url: session_path(resource_name),
       html: { autocomplete: 'off' },
     ) do |f|
 %>
-  <%= f.input :email,
-              label: t('account.index.email'),
-              required: true,
-              input_html: { class: 'margin-bottom-6',
-                            autocorrect: 'off',
-                            aria: { invalid: false } } %>
-  <%= render PasswordToggleComponent.new(form: f, required: true) %>
+  <%= render ValidatedFieldComponent.new(
+        form: f,
+        name: :email,
+        label: t('account.index.email'),
+        required: true,
+        input_html: { autocorrect: 'off' },
+      ) %>
+  <%= render PasswordToggleComponent.new(
+        form: f,
+        required: true,
+        wrapper_html: { class: 'margin-top-6' },
+      ) %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='margin-bottom-4'>
-    <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary usa-button--full-width margin-bottom-2' %>
+    <%= f.submit t('links.next'), full_width: true, big: false, wide: false, class: 'margin-bottom-2' %>
     <%= link_to(
           t('links.create_account'),
           sign_up_email_url(request_id: @request_id),

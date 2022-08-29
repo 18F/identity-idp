@@ -1,7 +1,6 @@
 module Idv
   class DocAuthController < ApplicationController
     before_action :confirm_two_factor_authenticated
-    before_action :redirect_if_mail_bounced
     before_action :redirect_if_pending_profile
     before_action :redirect_if_pending_in_person_enrollment
     before_action :extend_timeout_using_meta_refresh_for_select_paths
@@ -29,10 +28,6 @@ module Idv
 
     def return_to_sp
       redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
-    end
-
-    def redirect_if_mail_bounced
-      redirect_to idv_gpo_url if current_user.decorate.gpo_mail_bounced?
     end
 
     def redirect_if_pending_profile

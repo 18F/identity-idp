@@ -19,9 +19,9 @@ module TwoFactorAuthentication
       )
 
       if analytics_properties[:multi_factor_auth_method] == 'webauthn_platform'
-        irs_attempts_api_tracker.mfa_verify_webauthn_platform(success: result.success?)
+        irs_attempts_api_tracker.mfa_login_webauthn_platform(success: result.success?)
       elsif analytics_properties[:multi_factor_auth_method] == 'webauthn'
-        irs_attempts_api_tracker.mfa_verify_webauthn_roaming(success: result.success?)
+        irs_attempts_api_tracker.mfa_login_webauthn_roaming(success: result.success?)
       end
 
       handle_webauthn_result(result)

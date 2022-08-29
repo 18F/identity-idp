@@ -8,10 +8,10 @@ import { render } from '../../../support/document-capture';
 describe('document-capture/components/warning', () => {
   it('renders a warning', async () => {
     const actionOnClick = sinon.spy();
-    const addPageAction = sinon.spy();
+    const trackEvent = sinon.spy();
 
     const { getByRole, getByText } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
+      <AnalyticsContext.Provider value={{ trackEvent }}>
         <Warning
           heading="Oops!"
           actionText="Try again"
@@ -30,7 +30,7 @@ describe('document-capture/components/warning', () => {
       </AnalyticsContext.Provider>,
     );
 
-    expect(addPageAction).to.have.been.calledWith('IdV: warning shown', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning shown', {
       location: 'example',
       remaining_attempts: undefined,
     });
@@ -41,7 +41,7 @@ describe('document-capture/components/warning', () => {
     expect(getByRole('heading', { name: 'Oops!' })).to.exist();
     expect(tryAgainButton).to.exist();
     expect(actionOnClick).to.have.been.calledOnce();
-    expect(addPageAction).to.have.been.calledWith('IdV: warning action triggered', {
+    expect(trackEvent).to.have.been.calledWith('IdV: warning action triggered', {
       location: 'example',
     });
     expect(getByText('Something went wrong')).to.exist();

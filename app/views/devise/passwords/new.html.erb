@@ -9,7 +9,7 @@
   <%= t('instructions.password.forgot') %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       @password_reset_email_form,
       url: user_password_path,
       html: { autocomplete: 'off', method: :post },
@@ -19,11 +19,7 @@
               input_html: { autocorrect: 'off',
                             aria: { invalid: false, describedby: 'email-description' } } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
-  <%= f.button(
-        :submit,
-        t('forms.buttons.continue'),
-        class: 'display-block usa-button--big usa-button--wide margin-y-5',
-      ) %>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render(PageFooterComponent.new) do %>

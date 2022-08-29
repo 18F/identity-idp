@@ -28,10 +28,6 @@ module Idv
       #          we finish setting up IPP step indicators
       # i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
 
-      # WILLFIX: (LG-6308) move this to the location page when
-      #          we finish setting up IPP step indicators
-      # i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
-
       STEP_INDICATOR_STEPS = [
         { name: :find_a_post_office },
         { name: :verify_info },

@@ -1,4 +1,5 @@
 require_relative 'interaction_helper'
+require_relative 'javascript_driver_helper'
 
 module IdvHelper
   include ActiveJob::TestHelper

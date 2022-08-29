@@ -4,8 +4,7 @@ module Proofing
       class Proofer < LexisNexis::Proofer
         vendor_name 'lexisnexis:ddp'
 
-        required_attributes :state_id_number,
-                            :threatmetrix_session_id,
+        required_attributes :threatmetrix_session_id,
                             :state_id_number,
                             :first_name,
                             :last_name,
@@ -14,9 +13,10 @@ module Proofing
                             :address1,
                             :city,
                             :state,
-                            :zipcode
+                            :zipcode,
+                            :request_ip
 
-        optional_attributes :address2, :phone, :email
+        optional_attributes :address2, :phone, :email, :uuid_prefix
 
         stage :resolution
 
@@ -40,6 +40,7 @@ module Proofing
           result.transaction_id = body['request_id']
           request_result = body['request_result']
           review_status = body['review_status']
+          result.review_status = review_status
           result.add_error(:request_result, request_result) unless request_result == 'success'
           result.add_error(:review_status, review_status) unless review_status == 'pass'
         end

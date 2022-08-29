@@ -8,12 +8,12 @@
         t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>
 
-<%= validated_form_for(
+<%= simple_form_for(
       current_user,
       url: reauthn_user_password_path,
       html: { autocomplete: 'off', method: 'post', class: 'margin-top-6' },
     ) do |f| %>
   <%= render PasswordToggleComponent.new(form: f, required: true) %>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'display-block margin-y-5 usa-button--big usa-button--wide' %>
+  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 <%= render 'shared/cancel', link: account_path %>

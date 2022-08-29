@@ -18,8 +18,8 @@ describe IdentityLinker do
       }
 
       identity_attributes = last_identity.attributes.symbolize_keys.
-                            except(:created_at, :updated_at, :id, :session_uuid,
-                                   :last_authenticated_at, :nonce)
+        except(:created_at, :updated_at, :id, :session_uuid,
+               :last_authenticated_at, :nonce)
 
       expect(last_identity.session_uuid).to match(/.{8}-.{4}-.{4}-.{4}-.{12}/)
       expect(last_identity.last_authenticated_at).to be_present

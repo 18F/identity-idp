@@ -34,8 +34,7 @@ describe 'two_factor_authentication/personal_key_verification/show.html.erb' do
   it 'contains a form to submit the personal key' do
     render
 
-    expect(rendered).
-      to have_xpath("//input[@value='#{t('forms.buttons.submit.default')}']")
+    expect(rendered).to have_button(t('forms.buttons.submit.default'))
     expect(rendered).
       to have_xpath("//form[@action='#{login_two_factor_personal_key_path}']")
     expect(rendered).

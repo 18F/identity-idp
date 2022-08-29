@@ -180,6 +180,7 @@ class IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
+    config.add(:idv_personal_key_confirmation_enabled, type: :boolean)
     config.add(:idv_private_key, type: :string)
     config.add(:idv_public_key, type: :string)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
@@ -190,6 +191,8 @@ class IdentityConfig
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:include_slo_in_saml_metadata, type: :boolean)
+    config.add(:inherited_proofing_enabled, type: :boolean)
+    config.add(:inherited_proofing_va_base_url, type: :string)
     config.add(:irs_attempt_api_audience)
     config.add(:irs_attempt_api_auth_tokens, type: :comma_separated_string_list)
     config.add(:irs_attempt_api_csp_id)
@@ -198,6 +201,7 @@ class IdentityConfig
     config.add(:irs_attempt_api_event_count_default, type: :integer)
     config.add(:irs_attempt_api_event_count_max, type: :integer)
     config.add(:irs_attempt_api_public_key)
+    config.add(:irs_attempt_api_public_key_id)
     config.add(:kantara_2fa_phone_restricted, type: :boolean)
     config.add(:kantara_2fa_phone_existing_user_restriction, type: :boolean)
     config.add(:kantara_restriction_enforcement_date, type: :timestamp)
@@ -224,6 +228,7 @@ class IdentityConfig
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string)
     config.add(:lexisnexis_threatmetrix_policy, type: :string)
+    config.add(:lexisnexis_threatmetrix_required_to_verify, type: :boolean)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
@@ -288,7 +293,6 @@ class IdentityConfig
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(:proofing_device_profiling_collecting_enabled, type: :boolean)
     config.add(:proofing_device_profiling_decisioning_enabled, type: :boolean)
-    config.add(:proofing_send_partial_dob, type: :boolean)
     config.add(:proof_address_max_attempts, type: :integer)
     config.add(:proof_address_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
@@ -386,7 +390,6 @@ class IdentityConfig
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
-    config.add(:inherited_proofing_va_base_url, type: :string)
 
     @key_types = config.key_types
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).

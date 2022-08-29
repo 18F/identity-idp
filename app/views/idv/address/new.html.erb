@@ -64,9 +64,7 @@
           },
         ) %>
   </div>
-  <%= render ButtonComponent.new(big: true, wide: true, class: 'display-block margin-y-5') do %>
-    <%= t('forms.buttons.submit.update') %>
-  <% end %>
+  <%= f.submit t('forms.buttons.submit.update'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'idv/shared/back', step: 'verify' %>

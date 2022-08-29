@@ -24,6 +24,7 @@ module IrsAttemptsApi
         event_data_encryption_key,
         typ: 'secevent+jwe',
         zip: 'DEF',
+        enc: 'A256GCM',
       )
     end
 
@@ -32,14 +33,19 @@ module IrsAttemptsApi
       parsed_event = JSON.parse(decrypted_event)
       event_type = parsed_event['events'].keys.first.split('/').last
       event_data = parsed_event['events'].values.first
+      jti = parsed_event['jti'].split(':').last
       AttemptEvent.new(
-        jti: parsed_event['jti'],
+        jti: jti,
         iat: parsed_event['iat'],
         event_type: event_type,
         session_id: event_data['subject']['session_id'],
         occurred_at: Time.zone.at(event_data['occurred_at']),
         event_metadata: event_data.symbolize_keys.except(:subject, :occurred_at),
       )
+    end
+
+    def event_key
+      "#{event_data_encryption_key_id}:#{jti}"
     end
 
     private
@@ -69,6 +75,10 @@ module IrsAttemptsApi
     def long_event_type
       dasherized_name = event_type.to_s.dasherize
       "https://schemas.login.gov/secevent/irs-attempts-api/event-type/#{dasherized_name}"
+    end
+
+    def event_data_encryption_key_id
+      IdentityConfig.store.irs_attempt_api_public_key_id
     end
 
     def event_data_encryption_key

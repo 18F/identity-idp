@@ -10,6 +10,9 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import { useIfStillMounted, useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { Button, FullScreen } from '@18f/identity-components';
+import type { FullScreenRefHandle } from '@18f/identity-components';
+import type { FocusTrap } from 'focus-trap';
+import type { ReactNode, MouseEvent, Ref } from 'react';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
@@ -20,79 +23,105 @@ import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useCounter from '../hooks/use-counter';
 import useCookie from '../hooks/use-cookie';
+import type {
+  AcuantSuccessResponse,
+  AcuantDocumentType,
+  AcuantCaptureFailureError,
+} from './acuant-camera';
 
-/** @typedef {import('react').ReactNode} ReactNode */
-/** @typedef {import('./acuant-camera').AcuantSuccessResponse} AcuantSuccessResponse */
-/** @typedef {import('./acuant-camera').AcuantDocumentType} AcuantDocumentType */
-/** @typedef {import('@18f/identity-components').FullScreenRefHandle} FullScreenRefHandle */
-/** @typedef {import('../context/acuant').AcuantGlobal} AcuantGlobal */
+type AcuantDocumentTypeLabel = 'id' | 'passport' | 'none';
+type AcuantImageAssessment = 'success' | 'glare' | 'blurry';
+type ImageSource = 'acuant' | 'upload';
 
-/**
- * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
- */
+interface ImageAnalyticsPayload {
+  /**
+   * Image width, or null if unknown
+   */
+  width: number | null;
+  /**
+   * Image height, or null if unknown
+   */
+  height: number | null;
+  /**
+   * Mime type, or null if unknown
+   */
+  mimeType: string | null;
+  /**
+   * Method by which the image was added
+   */
+  source: ImageSource;
+  /**
+   * Total number of attempts at this point
+   */
+  attempt?: number;
+  /**
+   * Size of the image in bytes
+   */
+  size: number;
+}
 
-/**
- * @typedef {"success"|"glare"|"blurry"} AcuantImageAssessment
- */
+interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
+  documentType: AcuantDocumentTypeLabel;
+  dpi: number;
+  moire: number;
+  glare: number;
+  glareScoreThreshold: number;
+  isAssessedAsGlare: boolean;
+  sharpness: number;
+  sharpnessScoreThreshold: number;
+  isAssessedAsBlurry: boolean;
+  assessment: AcuantImageAssessment;
+}
 
-/**
- * @typedef {"acuant"|"upload"} ImageSource
- */
-
-/**
- * @typedef ImageAnalyticsPayload
- *
- * @prop {number?} width Image width, or null if unknown.
- * @prop {number?} height Image height, or null if unknown.
- * @prop {string?} mimeType Mime type, or null if unknown.
- * @prop {ImageSource} source Method by which image was added.
- * @prop {number=} attempt Total number of attempts at this point.
- * @prop {number} size Size of image, in bytes.
- */
-
-/**
- * @typedef _AcuantImageAnalyticsPayload
- *
- * @prop {AcuantDocumentTypeLabel} documentType
- * @prop {number} dpi
- * @prop {number} moire
- * @prop {number} glare
- * @prop {number} glareScoreThreshold
- * @prop {boolean} isAssessedAsGlare
- * @prop {number} sharpness
- * @prop {number} sharpnessScoreThreshold
- * @prop {boolean} isAssessedAsBlurry
- * @prop {AcuantImageAssessment} assessment
- */
-
-/**
- * @typedef {ImageAnalyticsPayload & _AcuantImageAnalyticsPayload} AcuantImageAnalyticsPayload
- */
-
-/**
- * @typedef AcuantCaptureProps
- *
- * @prop {string} label Label associated with file input.
- * @prop {string=} bannerText Optional banner text to show in file input.
- * @prop {string|Blob|null|undefined} value Current value.
- * @prop {(
- *   nextValue: string|Blob|null,
- *   metadata?: ImageAnalyticsPayload
- * )=>void} onChange Callback receiving next value on change.
- * @prop {()=>void=} onCameraAccessDeclined Camera permission declined callback.
- * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
- * camera is supported, defaults to the Acuant environment camera capture.
- * @prop {string=} className Optional additional class names.
- * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
- * @prop {ReactNode=} errorMessage Error to show.
- * @prop {string} name Prefix to prepend to user action analytics labels.
- */
+interface AcuantCaptureProps {
+  /**
+   * Label associated with file input
+   */
+  label: string;
+  /**
+   * Optional banner text to show in file input
+   */
+  bannerText: string;
+  /**
+   * Current value
+   */
+  value: string | Blob | null | undefined;
+  /**
+   * Callback receiving next value on change
+   */
+  onChange: (nextValue: string | Blob | null, metadata?: ImageAnalyticsPayload) => void;
+  /**
+   * Camera permission declined callback
+   */
+  onCameraAccessDeclined?: () => void;
+  /**
+   * Facing mode of caopture. If capture is not
+   * specified and a camera is supported, defaults
+   * to the Acuant environment camera capture.
+   */
+  capture: 'user' | 'environment';
+  /**
+   * Optional additional class names
+   */
+  className?: string;
+  /**
+   * Whether to allow file upload. Defaults
+   * to true.
+   */
+  allowUpload?: boolean;
+  /**
+   * Error message to show
+   */
+  errorMessage: ReactNode;
+  /**
+   * Prefix to prepend to user action analytics labels.
+   */
+  name: string;
+}
 
 /**
  * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
  * happily tolerate than an HTML entity.
- *
- * @type {string}
  */
 const NBSP_UNICODE = '\u00A0';
 
@@ -104,21 +133,15 @@ const noop = () => {};
 /**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
  * camera, or false otherwise.
- *
- * @param {import('./acuant-camera').AcuantCaptureFailureError} error
- *
- * @return {boolean}
  */
-export const isAcuantCameraAccessFailure = (error) => error instanceof Error;
+export const isAcuantCameraAccessFailure = (error: AcuantCaptureFailureError): error is Error =>
+  error instanceof Error;
 
 /**
  * Returns a human-readable document label corresponding to the given document type constant.
  *
- * @param {AcuantDocumentType} documentType
- *
- * @return {AcuantDocumentTypeLabel} Human-readable document label.
  */
-function getDocumentTypeLabel(documentType) {
+function getDocumentTypeLabel(documentType: AcuantDocumentType): AcuantDocumentTypeLabel {
   switch (documentType) {
     case 1:
       return 'id';
@@ -129,19 +152,15 @@ function getDocumentTypeLabel(documentType) {
   }
 }
 
-/**
- * @param {import('./acuant-camera').AcuantCaptureFailureError} error
- * @param {string=} code
- *
- * @return {string}
- */
-export function getNormalizedAcuantCaptureFailureMessage(error, code) {
+export function getNormalizedAcuantCaptureFailureMessage(
+  error: AcuantCaptureFailureError,
+  code: string | undefined,
+): string {
   if (isAcuantCameraAccessFailure(error)) {
     return 'User or system denied camera access';
   }
 
-  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
-    .AcuantJavascriptWebSdk;
+  const { REPEAT_FAIL_CODE, SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
 
   switch (code) {
     case REPEAT_FAIL_CODE:
@@ -168,15 +187,10 @@ export function getNormalizedAcuantCaptureFailureMessage(error, code) {
   }
 }
 
-/**
- * @param {File} file Image file.
- *
- * @return {Promise<{width: number?, height: number?}>}
- */
-function getImageDimensions(file) {
-  let objectURL;
+function getImageDimensions(file: File): Promise<{ width: number | null; height: number | null }> {
+  let objectURL: string;
   return file.type.indexOf('image/') === 0
-    ? new Promise((resolve) => {
+    ? new Promise<{ width: number | null; height: number | null }>((resolve) => {
         objectURL = window.URL.createObjectURL(file);
         const image = new window.Image();
         image.onload = () => resolve({ width: image.width, height: image.height });
@@ -196,9 +210,8 @@ function getImageDimensions(file) {
  * tick, the focus trap's deactivation will be overridden to prevent any default focus return, in
  * order to avoid a race condition between the intended focus targets.
  *
- * @param {import('focus-trap').FocusTrap} focusTrap
  */
-function suspendFocusTrapForAnticipatedFocus(focusTrap) {
+function suspendFocusTrapForAnticipatedFocus(focusTrap: FocusTrap) {
   // Pause trap event listeners to prevent focus from being pulled back into the trap container in
   // response to programmatic focus transitions.
   focusTrap.pause();
@@ -225,7 +238,7 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap) {
   }, 0);
 }
 
-export function getDecodedBase64ByteSize(data) {
+export function getDecodedBase64ByteSize(data: string) {
   let bytes = 0.75 * data.length;
 
   let i = data.length;
@@ -239,8 +252,6 @@ export function getDecodedBase64ByteSize(data) {
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
- *
- * @param {AcuantCaptureProps} props Props object.
  */
 function AcuantCapture(
   {
@@ -254,8 +265,8 @@ function AcuantCapture(
     allowUpload = true,
     errorMessage,
     name,
-  },
-  ref,
+  }: AcuantCaptureProps,
+  ref: Ref<HTMLInputElement | null>,
 ) {
   const {
     isReady,
@@ -267,13 +278,13 @@ function AcuantCapture(
     sharpnessThreshold,
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
-  const { addPageAction } = useContext(AnalyticsContext);
-  const fullScreenRef = useRef(/** @type {FullScreenRefHandle?} */ (null));
-  const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
+  const { trackEvent } = useContext(AnalyticsContext);
+  const fullScreenRef = useRef<FullScreenRefHandle>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
-  const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
+  const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
   const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
@@ -304,25 +315,21 @@ function AcuantCapture(
 
   /**
    * Calls onChange with next value and resets any errors which may be present.
-   *
-   * @param {Blob|string|null} nextValue Next value.
-   * @param {ImageAnalyticsPayload=} metadata Capture metadata.
    */
-  function onChangeAndResetError(nextValue, metadata) {
+  function onChangeAndResetError(
+    nextValue: Blob | string | null,
+    metadata?: ImageAnalyticsPayload,
+  ) {
     setOwnErrorMessage(null);
     onChange(nextValue, metadata);
   }
 
   /**
    * Returns an analytics payload, decorated with common values.
-   *
-   * @template {ImageAnalyticsPayload|AcuantImageAnalyticsPayload} P
-   *
-   * @param {P} payload
-   *
-   * @return {P}
    */
-  function getAddAttemptAnalyticsPayload(payload) {
+  function getAddAttemptAnalyticsPayload<
+    P extends ImageAnalyticsPayload | AcuantImageAnalyticsPayload,
+  >(payload: P): P {
     const enhancedPayload = { ...payload, attempt };
     incrementAttempt();
     return enhancedPayload;
@@ -330,12 +337,9 @@ function AcuantCapture(
 
   /**
    * Handler for file input change events.
-   *
-   * @param {File?} nextValue Next value, if set.
    */
-  async function onUpload(nextValue) {
-    /** @type {ImageAnalyticsPayload=} */
-    let analyticsPayload;
+  async function onUpload(nextValue: File | null) {
+    let analyticsPayload: ImageAnalyticsPayload | undefined;
     if (nextValue) {
       const { width, height } = await getImageDimensions(nextValue);
 
@@ -347,7 +351,7 @@ function AcuantCapture(
         size: nextValue.size,
       });
 
-      addPageAction(`IdV: ${name} image added`, analyticsPayload);
+      trackEvent(`IdV: ${name} image added`, analyticsPayload);
     }
 
     onChangeAndResetError(nextValue, analyticsPayload);
@@ -356,19 +360,12 @@ function AcuantCapture(
   /**
    * Given a click source, returns a higher-order function that, when called, will log an event
    * before calling the original function.
-   *
-   * @template {(...args: any[]) => any} T
-   *
-   * @param {string} source Click source.
-   * @param {{isDrop: boolean}=} metadata Additional payload metadata to log.
-   *
-   * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
    */
-  function withLoggedClick(source, metadata = { isDrop: false }) {
-    return (fn) =>
-      (...args) => {
+  function withLoggedClick(source: string, metadata: { isDrop: boolean } = { isDrop: false }) {
+    return <T extends (...args: any[]) => any>(fn: T) =>
+      (...args: Parameters<T>) => {
         if (!isSuppressingClickLogging.current) {
-          addPageAction(`IdV: ${name} image clicked`, { source, ...metadata });
+          trackEvent(`IdV: ${name} image clicked`, { source, ...metadata });
         }
 
         return fn(...args);
@@ -378,9 +375,8 @@ function AcuantCapture(
   /**
    * Calls the given function, during which time any normal click logging will be suppressed.
    *
-   * @param {() => any} fn Function to call
    */
-  function withoutClickLogging(fn) {
+  function withoutClickLogging(fn: () => any) {
     isSuppressingClickLogging.current = true;
     fn();
     isSuppressingClickLogging.current = false;
@@ -415,13 +411,11 @@ function AcuantCapture(
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
-   *
-   * @param {import('react').MouseEvent} event Click event.
    */
-  function startCaptureOrTriggerUpload(event) {
+  function startCaptureOrTriggerUpload(event: MouseEvent) {
     if (event.target === inputRef.current) {
       if (forceNativeCamera) {
-        addPageAction('IdV: Native camera forced after failed attempts', {
+        trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_attempts: failedCaptureAttempts,
         });
@@ -438,7 +432,7 @@ function AcuantCapture(
       }
 
       if (shouldStartSelfieCapture) {
-        /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
+        window.AcuantPassiveLiveness.startSelfieCapture(
           ifStillMounted((nextImageData) => {
             const dataURI = `data:image/jpeg;base64,${nextImageData}`;
             onChangeAndResetError(dataURI);
@@ -454,17 +448,13 @@ function AcuantCapture(
     }
   }
 
-  /**
-   * @param {AcuantSuccessResponse} nextCapture
-   */
-  function onAcuantImageCaptureSuccess(nextCapture) {
+  function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse) {
     const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < glareThreshold;
     const isAssessedAsBlurry = sharpness < sharpnessThreshold;
     const { width, height, data } = image;
 
-    /** @type {AcuantImageAssessment} */
-    let assessment;
+    let assessment: AcuantImageAssessment;
     if (isAssessedAsGlare) {
       setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
@@ -475,8 +465,7 @@ function AcuantCapture(
       assessment = 'success';
     }
 
-    /** @type {AcuantImageAnalyticsPayload} */
-    const analyticsPayload = getAddAttemptAnalyticsPayload({
+    const analyticsPayload: AcuantImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
       width,
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
@@ -494,7 +483,7 @@ function AcuantCapture(
       size: getDecodedBase64ByteSize(nextCapture.image.data),
     });
 
-    addPageAction(`IdV: ${name} image added`, analyticsPayload);
+    trackEvent(`IdV: ${name} image added`, analyticsPayload);
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
@@ -513,8 +502,7 @@ function AcuantCapture(
           onCropStart={() => setHasStartedCropping(true)}
           onImageCaptureSuccess={onAcuantImageCaptureSuccess}
           onImageCaptureFailure={(error, code) => {
-            const { SEQUENCE_BREAK_CODE } = /** @type {AcuantGlobal} */ (window)
-              .AcuantJavascriptWebSdk;
+            const { SEQUENCE_BREAK_CODE } = window.AcuantJavascriptWebSdk;
             if (isAcuantCameraAccessFailure(error)) {
               if (fullScreenRef.current?.focusTrap) {
                 suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
@@ -540,7 +528,7 @@ function AcuantCapture(
             }
 
             setIsCapturingEnvironment(false);
-            addPageAction('IdV: Image capture failed', {
+            trackEvent('IdV: Image capture failed', {
               field: name,
               error: getNormalizedAcuantCaptureFailureMessage(error, code),
             });

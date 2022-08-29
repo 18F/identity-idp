@@ -326,8 +326,19 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'tracks the verification attempt event' do
         stub_attempts_tracker
-        expect(@irs_attempts_api_tracker).to receive(:mfa_verify_phone_otp_sent).
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
           with(phone_number: '+12025551212', reauthentication: false, success: true)
+
+        get :send_code, params: { otp_delivery_selection_form:
+          { otp_delivery_preference: 'sms' } }
+      end
+
+      it 'tracks the attempt event when user session context is reauthentication' do
+        stub_attempts_tracker
+        subject.user_session[:context] = 'reauthentication'
+
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent).
+          with(phone_number: '+12025551212', reauthentication: true, success: true)
 
         get :send_code, params: { otp_delivery_selection_form:
           { otp_delivery_preference: 'sms' } }
@@ -348,6 +359,13 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
+
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
+          and_return(true)
+
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).
+          with(phone_number: '+12025551212', success: true)
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
@@ -542,6 +560,34 @@ describe Users::TwoFactorAuthenticationController do
             ),
           )
           expect(response).to redirect_to authentication_methods_setup_url
+        end
+      end
+
+      it 'marks the user as locked out after too many attempts on sign up' do
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = '+1 (202) 555-1213'
+
+        expect(@user.second_factor_locked_at).to be_nil
+
+        allow(OtpRateLimiter).to receive(:exceeded_otp_send_limit?).
+          and_return(true)
+
+        stub_attempts_tracker
+        expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited).
+          with(phone_number: '+12025551213', success: true)
+
+        freeze_time do
+          (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
+            get :send_code, params: {
+              otp_delivery_selection_form: {
+                otp_delivery_preference: 'sms',
+                otp_make_default_number: nil,
+              },
+            }
+          end
+
+          expect(@user.reload.second_factor_locked_at).to eq Time.zone.now
         end
       end
 

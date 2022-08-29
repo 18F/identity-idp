@@ -467,16 +467,12 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] name the name to prepend to analytics events
-  # @param [Number] failed_attempts the number of failed document capture attempts so far
   # The number of acceptable failed attempts (maxFailedAttemptsBeforeNativeCamera) has been met
   # or exceeded, and the system has forced the use of the native camera, rather than Acuant's
   # camera, on mobile devices.
-  def idv_native_camera_forced(name:, failed_attempts:, **extra)
+  def idv_native_camera_forced(**extra)
     track_event(
       'IdV: Native camera forced after failed attempts',
-      name: name,
-      failed_attempts: failed_attempts,
       **extra,
     )
   end
@@ -667,22 +663,6 @@ module AnalyticsEvents
     track_event(
       'IdV: USPS address letter requested',
       resend: resend,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success
-  # @param [Hash] errors
-  # GPO address submitted
-  def idv_gpo_address_submitted(
-    success:,
-    errors:,
-    **extra
-  )
-    track_event(
-      'IdV: USPS address submitted',
-      success: success,
-      errors: errors,
       **extra,
     )
   end

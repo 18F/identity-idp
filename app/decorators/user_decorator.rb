@@ -61,11 +61,6 @@ class UserDecorator
     user.active_profile.present?
   end
 
-  def gpo_mail_bounced?
-    return unless pending_profile
-    pending_profile&.gpo_confirmation_codes&.order(created_at: :desc)&.first&.bounced_at
-  end
-
   def active_profile_newer_than_pending_profile?
     user.active_profile.activated_at >= pending_profile.created_at
   end
@@ -99,7 +94,7 @@ class UserDecorator
 
   def recent_events
     events = Event.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
-             map(&:decorate)
+      map(&:decorate)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 

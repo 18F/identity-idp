@@ -11,21 +11,31 @@ namespace :attempts do
     resp = conn.post('/api/irs_attempts_api/security_events', body) do |req|
       req.headers['Authorization'] =
         "Bearer #{IdentityConfig.store.irs_attempt_api_csp_id} #{auth_token}"
-    end.body
+    end
 
-    events = JSON.parse(resp)
+    encrypted_data = Base64.strict_decode64(resp.body)
+    iv = Base64.strict_decode64(resp.headers['x-payload-iv'])
+    encrypted_key = Base64.strict_decode64(resp.headers['x-payload-key'])
+    private_key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
+    key = private_key.private_decrypt(encrypted_key)
+    decrypted = IrsAttemptsApi::EnvelopeEncryptor.decrypt(
+      encrypted_data: encrypted_data, key: key, iv: iv,
+    )
+
+    events = JSON.parse(decrypted)
 
     if File.exist?(private_key_path)
-      puts events['sets'].any? ? 'Decrypted events:' : 'No events returned.'
+      puts events.any? ? 'Decrypted events:' : 'No events returned.'
 
-      key = OpenSSL::PKey::RSA.new(File.read(private_key_path))
-      events['sets'].each do |_jti, event|
-        begin
-          pp JSON.parse(JWE.decrypt(event, key))
-        rescue
-          puts 'Failed to parse/decrypt event!'
+      events.each do |_jti, jwes|
+        jwes.each do |_key_id, jwe|
+          begin
+            pp JSON.parse(JWE.decrypt(jwe, private_key))
+          rescue
+            puts 'Failed to parse/decrypt event!'
+          end
+          puts "\n"
         end
-        puts "\n"
       end
     else
       puts "No decryption key in #{private_key_path}; cannot decrypt events."

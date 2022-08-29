@@ -10,10 +10,10 @@
   <%= t('in_person_proofing.body.state_id.info_html') %>
 </p>
 
-<%= validated_form_for :doc_auth,
-                       url: url_for,
-                       method: 'put',
-                       html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
+<%= simple_form_for :doc_auth,
+                    url: url_for,
+                    method: 'put',
+                    html: { autocomplete: 'off', class: 'margin-y-5' } do |f| %>
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
@@ -81,7 +81,7 @@
         ) %>
   </div>
 
-  <%= render ButtonComponent.new(big: true, wide: true) do %>
+  <%= f.submit do %>
     <% if updating_state_id %>
       <%= t('forms.buttons.submit.update') %>
     <% else %>

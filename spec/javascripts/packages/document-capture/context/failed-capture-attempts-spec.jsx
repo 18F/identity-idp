@@ -118,11 +118,11 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
      * but not both.
      */
     it('calls analytics with native camera message when failed attempts is greater than or equal to 0', async function () {
-      const addPageAction = sinon.spy();
-      const acuantCaptureComponent = <AcuantCapture />;
+      const trackEvent = sinon.spy();
+      const acuantCaptureComponent = <AcuantCapture name="example" />;
       function TestComponent({ children }) {
         return (
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
               <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
                 <Provider maxAttemptsBeforeNativeCamera={0} maxFailedAttemptsBeforeTips={10}>
@@ -139,18 +139,19 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
       await user.click(fileInput);
-      expect(addPageAction).to.have.been.called();
-      expect(addPageAction).to.have.been.calledWith(
+      expect(trackEvent).to.have.been.called();
+      expect(trackEvent).to.have.been.calledWith(
         'IdV: Native camera forced after failed attempts',
+        { field: 'example', failed_attempts: 0 },
       );
     });
 
     it('Does not call analytics with native camera message when failed attempts less than 2', async function () {
-      const addPageAction = sinon.spy();
+      const trackEvent = sinon.spy();
       const acuantCaptureComponent = <AcuantCapture />;
       function TestComponent({ children }) {
         return (
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ trackEvent }}>
             <DeviceContext.Provider value={{ isMobile: true }}>
               <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
                 <Provider maxAttemptsBeforeNativeCamera={2} maxFailedAttemptsBeforeTips={10}>
@@ -167,7 +168,7 @@ describe('maxAttemptsBeforeNativeCamera logging tests', () => {
       const fileInput = result.container.querySelector('input[type="file"]');
       expect(fileInput).to.exist();
       await user.click(fileInput);
-      expect(addPageAction).to.not.have.been.calledWith(
+      expect(trackEvent).to.not.have.been.calledWith(
         'IdV: Native camera forced after failed attempts',
       );
     });

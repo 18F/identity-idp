@@ -10,6 +10,7 @@ feature 'doc auth document capture step', :js do
   let(:liveness_enabled) { false }
   let(:doc_auth_enable_presigned_s3_urls) { false }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
@@ -74,6 +75,7 @@ feature 'doc auth document capture step', :js do
     #   'Throttler Rate Limit Triggered',
     #   throttle_type: :idv_doc_auth,
     # )
+    # expect(fake_attempts_tracker).to receive(:idv_document_upload_rate_limited)
   end
 
   it 'catches network connection errors on post_front_image', allow_browser_log: true do
@@ -98,10 +100,7 @@ feature 'doc auth document capture step', :js do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
@@ -187,10 +186,7 @@ feature 'doc auth document capture step', :js do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
       # Document capture tips
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))

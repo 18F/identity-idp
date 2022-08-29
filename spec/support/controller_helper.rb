@@ -40,7 +40,13 @@ module ControllerHelper
       user_session: user_session, current_user: user,
       service_provider: nil
     )
-    idv_session.applicant = { first_name: 'Some', last_name: 'One' }.with_indifferent_access
+    idv_session.applicant = {
+      first_name: 'Some',
+      last_name: 'One',
+      uuid: SecureRandom.uuid,
+      dob: 50.years.ago.to_date.to_s,
+      ssn: '666-12-1234',
+    }.with_indifferent_access
     idv_session.profile_confirmation = true
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -68,10 +74,6 @@ module ControllerHelper
     allow(decorated_user).to receive(:pending_profile_requires_verification?).
       and_return(has_pending_profile)
     decorated_user
-  end
-
-  def stub_gpo_mail_bounced(decorated_user)
-    allow(decorated_user).to receive(:gpo_mail_bounced?).and_return(true)
   end
 
   def stub_identity(user, params)
