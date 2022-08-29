@@ -39,7 +39,7 @@ module Idv
         idv_come_back_later_url
       elsif in_person_enrollment?
         idv_in_person_ready_to_verify_url
-      elsif device_profiling_failed?
+      elsif blocked_by_device_profiling?
         idv_setup_errors_url
       elsif session[:sp] && !pending_profile?
         sign_up_completed_url
@@ -87,7 +87,7 @@ module Idv
       current_user.pending_profile?
     end
 
-    def device_profiling_failed?
+    def blocked_by_device_profiling?
       return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
       proofing_component = ProofingComponent.find_by(user: current_user)
       # pass users who are inbetween feature flag being enabled and have not had a check run.
