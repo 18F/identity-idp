@@ -150,6 +150,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
