@@ -83,7 +83,8 @@ en:
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
       setup:
-        fail_html: 'Please <a href="%{contact_form}">fill out our contact form</a> and enter the code <b>LG99</b> in the detail field.'
+        fail_html: 'Please <a href="%{contact_form}">fill out our contact form</a> and
+          enter the code <b>LG99</b> in the detail field.'
         heading: There is an issue with your information
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
