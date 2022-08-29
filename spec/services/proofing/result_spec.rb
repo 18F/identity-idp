@@ -29,23 +29,6 @@ describe Proofing::Result do
     end
   end
 
-  describe '#add_message' do
-    let(:message) { 'FOOBAR' }
-    let(:result) { Proofing::Result.new.add_message(message) }
-
-    it 'returns itself' do
-      expect(result).to be_an_instance_of(Proofing::Result)
-    end
-
-    it 'adds a message' do
-      expect(result.messages).to eq([message])
-    end
-
-    it 'does not add duplicate message' do
-      expect(result.add_message(message).messages).to eq([message])
-    end
-  end
-
   describe '#exception?' do
     subject { result.exception? }
 

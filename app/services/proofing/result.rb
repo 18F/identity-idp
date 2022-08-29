@@ -5,14 +5,12 @@ module Proofing
 
     def initialize(
       errors: {},
-      messages: Set.new,
       context: {},
       exception: nil,
       transaction_id: nil,
       reference: nil
     )
       @errors = errors
-      @messages = messages
       @context = context
       @exception = exception
       @transaction_id = transaction_id
@@ -26,17 +24,8 @@ module Proofing
     end
     # rubocop:enable Style/OptionalArguments
 
-    def add_message(message)
-      @messages.add(message)
-      self
-    end
-
     def errors
       @errors.transform_values(&:to_a)
-    end
-
-    def messages
-      @messages.to_a
     end
 
     def errors?
@@ -62,7 +51,6 @@ module Proofing
     def to_h
       {
         errors: errors,
-        messages: messages,
         exception: exception,
         success: success?,
       }

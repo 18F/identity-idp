@@ -123,7 +123,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result).to eq(
           exception: nil,
           errors: {},
-          messages: [],
           success: true,
           timed_out: false,
           context: {
@@ -202,7 +201,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 ),
               ],
             },
-            messages: [],
             success: false,
             timed_out: false,
             context: {
