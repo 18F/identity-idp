@@ -123,9 +123,8 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
 
-  To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
-
-  To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
+  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
+  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 
