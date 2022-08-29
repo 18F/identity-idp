@@ -88,6 +88,9 @@ es:
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
           Los errores más comunes suelen producirse al ingresar un Número de
           Seguridad Social o un Código Postal incorrecto.
+      setup:
+        fail_html: 'Por favor, <a href="%contact_form}">rellene nuestro formulario de contacto</a> e introduzca el código <b>LG99</b> en el campo de detalle.'
+        heading: Hay un problema con tu información
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
