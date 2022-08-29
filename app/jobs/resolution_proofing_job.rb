@@ -19,7 +19,6 @@ class ResolutionProofingJob < ApplicationJob
     should_proof_state_id:,
     user_id: nil,
     threatmetrix_session_id: nil,
-    uuid_prefix: nil,
     request_ip: nil
   )
     timer = JobHelpers::Timer.new
@@ -40,7 +39,6 @@ class ResolutionProofingJob < ApplicationJob
       user: user,
       threatmetrix_session_id: threatmetrix_session_id,
       request_ip: request_ip,
-      uuid_prefix: uuid_prefix,
     )
 
     callback_log_data = proof_lexisnexis_then_aamva(
@@ -100,8 +98,7 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii:,
     user:,
     threatmetrix_session_id:,
-    request_ip:,
-    uuid_prefix:
+    request_ip:
   )
     return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
 
@@ -114,8 +111,7 @@ class ResolutionProofingJob < ApplicationJob
     ddp_pii = applicant_pii.dup
     ddp_pii[:threatmetrix_session_id] = threatmetrix_session_id
     ddp_pii[:email] = user&.confirmed_email_addresses&.first&.email
-    ddp_pii[:input_ip_address] = request_ip
-    ddp_pii[:local_attrib_1] = uuid_prefix
+    ddp_pii[:request_ip] = request_ip
 
     result = lexisnexis_ddp_proofer.proof(ddp_pii)
 

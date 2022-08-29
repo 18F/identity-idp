@@ -11,6 +11,13 @@ describe Idv::Steps::VerifyStep do
       app_id: '123',
     )
   end
+  let(:request) do
+    double(
+      'request',
+      remote_ip: Faker::Internet.ip_v4_address,
+      headers: { 'X-Amzn-Trace-Id' => amzn_trace_id },
+    )
+  end
   let(:controller) do
     instance_double(
       'controller',
@@ -18,12 +25,7 @@ describe Idv::Steps::VerifyStep do
       current_user: user,
       analytics: FakeAnalytics.new,
       url_options: {},
-      request: double(
-        'request',
-        headers: {
-          'X-Amzn-Trace-Id' => amzn_trace_id,
-        },
-      ),
+      request: request,
     )
   end
   let(:amzn_trace_id) { SecureRandom.uuid }
@@ -62,6 +64,7 @@ describe Idv::Steps::VerifyStep do
           trace_id: amzn_trace_id,
           threatmetrix_session_id: nil,
           user_id: user.id,
+          request_ip: request.remote_ip,
         )
 
       step.call
@@ -93,7 +96,7 @@ describe Idv::Steps::VerifyStep do
           current_user: user2,
           analytics: FakeAnalytics.new,
           url_options: {},
-          request: double('request', headers: {}),
+          request: request,
         )
       end
 

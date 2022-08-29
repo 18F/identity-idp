@@ -5,9 +5,15 @@ module Proofing
     class StateIdMockClient < Proofing::Base
       vendor_name 'StateIdMock'
 
-      required_attributes :state_id_number, :state_id_type, :state_id_jurisdiction
+      required_attributes :uuid,
+                          :first_name,
+                          :last_name,
+                          :dob,
+                          :state_id_number,
+                          :state_id_type,
+                          :state_id_jurisdiction
 
-      optional_attributes :uuid, :uuid_prefix
+      optional_attributes :uuid_prefix
 
       stage :state_id
 

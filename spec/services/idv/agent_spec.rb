@@ -13,6 +13,7 @@ describe Idv::Agent do
   describe 'instance' do
     let(:applicant) { { foo: 'bar' } }
     let(:trace_id) { SecureRandom.uuid }
+    let(:request_ip) { Faker::Internet.ip_v4_address }
 
     let(:agent) { Idv::Agent.new(applicant) }
 
@@ -30,6 +31,7 @@ describe Idv::Agent do
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
+            request_ip: request_ip,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -45,6 +47,7 @@ describe Idv::Agent do
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
+            request_ip: request_ip,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -65,6 +68,7 @@ describe Idv::Agent do
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
+            request_ip: request_ip,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -79,6 +83,7 @@ describe Idv::Agent do
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
+            request_ip: request_ip,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -99,6 +104,7 @@ describe Idv::Agent do
             trace_id: trace_id,
             user_id: user.id,
             threatmetrix_session_id: nil,
+            request_ip: request_ip,
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -122,6 +128,7 @@ describe Idv::Agent do
           trace_id: trace_id,
           user_id: user.id,
           threatmetrix_session_id: nil,
+          request_ip: request_ip,
         )
         result = document_capture_session.load_proofing_result.result
 
@@ -139,7 +146,14 @@ describe Idv::Agent do
       let(:issuer) { build(:service_provider).issuer }
 
       it 'proofs addresses successfully with valid information' do
-        agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
+        agent = Idv::Agent.new(
+          uuid: SecureRandom.uuid,
+          first_name: 'Fakey',
+          last_name: 'Fakersgerald',
+          dob: 50.years.ago.to_date.to_s,
+          ssn: '666-12-1234',
+          phone: Faker::PhoneNumber.cell_phone,
+        )
         agent.proof_address(
           document_capture_session,
           trace_id: trace_id,

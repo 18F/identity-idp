@@ -25,7 +25,7 @@ module Proofing
       end
 
       def attributes
-        required_attributes.concat optional_attributes
+        [*required_attributes, *optional_attributes]
       end
 
       def stage(stage = nil)

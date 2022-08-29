@@ -41,8 +41,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
-  let(:request_ip) { '127.0.0.1' }
-  let(:uuid_prefix) { 'ABC' }
+  let(:request_ip) { Faker::Internet.ip_v4_address }
 
   describe '.perform_later' do
     it 'stores results' do
@@ -54,7 +53,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        uuid_prefix: uuid_prefix,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -74,7 +72,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
-        uuid_prefix: uuid_prefix,
       )
     end
 

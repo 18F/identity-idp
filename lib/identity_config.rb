@@ -201,6 +201,7 @@ class IdentityConfig
     config.add(:irs_attempt_api_event_count_default, type: :integer)
     config.add(:irs_attempt_api_event_count_max, type: :integer)
     config.add(:irs_attempt_api_public_key)
+    config.add(:irs_attempt_api_public_key_id)
     config.add(:kantara_2fa_phone_restricted, type: :boolean)
     config.add(:kantara_2fa_phone_existing_user_restriction, type: :boolean)
     config.add(:kantara_restriction_enforcement_date, type: :timestamp)

@@ -130,6 +130,13 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_document_upload_rate_limited
+      track_event(
+        :idv_document_upload_rate_limited,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
