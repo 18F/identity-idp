@@ -20,7 +20,7 @@ class ResolutionProofingJob < ApplicationJob
     user_id: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
-    dob_year_only: nil, # retired
+    dob_year_only: nil # rubocop:disable Lint:UnusedMethodArgument
   )
     timer = JobHelpers::Timer.new
 
@@ -43,10 +43,10 @@ class ResolutionProofingJob < ApplicationJob
     )
 
     callback_log_data = proof_lexisnexis_then_aamva(
-                          timer: timer,
-                          applicant_pii: applicant_pii,
-                          should_proof_state_id: should_proof_state_id,
-                        )
+      timer: timer,
+      applicant_pii: applicant_pii,
+      should_proof_state_id: should_proof_state_id,
+    )
 
     if optional_threatmetrix_result.present?
       add_threatmetrix_result_to_callback_result(
