@@ -198,6 +198,11 @@ RSpec.describe GetUspsProofingResultsJob do
           enrollments_in_progress: 1,
           enrollments_passed: 1,
         )
+
+        expect(
+          job_analytics.events['GetUspsProofingResultsJob: Job completed'].
+            first[:duration],
+        ).to be >= 0.0
       end
 
       describe 'sending emails' do

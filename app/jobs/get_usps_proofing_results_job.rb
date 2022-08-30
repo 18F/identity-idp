@@ -45,6 +45,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       ...reprocess_delay_minutes.minutes.ago,
     )
 
+    started_at = Time.zone.now
     analytics.idv_in_person_usps_proofing_results_job_started(
       enrollments_count: enrollments.count,
       reprocess_delay_minutes: reprocess_delay_minutes,
@@ -52,7 +53,10 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     check_enrollments(enrollments)
 
-    analytics.idv_in_person_usps_proofing_results_job_completed(**enrollment_outcomes)
+    analytics.idv_in_person_usps_proofing_results_job_completed(
+      **enrollment_outcomes,
+      duration: (Time.zone.now - started_at).seconds.in_minutes.round(2),
+    )
 
     true
   end
