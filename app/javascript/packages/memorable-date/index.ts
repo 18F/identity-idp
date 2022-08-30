@@ -115,17 +115,15 @@ class MemorableDateElement extends HTMLElement {
       this.validate();
 
       // Update error messages on form validation
-      if (e.type === "invalid") {
+      if (e.type === 'invalid') {
         updateErrorMessage = true;
       }
 
       if (updateErrorMessage) {
         // Trigger error message updates
-        const errorMessage = allInputs.find(f => f.validationMessage)?.validationMessage;
+        const errorMessage = allInputs.find((f) => f.validationMessage)?.validationMessage;
         allInputs.forEach((f) => {
-          f.closest('lg-validated-field')?.setErrorMessage(
-            errorMessage || null
-          );
+          f.closest('lg-validated-field')?.setErrorMessage(errorMessage || null);
         });
       }
     };

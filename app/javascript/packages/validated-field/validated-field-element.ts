@@ -143,7 +143,7 @@ class ValidatedFieldElement extends HTMLElement {
   /**
    * Focus on this input if it's invalid and another error element
    * does not have focus.
-   * 
+   *
    * @param isValid Whether input is valid.
    */
   private focusOnError(isValid: boolean) {
