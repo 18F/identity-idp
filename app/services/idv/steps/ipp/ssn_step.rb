@@ -5,7 +5,12 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
+          flow_session[:pii_from_user][:ssn] = ssn
+
+          @flow.irs_attempts_api_tracker.idv_ssn_submitted(
+            success: true,
+            ssn: ssn,
+          )
 
           idv_session.delete('applicant')
         end
@@ -17,6 +22,10 @@ module Idv
         end
 
         private
+
+        def ssn
+          flow_params[:ssn]
+        end
 
         def form_submit
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))

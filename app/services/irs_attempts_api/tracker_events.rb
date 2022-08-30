@@ -130,6 +130,19 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when a user submits OTP code sent to their phone
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_otp_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_otp_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # The user has exceeded the rate limit during idv document upload
     def idv_document_upload_rate_limited
       track_event(
@@ -162,6 +175,17 @@ module IrsAttemptsApi
         success: success,
         phone_number: phone_number,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] ssn
+    # User entered in SSN number during Identity verification
+    def idv_ssn_submitted(success:, ssn:)
+      track_event(
+        :idv_ssn_submitted,
+        success: success,
+        ssn: ssn,
       )
     end
 
@@ -413,6 +437,20 @@ module IrsAttemptsApi
         success: success,
         email: email,
         failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks when user is rate limited for submitting registration email
+    # @param [String] email
+    # @param [Boolean] email_already_registered
+    def user_registration_email_submission_rate_limited(
+      email:,
+      email_already_registered:
+    )
+      track_event(
+        :user_registration_email_submission_rate_limited,
+        email: email,
+        email_already_registered: email_already_registered,
       )
     end
 

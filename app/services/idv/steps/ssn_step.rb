@@ -6,7 +6,11 @@ module Idv
       def call
         return invalid_state_response if invalid_state?
 
-        flow_session[:pii_from_doc][:ssn] = flow_params[:ssn]
+        flow_session[:pii_from_doc][:ssn] = ssn
+        @flow.irs_attempts_api_tracker.idv_ssn_submitted(
+          success: true,
+          ssn: ssn,
+        )
 
         idv_session.delete('applicant')
       end
@@ -22,6 +26,10 @@ module Idv
 
       def form_submit
         Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+      end
+
+      def ssn
+        flow_params[:ssn]
       end
 
       def invalid_state?

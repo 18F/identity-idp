@@ -103,7 +103,6 @@ feature 'doc capture document capture step', js: true do
           idv_result: {
             success: true,
             errors: {},
-            messages: [],
             pii_from_doc: {},
           },
         )
