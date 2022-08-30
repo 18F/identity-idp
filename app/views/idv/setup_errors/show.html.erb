@@ -12,10 +12,6 @@
       heading: t('idv.failure.setup.heading'),
     ) do %>
   <p>
-    <% if !IdentityConfig.store.lexisnexis_threatmetrix_mock_contact_url.nil? %>
-      <%= t('idv.failure.setup.fail_html', contact_form: IdentityConfig.store.lexisnexis_threatmetrix_mock_contact_url) %>
-    <% else %>
-      <%= t('idv.failure.setup.fail_html', contact_form: MarketingSite.contact_url) %>
-    <% end %>
+    <%= t('idv.failure.setup.fail_html', contact_form_link: link_to(t('idv.failure.setup.link_text'), IdentityConfig.store.idv_contact_url)) %>
   </p>
 <% end %>

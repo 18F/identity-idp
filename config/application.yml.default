@@ -99,6 +99,7 @@ identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
+idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_personal_key_confirmation_enabled: true
