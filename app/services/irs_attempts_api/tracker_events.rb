@@ -151,6 +151,22 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:)
+      track_event(
+        :idv_gpo_verification_submitted,
+        success: success,
+      )
+    end
+
+    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_throttled
+      track_event(
+        :idv_gpo_verification_throttled,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
