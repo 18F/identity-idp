@@ -167,6 +167,17 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] ssn
+    # User entered in SSN number during Identity verification
+    def idv_ssn_submitted(success:, ssn:)
+      track_event(
+        :idv_ssn_submitted,
+        success: success,
+        ssn: ssn,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)

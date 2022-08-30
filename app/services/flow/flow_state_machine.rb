@@ -25,6 +25,7 @@ module Flow
         increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
       end
+
       register_update_step(step, result)
       if flow.json
         render json: flow.json, status: flow.http_status
