@@ -46,7 +46,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'does not constrain enrollments for non-pending status' do
       user = create(:user)
-      expect {
+      expect do
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
           profile = create(:profile, :gpo_verification_pending, user: user)
@@ -59,7 +59,7 @@ RSpec.describe InPersonEnrollment, type: :model do
             create(:in_person_enrollment, user: user, profile: profile, status: status)
           end
         end
-      }.not_to raise_error
+      end.not_to raise_error
       expect(InPersonEnrollment.pending.count).to eq 1
       expect(InPersonEnrollment.count).to eq(InPersonEnrollment.statuses.length * 2 - 1)
       expect(InPersonEnrollment.pending.first.status_updated_at).to_not be_nil
@@ -71,9 +71,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
-    let!(:checked_pending_enrollment) {
+    let!(:checked_pending_enrollment) do
       create(:in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now)
-    }
+    end
     let!(:needy_enrollments) do
       [
         create(:in_person_enrollment, :pending),

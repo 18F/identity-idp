@@ -4,9 +4,9 @@ describe Idv::Session do
   let(:user) { create(:user) }
   let(:user_session) { {} }
 
-  subject {
+  subject do
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
-  }
+  end
 
   describe '#initialize' do
     context 'without idv user session' do
