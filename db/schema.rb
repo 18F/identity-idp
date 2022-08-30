@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_30_121822) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_08_140030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
@@ -476,7 +476,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_30_121822) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "acuant_result_count", default: 0
     t.integer "acuant_selfie_count", default: 0
-    t.integer "threatmetrix_count", default: 0
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 

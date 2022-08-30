@@ -13,7 +13,6 @@ module Db
         lexis_nexis_address
         gpo_letter
         phone_otp
-        threatmetrix
       ].freeze
 
       def self.call(user_id, token)
