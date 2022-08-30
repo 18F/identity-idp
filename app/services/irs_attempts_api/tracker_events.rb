@@ -130,6 +130,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
+      )
+    end
+
     # Tracks when a user submits OTP code sent to their phone
     # @param [String] phone_number
     # param [Boolean] success
