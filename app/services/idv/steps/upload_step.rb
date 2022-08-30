@@ -65,11 +65,9 @@ module Idv
       end
 
       def mobile_device?
-        if !flow_session[:skip_upload_step]
-          BrowserCache.parse(request.user_agent).mobile?
-        else
-          true
-        end
+        # See app/javascript/packs/document-capture-welcome.js
+        # And app/services/idv/steps/agreement_step.rb
+        !!flow_session[:skip_upload_step]
       end
 
       def form_response(destination:)
