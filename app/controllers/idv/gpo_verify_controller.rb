@@ -2,7 +2,6 @@ module Idv
   class GpoVerifyController < ApplicationController
     include IdvSession
     include StepIndicatorConcern
-    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -61,8 +60,6 @@ module Idv
     end
 
     private
-
-    attr_reader :gpo_verify_form
 
     def throttle
       @throttle ||= Throttle.new(

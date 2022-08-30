@@ -2,6 +2,7 @@ module Idv
   class ComeBackLaterController < ApplicationController
     include StepIndicatorConcern
 
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_user_needs_gpo_confirmation
 
     def show

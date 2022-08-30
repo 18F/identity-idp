@@ -3,6 +3,8 @@ module Idv
     include IdvSession
     include StepIndicatorConcern
 
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_needed
     before_action :confirm_user_completed_idv_profile_step
     before_action :confirm_mail_not_spammed
     before_action :confirm_gpo_allowed_if_strict_ial2

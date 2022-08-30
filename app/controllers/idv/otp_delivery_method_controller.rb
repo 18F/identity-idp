@@ -1,6 +1,6 @@
 module Idv
   class OtpDeliveryMethodController < ApplicationController
-    include IdvStepConcern
+    include IdvSession
     include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
@@ -12,7 +12,7 @@ module Idv
 
     def new
       analytics.idv_phone_otp_delivery_selection_visit
-      render_new_with_locals
+      render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
     def create
@@ -43,15 +43,7 @@ module Idv
 
     def render_new_with_error_message
       flash[:error] = t('idv.errors.unsupported_otp_delivery_method')
-      render_new_with_locals
-    end
-
-    def render_new_with_locals
-      render :new,
-             locals: {
-               step_indicator_steps: step_indicator_steps,
-               gpo_letter_available: gpo_letter_available,
-             }
+      render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
     def send_phone_confirmation_otp_and_handle_result
