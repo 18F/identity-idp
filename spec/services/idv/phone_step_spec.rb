@@ -52,7 +52,6 @@ describe Idv::PhoneStep do
       context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          messages: [],
           context: context,
           exception: nil,
           timed_out: false,
@@ -83,7 +82,6 @@ describe Idv::PhoneStep do
       context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          messages: [],
           context: context,
           exception: nil,
           timed_out: false,

@@ -10,7 +10,10 @@ module SignUp
     CREATE_ACCOUNT = 'create_account'
 
     def new
-      @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
+      @register_user_email_form = RegisterUserEmailForm.new(
+        analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
+      )
       analytics.user_registration_enter_email_visit
       render :new, locals: { request_id: nil }, formats: :html
     end
@@ -18,6 +21,7 @@ module SignUp
     def create
       @register_user_email_form = RegisterUserEmailForm.new(
         analytics: analytics,
+        attempts_tracker: irs_attempts_api_tracker,
       )
 
       result = @register_user_email_form.submit(permitted_params)
