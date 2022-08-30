@@ -12,7 +12,6 @@ module Db
         lexis_nexis_resolution
         lexis_nexis_address
         gpo_letter
-        threatmetrix
       ].freeze
 
       def self.call(service_provider, ial, token, transaction_id: nil, user: nil)
