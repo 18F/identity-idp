@@ -104,6 +104,28 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'complete?' do
+    let(:cancelled_enrollment) { create(:in_person_enrollment, :cancelled) }
+    let(:expired_enrollment) { create(:in_person_enrollment, :expired) }
+    let(:failed_enrollment) { create(:in_person_enrollment, :failed) }
+    let(:passed_enrollment) { create(:in_person_enrollment, :passed) }
+
+    let(:establishing_enrollment) { create(:in_person_enrollment, :establishing) }
+    let(:pending_enrollment) { create(:in_person_enrollment, :pending) }
+
+    it 'returns true for completed enrollments' do
+      expect(cancelled_enrollment.complete?).to eq(true)
+      expect(expired_enrollment.complete?).to eq(true)
+      expect(failed_enrollment.complete?).to eq(true)
+      expect(passed_enrollment.complete?).to eq(true)
+    end
+
+    it 'returns false for incomplete enrollments' do
+      expect(establishing_enrollment.complete?).to eq(false)
+      expect(pending_enrollment.complete?).to eq(false)
+    end
+  end
+
   describe 'minutes_since_established' do
     let(:enrollment) {
       create(

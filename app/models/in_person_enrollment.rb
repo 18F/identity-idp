@@ -39,6 +39,10 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  def complete?
+    ['cancelled', 'expired', 'failed', 'passed'].include?(status)
+  end
+
   def minutes_since_established
     return unless enrollment_established_at.present?
     (Time.zone.now - enrollment_established_at).seconds.in_minutes
