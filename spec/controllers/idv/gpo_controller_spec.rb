@@ -4,6 +4,7 @@ describe Idv::GpoController do
   let(:user) { create(:user) }
 
   before { stub_analytics }
+  before { stub_attempts_tracker }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -81,6 +82,13 @@ describe Idv::GpoController do
         expect(response).to redirect_to idv_review_path
         expect(subject.idv_session.address_verification_mechanism).to eq :gpo
       end
+
+      it 'logs attempts api tracking' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_letter_requested).
+          with(success: true, resend: false)
+
+        put :create
+      end
     end
 
     context 'resending a letter' do
@@ -100,6 +108,13 @@ describe Idv::GpoController do
       it 'calls GpoConfirmationMaker to send another letter with reveal_gpo_code on' do
         allow(FeatureManagement).to receive(:reveal_gpo_code?).and_return(true)
         expect_resend_letter_to_send_letter_and_redirect(otp: true)
+      end
+
+      it 'logs attempts api tracking' do
+        expect(@irs_attempts_api_tracker).to receive(:idv_letter_requested).
+          with(success: true, resend: true)
+
+        put :create
       end
 
       it 'redirects to capture password if pii is locked' do
