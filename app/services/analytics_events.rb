@@ -2404,8 +2404,11 @@ module AnalyticsEvents
   # GetUspsProofingResultsJob is beginning. Includes some metadata about what the job will do
   # @param [Integer] enrollments_count number of enrollments eligible for status check
   # @param [Integer] reprocess_delay_minutes minimum delay since last status check
-  def idv_in_person_usps_proofing_results_job_started(enrollments_count:, reprocess_delay_minutes:,
-                                                      **extra)
+  def idv_in_person_usps_proofing_results_job_started(
+    enrollments_count:,
+    reprocess_delay_minutes:,
+    **extra
+  )
     track_event(
       'GetUspsProofingResultsJob: Job started',
       enrollments_count: enrollments_count,
@@ -2421,10 +2424,15 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
-  def idv_in_person_usps_proofing_results_job_completed(enrollments_checked:, enrollments_errored:,
-                                                        enrollments_expired:, enrollments_failed:,
-                                                        enrollments_in_progress:,
-                                                        enrollments_passed:, **extra)
+  def idv_in_person_usps_proofing_results_job_completed(
+    enrollments_checked:,
+    enrollments_errored:,
+    enrollments_expired:,
+    enrollments_failed:,
+    enrollments_in_progress:,
+    enrollments_passed:,
+    **extra
+  )
     track_event(
       'GetUspsProofingResultsJob: Job completed',
       enrollments_checked: enrollments_checked,
@@ -2443,7 +2451,11 @@ module AnalyticsEvents
   # @param [String] exception_class
   # @param [String] exception_message
   def idv_in_person_usps_proofing_results_job_exception(
-    reason:, enrollment_id:, exception_class: nil, exception_message: nil, **extra
+    reason:,
+    enrollment_id:,
+    exception_class: nil,
+    exception_message: nil,
+    **extra
   )
     track_event(
       'GetUspsProofingResultsJob: Exception raised',
@@ -2461,9 +2473,14 @@ module AnalyticsEvents
   # @param [Boolean] fraud_suspected
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
-  def idv_in_person_usps_proofing_results_job_enrollment_updated(enrollment_code:, enrollment_id:,
-                                                                 fraud_suspected:, passed:, reason:,
-                                                                 **extra)
+  def idv_in_person_usps_proofing_results_job_enrollment_updated(
+    enrollment_code:,
+    enrollment_id:,
+    fraud_suspected:,
+    passed:,
+    reason:,
+    **extra
+  )
     track_event(
       'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: enrollment_code,
