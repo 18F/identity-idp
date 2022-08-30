@@ -162,6 +162,15 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
+    # Personal Key Step got generated for user
+    def idv_personal_key_generated(success:)
+      track_event(
+        :idv_personal_key_generated,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [String] phone_number
     # The phone upload link was sent during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
