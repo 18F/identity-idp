@@ -2,51 +2,40 @@ require 'rails_helper'
 
 RSpec.shared_examples 'enrollment with a status update' do |passed:, status:|
   it 'logs a message with common attributes' do
-    pending_enrollment.update(
-      enrollment_established_at: (Time.zone.now - 3.days),
-      status_check_attempted_at: (Time.zone.now - 15.minutes),
-      status_updated_at: (Time.zone.now - 2.days),
-    )
+    freeze_time do
+      pending_enrollment.update(
+        enrollment_established_at: Time.zone.now - 3.days,
+        status_check_attempted_at: Time.zone.now - 15.minutes,
+        status_updated_at: Time.zone.now - 2.days,
+      )
 
-    job.perform(Time.zone.now)
+      job.perform(Time.zone.now)
+    end
 
     expect(job_analytics).to have_logged_event(
       'GetUspsProofingResultsJob: Enrollment status updated',
       enrollment_code: pending_enrollment.enrollment_code,
       enrollment_id: pending_enrollment.id,
+      minutes_since_last_status_check: 15.0,
+      minutes_since_last_status_update: 2.days.in_minutes,
+      minutes_to_completion: 3.days.in_minutes,
       passed: passed,
     )
-
-    expect(
-      job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
-                     first[:minutes_since_last_status_check],
-    ).to be_within(0.01).of(15.0)
-    expect(
-      job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
-                     first[:minutes_since_last_status_update],
-    ).to be_within(0.01).of(2.days.in_minutes)
-    expect(
-      job_analytics.events['GetUspsProofingResultsJob: Enrollment status updated'].
-                     first[:minutes_to_completion],
-    ).to be_within(0.01).of(3.days.in_minutes)
   end
 
   it 'updates the status of the enrollment and profile appropriately' do
-    pending_enrollment.update(
-      status_check_attempted_at: (Time.zone.now - 1.day),
-      status_updated_at: (Time.zone.now - 2.days),
-    )
-    start_time = Time.zone.now
-    job.perform(Time.zone.now)
-    updated_time_range = start_time...(Time.zone.now)
+    freeze_time do
+      pending_enrollment.update(
+        status_check_attempted_at: Time.zone.now - 1.day,
+        status_updated_at: Time.zone.now - 2.days,
+      )
+      job.perform(Time.zone.now)
 
-    pending_enrollment.reload
-    expect(pending_enrollment.status_updated_at).to satisfy do |timestamp|
-      updated_time_range.cover?(timestamp)
+      pending_enrollment.reload
+      expect(pending_enrollment.status_updated_at).to eq(Time.zone.now)
+      expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
-    expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
-      updated_time_range.cover?(timestamp)
-    end
+
     expect(pending_enrollment.status).to eq(status)
 
     expect(pending_enrollment.profile.active).to eq(passed)
@@ -73,19 +62,16 @@ RSpec.shared_examples 'enrollment encountering an exception' do |exception_class
   end
 
   it 'updates the status_check_attempted_at timestamp' do
-    status_updated_at = Time.zone.now - 1.day
-    pending_enrollment.update(
-      status_check_attempted_at: (Time.zone.now - 1.day),
-      status_updated_at: status_updated_at,
-    )
-    start_time = Time.zone.now
-    job.perform(Time.zone.now)
-    updated_time_range = start_time...(Time.zone.now)
+    freeze_time do
+      pending_enrollment.update(
+        status_check_attempted_at: Time.zone.now - 1.day,
+        status_updated_at: Time.zone.now - 2.days,
+      )
+      job.perform(Time.zone.now)
 
-    pending_enrollment.reload
-    expect(pending_enrollment.status_updated_at).to be_within(1.second).of status_updated_at
-    expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
-      updated_time_range.cover?(timestamp)
+      pending_enrollment.reload
+      expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 2.days)
+      expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
     end
   end
 end
@@ -132,21 +118,14 @@ RSpec.describe GetUspsProofingResultsJob do
       it 'requests the enrollments that need their status checked' do
         stub_request_passed_proofing_results
 
-        job.perform(Time.zone.now)
+        freeze_time do
+          job.perform(Time.zone.now)
 
-        failure_message = 'expected call to InPersonEnrollment#needs_usps_status_check' \
-          ' with beginless range starting about 5 minutes ago'
-        expect(InPersonEnrollment).to(
-          have_received(:needs_usps_status_check).
-            with(
-              satisfy do |v|
-                v.begin.nil? && ((Time.zone.now - v.end) / 60).between?(
-                  reprocess_delay_minutes - 0.25, reprocess_delay_minutes + 0.25
-                )
-              end,
-            ),
-          failure_message,
-        )
+          expect(InPersonEnrollment).to(
+            have_received(:needs_usps_status_check).
+            with(...reprocess_delay_minutes.minutes.ago),
+          )
+        end
       end
 
       it 'records the last attempted status check regardless of response code and contents' do
@@ -164,23 +143,18 @@ RSpec.describe GetUspsProofingResultsJob do
           'failed test precondition: pending enrollments must not have status check time set',
         )
 
-        start_time = Time.zone.now
+        freeze_time do
+          job.perform(Time.zone.now)
 
-        job.perform(Time.zone.now)
-
-        expected_range = start_time...(Time.zone.now)
-
-        failure_message = 'job must update status check time for all pending enrollments'
-        expect(
-          pending_enrollments.
-            map(&:reload).
-            pluck(:status_check_attempted_at),
-        ).to(
-          all(
-            satisfy { |i| expected_range.cover?(i) },
-          ),
-          failure_message,
-        )
+          expect(
+            pending_enrollments.
+              map(&:reload).
+              pluck(:status_check_attempted_at),
+          ).to(
+            all(eq Time.zone.now),
+            'job must update status check time for all pending enrollments',
+          )
+        end
       end
 
       it 'logs a message when the job starts' do
@@ -451,22 +425,20 @@ RSpec.describe GetUspsProofingResultsJob do
         end
 
         it 'updates the timestamp but does not update the status or log a message' do
-          status_updated_at = Time.zone.now - 1.day
-          pending_enrollment.update(
-            status_check_attempted_at: (Time.zone.now - 1.day),
-            status_updated_at: status_updated_at,
-          )
-          start_time = Time.zone.now
-          job.perform(Time.zone.now)
-          updated_time_range = start_time...(Time.zone.now)
+          freeze_time do
+            pending_enrollment.update(
+              status_check_attempted_at: Time.zone.now - 1.day,
+              status_updated_at: Time.zone.now - 1.day,
+            )
+            job.perform(Time.zone.now)
 
-          pending_enrollment.reload
-          expect(pending_enrollment.pending?).to be_truthy
-          expect(pending_enrollment.profile.active).to eq(false)
-          expect(pending_enrollment.status_updated_at).to be_within(1.second).of status_updated_at
-          expect(pending_enrollment.status_check_attempted_at).to satisfy do |timestamp|
-            updated_time_range.cover?(timestamp)
+            pending_enrollment.reload
+            expect(pending_enrollment.status_updated_at).to eq(Time.zone.now - 1.day)
+            expect(pending_enrollment.status_check_attempted_at).to eq(Time.zone.now)
           end
+
+          expect(pending_enrollment.profile.active).to eq(false)
+          expect(pending_enrollment.pending?).to be_truthy
 
           expect(job_analytics).not_to have_logged_event(
             'GetUspsProofingResultsJob: Enrollment status updated',
