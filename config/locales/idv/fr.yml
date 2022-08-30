@@ -93,8 +93,8 @@ fr:
           Les erreurs les plus courantes sont un numéro de sécurité sociale ou
           un code postal incorrect.
       setup:
-        fail_html: 'Veuillez %{contact_form_link} et entrer le code <b>LG99</b> dans le
-          champ de détail.'
+        fail_html: 'Veuillez %{contact_form_link} et entrer le code
+          <b>%{support_code}</b> dans le champ de détail.'
         heading: Il y a un problème avec vos informations
         link_text: remplir notre formulaire de contact
       timeout: Le temps d’attente pour le traitement de votre demande est plus long

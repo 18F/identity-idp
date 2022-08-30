@@ -15,7 +15,11 @@ describe 'idv/setup_errors/show.html.erb' do
   it 'includes a message instructing them to fill out a contact form' do
     expect(rendered).to have_text(
       strip_tags(
-        t('idv.failure.setup.fail_html', contact_form_link: t('idv.failure.setup.link_text')),
+        t(
+          'idv.failure.setup.fail_html',
+          contact_form_link: t('idv.failure.setup.link_text'),
+          support_code: 'ABCD',
+        ),
       ),
     )
   end
