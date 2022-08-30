@@ -18,7 +18,7 @@ module Idv
         def extra_view_variables
           {
             updating_ssn: updating_ssn,
-            threatmetrix_session_id: generate_threatmetrix_session_id,            
+            threatmetrix_session_id: generate_threatmetrix_session_id,
           }
         end
 
