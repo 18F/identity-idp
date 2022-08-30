@@ -92,4 +92,14 @@ module InPersonHelper
 
     expect_step_indicator_current_step(text)
   end
+
+  def expect_in_person_gpo_step_indicator_current_step(text)
+    # Ensure that GPO letter step is shown in the step indicator.
+    expect(page).to have_css(
+      '.step-indicator__step',
+      text: t('step_indicator.flows.idv.get_a_letter'),
+    )
+
+    expect_in_person_step_indicator_current_step(text)
+  end
 end

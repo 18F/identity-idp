@@ -239,10 +239,12 @@ RSpec.describe 'In Person Proofing', js: true do
         t('step_indicator.flows.idv.verify_phone_or_address'),
       )
       click_on t('idv.buttons.mail.send')
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       acknowledge_and_confirm_personal_key
 
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
@@ -250,11 +252,11 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(account_path)
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
-      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       click_button t('forms.verify_profile.submit')
 
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
-      expect_in_person_step_indicator_current_step(
+      expect_in_person_gpo_step_indicator_current_step(
         t('step_indicator.flows.idv.go_to_the_post_office'),
       )
       expect(page).not_to have_content(t('account.index.verification.success'))
