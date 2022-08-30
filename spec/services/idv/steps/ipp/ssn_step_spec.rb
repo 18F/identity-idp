@@ -6,6 +6,7 @@ describe Idv::Steps::Ipp::SsnStep do
   let(:session) { { sp: { issuer: service_provider.issuer } } }
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
+  let(:attempts_api) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:threatmetrix_session_id) { nil }
   let(:controller) do
     instance_double(
@@ -13,6 +14,8 @@ describe Idv::Steps::Ipp::SsnStep do
       session: session,
       params: params,
       current_user: user,
+      analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: attempts_api,
     )
   end
 

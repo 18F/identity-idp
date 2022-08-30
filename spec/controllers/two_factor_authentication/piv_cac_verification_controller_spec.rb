@@ -193,7 +193,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           with('Multi-Factor Authentication: enter PIV CAC visited', attributes)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(type: 'piv_cac')
+          with(mfa_device_type: 'piv_cac')
 
         submit_attributes = {
           success: false,

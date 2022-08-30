@@ -365,7 +365,7 @@ describe Users::TwoFactorAuthenticationController do
 
         stub_attempts_tracker
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_phone_otp_sent_rate_limited).
-          with(phone_number: '+12025551212', success: true)
+          with(phone_number: '+12025551212')
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
@@ -575,7 +575,7 @@ describe Users::TwoFactorAuthenticationController do
 
         stub_attempts_tracker
         expect(@irs_attempts_api_tracker).to receive(:mfa_enroll_phone_otp_sent_rate_limited).
-          with(phone_number: '+12025551213', success: true)
+          with(phone_number: '+12025551213')
 
         freeze_time do
           (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do

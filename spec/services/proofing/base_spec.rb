@@ -159,7 +159,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(false)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil
         expect(subject.exception.message).
           to eq('Required attributes first_name, last_name, ssn are not present')
@@ -176,7 +175,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).to be_nil
       end
     end
@@ -191,7 +189,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(true)
         expect(subject.success?).to eq(false)
         expect(subject.errors).not_to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).to be_nil
       end
     end
@@ -206,7 +203,6 @@ describe Proofing::Base do
         expect(subject.success?).to eq(false)
         expect(subject.failed?).to eq(false)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil
       end
 
@@ -239,7 +235,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).to be_nil
       end
     end
@@ -262,7 +257,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).to be_nil
       end
     end
@@ -281,7 +275,6 @@ describe Proofing::Base do
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
         expect(subject.errors).to be_empty
-        expect(subject.messages).to be_empty
         expect(subject.exception).to be_nil
       end
     end

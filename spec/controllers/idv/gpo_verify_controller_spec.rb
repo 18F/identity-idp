@@ -5,14 +5,14 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
-  let(:pending_profile) {
+  let(:pending_profile) do
     create(
       :profile,
       :with_pii,
       user: user,
       proofing_components: proofing_components,
     )
-  }
+  end
   let(:proofing_components) { nil }
   let(:user) { create(:user) }
 
@@ -124,9 +124,9 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       context 'with establishing in person enrollment' do
-        let(:proofing_components) {
+        let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-        }
+        end
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe IrsAttemptsApi::RedisClient do
   describe '#write_event' do
-    it 'writes the attempt data to redis with the JTI as the key' do
+    it 'writes the attempt data to redis with the event key as the key' do
       freeze_time do
         now = Time.zone.now
         event = IrsAttemptsApi::AttemptEvent.new(
@@ -11,13 +11,13 @@ describe IrsAttemptsApi::RedisClient do
           occurred_at: Time.zone.now,
           event_metadata: { 'foo' => 'bar' },
         )
-        jti = event.jti
+        event_key = event.event_key
         jwe = event.to_jwe
 
-        subject.write_event(jti: jti, jwe: jwe, timestamp: now)
+        subject.write_event(event_key: event_key, jwe: jwe, timestamp: now)
 
         result = subject.redis_pool.with do |client|
-          client.hget(subject.key(now), jti)
+          client.hget(subject.key(now), event_key)
         end
         expect(result).to eq(jwe)
       end
@@ -36,12 +36,12 @@ describe IrsAttemptsApi::RedisClient do
             occurred_at: now,
             event_metadata: { 'foo' => 'bar' },
           )
-          jti = event.jti
+          event_key = event.event_key
           jwe = event.to_jwe
-          events[jti] = jwe
+          events[event_key] = jwe
         end
-        events.each do |jti, jwe|
-          subject.write_event(jti: jti, jwe: jwe, timestamp: now)
+        events.each do |event_key, jwe|
+          subject.write_event(event_key: event_key, jwe: jwe, timestamp: now)
         end
 
         result = subject.read_events(timestamp: now)
@@ -68,11 +68,11 @@ describe IrsAttemptsApi::RedisClient do
       jwe1 = event1.to_jwe
       jwe2 = event2.to_jwe
 
-      subject.write_event(jti: event1.jti, jwe: jwe1, timestamp: event1.occurred_at)
-      subject.write_event(jti: event2.jti, jwe: jwe2, timestamp: event2.occurred_at)
+      subject.write_event(event_key: event1.event_key, jwe: jwe1, timestamp: event1.occurred_at)
+      subject.write_event(event_key: event2.event_key, jwe: jwe2, timestamp: event2.occurred_at)
 
-      expect(subject.read_events(timestamp: time1)).to eq({ event1.jti => jwe1 })
-      expect(subject.read_events(timestamp: time2)).to eq({ event2.jti => jwe2 })
+      expect(subject.read_events(timestamp: time1)).to eq({ event1.event_key => jwe1 })
+      expect(subject.read_events(timestamp: time2)).to eq({ event2.event_key => jwe2 })
     end
   end
 end

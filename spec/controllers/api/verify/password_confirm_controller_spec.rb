@@ -63,9 +63,9 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with in-person profile' do
-        let(:applicant) {
+        let(:applicant) do
           Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-        }
+        end
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
@@ -267,6 +267,37 @@ describe Api::Verify::PasswordConfirmController do
         end
       end
 
+      context 'with threatmetrix required but review status did not pass' do
+        let(:applicant) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
+        end
+        let(:stub_idv_session) do
+          stub_user_with_applicant_data(user, applicant)
+        end
+        let(:stub_usps_response) do
+          stub_request_enroll
+        end
+
+        before(:each) do
+          stub_request_token
+          stub_usps_response
+          ProofingComponent.create(
+            user: user,
+            threatmetrix: true,
+            threatmetrix_review_status: 'review',
+          )
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_required_to_verify).
+            and_return(true)
+        end
+
+        it 'creates a disabled profile' do
+          post :create, params: { password: password, user_bundle_token: jwt }
+
+          expect(user.profiles.last.deactivation_reason).to eq('threatmetrix_review_pending')
+        end
+      end
+
       context 'with associated sp session' do
         before do
           session[:sp] = { issuer: create(:service_provider).issuer }
@@ -295,9 +326,9 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         context 'with in person profile' do
-          let(:applicant) {
+          let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-          }
+          end
           let(:stub_idv_session) do
             stub_user_with_applicant_data(user, applicant)
           end

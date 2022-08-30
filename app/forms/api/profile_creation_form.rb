@@ -50,7 +50,7 @@ module Api
         move_pii_to_user_session
       elsif user_bundle.gpo_address_verification?
         create_gpo_entry
-      elsif pending_in_person_enrollment?
+      elsif in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(user, session[:pii])
       end
     end
@@ -58,8 +58,10 @@ module Api
     def deactivation_reason
       if !phone_confirmed? || user_bundle.gpo_address_verification?
         :gpo_verification_pending
-      elsif pending_in_person_enrollment?
+      elsif in_person_enrollment?
         :in_person_verification_pending
+      elsif threatmetrix_failed_and_needs_review?
+        :threatmetrix_review_pending
       end
     end
 
@@ -69,13 +71,8 @@ module Api
     end
 
     def associate_in_person_enrollment_with_profile
-      return unless pending_in_person_enrollment? && user.establishing_in_person_enrollment
+      return unless in_person_enrollment? && user.establishing_in_person_enrollment
       user.establishing_in_person_enrollment.update(profile: profile)
-    end
-
-    def pending_in_person_enrollment?
-      return false unless IdentityConfig.store.in_person_proofing_enabled
-      ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
     end
 
     def phone_confirmed?
@@ -169,8 +166,15 @@ module Api
     end
 
     def in_person_enrollment?
-      return false unless IdentityConfig.store.in_person_proofing_enabled
       ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
+    def threatmetrix_failed_and_needs_review?
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_required_to_verify
+      return unless IdentityConfig.store.lexisnexis_threatmetrix_enabled
+      component = ProofingComponent.find_by(user: user)
+      return true unless component
+      !(component.threatmetrix && component.threatmetrix_review_status == 'pass')
     end
   end
 end

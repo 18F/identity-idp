@@ -265,7 +265,7 @@ RSpec.describe DocAuth::ErrorGenerator do
   end
 
   context 'The correct errors are delivered for image metrics when' do
-    let(:metrics) {
+    let(:metrics) do
       {
         front: {
           'HorizontalResolution' => 300,
@@ -280,7 +280,7 @@ RSpec.describe DocAuth::ErrorGenerator do
           'GlareMetric' => 50,
         },
       }
-    }
+    end
 
     it 'front image HDPI is too low' do
       metrics[:front]['HorizontalResolution'] = 250
