@@ -1,6 +1,7 @@
 module Idv
   class OtpVerificationController < ApplicationController
-    include IdvStepConcern
+    include IdvSession
+    include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
     # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable
@@ -12,7 +13,6 @@ module Idv
     def show
       # memoize the form so the ivar is available to the view
       phone_confirmation_otp_verification_form
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_phone_confirmation_otp_visit
     end
 

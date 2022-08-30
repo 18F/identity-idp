@@ -3,6 +3,7 @@ module Idv
     before_action :personal_key_confirmed
 
     include IdvStepConcern
+    include StepIndicatorConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
@@ -34,7 +35,6 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_review_info_visited
 
       gpo_mail_service = Idv::GpoMail.new(current_user)

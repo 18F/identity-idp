@@ -23,14 +23,6 @@ module IdvSession
     session[:doc_capture_user_id].present?
   end
 
-  def in_person_proofing_session?
-    effective_user.proofing_component&.document_check == 'usps'
-  end
-
-  def gpo_address_verification?
-    idv_session.address_verification_mechanism == 'gpo'
-  end
-
   def strict_ial2_upgrade_required?
     sp_session[:ial2_strict] && !effective_user.active_profile&.strict_ial2_proofed?
   end

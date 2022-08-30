@@ -1,13 +1,15 @@
 module Idv
   class PersonalKeyController < ApplicationController
-    include IdvStepConcern
+    include IdvSession
+    include StepIndicatorConcern
     include SecureHeadersConcern
 
     before_action :apply_secure_headers_override
+    before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_vendor_session_started
     before_action :confirm_profile_has_been_created
 
     def show
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_personal_key_visited
       add_proofing_component
 

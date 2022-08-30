@@ -23,7 +23,10 @@ interface VerifyFlowConfig {
   /**
    * Sequence of step indicator steps.
    */
-  steps: VerifyFlowStepIndicatorStep[];
+  stepsByAddressVerificationMethod: Record<
+    Exclude<AddressVerificationMethod, null>,
+    VerifyFlowStepIndicatorStep[]
+  >;
 
   /**
    * Mapping of flow form steps to corresponding step indicator step.
@@ -33,13 +36,16 @@ interface VerifyFlowConfig {
 
 const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
   [VerifyFlowPath.DEFAULT]: {
-    steps: [
-      'getting_started',
-      'verify_id',
-      'verify_info',
-      'verify_phone_or_address',
-      'secure_account',
-    ],
+    stepsByAddressVerificationMethod: {
+      phone: [
+        'getting_started',
+        'verify_id',
+        'verify_info',
+        'verify_phone_or_address',
+        'secure_account',
+      ],
+      gpo: ['getting_started', 'verify_id', 'verify_info', 'secure_account', 'get_a_letter'],
+    },
     mapping: {
       document_capture: 'verify_id',
       password_confirm: 'secure_account',
@@ -48,13 +54,22 @@ const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
     },
   },
   [VerifyFlowPath.IN_PERSON]: {
-    steps: [
-      'find_a_post_office',
-      'verify_info',
-      'verify_phone_or_address',
-      'secure_account',
-      'go_to_the_post_office',
-    ],
+    stepsByAddressVerificationMethod: {
+      phone: [
+        'find_a_post_office',
+        'verify_info',
+        'verify_phone_or_address',
+        'secure_account',
+        'go_to_the_post_office',
+      ],
+      gpo: [
+        'find_a_post_office',
+        'verify_info',
+        'secure_account',
+        'get_a_letter',
+        'go_to_the_post_office',
+      ],
+    },
     mapping: {
       document_capture: 'find_a_post_office',
       password_confirm: 'secure_account',
@@ -97,35 +112,13 @@ export function getStepStatus(index, currentStepIndex): StepStatus {
   return StepStatus.INCOMPLETE;
 }
 
-/**
- * Given contextual details of the current flow path, returns the relevant flow configuration.
- *
- * @param details Flow details
- *
- * @return Flow step configuration.
- */
-function getFlowStepsConfig({
-  path,
-  addressVerificationMethod,
-}: {
-  path: VerifyFlowPath;
-  addressVerificationMethod: AddressVerificationMethod;
-}): VerifyFlowConfig {
-  let { steps, mapping } = FLOW_STEP_PATHS[path];
-
-  if (addressVerificationMethod === 'gpo') {
-    steps = steps.filter((step) => step !== 'verify_phone_or_address').concat('get_a_letter');
-  }
-
-  return { steps, mapping };
-}
-
 function VerifyFlowStepIndicator({
   currentStep,
   path = VerifyFlowPath.DEFAULT,
 }: VerifyFlowStepIndicatorProps) {
   const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
-  const { steps, mapping } = getFlowStepsConfig({ path, addressVerificationMethod });
+  const { stepsByAddressVerificationMethod, mapping } = FLOW_STEP_PATHS[path];
+  const steps = stepsByAddressVerificationMethod[addressVerificationMethod ?? 'phone'];
   const currentStepIndex = steps.indexOf(mapping[currentStep]);
 
   // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
