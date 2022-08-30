@@ -23,12 +23,12 @@ module Idv
 
         private
 
-        def ssn
-          flow_params[:ssn]
-        end
-
         def form_submit
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+        end
+
+        def ssn
+          flow_params[:ssn]
         end
 
         def updating_ssn
