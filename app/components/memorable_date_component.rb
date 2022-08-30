@@ -1,9 +1,10 @@
 class MemorableDateComponent < BaseComponent
-  attr_reader :month, :day, :year, :required, :hint, :label, :form
+  attr_reader :name, :month, :day, :year, :required, :hint, :label, :form
 
   alias_method :f, :form
 
   def initialize(
+    name:,
     month:,
     day:,
     year:,
@@ -17,6 +18,7 @@ class MemorableDateComponent < BaseComponent
     range_errors: [],
     **_tag_options
   )
+    @name = name
     @month = month
     @day = day
     @year = year
@@ -69,33 +71,33 @@ class MemorableDateComponent < BaseComponent
   def generate_error_messages(label, min, max, override_error_messages)
     base_error_messages = {
       'missing_month_day_year' => t(
-        'simple_form.memorable_date.errors.missing_month_day_year',
+        'components.memorable_date.errors.missing_month_day_year',
         label: label,
       ),
-      'missing_month_day' => t('simple_form.memorable_date.errors.missing_month_day'),
-      'missing_month_year' => t('simple_form.memorable_date.errors.missing_month_year'),
-      'missing_day_year' => t('simple_form.memorable_date.errors.missing_day_year'),
-      'missing_month' => t('simple_form.memorable_date.errors.missing_month'),
-      'missing_day' => t('simple_form.memorable_date.errors.missing_day'),
-      'missing_year' => t('simple_form.memorable_date.errors.missing_year'),
-      'invalid_month' => t('simple_form.memorable_date.errors.invalid_month'),
-      'invalid_day' => t('simple_form.memorable_date.errors.invalid_day'),
-      'invalid_year' => t('simple_form.memorable_date.errors.invalid_year'),
-      'invalid_date' => t('simple_form.memorable_date.errors.invalid_date'),
+      'missing_month_day' => t('components.memorable_date.errors.missing_month_day'),
+      'missing_month_year' => t('components.memorable_date.errors.missing_month_year'),
+      'missing_day_year' => t('components.memorable_date.errors.missing_day_year'),
+      'missing_month' => t('components.memorable_date.errors.missing_month'),
+      'missing_day' => t('components.memorable_date.errors.missing_day'),
+      'missing_year' => t('components.memorable_date.errors.missing_year'),
+      'invalid_month' => t('components.memorable_date.errors.invalid_month'),
+      'invalid_day' => t('components.memorable_date.errors.invalid_day'),
+      'invalid_year' => t('components.memorable_date.errors.invalid_year'),
+      'invalid_date' => t('components.memorable_date.errors.invalid_date'),
     }
     if label && min
       base_error_messages['range_underflow'] =
-        t('simple_form.memorable_date.errors.range_underflow', label: label, date: min)
+        t('components.memorable_date.errors.range_underflow', label: label, date: min)
     end
 
     if label && max
       base_error_messages['range_overflow'] =
-        t('simple_form.memorable_date.errors.range_overflow', label: label, date: max)
+        t('components.memorable_date.errors.range_overflow', label: label, date: max)
     end
 
     if label && min && max
       base_error_messages['outside_date_range'] =
-        t('simple_form.memorable_date.errors.outside_date_range', label: label, min: min, max: max)
+        t('components.memorable_date.errors.outside_date_range', label: label, min: min, max: max)
     end
 
     if override_error_messages

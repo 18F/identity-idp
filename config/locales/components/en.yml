@@ -26,3 +26,27 @@ en:
     troubleshooting_options:
       default_heading: 'Having trouble? Here’s what you can do:'
       new_feature: New Feature
+    memorable_date:
+      day: Day
+      month: Month
+      year: Year
+      errors:
+        future_date: 'Enter a date that is in the past' 
+        date_of_birth:
+          missing_month_day_year: 'Enter a date of birth'
+          range_min_age: 'You must be over 13 years of age to use Login.gov'
+          range_overflow: 'Enter a date that is in the past'
+        missing_month_day_year: 'Enter a %{label}'
+        missing_month_day: 'Enter a month and day'
+        missing_month_year: 'Enter a month and year'
+        missing_day_year: 'Enter a day and year'
+        missing_month: 'Enter a month'
+        missing_day: 'Enter a day'
+        missing_year: 'Enter a year'
+        invalid_month: 'Enter a month between 1 and 12'
+        invalid_day: 'Enter a day between 1 and 31'
+        invalid_year: 'Enter a year with 4 numbers'
+        invalid_date: 'The entry is not a valid date'
+        range_underflow: 'Enter a date on or after %{date}'
+        range_overflow: 'Enter a date on or before %{date}'
+        outside_date_range: 'Enter a %{label} between %{min} and %{max}'
