@@ -158,7 +158,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     enrollment_outcomes[:enrollments_expired] += 1
     analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_updated(
       **enrollment_attributes(enrollment, true),
-      fraud_suspected: false,
+      fraud_suspected: nil,
       passed: false,
       reason: 'Enrollment has expired',
     )
