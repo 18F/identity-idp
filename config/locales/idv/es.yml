@@ -92,7 +92,7 @@ es:
         fail_html: 'Por favor, %{contact_form_link} e introduzca el código <b>LG99</b>
           en el campo de detalle.'
         heading: Hay un problema con tu información
-        link: rellene nuestro formulario decontacto
+        link_text: rellene nuestro formulario decontacto
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:

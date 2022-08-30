@@ -96,7 +96,7 @@ fr:
         fail_html: 'Veuillez %{contact_form_link} et entrer le code <b>LG99</b> dans le
           champ de détail.'
         heading: Il y a un problème avec vos informations
-        link: remplir notre formulaire de contact
+        link_text: remplir notre formulaire de contact
       timeout: Le temps d’attente pour le traitement de votre demande est plus long
         que d’habitude Veuillez réessayer.
     forgot_password:
