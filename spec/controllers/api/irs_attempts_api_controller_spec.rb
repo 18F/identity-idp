@@ -76,6 +76,9 @@ RSpec.describe Api::IrsAttemptsApiController do
     it 'returns an error with invalid timestamp parameter' do
       post :create, params: { timestamp: 'abc' }
       expect(response.status).to eq 422
+
+      post :create, params: { timestamp: 'T14' }
+      expect(response.status).to eq 422
     end
 
     it 'authenticates the client' do
