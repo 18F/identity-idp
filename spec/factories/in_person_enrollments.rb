@@ -4,7 +4,7 @@ FactoryBot.define do
     profile { association :profile, user: user }
     unique_id { Faker::Number.hexadecimal(digits: 18) }
     current_address_matches_id { true }
-    selected_location_details do { name: 'BALTIMORE' } end
+    selected_location_details { { name: 'BALTIMORE' } }
 
     trait :establishing do
       status { :establishing }
