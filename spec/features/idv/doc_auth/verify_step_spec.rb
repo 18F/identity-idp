@@ -9,6 +9,9 @@ feature 'doc auth verify step', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+      and_return(true)
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
   end
 
   it 'displays the expected content' do
@@ -177,7 +180,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: true,
           trace_id: anything,
-          threatmetrix_session_id: nil,
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
@@ -188,6 +191,8 @@ feature 'doc auth verify step', :js do
       click_idv_continue
 
       expect(DocAuthLog.find_by(user_id: user.id).aamva).not_to be_nil
+      expect(SpCost.find_by(cost_type: 'threatmetrix').transaction_id).
+        to eq(Proofing::Mock::DdpMockClient::TRANSACTION_ID)
     end
   end
 
@@ -204,7 +209,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: nil,
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
@@ -229,7 +234,7 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: nil,
+          threatmetrix_session_id: anything,
           user_id: user.id,
           request_ip: kind_of(String),
         ).
