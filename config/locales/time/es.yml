@@ -24,6 +24,9 @@ es:
       - noviembre
       - diciembre
     range: 'De %{from} a %{to}'
+    formats:
+      long: '%A, %B %d, %Y'
+      short: '%b %d, %Y'
   time:
     am: AM
     formats:

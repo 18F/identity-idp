@@ -79,7 +79,7 @@ describe('ValidatedFieldElement', () => {
 
     expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(() => getByText(element, 'This field is required')).to.throw();
+    expect(getByText(element, 'This field is required').style.display).to.equal('none');
   });
 
   it('focuses the first element with an error', () => {

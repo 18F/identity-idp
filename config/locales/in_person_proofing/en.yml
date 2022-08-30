@@ -81,18 +81,17 @@ en:
         dob_hint: 'Example: 4 28 1986'
         first_name: First name
         last_name: Last name
+        memorable_date:
+          errors:
+            date_of_birth:
+              missing_month_day_year: 'Enter a date of birth'
+              range_min_age: 'You must be over 13 years of age to use %{app_name}'
+              range_overflow: 'Enter a date that is in the past'
         state_id_jurisdiction: State
         state_id_jurisdiction_hint: Select the state shown on your ID
         state_id_jurisdiction_prompt: '- Select -'
         state_id_number: ID number
         state_id_number_hint: May include letters and numbers
-        memorable_date:
-          errors:
-            future_date: 'Enter a date that is in the past' 
-            date_of_birth:
-              missing_month_day_year: 'Enter a date of birth'
-              range_min_age: 'You must be over 13 years of age to use Login.gov'
-              range_overflow: 'Enter a date that is in the past'
     headings:
       address: Enter your current address
       barcode: You’re ready to verify your identity in person

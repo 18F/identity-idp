@@ -5,10 +5,10 @@ class MemorableDateComponent < BaseComponent
 
   def initialize(
     name:,
-    month:,
-    day:,
-    year:,
-    required:,
+    month: nil,
+    day: nil,
+    year: nil,
+    required: false,
     hint:,
     label:,
     form:,
@@ -60,7 +60,8 @@ class MemorableDateComponent < BaseComponent
   # Helper function to allow usages to use Date objects directly
   def convert_date date
     if date.instance_of? Date
-      I18n.l(date, format: :long)
+      # FIXME: Converted dates not parsed correctly in JS yet
+      I18n.l(date.to_time, format: :event_date)
     elsif date.blank?
       nil
     else

@@ -9,6 +9,7 @@ RSpec.describe MemorableDateComponent, type: :component do
   let(:form_builder) do
     SimpleForm::FormBuilder.new('MemorableDate', form_object, view_context, {})
   end
+  let(:name) { 'test-name' }
   let(:month) { 12 }
   let(:day) { 1 }
   let(:year) { 1990 }
@@ -18,6 +19,7 @@ RSpec.describe MemorableDateComponent, type: :component do
   let(:tag_options) { {} }
   let(:options) do
     {
+      name: name,
       month: month,
       day: day,
       year: year,
