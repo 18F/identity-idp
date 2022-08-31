@@ -35,7 +35,11 @@ module UspsInPersonProofing
         enrollment = user.establishing_in_person_enrollment
         return enrollment if enrollment.present?
 
-        InPersonEnrollment.create!(user: user, profile: nil)
+        InPersonEnrollment.create!(
+          unique_id: InPersonEnrollment.generate_unique_id,
+          user: user,
+          profile: nil,
+        )
       end
 
       def create_usps_enrollment(enrollment, pii)
