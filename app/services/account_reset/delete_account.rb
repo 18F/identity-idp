@@ -24,7 +24,7 @@ module AccountReset
 
     attr_reader :success, :account_age, :mfa_method_counts
 
-    # @return [Integer, nil] number of days since the acocunt was confirmed (rounded) or nil if
+    # @return [Integer, nil] number of days since the account was confirmed (rounded) or nil if
     # the account was not confirmed
     def track_account_age
       @account_age = if user.confirmed_at
