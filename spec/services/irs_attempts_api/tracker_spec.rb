@@ -44,6 +44,17 @@ RSpec.describe IrsAttemptsApi::Tracker do
       end
     end
 
+    it 'does not store events in plaintext in redis' do
+      freeze_time do
+        subject.track_event(:event, first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+
+        events = IrsAttemptsApi::RedisClient.new.read_events(timestamp: Time.zone.now)
+
+        expect(events.keys.first).to_not include('first_name')
+        expect(events.values.first).to_not include(Idp::Constants::MOCK_IDV_APPLICANT[:first_name])
+      end
+    end
+
     context 'the current session is not an IRS attempt API session' do
       let(:enabled_for_session) { false }
 
