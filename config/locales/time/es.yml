@@ -9,6 +9,8 @@ es:
       - viernes
       - sábado
       - domingo
+    formats:
+      long: '%-d de %B de %Y'
     month_names:
       - null
       - enero
@@ -24,9 +26,6 @@ es:
       - noviembre
       - diciembre
     range: 'De %{from} a %{to}'
-    formats:
-      long: '%A, %B %d, %Y'
-      short: '%b %d, %Y'
   time:
     am: AM
     formats:
