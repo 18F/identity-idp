@@ -152,7 +152,7 @@ end
 # support multi-PR changes.
 def format_changelog(changelog_entries)
   changelog_entries = changelog_entries.
-    sort_by { |entry| entry.subcategory }.
+    sort_by(&:subcategory).
     group_by { |entry| [entry.category, entry.change] }
 
   changelog = ''
