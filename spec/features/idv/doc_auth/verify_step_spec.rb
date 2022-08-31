@@ -7,8 +7,11 @@ feature 'doc auth verify step', :js do
   let(:skip_step_completion) { false }
   let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:fake_attempts_tracker) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
+      and_return(fake_attempts_tracker)
   end
 
   it 'displays the expected content' do
@@ -106,6 +109,19 @@ feature 'doc auth verify step', :js do
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
     click_idv_continue
+    expect(fake_attempts_tracker).to receive(:track_event).with(
+      :idv_verification_submitted,
+      success: false,
+      failure_reason: { ssn: ['Unverified SSN.'] },
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+    )
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth warning visited',
