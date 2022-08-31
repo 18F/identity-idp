@@ -92,7 +92,6 @@ module Proofing
           fraudpoint.synthetic_identity_index
           fraudpoint.transaction_status
           fraudpoint.vulnerable_victim_index
-          integration_hub_results
           org_id
           policy
           policy_details_api
