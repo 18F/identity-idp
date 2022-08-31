@@ -63,9 +63,9 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with in-person profile' do
-        let(:applicant) {
+        let(:applicant) do
           Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-        }
+        end
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
@@ -268,9 +268,9 @@ describe Api::Verify::PasswordConfirmController do
       end
 
       context 'with threatmetrix required but review status did not pass' do
-        let(:applicant) {
+        let(:applicant) do
           Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-        }
+        end
         let(:stub_idv_session) do
           stub_user_with_applicant_data(user, applicant)
         end
@@ -326,9 +326,9 @@ describe Api::Verify::PasswordConfirmController do
         end
 
         context 'with in person profile' do
-          let(:applicant) {
+          let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(same_address_as_id: true)
-          }
+          end
           let(:stub_idv_session) do
             stub_user_with_applicant_data(user, applicant)
           end
@@ -371,7 +371,7 @@ describe Api::Verify::PasswordConfirmController do
           ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
           post :create, params: { password: password, user_bundle_token: jwt }
 
-          expect(JSON.parse(response.body)['completion_url']).to eq(idv_come_back_later_url)
+          expect(JSON.parse(response.body)['completion_url']).to eq(idv_setup_errors_url)
         end
       end
 

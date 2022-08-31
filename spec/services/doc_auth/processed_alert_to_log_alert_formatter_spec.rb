@@ -17,9 +17,9 @@ RSpec.describe DocAuth::ProcessedAlertToLogAlertFormatter do
   end
 
   context('when ProcessedAlertToLogAlertFormatter is called') do
-    subject {
+    subject do
       DocAuth::ProcessedAlertToLogAlertFormatter.new.log_alerts(alerts)
-    }
+    end
 
     it('returns failed if both passed and failed are returned by the alert') do
       expect(subject).to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))

@@ -45,8 +45,8 @@ describe GpoConfirmationExporter do
     it 'creates psv string' do
       result = <<~HEREDOC
         01|2\r
-        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 16, 2018|#{service_provider.friendly_name}|https://#{IdentityConfig.store.domain_name}\r
-        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 16, 2018|Login.gov|https://#{IdentityConfig.store.domain_name}\r
+        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 16, 2018|#{service_provider.friendly_name}|#{IdentityConfig.store.domain_name}\r
+        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 16, 2018|Login.gov|#{IdentityConfig.store.domain_name}\r
       HEREDOC
 
       psv_contents = subject.run

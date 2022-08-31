@@ -32,6 +32,11 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def ddp_success_redacted_response_json
+      raw = read_fixture_file_at_path('ddp/successful_redacted_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def ddp_failure_response_json
       raw = read_fixture_file_at_path('ddp/failed_response.json')
       JSON.parse(raw).to_json

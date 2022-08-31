@@ -130,9 +130,9 @@ describe Idv::ReviewController do
   end
 
   describe '#confirm_current_password' do
-    let(:applicant) {
+    let(:applicant) do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-    }
+    end
 
     controller do
       before_action :confirm_current_password
@@ -295,9 +295,9 @@ describe Idv::ReviewController do
     end
 
     context 'user fails to supply correct password' do
-      let(:applicant) {
+      let(:applicant) do
         Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-      }
+      end
 
       before do
         idv_session
@@ -400,17 +400,17 @@ describe Idv::ReviewController do
         end
 
         context 'with in person profile' do
-          let!(:enrollment) {
+          let!(:enrollment) do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
-          }
+          end
           let(:stub_usps_response) do
             stub_request_enroll
           end
-          let(:applicant) {
+          let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
               same_address_as_id: true,
             )
-          }
+          end
 
           before do
             stub_request_token

@@ -174,9 +174,9 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = I18n.with_locale(:es) {
+      response = I18n.with_locale(:es) do
         proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
-      }
+      end
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
       expect(response.errors[:general]).to match_array(

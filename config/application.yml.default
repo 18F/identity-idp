@@ -99,6 +99,7 @@ identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
+idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_personal_key_confirmation_enabled: true
@@ -152,6 +153,7 @@ lexisnexis_threatmetrix_api_key: test_api_key
 lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_org_id: test_account
 lexisnexis_threatmetrix_policy: test-policy
+lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
 lexisnexis_threatmetrix_mock_enabled: true

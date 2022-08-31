@@ -38,12 +38,12 @@ describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
 
-  subject {
+  subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
     )
-  }
+  end
 
   describe '#submit' do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }

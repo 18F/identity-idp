@@ -22,7 +22,9 @@ RSpec.describe Api::IrsAttemptsApiController do
         event_type: :test_event,
         session_id: 'test-session-id',
         occurred_at: time,
-        event_metadata: {},
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
       )
       jti = event.jti
       jwe = event.to_jwe
@@ -75,6 +77,9 @@ RSpec.describe Api::IrsAttemptsApiController do
 
     it 'returns an error with invalid timestamp parameter' do
       post :create, params: { timestamp: 'abc' }
+      expect(response.status).to eq 422
+
+      post :create, params: { timestamp: 'T14' }
       expect(response.status).to eq 422
     end
 
