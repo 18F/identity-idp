@@ -1,6 +1,7 @@
 class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
+  include InheritedProofingConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :profile_needs_reactivation?, only: [:index]
@@ -36,7 +37,11 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    redirect_to idv_doc_auth_url
+    if va_inherited_proofing?
+      redirect_to idv_inherited_proofing_url
+    else
+      redirect_to idv_doc_auth_url
+    end
   end
 
   def profile_needs_reactivation?

@@ -3,7 +3,8 @@ postgresql: &postgresql
   encoding: utf8
   database: identity_idp_<%= Rails.env %>
   port: 5432
-  username: <%= ENV['DOCKER_DB_USER'] %>
+  username: <%= ENV['DOCKER_DB_USER'] || ENV['POSTGRES_USER']%>
+  password: <%= ENV['POSTGRES_PASSWORD'] %>
 
 defaults: &defaults
   host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
@@ -24,6 +25,7 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
+    database: <%= ENV['POSTGRES_DB'] || "identity_idp_development" %>
     migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
@@ -39,7 +41,6 @@ test:
     pool: 10
     checkout_timeout: 10
     database: <%= ENV['POSTGRES_DB'] || "identity_idp_test#{ENV['TEST_ENV_NUMBER']}" %>
-    user: <%= ENV['POSTGRES_USER'] %>
     password: <%= ENV['POSTGRES_PASSWORD'] %>
     migrations_paths: db/primary_migrate
   read_replica:

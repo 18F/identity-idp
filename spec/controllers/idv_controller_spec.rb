@@ -55,6 +55,21 @@ describe IdvController do
       expect(response).to redirect_to idv_doc_auth_path
     end
 
+    it 'redirects to inherited proofing if an auth code parameter is included in request URL' do
+      session_service_provider = create(:service_provider)
+      users_auth_code = 'any_auth_code'
+      request_url = "https://login.gov/openid_connect/authorize?inherited_proofing_auth=#{users_auth_code}"
+
+      allow_any_instance_of(ApplicationController).to receive(:current_sp).
+        and_return(session_service_provider)
+      stub_sign_in
+      session[:sp] = { request_url: request_url }
+
+      get :index
+
+      expect(response).to redirect_to idv_inherited_proofing_path
+    end
+
     context 'sp has reached quota limit' do
       let(:issuer) { 'foo' }
 
