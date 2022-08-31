@@ -32,7 +32,10 @@ module Idv
       else
         result = @gpo_verify_form.submit
         analytics.idv_gpo_verification_submitted(**result.to_h)
-        irs_attempts_api_tracker.idv_gpo_verification_submitted(success: result.success?)
+        irs_attempts_api_tracker.idv_gpo_verification_submitted(
+          success: result.success?,
+          failure_reason: result.errors.presence,
+        )
 
         if result.success?
           if result.extra[:pending_in_person_enrollment]

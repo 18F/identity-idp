@@ -150,12 +150,14 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success
+    # param [Boolean] Success
+    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
-    def idv_gpo_verification_submitted(success:)
+    def idv_gpo_verification_submitted(success:, failure_reason:)
       track_event(
         :idv_gpo_verification_submitted,
         success: success,
+        failure_reason: failure_reason,
       )
     end
 
