@@ -95,13 +95,13 @@ RSpec.describe 'scripts/changelog_check' do
         body:- Lets us set log level to minimize STDOUT output
           from Identity::Hostdata (downloading files from S3, etc)
 
-        * changelog: Improvements, authentication, provide better authentication (LG-4515)
+        * changelog: Improvements, authentication API, provide better authentication (LG-4515)
         DELIMITER
       COMMIT
 
       changelogs = generate_changelog(git_log)
 
-      expect(changelogs.first.subcategory).to eq('Authentication')
+      expect(changelogs.first.subcategory).to eq('Authentication API')
       expect(changelogs.first.change).to start_with('P')
     end
   end
