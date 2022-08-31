@@ -210,6 +210,7 @@ RSpec.describe GetUspsProofingResultsJob do
           pending_enrollment.update(unique_id: nil)
           stub_request_passed_proofing_results
           expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+
           job.perform(Time.zone.now)
 
           expect(pending_enrollment.unique_id).not_to be_nil
