@@ -55,7 +55,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     analytics.idv_in_person_usps_proofing_results_job_completed(
       **enrollment_outcomes,
-      duration: (Time.zone.now - started_at).seconds.in_minutes.round(2),
+      duration_seconds: (Time.zone.now - started_at).seconds.round(2),
     )
 
     true

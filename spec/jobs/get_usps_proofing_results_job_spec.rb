@@ -201,7 +201,7 @@ RSpec.describe GetUspsProofingResultsJob do
 
         expect(
           job_analytics.events['GetUspsProofingResultsJob: Job completed'].
-            first[:duration],
+            first[:duration_seconds],
         ).to be >= 0.0
       end
 

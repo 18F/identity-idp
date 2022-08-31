@@ -2418,7 +2418,7 @@ module AnalyticsEvents
   end
 
   # GetUspsProofingResultsJob has completed. Includes counts of various outcomes encountered
-  # @param [Float] duration number of minutes the job was running
+  # @param [Float] duration_seconds number of minutes the job was running
   # @param [Integer] enrollments_checked number of enrollments eligible for status check
   # @param [Integer] enrollments_errored number of enrollments for which we encountered an error
   # @param [Integer] enrollments_expired number of enrollments which expired
@@ -2426,7 +2426,7 @@ module AnalyticsEvents
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
   def idv_in_person_usps_proofing_results_job_completed(
-    duration:,
+    duration_seconds:,
     enrollments_checked:,
     enrollments_errored:,
     enrollments_expired:,
@@ -2437,7 +2437,7 @@ module AnalyticsEvents
   )
     track_event(
       'GetUspsProofingResultsJob: Job completed',
-      duration: duration,
+      duration_seconds: duration_seconds,
       enrollments_checked: enrollments_checked,
       enrollments_errored: enrollments_errored,
       enrollments_expired: enrollments_expired,
