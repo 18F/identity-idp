@@ -56,6 +56,10 @@ feature 'doc auth upload step' do
   end
 
   context 'on a desktop device' do
+    before do
+      allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(false)
+    end
+    
     it 'is on the correct page' do
       expect(page).to have_current_path(idv_doc_auth_upload_step)
       expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
