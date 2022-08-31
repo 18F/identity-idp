@@ -6,6 +6,8 @@ module Idv
       def call
         @flow.irs_attempts_api_tracker.document_upload_method_selected(upload_method: params[:type])
 
+        # See the simple_form_for in
+        # app/views/idv/doc_auth/upload.html.erb
         if params[:type] == 'desktop'
           handle_desktop_selection
         else
