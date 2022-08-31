@@ -9,6 +9,7 @@ feature 'doc auth upload step' do
 
   before do
     sign_in_and_2fa_user
+    allow_any_instance_of(Idv::Steps::UploadStep).to receive(:mobile_device?).and_return(true)
     complete_doc_auth_steps_before_upload_step
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ApplicationController).to receive(:irs_attempts_api_tracker).
