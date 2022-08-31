@@ -31,6 +31,18 @@ feature 'doc auth verify step', :js do
   end
 
   it 'proceeds to the next page upon confirmation' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+      success: true,
+      failure_reason: nil,
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
     click_idv_continue
@@ -104,13 +116,7 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution fails' do
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_ssn_that_fails_resolution
-    click_idv_continue
-    click_idv_continue
-    expect(fake_attempts_tracker).to receive(:track_event).with(
-      :idv_verification_submitted,
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
       success: false,
       failure_reason: { ssn: ['Unverified SSN.'] },
       document_state: 'MT',
@@ -122,6 +128,11 @@ feature 'doc auth verify step', :js do
       date_of_birth: '1938-10-06',
       address: '1 FAKE RD',
     )
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_ssn_step
+    fill_out_ssn_form_with_ssn_that_fails_resolution
+    click_idv_continue
+    click_idv_continue
 
     expect(fake_analytics).to have_logged_event(
       'IdV: doc auth warning visited',
@@ -136,6 +147,18 @@ feature 'doc auth verify step', :js do
   end
 
   it 'does not proceed to the next page if resolution raises an exception' do
+    expect(fake_attempts_tracker).to receive(:idv_verification_submitted).with(
+      success: false,
+      failure_reason: nil,
+      document_state: 'MT',
+      document_number: '1111111111111',
+      document_issued: '2019-12-31',
+      document_expiration: '2099-12-31',
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      date_of_birth: '1938-10-06',
+      address: '1 FAKE RD',
+    )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_raises_exception
