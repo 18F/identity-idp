@@ -49,9 +49,9 @@ class ResetPasswordForm
         user.email_addresses.take.update(confirmed_at: now)
         attributes[:confirmed_at] = now
       end
-    end
 
-    UpdateUser.new(user: user, attributes: attributes).call
+      UpdateUser.new(user: user, attributes: attributes).call
+    end
   end
 
   def mark_profile_inactive
