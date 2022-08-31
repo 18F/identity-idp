@@ -29,7 +29,6 @@ module Idv
         end
 
         def generate_threatmetrix_session_id
-          return unless IdentityConfig.store.proofing_device_profiling_collecting_enabled
           flow_session[:threatmetrix_session_id] = SecureRandom.uuid if !updating_ssn
           flow_session[:threatmetrix_session_id]
         end
