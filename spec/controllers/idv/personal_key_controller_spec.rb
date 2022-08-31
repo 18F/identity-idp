@@ -113,21 +113,6 @@ describe Idv::PersonalKeyController do
       get :show
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
-
-    context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'assigns step indicator steps with gpo letter step' do
-        get :show
-
-        steps = assigns(:step_indicator_steps)
-
-        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
-        expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO)
-      end
-    end
   end
 
   describe '#update' do
