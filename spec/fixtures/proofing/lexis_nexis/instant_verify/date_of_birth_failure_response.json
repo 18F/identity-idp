@@ -1,16 +1,22 @@
 {
   "Status": {
-    "ConversationId": "8624642277235233040",
-    "RequestId": "13936712",
-    "TransactionStatus": "passed",
-    "Reference": "Reference1"
+    "ConversationId": "31017681262575",
+    "RequestId": "23584020325",
+    "TransactionStatus": "failed",
+    "TransactionReasonCode": {
+      "Code": "total.scoring.model.verification.fail"
+    },
+    "Reference": "0987:1234-abcd"
   },
   "Products": [
     {
       "ProductType": "InstantVerify",
       "ExecutedStepName": "Execute Instant Verify",
       "ProductConfigurationName": "REDACTED_CONFIGURATION",
-      "ProductStatus": "pass",
+      "ProductStatus": "fail",
+      "ProductReason": {
+        "Code": "total.scoring.model.verification.fail"
+      },
       "Items": [
         {
           "ItemName": "Addr1Zip_StateMatch",
@@ -42,11 +48,23 @@
         },
         {
           "ItemName": "DOBFullVerified",
-          "ItemStatus": "pass"
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "dob_full_verified_fail"
+          },
+          "ItemInformationDetails": [
+            {
+              "Name": "DX",
+              "Value": "dob_unable_to_verify_dx"
+            }
+          ]
         },
         {
           "ItemName": "DOBYearVerified",
-          "ItemStatus": "pass"
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "dob_year_not_verfied_fail"
+          }
         },
         {
           "ItemName": "LexIDDeathMatch",

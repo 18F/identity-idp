@@ -1,16 +1,22 @@
 {
   "Status": {
-    "ConversationId": "8624642277235233040",
-    "RequestId": "13936712",
-    "TransactionStatus": "passed",
-    "Reference": "Reference1"
+    "ConversationId": "31017681316505",
+    "RequestId": "23584090175",
+    "TransactionStatus": "failed",
+    "TransactionReasonCode": {
+      "Code": "total.scoring.model.verification.fail"
+    },
+    "Reference": "0987:1234-abcd"
   },
   "Products": [
     {
       "ProductType": "InstantVerify",
       "ExecutedStepName": "Execute Instant Verify",
       "ProductConfigurationName": "REDACTED_CONFIGURATION",
-      "ProductStatus": "pass",
+      "ProductStatus": "fail",
+      "ProductReason": {
+        "Code": "total.scoring.model.verification.fail"
+      },
       "Items": [
         {
           "ItemName": "Addr1Zip_StateMatch",
@@ -30,11 +36,17 @@
         },
         {
           "ItemName": "IdentityOccupancyVerified",
-          "ItemStatus": "pass"
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "occupancy_not_verified_fail"
+          }
         },
         {
           "ItemName": "AddrDeliverable",
-          "ItemStatus": "pass"
+          "ItemStatus": "fail",
+          "ItemReason": {
+            "Code": "addr_not_deliverable_fail"
+          }
         },
         {
           "ItemName": "AddrNotHighRisk",
