@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'open3'
 require 'optparse'
-require 'active_support/inflector'
 
 CHANGELOG_REGEX =
   %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[\w -]{2,}), (?<change>.+)$}
@@ -135,7 +134,7 @@ def generate_changelog(git_log)
 
     changelog_entry = ChangelogEntry.new(
       category: category,
-      subcategory: change[:subcategory].upcase_first,
+      subcategory: change[:subcategory],
       pr_number: pr_number&.named_captures&.fetch('pr'),
       change: change[:change].sub(/./, &:upcase),
     )
