@@ -10,13 +10,27 @@ class PhoneNumberCapabilities
   attr_reader :phone, :phone_confirmed
 
   def self.translated_international_codes
-    return @translated_international_codes_data if defined?(@translated_international_codes_data)
-    @translated_international_codes_data = {}
-    INTERNATIONAL_CODES.each do |k, value|
-      @translated_international_codes_data[k] =
-        value.merge('name' => I18n.t("countries.#{k.downcase}"))
+    translated_international_codes_data = {}
+    I18n.available_locales.each do |locale|
+      INTERNATIONAL_CODES.each do |k, value|
+        translated_international_codes_data[k] =
+          value.merge('name' => I18n.t("countries.#{k.downcase}"))
+      end
     end
-    @translated_international_codes_data
+    translated_international_codes_data
+  end
+
+  def self.cached_translated_international_codes
+    return @translated_international_codes_data[I18n.locale] if defined?(@translated_international_codes_data)
+    @translated_international_codes_data = {}
+    I18n.available_locales.each do |locale|
+      INTERNATIONAL_CODES.each do |k, value|
+        @translated_international_codes_data[locale] ||= {}
+        @translated_international_codes_data[locale][k] =
+          value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
+      end
+    end
+    @translated_international_codes_data[I18n.locale]
   end
 
   def initialize(phone, phone_confirmed:)

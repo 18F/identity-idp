@@ -10,6 +10,8 @@ class PhoneInputComponent < BaseComponent
     allowed_countries: nil,
     delivery_methods: [:sms, :voice],
     required: false,
+    recalculate: false,
+    use_cache: false,
     **tag_options
   )
     @allowed_countries = allowed_countries
@@ -18,6 +20,8 @@ class PhoneInputComponent < BaseComponent
     @required = required
     @delivery_methods = delivery_methods
     @tag_options = tag_options
+    @recalculate = recalculate
+    @use_cache = use_cache
   end
 
   def supported_country_codes
@@ -36,9 +40,20 @@ class PhoneInputComponent < BaseComponent
   end
 
   def international_phone_codes
+    if @use_cache && !@recalculate
+      translated_international_codes = PhoneNumberCapabilities.cached_translated_international_codes
+    elsif !@use_cache && !@recalculate
+      translated_international_codes = PhoneNumberCapabilities.translated_international_codes
+    end
     supported_country_codes.
       map do |code_key|
-        code_data = PhoneNumberCapabilities.translated_international_codes[code_key]
+        if !@recalculate
+          code_data = translated_international_codes[code_key]
+        elsif @use_cache && @recalculate
+          code_data = PhoneNumberCapabilities.cached_translated_international_codes[code_key]
+        elsif !@use_cache && @recalculate
+          code_data = PhoneNumberCapabilities.translated_international_codes[code_key]
+        end
 
         [
           international_phone_code_label(code_data),

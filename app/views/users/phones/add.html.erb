@@ -21,7 +21,7 @@
       url: add_phone_path,
     ) do |f| %>
 
-  <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, required: true, class: 'margin-bottom-4') %>
+  <%= render PhoneInputComponent.new(form: f, confirmed_phone: false, use_cache: @use_cache, recalculate: @recalculate, required: true, class: 'margin-bottom-4') %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
