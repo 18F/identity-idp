@@ -28,8 +28,8 @@ module AccountReset
     # the account was not confirmed
     def track_account_age
       @account_age = if user.confirmed_at
-        (Time.zone.now - user.confirmed_at).seconds.in_days.round
-      end
+                       (Time.zone.now - user.confirmed_at).seconds.in_days.round
+                     end
     end
 
     def track_mfa_method_counts
