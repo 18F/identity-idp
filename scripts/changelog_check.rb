@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'open3'
 require 'optparse'
+require 'active_support/inflector'
 
 CHANGELOG_REGEX =
   %r{^(?:\* )?changelog: (?<category>[\w -/]{2,}), (?<subcategory>[\w -]{2,}), (?<change>.+)$}
