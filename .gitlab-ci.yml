@@ -206,7 +206,9 @@ coverage:
     - mv coverage/coverage/* coverage/
   artifacts:
     reports:
-      cobertura: coverage/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
     name: coverage
     expire_in: 31d
     paths:
