@@ -1,6 +1,5 @@
 {
-    "name": "@18f/identity-memorable-date",
-    "private": true,
-    "version": "1.0.0"
-  }
-  
+  "name": "@18f/identity-memorable-date",
+  "private": true,
+  "version": "1.0.0"
+}
