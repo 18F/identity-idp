@@ -308,15 +308,9 @@ class MemorableDateElement extends HTMLElement {
    * @returns Modified hash containing only valid memorable date error key/value pairs
    */
   private extractErrorMessages(rawLookup: Record<string, any>): MemorableDateErrorMessageLookup {
-    return Object.entries<Record<string, any>>(rawLookup).reduce((a, entry) => {
-      if (this.isValidErrorMessage(entry)) {
-        return {
-          ...a,
-          [entry[0]]: entry[1],
-        };
-      }
-      return a;
-    }, {} as MemorableDateErrorMessageLookup);
+    return Object.fromEntries(
+      Object.entries(rawLookup).filter(this.isValidErrorMessage),
+    ) as MemorableDateErrorMessageLookup;
   }
 
   /**
