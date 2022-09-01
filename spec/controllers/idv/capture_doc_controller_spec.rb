@@ -35,11 +35,6 @@ describe Idv::CaptureDocController do
       it 'redirects to the root url' do
         get :index
 
-        expected_params = ActionController::Parameters.new(
-          { 'controller' => 'idv/capture_doc',
-            'action' => 'index' },
-        )
-
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
           { document_capture_session: nil, request_id: nil },
         )
@@ -51,12 +46,6 @@ describe Idv::CaptureDocController do
     context 'with a bad session' do
       it 'redirects to the root url' do
         get :index, params: { 'document-capture-session': 'foo' }
-
-        expected_params = ActionController::Parameters.new(
-          { 'document-capture-session' => 'foo',
-            'controller' => 'idv/capture_doc',
-            'action' => 'index' },
-        )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
           { document_capture_session: nil, request_id: nil },
@@ -72,14 +61,6 @@ describe Idv::CaptureDocController do
           get :index, params: { 'document-capture-session': session_uuid }
         end
 
-        expected_params = ActionController::Parameters.new(
-          {
-            'document-capture-session' => session_uuid,
-            'controller' => 'idv/capture_doc',
-            'action' => 'index',
-          },
-        )
-
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
           { document_capture_session: nil, request_id: nil },
         )
@@ -91,14 +72,6 @@ describe Idv::CaptureDocController do
     context 'with a good session uuid' do
       it 'redirects to the first step' do
         get :index, params: { 'document-capture-session': session_uuid }
-
-        expected_params = ActionController::Parameters.new(
-          {
-            'document-capture-session' => session_uuid,
-            'controller' => 'idv/capture_doc',
-            'action' => 'index',
-          },
-        )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
           { document_capture_session: nil, request_id: nil },
@@ -112,11 +85,6 @@ describe Idv::CaptureDocController do
       it 'redirects to the first step' do
         mock_session(user.id)
         get :index
-
-        expected_params = ActionController::Parameters.new(
-          { 'controller' => 'idv/capture_doc',
-            'action' => 'index' },
-        )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
           { document_capture_session: nil, request_id: nil },
