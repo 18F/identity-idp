@@ -42,7 +42,7 @@ module Idv
         if current_user.pending_profile
           current_user.pending_profile.proofing_components
         else
-          ProofingComponent.find_by(user: current_user)&.as_json
+          ProofingComponent.find_by(user: current_user).as_json
         end
       end.to_h
     end
