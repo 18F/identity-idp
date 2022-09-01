@@ -42,7 +42,7 @@ module UspsInPersonProofing
         address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: enrollment.usps_unique_id,
+            unique_id: enrollment.unique_id || enrollment.usps_unique_id,
             first_name: pii['first_name'],
             last_name: pii['last_name'],
             address: address,
