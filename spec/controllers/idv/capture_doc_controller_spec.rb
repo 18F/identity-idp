@@ -56,7 +56,8 @@ describe Idv::CaptureDocController do
 
         expected_params = ActionController::Parameters.new(
           { 'document-capture-session' => 'foo',
-            'controller' => 'idv/capture_doc', 'action' => 'index' },
+            'controller' => 'idv/capture_doc',
+            'action' => 'index' },
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
@@ -77,7 +78,9 @@ describe Idv::CaptureDocController do
 
         expected_params = ActionController::Parameters.new(
           {
-            'document-capture-session' => session_uuid, 'controller' => 'idv/capture_doc', 'action' => 'index'
+            'document-capture-session' => session_uuid,
+            'controller' => 'idv/capture_doc',
+            'action' => 'index',
           },
         )
 
@@ -97,7 +100,9 @@ describe Idv::CaptureDocController do
 
         expected_params = ActionController::Parameters.new(
           {
-            'document-capture-session' => session_uuid, 'controller' => 'idv/capture_doc', 'action' => 'index'
+            'document-capture-session' => session_uuid,
+            'controller' => 'idv/capture_doc',
+            'action' => 'index',
           },
         )
 

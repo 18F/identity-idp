@@ -26,7 +26,8 @@ module Idv
       if params[:action] == 'index'
         irs_attempts_api_tracker.idv_phone_upload_link_used(
           success: result.success?,
-          link_params: params, failure_reason: result.errors
+          link_params: params,
+          failure_reason: result.errors,
         )
       end
 
