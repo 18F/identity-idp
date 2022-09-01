@@ -33,7 +33,7 @@ module Idv
       data[:address_verification_mechanism] = idv_session.address_verification_mechanism
       data[:user_phone_confirmation] = idv_session.user_phone_confirmation
       data[:vendor_phone_confirmation] = idv_session.vendor_phone_confirmation
-      data[:in_person_enrollment] = idv_session.pending_in_person_enrollment?
+      data[:in_person_enrollment] = idv_session.in_person_enrollment?
 
       data
     end
