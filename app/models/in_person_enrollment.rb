@@ -72,7 +72,7 @@ class InPersonEnrollment < ApplicationRecord
   end
 
   def set_unique_id
-    self.unique_id = InPersonEnrollment.generate_unique_id if self.unique_id.nil?
+    self.unique_id = InPersonEnrollment.generate_unique_id
   end
 
   def profile_belongs_to_user
