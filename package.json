@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "workspaces": [
     "app/javascript/packages/*"
@@ -45,7 +45,6 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
-    "@peculiar/webcrypto": "^1.1.6",
     "@testing-library/dom": "^7.29.0",
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.7.0",

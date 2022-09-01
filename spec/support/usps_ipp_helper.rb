@@ -38,9 +38,15 @@ module UspsIppHelper
 
   def stub_request_expired_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_expired_proofing_results_args,
+    )
+  end
+
+  def request_expired_proofing_results_args
+    {
       status: 400, body: UspsInPersonProofing::Mock::Fixtures.
         request_expired_proofing_results_response
-    )
+    }
   end
 
   def stub_request_failed_proofing_results
@@ -71,9 +77,15 @@ module UspsIppHelper
 
   def stub_request_passed_proofing_results
     stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults}).to_return(
+      **request_passed_proofing_results_args,
+    )
+  end
+
+  def request_passed_proofing_results_args
+    {
       status: 200, body: UspsInPersonProofing::Mock::Fixtures.
         request_passed_proofing_results_response
-    )
+    }
   end
 
   def stub_request_in_progress_proofing_results

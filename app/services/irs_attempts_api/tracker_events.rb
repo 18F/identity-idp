@@ -150,6 +150,24 @@ module IrsAttemptsApi
       )
     end
 
+    # param [Boolean] Success
+    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:, failure_reason:)
+      track_event(
+        :idv_gpo_verification_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_throttled
+      track_event(
+        :idv_gpo_verification_throttled,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] resend
     # The Address validation letter has been requested by user

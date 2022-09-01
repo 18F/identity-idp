@@ -134,7 +134,7 @@ def generate_changelog(git_log)
 
     changelog_entry = ChangelogEntry.new(
       category: category,
-      subcategory: change[:subcategory].capitalize,
+      subcategory: change[:subcategory],
       pr_number: pr_number&.named_captures&.fetch('pr'),
       change: change[:change].sub(/./, &:upcase),
     )
@@ -150,13 +150,14 @@ end
 # Entries with the same category and change are grouped into one changelog line so that we can
 # support multi-PR changes.
 def format_changelog(changelog_entries)
-  changelog_entries = changelog_entries.group_by { |entry| [entry.category, entry.change] }
+  changelog_entries = changelog_entries.
+    sort_by(&:subcategory).
+    group_by { |entry| [entry.category, entry.change] }
 
   changelog = ''
   CATEGORIES.each do |category|
     category_changes = changelog_entries.
-      filter { |(changelog_category, _change), _changes| changelog_category == category }.
-      sort_by { |(_category, change), _changes| change }
+      filter { |(changelog_category, _change), _changes| changelog_category == category }
 
     next if category_changes.empty?
     changelog.concat("## #{category}\n")
