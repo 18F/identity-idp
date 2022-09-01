@@ -202,7 +202,7 @@ module IrsAttemptsApi
     # The request_id included with the phone upload link used
     def idv_phone_upload_link_used(
       document_capture_session:,
-      request_id: 
+      request_id:
     )
       track_event(
         :idv_phone_upload_link_used,
