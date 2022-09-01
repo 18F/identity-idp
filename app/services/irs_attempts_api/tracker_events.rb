@@ -212,6 +212,23 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
+    # @param [JSON] link_params
+    # The parameters that were included with the link that was used
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_upload_link_used(
+      success:,
+      link_params:,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_phone_upload_link_used,
+        success: success,
+        link_params: link_params,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # @param [Boolean] success
     # @param [String] ssn
     # User entered in SSN number during Identity verification
     def idv_ssn_submitted(success:, ssn:)
