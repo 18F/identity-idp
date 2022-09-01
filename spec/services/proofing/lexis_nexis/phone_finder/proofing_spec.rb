@@ -26,23 +26,34 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
   end
 
   describe '#proof' do
-    subject(:result) { instance.proof(applicant) }
-
     before do
       stub_request(:post, verification_request.url).
         to_return(body: response_body, status: 200)
     end
 
-    context 'when the response is a failure' do
-      let(:response_body) do
-        LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
+    context 'when the response is a success' do
+      let(:response_body) { LexisNexisFixtures.phone_finder_success_response_json }
+
+      it 'is a successful result' do
+        result = instance.proof(applicant)
+
+        binding.pry
+
+        expect(result.success?).to eq(true)
+        expect(result.errors).to eq({})
       end
+    end
+
+    context 'when the response is a failure' do
+      let(:response_body) { LexisNexisFixtures.phone_finder_fail_response_json }
 
       it 'is a failure result' do
+        result = instance.proof(applicant)
+
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'Execute Instant Verify': include(a_kind_of(Hash)),
+          'PhoneFinder Checks': include(a_kind_of(Hash)),
         )
       end
     end

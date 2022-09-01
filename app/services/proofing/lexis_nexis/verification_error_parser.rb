@@ -13,10 +13,6 @@ module Proofing
         { base: base_error_message }.merge(product_error_messages)
       end
 
-      def verification_status
-        @verification_status ||= body.dig('Status', 'TransactionStatus')
-      end
-
       private
 
       attr_reader :base_error_message, :product_error_messages

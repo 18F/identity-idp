@@ -3,11 +3,10 @@ module Proofing
     class Response
       class UnexpectedHTTPStatusCodeError < StandardError; end
 
-      attr_reader :response
+      attr_reader :response_body
 
-      def initialize(response)
-        @response = response
-        handle_unexpected_http_status_code_error
+      def initialize(response_body)
+        @response_body = JSON.parse(response_body)
       end
 
       def verification_errors
@@ -28,22 +27,10 @@ module Proofing
         @reference ||= response_body.dig('Status', 'Reference')
       end
 
-      # @api private
-      def response_body
-        @response_body ||= JSON.parse(response.body)
-      end
-
       private
 
       def verification_error_parser
         @verification_error_parser ||= VerificationErrorParser.new(response_body)
-      end
-
-      def handle_unexpected_http_status_code_error
-        return if response.success?
-
-        message = "Unexpected status code '#{response.status}': #{response.body}"
-        raise UnexpectedHTTPStatusCodeError, message
       end
     end
   end
