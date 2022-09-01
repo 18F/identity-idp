@@ -1,7 +1,7 @@
 {
   "Status": {
-    "ConversationId": "31017681353335",
-    "RequestId": "23584138465",
+    "ConversationId": "123456",
+    "RequestId": "7890",
     "TransactionStatus": "failed",
     "TransactionReasonCode": {
       "Code": "total.scoring.model.verification.fail"
