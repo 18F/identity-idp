@@ -12,6 +12,7 @@ describe Idv::DocAuthController do
         :confirm_two_factor_authenticated,
         :fsm_initialize,
         :ensure_correct_step,
+        :override_csp_for_threat_metrix,
       )
     end
 
