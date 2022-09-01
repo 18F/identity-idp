@@ -138,4 +138,12 @@ describe 'shared/_step_indicator.html.erb' do
       end
     end
   end
+
+  context 'with invalid step' do
+    let(:current_step) { :missing }
+
+    it 'renders without a current step' do
+      expect(rendered).not_to have_css('.step-indicator__step--current')
+    end
+  end
 end
