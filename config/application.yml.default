@@ -99,6 +99,7 @@ identity_pki_disabled: false
 identity_pki_local_dev: false
 idv_api_enabled_steps: '[]'
 idv_attempt_window_in_hours: 6
+idv_contact_url: https://www.example.com
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_personal_key_confirmation_enabled: true
@@ -112,6 +113,8 @@ in_person_proofing_enabled_issuers: '[]'
 in_person_enrollment_validity_in_days: 30
 in_person_results_delay_in_hours: 1
 include_slo_in_saml_metadata: false
+inherited_proofing_enabled: false
+inherited_proofing_va_base_url: 'https://staging-api.va.gov'
 irs_attempt_api_audience: 'https://irs.gov'
 irs_attempt_api_auth_tokens: ''
 irs_attempt_api_csp_id: 'LOGIN.gov'
@@ -150,9 +153,11 @@ lexisnexis_threatmetrix_api_key: test_api_key
 lexisnexis_threatmetrix_base_url: https://www.example.com
 lexisnexis_threatmetrix_org_id: test_account
 lexisnexis_threatmetrix_policy: test-policy
+lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 lexisnexis_threatmetrix_enabled: false
 lexisnexis_threatmetrix_mock_enabled: true
+lexisnexis_threatmetrix_required_to_verify: false
 ###################################################################
 lockout_period_in_minutes: 10
 log_to_stdout: false
@@ -202,7 +207,6 @@ poll_rate_for_verify_in_seconds: 3
 proofer_mock_fallback: true
 proofing_device_profiling_collecting_enabled: false
 proofing_device_profiling_decisioning_enabled: false
-proofing_send_partial_dob: false
 proof_address_max_attempts: 5
 proof_address_max_attempt_window_in_minutes: 360
 proof_ssn_max_attempts: 10
@@ -290,7 +294,6 @@ voice_otp_speech_rate: 'slow'
 voip_check: true
 voip_block: true
 voip_allowed_phones: '[]'
-inherited_proofing_va_base_url: 'https://staging-api.va.gov'
 
 development:
   aamva_private_key: 123abc
@@ -322,10 +325,12 @@ development:
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   in_person_proofing_enabled: true
+  inherited_proofing_enabled: true
   kantara_2fa_phone_restricted: true
   kantara_2fa_phone_existing_user_restriction: true
   kantara_restriction_enforcement_date: '2022-07-01'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  irs_attempt_api_public_key_id: key1
   irs_attempt_api_enabled: true
   irs_attempt_api_auth_tokens: 'abc123'
   liveness_checking_enabled: true
@@ -398,6 +403,7 @@ production:
   hmac_fingerprinter_key_queue: '[]'
   idv_sp_required: true
   irs_attempt_api_public_key: change-me-pls
+  irs_attempt_api_public_key_id: key1
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   kantara_restriction_enforcement_date: '2022-07-19'
@@ -474,8 +480,10 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
+  inherited_proofing_enabled: true
   irs_attempt_api_auth_tokens: 'test-token-1,test-token-2'
   irs_attempt_api_public_key: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAyut9Uio5XxsIUVrXARqCoHvcMVYT0p6WyU1BnbhxLRW4Q60p+4Bn32vVOt9nzeih7qvauYM5M0PZdKEmwOHflqPP+ABfKhL+6jxBhykN5P5UY375wTFBJZ20Fx8jOJbRhJD02oUQ49YKlDu3MG5Y0ApyD4ER4WKgxuB2OdyQKd9vg2ZZa+P2pw1HkFPEin0h8KBUFBeLGDZni8PIJdHBP6dA+xbayGBxSM/8xQC0JIg6KlGTcLql37QJIhP2oSv0nAJNb6idFPAz0uMCQDQWKKWV5FUDCsFVH7VuQz8xUCwnPn/SdaratB+29bwUpVhgHXrHdJ0i8vjBEX7smD7pI8CcFHuVgACt86NMlBnNCVkwumQgZNAAxe2mJoYcotEWOnhCuMc6MwSj985bj8XEdFlbf4ny9QO9rETd5aYcwXBiV/T6vd637uvHb0KenghNmlb1Tv9LMj2b9ZwNc9C6oeCnbN2YAfxSDrb8Ik+yq4hRewOvIK7f0CcpZYDXK25aHXnHm306Uu53KIwMGf1mha5T5LWTNaYy5XFoMWHJ9E+AnU/MUJSrwCAITH/S0JFcna5Oatn70aTE9pISATsqB5Iz1c46MvdrxD8hPoDjT7x6/EO316DZrxQfJhjbWsCB+R0QxYLkXPHczhB2Z0HPna9xB6RbJHzph7ifDizhZoMCAwEAAQ==
+  irs_attempt_api_public_key_id: key1
   kantara_2fa_phone_restricted: false
   kantara_2fa_phone_existing_user_restriction: false
   lexisnexis_trueid_account_id: 'test_account'

@@ -9,7 +9,8 @@ module Idv
       should_proof_state_id:,
       trace_id:,
       user_id:,
-      threatmetrix_session_id:
+      threatmetrix_session_id:,
+      request_ip:
     )
       document_capture_session.create_proofing_session
 
@@ -20,11 +21,12 @@ module Idv
       job_arguments = {
         encrypted_arguments: encrypted_arguments,
         should_proof_state_id: should_proof_state_id,
-        dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
+        dob_year_only: false,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         user_id: user_id,
         threatmetrix_session_id: threatmetrix_session_id,
+        request_ip: request_ip,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

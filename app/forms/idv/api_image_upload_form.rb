@@ -12,13 +12,14 @@ module Idv
     validate :throttle_if_rate_limited
 
     def initialize(params, liveness_checking_enabled:, service_provider:, analytics: nil,
-                   uuid_prefix: nil)
+                   uuid_prefix: nil, irs_attempts_api_tracker: nil)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
       @service_provider = service_provider
       @analytics = analytics
       @readable = {}
       @uuid_prefix = uuid_prefix
+      @irs_attempts_api_tracker = irs_attempts_api_tracker
     end
 
     def submit
@@ -43,7 +44,8 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix
+    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
+                :irs_attempts_api_tracker
 
     def throttled_else_increment
       return unless document_capture_session
@@ -177,6 +179,7 @@ module Idv
     def throttle_if_rate_limited
       return unless @throttled
       analytics.throttler_rate_limit_triggered(throttle_type: :idv_doc_auth)
+      irs_attempts_api_tracker.idv_document_upload_rate_limited
       errors.add(:limit, t('errors.doc_auth.throttled_heading'), type: :throttled)
     end
 
@@ -223,6 +226,19 @@ module Idv
           async: false,
           flow_path: params[:flow_path],
         ),
+      )
+      pii_from_doc = client_response.pii_from_doc || {}
+      irs_attempts_api_tracker.idv_document_upload_submitted(
+        success: client_response.success?,
+        document_state: pii_from_doc[:state],
+        document_number: pii_from_doc[:state_id_number],
+        document_issued: pii_from_doc[:state_id_issued],
+        document_expiration: pii_from_doc[:state_id_expiration],
+        first_name: pii_from_doc[:first_name],
+        last_name: pii_from_doc[:last_name],
+        date_of_birth: pii_from_doc[:dob],
+        address: pii_from_doc[:address1],
+        failure_reason: client_response.errors&.except(:hints)&.presence,
       )
     end
 

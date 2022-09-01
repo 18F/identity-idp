@@ -6,17 +6,21 @@ describe Idv::Steps::Ipp::VerifyStep do
   let(:user) { build(:user) }
   let(:service_provider) { create(:service_provider) }
   let(:amzn_trace_id) { SecureRandom.uuid }
+  let(:request) do
+    double(
+      'request',
+      headers: {
+        'X-Amzn-Trace-Id' => amzn_trace_id,
+      },
+      remote_ip: Faker::Internet.ip_v4_address,
+    )
+  end
   let(:controller) do
     instance_double(
       'controller',
       analytics: FakeAnalytics.new,
       current_user: user,
-      request: double(
-        'request',
-        headers: {
-          'X-Amzn-Trace-Id' => amzn_trace_id,
-        },
-      ),
+      request: request,
       session: { sp: { issuer: service_provider.issuer } },
       url_options: {},
     )
@@ -54,6 +58,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           trace_id: amzn_trace_id,
           threatmetrix_session_id: nil,
           user_id: anything,
+          request_ip: request.remote_ip,
         )
 
       step.call
@@ -90,7 +95,7 @@ describe Idv::Steps::Ipp::VerifyStep do
           'controller',
           analytics: FakeAnalytics.new,
           current_user: user2,
-          request: double('request', headers: {}),
+          request: request,
           session: { sp: { issuer: service_provider.issuer } },
           url_options: {},
         )

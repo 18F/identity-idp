@@ -57,11 +57,11 @@ end
 # The string is first split on DELIMITER, and then the body is split into
 # individual lines.
 def build_structured_git_log(git_log)
-  git_log.strip.split('DELIMITER').map { |commit|
+  git_log.strip.split('DELIMITER').map do |commit|
     commit.split("\nbody:").map do |commit_message_lines|
       commit_message_lines.split(%r{[\r\n]}).filter { |line| line != '' }
     end
-  }.map do |title_and_commit_messages|
+  end.map do |title_and_commit_messages|
     title = title_and_commit_messages.first.first.delete_prefix('title: ')
     messages = title_and_commit_messages[1]
     SquashedCommit.new(

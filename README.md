@@ -27,9 +27,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 -- (to install Node.js v.14 using brew: `brew install node@14`)
 - [Yarn](https://yarnpkg.com/en/)
 - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
-  
+
 2. You will need to install openssl version 1.1:
-  
+
 - Run `brew install openssl@1.1`
 
 3. Test that you have Postgres and Redis running.
@@ -121,18 +121,10 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  Login.gov uses a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to view email messages locally. When Mailcatcher is running, visit http://localhost:1080/ to see them.
+  In local development, the application does not deliver real email messages. Instead, we use a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to capture all messages.
 
-  We spin up a Mailcatcher process by default through `make run`, but if you want to run Mailcatcher as a standalone process, just run:
-
-  ```
-  $ mailcatcher
-  ```
-
-  If you would like to run the application on a different port:
-
-  * Change the port number for `mailer_domain_name` and `domain_name` in `config/application.yml`
-  * Run the app on your desired port like `make run PORT=1234`
+  - To view email messages which would have been sent, visit http://localhost:1080/ while the application is running.
+  - To view email templates with placeholder values, visit http://localhost:3000/rails/mailers/ to see a list of template previews.
 
 #### Translations
 

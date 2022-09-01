@@ -9,13 +9,13 @@ describe 'idv/shared/_ssn.html.erb' do
   let(:updating_ssn) { false }
   let(:js_domain) { 'h.online-metrix.net' }
 
-  let(:tags_js_url) {
+  let(:tags_js_url) do
     "https://#{js_domain}/fp/tags.js?org_id=#{lexisnexis_threatmetrix_org_id}&session_id=#{session_id}"
-  }
+  end
 
-  let(:tags_iframe_url) {
+  let(:tags_iframe_url) do
     "https://#{js_domain}/fp/tags?org_id=#{lexisnexis_threatmetrix_org_id}&session_id=#{session_id}"
-  }
+  end
 
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')

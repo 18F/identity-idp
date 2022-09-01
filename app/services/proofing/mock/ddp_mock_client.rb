@@ -12,9 +12,10 @@ module Proofing
                           :address1,
                           :city,
                           :state,
-                          :zipcode
+                          :zipcode,
+                          :request_ip
 
-      optional_attributes :address2, :phone, :email
+      optional_attributes :address2, :phone, :email, :uuid_prefix
 
       stage :resolution
 
@@ -31,6 +32,11 @@ module Proofing
 
       proof do |applicant, result|
         result.transaction_id = TRANSACTION_ID
+        response_body = File.read(
+          Rails.root.join(
+            'spec', 'fixtures', 'proofing', 'lexis_nexis', 'ddp', 'successful_response.json'
+          ),
+        )
         result.review_status = case SsnFormatter.format(applicant[:ssn])
         when REJECT_STATUS_SSN
           'reject'
@@ -41,6 +47,9 @@ module Proofing
         else
           'pass'
         end
+        result.response_body = JSON.parse(
+          response_body.gsub('REVIEW_STATUS', result.review_status.to_s),
+        )
       end
     end
   end

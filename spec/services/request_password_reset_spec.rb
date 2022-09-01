@@ -4,6 +4,17 @@ RSpec.describe RequestPasswordReset do
   describe '#perform' do
     let(:user) { create(:user) }
     let(:email) { user.email_addresses.first.email }
+    let(:irs_attempts_api_tracker) do
+      instance_double(
+        IrsAttemptsApi::Tracker,
+        forgot_password_email_sent: true,
+        forgot_password_email_rate_limited: true,
+      )
+    end
+
+    before do
+      allow(IrsAttemptsApi::Tracker).to receive(:new).and_return(irs_attempts_api_tracker)
+    end
 
     context 'when the user is not found' do
       it 'sends the account registration email' do
@@ -22,7 +33,10 @@ RSpec.describe RequestPasswordReset do
           send_sign_up_email_confirmation,
         )
 
-        RequestPasswordReset.new(email: email).perform
+        RequestPasswordReset.new(
+          email: email,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        ).perform
         user = User.find_with_email(email)
         expect(user).to be_present
         expect(RegistrationLog.first.user_id).to eq(user.id)
@@ -30,7 +44,14 @@ RSpec.describe RequestPasswordReset do
     end
 
     context 'when the user is found and confirmed' do
-      it 'sends password reset instructions' do
+      subject(:perform) do
+        described_class.new(
+          email: email,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        ).perform
+      end
+
+      before do
         allow(UserMailer).to receive(:reset_password_instructions).
           and_wrap_original do |impl, user, email, options|
             token = options.fetch(:token)
@@ -40,8 +61,10 @@ RSpec.describe RequestPasswordReset do
 
             impl.call(user, email, **options)
           end
+      end
 
-        expect { RequestPasswordReset.new(email: email).perform }.
+      it 'sends password reset instructions' do
+        expect { subject }.
           to(change { user.reload.reset_password_token })
       end
 
@@ -49,7 +72,13 @@ RSpec.describe RequestPasswordReset do
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
-        RequestPasswordReset.new(email: email).perform
+        subject
+      end
+
+      it 'calls irs tracking method forgot_password_email_sent ' do
+        subject
+
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
       end
     end
 
@@ -65,7 +94,12 @@ RSpec.describe RequestPasswordReset do
             impl.call(user, email, **options)
           end
 
-        expect { RequestPasswordReset.new(email: email).perform }.
+        expect do
+          RequestPasswordReset.new(
+            email: email,
+            irs_attempts_api_tracker: irs_attempts_api_tracker,
+          ).perform
+        end.
           to(change { user.reload.reset_password_token })
       end
     end
@@ -93,13 +127,17 @@ RSpec.describe RequestPasswordReset do
           send_sign_up_email_confirmation,
         )
 
-        RequestPasswordReset.new(email: unconfirmed_email_address.email).perform
+        RequestPasswordReset.new(
+          email: unconfirmed_email_address.email,
+        ).perform
       end
 
       it 'does not send a recovery activated push event' do
         expect(PushNotification::HttpPush).to_not receive(:deliver)
 
-        RequestPasswordReset.new(email: unconfirmed_email_address.email).perform
+        RequestPasswordReset.new(
+          email: unconfirmed_email_address.email,
+        ).perform
       end
     end
 
@@ -112,10 +150,14 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'always finds the user with the confirmed email address' do
-        form = RequestPasswordReset.new(email: email)
+        form = RequestPasswordReset.new(
+          email: email,
+          irs_attempts_api_tracker: irs_attempts_api_tracker,
+        )
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_sent)
       end
     end
 
@@ -125,17 +167,32 @@ RSpec.describe RequestPasswordReset do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         max_attempts.times do
-          expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+          expect do
+            RequestPasswordReset.new(
+              email: email,
+              analytics: analytics,
+              irs_attempts_api_tracker: irs_attempts_api_tracker,
+            ).perform
+          end.
             to(change { user.reload.reset_password_token })
         end
 
         # extra time, throttled
-        expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+        expect do
+          RequestPasswordReset.new(
+            email: email,
+            analytics: analytics,
+            irs_attempts_api_tracker: irs_attempts_api_tracker,
+          ).perform
+        end.
           to_not(change { user.reload.reset_password_token })
 
         expect(analytics).to have_logged_event(
           'Throttler Rate Limit Triggered',
           throttle_type: :reset_password_email,
+        )
+        expect(irs_attempts_api_tracker).to have_received(:forgot_password_email_rate_limited).with(
+          email: email,
         )
       end
 
@@ -147,12 +204,24 @@ RSpec.describe RequestPasswordReset do
           exactly(max_attempts).times
 
         max_attempts.times do
-          expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+          expect do
+            RequestPasswordReset.new(
+              email: email,
+              analytics: analytics,
+              irs_attempts_api_tracker: irs_attempts_api_tracker,
+            ).perform
+          end.
             to(change { user.reload.reset_password_token })
         end
 
         # extra time, throttled
-        expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+        expect do
+          RequestPasswordReset.new(
+            email: email,
+            analytics: analytics,
+            irs_attempts_api_tracker: irs_attempts_api_tracker,
+          ).perform
+        end.
           to_not(change { user.reload.reset_password_token })
       end
     end

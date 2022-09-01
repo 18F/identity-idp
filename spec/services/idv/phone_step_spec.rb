@@ -17,7 +17,13 @@ describe Idv::PhoneStep do
       current_user: user,
       service_provider: service_provider,
     )
-    idvs.applicant = { first_name: 'Some' }
+    idvs.applicant = {
+      first_name: 'Some',
+      last_name: 'One',
+      uuid: SecureRandom.uuid,
+      dob: 50.years.ago.to_date.to_s,
+      ssn: '666-12-1234',
+    }
     idvs
   end
   let(:good_phone) { '2255555000' }
@@ -32,12 +38,12 @@ describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
 
-  subject {
+  subject do
     described_class.new(
       idv_session: idv_session,
       trace_id: trace_id,
     )
-  }
+  end
 
   describe '#submit' do
     let(:throttle) { Throttle.new(throttle_type: :proof_address, user: user) }
@@ -46,13 +52,14 @@ describe Idv::PhoneStep do
       context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          messages: [],
           context: context,
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',
         },
       }
+
+      original_applicant = idv_session.applicant.dup
 
       subject.submit(phone: good_phone)
 
@@ -64,9 +71,10 @@ describe Idv::PhoneStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
       expect(idv_session.applicant).to eq(
-        first_name: 'Some',
-        phone: good_phone,
-        uuid_prefix: service_provider.app_id,
+        original_applicant.merge(
+          phone: good_phone,
+          uuid_prefix: service_provider.app_id,
+        ),
       )
     end
 
@@ -74,13 +82,14 @@ describe Idv::PhoneStep do
       context = { stages: [{ address: 'AddressMock' }] }
       extra = {
         vendor: {
-          messages: [],
           context: context,
           exception: nil,
           timed_out: false,
           transaction_id: 'address-mock-transaction-id-123',
         },
       }
+
+      original_applicant = idv_session.applicant.dup
 
       subject.submit(phone: bad_phone)
       expect(subject.async_state.done?).to eq true
@@ -92,7 +101,7 @@ describe Idv::PhoneStep do
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to be_falsy
       expect(idv_session.user_phone_confirmation).to be_falsy
-      expect(idv_session.applicant).to eq(first_name: 'Some')
+      expect(idv_session.applicant).to eq(original_applicant)
     end
 
     it 'increments step attempts' do

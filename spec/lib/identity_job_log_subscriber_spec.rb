@@ -48,7 +48,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       expect(json['exception_message']).to eq 'invalid base64'
     end
 
-    expect {
+    expect do
       AddressProofingJob.perform_later(
         result_id: nil,
         encrypted_arguments: 'abc',
@@ -56,7 +56,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         user_id: SecureRandom.random_number(1000),
         issuer: build(:service_provider).issuer,
       )
-    }.to raise_error(ArgumentError)
+    end.to raise_error(ArgumentError)
   end
 
   describe '#enqueue_retry' do
