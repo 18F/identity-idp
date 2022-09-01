@@ -10,7 +10,12 @@ class AccessTokenVerifier
   end
 
   def submit
-    FormResponse.new(success: valid?, errors: errors)
+    FormResponse.new(
+      success: valid?, errors: errors, extra: {
+        client_id: identity&.service_provider,
+        ial: identity&.ial,
+      }
+    )
   end
 
   def identity
