@@ -133,6 +133,10 @@ module Idv
       session[:user_phone_confirmation_session] = new_user_phone_confirmation_session.to_h
     end
 
+    def in_person_enrollment?
+      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
+    end
+
     private
 
     attr_accessor :user_session
@@ -161,10 +165,6 @@ module Idv
         user: current_user,
         user_password: user_password,
       )
-    end
-
-    def in_person_enrollment?
-      ProofingComponent.find_by(user: current_user)&.document_check == Idp::Constants::Vendors::USPS
     end
   end
 end
