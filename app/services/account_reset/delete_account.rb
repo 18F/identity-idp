@@ -27,9 +27,8 @@ module AccountReset
     # @return [Integer, nil] number of days since the account was confirmed (rounded) or nil if
     # the account was not confirmed
     def track_account_age
-      @account_age = if user.confirmed_at
-                       (Time.zone.now - user.confirmed_at).seconds.in_days.round
-                     end
+      return if !user.confirmed_at
+      @account_age = (Time.zone.now - user.confirmed_at).seconds.in_days.round
     end
 
     def track_mfa_method_counts
