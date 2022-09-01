@@ -41,7 +41,7 @@ describe Idv::CaptureDocController do
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          {:document_capture_session=>nil, :request_id=>nil},
+          { document_capture_session: nil, request_id: nil },
         )
 
         expect(response).to redirect_to root_url
@@ -59,7 +59,7 @@ describe Idv::CaptureDocController do
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          {:document_capture_session=>nil, :request_id=>nil},
+          { document_capture_session: nil, request_id: nil },
         )
 
         expect(response).to redirect_to root_url
@@ -81,7 +81,7 @@ describe Idv::CaptureDocController do
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          {:document_capture_session=>nil, :request_id=>nil},
+          { document_capture_session: nil, request_id: nil },
         )
 
         expect(response).to redirect_to root_url
@@ -101,7 +101,7 @@ describe Idv::CaptureDocController do
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          {:document_capture_session=>nil, :request_id=>nil},
+          { document_capture_session: nil, request_id: nil },
         )
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
@@ -119,7 +119,7 @@ describe Idv::CaptureDocController do
         )
 
         expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          {:document_capture_session=>nil, :request_id=>nil},
+          { document_capture_session: nil, request_id: nil },
         )
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
