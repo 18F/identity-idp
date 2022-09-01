@@ -1,6 +1,9 @@
 module Idv
   class CaptureDocController < ApplicationController
+    # rubocop:disable Rails/LexicallyScopedActionFilter
+    # index comes from the flow_state_matchine.rb
     before_action :track_index_loads, only: [:index]
+    # rubocop:enable Rails/LexicallyScopedActionFilter
     before_action :ensure_user_id_in_session
 
     include Flow::FlowStateMachine
