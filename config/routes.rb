@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     post "/api/saml/authpost#{suffix}" => 'saml_idp#auth'
     get "/api/saml/auth#{suffix}" => 'saml_idp#auth'
   end
+  get "/api/saml/complete" => 'saml_completion#index', as: :complete_saml
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
