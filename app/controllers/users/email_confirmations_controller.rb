@@ -13,7 +13,14 @@ module Users
     private
 
     def email_address
-      @email_address ||= EmailAddress.find_with_confirmation_token(params[:confirmation_token])
+      return @email_address if defined?(@email_address)
+
+      email_address = EmailAddress.find_with_confirmation_token(params[:confirmation_token])
+      if email_address&.user&.confirmed?
+        @email_address = email_address
+      else
+        @email_address = nil
+      end
     end
 
     def email_confirmation_token_validator
