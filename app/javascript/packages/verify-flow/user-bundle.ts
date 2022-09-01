@@ -2,8 +2,6 @@ import type { AddressVerificationMethod } from './context/address-verification-m
 
 interface UserBundleMetadata {
   address_verification_mechanism: AddressVerificationMethod;
-
-  in_person_enrollment: boolean;
 }
 
 interface UserBundle {

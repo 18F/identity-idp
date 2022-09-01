@@ -4,7 +4,7 @@ import { trackEvent } from '@18f/identity-analytics';
 import { getConfigValue } from '@18f/identity-config';
 import { useObjectMemo } from '@18f/identity-react-hooks';
 import { STEPS } from './steps';
-import VerifyFlowStepIndicator, { VerifyFlowPath } from './verify-flow-step-indicator';
+import VerifyFlowStepIndicator from './verify-flow-step-indicator';
 import { useSyncedSecretValues } from './context/secrets-context';
 import FlowContext from './context/flow-context';
 import useInitialStepValidation from './hooks/use-initial-step-validation';
@@ -73,11 +73,6 @@ export interface VerifyFlowProps {
   initialAddressVerificationMethod?: AddressVerificationMethod;
 
   /**
-   * Flow path to render for step indicator.
-   */
-  flowPath?: VerifyFlowPath;
-
-  /**
    * Callback invoked after completing the form.
    */
   onComplete: (values: VerifyFlowValues) => void;
@@ -110,7 +105,6 @@ function VerifyFlow({
   basePath,
   cancelURL = '',
   initialAddressVerificationMethod,
-  flowPath,
   onComplete,
 }: VerifyFlowProps) {
   let steps = STEPS;
@@ -145,7 +139,7 @@ function VerifyFlow({
     <ErrorBoundary>
       <FlowContext.Provider value={context}>
         <AddressVerificationMethodContextProvider initialMethod={initialAddressVerificationMethod}>
-          <VerifyFlowStepIndicator currentStep={currentStep} path={flowPath} />
+          <VerifyFlowStepIndicator currentStep={currentStep} />
           <FormSteps
             steps={steps}
             initialValues={syncedValues}

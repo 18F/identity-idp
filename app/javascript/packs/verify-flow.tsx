@@ -1,7 +1,6 @@
 import { render, unmountComponentAtNode } from 'react-dom';
 import {
   VerifyFlow,
-  VerifyFlowPath,
   SecretsContextProvider,
   decodeUserBundle,
   AddressVerificationMethod,
@@ -65,7 +64,6 @@ export async function initialize() {
 
   let cryptoKey: CryptoKey;
   let initialAddressVerificationMethod: AddressVerificationMethod | undefined;
-  let flowPath: VerifyFlowPath | undefined;
   try {
     const storeKey = s2ab(atob(storeKeyBase64));
     cryptoKey = await window.crypto.subtle.importKey('raw', storeKey, 'AES-GCM', true, [
@@ -80,9 +78,6 @@ export async function initialize() {
     if (userBundle) {
       Object.assign(initialValues, Object.fromEntries(mapKeys(userBundle.pii, camelCase)));
       initialAddressVerificationMethod = userBundle.metadata.address_verification_mechanism;
-      if (userBundle.metadata.in_person_enrollment) {
-        flowPath = VerifyFlowPath.IN_PERSON;
-      }
     }
   } catch (error) {
     trackError(error);
@@ -108,7 +103,6 @@ export async function initialize() {
         basePath={basePath}
         onComplete={onComplete}
         initialAddressVerificationMethod={initialAddressVerificationMethod}
-        flowPath={flowPath}
       />
     </SecretsContextProvider>,
     appRoot,

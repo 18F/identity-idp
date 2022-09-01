@@ -16,17 +16,13 @@ type VerifyFlowStepIndicatorStep =
   | 'verify_phone_or_address'
   | 'secure_account'
   | 'find_a_post_office'
-  | 'go_to_the_post_office'
-  | 'get_a_letter';
+  | 'go_to_the_post_office';
 
 interface VerifyFlowConfig {
   /**
    * Sequence of step indicator steps.
    */
-  stepsByAddressVerificationMethod: Record<
-    Exclude<AddressVerificationMethod, null>,
-    VerifyFlowStepIndicatorStep[]
-  >;
+  steps: VerifyFlowStepIndicatorStep[];
 
   /**
    * Mapping of flow form steps to corresponding step indicator step.
@@ -36,16 +32,13 @@ interface VerifyFlowConfig {
 
 const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
   [VerifyFlowPath.DEFAULT]: {
-    stepsByAddressVerificationMethod: {
-      phone: [
-        'getting_started',
-        'verify_id',
-        'verify_info',
-        'verify_phone_or_address',
-        'secure_account',
-      ],
-      gpo: ['getting_started', 'verify_id', 'verify_info', 'secure_account', 'get_a_letter'],
-    },
+    steps: [
+      'getting_started',
+      'verify_id',
+      'verify_info',
+      'verify_phone_or_address',
+      'secure_account',
+    ],
     mapping: {
       document_capture: 'verify_id',
       password_confirm: 'secure_account',
@@ -54,27 +47,15 @@ const FLOW_STEP_PATHS: Record<VerifyFlowPath, VerifyFlowConfig> = {
     },
   },
   [VerifyFlowPath.IN_PERSON]: {
-    stepsByAddressVerificationMethod: {
-      phone: [
-        'find_a_post_office',
-        'verify_info',
-        'verify_phone_or_address',
-        'secure_account',
-        'go_to_the_post_office',
-      ],
-      gpo: [
-        'find_a_post_office',
-        'verify_info',
-        'secure_account',
-        'get_a_letter',
-        'go_to_the_post_office',
-      ],
-    },
+    steps: [
+      'find_a_post_office',
+      'verify_info',
+      'verify_phone_or_address',
+      'secure_account',
+      'go_to_the_post_office',
+    ],
     mapping: {
       document_capture: 'find_a_post_office',
-      password_confirm: 'secure_account',
-      personal_key: 'secure_account',
-      personal_key_confirm: 'secure_account',
     },
   },
 };
@@ -112,14 +93,36 @@ export function getStepStatus(index, currentStepIndex): StepStatus {
   return StepStatus.INCOMPLETE;
 }
 
+/**
+ * Given contextual details of the current flow path, returns explicit statuses which should be used
+ * at particular steps.
+ *
+ * @param details Flow details
+ *
+ * @return Step status overrides.
+ */
+function getStatusOverrides({
+  addressVerificationMethod,
+}: {
+  addressVerificationMethod: AddressVerificationMethod;
+}) {
+  const statuses: Partial<Record<VerifyFlowStepIndicatorStep, StepStatus>> = {};
+
+  if (addressVerificationMethod === 'gpo') {
+    statuses.verify_phone_or_address = StepStatus.PENDING;
+  }
+
+  return statuses;
+}
+
 function VerifyFlowStepIndicator({
   currentStep,
   path = VerifyFlowPath.DEFAULT,
 }: VerifyFlowStepIndicatorProps) {
-  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
-  const { stepsByAddressVerificationMethod, mapping } = FLOW_STEP_PATHS[path];
-  const steps = stepsByAddressVerificationMethod[addressVerificationMethod ?? 'phone'];
+  const { steps, mapping } = FLOW_STEP_PATHS[path];
   const currentStepIndex = steps.indexOf(mapping[currentStep]);
+  const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
+  const statusOverrides = getStatusOverrides({ addressVerificationMethod });
 
   // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
@@ -128,7 +131,6 @@ function VerifyFlowStepIndicator({
   // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
   // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
-  // i18n-tasks-use t('step_indicator.flows.idv.get_a_letter')
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -136,7 +138,7 @@ function VerifyFlowStepIndicator({
         <StepIndicatorStep
           key={step}
           title={t(`step_indicator.flows.idv.${step}`)}
-          status={getStepStatus(index, currentStepIndex)}
+          status={statusOverrides[step] || getStepStatus(index, currentStepIndex)}
         />
       ))}
     </StepIndicator>
