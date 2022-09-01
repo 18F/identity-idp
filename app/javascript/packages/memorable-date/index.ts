@@ -81,13 +81,8 @@ class MemorableDateElement extends HTMLElement {
     const month = this.monthInput;
     const day = this.dayInput;
     const year = this.yearInput;
-    const inputs: HTMLInputElement[] = [];
 
-    month && inputs.push(month);
-    day && inputs.push(day);
-    year && inputs.push(year);
-
-    return inputs;
+    return [month, day, year].filter(Boolean) as HTMLInputElement[];
   }
 
   /**
