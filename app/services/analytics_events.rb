@@ -1382,11 +1382,15 @@ module AnalyticsEvents
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
+  # @param [Integer] ial
+  # @param [String] client_id Service Provider issuer
   # @param [Hash] errors
-  def openid_connect_bearer_token(success:, errors:, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
+      ial: ial,
+      client_id: client_id,
       errors: errors,
       **extra,
     )
