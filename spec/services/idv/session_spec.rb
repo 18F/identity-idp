@@ -233,4 +233,16 @@ describe Idv::Session do
       expect(subject.address_mechanism_chosen?).to eq(false)
     end
   end
+
+  describe '#in_person_enrollment?' do
+    it { expect(subject.in_person_enrollment?).to eq(false) }
+
+    context 'with USPS document check proofing component' do
+      before do
+        ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
+      end
+
+      it { expect(subject.in_person_enrollment?).to eq(true) }
+    end
+  end
 end
