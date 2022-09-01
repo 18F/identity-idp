@@ -206,10 +206,10 @@ RSpec.describe GetUspsProofingResultsJob do
       end
 
       context 'when an enrollment does not have a unique ID' do
-        it 'generates a secure unique ID' do
+        it 'generates a backwards-compatible unique ID' do
           pending_enrollment.update(unique_id: nil)
           stub_request_passed_proofing_results
-          expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+          expect(pending_enrollment).to receive(:usps_unique_id).and_call_original
 
           job.perform(Time.zone.now)
 

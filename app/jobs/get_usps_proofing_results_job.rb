@@ -72,9 +72,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     enrollments.each do |enrollment|
       # Add a unique ID for enrollments that don't have one
-      if enrollment.unique_id.blank?
-        enrollment.update(unique_id: InPersonEnrollment.generate_unique_id)
-      end
+      enrollment.update(unique_id: enrollment.usps_unique_id) if enrollment.unique_id.blank?
 
       status_check_attempted_at = Time.zone.now
       enrollment_outcomes[:enrollments_checked] += 1
