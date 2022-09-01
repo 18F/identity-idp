@@ -24,6 +24,41 @@ describe Users::EmailConfirmationsController do
 
         get :create, params: { confirmation_token: email_record.reload.confirmation_token }
       end
+
+      it 'rejects an otherwise valid token for unconfirmed users' do
+        user = create(:user, :unconfirmed, email_addresses: [])
+        new_email = Faker::Internet.safe_email
+
+        add_email_form = AddUserEmailForm.new
+        add_email_form.submit(user, email: new_email)
+        email_record = add_email_form.email_address_record(new_email)
+
+        get :create, params: { confirmation_token: email_record.reload.confirmation_token }
+        expect(user.email_addresses.confirmed.count).to eq 0
+        expect(email_record.reload.confirmed_at).to eq nil
+        expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      end
+
+      it 'rejects expired tokens' do
+        user = create(:user)
+        new_email = Faker::Internet.safe_email
+
+        add_email_form = AddUserEmailForm.new
+        add_email_form.submit(user, email: new_email)
+        email_record = add_email_form.email_address_record(new_email)
+
+        travel(IdentityConfig.store.add_email_link_valid_for_hours.hours + 1.minute) do
+          get :create, params: { confirmation_token: email_record.reload.confirmation_token }
+        end
+
+        expect(email_record.reload.confirmed_at).to eq nil
+        expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      end
+
+      it 'rejects invalid tokens' do
+        get :create, params: { confirmation_token: 'abc' }
+        expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      end
     end
   end
 end

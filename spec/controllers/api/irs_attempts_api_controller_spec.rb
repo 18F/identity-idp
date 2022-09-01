@@ -22,7 +22,9 @@ RSpec.describe Api::IrsAttemptsApiController do
         event_type: :test_event,
         session_id: 'test-session-id',
         occurred_at: time,
-        event_metadata: {},
+        event_metadata: {
+          first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+        },
       )
       jti = event.jti
       jwe = event.to_jwe

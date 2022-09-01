@@ -27,10 +27,15 @@ module Idv
       @gpo_verify_form = build_gpo_verify_form
 
       if throttle.throttled_else_increment?
+        irs_attempts_api_tracker.idv_gpo_verification_throttled
         render_throttled
       else
         result = @gpo_verify_form.submit
         analytics.idv_gpo_verification_submitted(**result.to_h)
+        irs_attempts_api_tracker.idv_gpo_verification_submitted(
+          success: result.success?,
+          failure_reason: result.errors.presence,
+        )
 
         if result.success?
           if result.extra[:pending_in_person_enrollment]

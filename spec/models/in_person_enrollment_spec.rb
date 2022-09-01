@@ -105,11 +105,11 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'minutes_since_established' do
-    let(:enrollment) {
+    let(:enrollment) do
       create(
         :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.hours
       )
-    }
+    end
 
     it 'returns number of minutes since enrollment was established' do
       expect(enrollment.minutes_since_established).to be_within(0.01).of(120)
@@ -124,11 +124,11 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'minutes_since_last_status_check' do
-    let(:enrollment) {
+    let(:enrollment) do
       create(
         :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
       )
-    }
+    end
 
     it 'returns number of minutes since last status check' do
       expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
@@ -142,11 +142,11 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'minutes_since_status_updated' do
-    let(:enrollment) {
+    let(:enrollment) do
       enrollment = create(:in_person_enrollment, :passed)
       enrollment.status_updated_at = (Time.zone.now - 2.hours)
       enrollment
-    }
+    end
 
     it 'returns number of minutes since the status was updated' do
       expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
