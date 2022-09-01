@@ -1,10 +1,10 @@
     <label class="usa-label">     
         <%= @label %>
     </label>
-    <span class="usa-hint" id="dob_hint">
+    <span class="usa-hint">
         <%= @hint %>
     </span>
-      <%= content_tag :'lg-memorable-date', min: min&.html_safe, max: max&.html_safe do -%>
+      <%= content_tag :'lg-memorable-date', min: min, max: max do -%>
        <div class="usa-memorable-date">
           <%= content_tag(
                 :script,
@@ -16,15 +16,6 @@
                 false,
               ) %>
             <lg-validated-field>
-          <%= content_tag(
-                :script,
-                error_messages.to_json,
-                {
-                  type: 'application/json',
-                  class: 'validated-field__error-strings',
-                },
-                false,
-              ) %>
               <%= f.simple_fields_for name do |p| %>
                 <%= p.input(
                       :month,
@@ -49,15 +40,6 @@
               <% end %>
               </lg-validated-field>
               <lg-validated-field>
-          <%= content_tag(
-                :script,
-                error_messages.to_json,
-                {
-                  type: 'application/json',
-                  class: 'validated-field__error-strings',
-                },
-                false,
-              ) %>
               <%= f.simple_fields_for name do |p| %>
               <%= p.input(
                     :day,
@@ -82,15 +64,6 @@
               <% end %>
               </lg-validated-field>
               <lg-validated-field>
-          <%= content_tag(
-                :script,
-                error_messages.to_json,
-                {
-                  type: 'application/json',
-                  class: 'validated-field__error-strings',
-                },
-                false,
-              ) %>
               <%= f.simple_fields_for name do |p| %>
               <%= p.input(
                     :year,

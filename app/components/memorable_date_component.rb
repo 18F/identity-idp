@@ -18,17 +18,17 @@ class MemorableDateComponent < BaseComponent
   # @param [String] hint Additional Hint to show to the user
   # @param [String] label Label for field
   # @param [String] form Form that this field belongs to
-  # @param [String] month (nil) Starting value for month
-  # @param [String] day (nil) Starting value for day
-  # @param [String] year (nil) Starting value for year
-  # @param [String] required (false) Whether this field is required
-  # @param [Date,DateTime] min (nil) Minimum allowed date, inclusive
-  # @param [Date,DateTime] max (nil) Maximum allowed date, inclusive
-  # @param [Hash<String,String>] error_messages Array of mappings of error states to messages
-  # @param [Array<Hash>] range_errors Array of custom range errors
-  # @option range_errors [Date,DateTime] min Minimum value for range check
-  # @option range_errors [Date,DateTime] max Maximum value for range check
-  # @option range_errors [String] message Error message to display if range check fails
+  # @param [String] month Starting value for month
+  # @param [String] day Starting value for day
+  # @param [String] year Starting value for year
+  # @param [String] required Whether this field is required
+  # @param [Date,DateTime] min Minimum allowed date, inclusive
+  # @param [Date,DateTime] max Maximum allowed date, inclusive
+  # @param [Hash<Symbol,String>] error_messages Array of mappings of error states to messages
+  # @param [Array<Hash] range_errors Array of custom range errors
+  # @option range_errors [Date,DateTime] :min Minimum value for range check
+  # @option range_errors [Date,DateTime] :max Maximum value for range check
+  # @option range_errors [String] :message Error message to display if range check fails
   def initialize(
     name:, hint:, label:, form:,
     month: nil,
@@ -66,8 +66,8 @@ class MemorableDateComponent < BaseComponent
         new_err = {
           message: err[:message],
         }
-        new_err['min'] = convert_date err[:min] if !err[:min].blank?
-        new_err['max'] = convert_date err[:max] if !err[:max].blank?
+        new_err[:min] = convert_date err[:min] if !err[:min].blank?
+        new_err[:max] = convert_date err[:max] if !err[:max].blank?
         new_err
       end,
     }
@@ -101,23 +101,23 @@ class MemorableDateComponent < BaseComponent
   # then integrate any overrides
   def generate_error_messages(label, min, max, override_error_messages)
     base_error_messages = {
-      'missing_month_day_year' => t(
+      missing_month_day_year: t(
         'components.memorable_date.errors.missing_month_day_year',
         label: label,
       ),
-      'missing_month_day' => t('components.memorable_date.errors.missing_month_day'),
-      'missing_month_year' => t('components.memorable_date.errors.missing_month_year'),
-      'missing_day_year' => t('components.memorable_date.errors.missing_day_year'),
-      'missing_month' => t('components.memorable_date.errors.missing_month'),
-      'missing_day' => t('components.memorable_date.errors.missing_day'),
-      'missing_year' => t('components.memorable_date.errors.missing_year'),
-      'invalid_month' => t('components.memorable_date.errors.invalid_month'),
-      'invalid_day' => t('components.memorable_date.errors.invalid_day'),
-      'invalid_year' => t('components.memorable_date.errors.invalid_year'),
-      'invalid_date' => t('components.memorable_date.errors.invalid_date'),
+      missing_month_day: t('components.memorable_date.errors.missing_month_day'),
+      missing_month_year: t('components.memorable_date.errors.missing_month_year'),
+      missing_day_year: t('components.memorable_date.errors.missing_day_year'),
+      missing_month: t('components.memorable_date.errors.missing_month'),
+      missing_day: t('components.memorable_date.errors.missing_day'),
+      missing_year: t('components.memorable_date.errors.missing_year'),
+      invalid_month: t('components.memorable_date.errors.invalid_month'),
+      invalid_day: t('components.memorable_date.errors.invalid_day'),
+      invalid_year: t('components.memorable_date.errors.invalid_year'),
+      invalid_date: t('components.memorable_date.errors.invalid_date'),
     }
     if label && min
-      base_error_messages['range_underflow'] =
+      base_error_messages[:range_underflow] =
         t(
           'components.memorable_date.errors.range_underflow', label: label,
                                                               date: i18n_long_format(min)
@@ -125,7 +125,7 @@ class MemorableDateComponent < BaseComponent
     end
 
     if label && max
-      base_error_messages['range_overflow'] =
+      base_error_messages[:range_overflow] =
         t(
           'components.memorable_date.errors.range_overflow', label: label,
                                                              date: i18n_long_format(max)
@@ -133,7 +133,7 @@ class MemorableDateComponent < BaseComponent
     end
 
     if label && min && max
-      base_error_messages['outside_date_range'] =
+      base_error_messages[:outside_date_range] =
         t(
           'components.memorable_date.errors.outside_date_range',
           label: label,
