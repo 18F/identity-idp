@@ -214,7 +214,7 @@ function AcuantContextProvider({
   children,
 }: AcuantContextProviderProps) {
   const { isMobile } = useContext(DeviceContext);
-  const { addPageAction } = useContext(AnalyticsContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -262,7 +262,7 @@ function AcuantContextProvider({
           window.AcuantJavascriptWebSdk.startWorkers(() => {
             window.AcuantCamera = getActualAcuantCamera();
             const { isCameraSupported: nextIsCameraSupported } = window.AcuantCamera;
-            addPageAction('IdV: Acuant SDK loaded', {
+            trackEvent('IdV: Acuant SDK loaded', {
               success: true,
               isCameraSupported: nextIsCameraSupported,
             });
@@ -273,7 +273,7 @@ function AcuantContextProvider({
           });
         },
         onFail(code, description) {
-          addPageAction('IdV: Acuant SDK loaded', {
+          trackEvent('IdV: Acuant SDK loaded', {
             success: false,
             code,
             description,

@@ -1,3 +1,8 @@
+require_relative 'idv_helper'
+require_relative 'javascript_driver_helper'
+require_relative 'doc_auth_helper'
+require_relative '../saml_auth_helper'
+
 module IdvStepHelper
   def self.included(base)
     base.class_eval do
@@ -113,6 +118,10 @@ module IdvStepHelper
 
   def complete_idv_steps_before_step(step, user = user_with_2fa)
     send("complete_idv_steps_before_#{step}_step", user)
+  end
+
+  def expect_step_indicator_current_step(text)
+    expect(page).to have_css('.step-indicator__step--current', text: text)
   end
 
   private

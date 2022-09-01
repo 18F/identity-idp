@@ -309,6 +309,7 @@ Rails.application.routes.draw do
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
+      get '/setup_errors' => 'setup_errors#show'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       put '/cancel' => 'cancellations#update'
@@ -336,6 +337,9 @@ Rails.application.routes.draw do
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
+
+      get '/inherited_proofing' => 'inherited_proofing#index'
+      get '/inherited_proofing/:step' => 'inherited_proofing#show', as: :inherited_proofing_step
 
       # deprecated routes
       get '/confirmations' => 'personal_key#show'

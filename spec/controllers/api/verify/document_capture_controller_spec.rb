@@ -24,7 +24,7 @@ describe Api::Verify::DocumentCaptureController do
   let(:user) { create(:user, :signed_up) }
   let(:flow_path) { 'standard' }
   let(:liveness_checking_enabled) { false }
-  let(:analytics_data) {
+  let(:analytics_data) do
     { browser_attributes:
       { browser_bot: false,
         browser_device_name: 'Unknown',
@@ -34,7 +34,7 @@ describe Api::Verify::DocumentCaptureController do
         browser_platform_version: '0',
         browser_version: '0.0',
         user_agent: 'Rails Testing' } }
-  }
+  end
 
   before do
     stub_sign_in(user) if user

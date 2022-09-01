@@ -1,6 +1,8 @@
+require_relative 'idv_step_helper'
 require_relative 'doc_auth_helper'
 
 module InPersonHelper
+  include IdvStepHelper
   include DocAuthHelper
 
   GOOD_FIRST_NAME = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
@@ -79,5 +81,17 @@ module InPersonHelper
     complete_address_step(user)
     complete_ssn_step(user)
     complete_verify_step(user)
+  end
+
+  def expect_in_person_step_indicator_current_step(text)
+    # Normally we're only concerned with the "current" step, but since some steps are shared between
+    # flows, we also want to make sure that at least one of the in-person-specific steps exists in
+    # the step indicator.
+    expect(page).to have_css(
+      '.step-indicator__step',
+      text: t('step_indicator.flows.idv.find_a_post_office'),
+    )
+
+    expect_step_indicator_current_step(text)
   end
 end

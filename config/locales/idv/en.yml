@@ -82,6 +82,11 @@ en:
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP Code.
+      setup:
+        fail_html: 'Please %{contact_form_link} and enter the code
+          <b>%{support_code}</b> in the detail field.'
+        heading: There is an issue with your information
+        link_text: fill out our contact form
       timeout: We are experiencing higher than usual wait time processing your
         request. Please try again.
     forgot_password:

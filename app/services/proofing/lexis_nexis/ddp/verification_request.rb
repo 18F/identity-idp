@@ -20,13 +20,14 @@ module Proofing
             account_first_name: applicant[:first_name],
             account_last_name: applicant[:last_name],
             account_telephone: '', # applicant[:phone], decision was made not to send phone
-            drivers_license_number_hash: applicant[:state_id_number] ?
-              OpenSSL::Digest::SHA256.hexdigest(applicant[:state_id_number].gsub(/\W/, '')) : '',
+            account_drivers_license_number: applicant[:state_id_number].gsub(/\W/, ''),
+            account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip,
             event_type: 'ACCOUNT_CREATION',
             policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id],
-            ssn_hash: OpenSSL::Digest::SHA256.hexdigest(applicant[:ssn].gsub(/\D/, '')),
+            national_id_number: applicant[:ssn].gsub(/\D/, ''),
+            national_id_type: 'US_SSN',
             input_ip_address: applicant[:request_ip],
             local_attrib_1: applicant[:uuid_prefix],
           }.to_json

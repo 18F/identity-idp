@@ -14,10 +14,11 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, password_reset_requested: false)
+  def initialize(analytics:, attempts_tracker:, password_reset_requested: false)
     @throttled = false
     @password_reset_requested = password_reset_requested
     @analytics = analytics
+    @attempts_tracker = attempts_tracker
   end
 
   def user
@@ -133,6 +134,9 @@ class RegisterUserEmailForm
       @analytics.throttler_rate_limit_triggered(
         throttle_type: :reg_unconfirmed_email,
       )
+      @attempts_tracker.user_registration_email_submission_rate_limited(
+        email: email, email_already_registered: false,
+      )
     else
       SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
     end
@@ -145,6 +149,9 @@ class RegisterUserEmailForm
     if @throttled
       @analytics.throttler_rate_limit_triggered(
         throttle_type: :reg_confirmed_email,
+      )
+      @attempts_tracker.user_registration_email_submission_rate_limited(
+        email: email, email_already_registered: true,
       )
     else
       UserMailer.signup_with_your_email(existing_user, email).deliver_now_or_later

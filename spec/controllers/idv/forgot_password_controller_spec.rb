@@ -8,25 +8,40 @@ describe Idv::ForgotPasswordController do
   end
 
   describe '#new' do
-    it 'tracks the event in analytics when referer is nil' do
+    before do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('IdV: forgot password visited')
+      allow(@analytics).to receive(:track_event)
+    end
 
+    it 'tracks the event in analytics when referer is nil' do
       get :new
+
+      expect(@analytics).to have_received(:track_event).with('IdV: forgot password visited')
     end
   end
 
   describe '#update' do
-    it 'tracks an analytics event' do
-      user = create(:user)
+    let(:user) { create(:user) }
+
+    before do
       stub_sign_in(user)
       stub_analytics
+      stub_attempts_tracker
+      allow(@analytics).to receive(:track_event)
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
+    end
 
-      expect(@analytics).to receive(:track_event).with('IdV: forgot password confirmed')
-
+    it 'tracks analytics events' do
       post :update
+
+      expect(@analytics).to have_received(:track_event).with('IdV: forgot password confirmed')
+      expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+        :forgot_password_email_sent,
+        email: user.email,
+        success: true,
+      )
     end
   end
 end

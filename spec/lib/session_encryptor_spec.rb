@@ -122,9 +122,9 @@ RSpec.describe SessionEncryptor do
           },
         }
 
-        expect {
+        expect do
           subject.dump(session)
-        }.to raise_error(
+        end.to raise_error(
           RuntimeError, "invalid session, 'sensitive_data' is reserved key"
         )
       end
@@ -138,15 +138,15 @@ RSpec.describe SessionEncryptor do
           'idv_new' => [{ 'nested' => { 'ssn' => '666-66-6666' } }],
         } }
 
-        expect {
+        expect do
           subject.dump(nested_session)
-        }.to raise_error(
+        end.to raise_error(
           SessionEncryptor::SensitiveKeyError, 'ssn unexpectedly appeared in session'
         )
 
-        expect {
+        expect do
           subject.dump(nested_array_session)
-        }.to raise_error(
+        end.to raise_error(
           SessionEncryptor::SensitiveKeyError, 'ssn unexpectedly appeared in session'
         )
       end
@@ -174,9 +174,9 @@ RSpec.describe SessionEncryptor do
           'new_key' => Idp::Constants::MOCK_IDV_APPLICANT[:last_name],
         }
 
-        expect {
+        expect do
           subject.dump(session)
-        }.to raise_error(
+        end.to raise_error(
           SessionEncryptor::SensitiveValueError,
         )
       end

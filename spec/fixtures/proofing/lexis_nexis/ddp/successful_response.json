@@ -1,18 +1,10 @@
 {
-  "account_address_result": "success",
-  "account_address_score": "0",
-  "account_email_result": "success",
-  "account_email_score": "0",
-  "account_name_result": "success",
-  "account_name_score": "0",
-  "account_telephone_result": "success",
-  "account_telephone_score": "0",
   "request_id": "1234",
   "request_result": "success",
   "review_status": "pass",
   "risk_rating": "trusted",
-  "ssn_hash_result": "success",
-  "ssn_hash_score": "0",
   "summary_risk_score": "-6",
-  "tmx_risk_rating": "neutral"
+  "tmx_risk_rating": "neutral",
+  "fraudpoint.score": "500",
+  "first_name": "WARNING! YOU SHOULD NEVER SEE THIS PII FIELD IN THE LOGS"
 }
