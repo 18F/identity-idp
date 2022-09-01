@@ -62,5 +62,26 @@ describe('VerifyFlowStepIndicator', () => {
       const current = getByText('step_indicator.flows.idv.find_a_post_office');
       expect(current.closest('.step-indicator__step--current')).to.exist();
     });
+
+    context('with gpo as address verification method', () => {
+      it('omits address verification step and adds letter step before post office', () => {
+        const { queryByText } = render(
+          <AddressVerificationMethodContextProvider initialMethod="gpo">
+            <VerifyFlowStepIndicator currentStep="personal_key" path={VerifyFlowPath.IN_PERSON} />
+          </AddressVerificationMethodContextProvider>,
+        );
+
+        const verifyAddress = queryByText('step_indicator.flows.idv.verify_phone_or_address');
+        const getALetter = queryByText('step_indicator.flows.idv.get_a_letter');
+        const goToThePostOffice = queryByText('step_indicator.flows.idv.go_to_the_post_office');
+
+        expect(verifyAddress).to.not.exist();
+        expect(getALetter).to.exist();
+        expect(goToThePostOffice).to.exist();
+        expect(goToThePostOffice!.compareDocumentPosition(getALetter!)).to.equal(
+          Node.DOCUMENT_POSITION_PRECEDING,
+        );
+      });
+    });
   });
 });
