@@ -423,9 +423,9 @@ function AcuantCapture(
         isAcuantCaptureCapable &&
         capture !== 'user' &&
         !isForceUploading.current &&
-        !forceNativeCamera;
+        !maxSdkAttemptsReached;
 
-      if (isAcuantCaptureCapable && isEnvironmentCapture && forceNativeCamera) {
+      if (isAcuantCaptureCapable && isEnvironmentCapture && maxSdkAttemptsReached) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
