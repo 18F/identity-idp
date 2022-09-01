@@ -22,7 +22,8 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
   # @param [String] user_id
-  # @param [Integer] account_age_in_days
+  # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
+  # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
   # @param [Hash] errors
   # An account has been deleted through the account reset flow
