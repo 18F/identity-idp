@@ -123,7 +123,7 @@ module Proofing
           unknown_session
         ]
 
-        # @param [Hash] body
+        # @param [Hash, nil] parsed JSON response body
         def self.redact(hash)
           return { error: 'TMx response body was empty' } if hash.nil?
           return { error: 'TMx response body was malformed' } unless hash.is_a? Hash
