@@ -68,11 +68,12 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         subject.schedule_in_person_enrollment(user, pii)
       end
 
-      it 'sets enrollment status to pending and sets enrollment established at date' do
+      it 'sets enrollment status to pending and sets established at date and unique id' do
         subject.schedule_in_person_enrollment(user, pii)
 
         expect(user.in_person_enrollments.first.status).to eq('pending')
         expect(user.in_person_enrollments.first.enrollment_established_at).to_not be_nil
+        expect(user.in_person_enrollments.first.unique_id).to_not be_nil
       end
 
       it 'sends verification emails' do

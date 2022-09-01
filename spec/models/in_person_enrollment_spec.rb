@@ -66,6 +66,31 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
+  describe 'Triggers' do
+    it 'generates a unique ID if one is not provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile, status: :pending)
+
+      expect(enrollment.unique_id).not_to be_nil
+    end
+
+    it 'does not generated a unique ID if one is provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).not_to receive(:generate_unique_id)
+
+      enrollment = create(
+        :in_person_enrollment, user: user, profile: profile, status: :pending,
+                               unique_id: '1234'
+      )
+
+      expect(enrollment.unique_id).to eq('1234')
+    end
+  end
+
   describe 'needs_usps_status_check' do
     let(:check_interval) { ...1.hour.ago }
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }

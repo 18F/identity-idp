@@ -2,7 +2,6 @@ FactoryBot.define do
   factory :in_person_enrollment do
     user { association :user, :signed_up }
     profile { association :profile, user: user }
-    unique_id { Faker::Number.hexadecimal(digits: 18) }
     current_address_matches_id { true }
     selected_location_details { { name: 'BALTIMORE' } }
 

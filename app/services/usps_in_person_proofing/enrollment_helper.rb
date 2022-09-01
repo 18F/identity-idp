@@ -36,7 +36,6 @@ module UspsInPersonProofing
         return enrollment if enrollment.present?
 
         InPersonEnrollment.create!(
-          unique_id: InPersonEnrollment.generate_unique_id,
           user: user,
           profile: nil,
         )
