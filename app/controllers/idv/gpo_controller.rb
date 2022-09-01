@@ -11,6 +11,7 @@ module Idv
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
+      @step_indicator_current_step = step_indicator_current_step
       analytics.idv_gpo_address_visited(
         letter_already_sent: @presenter.letter_already_sent?,
       )
@@ -35,6 +36,14 @@ module Idv
     end
 
     private
+
+    def step_indicator_current_step
+      if resend_requested?
+        :get_a_letter
+      else
+        :verify_phone_or_address
+      end
+    end
 
     def update_tracking
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
