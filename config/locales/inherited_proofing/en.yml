@@ -6,14 +6,22 @@ en:
     headings:
       welcome: Get started verifying your identity
     info:
-      no_sp_name: The agency that you are trying to access
+      no_sp_name: VA needs to make sure you are you
       privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
         your identity. %{link} about our privacy and security measures.'
-      welcome_html: '%{sp_name} needs to make sure you are you — not someone
+      welcome_html: '%{sp_name} - not someone
         pretending to be you.'
     instructions:
-      bullet1: A phone number on a phone plan associated with your name
       learn_more: Learn more
       privacy: Our privacy and security standards
-      welcome: 'To verify your identity, you will need:'
+      welcome: To verify your identity,
+      verify_requirements: you will need a phone number with a phone plan associated with your name.
+      verification_content: You do not need to be the primary account holder on your phone plan. If your phone number 
+                            doesn’t work, we can send you a verification code by mail.
+    troubleshooting:
+      headings:
+        missing_required_items: Don’t have a phone number? Here’s how to get help
+      options:
+        learn_more_phone_or_mail: Learn more about verifying by phone or mail 
+        get_va_help: Get help at VA

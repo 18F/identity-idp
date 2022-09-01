@@ -8,12 +8,39 @@
   <p>
     <%= t('inherited_proofing.info.welcome_html', sp_name: decorated_session.sp_name || t('inherited_proofing.info.no_sp_name')) %>
   </p>
-  <h2><%= t('inherited_proofing.instructions.welcome') %></h2>
 
-  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <%= c.item(heading: t('inherited_proofing.instructions.bullet1')) %>
-  <% end %>
+  <%= t('inherited_proofing.instructions.welcome') %>
+  <b>
+    <%= t('inherited_proofing.instructions.verify_requirements') %>
+  </b>
+  <br/>
+  <div>
+    <br/>
+    <%= t('inherited_proofing.instructions.verification_content') %>
+  </div>
 
+  <%= render(
+          'shared/troubleshooting_options',
+          heading_tag: :h3,
+          heading: t('inherited_proofing.troubleshooting.headings.missing_required_items'),
+          options: [
+            {
+              url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+              text: t('inherited_proofing.troubleshooting.options.learn_more_phone_or_mail'),
+              new_tab: true,
+            },
+            {
+              url: 'https://www.va.gov/resources/managing-your-vagov-profile/',
+              text: t('inherited_proofing.troubleshooting.options.get_va_help'),
+              new_tab: true,
+            },
+            decorated_session.sp_name && {
+              url: idv_doc_auth_return_to_sp_path(location: 'missing_items'),
+              text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+              new_tab: true,
+            },
+          ].select(&:present?),
+        ) %>
   <%= simple_form_for :inherited_proofing,
                       url: url_for,
                       method: 'put',
