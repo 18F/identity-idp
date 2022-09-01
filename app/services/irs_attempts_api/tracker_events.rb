@@ -196,20 +196,18 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [Boolean] success
-    # @param [JSON] link_params
-    # The parameters that were included with the link that was used
-    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # @param [String] document_capture_session
+    # The document_capture_session included with the phone upload link used
+    # @param [String] request_id
+    # The request_id included with the phone upload link used
     def idv_phone_upload_link_used(
-      success:,
-      link_params:,
-      failure_reason: nil
+      document_capture_session:,
+      request_id: 
     )
       track_event(
         :idv_phone_upload_link_used,
-        success: success,
-        link_params: link_params,
-        failure_reason: failure_reason,
+        document_capture_session: document_capture_session,
+        request_id: request_id,
       )
     end
 

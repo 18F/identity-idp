@@ -1,5 +1,6 @@
 module Idv
   class CaptureDocController < ApplicationController
+    before_action :track_index_loads, only: [:index]
     before_action :ensure_user_id_in_session
 
     include Flow::FlowStateMachine
@@ -20,20 +21,19 @@ module Idv
 
     private
 
+    def track_index_loads
+      irs_attempts_api_tracker.idv_phone_upload_link_used(
+        document_capture_session: params[:document_capture_session],
+        request_id: params[:request_id],
+      )
+    end
+
     def ensure_user_id_in_session
-      result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
-
-      if params[:action] == 'index'
-        irs_attempts_api_tracker.idv_phone_upload_link_used(
-          success: result.success?,
-          link_params: params,
-          failure_reason: result.errors,
-        )
-      end
-
       return if session[:doc_capture_user_id] &&
                 token.blank? &&
                 document_capture_session_uuid.blank?
+
+      result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
 
       analytics.track_event(FLOW_STATE_MACHINE_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
