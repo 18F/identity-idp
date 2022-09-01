@@ -292,7 +292,6 @@ class MemorableDateElement extends HTMLElement {
    */
   private isValidErrorMessage(entry: [string, any]): entry is [MemorableDateErrorMessage, string] {
     return (
-      Array.isArray(entry) &&
       MemorableDateErrorMessage[entry[0]] === entry[0] &&
       typeof entry[1] === 'string'
     );
