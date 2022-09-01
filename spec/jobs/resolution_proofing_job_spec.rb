@@ -37,6 +37,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
   end
+  let(:ddp_proofer) { Proofing::Mock::DdpMockClient.new }
   let(:trace_id) { SecureRandom.uuid }
   let(:user) { create(:user, :signed_up) }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
@@ -256,6 +257,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(ddp_proofer)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
           and_return(true)
       end
@@ -291,6 +293,24 @@ RSpec.describe ResolutionProofingJob, type: :job do
           proofing_component = user.proofing_component
           expect(proofing_component.threatmetrix).to equal(true)
           expect(proofing_component.threatmetrix_review_status).to eq('pass')
+        end
+
+        context 'nil response body from ddp' do
+          let(:ddp_result) { Proofing::Result.new }
+
+          before do
+            expect(ddp_result.response_body).to be_nil
+            expect(ddp_proofer).to receive(:proof).and_return(ddp_result)
+          end
+
+          it 'does not blow up' do
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+
+            expect(result[:context][:stages][:threatmetrix][:response_body]).
+              to eq(error: 'TMx response body was empty')
+          end
         end
       end
 
