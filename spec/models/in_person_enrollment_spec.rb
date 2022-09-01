@@ -72,7 +72,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       profile = create(:profile, :gpo_verification_pending, user: user)
       expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
 
-      enrollment = create(:in_person_enrollment, user: user, profile: profile, status: :pending)
+      enrollment = create(:in_person_enrollment, user: user, profile: profile)
 
       expect(enrollment.unique_id).not_to be_nil
     end
@@ -82,10 +82,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       profile = create(:profile, :gpo_verification_pending, user: user)
       expect(InPersonEnrollment).not_to receive(:generate_unique_id)
 
-      enrollment = create(
-        :in_person_enrollment, user: user, profile: profile, status: :pending,
-                               unique_id: '1234'
-      )
+      enrollment = create(:in_person_enrollment, user: user, profile: profile, unique_id: '1234')
 
       expect(enrollment.unique_id).to eq('1234')
     end
