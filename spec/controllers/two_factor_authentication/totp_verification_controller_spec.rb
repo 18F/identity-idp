@@ -99,7 +99,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           with(:mfa_login_totp, success: false)
 
         expect(@irs_attempts_api_tracker).to receive(:mfa_login_rate_limited).
-          with(type: 'totp')
+          with(mfa_device_type: 'totp')
 
         expect(PushNotification::HttpPush).to receive(:deliver).
           with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
