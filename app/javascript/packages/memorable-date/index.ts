@@ -257,6 +257,9 @@ class MemorableDateElement extends HTMLElement {
     allInputs.forEach((field) => {
       if (fields.includes(field)) {
         field.setCustomValidity(message);
+      } else if (!field.validity.valid) {
+        // Prevent the built-in errors from overriding custom errors
+        field.setCustomValidity(message);
       } else {
         field.setCustomValidity('');
       }
