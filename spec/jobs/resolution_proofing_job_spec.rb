@@ -44,6 +44,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:issuer) { 'fake-issuer' }
+  let(:friendly_name) { 'fake-name' }
+  let(:app_id) { 'fake-app-id' }
   let(:ddp_response_body) do
     JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true)
   end
@@ -113,8 +115,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         ServiceProvider.create(
           issuer: issuer,
-          friendly_name: issuer,
-          app_id: issuer,
+          friendly_name: friendly_name,
+          app_id: app_id,
           allow_threatmetrix: true,
         )
       end
@@ -435,8 +437,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return(Proofing::Result.new)
           ServiceProvider.create(
             issuer: issuer,
-            friendly_name: issuer,
-            app_id: issuer,
+            friendly_name: friendly_name,
+            app_id: app_id,
             allow_threatmetrix: true,
           )
         end

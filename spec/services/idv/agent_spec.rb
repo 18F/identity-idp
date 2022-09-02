@@ -15,14 +15,16 @@ describe Idv::Agent do
     let(:trace_id) { SecureRandom.uuid }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:issuer) { 'fake-issuer' }
+    let(:friendly_name) { 'fake-name' }
+    let(:app_id) { 'fake-app-id' }
 
     let(:agent) { Idv::Agent.new(applicant) }
 
     before do
       ServiceProvider.create(
         issuer: issuer,
-        friendly_name: issuer,
-        app_id: issuer,
+        friendly_name: friendly_name,
+        app_id: app_id,
         allow_threatmetrix: true,
       )
     end
