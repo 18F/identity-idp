@@ -27,18 +27,22 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_prepare_step(user)
 
     # state ID page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('in_person_proofing.headings.state_id'))
     complete_state_id_step(user)
 
     # address page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('in_person_proofing.headings.address'))
     complete_address_step(user)
 
     # ssn page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('doc_auth.headings.ssn'))
     complete_ssn_step(user)
 
     # verify page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     expect(page).to have_content(t('headings.verify'))
     expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
     expect(page).to have_text(InPersonHelper::GOOD_LAST_NAME)
@@ -71,14 +75,29 @@ RSpec.describe 'In Person Proofing', js: true do
     complete_verify_step(user)
 
     # phone page
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
     expect(page).to have_content(t('idv.titles.session.phone'))
-    complete_phone_step(user)
+    fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+    click_idv_continue
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
+    choose_idv_otp_delivery_method_sms
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.verify_phone_or_address'),
+    )
+    fill_in_code_with_last_phone_otp
+    click_submit_default
 
     # password confirm page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
     expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
     complete_review_step(user)
 
     # personal key page
+    expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
     expect(page).to have_content(t('titles.idv.personal_key'))
     deadline = nil
     freeze_time do
@@ -89,6 +108,9 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     # ready to verify page
+    expect_in_person_step_indicator_current_step(
+      t('step_indicator.flows.idv.go_to_the_post_office'),
+    )
     expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
     enrollment_code = JSON.parse(
       UspsInPersonProofing::Mock::Fixtures.request_enroll_response,
@@ -213,10 +235,16 @@ RSpec.describe 'In Person Proofing', js: true do
       begin_in_person_proofing
       complete_all_in_person_proofing_steps
       click_on t('idv.troubleshooting.options.verify_by_mail')
+      expect_in_person_step_indicator_current_step(
+        t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
       click_on t('idv.buttons.mail.send')
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       complete_review_step
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.secure_account'))
       acknowledge_and_confirm_personal_key
 
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       expect(page).to have_content(t('idv.titles.come_back_later'))
       expect(page).to have_current_path(idv_come_back_later_path)
 
@@ -224,9 +252,13 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_current_path(account_path)
       expect(page).not_to have_content(t('headings.account.verified_account'))
       click_on t('account.index.verification.reactivate_button')
+      expect_in_person_gpo_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
       click_button t('forms.verify_profile.submit')
 
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
+      expect_in_person_gpo_step_indicator_current_step(
+        t('step_indicator.flows.idv.go_to_the_post_office'),
+      )
       expect(page).not_to have_content(t('account.index.verification.success'))
     end
 

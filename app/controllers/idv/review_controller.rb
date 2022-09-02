@@ -3,6 +3,7 @@ module Idv
     before_action :personal_key_confirmed
 
     include IdvStepConcern
+    include StepIndicatorConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
@@ -34,7 +35,6 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_review_info_visited
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -62,14 +62,6 @@ module Idv
     def redirect_to_idv_app_if_enabled
       return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
       redirect_to idv_app_path
-    end
-
-    def step_indicator_steps
-      if idv_session.address_verification_mechanism == 'gpo'
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
-      else
-        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      end
     end
 
     def flash_message_content

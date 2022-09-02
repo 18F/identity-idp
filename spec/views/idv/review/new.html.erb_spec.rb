@@ -9,6 +9,8 @@ describe 'idv/review/new.html.erb' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:step_indicator_steps).
+        and_return(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
       @applicant = {
         first_name: 'Some',
         last_name: 'One',
@@ -20,7 +22,6 @@ describe 'idv/review/new.html.erb' do
         zipcode: '12345',
         phone: '+1 (213) 555-0000',
       }
-      @step_indicator_steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
 
       render
     end
