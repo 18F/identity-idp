@@ -150,7 +150,6 @@ module Proofing
           private_browsing
           profile_api_timedelta
           profile_connection_type
-          profiled_domain
           profiling_datetime
           profiling_delta
           proxy_score
