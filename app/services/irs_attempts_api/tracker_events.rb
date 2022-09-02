@@ -196,18 +196,10 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] document_capture_session
-    # The document_capture_session included with the phone upload link used
-    # @param [String] request_id
-    # The request_id included with the phone upload link used
-    def idv_phone_upload_link_used(
-      document_capture_session:,
-      request_id:
-    )
+    # The user has used a phone_upload_link to upload docs on their mobile device
+    def idv_phone_upload_link_used
       track_event(
         :idv_phone_upload_link_used,
-        document_capture_session: document_capture_session,
-        request_id: request_id,
       )
     end
 

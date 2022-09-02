@@ -25,10 +25,7 @@ module Idv
     private
 
     def track_index_loads
-      irs_attempts_api_tracker.idv_phone_upload_link_used(
-        document_capture_session: document_capture_session_uuid,
-        request_id: request_id,
-      )
+      irs_attempts_api_tracker.idv_phone_upload_link_used
     end
 
     def ensure_user_id_in_session
