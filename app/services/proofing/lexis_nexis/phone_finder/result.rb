@@ -5,6 +5,7 @@ module Proofing
         attr_reader :verification_response
 
         delegate(
+          :reference,
           :verification_status,
           :verification_errors,
           to: :verification_response,
@@ -20,6 +21,10 @@ module Proofing
 
         def timed_out?
           false
+        end
+
+        def transaction_id
+          verification_response.conversation_id
         end
       end
     end
