@@ -35,9 +35,7 @@ describe Idv::CaptureDocController do
       it 'redirects to the root url' do
         get :index
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          { document_capture_session: nil, request_id: '' },
-        )
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to root_url
       end
@@ -47,9 +45,7 @@ describe Idv::CaptureDocController do
       it 'redirects to the root url' do
         get :index, params: { 'document-capture-session': 'foo' }
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          { document_capture_session: 'foo', request_id: '' },
-        )
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to root_url
       end
@@ -61,9 +57,7 @@ describe Idv::CaptureDocController do
           get :index, params: { 'document-capture-session': session_uuid }
         end
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          { document_capture_session: session_uuid, request_id: '' },
-        )
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to root_url
       end
@@ -73,9 +67,7 @@ describe Idv::CaptureDocController do
       it 'redirects to the first step' do
         get :index, params: { 'document-capture-session': session_uuid }
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          { document_capture_session: session_uuid, request_id: '' },
-        )
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
       end
@@ -86,9 +78,7 @@ describe Idv::CaptureDocController do
         mock_session(user.id)
         get :index
 
-        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used).with(
-          { document_capture_session: nil, request_id: '' },
-        )
+        expect(@irs_attempts_api_tracker).to have_received(:idv_phone_upload_link_used)
 
         expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
       end
