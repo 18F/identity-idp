@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
-  let(:response_body) { JSON.parse(LexisNexisFixtures.instant_verify_failure_response_json) }
+  let(:response_body) do
+    JSON.parse(LexisNexisFixtures.instant_verify_identity_not_found_response_json)
+  end
   subject(:error_parser) { described_class.new(response_body) }
 
   describe '#initialize' do
     let(:response_body) do
-      JSON.parse(LexisNexisFixtures.instant_verify_year_of_birth_fail_response_json)
+      JSON.parse(LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json)
     end
   end
 
