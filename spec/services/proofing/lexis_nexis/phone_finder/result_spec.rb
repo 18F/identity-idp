@@ -21,6 +21,7 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
   context 'successful response' do
     it 'returns a successful verified result' do
       expect(subject.success?).to eq(true)
+      expect(subject.verification_errors).to eq({})
     end
   end
 
@@ -35,5 +36,9 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
         :InstantVerify,
       )
     end
+  end
+
+  context 'error response' do
+    it 'returns an error result'
   end
 end
