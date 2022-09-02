@@ -17,7 +17,7 @@ module Proofing
       end
 
       def verification_status
-        @verification_status ||= response_body.dig('Status', 'TransactionStatus')
+        verification_error_parser.verification_status
       end
 
       def conversation_id
