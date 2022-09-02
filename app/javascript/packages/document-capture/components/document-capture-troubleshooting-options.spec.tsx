@@ -150,18 +150,16 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
       );
 
       it('has link to IPP flow', () => {
-        const { getByText, getAllByRole } = render(
+        const { getByText, getByRole } = render(
           <DocumentCaptureTroubleshootingOptions hasErrors />,
           { wrapper },
         );
 
         expect(getByText('components.troubleshooting_options.new_feature')).to.exist();
 
-        const buttons = getAllByRole('button');
-        const ippButton = buttons.find(
-          ({ textContent }) => textContent === 'idv.troubleshooting.options.verify_in_person',
-        );
-        expect(ippButton).to.exist();
+        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
+
+        expect(link).to.exist();
       });
 
       it('logs an event when clicking the troubleshooting option', async () => {
@@ -173,10 +171,8 @@ describe('DocumentCaptureTroubleshootingOptions', () => {
           { wrapper },
         );
 
-        const button = getByRole('button', {
-          name: 'idv.troubleshooting.options.verify_in_person',
-        });
-        await userEvent.click(button);
+        const link = getByRole('link', { name: 'idv.troubleshooting.options.verify_in_person' });
+        await userEvent.click(link);
 
         expect(trackEvent).to.have.been.calledWith(
           'IdV: verify in person troubleshooting option clicked',
