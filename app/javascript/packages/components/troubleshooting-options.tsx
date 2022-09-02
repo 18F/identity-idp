@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { BlockLink, BlockSubmitButton } from '@18f/identity-components';
+import { BlockLink } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { BlockLinkProps } from './block-link';
 
 export type TroubleshootingOption = Omit<BlockLinkProps, 'href'> & {
-  url?: string;
+  url: string;
 
   text: ReactNode;
 
@@ -48,13 +48,9 @@ function TroubleshootingOptions({
       <ul className="troubleshooting-options__options">
         {options.map(({ url, text, ...extraProps }, index) => (
           <li key={`tso-${index}`}>
-            {url !== undefined ? (
-              <BlockLink {...extraProps} href={url}>
-                {text}
-              </BlockLink>
-            ) : (
-              <BlockSubmitButton>{text}</BlockSubmitButton>
-            )}
+            <BlockLink {...extraProps} href={url}>
+              {text}
+            </BlockLink>
           </li>
         ))}
       </ul>

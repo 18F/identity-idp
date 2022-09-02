@@ -5,7 +5,9 @@ class FrontendLogController < ApplicationController
   before_action :check_user_authenticated
   before_action :validate_parameter_types
 
+  # rubocop:disable Layout/LineLength
   EVENT_MAP = {
+    'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
     'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_review_info_visited,
     'IdV: password confirm submitted' => proc do |analytics|
@@ -22,6 +24,7 @@ class FrontendLogController < ApplicationController
   }.transform_values do |method|
     method.is_a?(Proc) ? method : AnalyticsEvents.instance_method(method)
   end.freeze
+  # rubocop:enable Layout/LineLength
 
   def create
     event = log_params[:event]
