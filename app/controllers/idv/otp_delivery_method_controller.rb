@@ -17,6 +17,7 @@ module Idv
     def create
       result = otp_delivery_selection_form.submit(otp_delivery_selection_params)
       analytics.idv_phone_otp_delivery_selection_submitted(**result.to_h)
+
       return render_new_with_error_message unless result.success?
       send_phone_confirmation_otp_and_handle_result
     end
@@ -49,6 +50,13 @@ module Idv
       save_delivery_preference
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_sent(**result.to_h)
+
+      irs_attempts_api_tracker.idv_phone_confirmation_otp_sent(
+        phone_number: @idv_phone,
+        success: result.success?,
+        otp_delivery_method: params[:otp_delivery_preference],
+        failure_reason: result.success? ? {} : otp_sent_tracker_error(result),
+      )
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -58,6 +66,7 @@ module Idv
 
     def handle_send_phone_confirmation_otp_failure(result)
       if send_phone_confirmation_otp_rate_limited?
+        irs_attempts_api_tracker.idv_phone_confirmation_otp_sent_rate_limited
         handle_too_many_otp_sends
       else
         invalid_phone_number(result.extra[:telephony_response].error)
@@ -72,6 +81,14 @@ module Idv
         sent_at: original_session.sent_at,
         delivery_method: @otp_delivery_selection_form.otp_delivery_preference.to_sym,
       )
+    end
+
+    def otp_sent_tracker_error(result)
+      if send_phone_confirmation_otp_rate_limited?
+        { rate_limited: true }
+      else
+        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+      end
     end
 
     def otp_delivery_selection_form
