@@ -12,6 +12,12 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
 
   subject { described_class.new(verification_response) }
 
+  it 'renders LexisNexis metadata' do
+    # expected values originate in the fixture
+    expect(subject.reference).to eq('Reference1')
+    expect(subject.transaction_id).to eq('8624642277235233040')
+  end
+
   context 'successful response' do
     it 'returns a successful verified result' do
       expect(subject.success?).to eq(true)
