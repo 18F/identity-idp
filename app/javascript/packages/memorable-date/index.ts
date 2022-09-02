@@ -238,11 +238,11 @@ class MemorableDateElement extends HTMLElement {
       return null;
     }
 
-    const value = Date.parse(raw);
-    if (Number.isNaN(value)) {
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) {
       return null;
     }
-    return new Date(value);
+    return date;
   }
 
   /**
