@@ -14,7 +14,7 @@ module Proofing
                             :city,
                             :state,
                             :zipcode,
-                            :request_ip
+                            :request_ip,
                             :issuer
 
         optional_attributes :address2, :phone, :email, :uuid_prefix
