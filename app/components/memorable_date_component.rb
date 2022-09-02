@@ -25,9 +25,9 @@ class MemorableDateComponent < BaseComponent
   # @param [Date,#to_date] min Minimum allowed date, inclusive
   # @param [Date,#to_date] max Maximum allowed date, inclusive
   # @param [Hash<Symbol,String>] error_messages Array of mappings of error states to messages
-  # @param [Array<Hash] range_errors Array of custom range errors
-  # @option range_errors [Date,DateTime] :min Minimum value for range check
-  # @option range_errors [Date,DateTime] :max Maximum value for range check
+  # @param [Array<Hash>] range_errors Array of custom range errors
+  # @option range_errors [Date,#to_date] :min Minimum value for range check
+  # @option range_errors [Date,#to_date] :max Maximum value for range check
   # @option range_errors [String] :message Error message to display if range check fails
   def initialize(
     name:, hint:, label:, form:,
@@ -92,8 +92,9 @@ class MemorableDateComponent < BaseComponent
 
   # Convert a date or DateTime to a long-form localized date string
   def i18n_long_format date
-    if date.instance_of?(Date) || date.instance_of?(DateTime)
-      I18n.l(date, format: t('date.formats.long'))
+    if date.respond_to?(:to_date)
+      # i18n-tasks-use t('date.formats.long')
+      I18n.l(date.to_date, format: :long)
     end
   end
 
