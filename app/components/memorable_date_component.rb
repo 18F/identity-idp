@@ -22,8 +22,8 @@ class MemorableDateComponent < BaseComponent
   # @param [String] day Starting value for day
   # @param [String] year Starting value for year
   # @param [String] required Whether this field is required
-  # @param [Date,DateTime] min Minimum allowed date, inclusive
-  # @param [Date,DateTime] max Maximum allowed date, inclusive
+  # @param [Date,#to_date] min Minimum allowed date, inclusive
+  # @param [Date,#to_date] max Maximum allowed date, inclusive
   # @param [Hash<Symbol,String>] error_messages Array of mappings of error states to messages
   # @param [Array<Hash] range_errors Array of custom range errors
   # @option range_errors [Date,DateTime] :min Minimum value for range check
