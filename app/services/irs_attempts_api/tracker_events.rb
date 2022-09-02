@@ -150,6 +150,24 @@ module IrsAttemptsApi
       )
     end
 
+    # param [Boolean] Success
+    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:, failure_reason:)
+      track_event(
+        :idv_gpo_verification_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_throttled
+      track_event(
+        :idv_gpo_verification_throttled,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] resend
     # The Address validation letter has been requested by user
@@ -172,7 +190,7 @@ module IrsAttemptsApi
 
     # @param [Boolean] success
     # @param [String] phone_number
-    # The phone upload link was sent during the IDV process
+    # The phone number that the link was sent to during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_upload_link_sent(
       success:,
@@ -184,6 +202,21 @@ module IrsAttemptsApi
         success: success,
         phone_number: phone_number,
         failure_reason: failure_reason,
+      )
+    end
+
+    # @param [String] document_capture_session
+    # The document_capture_session included with the phone upload link used
+    # @param [String] request_id
+    # The request_id included with the phone upload link used
+    def idv_phone_upload_link_used(
+      document_capture_session:,
+      request_id:
+    )
+      track_event(
+        :idv_phone_upload_link_used,
+        document_capture_session: document_capture_session,
+        request_id: request_id,
       )
     end
 

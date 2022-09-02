@@ -24,7 +24,6 @@ describe 'shared/_step_indicator_step.html.erb' do
         it 'renders incomplete step' do
           expect(rendered).to have_selector('.step-indicator__step')
           expect(rendered).not_to have_selector('.step-indicator__step--current')
-          expect(rendered).not_to have_selector('.step-indicator__step--pending')
           expect(rendered).not_to have_selector('.step-indicator__step--complete')
         end
 
@@ -39,7 +38,6 @@ describe 'shared/_step_indicator_step.html.erb' do
         it 'renders current step' do
           expect(rendered).to have_selector('.step-indicator__step')
           expect(rendered).to have_selector('.step-indicator__step--current')
-          expect(rendered).not_to have_selector('.step-indicator__step--pending')
           expect(rendered).not_to have_selector('.step-indicator__step--complete')
         end
 
@@ -53,7 +51,6 @@ describe 'shared/_step_indicator_step.html.erb' do
 
         it 'renders pending step' do
           expect(rendered).to have_selector('.step-indicator__step')
-          expect(rendered).to have_selector('.step-indicator__step--pending')
           expect(rendered).not_to have_selector('.step-indicator__step--current')
           expect(rendered).not_to have_selector('.step-indicator__step--complete')
         end
@@ -70,7 +67,6 @@ describe 'shared/_step_indicator_step.html.erb' do
           expect(rendered).to have_selector('.step-indicator__step')
           expect(rendered).to have_selector('.step-indicator__step--complete')
           expect(rendered).not_to have_selector('.step-indicator__step--current')
-          expect(rendered).not_to have_selector('.step-indicator__step--pending')
         end
 
         it 'renders accessible indicator' do

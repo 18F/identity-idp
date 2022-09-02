@@ -6,7 +6,7 @@
 variables:
   GITLAB_CI: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  IDP_CI_SHA: 'sha256:db00ce3b6c4b75e449d72e19329afdde94937547a75bfbfb6ef774ed3f5d77b6'
+  IDP_CI_SHA: 'sha256:cea459aea56802327075b873cc73a8859ecffa359a9311b359ea49b19b1ba934'
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
@@ -185,7 +185,6 @@ js_tests:
     - *yarn_install
     - yarn test
 
-
 pinpoint-check:
   stage: test
   cache:
@@ -206,7 +205,9 @@ coverage:
     - mv coverage/coverage/* coverage/
   artifacts:
     reports:
-      cobertura: coverage/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/coverage.xml
     name: coverage
     expire_in: 31d
     paths:

@@ -212,9 +212,9 @@ describe Idv::ReviewController do
       it 'shows steps' do
         get :new
 
-        expect(subject.view_assigns['step_indicator_steps']).not_to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
+        steps = subject.view_assigns['step_indicator_steps']
+
+        expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS)
       end
 
       context 'idv app password confirm step is enabled' do
@@ -236,12 +236,12 @@ describe Idv::ReviewController do
         idv_session.address_verification_mechanism = 'gpo'
       end
 
-      it 'shows revises steps to show pending address verification' do
+      it 'shows gpo steps' do
         get :new
 
-        expect(subject.view_assigns['step_indicator_steps']).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
+        steps = subject.view_assigns['step_indicator_steps']
+
+        expect(steps).to eq(Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO)
       end
     end
 

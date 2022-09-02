@@ -27,10 +27,10 @@ module Idv
     private
 
     def step_indicator_steps
-      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      return steps if idv_session.address_verification_mechanism != 'gpo'
-      steps.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
+      if idv_session.address_verification_mechanism == 'gpo'
+        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS_GPO
+      else
+        Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
       end
     end
 
