@@ -17,6 +17,7 @@ import DocumentCaptureTroubleshootingOptions from './document-capture-troublesho
 import Warning from './warning';
 import AnalyticsContext from '../context/analytics';
 import BarcodeAttentionWarning from './barcode-attention-warning';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 
 type DocumentSide = 'front' | 'back';
 
@@ -87,7 +88,6 @@ function ReviewIssuesStep({
 
   const { onFailedCaptureAttempt } = useContext(FailedCaptureAttemptsContext);
   useEffect(() => onFailedCaptureAttempt(), []);
-  
   function onWarningPageDismissed() {
     trackEvent('IdV: Capture troubleshooting dismissed');
 
