@@ -17,4 +17,17 @@ describe Proofing::LexisNexis::PhoneFinder::Result do
       expect(subject.success?).to eq(true)
     end
   end
+
+  context 'failed to match response' do
+    let(:response_body) { LexisNexisFixtures.instant_verify_failure_response_json }
+
+    it 'returns a failed to match verified result' do
+      expect(subject.success?).to eq(false)
+      expect(subject.verification_errors).to include(
+        :base,
+        :SomeOtherProduct,
+        :InstantVerify,
+      )
+    end
+  end
 end
