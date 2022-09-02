@@ -19,10 +19,9 @@ class PhoneNumberCapabilities
       translated_international_codes_data
     else
       return @translated_intl_codes_data[I18n.locale] if defined?(@translated_intl_codes_data)
-      @translated_intl_codes_data = {}
+      @translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
       I18n.available_locales.each do |locale|
         INTERNATIONAL_CODES.each do |k, value|
-          @translated_intl_codes_data[locale] ||= {}
           @translated_intl_codes_data[locale][k] =
             value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
         end
