@@ -85,12 +85,12 @@ class MemorableDateComponent < BaseComponent
 
   private
 
-  # Convert a Date or DateTime to a string like 1892-01-23
+  # Convert a Date or date-like value to a string like 1892-01-23
   def convert_date(date)
     date.to_date.to_s if date.respond_to?(:to_date)
   end
 
-  # Convert a date or DateTime to a long-form localized date string
+  # Convert a Date or date-like value to a long-form localized date string
   def i18n_long_format date
     if date.respond_to?(:to_date)
       # i18n-tasks-use t('date.formats.long')
