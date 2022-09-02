@@ -13,7 +13,7 @@ import { getVisitors } from './visitors/index.js';
 
 /**
  * @param {string} content Original content.
- * @param {NormalizeOptions=} options Normalize options.
+ * @param {NormalizeOptions} options Normalize options.
  *
  * @return {string} Normalized content.
  */

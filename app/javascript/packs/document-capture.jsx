@@ -127,7 +127,7 @@ function trackEvent(event, payload) {
   const keepAlive = () =>
     window.fetch(keepAliveEndpoint, {
       method: 'POST',
-      headers: /** @type {string[][]} */ ([csrf && ['X-CSRF-Token', csrf]].filter(Boolean)),
+      headers: /** @type {[string, string][]} */ ([csrf && ['X-CSRF-Token', csrf]].filter(Boolean)),
     });
 
   const {
