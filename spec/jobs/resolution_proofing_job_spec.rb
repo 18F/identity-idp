@@ -309,35 +309,35 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result = document_capture_session.load_proofing_result[:result]
 
         expect(result).to eq(
-                            exception: nil,
-                            errors: {},
-                            success: true,
-                            timed_out: false,
-                            context: {
-                              should_proof_state_id: true,
-                              stages: {
-                                resolution: {
-                                  client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                                  errors: {},
-                                  exception: nil,
-                                  success: true,
-                                  timed_out: false,
-                                  transaction_id: lexisnexis_transaction_id,
-                                  reference: lexisnexis_reference,
-                                },
-                                state_id: {
-                                  client: Proofing::Aamva::Proofer.vendor_name,
-                                  errors: {},
-                                  exception: nil,
-                                  success: true,
-                                  timed_out: false,
-                                  transaction_id: aamva_transaction_id,
-                                },
-                              },
-                            },
-                            transaction_id: lexisnexis_transaction_id,
-                            reference: lexisnexis_reference,
-                            )
+          exception: nil,
+          errors: {},
+          success: true,
+          timed_out: false,
+          context: {
+            should_proof_state_id: true,
+            stages: {
+              resolution: {
+                client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: lexisnexis_transaction_id,
+                reference: lexisnexis_reference,
+              },
+              state_id: {
+                client: Proofing::Aamva::Proofer.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
+                transaction_id: aamva_transaction_id,
+              },
+            },
+          },
+          transaction_id: lexisnexis_transaction_id,
+          reference: lexisnexis_reference,
+        )
         proofing_component = user.proofing_component
         expect(proofing_component&.threatmetrix).to be_nil
       end
@@ -372,39 +372,39 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result).to match(
-                              exception: nil,
-                              errors: {
-                                base: [
-                                  a_string_starting_with(
-                                    'Response error with code \'invalid_transaction_initiate\':',
-                                    ),
-                                ],
-                              },
-                              success: false,
-                              timed_out: false,
-                              context: {
-                                should_proof_state_id: true,
-                                stages: {
-                                  resolution: {
-                                    client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                                    errors: {
-                                      base: [
-                                        a_string_starting_with(
-                                          'Response error with code \'invalid_transaction_initiate\':',
-                                          ),
-                                      ],
-                                    },
-                                    exception: nil,
-                                    success: false,
-                                    timed_out: false,
-                                    transaction_id: lexisnexis_transaction_id,
-                                    reference: lexisnexis_reference,
-                                  },
-                                },
-                              },
-                              transaction_id: lexisnexis_transaction_id,
-                              reference: lexisnexis_reference,
-                              )
+            exception: nil,
+            errors: {
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
+            },
+            success: false,
+            timed_out: false,
+            context: {
+              should_proof_state_id: true,
+              stages: {
+                resolution: {
+                  client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
+                  errors: {
+                    base: [
+                      a_string_starting_with(
+                        'Response error with code \'invalid_transaction_initiate\':',
+                      ),
+                    ],
+                  },
+                  exception: nil,
+                  success: false,
+                  timed_out: false,
+                  transaction_id: lexisnexis_transaction_id,
+                  reference: lexisnexis_reference,
+                },
+              },
+            },
+            transaction_id: lexisnexis_transaction_id,
+            reference: lexisnexis_reference,
+          )
         end
       end
 
@@ -530,8 +530,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
               :timing,
               name: 'ProofResolution',
               trace_id: trace_id,
-              ),
-            )
+            ),
+          )
 
           perform
 
