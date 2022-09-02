@@ -43,6 +43,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:threatmetrix_request_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
   let(:request_ip) { Faker::Internet.ip_v4_address }
+  let(:issuer) { 'fake-issuer' }
   let(:ddp_response_body) do
     JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true)
   end
@@ -57,6 +58,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
+        issuer: issuer,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -76,10 +78,11 @@ RSpec.describe ResolutionProofingJob, type: :job do
         user_id: user.id,
         threatmetrix_session_id: threatmetrix_session_id,
         request_ip: request_ip,
+        issuer: issuer,
       )
     end
 
-    context 'webmock lexisnexis and threatmetrix' do
+    context 'webmock lexisnexis and threatmetrix is on for service provider' do
       before do
         stub_request(
           :post,
@@ -107,6 +110,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         allow(state_id_proofer).to receive(:proof).
           and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
+
+        ServiceProvider.create(
+          issuer: issuer,
+          friendly_name: issuer,
+          app_id: issuer,
+          allow_threatmetrix: true,
+        )
       end
 
       let(:lexisnexis_response) do
@@ -253,7 +263,162 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
-    context 'stubbing vendors' do
+    context 'webmock lexisnexis and threatmetrix and threatmetrix disabled per sp' do
+      before do
+        stub_request(
+          :post,
+          'https://lexisnexis.example.com/restws/identity/v2/abc123/aaa/conversation',
+        ).to_return(body: lexisnexis_response.to_json)
+        stub_request(
+          :post,
+          'https://www.example.com/api/session-query',
+        ).to_return(body: LexisNexisFixtures.ddp_success_response_json)
+
+        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
+
+        allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
+        allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_username).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_password).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_base_url).
+          and_return('https://lexisnexis.example.com/')
+        allow(IdentityConfig.store).to receive(:lexisnexis_instant_verify_workflow).
+          and_return('aaa')
+
+        allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+
+        allow(state_id_proofer).to receive(:proof).
+          and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
+      end
+
+      let(:lexisnexis_response) do
+        {
+          'Status' => {
+            'TransactionStatus' => 'passed',
+            'ConversationId' => lexisnexis_transaction_id,
+            'Reference' => lexisnexis_reference,
+          },
+        }
+      end
+
+      it 'returns results' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result).to eq(
+                            exception: nil,
+                            errors: {},
+                            success: true,
+                            timed_out: false,
+                            context: {
+                              should_proof_state_id: true,
+                              stages: {
+                                resolution: {
+                                  client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
+                                  errors: {},
+                                  exception: nil,
+                                  success: true,
+                                  timed_out: false,
+                                  transaction_id: lexisnexis_transaction_id,
+                                  reference: lexisnexis_reference,
+                                },
+                                state_id: {
+                                  client: Proofing::Aamva::Proofer.vendor_name,
+                                  errors: {},
+                                  exception: nil,
+                                  success: true,
+                                  timed_out: false,
+                                  transaction_id: aamva_transaction_id,
+                                },
+                              },
+                            },
+                            transaction_id: lexisnexis_transaction_id,
+                            reference: lexisnexis_reference,
+                            )
+        proofing_component = user.proofing_component
+        expect(proofing_component&.threatmetrix).to be_nil
+      end
+
+      context 'failed response from lexisnexis' do
+        let(:should_proof_state_id) { true }
+        let(:lexisnexis_response) do
+          {
+            'Status' => {
+              'ConversationId' => lexisnexis_transaction_id,
+              'Reference' => lexisnexis_reference,
+              'Workflow' => 'foobar.baz',
+              'TransactionStatus' => 'error',
+              'TransactionReasonCode' => {
+                'Code' => 'invalid_transaction_initiate',
+              },
+            },
+            'Information' => {
+              'InformationType' => 'error-details',
+              'Code' => 'invalid_transaction_initiate',
+              'Description' => 'Error: Invalid Transaction Initiate',
+              'DetailDescription' => [
+                { 'Text' => 'Date of Birth is not a valid date' },
+              ],
+            },
+          }
+        end
+
+        it 'has a failed response' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result).to match(
+                              exception: nil,
+                              errors: {
+                                base: [
+                                  a_string_starting_with(
+                                    'Response error with code \'invalid_transaction_initiate\':',
+                                    ),
+                                ],
+                              },
+                              success: false,
+                              timed_out: false,
+                              context: {
+                                should_proof_state_id: true,
+                                stages: {
+                                  resolution: {
+                                    client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
+                                    errors: {
+                                      base: [
+                                        a_string_starting_with(
+                                          'Response error with code \'invalid_transaction_initiate\':',
+                                          ),
+                                      ],
+                                    },
+                                    exception: nil,
+                                    success: false,
+                                    timed_out: false,
+                                    transaction_id: lexisnexis_transaction_id,
+                                    reference: lexisnexis_reference,
+                                  },
+                                },
+                              },
+                              transaction_id: lexisnexis_transaction_id,
+                              reference: lexisnexis_reference,
+                              )
+        end
+      end
+
+      context 'no threatmetrix_session_id' do
+        let(:threatmetrix_session_id) { nil }
+        it 'does not attempt to create a ddp proofer' do
+          perform
+
+          expect(instance).not_to receive(:lexisnexis_ddp_proofer)
+        end
+      end
+    end
+
+    context 'stubbing vendors and threatmetrix is on for the service provider' do
       before do
         allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
@@ -268,6 +433,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
             and_return(Proofing::Result.new)
           expect(state_id_proofer).to receive(:proof).
             and_return(Proofing::Result.new)
+          ServiceProvider.create(
+            issuer: issuer,
+            friendly_name: issuer,
+            app_id: issuer,
+            allow_threatmetrix: true,
+          )
         end
 
         it 'logs the trace_id and timing info for ProofResolution and the Threatmetrix info' do
@@ -309,6 +480,69 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             expect(result[:context][:stages][:threatmetrix][:response_body]).
               to eq(error: 'TMx response body was empty')
+          end
+        end
+      end
+
+      context 'does not call state id with an unsuccessful response from the proofer' do
+        it 'posts back to the callback url' do
+          expect(resolution_proofer).to receive(:proof).
+            and_return(Proofing::Result.new(exception: 'error'))
+          expect(state_id_proofer).not_to receive(:proof)
+
+          perform
+        end
+      end
+
+      context 'no state_id proof' do
+        let(:should_proof_state_id) { false }
+
+        it 'does not call state_id proof if resolution proof is successful' do
+          expect(resolution_proofer).to receive(:proof).
+            and_return(Proofing::Result.new)
+
+          expect(state_id_proofer).not_to receive(:proof)
+          perform
+        end
+      end
+    end
+
+    context 'stubbing vendors and threatmetrix is off for the service provider' do
+      before do
+        allow(instance).to receive(:resolution_proofer).and_return(resolution_proofer)
+        allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
+        allow(instance).to receive(:lexisnexis_ddp_proofer).and_return(ddp_proofer)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).
+          and_return(true)
+      end
+
+      context 'with a successful response from the proofer' do
+        before do
+          expect(resolution_proofer).to receive(:proof).
+            and_return(Proofing::Result.new)
+          expect(state_id_proofer).to receive(:proof).
+            and_return(Proofing::Result.new)
+        end
+
+        it 'logs the trace_id and timing info for ProofResolution info' do
+          expect(instance).to receive(:logger_info_hash).ordered.with(
+            hash_including(
+              :timing,
+              name: 'ProofResolution',
+              trace_id: trace_id,
+              ),
+            )
+
+          perform
+
+          expect(user.proofing_component&.threatmetrix).to be_nil
+        end
+
+        context 'nil response body from ddp' do
+          let(:ddp_result) { Proofing::Result.new(response_body: nil) }
+
+          before do
+            expect(ddp_proofer).to receive(:proof).and_return(ddp_result)
           end
         end
       end
