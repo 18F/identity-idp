@@ -26,6 +26,16 @@ module Proofing
         def transaction_id
           verification_response.conversation_id
         end
+
+        def to_h
+          {
+            errors: verification_errors,
+            success: success?,
+            timed_out: timed_out?,
+            transaction_id: transaction_id,
+            vendor_name: 'lexisnexis:phone_finder'
+          }
+        end
       end
     end
   end
