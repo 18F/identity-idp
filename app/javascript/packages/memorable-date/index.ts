@@ -36,8 +36,8 @@ type MemorableDateErrorMessageLookup = Record<string, string | undefined>;
 type ErrorMessageFieldMapping = [string, (HTMLInputElement | undefined)[]];
 
 interface ErrorMessageLookupContainer {
-  error_messages: MemorableDateErrorMessageLookup;
-  range_errors: RangeErrorMessage[];
+  errorMessages: MemorableDateErrorMessageLookup;
+  rangeErrors: RangeErrorMessage[];
 }
 
 /**
@@ -139,8 +139,7 @@ class MemorableDateElement extends HTMLElement {
       return;
     }
 
-    const { error_messages: errorMessages, range_errors: rangeErrors } =
-      this.getErrorMessageMappings();
+    const { errorMessages, rangeErrors } = this.getErrorMessageMappings();
 
     const hasMissingValues = (
       [
@@ -365,8 +364,8 @@ class MemorableDateElement extends HTMLElement {
     }
 
     return {
-      error_messages: errorMessages,
-      range_errors: rangeErrors,
+      errorMessages,
+      rangeErrors,
     };
   }
 }
