@@ -86,8 +86,8 @@ class MemorableDateComponent < BaseComponent
   private
 
   # Convert a Date or DateTime to a string like 1892-01-23
-  def convert_date date
-    date.strftime('%Y-%m-%d') if date.instance_of?(Date) || date.instance_of?(DateTime)
+  def convert_date(date)
+    date.to_date.to_s if date.respond_to?(:to_date)
   end
 
   # Convert a date or DateTime to a long-form localized date string
