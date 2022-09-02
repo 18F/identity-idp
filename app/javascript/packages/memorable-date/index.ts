@@ -2,21 +2,21 @@
  * Keys to lookup error messages for different states
  * of the MemorableDate element
  */
-export enum MemorableDateErrorMessage {
-  missing_month_day_year = 'missing_month_day_year',
-  missing_month_day = 'missing_month_day',
-  missing_month_year = 'missing_month_year',
-  missing_day_year = 'missing_day_year',
-  missing_month = 'missing_month',
-  missing_day = 'missing_day',
-  missing_year = 'missing_year',
-  invalid_month = 'invalid_month',
-  invalid_day = 'invalid_day',
-  invalid_year = 'invalid_year',
-  invalid_date = 'invalid_date',
-  range_underflow = 'range_underflow',
-  range_overflow = 'range_overflow',
-  outside_date_range = 'outside_date_range',
+export const enum MemorableDateErrorMessage {
+  MISSING_MONTH_DAY_YEAR = 'missing_month_day_year',
+  MISSING_MONTH_DAY = 'missing_month_day',
+  MISSING_MONTH_YEAR = 'missing_month_year',
+  MISSING_DAY_YEAR = 'missing_day_year',
+  MISSING_MONTH = 'missing_month',
+  MISSING_DAY = 'missing_day',
+  MISSING_YEAR = 'missing_year',
+  INVALID_MONTH = 'invalid_month',
+  INVALID_DAY = 'invalid_day',
+  INVALID_YEAR = 'invalid_year',
+  INVALID_DATE = 'invalid_date',
+  RANGE_UNDERFLOW = 'range_underflow',
+  RANGE_OVERFLOW = 'range_overflow',
+  OUTSIDE_DATE_RANGE = 'outside_date_range',
 }
 
 /**
@@ -31,10 +31,9 @@ interface RangeErrorMessage {
 /**
  * Type for a hash in which the specified messages can be looked up
  */
-type MemorableDateErrorMessageLookup = Record<
-  MemorableDateErrorMessage & string,
-  string | undefined
->;
+type MemorableDateErrorMessageLookup = Record<string, string | undefined>;
+
+type ErrorMessageFieldMapping = [string, (HTMLInputElement | undefined)[]];
 
 interface ErrorMessageLookupContainer {
   error_messages: MemorableDateErrorMessageLookup;
@@ -100,26 +99,27 @@ class MemorableDateElement extends HTMLElement {
   }
 
   connectedCallback() {
-    // Wait to show validation until first submission
-    let updateErrorMessage = false;
-
     const { allInputs } = this;
 
     const inputListener = (e: Event) => {
-      // Run validations
       this.validate();
 
-      // Update error messages on form validation
-      if (e.type === 'invalid') {
-        updateErrorMessage = true;
-      }
-
-      if (updateErrorMessage) {
-        // Trigger error message updates
-        const errorMessage = allInputs.find((f) => f.validationMessage)?.validationMessage;
-        allInputs.forEach((f) => {
-          f.closest('lg-validated-field')?.setErrorMessage(errorMessage || null);
-        });
+      if (e.type === 'input') {
+        // Artificially trigger input events on all inputs
+        // for input events on one input. This makes the corresponding
+        // <lg-validated-field> elements remove error styling from all
+        // memorable-date fields at the same time as it hides the error
+        // message (instead of only the selected field).
+        const otherInputs = allInputs.filter((i) => i !== e.target);
+        try {
+          otherInputs.forEach((i) => {
+            // Prevent recursion by removing listener temporarily
+            i.removeEventListener('input', inputListener);
+            i.dispatchEvent(new CustomEvent('input', { bubbles: true }));
+          });
+        } finally {
+          otherInputs.forEach((i) => i.addEventListener('input', inputListener));
+        }
       }
     };
 
@@ -142,23 +142,29 @@ class MemorableDateElement extends HTMLElement {
     const { error_messages: errorMessages, range_errors: rangeErrors } =
       this.getErrorMessageMappings();
 
-    const hasMissingValues = [
-      { month, day, year },
-      { month, day },
-      { month, year },
-      { month },
-      { day, year },
-      { day },
-      { year },
-    ].some(this.checkMissingValues(errorMessages));
+    const hasMissingValues = (
+      [
+        [MemorableDateErrorMessage.MISSING_MONTH_DAY_YEAR, [month, day, year]],
+        [MemorableDateErrorMessage.MISSING_MONTH_DAY, [month, day]],
+        [MemorableDateErrorMessage.MISSING_MONTH_YEAR, [month, year]],
+        [MemorableDateErrorMessage.MISSING_MONTH, [month]],
+        [MemorableDateErrorMessage.MISSING_DAY_YEAR, [day, year]],
+        [MemorableDateErrorMessage.MISSING_DAY, [day]],
+        [MemorableDateErrorMessage.MISSING_YEAR, [year]],
+      ] as ErrorMessageFieldMapping[]
+    ).some(this.checkMissingValues(errorMessages));
 
     if (hasMissingValues) {
       return;
     }
 
-    const hasInvalidValues = [{ month }, { day }, { year }].some(
-      this.checkFieldsInvalid(errorMessages),
-    );
+    const hasInvalidValues = (
+      [
+        [MemorableDateErrorMessage.INVALID_MONTH, [month]],
+        [MemorableDateErrorMessage.INVALID_DAY, [day]],
+        [MemorableDateErrorMessage.INVALID_YEAR, [year]],
+      ] as ErrorMessageFieldMapping[]
+    ).some(this.checkFieldsInvalid(errorMessages));
 
     if (hasInvalidValues) {
       return;
@@ -166,8 +172,7 @@ class MemorableDateElement extends HTMLElement {
 
     let parsedDate: Date | undefined;
     try {
-      const parsedUnixTime = Date.parse(`${year.value}-${month.value}-${day.value}`);
-      parsedDate = new Date(parsedUnixTime);
+      parsedDate = new Date(`${year.value}-${month.value}-${day.value}`);
     } catch (e) {}
 
     // Check for cases where invalid dates could be "rolled over" into the next month
@@ -175,8 +180,9 @@ class MemorableDateElement extends HTMLElement {
     //
     // Also bails if the date is otherwise invalid
     if (parsedDate?.getUTCDate() !== Number(day.value)) {
-      if (errorMessages.invalid_date) {
-        this.setValidity(errorMessages.invalid_date, month, day, year);
+      const invalidDateMessage = errorMessages[MemorableDateErrorMessage.INVALID_DATE];
+      if (invalidDateMessage) {
+        this.setValidity(invalidDateMessage, month, day, year);
       }
       return;
     }
@@ -201,8 +207,11 @@ class MemorableDateElement extends HTMLElement {
   ): string | undefined {
     const { min, max } = this;
 
-    const minErrorMessage = errorMessages.range_underflow || errorMessages.outside_date_range;
-    const maxErrorMessage = errorMessages.range_overflow || errorMessages.outside_date_range;
+    const outsideRangeErrorMessage = errorMessages[MemorableDateErrorMessage.OUTSIDE_DATE_RANGE];
+    const minErrorMessage =
+      errorMessages[MemorableDateErrorMessage.RANGE_UNDERFLOW] || outsideRangeErrorMessage;
+    const maxErrorMessage =
+      errorMessages[MemorableDateErrorMessage.RANGE_OVERFLOW] || outsideRangeErrorMessage;
 
     if (minErrorMessage && min instanceof Date && date < min) {
       // Set range underflow error if applicable and messaging is available
@@ -259,11 +268,10 @@ class MemorableDateElement extends HTMLElement {
    * @returns Function to show errors for missing values on a group of elements
    */
   private checkMissingValues(errs: MemorableDateErrorMessageLookup) {
-    return (fields: { [k: string]: HTMLInputElement | undefined }): boolean => {
-      const message = errs[`missing_${Object.keys(fields).join('_')}`];
-      const fieldValues = Object.values(fields);
-      if (fieldValues.every((field) => !field?.value)) {
-        message && this.setValidity(message, ...(fieldValues as HTMLInputElement[]));
+    return ([messageType, fields]: ErrorMessageFieldMapping): boolean => {
+      if (fields.every((field) => !field?.value)) {
+        const message = errs[messageType];
+        message && this.setValidity(message, ...(fields as HTMLInputElement[]));
         return true;
       }
       return false;
@@ -275,11 +283,10 @@ class MemorableDateElement extends HTMLElement {
    * @returns Function to show errors for invalid values on a group of elements
    */
   private checkFieldsInvalid(errs: MemorableDateErrorMessageLookup) {
-    return (fields: { [k: string]: HTMLInputElement | undefined }): boolean => {
-      const message = errs[`invalid_${Object.keys(fields).join('_')}`];
-      const fieldValues = Object.values(fields);
-      if (fieldValues.every((field) => field?.validity.patternMismatch)) {
-        message && this.setValidity(message, ...(fieldValues as HTMLInputElement[]));
+    return ([messageType, fields]: ErrorMessageFieldMapping): boolean => {
+      const message = errs[messageType];
+      if (fields.every((field) => field?.validity.patternMismatch)) {
+        message && this.setValidity(message, ...(fields as HTMLInputElement[]));
         return true;
       }
       return false;
@@ -290,11 +297,9 @@ class MemorableDateElement extends HTMLElement {
    * @param entry Entry to check from Object.entries call
    * @returns True if the given entry is a valid mapping for memorable date errors
    */
-  private isValidErrorMessage(entry: [string, any]): entry is [MemorableDateErrorMessage, string] {
-    return (
-      MemorableDateErrorMessage[entry[0]] === entry[0] &&
-      typeof entry[1] === 'string'
-    );
+  private isValidErrorMessage(entry: [string, any]): entry is [string, string] {
+    const [, errorMessage] = entry;
+    return typeof errorMessage === 'string';
   }
 
   /**
