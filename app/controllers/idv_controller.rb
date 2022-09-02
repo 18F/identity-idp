@@ -37,11 +37,8 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.idv_intro_visit
-    if va_inherited_proofing?
-      redirect_to idv_inherited_proofing_url
-    else
-      redirect_to idv_doc_auth_url
-    end
+    return redirect_to idv_inherited_proofing_url if va_inherited_proofing?
+    redirect_to idv_doc_auth_url
   end
 
   def profile_needs_reactivation?
