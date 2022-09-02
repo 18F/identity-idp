@@ -26,7 +26,6 @@ function StepIndicatorStep({ title, status }: StepIndicatorStepProps) {
     'step-indicator__step',
     status === CURRENT && 'step-indicator__step--current',
     status === COMPLETE && 'step-indicator__step--complete',
-    status === PENDING && 'step-indicator__step--pending',
   ]
     .filter(Boolean)
     .join(' ');

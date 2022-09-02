@@ -5,6 +5,7 @@ fr:
     flows:
       idv:
         find_a_post_office: Trouver un bureau de poste
+        get_a_letter: Recevoir une lettre par la poste
         getting_started: Démarrer
         go_to_the_post_office: Se rendre au bureau de poste
         secure_account: Sécurisez votre compte

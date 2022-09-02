@@ -18,14 +18,10 @@ feature 'verify profile with OTP' do
   end
 
   context 'GPO letter' do
-    it 'shows step indicator progress with current verify step, completed secure account' do
+    it 'shows step indicator progress with current step' do
       sign_in_live_with_2fa(user)
 
-      expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_phone_or_address'))
-      expect(page).to have_css(
-        '.step-indicator__step--complete',
-        text: t('step_indicator.flows.idv.secure_account'),
-      )
+      expect_step_indicator_current_step(t('step_indicator.flows.idv.get_a_letter'))
     end
 
     scenario 'valid OTP' do
