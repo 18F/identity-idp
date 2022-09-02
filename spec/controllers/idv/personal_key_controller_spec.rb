@@ -24,13 +24,13 @@ describe Idv::PersonalKeyController do
   let(:user) { create(:user, :signed_up, password: password) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:profile) { subject.idv_session.profile }
-  let(:idv_session) {
+  let(:idv_session) do
     Idv::Session.new(
       user_session: subject.user_session,
       current_user: user,
       service_provider: nil,
     )
-  }
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
