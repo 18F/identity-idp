@@ -123,9 +123,9 @@ class MemorableDateElement extends HTMLElement {
       }
     };
 
-    allInputs.forEach((i) => {
-      i.addEventListener('input', inputListener);
-      i.addEventListener('invalid', inputListener);
+    allInputs.forEach((input) => {
+      input.addEventListener('input', inputListener);
+      input.addEventListener('invalid', inputListener);
     });
   }
 
