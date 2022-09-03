@@ -25,7 +25,7 @@ describe Idv::Agent do
         issuer: issuer,
         friendly_name: friendly_name,
         app_id: app_id,
-        allow_threatmetrix: true,
+        device_profiling_enabled: true,
       )
     end
 

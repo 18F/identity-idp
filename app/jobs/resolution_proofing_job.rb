@@ -250,6 +250,6 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def issuer_allows_threatmetrix?(issuer)
-    ServiceProvider.find_by(issuer: issuer)&.allow_threatmetrix
+    ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end

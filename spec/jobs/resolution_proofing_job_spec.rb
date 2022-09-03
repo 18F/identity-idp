@@ -90,7 +90,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           issuer: issuer,
           friendly_name: friendly_name,
           app_id: app_id,
-          allow_threatmetrix: true,
+          device_profiling_enabled: true,
         )
       end
       context 'webmock lexisnexis and threatmetrix' do
@@ -274,7 +274,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           issuer: issuer,
           friendly_name: friendly_name,
           app_id: app_id,
-          allow_threatmetrix: false,
+          device_profiling_enabled: false,
         )
       end
       context 'webmock lexisnexis and threatmetrix' do
@@ -439,7 +439,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           issuer: issuer,
           friendly_name: friendly_name,
           app_id: app_id,
-          allow_threatmetrix: true,
+          device_profiling_enabled: true,
         )
       end
       context 'stubbing vendors and threatmetrix' do
@@ -532,7 +532,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           issuer: issuer,
           friendly_name: friendly_name,
           app_id: app_id,
-          allow_threatmetrix: false,
+          device_profiling_enabled: false,
         )
       end
       context 'stubbing vendors and threatmetrix' do

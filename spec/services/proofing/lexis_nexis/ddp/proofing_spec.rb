@@ -68,7 +68,7 @@ describe Proofing::LexisNexis::Ddp::Proofer do
         issuer: issuer,
         friendly_name: friendly_name,
         app_id: app_id,
-        allow_threatmetrix: true,
+        device_profiling_enabled: true,
       )
       stub_request(:post, verification_request.url).
         to_return(body: response_body, status: 200)
