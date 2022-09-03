@@ -180,6 +180,7 @@ feature 'doc auth verify step', :js do
           threatmetrix_session_id: kind_of(String),
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 
@@ -207,6 +208,7 @@ feature 'doc auth verify step', :js do
           threatmetrix_session_id: kind_of(String),
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 
@@ -232,6 +234,7 @@ feature 'doc auth verify step', :js do
           threatmetrix_session_id: kind_of(String),
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 
