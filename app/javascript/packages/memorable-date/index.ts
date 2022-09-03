@@ -101,24 +101,24 @@ class MemorableDateElement extends HTMLElement {
   connectedCallback() {
     const { allInputs } = this;
 
-    const inputListener = (e: Event) => {
+    const inputListener = (event: Event) => {
       this.validate();
 
-      if (e.type === 'input') {
+      if (event.type === 'input') {
         // Artificially trigger input events on all inputs
         // for input events on one input. This makes the corresponding
         // <lg-validated-field> elements remove error styling from all
         // memorable-date fields at the same time as it hides the error
         // message (instead of only the selected field).
-        const otherInputs = allInputs.filter((i) => i !== e.target);
+        const otherInputs = allInputs.filter((input) => input !== event.target);
         try {
-          otherInputs.forEach((i) => {
+          otherInputs.forEach((input) => {
             // Prevent recursion by removing listener temporarily
-            i.removeEventListener('input', inputListener);
-            i.dispatchEvent(new CustomEvent('input', { bubbles: true }));
+            input.removeEventListener('input', inputListener);
+            input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
           });
         } finally {
-          otherInputs.forEach((i) => i.addEventListener('input', inputListener));
+          otherInputs.forEach((input) => input.addEventListener('input', inputListener));
         }
       }
     };
