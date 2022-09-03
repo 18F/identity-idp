@@ -31,7 +31,7 @@ describe('ValidatedFieldElement', () => {
       </div>
     `;
 
-    const form = document.createElement('form');
+    const form = document.querySelector('form') || document.createElement('form');
     form.appendChild(element);
     document.body.appendChild(form);
 

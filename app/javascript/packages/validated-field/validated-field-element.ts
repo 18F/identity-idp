@@ -147,7 +147,7 @@ class ValidatedFieldElement extends HTMLElement {
    * @param isValid Whether input is valid.
    */
   private focusOnError(isValid: boolean) {
-    if (!(isValid && document.activeElement?.classList.contains('usa-input--error'))) {
+    if (!isValid && !document.activeElement?.classList.contains('usa-input--error')) {
       this.input?.focus();
     }
   }
