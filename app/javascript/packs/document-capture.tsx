@@ -28,6 +28,7 @@ interface AppRootData {
   appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
+  nativeCameraABTestingEnabled: string;
   nativeCameraOnly: string;
   flowPath: FlowPath;
   cancelUrl: string;
@@ -108,6 +109,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
+    nativeCameraABTestingEnabled,
     nativeCameraOnly,
     appName,
     flowPath,
@@ -163,7 +165,13 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
-    [NativeCameraABTestContextProvider, { nativeCameraOnly: nativeCameraOnly === 'false' }],
+    [
+      NativeCameraABTestContextProvider,
+      {
+        nativeCameraABTestingEnabled: nativeCameraABTestingEnabled === 'true',
+        nativeCameraOnly: nativeCameraOnly === 'true',
+      },
+    ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 

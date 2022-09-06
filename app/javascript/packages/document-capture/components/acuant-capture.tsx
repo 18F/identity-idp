@@ -303,7 +303,7 @@ function AcuantCapture(
     forceNativeCamera,
   } = useContext(FailedCaptureAttemptsContext);
 
-  const { nativeCameraOnly } = useContext(NativeCameraABTestContext);
+  const { nativeCameraABTestingEnabled, nativeCameraOnly } = useContext(NativeCameraABTestContext);
 
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
@@ -434,6 +434,11 @@ function AcuantCapture(
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
           failed_submission_attempts: failedSubmissionAttempts,
+        });
+      }
+      if (nativeCameraABTestingEnabled) {
+        trackEvent('IdV: Native camera A/B Test', {
+          native_camera_only: nativeCameraOnly,
         });
       }
 
