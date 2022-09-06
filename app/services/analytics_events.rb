@@ -2567,5 +2567,10 @@ module AnalyticsEvents
   def cancel_account_reset_recovery
     track_event('Account Reset: Cancel Account Recovery Options')
   end
+
+  # Tracks when the user reaches the verify setup errors page after failing proofing
+  def idv_setup_errors_visited
+    track_event('IdV: Verify setup errors visited')
+  end
 end
 # rubocop:enable Metrics/ModuleLength
