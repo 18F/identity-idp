@@ -70,7 +70,7 @@ class AnalyticsEventsDocumenter
       output.puts JSON.pretty_generate(documenter.as_json)
     end
 
-    [ output.string.presence, exit_status ]
+    [output.string.presence, exit_status]
   end
 
   def initialize(database_path:, class_name:, require_extra_params:)

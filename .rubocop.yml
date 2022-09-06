@@ -309,6 +309,9 @@ Layout/SpaceInLambdaLiteral:
   Enabled: true
   EnforcedStyle: require_no_space
 
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+
 Layout/SpaceInsideBlockBraces:
   Enabled: true
 
