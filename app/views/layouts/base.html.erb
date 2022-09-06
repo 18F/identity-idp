@@ -56,7 +56,7 @@
   <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
-  <%= render 'shared/banner' %>
+  <%= render 'shared/banner', locals: {idv_ip_va_logo: local_assigns[:idv_ip_va_logo].present?} %>
   <main class="site-wrap bg-primary-lighter" id="main-content">
     <div class="grid-container padding-y-4 tablet:padding-y-8 <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>

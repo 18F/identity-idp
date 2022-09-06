@@ -61,9 +61,9 @@
       <%= yield(:header) %>
     <% else %>
       <% if decorated_session.sp_name %>
-        <%= render 'shared/nav_branded' %>
+        <%= render 'shared/nav_branded', locals: { idv_ip_va_logo: locals[:idv_ip_va_logo].present? } %>
       <% else %>
-        <%= render 'shared/nav_lite' %>
+        <%= render 'shared/nav_lite', locals: { idv_ip_va_logo: locals[:idv_ip_va_logo].present? } %>
       <% end %>
     <% end %>
   </div>

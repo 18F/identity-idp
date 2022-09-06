@@ -1,3 +1,6 @@
 <%= link_to root_path do %>
-  <%= image_tag(asset_url('logo.svg'), height: 15, width: 111, alt: APP_NAME, class: 'display-block') %>
+  <%= image_tag(asset_url('logo.svg'), height: 15, width: 111, alt: APP_NAME)%>
+  <% if locals[:idv_ip_va_logo].present? %>
+    | <%= image_tag(asset_url('va_logo.svg'), height: 20, alt: APP_NAME) %>
+  <% end %>
 <% end %>

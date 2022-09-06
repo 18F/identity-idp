@@ -3,6 +3,7 @@ module Idv
     include Flow::FlowStateMachine
 
     before_action :render_404_if_disabled
+    layout 'inherited_proofing'
 
     FLOW_STATE_MACHINE_SETTINGS = {
       step_url: :idv_inherited_proofing_step_url,
