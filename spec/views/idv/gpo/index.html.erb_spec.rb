@@ -4,6 +4,7 @@ describe 'idv/gpo/index.html.erb' do
   let(:letter_already_sent) { false }
   let(:user_needs_address_otp_verification) { false }
   let(:go_back_path) { nil }
+  let(:step_indicator_steps) { Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS }
   let(:presenter) do
     user = build_stubbed(:user, :signed_up)
     Idv::GpoPresenter.new(user, {})
@@ -11,6 +12,7 @@ describe 'idv/gpo/index.html.erb' do
 
   before do
     allow(view).to receive(:go_back_path).and_return(go_back_path)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
 
     allow(presenter).to receive(:letter_already_sent?).and_return(letter_already_sent)
     allow(presenter).to receive(:user_needs_address_otp_verification?).

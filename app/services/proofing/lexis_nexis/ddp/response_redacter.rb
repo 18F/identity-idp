@@ -10,6 +10,12 @@ module Proofing
           account_email_result
           account_email_score
           account_email_worst_score
+          account_address_assert_history
+          account_address_country
+          account_address_first_seen
+          account_address_last_event
+          account_address_last_update
+          account_address_score
           account_address_state
           account_lex_id
           account_lex_id_first_seen
@@ -37,6 +43,13 @@ module Proofing
           bb_fraud_rating
           bb_fraud_score
           champion_request_duration
+          device_first_seen
+          device_id_confidence
+          device_last_event
+          device_last_update
+          device_match_result
+          device_score
+          device_worst_score
           digital_id
           digital_id_confidence
           digital_id_confidence_rating
@@ -50,6 +63,10 @@ module Proofing
           digital_id_trust_score_summary_reason_code
           emailage.emailriskscore.billriskcountry
           emailage.emailriskscore.correlationid
+          emailage.emailriskscore.domain_creation_days
+          emailage.emailriskscore.domainage
+          emailage.emailriskscore.domaincategory
+          emailage.emailriskscore.domaincountrymatch
           emailage.emailriskscore.domainexists
           emailage.emailriskscore.domainrelevantinfo
           emailage.emailriskscore.domainrelevantinfoid
@@ -65,10 +82,16 @@ module Proofing
           emailage.emailriskscore.eascore
           emailage.emailriskscore.eastatusid
           emailage.emailriskscore.emailexists
+          emailage.emailriskscore.emailtobilladdressconfidence
+          emailage.emailriskscore.emailtoipconfidence
           emailage.emailriskscore.first_seen_days
           emailage.emailriskscore.firstverificationdate
           emailage.emailriskscore.fraudrisk
+          emailage.emailriskscore.ip_risklevel
+          emailage.emailriskscore.ip_riskreason
+          emailage.emailriskscore.iptobilladdressconfidence
           emailage.emailriskscore.namematch
+          emailage.emailriskscore.overalldigitalidentityscore
           emailage.emailriskscore.phone_status
           emailage.emailriskscore.responsestatus.errorcode
           emailage.emailriskscore.responsestatus.status
@@ -92,12 +115,42 @@ module Proofing
           fraudpoint.synthetic_identity_index
           fraudpoint.transaction_status
           fraudpoint.vulnerable_victim_index
+          fuzzy_device_first_seen
+          fuzzy_device_id_confidence
+          fuzzy_device_last_event
+          fuzzy_device_last_update
+          fuzzy_device_match_result
+          fuzzy_device_result
+          fuzzy_device_score
+          fuzzy_device_worst_score
+          http_connection_type
+          http_referer_domain
+          input_ip_assert_history
+          input_ip_connection_type
+          input_ip_first_seen
+          input_ip_last_event
+          input_ip_last_update
+          input_ip_score
+          input_ip_worst_score
+          national_id_first_seen
+          national_id_last_event
+          national_id_last_update
+          national_id_score
+          national_id_type
+          national_id_worst_score
           org_id
           policy
           policy_details_api
           policy_engine_version
           policy_score
+          page_time_on
           primary_industry
+          private_browsing
+          profile_api_timedelta
+          profile_connection_type
+          profiling_datetime
+          profiling_delta
+          proxy_score
           reason_code
           request_duration
           request_id
@@ -109,6 +162,9 @@ module Proofing
           session_id
           session_id_query_count
           summary_risk_score
+          time_zone
+          time_zone_dst_offset
+          timezone_name
           tmx_reason_code
           tmx_risk_rating
           tmx_summary_reason_code
@@ -120,11 +176,15 @@ module Proofing
           tps_type
           tps_vendor
           tps_was_timeout
+          true_ip_score
+          true_ip_worst_score
           unknown_session
         ]
 
-        # @param [Hash] body
+        # @param [Hash, nil] parsed JSON response body
         def self.redact(hash)
+          return { error: 'TMx response body was empty' } if hash.nil?
+          return { error: 'TMx response body was malformed' } unless hash.is_a? Hash
           filtered_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
           unfiltered_keys = hash.keys - filtered_response_h.keys
           unfiltered_keys.each do |key|

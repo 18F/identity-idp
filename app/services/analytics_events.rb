@@ -22,7 +22,8 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
   # @param [String] user_id
-  # @param [Integer] account_age_in_days
+  # @param [Integer, nil] account_age_in_days number of days since the account was confirmed
+  # (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts
   # @param [Hash] errors
   # An account has been deleted through the account reset flow
@@ -492,6 +493,11 @@ module AnalyticsEvents
   # The user visited the "come back later" page shown during the GPO mailing flow
   def idv_come_back_later_visit
     track_event('IdV: come back later visited')
+  end
+
+  # The user clicked the troubleshooting option to start in-person proofing
+  def idv_verify_in_person_troubleshooting_option_clicked
+    track_event('IdV: verify in person troubleshooting option clicked')
   end
 
   # The user visited the "ready to verify" page for the in person proofing flow
@@ -1381,11 +1387,15 @@ module AnalyticsEvents
 
   # Tracks when an openid connect bearer token authentication request is made
   # @param [Boolean] success
+  # @param [Integer] ial
+  # @param [String] client_id Service Provider issuer
   # @param [Hash] errors
-  def openid_connect_bearer_token(success:, errors:, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success: success,
+      ial: ial,
+      client_id: client_id,
       errors: errors,
       **extra,
     )

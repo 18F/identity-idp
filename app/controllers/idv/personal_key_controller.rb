@@ -1,6 +1,7 @@
 module Idv
   class PersonalKeyController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
     include SecureHeadersConcern
 
     before_action :apply_secure_headers_override
@@ -9,7 +10,6 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_personal_key_visited
       add_proofing_component
 
@@ -25,14 +25,6 @@ module Idv
     end
 
     private
-
-    def step_indicator_steps
-      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      return steps if idv_session.address_verification_mechanism != 'gpo'
-      steps.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
-      end
-    end
 
     def next_step
       if pending_profile? && idv_session.address_verification_mechanism == 'gpo'
@@ -75,6 +67,7 @@ module Idv
 
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
+      irs_attempts_api_tracker.idv_personal_key_generated(success: true)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
     end
 

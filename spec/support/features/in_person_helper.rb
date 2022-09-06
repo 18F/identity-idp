@@ -43,7 +43,7 @@ module InPersonHelper
     mock_doc_auth_attention_with_barcode
     attach_and_submit_images
 
-    click_button t('idv.troubleshooting.options.verify_in_person')
+    click_link t('idv.troubleshooting.options.verify_in_person')
   end
 
   def complete_location_step(_user = nil)
@@ -93,5 +93,15 @@ module InPersonHelper
     )
 
     expect_step_indicator_current_step(text)
+  end
+
+  def expect_in_person_gpo_step_indicator_current_step(text)
+    # Ensure that GPO letter step is shown in the step indicator.
+    expect(page).to have_css(
+      '.step-indicator__step',
+      text: t('step_indicator.flows.idv.get_a_letter'),
+    )
+
+    expect_in_person_step_indicator_current_step(text)
   end
 end

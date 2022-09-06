@@ -38,15 +38,18 @@ describe('VerifyFlowStepIndicator', () => {
   });
 
   context('with gpo as address verification method', () => {
-    it('renders address verification as pending', () => {
-      const { getByText } = render(
+    it('revises the flow path to omit address verification and add letter step', () => {
+      const { queryByText } = render(
         <AddressVerificationMethodContextProvider initialMethod="gpo">
           <VerifyFlowStepIndicator currentStep="personal_key" />
         </AddressVerificationMethodContextProvider>,
       );
 
-      const previous = getByText('step_indicator.flows.idv.verify_phone_or_address');
-      expect(previous.closest('.step-indicator__step--pending')).to.exist();
+      const verifyAddress = queryByText('step_indicator.flows.idv.verify_phone_or_address');
+      const getALetter = queryByText('step_indicator.flows.idv.get_a_letter');
+
+      expect(verifyAddress).to.not.exist();
+      expect(getALetter).to.exist();
     });
   });
 

@@ -7,8 +7,7 @@ locals:
    status = local_assigns[:status] || :not_complete
    classes = ['step-indicator__step']
    classes << 'step-indicator__step--current' if local_assigns[:status] == :current
-   classes << 'step-indicator__step--complete' if local_assigns[:status] == :complete
-   classes << 'step-indicator__step--pending' if local_assigns[:status] == :pending %>
+   classes << 'step-indicator__step--complete' if local_assigns[:status] == :complete %>
 
 <%#
 Using `aria-current="step"` would be the preferred method to indicate the current step, but at the

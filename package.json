@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "workspaces": [
     "app/javascript/packages/*"
@@ -45,7 +45,6 @@
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {
-    "@peculiar/webcrypto": "^1.1.6",
     "@testing-library/dom": "^7.29.0",
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.7.0",
@@ -60,7 +59,7 @@
     "@types/sinon": "^10.0.11",
     "@types/sinon-chai": "^3.2.8",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
+    "@typescript-eslint/parser": "^5.36.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^3.0.3",
@@ -83,7 +82,7 @@
     "sinon-chai": "^3.5.0",
     "stylelint": "^14.1.0",
     "svgo": "^2.8.0",
-    "typescript": "^4.5.5",
+    "typescript": "^4.8.2",
     "webpack-dev-server": "^4.7.2"
   },
   "resolutions": {
