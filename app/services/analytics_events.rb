@@ -495,6 +495,11 @@ module AnalyticsEvents
     track_event('IdV: come back later visited')
   end
 
+  # The user clicked the troubleshooting option to start in-person proofing
+  def idv_verify_in_person_troubleshooting_option_clicked
+    track_event('IdV: verify in person troubleshooting option clicked')
+  end
+
   # The user visited the "ready to verify" page for the in person proofing flow
   def idv_in_person_ready_to_verify_visit
     track_event('IdV: in person ready to verify visited')
