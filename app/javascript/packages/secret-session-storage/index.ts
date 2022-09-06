@@ -6,7 +6,8 @@ type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string
 /**
  * Convert an ArrayBuffer to an equivalent string.
  */
-export const ab2s = (buffer: Uint8Array) => String.fromCharCode.apply(null, new Uint8Array(buffer));
+export const ab2s = (buffer: ArrayBuffer) =>
+  String.fromCharCode.apply(null, new Uint8Array(buffer));
 
 /**
  * Convert a string to an equivalent ArrayBuffer.

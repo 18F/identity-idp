@@ -75,12 +75,12 @@ describe 'shared/_step_indicator.html.erb' do
     end
 
     context 'explicit step status' do
-      let(:steps) { [{ name: :one, status: :pending }, { name: :two }] }
+      let(:steps) { [{ name: :one, status: :complete }, { name: :two }] }
       let(:current_step) { :two }
 
       it 'renders with status' do
         expect(rendered).to have_css(
-          '.step-indicator__step--pending',
+          '.step-indicator__step--complete',
           text: t('step_indicator.flows.example.one'),
         )
       end
@@ -136,6 +136,14 @@ describe 'shared/_step_indicator.html.erb' do
           text: 'Nil Scope One',
         )
       end
+    end
+  end
+
+  context 'with invalid step' do
+    let(:current_step) { :missing }
+
+    it 'renders without a current step' do
+      expect(rendered).not_to have_css('.step-indicator__step--current')
     end
   end
 end

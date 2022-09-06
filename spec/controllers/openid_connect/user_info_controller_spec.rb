@@ -22,6 +22,8 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to receive(:track_event).
           with('OpenID Connect: bearer token authentication',
                success: false,
+               client_id: nil,
+               ial: nil,
                errors: hash_including(:access_token),
                error_details: hash_including(:access_token))
 
@@ -44,6 +46,8 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to receive(:track_event).
           with('OpenID Connect: bearer token authentication',
                success: false,
+               client_id: nil,
+               ial: nil,
                errors: hash_including(:access_token),
                error_details: hash_including(:access_token))
 
@@ -66,6 +70,8 @@ RSpec.describe OpenidConnect::UserInfoController do
           with('OpenID Connect: bearer token authentication',
                success: false,
                errors: hash_including(:access_token),
+               client_id: nil,
+               ial: nil,
                error_details: hash_including(:access_token))
 
         action
@@ -75,16 +81,14 @@ RSpec.describe OpenidConnect::UserInfoController do
     context 'with a valid bearer token' do
       let(:authorization_header) { "Bearer #{access_token}" }
       let(:access_token) { SecureRandom.hex }
-      let(:identity) { build(:service_provider_identity, user: create(:user)) }
-
-      before do
-        fake_verifier = instance_double(
-          AccessTokenVerifier,
-          identity: identity,
-          submit: FormResponse.new(success: true, errors: {}),
+      let(:identity) do
+        create(
+          :service_provider_identity, rails_session_id: SecureRandom.hex,
+                                      access_token: access_token, user: create(:user)
         )
-        expect(AccessTokenVerifier).to receive(:new).
-          with(authorization_header).and_return(fake_verifier)
+      end
+      before do
+        Pii::SessionStore.new(identity.rails_session_id).put({}, 50)
       end
 
       it 'renders user info' do
@@ -95,8 +99,13 @@ RSpec.describe OpenidConnect::UserInfoController do
 
       it 'tracks analytics' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with('OpenID Connect: bearer token authentication', success: true, errors: {})
+        expect(@analytics).to receive(:track_event).with(
+          'OpenID Connect: bearer token authentication',
+          success: true,
+          client_id: identity.service_provider,
+          ial: identity.ial,
+          errors: {},
+        )
 
         action
       end

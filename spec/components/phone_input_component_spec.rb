@@ -136,10 +136,11 @@ RSpec.describe PhoneInputComponent, type: :component do
 
   context 'with delivery unsupported country' do
     before do
-      stub_const(
-        'PhoneNumberCapabilities::INTERNATIONAL_CODES',
-        PhoneNumberCapabilities::INTERNATIONAL_CODES.merge(
-          'US' => PhoneNumberCapabilities::INTERNATIONAL_CODES['US'].merge('supports_sms' => false),
+      allow(PhoneNumberCapabilities).to receive(:translated_international_codes).and_return(
+        PhoneNumberCapabilities.translated_international_codes.merge(
+          'US' => PhoneNumberCapabilities.translated_international_codes['US'].merge(
+            'supports_sms' => false,
+          ),
         ),
       )
     end
@@ -159,10 +160,9 @@ RSpec.describe PhoneInputComponent, type: :component do
 
   context 'with delivery unsupported unconfirmed country' do
     before do
-      stub_const(
-        'PhoneNumberCapabilities::INTERNATIONAL_CODES',
-        PhoneNumberCapabilities::INTERNATIONAL_CODES.merge(
-          'US' => PhoneNumberCapabilities::INTERNATIONAL_CODES['US'].merge(
+      allow(PhoneNumberCapabilities).to receive(:translated_international_codes).and_return(
+        PhoneNumberCapabilities.translated_international_codes.merge(
+          'US' => PhoneNumberCapabilities.translated_international_codes['US'].merge(
             'supports_sms_unconfirmed' => false,
           ),
         ),

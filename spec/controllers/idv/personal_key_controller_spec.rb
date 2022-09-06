@@ -113,21 +113,6 @@ describe Idv::PersonalKeyController do
       get :show
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
-
-    context 'user selected gpo verification' do
-      before do
-        subject.idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'assigns step indicator steps with pending status' do
-        get :show
-
-        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
-        expect(assigns(:step_indicator_steps)).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
-    end
   end
 
   describe '#update' do

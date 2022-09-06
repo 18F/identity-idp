@@ -24,7 +24,7 @@ module Idv
         errors: errors,
         extra: {
           address_edited: @address_edited,
-          pii_like_keypaths: [[:errors, :zipcode ], [:error_details, :zipcode]],
+          pii_like_keypaths: [[:errors, :zipcode], [:error_details, :zipcode]],
         },
       )
     end

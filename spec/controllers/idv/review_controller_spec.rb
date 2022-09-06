@@ -209,14 +209,6 @@ describe Idv::ReviewController do
         )
       end
 
-      it 'shows steps' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).not_to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
-
       context 'idv app password confirm step is enabled' do
         before do
           allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
@@ -228,20 +220,6 @@ describe Idv::ReviewController do
 
           expect(response).to redirect_to idv_app_path
         end
-      end
-    end
-
-    context 'user chooses address verification' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'shows revises steps to show pending address verification' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
       end
     end
 

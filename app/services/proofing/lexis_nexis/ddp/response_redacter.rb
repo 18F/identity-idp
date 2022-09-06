@@ -92,7 +92,6 @@ module Proofing
           fraudpoint.synthetic_identity_index
           fraudpoint.transaction_status
           fraudpoint.vulnerable_victim_index
-          integration_hub_results
           org_id
           policy
           policy_details_api
@@ -124,8 +123,10 @@ module Proofing
           unknown_session
         ]
 
-        # @param [Hash] body
+        # @param [Hash, nil] parsed JSON response body
         def self.redact(hash)
+          return { error: 'TMx response body was empty' } if hash.nil?
+          return { error: 'TMx response body was malformed' } unless hash.is_a? Hash
           filtered_response_h = hash.slice(*ALLOWED_RESPONSE_FIELDS)
           unfiltered_keys = hash.keys - filtered_response_h.keys
           unfiltered_keys.each do |key|

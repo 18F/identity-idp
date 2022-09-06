@@ -23,9 +23,11 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
     )
   end
   let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
+  let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
 
   before do
     assign(:presenter, presenter)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
   context 'with enrollment where current address matches id' do

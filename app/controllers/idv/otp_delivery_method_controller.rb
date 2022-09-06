@@ -1,6 +1,7 @@
 module Idv
   class OtpDeliveryMethodController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
     include PhoneOtpRateLimitable
     include PhoneOtpSendable
 

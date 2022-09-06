@@ -1,6 +1,7 @@
 module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
+    include StepIndicatorConcern
 
     attr_reader :idv_form
 

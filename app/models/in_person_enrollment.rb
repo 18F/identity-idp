@@ -39,6 +39,21 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  def minutes_since_established
+    return unless enrollment_established_at.present?
+    (Time.zone.now - enrollment_established_at).seconds.in_minutes.round(2)
+  end
+
+  def minutes_since_last_status_check
+    return unless status_check_attempted_at.present?
+    (Time.zone.now - status_check_attempted_at).seconds.in_minutes.round(2)
+  end
+
+  def minutes_since_last_status_update
+    return unless status_updated_at.present?
+    (Time.zone.now - status_updated_at).seconds.in_minutes.round(2)
+  end
+
   # (deprecated) Returns the value to use for the USPS enrollment ID
   def usps_unique_id
     user.uuid.delete('-').slice(0, 18)

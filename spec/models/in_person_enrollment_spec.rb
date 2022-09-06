@@ -103,4 +103,59 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
   end
+
+  describe 'minutes_since_established' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since enrollment was established' do
+      expect(enrollment.minutes_since_established).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been established' do
+      enrollment.status = 'establishing'
+      enrollment.enrollment_established_at = nil
+
+      expect(enrollment.minutes_since_established).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_last_status_check' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since last status check' do
+      expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been status-checked' do
+      enrollment.status_check_attempted_at = nil
+
+      expect(enrollment.minutes_since_last_status_check).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_status_updated' do
+    let(:enrollment) do
+      enrollment = create(:in_person_enrollment, :passed)
+      enrollment.status_updated_at = (Time.zone.now - 2.hours)
+      enrollment
+    end
+
+    it 'returns number of minutes since the status was updated' do
+      expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment status has not been updated' do
+      enrollment.status_updated_at = nil
+
+      expect(enrollment.minutes_since_last_status_update).to eq(nil)
+    end
+  end
 end
