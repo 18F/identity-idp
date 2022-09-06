@@ -9,7 +9,9 @@ describe('ValidatedFieldElement', () => {
   function createAndConnectElement({ hasInitialError = false, errorInsideField = true } = {}) {
     const element = document.createElement('lg-validated-field');
     const errorMessageId = ++idCounter;
-    const errorHtml = hasInitialError ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>` : '';
+    const errorHtml = hasInitialError
+      ? `<div class="usa-error-message" id="validated-field-error-${errorMessageId}">Invalid value</div>`
+      : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
         {
@@ -25,7 +27,7 @@ describe('ValidatedFieldElement', () => {
           aria-required="true"
           class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
         />
-        ${(errorHtml && errorInsideField) ? errorHtml : ''}
+        ${errorHtml && errorInsideField ? errorHtml : ''}
       </div>
     `;
 
@@ -116,7 +118,7 @@ describe('ValidatedFieldElement', () => {
   });
 
   context('with error message element pre-rendered in the DOM', () => {
-    it('reuses the error message element from inside the tag', async () => {
+    it('reuses the error message element from inside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: true });
 
       expect(() => getByText(element, 'Invalid value')).not.to.throw();
@@ -129,7 +131,7 @@ describe('ValidatedFieldElement', () => {
       expect(() => getByText(element, 'This field is required')).not.to.throw();
     });
 
-    it('reuses the error message element from outside the tag', async () => {
+    it('reuses the error message element from outside the tag', () => {
       const element = createAndConnectElement({ hasInitialError: true, errorInsideField: false });
       const form = element.parentNode as HTMLFormElement;
 
