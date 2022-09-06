@@ -5,11 +5,7 @@ module Idv
         get_started: Idv::Steps::InheritedProofing::GetStartedStep,
         agreement: Idv::Steps::InheritedProofing::AgreementStep,
         verify_info: Idv::Steps::InheritedProofing::VerifyInfoStep,
-<<<<<<< HEAD
         verify_phone: Idv::Steps::InheritedProofing::PhoneStep,
-=======
-        verify_phone_or_address: Idv::Steps::InheritedProofing::PhoneStep,
->>>>>>> 3a38894e8 (initial flowstate test push)
       }.freeze
 
       STEP_INDICATOR_STEPS = [
