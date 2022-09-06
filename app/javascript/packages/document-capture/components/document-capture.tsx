@@ -21,6 +21,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
+import useStepLogger from '../hooks/use-step-logger';
 
 /**
  * Returns a new object with specified keys removed.
@@ -59,6 +60,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
   const { inPersonURL } = useContext(FlowContext);
+  const { onStepSubmit } = useStepLogger(stepName);
   useDidUpdateEffect(onStepChange, [stepName]);
 
   /**
@@ -104,15 +106,15 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ? []
       : ([
           {
-            name: 'location',
+            name: InPersonLocationStep.stepName,
             form: InPersonLocationStep,
           },
           {
-            name: 'prepare',
+            name: InPersonPrepareStep.stepName,
             form: InPersonPrepareStep,
           },
           flowPath === 'hybrid' && {
-            name: 'switch_back',
+            name: InPersonSwitchBackStep.stepName,
             form: InPersonSwitchBackStep,
           },
         ].filter(Boolean) as FormStep[]);
@@ -146,7 +148,12 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ].filter(Boolean) as FormStep[]);
 
   const stepIndicatorPath =
-    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
+    stepName &&
+    [
+      InPersonLocationStep.stepName,
+      InPersonPrepareStep.stepName,
+      InPersonSwitchBackStep.stepName,
+    ].includes(stepName)
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -182,6 +189,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
             onStepChange={setStepName}
+            onStepSubmit={onStepSubmit}
             autoFocus={!!submissionError}
           />
         </>

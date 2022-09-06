@@ -23,4 +23,6 @@ function InPersonSwitchBackStep({ onChange }: FormStepComponentProps<any>) {
   );
 }
 
+InPersonSwitchBackStep.stepName = 'switch_back';
+
 export default InPersonSwitchBackStep;

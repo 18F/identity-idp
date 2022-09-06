@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import {
   Alert,
   Button,
@@ -16,6 +17,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import { FormStepsButton } from '@18f/identity-form-steps';
 import UploadContext from '../context/upload';
 import MarketingSiteContext from '../context/marketing-site';
+import AnalyticsContext from '../context/analytics';
 import BackButton from './back-button';
 import InPersonTroubleshootingOptions from './in-person-troubleshooting-options';
 
@@ -23,8 +25,25 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { flowPath } = useContext(UploadContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const { securityAndPrivacyHowItWorksURL } = useContext(MarketingSiteContext);
   const { selectedLocationName } = value;
+
+  const onContinue: MouseEventHandler = async (event) => {
+    removeUnloadProtection();
+
+    let destination;
+    if (event.target instanceof HTMLAnchorElement) {
+      event.preventDefault();
+      destination = event.target.href;
+    }
+
+    await trackEvent('IdV: prepare submitted');
+
+    if (destination) {
+      window.location = destination;
+    }
+  };
 
   return (
     <>
@@ -90,7 +109,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
       {flowPath === 'hybrid' && <FormStepsButton.Continue />}
       {inPersonURL && flowPath === 'standard' && (
         <div className="margin-y-5">
-          <Button href={inPersonURL} onClick={removeUnloadProtection} isBig isWide>
+          <Button href={inPersonURL} onClick={onContinue} isBig isWide>
             {t('forms.buttons.continue')}
           </Button>
         </div>
@@ -113,5 +132,7 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
     </>
   );
 }
+
+InPersonPrepareStep.stepName = 'prepare';
 
 export default InPersonPrepareStep;

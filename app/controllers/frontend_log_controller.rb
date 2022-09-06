@@ -8,6 +8,12 @@ class FrontendLogController < ApplicationController
   # rubocop:disable Layout/LineLength
   EVENT_MAP = {
     'IdV: verify in person troubleshooting option clicked' => :idv_verify_in_person_troubleshooting_option_clicked,
+    'IdV: location visited' => :idv_in_person_location_visited,
+    'IdV: location submitted' => :idv_in_person_location_submitted,
+    'IdV: prepare visited' => :idv_in_person_prepare_visited,
+    'IdV: prepare submitted' => :idv_in_person_prepare_submitted,
+    'IdV: switch_back visited' => :idv_in_person_switch_back_visited,
+    'IdV: switch_back submitted' => :idv_in_person_switch_back_submitted,
     'IdV: forgot password visited' => :idv_forgot_password,
     'IdV: password confirm visited' => :idv_review_info_visited,
     'IdV: password confirm submitted' => proc do |analytics|

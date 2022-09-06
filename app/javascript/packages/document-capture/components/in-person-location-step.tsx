@@ -192,4 +192,6 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
   );
 }
 
+InPersonLocationStep.stepName = 'location';
+
 export default InPersonLocationStep;
