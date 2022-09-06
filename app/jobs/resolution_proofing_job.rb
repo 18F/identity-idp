@@ -250,6 +250,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def issuer_allows_threatmetrix?(issuer)
+    return false if issuer.blank?
     ServiceProvider.find_by(issuer: issuer)&.device_profiling_enabled
   end
 end
