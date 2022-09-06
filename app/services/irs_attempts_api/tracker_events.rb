@@ -246,6 +246,46 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The verification was submitted during the IDV process
+    def idv_verification_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address: nil,
+      ssn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_verification_submitted,
+        success: success,
+        document_state: document_state,
+        document_number: document_number,
+        document_issued: document_issued,
+        document_expiration: document_expiration,
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth,
+        address: address,
+        ssn: ssn,
+        failure_reason: failure_reason,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)
