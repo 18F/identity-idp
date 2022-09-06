@@ -130,6 +130,13 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
+      )
+    end
+
     # The user has exceeded the rate limit during idv document upload
     def idv_document_upload_rate_limited
       track_event(
