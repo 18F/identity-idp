@@ -144,11 +144,13 @@ describe Idv::ReviewController do
 
     before(:each) do
       stub_sign_in(user)
+      stub_attempts_tracker
       routes.draw do
         post 'show' => 'idv/review#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:idv_session).and_return(idv_session)
+      allow(@irs_attempts_api_tracker).to receive(:track_event)
     end
 
     context 'user does not provide password' do
@@ -161,11 +163,20 @@ describe Idv::ReviewController do
     end
 
     context 'user provides wrong password' do
-      it 'redirects to new' do
+      before do
         post :show, params: { user: { password: 'wrong' } }
+      end
 
+      it 'redirects to new' do
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
         expect(response).to redirect_to idv_review_path
+      end
+
+      it 'tracks irs password entered event (idv_password_entered)' do
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+          :idv_password_entered,
+          success: false,
+        )
       end
     end
 
@@ -282,6 +293,8 @@ describe Idv::ReviewController do
     context 'user has completed all steps' do
       before do
         idv_session
+        stub_attempts_tracker
+        allow(@irs_attempts_api_tracker).to receive(:track_event)
       end
 
       it 'redirects to personal key path' do
@@ -300,6 +313,15 @@ describe Idv::ReviewController do
         allow_any_instance_of(User).to receive(:active_profile).and_return(true)
         get :new
         expect(response).to redirect_to idv_personal_key_path
+      end
+
+      it 'tracks irs password entered event (idv_password_entered)' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(@irs_attempts_api_tracker).to have_received(:track_event).with(
+          :idv_password_entered,
+          success: true,
+        )
       end
 
       it 'creates Profile with applicant attributes' do

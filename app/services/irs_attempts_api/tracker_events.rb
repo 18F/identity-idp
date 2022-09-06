@@ -144,6 +144,15 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success,
+      )
+    end
+
     # param [Boolean] Success
     # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
     # GPO verification submitted from Letter sent to verify address
