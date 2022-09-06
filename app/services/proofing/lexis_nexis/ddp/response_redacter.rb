@@ -124,9 +124,7 @@ module Proofing
           fuzzy_device_score
           fuzzy_device_worst_score
           http_connection_type
-          http_referer
           http_referer_domain
-          http_referer_url
           input_ip_assert_history
           input_ip_connection_type
           input_ip_first_seen
