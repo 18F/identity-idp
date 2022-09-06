@@ -166,6 +166,11 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # @param [String] otp_delivery_method
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # Track when OTP is sent and what method chosen during idv flow.
     def idv_phone_confirmation_otp_sent(success:, phone_number:,
                                         otp_delivery_method:, failure_reason:)
       track_event(
@@ -177,6 +182,7 @@ module IrsAttemptsApi
       )
     end
 
+    # Track when OTP phone sent is rate limited during idv flow
     def idv_phone_confirmation_otp_sent_rate_limited
       track_event(
         :idv_phone_confirmation_otp_sent_rate_limited,
