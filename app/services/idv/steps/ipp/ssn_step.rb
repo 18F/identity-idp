@@ -5,7 +5,12 @@ module Idv
         STEP_INDICATOR_STEP = :verify_info
 
         def call
-          flow_session[:pii_from_user][:ssn] = flow_params[:ssn]
+          flow_session[:pii_from_user][:ssn] = ssn
+
+          @flow.irs_attempts_api_tracker.idv_ssn_submitted(
+            success: true,
+            ssn: ssn,
+          )
 
           idv_session.delete('applicant')
         end
@@ -13,6 +18,7 @@ module Idv
         def extra_view_variables
           {
             updating_ssn: updating_ssn,
+            threatmetrix_session_id: generate_threatmetrix_session_id,
           }
         end
 
@@ -20,6 +26,15 @@ module Idv
 
         def form_submit
           Idv::SsnFormatForm.new(current_user).submit(permit(:ssn))
+        end
+
+        def generate_threatmetrix_session_id
+          flow_session[:threatmetrix_session_id] = SecureRandom.uuid if !updating_ssn
+          flow_session[:threatmetrix_session_id]
+        end
+
+        def ssn
+          flow_params[:ssn]
         end
 
         def updating_ssn

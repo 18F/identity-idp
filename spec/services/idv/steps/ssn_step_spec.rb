@@ -6,6 +6,7 @@ describe Idv::Steps::SsnStep do
   let(:user) { build(:user) }
   let(:params) { { doc_auth: {} } }
   let(:session) { { sp: { issuer: service_provider.issuer } } }
+  let(:attempts_api) { IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:service_provider) do
     create(
       :service_provider,
@@ -20,6 +21,7 @@ describe Idv::Steps::SsnStep do
       current_user: user,
       params: params,
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: attempts_api,
       url_options: {},
       request: double(
         'request',
@@ -60,6 +62,14 @@ describe Idv::Steps::SsnStep do
         expect(flow.flow_session[:pii_from_doc][:ssn]).to eq(ssn)
       end
 
+      it 'logs attempts api event' do
+        expect(attempts_api).to receive(:idv_ssn_submitted).with(
+          success: true,
+          ssn: ssn,
+        )
+        step.call
+      end
+
       context 'with existing session applicant' do
         let(:session) { super().merge(idv: { 'applicant' => {} }) }
 
@@ -92,12 +102,12 @@ describe Idv::Steps::SsnStep do
       end
 
       context 'with proofing device profiling collecting disabled' do
-        it 'does not add a session id to flow session' do
+        it 'still adds a session id to flow session' do
           allow(IdentityConfig.store).
             to receive(:proofing_device_profiling_collecting_enabled).
             and_return(false)
           step.extra_view_variables
-          expect(flow.flow_session[:threatmetrix_session_id]).to eq(nil)
+          expect(flow.flow_session[:threatmetrix_session_id]).to_not eq(nil)
         end
       end
     end

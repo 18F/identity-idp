@@ -94,12 +94,12 @@ RSpec.describe RequestPasswordReset do
             impl.call(user, email, **options)
           end
 
-        expect {
+        expect do
           RequestPasswordReset.new(
             email: email,
             irs_attempts_api_tracker: irs_attempts_api_tracker,
           ).perform
-        }.
+        end.
           to(change { user.reload.reset_password_token })
       end
     end
@@ -167,24 +167,24 @@ RSpec.describe RequestPasswordReset do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         max_attempts.times do
-          expect {
+          expect do
             RequestPasswordReset.new(
               email: email,
               analytics: analytics,
               irs_attempts_api_tracker: irs_attempts_api_tracker,
             ).perform
-          }.
+          end.
             to(change { user.reload.reset_password_token })
         end
 
         # extra time, throttled
-        expect {
+        expect do
           RequestPasswordReset.new(
             email: email,
             analytics: analytics,
             irs_attempts_api_tracker: irs_attempts_api_tracker,
           ).perform
-        }.
+        end.
           to_not(change { user.reload.reset_password_token })
 
         expect(analytics).to have_logged_event(
@@ -204,24 +204,24 @@ RSpec.describe RequestPasswordReset do
           exactly(max_attempts).times
 
         max_attempts.times do
-          expect {
+          expect do
             RequestPasswordReset.new(
               email: email,
               analytics: analytics,
               irs_attempts_api_tracker: irs_attempts_api_tracker,
             ).perform
-          }.
+          end.
             to(change { user.reload.reset_password_token })
         end
 
         # extra time, throttled
-        expect {
+        expect do
           RequestPasswordReset.new(
             email: email,
             analytics: analytics,
             irs_attempts_api_tracker: irs_attempts_api_tracker,
           ).perform
-        }.
+        end.
           to_not(change { user.reload.reset_password_token })
       end
     end

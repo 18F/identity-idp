@@ -1,20 +1,22 @@
 module Proofing
   class Result
     attr_reader :exception
-    attr_accessor :context, :transaction_id, :reference, :review_status
+    attr_accessor :context, :transaction_id, :reference, :review_status, :response_body
 
     def initialize(
       errors: {},
       context: {},
       exception: nil,
       transaction_id: nil,
-      reference: nil
+      reference: nil,
+      response_body: nil
     )
       @errors = errors
       @context = context
       @exception = exception
       @transaction_id = transaction_id
       @reference = reference
+      @response_body = response_body
     end
 
     # rubocop:disable Style/OptionalArguments

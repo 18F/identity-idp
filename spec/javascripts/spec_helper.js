@@ -1,4 +1,4 @@
-import { Crypto } from '@peculiar/webcrypto';
+import { webcrypto } from 'crypto';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
@@ -26,7 +26,7 @@ const windowGlobals = Object.fromEntries(
 );
 Object.assign(global, windowGlobals);
 global.window.fetch = () => Promise.reject(new Error('Fetch must be stubbed'));
-global.window.crypto = new Crypto(); // In the future (Node >=15), use native webcrypto: https://nodejs.org/api/webcrypto.html
+global.window.crypto = webcrypto;
 global.window.URL.createObjectURL = createObjectURLAsDataURL;
 global.window.URL.revokeObjectURL = () => {};
 Object.defineProperty(global.window.Image.prototype, 'src', {
@@ -37,3 +37,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
 
 useCleanDOM(dom);
 useConsoleLogSpy();
+
+// Remove after upgrading to React 18
+// See: https://github.com/facebook/react/issues/20756#issuecomment-780945678
+delete global.MessageChannel;

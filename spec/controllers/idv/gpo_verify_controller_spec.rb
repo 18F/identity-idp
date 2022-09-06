@@ -5,19 +5,20 @@ RSpec.describe Idv::GpoVerifyController do
   let(:success) { true }
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
-  let(:pending_profile) {
+  let(:pending_profile) do
     create(
       :profile,
       :with_pii,
       user: user,
       proofing_components: proofing_components,
     )
-  }
+  end
   let(:proofing_components) { nil }
   let(:user) { create(:user) }
 
   before do
     stub_analytics
+    stub_attempts_tracker
     stub_sign_in(user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
@@ -68,7 +69,6 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       it 'renders throttled page' do
-        stub_analytics
         expect(@analytics).to receive(:track_event).with(
           'IdV: GPO verification visited',
         ).once
@@ -108,6 +108,8 @@ RSpec.describe Idv::GpoVerifyController do
           enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+          with(success: true, failure_reason: nil)
 
         action
 
@@ -124,9 +126,9 @@ RSpec.describe Idv::GpoVerifyController do
       end
 
       context 'with establishing in person enrollment' do
-        let(:proofing_components) {
+        let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-        }
+        end
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
@@ -143,6 +145,8 @@ RSpec.describe Idv::GpoVerifyController do
             enqueued_at: user.pending_profile.gpo_confirmation_codes.last.code_sent_at,
             pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
           )
+          expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+            with(success: true, failure_reason: nil)
 
           action
 
@@ -170,6 +174,9 @@ RSpec.describe Idv::GpoVerifyController do
           error_details: { otp: [:confirmation_code_incorrect] },
           pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
+        failure_reason = { otp: ['Incorrect code. Did you type it in correctly?'] }
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_submitted).
+          with(success: false, failure_reason: failure_reason)
 
         action
 
@@ -203,6 +210,8 @@ RSpec.describe Idv::GpoVerifyController do
           'Throttler Rate Limit Triggered',
           throttle_type: :verify_gpo_key,
         ).once
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_gpo_verification_throttled).once
 
         (max_attempts + 1).times do |i|
           post(

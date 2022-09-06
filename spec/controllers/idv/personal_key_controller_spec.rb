@@ -229,7 +229,7 @@ describe Idv::PersonalKeyController do
         ProofingComponent.find_by(user: user).update(threatmetrix_review_status: 'fail')
         patch :update
 
-        expect(response).to redirect_to idv_come_back_later_path
+        expect(response).to redirect_to idv_setup_errors_path
       end
     end
   end

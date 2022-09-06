@@ -4,17 +4,19 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
   let(:public_key) { private_key.public_key }
   describe '.encrypt' do
     it 'returns encrypted result' do
-      text = 'test'
+      text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
         data: text, timestamp: time, public_key: public_key,
       )
 
       expect(result.encrypted_data).to_not eq text
+      expect(result.encrypted_data).to_not include(text)
+      expect(Base64.decode64(result.encrypted_data)).to_not include(text)
     end
 
     it 'filename includes digest and truncated timestamp' do
-      text = 'test'
+      text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
         data: text, timestamp: time,
@@ -31,7 +33,7 @@ RSpec.describe IrsAttemptsApi::EnvelopeEncryptor do
 
   describe '.decrypt' do
     it 'returns decrypted text' do
-      text = 'test'
+      text = Idp::Constants::MOCK_IDV_APPLICANT[:first_name]
       time = Time.zone.now
       result = IrsAttemptsApi::EnvelopeEncryptor.encrypt(
         data: text, timestamp: time,
