@@ -501,37 +501,31 @@ module AnalyticsEvents
   end
 
   # The user visited the in person proofing location step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_location_visited(**extra)
     track_event('IdV: in person proofing location visited', **extra)
   end
 
   # The user submitted the in person proofing location step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_location_submitted(**extra)
     track_event('IdV: in person proofing location submitted', **extra)
   end
 
   # The user visited the in person proofing prepare step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_prepare_visited(**extra)
     track_event('IdV: in person proofing prepare visited', **extra)
   end
 
   # The user submitted the in person proofing prepare step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_prepare_submitted(**extra)
     track_event('IdV: in person proofing prepare submitted', **extra)
   end
 
   # The user visited the in person proofing switch_back step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_switch_back_visited(**extra)
     track_event('IdV: in person proofing switch_back visited', **extra)
   end
 
   # The user submitted the in person proofing switch_back step
-  # @param [String] flow_path Path used for document capture ("standard" or "hybrid")
   def idv_in_person_switch_back_submitted(**extra)
     track_event('IdV: in person proofing switch_back submitted', **extra)
   end
