@@ -180,7 +180,7 @@ module IrsAttemptsApi
     end
 
     # @param [Boolean] success
-    # Personal Key Step got generated for user
+    # Personal Key got generated for user
     def idv_personal_key_generated(success:)
       track_event(
         :idv_personal_key_generated,
