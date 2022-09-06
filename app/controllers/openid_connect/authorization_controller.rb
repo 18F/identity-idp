@@ -1,3 +1,4 @@
+require 'benchmark/ips'
 module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
@@ -20,13 +21,41 @@ module OpenidConnect
     before_action :bump_auth_count, only: [:index]
 
     def index
+      # StackProf.run(mode: :cpu, raw: true, interval: 50, out: 'tmp/stackprof-cpu-myapp.dump') do
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
-      return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
+
+# Warming up --------------------------------------
+#             no cache     8.000  i/100ms
+#                cache    50.000  i/100ms
+# Calculating -------------------------------------
+#             no cache     79.407  (±12.6%) i/s -      2.328k in  30.055220s
+#                cache    449.444  (±10.9%) i/s -     13.300k in  30.030989s
+
+# Comparison:
+#                cache:      449.4 i/s
+#             no cache:       79.4 i/s - 5.66x  (± 0.00) slower
+
+      j = Benchmark.ips do |x|
+        x.time = 30
+        x.report("no cache") do
+          @use_cache = false
+          return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
+        end
+
+        x.report("cache") do
+          @use_cache = true
+          return redirect_to(sign_up_completed_url) if needs_completion_screen_reason
+        end
+
+        x.compare!
+      end
+      binding.pry
       link_identity_to_service_provider
       if auth_count == 1 && first_visit_for_sp?
         return redirect_to(user_authorization_confirmation_url)
       end
       handle_successful_handoff
+      render plain: "O"
     end
 
     private
@@ -69,7 +98,7 @@ module OpenidConnect
     def handle_successful_handoff
       track_events
       SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
-      redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
+      # redirect_to @authorize_form.success_redirect_uri, allow_other_host: true
       delete_branded_experience
     end
 
