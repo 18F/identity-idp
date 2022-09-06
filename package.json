@@ -59,7 +59,7 @@
     "@types/sinon": "^10.0.11",
     "@types/sinon-chai": "^3.2.8",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
-    "@typescript-eslint/parser": "^5.12.0",
+    "@typescript-eslint/parser": "^5.36.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "clipboard-polyfill": "^3.0.3",
