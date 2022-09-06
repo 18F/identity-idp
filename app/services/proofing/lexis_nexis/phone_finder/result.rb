@@ -11,6 +11,10 @@ module Proofing
           to: :verification_response,
         )
 
+        def exception
+          nil
+        end
+
         def initialize(verification_response)
           @verification_response = verification_response
         end
@@ -29,6 +33,7 @@ module Proofing
 
         def to_h
           {
+            exception: exception,
             errors: verification_errors,
             success: success?,
             timed_out: timed_out?,
