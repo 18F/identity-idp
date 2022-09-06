@@ -84,6 +84,7 @@ RSpec.describe AddressProofingJob, type: :job do
           success: true,
           timed_out: false,
           transaction_id: conversation_id,
+          vendor_name: 'lexisnexis:phone_finder',
         )
       end
 
