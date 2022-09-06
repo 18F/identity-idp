@@ -11,6 +11,10 @@ module Proofing
           to: :verification_response,
         )
 
+        def errors
+          verification_errors
+        end
+
         def exception
           nil
         end
@@ -34,7 +38,7 @@ module Proofing
         def to_h
           {
             exception: exception,
-            errors: verification_errors,
+            errors: errors,
             success: success?,
             timed_out: timed_out?,
             transaction_id: transaction_id,
