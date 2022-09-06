@@ -42,6 +42,7 @@ feature 'doc auth verify step', :js do
       last_name: 'MCFAKERSON',
       date_of_birth: '1938-10-06',
       address: '1 FAKE RD',
+      ssn: '900-66-1234',
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_verify_step
@@ -127,6 +128,7 @@ feature 'doc auth verify step', :js do
       last_name: 'MCFAKERSON',
       date_of_birth: '1938-10-06',
       address: '1 FAKE RD',
+      ssn: '123-45-6666',
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
@@ -158,6 +160,7 @@ feature 'doc auth verify step', :js do
       last_name: 'MCFAKERSON',
       date_of_birth: '1938-10-06',
       address: '1 FAKE RD',
+      ssn: '000-00-0000',
     )
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step

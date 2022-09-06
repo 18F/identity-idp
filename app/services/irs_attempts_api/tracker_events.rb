@@ -228,6 +228,7 @@ module IrsAttemptsApi
       last_name: nil,
       date_of_birth: nil,
       address: nil,
+      ssn: nil,
       failure_reason: nil
     )
       track_event(
@@ -241,6 +242,7 @@ module IrsAttemptsApi
         last_name: last_name,
         date_of_birth: date_of_birth,
         address: address,
+        ssn: ssn,
         failure_reason: failure_reason,
       )
     end
