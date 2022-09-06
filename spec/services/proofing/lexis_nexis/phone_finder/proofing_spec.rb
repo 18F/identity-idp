@@ -37,8 +37,6 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       it 'is a successful result' do
         result = instance.proof(applicant)
 
-        binding.pry
-
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
       end
