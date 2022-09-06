@@ -104,29 +104,25 @@ class MemorableDateElement extends HTMLElement {
     const inputListener = (event: Event) => {
       this.validate();
 
-      if (event.type === 'input') {
-        // Artificially trigger input events on all inputs
-        // for input events on one input. This makes the corresponding
-        // <lg-validated-field> elements remove error styling from all
-        // memorable-date fields at the same time as it hides the error
-        // message (instead of only the selected field).
-        const otherInputs = allInputs.filter((input) => input !== event.target);
-        try {
-          otherInputs.forEach((input) => {
-            // Prevent recursion by removing listener temporarily
-            input.removeEventListener('input', inputListener);
-            input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
-          });
-        } finally {
-          otherInputs.forEach((input) => input.addEventListener('input', inputListener));
-        }
+      // Artificially trigger input events on all inputs
+      // for input events on one input. This makes the corresponding
+      // <lg-validated-field> elements remove error styling from all
+      // memorable-date fields at the same time as it hides the error
+      // message (instead of only the selected field).
+      const otherInputs = allInputs.filter((input) => input !== event.target);
+      try {
+        this.removeEventListener('input', inputListener);
+        otherInputs.forEach((input) => {
+          // Prevent recursion by removing listener temporarily
+          input.dispatchEvent(new CustomEvent('input', { bubbles: true }));
+        });
+      } finally {
+        this.addEventListener('input', inputListener);
       }
     };
 
-    allInputs.forEach((input) => {
-      input.addEventListener('input', inputListener);
-      input.addEventListener('invalid', inputListener);
-    });
+    this.addEventListener('input', inputListener);
+    this.addEventListener('invalid', () => this.validate(), true);
   }
 
   validate(): void {
