@@ -131,6 +131,7 @@ module Idv
       end
 
       def service_provider_device_profiling_enabled?
+        return false if sp_session[:issuer].blank?
         ServiceProvider.find_by(issuer: sp_session[:issuer])&.device_profiling_enabled
       end
 
