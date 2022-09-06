@@ -9,6 +9,7 @@ import {
   ServiceProviderContextProvider,
   AnalyticsContextProvider,
   FailedCaptureAttemptsContextProvider,
+  NativeCameraABTestContextProvider,
   MarketingSiteContextProvider,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -27,6 +28,7 @@ interface AppRootData {
   appName: string;
   maxCaptureAttemptsBeforeTips: string;
   maxAttemptsBeforeNativeCamera: string;
+  nativeCameraOnly: string;
   flowPath: FlowPath;
   cancelUrl: string;
   idvInPersonUrl?: string;
@@ -106,6 +108,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
     maxCaptureAttemptsBeforeTips,
     maxCaptureAttemptsBeforeNativeCamera,
     maxSubmissionAttemptsBeforeNativeCamera,
+    nativeCameraOnly,
     appName,
     flowPath,
     cancelUrl: cancelURL,
@@ -160,6 +163,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
         maxSubmissionAttemptsBeforeNativeCamera: Number(maxSubmissionAttemptsBeforeNativeCamera),
       },
     ],
+    [NativeCameraABTestContextProvider, { nativeCameraOnly: nativeCameraOnly === 'false' }],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 
