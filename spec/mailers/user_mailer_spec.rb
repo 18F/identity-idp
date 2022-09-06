@@ -522,14 +522,14 @@ describe UserMailer, type: :mailer do
 
   describe '#in_person_ready_to_verify' do
     let(:first_name) { 'Michael' }
-    let!(:enrollment) {
+    let!(:enrollment) do
       create(
         :in_person_enrollment,
         :pending,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
       )
-    }
+    end
 
     let(:mail) do
       UserMailer.in_person_ready_to_verify(
@@ -545,13 +545,13 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_verified' do
-    let(:enrollment) {
+    let(:enrollment) do
       create(
         :in_person_enrollment,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
       )
-    }
+    end
 
     let(:mail) do
       UserMailer.in_person_verified(
@@ -566,13 +566,13 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#in_person_failed' do
-    let(:enrollment) {
+    let(:enrollment) do
       create(
         :in_person_enrollment,
         selected_location_details: { name: 'FRIENDSHIP' },
         status_updated_at: Time.zone.now - 2.hours,
       )
-    }
+    end
 
     let(:mail) do
       UserMailer.in_person_failed(

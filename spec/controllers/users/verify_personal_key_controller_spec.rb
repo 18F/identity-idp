@@ -70,7 +70,7 @@ describe Users::VerifyPersonalKeyController do
   end
 
   describe '#create' do
-    let!(:profiles) {
+    let!(:profiles) do
       [
         create(
           :profile,
@@ -79,7 +79,7 @@ describe Users::VerifyPersonalKeyController do
           pii: { ssn: '123456789' },
         ),
       ]
-    }
+    end
     let(:error_text) { 'Incorrect personal key' }
     let(:personal_key_error) { { personal_key: [error_text] } }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }

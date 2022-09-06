@@ -35,7 +35,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
 
     context 'when the response is a failure' do
       let(:response_body) do
-        LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
+        LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json
       end
 
       it 'is a failure result' do

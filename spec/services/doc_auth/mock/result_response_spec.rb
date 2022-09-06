@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DocAuth::Mock::ResultResponse do
   let(:warn_notifier) { instance_double('Proc') }
 
-  subject(:response) {
+  subject(:response) do
     config = DocAuth::Mock::Config.new(
       dpi_threshold: 290,
       sharpness_threshold: 40,
@@ -11,7 +11,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       warn_notifier: warn_notifier,
     )
     described_class.new(input, config, false)
-  }
+  end
 
   context 'with an image file' do
     let(:input) { DocAuthImageFixtures.document_front_image }
@@ -246,7 +246,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
   end
 
   context 'with a yaml file containing a passing result' do
-    subject(:response) {
+    subject(:response) do
       config = DocAuth::Mock::Config.new(
         {
           dpi_threshold: 290,
@@ -255,7 +255,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
         },
       )
       described_class.new(input, config, true)
-    }
+    end
 
     let(:input) do
       <<~YAML

@@ -84,7 +84,7 @@ module Api
       timestamp_param = params.permit(:timestamp)[:timestamp]
       return nil if timestamp_param.nil?
 
-      ActiveSupport::TimeZone['UTC'].parse(timestamp_param)
+      Time.strptime(timestamp_param, '%Y-%m-%dT%H:%M:%S%z')
     rescue ArgumentError
       nil
     end

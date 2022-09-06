@@ -48,7 +48,7 @@ module Reports
 
     def combine_by_iaa_month(by_iaa_results:, by_issuer_results:)
       by_iaa_and_year_month = by_iaa_results.group_by do |result|
-        [ result[:key], result[:year_month] ]
+        [result[:key], result[:year_month]]
       end
 
       by_issuer_iaa_issuer_year_months = by_issuer_results.

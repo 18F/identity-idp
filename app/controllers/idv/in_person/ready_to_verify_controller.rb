@@ -2,6 +2,7 @@ module Idv
   module InPerson
     class ReadyToVerifyController < ApplicationController
       include RenderConditionConcern
+      include StepIndicatorConcern
 
       check_or_render_not_found -> { IdentityConfig.store.in_person_proofing_enabled }
 

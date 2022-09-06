@@ -2,19 +2,34 @@ FactoryBot.define do
   factory :in_person_enrollment do
     user { association :user, :signed_up }
     profile { association :profile, user: user }
-    unique_id { Faker::Number.hexadecimal(digits: 18) }
+    current_address_matches_id { true }
+    selected_location_details { { name: 'BALTIMORE' } }
 
     trait :establishing do
-      after :build do |enrollment|
-        enrollment.status = :establishing
-      end
+      status { :establishing }
     end
 
     trait :pending do
-      after :build do |enrollment|
-        enrollment.status = :pending
-        enrollment.enrollment_code = Faker::Number.number(digits: 16)
-      end
+      status { :pending }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
+    end
+
+    trait :expired do
+      status { :expired }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_check_attempted_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
+    end
+
+    trait :failed do
+      status { :failed }
+      enrollment_code { Faker::Number.number(digits: 16) }
+      enrollment_established_at { Time.zone.now }
+      status_check_attempted_at { Time.zone.now }
+      status_updated_at { Time.zone.now }
     end
   end
 end

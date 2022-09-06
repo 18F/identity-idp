@@ -137,6 +137,74 @@ module IrsAttemptsApi
       )
     end
 
+    # The user has exceeded the rate limit during idv document upload
+    def idv_document_upload_rate_limited
+      track_event(
+        :idv_document_upload_rate_limited,
+      )
+    end
+
+    # param [Boolean] Success
+    # param [Hash<Key, Array<String>>] failure_reason displays GPO submission failed
+    # GPO verification submitted from Letter sent to verify address
+    def idv_gpo_verification_submitted(success:, failure_reason:)
+      track_event(
+        :idv_gpo_verification_submitted,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # GPO verification submission throttled, user entered in too many invalid gpo letter codes
+    def idv_gpo_verification_throttled
+      track_event(
+        :idv_gpo_verification_throttled,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] resend
+    # The Address validation letter has been requested by user
+    def idv_letter_requested(success:, resend:)
+      track_event(
+        :idv_letter_requested,
+        success: success,
+        resend: resend,
+      )
+    end
+
+    # @param [Boolean] success
+    # Personal Key got generated for user
+    def idv_personal_key_generated(success:)
+      track_event(
+        :idv_personal_key_generated,
+        success: success,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # @param [String] otp_delivery_method
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # Track when OTP is sent and what method chosen during idv flow.
+    def idv_phone_confirmation_otp_sent(success:, phone_number:,
+                                        otp_delivery_method:, failure_reason:)
+      track_event(
+        :idv_phone_confirmation_otp_sent,
+        success: success,
+        phone_number: phone_number,
+        otp_delivery_method: otp_delivery_method,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Track when OTP phone sent is rate limited during idv flow
+    def idv_phone_confirmation_otp_sent_rate_limited
+      track_event(
+        :idv_phone_confirmation_otp_sent_rate_limited,
+      )
+    end
+
     # Tracks when a user submits OTP code sent to their phone
     # @param [String] phone_number
     # param [Boolean] success
@@ -150,16 +218,9 @@ module IrsAttemptsApi
       )
     end
 
-    # The user has exceeded the rate limit during idv document upload
-    def idv_document_upload_rate_limited
-      track_event(
-        :idv_document_upload_rate_limited,
-      )
-    end
-
     # @param [Boolean] success
     # @param [String] phone_number
-    # The phone upload link was sent during the IDV process
+    # The phone number that the link was sent to during the IDV process
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     def idv_phone_upload_link_sent(
       success:,
@@ -170,6 +231,64 @@ module IrsAttemptsApi
         :idv_phone_upload_link_sent,
         success: success,
         phone_number: phone_number,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # The user has used a phone_upload_link to upload docs on their mobile device
+    def idv_phone_upload_link_used
+      track_event(
+        :idv_phone_upload_link_used,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] ssn
+    # User entered in SSN number during Identity verification
+    def idv_ssn_submitted(success:, ssn:)
+      track_event(
+        :idv_ssn_submitted,
+        success: success,
+        ssn: ssn,
+      )
+    end
+
+    # @param [Boolean] success
+    # @param [String] document_state
+    # @param [String] document_number
+    # @param [String] document_issued
+    # @param [String] document_expiration
+    # @param [String] first_name
+    # @param [String] last_name
+    # @param [String] date_of_birth
+    # @param [String] address
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    # The verification was submitted during the IDV process
+    def idv_verification_submitted(
+      success:,
+      document_state: nil,
+      document_number: nil,
+      document_issued: nil,
+      document_expiration: nil,
+      first_name: nil,
+      last_name: nil,
+      date_of_birth: nil,
+      address: nil,
+      ssn: nil,
+      failure_reason: nil
+    )
+      track_event(
+        :idv_verification_submitted,
+        success: success,
+        document_state: document_state,
+        document_number: document_number,
+        document_issued: document_issued,
+        document_expiration: document_expiration,
+        first_name: first_name,
+        last_name: last_name,
+        date_of_birth: date_of_birth,
+        address: address,
+        ssn: ssn,
         failure_reason: failure_reason,
       )
     end
@@ -216,13 +335,11 @@ module IrsAttemptsApi
     end
 
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
-    # @param [Boolean] success - True if the user was locked out
     # The user has exceeded the rate limit for SMS OTP sends.
-    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:, success:)
+    def mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_enroll_phone_otp_sent_rate_limited,
         phone_number: phone_number,
-        success: success,
       )
     end
 
@@ -253,13 +370,13 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] type - the type of multi-factor authentication used
+    # @param [String] mfa_device_type - the type of multi-factor authentication used
     # The user has exceeded the rate limit during enrollment
     # and account has been locked
-    def mfa_enroll_rate_limited(type:)
+    def mfa_enroll_rate_limited(mfa_device_type:)
       track_event(
         :mfa_enroll_rate_limited,
-        type: type,
+        mfa_device_type: mfa_device_type,
       )
     end
 
@@ -313,13 +430,11 @@ module IrsAttemptsApi
     end
 
     # @param [String] phone_number - The user's phone number used for multi-factor authentication
-    # @param [Boolean] success - True if the user was locked out
     # The user has exceeded the rate limit for SMS OTP sends.
-    def mfa_login_phone_otp_sent_rate_limited(phone_number:, success:)
+    def mfa_login_phone_otp_sent_rate_limited(phone_number:)
       track_event(
         :mfa_login_phone_otp_sent_rate_limited,
         phone_number: phone_number,
-        success: success,
       )
     end
 
@@ -351,13 +466,13 @@ module IrsAttemptsApi
       )
     end
 
-    # @param [String] type - the type of multi-factor authentication used
+    # @param [String] mfa_device_type - the type of multi-factor authentication used
     # The user has exceeded the rate limit during verification
     # and account has been locked
-    def mfa_login_rate_limited(type:)
+    def mfa_login_rate_limited(mfa_device_type:)
       track_event(
         :mfa_login_rate_limited,
-        type: type,
+        mfa_device_type: mfa_device_type,
       )
     end
 

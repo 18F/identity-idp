@@ -16,7 +16,8 @@ type VerifyFlowStepIndicatorStep =
   | 'verify_phone_or_address'
   | 'secure_account'
   | 'find_a_post_office'
-  | 'go_to_the_post_office';
+  | 'go_to_the_post_office'
+  | 'get_a_letter';
 
 interface VerifyFlowConfig {
   /**
@@ -94,35 +95,35 @@ export function getStepStatus(index, currentStepIndex): StepStatus {
 }
 
 /**
- * Given contextual details of the current flow path, returns explicit statuses which should be used
- * at particular steps.
+ * Given contextual details of the current flow path, returns the relevant flow configuration.
  *
  * @param details Flow details
  *
- * @return Step status overrides.
+ * @return Flow step configuration.
  */
-function getStatusOverrides({
+function getFlowStepsConfig({
+  path,
   addressVerificationMethod,
 }: {
+  path: VerifyFlowPath;
   addressVerificationMethod: AddressVerificationMethod;
-}) {
-  const statuses: Partial<Record<VerifyFlowStepIndicatorStep, StepStatus>> = {};
+}): VerifyFlowConfig {
+  let { steps, mapping } = FLOW_STEP_PATHS[path];
 
   if (addressVerificationMethod === 'gpo') {
-    statuses.verify_phone_or_address = StepStatus.PENDING;
+    steps = steps.filter((step) => step !== 'verify_phone_or_address').concat('get_a_letter');
   }
 
-  return statuses;
+  return { steps, mapping };
 }
 
 function VerifyFlowStepIndicator({
   currentStep,
   path = VerifyFlowPath.DEFAULT,
 }: VerifyFlowStepIndicatorProps) {
-  const { steps, mapping } = FLOW_STEP_PATHS[path];
-  const currentStepIndex = steps.indexOf(mapping[currentStep]);
   const { addressVerificationMethod } = useContext(AddressVerificationMethodContext);
-  const statusOverrides = getStatusOverrides({ addressVerificationMethod });
+  const { steps, mapping } = getFlowStepsConfig({ path, addressVerificationMethod });
+  const currentStepIndex = steps.indexOf(mapping[currentStep]);
 
   // i18n-tasks-use t('step_indicator.flows.idv.getting_started')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_id')
@@ -131,6 +132,7 @@ function VerifyFlowStepIndicator({
   // i18n-tasks-use t('step_indicator.flows.idv.secure_account')
   // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
+  // i18n-tasks-use t('step_indicator.flows.idv.get_a_letter')
 
   return (
     <StepIndicator className="margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4">
@@ -138,7 +140,7 @@ function VerifyFlowStepIndicator({
         <StepIndicatorStep
           key={step}
           title={t(`step_indicator.flows.idv.${step}`)}
-          status={statusOverrides[step] || getStepStatus(index, currentStepIndex)}
+          status={getStepStatus(index, currentStepIndex)}
         />
       ))}
     </StepIndicator>

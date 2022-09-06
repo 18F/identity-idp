@@ -1,6 +1,7 @@
 module Idv
   class OtpVerificationController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
     include PhoneOtpRateLimitable
 
     # confirm_two_factor_authenticated before action is in PhoneOtpRateLimitable

@@ -10,12 +10,17 @@ class PhoneNumberCapabilities
   attr_reader :phone, :phone_confirmed
 
   def self.translated_international_codes
-    translated_international_codes_data = {}
-    INTERNATIONAL_CODES.each do |k, value|
-      translated_international_codes_data[k] =
-        value.merge('name' => I18n.t("countries.#{k.downcase}"))
+    @translated_intl_codes_data = nil if Rails.env.development?
+    return @translated_intl_codes_data[I18n.locale] if @translated_intl_codes_data
+
+    @translated_intl_codes_data = Hash.new { |h, k| h[k] = {} }
+    I18n.available_locales.each do |locale|
+      INTERNATIONAL_CODES.each do |k, value|
+        @translated_intl_codes_data[locale][k] =
+          value.merge('name' => I18n.t("countries.#{k.downcase}", locale: locale))
+      end
     end
-    translated_international_codes_data
+    @translated_intl_codes_data[I18n.locale]
   end
 
   def initialize(phone, phone_confirmed:)
