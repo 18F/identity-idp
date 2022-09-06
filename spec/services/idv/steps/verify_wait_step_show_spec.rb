@@ -80,11 +80,10 @@ describe Idv::Steps::VerifyWaitStepShow do
 
       step.call
 
-      sp_costs = SpCost.where(issuer: issuer)
-      expect(sp_costs[0].cost_type).to eq('lexis_nexis_resolution')
+      sp_costs = SpCost.where(issuer: issuer, cost_type: 'lexis_nexis_resolution')
       expect(sp_costs[0].transaction_id).to eq(resolution_transaction_id)
-      expect(sp_costs[1].cost_type).to eq('threatmetrix')
-      expect(sp_costs[1].transaction_id).to eq(threatmetrix_transaction_id)
+      sp_costs = SpCost.where(issuer: issuer, cost_type: 'threatmetrix')
+      expect(sp_costs[0].transaction_id).to eq(threatmetrix_transaction_id)
 
       proofing_cost = ProofingCost.last
       expect(proofing_cost.user_id).to eq(user.id)
