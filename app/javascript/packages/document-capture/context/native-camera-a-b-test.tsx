@@ -1,8 +1,7 @@
 import { createContext } from 'react';
 import type { ReactNode } from 'react';
-import useCounter from '../hooks/use-counter';
 
-interface NativeCameraABTestContextInterface {
+interface NativeCameraABTestContextValue {
   /**
    * Whether or not the Acuant SDK should be bypassed and only the native camera
    * offered to the user.
@@ -10,7 +9,7 @@ interface NativeCameraABTestContextInterface {
   nativeCameraOnly: boolean;
 }
 
-const NativeCameraABTestContext = createContext<NativeCameraABTestContextInterface>({
+const NativeCameraABTestContext = createContext<NativeCameraABTestContextValue>({
   nativeCameraOnly: false,
 });
 
