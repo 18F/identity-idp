@@ -39,10 +39,14 @@ module UspsInPersonProofing
       end
 
       def create_usps_enrollment(enrollment, pii)
+        # Use the enrollment's unique_id value if it exists, otherwise use the deprecated
+        # #usps_unique_id value in order to remain backwards-compatible. LG-7024 will remove this
+        unique_id = enrollment.unique_id || enrollment.usps_unique_id
         address = [pii['address1'], pii['address2']].select(&:present?).join(' ')
+
         applicant = UspsInPersonProofing::Applicant.new(
           {
-            unique_id: enrollment.unique_id || enrollment.usps_unique_id,
+            unique_id: unique_id,
             first_name: pii['first_name'],
             last_name: pii['last_name'],
             address: address,
