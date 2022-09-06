@@ -1,18 +1,13 @@
 import Link, { LinkProps } from './link';
 import BlockLinkArrow from './block-link-arrow';
 
-export interface BlockLinkProps extends LinkProps {
-  /**
-   * Link destination.
-   */
-  href: string;
-}
+export interface BlockLinkProps extends LinkProps {}
 
-function BlockLink({ href, children, className, ...linkProps }: BlockLinkProps) {
+function BlockLink({ children, className, ...linkProps }: BlockLinkProps) {
   const classes = ['block-link', className].filter(Boolean).join(' ');
 
   return (
-    <Link href={href} {...linkProps} className={classes}>
+    <Link {...linkProps} className={classes}>
       {children}
       <BlockLinkArrow />
     </Link>

@@ -5,6 +5,7 @@ import { useI18n } from '@18f/identity-react-i18n';
 import type { TroubleshootingOption } from '@18f/identity-components/troubleshooting-options';
 import ServiceProviderContext from '../context/service-provider';
 import MarketingSiteContext from '../context/marketing-site';
+import AnalyticsContext from '../context/analytics';
 
 interface DocumentCaptureTroubleshootingOptionsProps {
   /**
@@ -43,6 +44,7 @@ function DocumentCaptureTroubleshootingOptions({
   const { t } = useI18n();
   const { inPersonURL } = useContext(FlowContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const { trackEvent } = useContext(AnalyticsContext);
   const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
 
   return (
@@ -81,7 +83,13 @@ function DocumentCaptureTroubleshootingOptions({
         <TroubleshootingOptions
           isNewFeatures
           heading={t('idv.troubleshooting.headings.are_you_near')}
-          options={[{ text: t('idv.troubleshooting.options.verify_in_person') }]}
+          options={[
+            {
+              url: '#location',
+              text: t('idv.troubleshooting.options.verify_in_person'),
+              onClick: () => trackEvent('IdV: verify in person troubleshooting option clicked'),
+            },
+          ]}
         />
       )}
     </>

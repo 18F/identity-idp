@@ -30,14 +30,14 @@ describe Idv::InPerson::UspsLocationsController do
 
   describe '#index' do
     let(:proofer) { double('Proofer') }
-    let(:locations) {
+    let(:locations) do
       [
         { name: 'Location 1' },
         { name: 'Location 2' },
         { name: 'Location 3' },
         { name: 'Location 4' },
       ]
-    }
+    end
     subject(:response) { get :index }
 
     before do

@@ -60,7 +60,7 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
           expect(applicant.state).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:state])
           expect(applicant.zip_code).to eq(Idp::Constants::MOCK_IDV_APPLICANT[:zipcode])
           expect(applicant.email).to eq('no-reply@login.gov')
-          expect(applicant.unique_id).to be_a(String)
+          expect(applicant.unique_id).to eq(enrollment.unique_id)
 
           proofer.request_enroll(applicant)
         end
@@ -68,11 +68,29 @@ RSpec.describe UspsInPersonProofing::EnrollmentHelper do
         subject.schedule_in_person_enrollment(user, pii)
       end
 
-      it 'sets enrollment status to pending and sets enrollment established at date' do
+      context 'when the enrollment does not have a unique ID' do
+        it 'uses the deprecated InPersonEnrollment#usps_unique_id value to create the enrollment' do
+          enrollment.update(unique_id: nil)
+          proofer = UspsInPersonProofing::Mock::Proofer.new
+          mock = double
+
+          expect(UspsInPersonProofing::Proofer).to receive(:new).and_return(mock)
+          expect(mock).to receive(:request_enroll) do |applicant|
+            expect(applicant.unique_id).to eq(enrollment.usps_unique_id)
+
+            proofer.request_enroll(applicant)
+          end
+
+          subject.schedule_in_person_enrollment(user, pii)
+        end
+      end
+
+      it 'sets enrollment status to pending and sets established at date and unique id' do
         subject.schedule_in_person_enrollment(user, pii)
 
         expect(user.in_person_enrollments.first.status).to eq('pending')
         expect(user.in_person_enrollments.first.enrollment_established_at).to_not be_nil
+        expect(user.in_person_enrollments.first.unique_id).to_not be_nil
       end
 
       it 'sends verification emails' do

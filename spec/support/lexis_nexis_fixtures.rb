@@ -32,6 +32,11 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def ddp_success_redacted_response_json
+      raw = read_fixture_file_at_path('ddp/successful_redacted_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def ddp_failure_response_json
       raw = read_fixture_file_at_path('ddp/failed_response.json')
       JSON.parse(raw).to_json
@@ -52,23 +57,30 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
-    def instant_verify_failure_response_json
-      raw = read_fixture_file_at_path('instant_verify/failed_response.json')
-      JSON.parse(raw).to_json
-    end
-
     def instant_verify_error_response_json
       raw = read_fixture_file_at_path('instant_verify/error_response.json')
       JSON.parse(raw).to_json
     end
 
-    def instant_verify_year_of_birth_fail_response_json
-      raw = read_fixture_file_at_path('instant_verify/year_of_birth_fail_response.json')
+    def instant_verify_identity_not_found_response_json
+      raw = read_fixture_file_at_path('instant_verify/identity_not_found_response.json')
       JSON.parse(raw).to_json
     end
 
-    def instant_verify_date_of_birth_full_fail_response_json
-      raw = read_fixture_file_at_path('instant_verify/date_of_birth_full_fail_response.json')
+    def instant_verify_date_of_birth_fail_response_json
+      raw = read_fixture_file_at_path('instant_verify/date_of_birth_failure_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def instant_verify_address_fail_response_json
+      raw = read_fixture_file_at_path('instant_verify/address_failure_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def instant_verify_date_of_birth_and_address_fail_response_json
+      raw = read_fixture_file_at_path(
+        'instant_verify/date_of_birth_and_address_failure_response.json',
+      )
       JSON.parse(raw).to_json
     end
 

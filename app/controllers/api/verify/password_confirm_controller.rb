@@ -51,8 +51,8 @@ module Api
           idv_come_back_later_url
         elsif in_person_enrollment?(user)
           idv_in_person_ready_to_verify_url
-        elsif device_profiling_failed?(user)
-          idv_come_back_later_url
+        elsif blocked_by_device_profiling?(user)
+          idv_setup_errors_url
         elsif current_sp
           sign_up_completed_url
         else
@@ -65,7 +65,7 @@ module Api
         ProofingComponent.find_by(user: user)&.document_check == Idp::Constants::Vendors::USPS
       end
 
-      def device_profiling_failed?(user)
+      def blocked_by_device_profiling?(user)
         return false unless IdentityConfig.store.proofing_device_profiling_decisioning_enabled
         proofing_component = ProofingComponent.find_by(user: user)
         # pass users who are inbetween feature flag being enabled and have not had a check run.

@@ -46,7 +46,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'does not constrain enrollments for non-pending status' do
       user = create(:user)
-      expect {
+      expect do
         InPersonEnrollment.statuses.each do |key,|
           status = InPersonEnrollment.statuses[key]
           profile = create(:profile, :gpo_verification_pending, user: user)
@@ -59,10 +59,32 @@ RSpec.describe InPersonEnrollment, type: :model do
             create(:in_person_enrollment, user: user, profile: profile, status: status)
           end
         end
-      }.not_to raise_error
+      end.not_to raise_error
       expect(InPersonEnrollment.pending.count).to eq 1
       expect(InPersonEnrollment.count).to eq(InPersonEnrollment.statuses.length * 2 - 1)
       expect(InPersonEnrollment.pending.first.status_updated_at).to_not be_nil
+    end
+  end
+
+  describe 'Triggers' do
+    it 'generates a unique ID if one is not provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).to receive(:generate_unique_id).and_call_original
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile)
+
+      expect(enrollment.unique_id).not_to be_nil
+    end
+
+    it 'does not generated a unique ID if one is provided' do
+      user = create(:user)
+      profile = create(:profile, :gpo_verification_pending, user: user)
+      expect(InPersonEnrollment).not_to receive(:generate_unique_id)
+
+      enrollment = create(:in_person_enrollment, user: user, profile: profile, unique_id: '1234')
+
+      expect(enrollment.unique_id).to eq('1234')
     end
   end
 
@@ -71,9 +93,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     let!(:passed_enrollment) { create(:in_person_enrollment, :passed) }
     let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
     let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
-    let!(:checked_pending_enrollment) {
+    let!(:checked_pending_enrollment) do
       create(:in_person_enrollment, :pending, status_check_attempted_at: Time.zone.now)
-    }
+    end
     let!(:needy_enrollments) do
       [
         create(:in_person_enrollment, :pending),
@@ -101,6 +123,61 @@ RSpec.describe InPersonEnrollment, type: :model do
       needy_enrollments.each do |enrollment|
         expect(enrollment.needs_usps_status_check?(check_interval)).to be_truthy
       end
+    end
+  end
+
+  describe 'minutes_since_established' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, enrollment_established_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since enrollment was established' do
+      expect(enrollment.minutes_since_established).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been established' do
+      enrollment.status = 'establishing'
+      enrollment.enrollment_established_at = nil
+
+      expect(enrollment.minutes_since_established).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_last_status_check' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :passed, status_check_attempted_at: Time.zone.now - 2.hours
+      )
+    end
+
+    it 'returns number of minutes since last status check' do
+      expect(enrollment.minutes_since_last_status_check).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment has not been status-checked' do
+      enrollment.status_check_attempted_at = nil
+
+      expect(enrollment.minutes_since_last_status_check).to eq(nil)
+    end
+  end
+
+  describe 'minutes_since_status_updated' do
+    let(:enrollment) do
+      enrollment = create(:in_person_enrollment, :passed)
+      enrollment.status_updated_at = (Time.zone.now - 2.hours)
+      enrollment
+    end
+
+    it 'returns number of minutes since the status was updated' do
+      expect(enrollment.minutes_since_last_status_update).to be_within(0.01).of(120)
+    end
+
+    it 'returns nil if enrollment status has not been updated' do
+      enrollment.status_updated_at = nil
+
+      expect(enrollment.minutes_since_last_status_update).to eq(nil)
     end
   end
 end

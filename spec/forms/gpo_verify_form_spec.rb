@@ -10,14 +10,14 @@ describe GpoVerifyForm do
   let(:entered_otp) { otp }
   let(:otp) { 'ABC123' }
   let(:code_sent_at) { Time.zone.now }
-  let(:pending_profile) {
+  let(:pending_profile) do
     create(
       :profile,
       user: user,
       deactivation_reason: :gpo_verification_pending,
       proofing_components: proofing_components,
     )
-  }
+  end
   let(:proofing_components) { nil }
 
   before do
@@ -122,9 +122,9 @@ describe GpoVerifyForm do
         let!(:enrollment) do
           create(:in_person_enrollment, :establishing, profile: pending_profile, user: user)
         end
-        let(:proofing_components) {
+        let(:proofing_components) do
           ProofingComponent.create(user: user, document_check: Idp::Constants::Vendors::USPS)
-        }
+        end
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
         end

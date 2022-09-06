@@ -13,6 +13,7 @@ describe Idv::Steps::VerifyWaitStepShow do
     instance_double(
       'controller',
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_sp: service_provider,
       current_user: user,
       flash: {},
@@ -31,12 +32,12 @@ describe Idv::Steps::VerifyWaitStepShow do
     }
   end
 
-  let(:document_capture_session) {
+  let(:document_capture_session) do
     document_capture_session = DocumentCaptureSession.create!(user: user)
     document_capture_session.create_proofing_session
     document_capture_session.store_proofing_result(idv_result)
     document_capture_session
-  }
+  end
 
   let(:dcs_uuid) { document_capture_session.uuid }
 

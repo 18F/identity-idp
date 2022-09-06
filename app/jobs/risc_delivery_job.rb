@@ -18,7 +18,7 @@ class RiscDeliveryJob < ApplicationJob
            attempts: 10
 
   def self.warning_error_classes
-    NETWORK_ERRORS + [ RedisRateLimiter::LimitError ]
+    NETWORK_ERRORS + [RedisRateLimiter::LimitError]
   end
 
   def perform(

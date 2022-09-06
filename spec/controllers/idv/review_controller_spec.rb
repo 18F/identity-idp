@@ -130,9 +130,9 @@ describe Idv::ReviewController do
   end
 
   describe '#confirm_current_password' do
-    let(:applicant) {
+    let(:applicant) do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-    }
+    end
 
     controller do
       before_action :confirm_current_password
@@ -209,14 +209,6 @@ describe Idv::ReviewController do
         )
       end
 
-      it 'shows steps' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).not_to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
-      end
-
       context 'idv app password confirm step is enabled' do
         before do
           allow(IdentityConfig.store).to receive(:idv_api_enabled_steps).
@@ -228,20 +220,6 @@ describe Idv::ReviewController do
 
           expect(response).to redirect_to idv_app_path
         end
-      end
-    end
-
-    context 'user chooses address verification' do
-      before do
-        idv_session.address_verification_mechanism = 'gpo'
-      end
-
-      it 'shows revises steps to show pending address verification' do
-        get :new
-
-        expect(subject.view_assigns['step_indicator_steps']).to include(
-          hash_including(name: :verify_phone_or_address, status: :pending),
-        )
       end
     end
 
@@ -284,9 +262,9 @@ describe Idv::ReviewController do
     end
 
     context 'user fails to supply correct password' do
-      let(:applicant) {
+      let(:applicant) do
         Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(phone_confirmed_at: Time.zone.now)
-      }
+      end
 
       before do
         idv_session
@@ -378,17 +356,17 @@ describe Idv::ReviewController do
         end
 
         context 'with in person profile' do
-          let!(:enrollment) {
+          let!(:enrollment) do
             create(:in_person_enrollment, :establishing, user: user, profile: nil)
-          }
+          end
           let(:stub_usps_response) do
             stub_request_enroll
           end
-          let(:applicant) {
+          let(:applicant) do
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(
               same_address_as_id: true,
             )
-          }
+          end
 
           before do
             stub_request_token

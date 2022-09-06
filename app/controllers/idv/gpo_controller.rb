@@ -1,6 +1,7 @@
 module Idv
   class GpoController < ApplicationController
     include IdvSession
+    include StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_needed
@@ -10,6 +11,7 @@ module Idv
 
     def index
       @presenter = GpoPresenter.new(current_user, url_options)
+      @step_indicator_current_step = step_indicator_current_step
       analytics.idv_gpo_address_visited(
         letter_already_sent: @presenter.letter_already_sent?,
       )
@@ -35,8 +37,17 @@ module Idv
 
     private
 
+    def step_indicator_current_step
+      if resend_requested?
+        :get_a_letter
+      else
+        :verify_phone_or_address
+      end
+    end
+
     def update_tracking
       analytics.idv_gpo_address_letter_requested(resend: resend_requested?)
+      irs_attempts_api_tracker.idv_letter_requested(success: true, resend: resend_requested?)
       create_user_event(:gpo_mail_sent, current_user)
 
       ProofingComponent.create_or_find_by(user: current_user).update(address_check: 'gpo_letter')

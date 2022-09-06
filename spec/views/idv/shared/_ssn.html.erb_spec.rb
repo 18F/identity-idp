@@ -9,13 +9,13 @@ describe 'idv/shared/_ssn.html.erb' do
   let(:updating_ssn) { false }
   let(:js_domain) { 'h.online-metrix.net' }
 
-  let(:tags_js_url) {
+  let(:tags_js_url) do
     "https://#{js_domain}/fp/tags.js?org_id=#{lexisnexis_threatmetrix_org_id}&session_id=#{session_id}"
-  }
+  end
 
-  let(:tags_iframe_url) {
+  let(:tags_iframe_url) do
     "https://#{js_domain}/fp/tags?org_id=#{lexisnexis_threatmetrix_org_id}&session_id=#{session_id}"
-  }
+  end
 
   before :each do
     allow(view).to receive(:url_for).and_return('https://example.com/')
@@ -27,10 +27,9 @@ describe 'idv/shared/_ssn.html.erb' do
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
     render partial: 'idv/shared/ssn', locals: {
-      flow_session: {
-        threatmetrix_session_id: session_id,
-      },
+      flow_session: {},
       success_alert_enabled: false,
+      threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
     }
   end

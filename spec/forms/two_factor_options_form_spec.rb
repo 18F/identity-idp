@@ -4,13 +4,13 @@ describe TwoFactorOptionsForm do
   let(:user) { build(:user) }
   let(:aal3_required) { false }
   let(:piv_cac_required) { false }
-  subject {
+  subject do
     described_class.new(
       user: user,
       aal3_required: aal3_required,
       piv_cac_required: piv_cac_required,
     )
-  }
+  end
 
   describe '#submit' do
     let(:submit_phone) { subject.submit(selection: 'phone') }

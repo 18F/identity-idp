@@ -7,9 +7,9 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
   let(:profile) { build(:profile, user: user) }
   let(:enrollment_code) { '2048702198804358' }
   let(:current_address_matches_id) { true }
-  let(:selected_location_details) {
+  let(:selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
-  }
+  end
   let(:created_at) { Time.zone.parse('2022-07-13') }
   let(:enrollment) do
     InPersonEnrollment.new(
@@ -23,9 +23,11 @@ describe 'idv/in_person/ready_to_verify/show.html.erb' do
     )
   end
   let(:presenter) { Idv::InPerson::ReadyToVerifyPresenter.new(enrollment: enrollment) }
+  let(:step_indicator_steps) { Idv::Flows::InPersonFlow::STEP_INDICATOR_STEPS }
 
   before do
     assign(:presenter, presenter)
+    allow(view).to receive(:step_indicator_steps).and_return(step_indicator_steps)
   end
 
   context 'with enrollment where current address matches id' do
