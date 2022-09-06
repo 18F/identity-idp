@@ -218,6 +218,15 @@ module IrsAttemptsApi
       )
     end
 
+    # The user reached the rate limit for Idv phone OTP submitted
+    # @param [String] phone
+    def idv_phone_otp_submitted_rate_limited(phone:)
+      track_event(
+        :idv_phone_otp_submitted_rate_limited,
+        phone: phone,
+      )
+    end
+
     # @param [Boolean] success
     # @param [String] phone_number
     # The phone number that the link was sent to during the IDV process
