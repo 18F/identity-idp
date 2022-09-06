@@ -139,6 +139,7 @@ module IrsAttemptsApi
         :idv_phone_submitted,
         phone_number: phone_number,
         success: success,
+        failure_reason: failure_reason,
       )
     end
 
