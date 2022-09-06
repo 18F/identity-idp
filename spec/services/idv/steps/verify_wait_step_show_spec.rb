@@ -6,6 +6,8 @@ describe Idv::Steps::VerifyWaitStepShow do
   let(:user) { build(:user) }
   let(:issuer) { 'test_issuer' }
   let(:service_provider) { build(:service_provider, issuer: issuer) }
+  let(:resolution_transaction_id) { Proofing::Mock::ResolutionMockClient::TRANSACTION_ID }
+  let(:threatmetrix_transaction_id) { Proofing::Mock::DdpMockClient::TRANSACTION_ID }
 
   let(:request) { FakeRequest.new }
 
@@ -24,7 +26,8 @@ describe Idv::Steps::VerifyWaitStepShow do
 
   let(:idv_result) do
     {
-      context: { stages: { resolution: {} } },
+      context: { stages: { resolution: { transaction_id: resolution_transaction_id },
+                           threatmetrix: { transaction_id: threatmetrix_transaction_id } } },
       errors: {},
       exception: nil,
       success: true,
@@ -71,11 +74,17 @@ describe Idv::Steps::VerifyWaitStepShow do
     end
 
     it 'adds costs' do
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling_collecting_enabled).
+        and_return(true)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_enabled).and_return(true)
+
       step.call
 
-      expect(SpCost.where(issuer: issuer).map(&:cost_type)).to contain_exactly(
-        'lexis_nexis_resolution',
-      )
+      sp_costs = SpCost.where(issuer: issuer)
+      expect(sp_costs[0].cost_type).to eq('lexis_nexis_resolution')
+      expect(sp_costs[0].transaction_id).to eq(resolution_transaction_id)
+      expect(sp_costs[1].cost_type).to eq('threatmetrix')
+      expect(sp_costs[1].transaction_id).to eq(threatmetrix_transaction_id)
     end
 
     it 'clears pii from session' do

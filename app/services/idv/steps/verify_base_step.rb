@@ -49,8 +49,6 @@ module Idv
           if stage == :resolution
             # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            tmx_id = hash[:threatmetrix_request_id]
-            add_cost(:threatmetrix, transaction_id: tmx_id) if tmx_id
           elsif stage == :state_id
             process_aamva(hash[:transaction_id])
           elsif stage == :threatmetrix
