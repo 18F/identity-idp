@@ -24,7 +24,7 @@ export interface FlowContextValue {
   /**
    * Handle flow completion with a given destination URL.
    */
-  onComplete({ completionURL: string }): void;
+  onComplete: ({ completionURL }: { completionURL: string }) => void;
 }
 
 const FlowContext = createContext<FlowContextValue>({
