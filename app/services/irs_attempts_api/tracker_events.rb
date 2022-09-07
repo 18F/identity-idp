@@ -130,6 +130,19 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user submits their idv phone number
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
     # Tracks Idv phone OTP sent rate limits
     def idv_phone_otp_sent_rate_limited
       track_event(
