@@ -219,9 +219,10 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: true,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: nil,
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 
@@ -246,9 +247,10 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: nil,
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 
@@ -271,9 +273,10 @@ feature 'doc auth verify step', :js do
           anything,
           should_proof_state_id: false,
           trace_id: anything,
-          threatmetrix_session_id: kind_of(String),
+          threatmetrix_session_id: nil,
           user_id: user.id,
           request_ip: kind_of(String),
+          issuer: anything,
         ).
         and_call_original
 

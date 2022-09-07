@@ -181,6 +181,7 @@ module Idv
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
+          issuer: sp_session[:issuer],
         )
       end
 
