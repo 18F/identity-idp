@@ -55,6 +55,18 @@ describe IdvController do
       expect(response).to redirect_to idv_doc_auth_path
     end
 
+    context 'with a VA inherited proofing session' do
+      before do
+        stub_sign_in
+        allow(controller).to receive(:va_inherited_proofing?).and_return(true)
+      end
+
+      it 'redirects to inherited proofing' do
+        get :index
+        expect(response).to redirect_to idv_inherited_proofing_path
+      end
+    end
+
     context 'sp has reached quota limit' do
       let(:issuer) { 'foo' }
 

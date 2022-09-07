@@ -183,6 +183,7 @@ module Idv
           user_id: user_id,
           threatmetrix_session_id: flow_session[:threatmetrix_session_id],
           request_ip: request.remote_ip,
+          issuer: sp_session[:issuer],
         )
       end
 
@@ -225,6 +226,20 @@ module Idv
             address_edited: !!flow_session['address_edited'],
             pii_like_keypaths: [[:errors, :ssn]],
           },
+        )
+        pii_from_doc = pii || {}
+        @flow.irs_attempts_api_tracker.idv_verification_submitted(
+          success: form_response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address: pii_from_doc[:address1],
+          ssn: pii_from_doc[:ssn],
+          failure_reason: form_response.errors&.presence,
         )
 
         if form_response.success?

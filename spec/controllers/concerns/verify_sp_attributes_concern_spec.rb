@@ -14,7 +14,7 @@ RSpec.describe VerifySpAttributesConcern do
       allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
     end
 
-    subject(:consent_has_expired?) { controller.consent_has_expired? }
+    subject(:consent_has_expired?) { controller.consent_has_expired?(sp_session_identity) }
 
     context 'when there is no sp_session_identity' do
       let(:sp_session_identity) { nil }
@@ -113,7 +113,7 @@ RSpec.describe VerifySpAttributesConcern do
       allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
     end
 
-    subject(:consent_was_revoked?) { controller.consent_was_revoked? }
+    subject(:consent_was_revoked?) { controller.consent_was_revoked?(sp_session_identity) }
 
     context 'when there is no sp_session_identity' do
       let(:sp_session_identity) { nil }

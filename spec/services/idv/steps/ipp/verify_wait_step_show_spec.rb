@@ -13,6 +13,7 @@ describe Idv::Steps::Ipp::VerifyWaitStepShow do
     instance_double(
       'controller',
       analytics: FakeAnalytics.new,
+      irs_attempts_api_tracker: IrsAttemptsApiTrackingHelper::FakeAttemptsTracker.new,
       current_sp: service_provider,
       current_user: user,
       flash: {},

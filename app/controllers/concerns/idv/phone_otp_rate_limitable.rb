@@ -29,6 +29,7 @@ module Idv
 
     def handle_too_many_otp_sends
       analytics.idv_phone_confirmation_otp_rate_limit_sends
+      irs_attempts_api_tracker.idv_phone_otp_sent_rate_limited
       handle_max_attempts('otp_requests')
     end
 

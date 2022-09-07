@@ -554,6 +554,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_06_112214) do
     t.boolean "email_nameid_format_allowed", default: false
     t.boolean "use_legacy_name_id_behavior", default: false
     t.boolean "irs_attempts_api_enabled"
+    t.boolean "device_profiling_enabled", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
