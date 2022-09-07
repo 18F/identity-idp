@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import type { ReactChildren } from 'react';
+import type { ReactChild } from 'react';
 import type { trackEvent } from '@18f/identity-analytics';
 
 type SetSubmitEventMetadata = (metadata: Record<string, any>) => void;
@@ -31,7 +31,7 @@ interface AnalyticsContextValue {
 }
 
 type AnalyticsContextProviderProps = Pick<AnalyticsContextValue, 'trackEvent'> & {
-  children: ReactChildren;
+  children: ReactChild;
 };
 
 const DEFAULT_EVENT_METADATA: Record<string, any> = {};
