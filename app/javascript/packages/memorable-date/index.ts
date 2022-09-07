@@ -100,6 +100,7 @@ class MemorableDateElement extends HTMLElement {
 
   connectedCallback() {
     const { allInputs } = this;
+    this.validate();
 
     const inputListener = (event: Event) => {
       this.validate();
@@ -167,7 +168,9 @@ class MemorableDateElement extends HTMLElement {
 
     let parsedDate: Date | undefined;
     try {
-      parsedDate = new Date(`${year.value}-${month.value}-${day.value}`);
+      parsedDate = new Date(
+        `${year.value}-${month.value.padStart(2, '0')}-${day.value.padStart(2, '0')}`,
+      );
     } catch (e) {}
 
     // Check for cases where invalid dates could be "rolled over" into the next month

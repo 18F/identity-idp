@@ -218,4 +218,61 @@ RSpec.describe MemorableDateComponent, type: :component do
     expect(rendered).to_not have_css('.usa-error-message', visible: true)
     expect(rendered).to have_css('.usa-error-message', visible: false)
   end
+
+  context 'tag options are specified' do
+    let(:tag_options) do
+      {
+        id: 'tag-options-test',
+      }
+    end
+
+    it 'renders with the tag options' do
+      expect(rendered).to have_css('lg-memorable-date#tag-options-test')
+    end
+  end
+
+  it 'provides a method for parsing the submitted date' do
+    expect(
+      MemorableDateComponent.extract_date_param(
+        day: '14',
+        month: '2',
+        year: '1990',
+      ),
+    ).to eq('1990-02-14')
+    expect(
+      MemorableDateComponent.extract_date_param(
+        day: '14',
+        month: '2',
+        year: '90',
+      ),
+    ).to be_nil
+    expect(
+      MemorableDateComponent.extract_date_param(
+        month: '2',
+        year: '1990',
+      ),
+    ).to be_nil
+    expect(
+      MemorableDateComponent.extract_date_param(
+        day: '14',
+        year: '1990',
+      ),
+    ).to be_nil
+    expect(
+      MemorableDateComponent.extract_date_param(
+        month: '2',
+        year: '1990',
+      ),
+    ).to be_nil
+    expect(
+      MemorableDateComponent.extract_date_param(
+        day: '14',
+        month: '2',
+        year: '19a0',
+      ),
+    ).to be_nil
+    expect(
+      MemorableDateComponent.extract_date_param('abcd'),
+    ).to be_nil
+  end
 end

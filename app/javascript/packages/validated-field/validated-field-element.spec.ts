@@ -56,7 +56,7 @@ describe('ValidatedFieldElement', () => {
     expect(document.activeElement).to.equal(input);
     const message = getByText(element, 'This field is required');
     expect(message).to.be.ok();
-    expect(message.id).to.equal(input.getAttribute('aria-describedby'));
+    expect(message.id).to.equal('validated-field-error-1');
   });
 
   it('shows custom validity as message content', () => {

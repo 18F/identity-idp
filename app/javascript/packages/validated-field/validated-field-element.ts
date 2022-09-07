@@ -117,22 +117,21 @@ class ValidatedFieldElement extends HTMLElement {
    */
   getOrCreateErrorMessageElement(): Element {
     if (!this.errorMessage) {
-      this.errorMessage =
-        (this.descriptorId && this.ownerDocument.getElementById(this.descriptorId)) ||
-        this.querySelector('.usa-error-message');
+      this.errorMessage = this.ownerDocument.createElement('div');
+      this.errorMessage.classList.add('usa-error-message');
 
-      if (!this.errorMessage) {
-        this.errorMessage = this.ownerDocument.createElement('div');
-        this.errorMessage.classList.add('usa-error-message');
-        if (this.descriptorId) {
-          this.errorMessage.id = this.descriptorId;
-        }
-        if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
-          this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
-        }
+      const descriptorId = (this.descriptorId?.split(' ') || []).find(
+        (id) => document.getElementById(id) === null,
+      );
 
-        this.inputWrapper?.appendChild(this.errorMessage);
+      if (descriptorId) {
+        this.errorMessage.id = descriptorId;
       }
+      if (this.input && TEXT_LIKE_INPUT_TYPES.has(this.input.type)) {
+        this.errorMessage.style.maxWidth = `${this.input.offsetWidth}px`;
+      }
+
+      this.inputWrapper?.appendChild(this.errorMessage);
     }
 
     return this.errorMessage;

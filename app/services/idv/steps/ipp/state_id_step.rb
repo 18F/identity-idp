@@ -10,17 +10,8 @@ module Idv
           end
 
           # Accept Date of Birth from both memorable date and input date components
-          fp = flow_params&.[](:dob)
-          if !(fp.instance_of?(String) || fp.empty?)
-            formatted_dob = [
-              fp&.[](:year),
-              fp&.[](:month)&.rjust(2, '0'),
-              fp&.[](:day)&.rjust(2, '0'),
-            ].join '-'
-            if /^\d{4}-\d{2}-\d{2}$/.match? formatted_dob
-              flow_session[:pii_from_user][:dob] = formatted_dob
-            end
-          end
+          formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
+          flow_session[:pii_from_user][:dob] = formatted_dob if formatted_dob
         end
 
         def extra_view_variables

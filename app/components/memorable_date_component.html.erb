@@ -1,10 +1,10 @@
 <label class="usa-label">     
-    <%= @label %>
+    <%= label %>
 </label>
 <span class="usa-hint">
-    <%= @hint %>
+    <%= hint %>
 </span>
-  <%= content_tag :'lg-memorable-date', min: min, max: max do -%>
+  <%= content_tag :'lg-memorable-date', min: min, max: max, **tag_options do -%>
     <div class="usa-memorable-date">
       <%= content_tag(
             :script,
@@ -19,7 +19,7 @@
           <%= f.simple_fields_for name do |p| %>
             <%= p.input(
                   :month,
-                  pattern: '^(1[0-2])|(0?[1-9])$',
+                  pattern: '(1[0-2])|(0?[1-9])',
                   wrapper_html: { class: 'usa-form-group usa-form-group--month margin-bottom-0' },
                   label: t('components.memorable_date.month'),
                   label_html: { class: 'usa-label' },
@@ -43,7 +43,7 @@
           <%= f.simple_fields_for name do |p| %>
           <%= p.input(
                 :day,
-                pattern: '^(3[01])|([12][0-9])|(0?[1-9])$',
+                pattern: '(3[01])|([12][0-9])|(0?[1-9])',
                 wrapper_html: { class: 'usa-form-group usa-form-group--day margin-bottom-0' },
                 label: t('components.memorable_date.day'),
                 label_html: { class: 'usa-label' },
@@ -67,7 +67,7 @@
           <%= f.simple_fields_for name do |p| %>
           <%= p.input(
                 :year,
-                pattern: '^\d{4}$',
+                pattern: '\d{4}',
                 wrapper_html: { class: 'usa-form-group usa-form-group--year margin-bottom-0' },
                 label: t('components.memorable_date.year'),
                 label_html: { class: 'usa-label' },

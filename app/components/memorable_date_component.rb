@@ -9,7 +9,7 @@
 # The errors for this component are configurable via +error_messages+, and you may
 # include custom min/max validations via +range_errors+.
 class MemorableDateComponent < BaseComponent
-  attr_reader :name, :month, :day, :year, :required, :hint, :label, :form
+  attr_reader :name, :month, :day, :year, :required, :hint, :label, :form, :tag_options
 
   alias_method :f, :form
 
@@ -39,7 +39,7 @@ class MemorableDateComponent < BaseComponent
     max: nil,
     error_messages: {},
     range_errors: [],
-    **_tag_options
+    **tag_options
   )
     @name = name
     @month = month
@@ -51,7 +51,7 @@ class MemorableDateComponent < BaseComponent
     @hint = hint
     @label = label
     @form = form
-    @tag_options = []
+    @tag_options = tag_options
     @error_messages = error_messages
     @range_errors = range_errors
   end
@@ -81,6 +81,26 @@ class MemorableDateComponent < BaseComponent
   # Get max date as a string like 1892-01-23
   def max
     convert_date @max
+  end
+
+  # Extract a memorable date param from a submitted form value
+  #
+  # @param [Hash] date
+  # @option date [String] month
+  # @option date [String] day
+  # @option date [String] year
+  # @return [String,nil] The formatted date, or nil if the param cannot be converted
+  def self.extract_date_param(date)
+    if date.instance_of?(String) || date.empty?
+      nil
+    else
+      formatted_date = [
+        date&.[](:year),
+        date&.[](:month)&.rjust(2, '0'),
+        date&.[](:day)&.rjust(2, '0'),
+      ].join '-'
+      formatted_date if /^\d{4}-\d{2}-\d{2}$/.match? formatted_date
+    end
   end
 
   private
