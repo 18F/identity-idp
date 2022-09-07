@@ -76,7 +76,7 @@ describe('MemorableDateElement', () => {
                         class="validated-field__input memorable-date__month"
                         aria-invalid="false"
                         aria-describedby="test-md-error-message"
-                        pattern="^(1[0-2])|(0?[1-9])$"
+                        pattern="(1[0-2])|(0?[1-9])"
                         minlength="1"
                         maxlength="2" />
                 </lg-validated-field>
@@ -87,7 +87,7 @@ describe('MemorableDateElement', () => {
                         class="validated-field__input memorable-date__day"
                         aria-invalid="false"
                         aria-describedby="test-md-error-message"
-                        pattern="^(3[01])|([12][0-9])|(0?[1-9])$"
+                        pattern="(3[01])|([12][0-9])|(0?[1-9])"
                         minlength="1"
                         maxlength="2" />
                 </lg-validated-field>
@@ -98,7 +98,7 @@ describe('MemorableDateElement', () => {
                         class="validated-field__input memorable-date__year"
                         aria-invalid="false"
                         aria-describedby="test-md-error-message"
-                        pattern="^\\d{4}$"
+                        pattern="\\d{4}"
                         minlength="4"
                         maxlength="4" />
                 </lg-validated-field>
