@@ -20,6 +20,7 @@ class InPersonEnrollment < ApplicationRecord
   validate :profile_belongs_to_user
 
   before_save(:on_status_updated, if: :will_save_change_to_status?)
+  before_create(:set_unique_id, unless: :unique_id)
 
   # Find enrollments that need a status check via the USPS API
   def self.needs_usps_status_check(check_interval)
@@ -39,6 +40,21 @@ class InPersonEnrollment < ApplicationRecord
     )
   end
 
+  def minutes_since_established
+    return unless enrollment_established_at.present?
+    (Time.zone.now - enrollment_established_at).seconds.in_minutes.round(2)
+  end
+
+  def minutes_since_last_status_check
+    return unless status_check_attempted_at.present?
+    (Time.zone.now - status_check_attempted_at).seconds.in_minutes.round(2)
+  end
+
+  def minutes_since_last_status_update
+    return unless status_updated_at.present?
+    (Time.zone.now - status_updated_at).seconds.in_minutes.round(2)
+  end
+
   # (deprecated) Returns the value to use for the USPS enrollment ID
   def usps_unique_id
     user.uuid.delete('-').slice(0, 18)
@@ -53,6 +69,10 @@ class InPersonEnrollment < ApplicationRecord
 
   def on_status_updated
     self.status_updated_at = Time.zone.now
+  end
+
+  def set_unique_id
+    self.unique_id = self.class.generate_unique_id
   end
 
   def profile_belongs_to_user

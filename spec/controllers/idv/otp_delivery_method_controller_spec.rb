@@ -207,6 +207,7 @@ describe Idv::OtpDeliveryMethodController do
 
       before do
         stub_analytics
+        stub_attempts_tracker
         allow(Telephony).to receive(:send_confirmation_otp).and_return(telephony_response)
       end
 
@@ -223,6 +224,13 @@ describe Idv::OtpDeliveryMethodController do
         )
         expect(@analytics).to receive(:track_event).ordered.with(
           'Vendor Phone Validation failed', telephony_error_analytics_hash
+        )
+
+        expect(@irs_attempts_api_tracker).to receive(:idv_phone_confirmation_otp_sent).with(
+          phone_number: '+1 (225) 555-5000',
+          success: false,
+          otp_delivery_method: 'sms',
+          failure_reason: { telephony_error: I18n.t('telephony.error.friendly_message.generic') },
         )
 
         post :create, params: params

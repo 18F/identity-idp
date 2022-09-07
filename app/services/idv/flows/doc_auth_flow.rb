@@ -22,6 +22,14 @@ module Idv
         { name: :secure_account },
       ].freeze
 
+      STEP_INDICATOR_STEPS_GPO = [
+        { name: :getting_started },
+        { name: :verify_id },
+        { name: :verify_info },
+        { name: :secure_account },
+        { name: :get_a_letter },
+      ].freeze
+
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
       }.freeze

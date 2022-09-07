@@ -14,8 +14,20 @@ describe Idv::Agent do
     let(:applicant) { { foo: 'bar' } }
     let(:trace_id) { SecureRandom.uuid }
     let(:request_ip) { Faker::Internet.ip_v4_address }
+    let(:issuer) { 'fake-issuer' }
+    let(:friendly_name) { 'fake-name' }
+    let(:app_id) { 'fake-app-id' }
 
     let(:agent) { Idv::Agent.new(applicant) }
+
+    before do
+      ServiceProvider.create(
+        issuer: issuer,
+        friendly_name: friendly_name,
+        app_id: app_id,
+        device_profiling_enabled: true,
+      )
+    end
 
     describe '#proof_resolution' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
@@ -32,6 +44,7 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            issuer: issuer,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -48,6 +61,7 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -69,6 +83,7 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -84,6 +99,7 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            issuer: issuer,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -105,6 +121,7 @@ describe Idv::Agent do
             user_id: user.id,
             threatmetrix_session_id: nil,
             request_ip: request_ip,
+            issuer: issuer,
           )
           result = document_capture_session.load_proofing_result.result
 
@@ -129,6 +146,7 @@ describe Idv::Agent do
           user_id: user.id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
+          issuer: issuer,
         )
         result = document_capture_session.load_proofing_result.result
 

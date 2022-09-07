@@ -27,10 +27,9 @@ describe 'idv/shared/_ssn.html.erb' do
       to receive(:lexisnexis_threatmetrix_org_id).and_return(lexisnexis_threatmetrix_org_id)
 
     render partial: 'idv/shared/ssn', locals: {
-      flow_session: {
-        threatmetrix_session_id: session_id,
-      },
+      flow_session: {},
       success_alert_enabled: false,
+      threatmetrix_session_id: session_id,
       updating_ssn: updating_ssn,
     }
   end

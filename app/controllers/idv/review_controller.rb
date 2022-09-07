@@ -3,6 +3,7 @@ module Idv
     before_action :personal_key_confirmed
 
     include IdvStepConcern
+    include StepIndicatorConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
@@ -28,13 +29,14 @@ module Idv
       return if valid_password?
 
       analytics.idv_review_complete(success: false)
+      irs_attempts_api_tracker.idv_password_entered(success: false)
+
       flash[:error] = t('idv.errors.incorrect_password')
       redirect_to idv_review_url
     end
 
     def new
       @applicant = idv_session.applicant
-      @step_indicator_steps = step_indicator_steps
       analytics.idv_review_info_visited
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -47,6 +49,7 @@ module Idv
     end
 
     def create
+      irs_attempts_api_tracker.idv_password_entered(success: true)
       init_profile
       user_session[:need_personal_key_confirmation] = true
       redirect_to next_step
@@ -62,14 +65,6 @@ module Idv
     def redirect_to_idv_app_if_enabled
       return if !IdentityConfig.store.idv_api_enabled_steps.include?('password_confirm')
       redirect_to idv_app_path
-    end
-
-    def step_indicator_steps
-      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
-      return steps if idv_session.address_verification_mechanism != 'gpo'
-      steps.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
-      end
     end
 
     def flash_message_content

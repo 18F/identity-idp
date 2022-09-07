@@ -15,3 +15,5 @@ export {
   default as FailedCaptureAttemptsContext,
   Provider as FailedCaptureAttemptsContextProvider,
 } from './failed-capture-attempts';
+
+export type { DeviceContextValue } from './device';
