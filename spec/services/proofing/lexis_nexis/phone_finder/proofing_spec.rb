@@ -49,10 +49,8 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
         result = instance.proof(applicant)
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to include(
-          base: include(a_kind_of(String)),
-          'PhoneFinder Checks': include(a_kind_of(Hash)),
-        )
+        expect(result.errors[:base]).to be_a String
+        expect(result.errors[:'PhoneFinder Checks']).to be_a Hash
       end
     end
   end
