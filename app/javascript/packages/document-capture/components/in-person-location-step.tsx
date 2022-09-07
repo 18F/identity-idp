@@ -30,16 +30,9 @@ interface FormattedLocation {
   weekdayHours: string;
 }
 
-const locationUrl = '/verify/in_person/usps_locations';
+export const LOCATIONS_URL = '/verify/in_person/usps_locations';
 
-const getResponse = async () => {
-  const response = await fetch(locationUrl).then((res) =>
-    res.json().catch((error) => {
-      throw error;
-    }),
-  );
-  return response;
-};
+const getResponse = () => window.fetch(LOCATIONS_URL).then((res) => res.json());
 
 const formatLocation = (postOffices: PostOffice[]) => {
   const formattedLocations = [] as FormattedLocation[];
@@ -115,7 +108,7 @@ function InPersonLocationStep({ onChange, toPreviousStep }) {
         headers['X-CSRF-Token'] = csrf;
       }
       setInProgress(true);
-      await fetch(locationUrl, {
+      await fetch(LOCATIONS_URL, {
         method: 'PUT',
         body: JSON.stringify(selected),
         headers,

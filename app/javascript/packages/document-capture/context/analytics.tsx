@@ -1,8 +1,10 @@
 import { createContext, useState } from 'react';
-import type { ReactChild } from 'react';
+import type { ReactNode } from 'react';
 import type { trackEvent } from '@18f/identity-analytics';
 
-type SetSubmitEventMetadata = (metadata: Record<string, any>) => void;
+type EventMetadata = Record<string, any>;
+
+type SetSubmitEventMetadata = (metadata: EventMetadata) => void;
 
 type TrackSubmitEvent = (stepName: string) => void;
 
@@ -25,13 +27,18 @@ interface AnalyticsContextValue {
   trackVisitEvent: TrackVisitEvent;
 
   /**
+   * Additional metadata to be included in the next tracked submit event.
+   */
+  submitEventMetadata: EventMetadata;
+
+  /**
    * Sets additional metadata to be included in the next tracked submit event.
    */
   setSubmitEventMetadata: SetSubmitEventMetadata;
 }
 
 type AnalyticsContextProviderProps = Pick<AnalyticsContextValue, 'trackEvent'> & {
-  children: ReactChild;
+  children: ReactNode;
 };
 
 const DEFAULT_EVENT_METADATA: Record<string, any> = {};
@@ -42,6 +49,7 @@ const AnalyticsContext = createContext<AnalyticsContextValue>({
   trackEvent: () => Promise.resolve(),
   trackSubmitEvent() {},
   trackVisitEvent() {},
+  submitEventMetadata: DEFAULT_EVENT_METADATA,
   setSubmitEventMetadata() {},
 });
 
@@ -64,7 +72,13 @@ export function AnalyticsContextProvider({ children, trackEvent }: AnalyticsCont
     }
   };
 
-  const value = { trackEvent, trackVisitEvent, trackSubmitEvent, setSubmitEventMetadata };
+  const value = {
+    trackEvent,
+    trackVisitEvent,
+    trackSubmitEvent,
+    submitEventMetadata,
+    setSubmitEventMetadata,
+  };
 
   return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>;
 }
