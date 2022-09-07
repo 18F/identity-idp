@@ -161,7 +161,7 @@ module Users
     end
 
     def track_authentication_attempt(email)
-      user = User.find_with_email(email) || AnonymousUser.new
+      user = current_user || User.find_with_email(email) || AnonymousUser.new
 
       success = user_signed_in_and_not_locked_out?(user)
       analytics.email_and_password_auth(
