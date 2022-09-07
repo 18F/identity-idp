@@ -286,6 +286,15 @@ module IrsAttemptsApi
       )
     end
 
+    # @param [String] email
+    # A login attempt was rejected due to too many incorrect attempts
+    def login_rate_limited(email)
+      track_event(
+        :login_rate_limited,
+        email: email,
+      )
+    end
+
     # @param [Boolean] success True if the email and password matched
     # A user has initiated a logout event
     def logout_initiated(success:)

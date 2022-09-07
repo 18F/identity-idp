@@ -94,6 +94,10 @@ module Users
     end
 
     def process_locked_out_session
+      irs_attempts_api_tracker.login_rate_limited(
+        email: auth_params[:email]
+      )
+
       flash[:error] = t('errors.sign_in.bad_password_limit')
       redirect_to root_url(request_id: request_id)
     end
