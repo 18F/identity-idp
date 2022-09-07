@@ -98,7 +98,7 @@ feature 'Analytics Regression', js: true do
       'IdV: doc auth verify_document_status submitted' => { success: true, flow_path: 'standard', step: 'verify_document_status', attention_with_barcode: true, doc_auth_result: 'Attention' },
       'IdV: verify in person troubleshooting option clicked' => {},
       'IdV: in person proofing location visited' => { 'flow_path' => 'standard' },
-      'IdV: in person proofing location submitted' => { 'flow_path' => 'standard' },
+      'IdV: in person proofing location submitted' => { 'flow_path' => 'standard', 'selected_location' => 'BALTIMORE' },
       'IdV: in person proofing prepare visited' => { 'flow_path' => 'standard' },
       'IdV: in person proofing prepare submitted' => { 'flow_path' => 'standard' },
       'IdV: in person proofing state_id visited' => { step: 'state_id', flow_path: 'standard', step_count: 1 },

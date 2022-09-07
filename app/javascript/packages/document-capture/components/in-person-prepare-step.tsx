@@ -133,6 +133,4 @@ function InPersonPrepareStep({ toPreviousStep, value }) {
   );
 }
 
-InPersonPrepareStep.stepName = 'prepare';
-
 export default InPersonPrepareStep;

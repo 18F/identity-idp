@@ -1,4 +1,4 @@
-import { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext, useEffect } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
@@ -14,6 +14,7 @@ import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import UploadContext from '../context/upload';
+import AnalyticsContext from '../context/analytics';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import { RetrySubmissionError } from './submission-complete';
@@ -21,7 +22,6 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import withProps from '../higher-order/with-props';
-import useStepLogger from '../hooks/use-step-logger';
 
 /**
  * Returns a new object with specified keys removed.
@@ -59,9 +59,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
   const { t } = useI18n();
   const serviceProvider = useContext(ServiceProviderContext);
   const { flowPath } = useContext(UploadContext);
+  const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { inPersonURL } = useContext(FlowContext);
-  const { onStepSubmit } = useStepLogger(stepName);
   useDidUpdateEffect(onStepChange, [stepName]);
+  useEffect(() => {
+    if (stepName) {
+      trackVisitEvent(stepName);
+    }
+  }, [stepName]);
 
   /**
    * Clears error state and sets form values for submission.
@@ -106,15 +111,15 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ? []
       : ([
           {
-            name: InPersonLocationStep.stepName,
+            name: 'location',
             form: InPersonLocationStep,
           },
           {
-            name: InPersonPrepareStep.stepName,
+            name: 'prepare',
             form: InPersonPrepareStep,
           },
           flowPath === 'hybrid' && {
-            name: InPersonSwitchBackStep.stepName,
+            name: 'switch_back',
             form: InPersonSwitchBackStep,
           },
         ].filter(Boolean) as FormStep[]);
@@ -148,12 +153,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
       ].filter(Boolean) as FormStep[]);
 
   const stepIndicatorPath =
-    stepName &&
-    [
-      InPersonLocationStep.stepName,
-      InPersonPrepareStep.stepName,
-      InPersonSwitchBackStep.stepName,
-    ].includes(stepName)
+    stepName && ['location', 'prepare', 'switch_back'].includes(stepName)
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
 
@@ -189,7 +189,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange = () => {} }: Docum
             initialActiveErrors={initialActiveErrors}
             onComplete={submitForm}
             onStepChange={setStepName}
-            onStepSubmit={onStepSubmit}
+            onStepSubmit={trackSubmitEvent}
             autoFocus={!!submissionError}
           />
         </>
