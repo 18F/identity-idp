@@ -130,10 +130,39 @@ module IrsAttemptsApi
       )
     end
 
+    # Tracks when the user submits their idv phone number
+    # @param [String] phone_number
+    # param [Boolean] success
+    # @param [Hash<Symbol,Array<Symbol>>] failure_reason
+    def idv_phone_submitted(phone_number:, success:, failure_reason: nil)
+      track_event(
+        :idv_phone_submitted,
+        phone_number: phone_number,
+        success: success,
+        failure_reason: failure_reason,
+      )
+    end
+
+    # Tracks Idv phone OTP sent rate limits
+    def idv_phone_otp_sent_rate_limited
+      track_event(
+        :idv_phone_otp_sent_rate_limited,
+      )
+    end
+
     # The user has exceeded the rate limit during idv document upload
     def idv_document_upload_rate_limited
       track_event(
         :idv_document_upload_rate_limited,
+      )
+    end
+
+    # Tracks when the user submits a password for identity proofing
+    # @param [Boolean] success
+    def idv_password_entered(success:)
+      track_event(
+        :idv_password_entered,
+        success: success,
       )
     end
 
@@ -208,6 +237,15 @@ module IrsAttemptsApi
         phone_number: phone_number,
         success: success,
         failure_reason: failure_reason,
+      )
+    end
+
+    # The user reached the rate limit for Idv phone OTP submitted
+    # @param [String] phone
+    def idv_phone_otp_submitted_rate_limited(phone:)
+      track_event(
+        :idv_phone_otp_submitted_rate_limited,
+        phone: phone,
       )
     end
 
