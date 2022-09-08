@@ -415,7 +415,6 @@ describe ApplicationController do
       expect(url_with_updated_params).to eq(nil)
     end
 
-
     context 'with a SAML request' do
       let(:sp_session_request_url) { '/api/saml/auth2022' }
       it 'returns the saml completion url' do

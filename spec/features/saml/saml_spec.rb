@@ -249,7 +249,7 @@ feature 'saml api' do
 
       expect(fake_analytics.events['SAML Auth Request']).to eq(
         [{ requested_ial: 'http://idmanagement.gov/ns/assurance/ial/1',
-          service_provider: 'http://localhost:3000' }],
+           service_provider: 'http://localhost:3000' }],
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
