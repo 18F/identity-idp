@@ -85,7 +85,7 @@ class FrontendLogController < ApplicationController
   def method_kwargs(method)
     method.
       parameters.
-      select { |info_pair| [:key, :keyreq].include?(info_pair[0]) }.
-      map(&:last)
+      map { |type, name| name if [:key, :keyreq].include?(type) }.
+      compact
   end
 end
