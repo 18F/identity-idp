@@ -43,7 +43,7 @@ type AnalyticsContextProviderProps = Pick<AnalyticsContextValue, 'trackEvent'> &
 
 const DEFAULT_EVENT_METADATA: Record<string, any> = {};
 
-const LOGGED_STEPS: string[] = ['location', 'prepare', 'switch_back'];
+export const LOGGED_STEPS: string[] = ['location', 'prepare', 'switch_back'];
 
 const AnalyticsContext = createContext<AnalyticsContextValue>({
   trackEvent: () => Promise.resolve(),
